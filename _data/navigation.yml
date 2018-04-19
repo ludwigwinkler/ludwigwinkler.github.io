@@ -6,3 +6,6 @@
 
 - title: "BO"
   href: "/BayesianOptimization/"
+
+- title: "BNN"
+  href: "/BayesianNN/"
