@@ -1,7 +1,3 @@
----
-title: This is my title
----
-
 Ludwig Winkler
 =====================
 Hello there!
