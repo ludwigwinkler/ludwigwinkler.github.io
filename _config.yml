@@ -1,5 +1,8 @@
 name: Ludwig Winkler
 title: Hi
+subtitle: Hi Hi
+description: Descriptive Text for yo whatever
 markdown: kramdown
 permalink: /blog/:year/:month/:day/:title
 theme: jekyll-theme-cayman
+image: data/LudwigWinkler_AlexSmall.jpg
