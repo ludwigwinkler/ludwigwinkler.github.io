@@ -1,8 +1,5 @@
----
-title: Hi
----
-
 name: Ludwig Winkler
+title: Hi
 markdown: kramdown
 permalink: /blog/:year/:month/:day/:title
 theme: jekyll-theme-cayman
