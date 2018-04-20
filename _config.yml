@@ -1,5 +1,4 @@
 name: Ludwig Winkler
-title: Ludwig Winkler's github.io
 markdown: kramdown
 permalink: /blog/:year/:month/:day/:title
 theme: jekyll-theme-cayman
