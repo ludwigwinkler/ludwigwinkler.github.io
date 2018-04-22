@@ -6,3 +6,6 @@ markdown: kramdown
 permalink: /blog/:year/:month/:day/:title
 theme: jekyll-theme-cayman
 image: data/LudwigWinkler_AlexSmall.jpg
+
+header_pages:
+  - data/hi.md
