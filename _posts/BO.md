@@ -1,3 +1,4 @@
+
 <head>
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
        <script type="text/x-mathjax-config">
@@ -11,6 +12,13 @@
        </script>
        <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 </head>
+---
+layout: post
+title:  "Welcome to Massively: The Jekyll Theme!"
+date:   2017-10-31
+excerpt: "Huge thanks to HTML5 UP for making this awesome template! Let's see what it can do"
+image: "/images/pic02.jpg"
+---
 
 [Back Home](https://ludwigwinkler.github.io)
 
@@ -72,17 +80,17 @@ This allows us to omitt the normalization constant and determine the relevant me
 
 Let $y=f(x)$, where $x \in \mathbb{R}^d$ and $y \in \mathbb{R}$ be the function which we want to estimate with a Gaussian Process.
 Furthermore, let $\mathcal{D} = (X, y) = \\{(x_i, y_i)\\}_{i=0}^N$
-with $X \in$ $\mathbb{R}^{N \times d}$ 
-and $y \in \mathbb{R}^{N}$, 
+with $X \in$ $\mathbb{R}^{N \times d}$
+and $y \in \mathbb{R}^{N}$,
 be our training observations of the function $f$.
 
-Lastly, let $ \mathcal{D}\_* = ( X\_* , y\_* ) = \\{ ( X\_{ * j } , y\_{ * j } ) \\} \_{j=0}^{ N\_* } $ with $ X\_* \in \mathbb{R}^{N\_* \times d} $ and $ y\_* \in \mathbb{R}^{ N\_* } $ , 
-be the test observations at which we want to compute the predictive distributions of $ y\_* =f( X\_* ) $ 
+Lastly, let $ \mathcal{D}\_* = ( X\_* , y\_* ) = \\{ ( X\_{ * j } , y\_{ * j } ) \\} \_{j=0}^{ N\_* } $ with $ X\_* \in \mathbb{R}^{N\_* \times d} $ and $ y\_* \in \mathbb{R}^{ N\_* } $ ,
+be the test observations at which we want to compute the predictive distributions of $ y\_* =f( X\_* ) $
 for the function $ f $.
 
-A Gaussian process is defined as a stochastic process, such that every finite collection of realizations 
-$ X = \\{ x\_i \\}\_{ i=0 }^N , x\_i \in \mathbb{R}^d$ of the random variables 
-$ X \sim \mathcal{N}( \cdot  \|  \mu, \Sigma),  X \in \mathbb{R}^d $ 
+A Gaussian process is defined as a stochastic process, such that every finite collection of realizations
+$ X = \\{ x\_i \\}\_{ i=0 }^N , x\_i \in \mathbb{R}^d$ of the random variables
+$ X \sim \mathcal{N}( \cdot  \|  \mu, \Sigma),  X \in \mathbb{R}^d $
 is a multivariate distribution.
 
 A constraint of Gaussian processes as they are used in machine learning, which can be relaxed in specific cases, is that they are assumed to have a zero mean.
@@ -184,7 +192,7 @@ $$
 
 The block matrices $k(X,X) \in \mathbb{R}^{N \times N}$
 $ k(X, X\_* ) \in \mathbb{R}^{N \times N\_* }, $
-$k( X\_* , X ) \in \mathbb{R}^{ N\_* \times N }$ and 
+$k( X\_* , X ) \in \mathbb{R}^{ N\_* \times N }$ and
 $k(X\_* , X\_* ) \in \mathbb{R}^{N\_* \times N\_* }$ are the Gramian matrices of the training and test observations with respect to the kernel $k(x, x')$.
 
 Furthermore both $k(X,X)$ and $k( X\_* , X\_* )$ are symmetric matrices and $k( X, X\_* )$ and $k( X\_* ,X)$ are each others mutually transposed.
@@ -330,4 +338,3 @@ $$
 Here is an image of a Gaussian Process:
 
 ![Hi](https://raw.githubusercontent.com/ludwigwinkler/BayesianOptimization/gh-pages/docs/GP_2Obs.png)
-
