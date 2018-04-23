@@ -1,4 +1,10 @@
-
+---
+layout: post
+title:  "Welcome to Massively: The Jekyll Theme!"
+date:   2017-10-31
+excerpt: "Huge thanks to HTML5 UP for making this awesome template! Let's see what it can do"
+image: "/images/pic02.jpg"
+---
 <head>
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
        <script type="text/x-mathjax-config">
@@ -12,13 +18,7 @@
        </script>
        <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 </head>
----
-layout: post
-title:  "Welcome to Massively: The Jekyll Theme!"
-date:   2017-10-31
-excerpt: "Huge thanks to HTML5 UP for making this awesome template! Let's see what it can do"
-image: "/images/pic02.jpg"
----
+
 
 [Back Home](https://ludwigwinkler.github.io)
 
