@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.2.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-04-24T20:40:58+02:00</updated><id>/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Bayesian Optimization</title><link href="/blog/BayesianOptimization/" rel="alternate" type="text/html" title="Bayesian Optimization" /><published>2018-04-24T00:00:00+02:00</published><updated>2018-04-24T00:00:00+02:00</updated><id>/blog/BayesianOptimization</id><content type="html" xml:base="/blog/BayesianOptimization/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.2.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-04-24T20:51:49+02:00</updated><id>/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Bayesian Optimization</title><link href="/blog/BayesianOptimization/" rel="alternate" type="text/html" title="Bayesian Optimization" /><published>2018-04-24T00:00:00+02:00</published><updated>2018-04-24T00:00:00+02:00</updated><id>/blog/BayesianOptimization</id><content type="html" xml:base="/blog/BayesianOptimization/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -94,7 +94,23 @@ The expected improvement is the most Bayesian acquisition function as it incorpo
 
 &lt;p&gt;While the UCB acquisition function has a more straightforward interpretation, it suffers from getting stuck in local minima.
 This is due to UCB using a fixed integer multiple $\kappa$ of the variance instead of integrating over it.
-The EI acquisition utilizes the uncertainty in a fully Bayesian way and is able to explore the feasible set even after having found an optimum.&lt;/p&gt;</content><summary type="html">Using Gaussian Processes for Optimization</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="" /></entry><entry><title type="html">Gaussian Processes - Extensions</title><link href="/blog/Gaussian-Processes-Extensions/" rel="alternate" type="text/html" title="Gaussian Processes - Extensions" /><published>2018-04-23T00:00:00+02:00</published><updated>2018-04-23T00:00:00+02:00</updated><id>/blog/Gaussian-Processes-Extensions</id><content type="html" xml:base="/blog/Gaussian-Processes-Extensions/">&lt;head&gt;
+The EI acquisition utilizes the uncertainty in a fully Bayesian way and is able to explore the feasible set even after having found an optimum.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;BO_EI0.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
+&lt;img src=&quot;BO_EI1.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
+&lt;img src=&quot;BO_EI2.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
+&lt;img src=&quot;BO_EI3.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
+&lt;img src=&quot;BO_EI4.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
+&lt;img src=&quot;BO_EI5.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
+&lt;img src=&quot;BO_EI6.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
+&lt;img src=&quot;BO_EI7.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
+&lt;img src=&quot;BO_EI8.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
+&lt;img src=&quot;BO_EI9.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
+&lt;img src=&quot;BO_EI10.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
+&lt;img src=&quot;BO_EI11.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
+&lt;img src=&quot;BO_EI12.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
+&lt;img src=&quot;BO_EI13.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
+&lt;img src=&quot;BO_EI14.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;&lt;/p&gt;</content><summary type="html">Using Gaussian Processes for Optimization</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="" /></entry><entry><title type="html">Gaussian Processes - Extensions</title><link href="/blog/Gaussian-Processes-Extensions/" rel="alternate" type="text/html" title="Gaussian Processes - Extensions" /><published>2018-04-23T00:00:00+02:00</published><updated>2018-04-23T00:00:00+02:00</updated><id>/blog/Gaussian-Processes-Extensions</id><content type="html" xml:base="/blog/Gaussian-Processes-Extensions/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({

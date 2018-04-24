@@ -113,3 +113,19 @@ $$
 While the UCB acquisition function has a more straightforward interpretation, it suffers from getting stuck in local minima.
 This is due to UCB using a fixed integer multiple $\kappa$ of the variance instead of integrating over it.
 The EI acquisition utilizes the uncertainty in a fully Bayesian way and is able to explore the feasible set even after having found an optimum.
+
+![](BO_EI0.png){:height="75%" width="75%"}
+![](BO_EI1.png){:height="75%" width="75%"}
+![](BO_EI2.png){:height="75%" width="75%"}
+![](BO_EI3.png){:height="75%" width="75%"}
+![](BO_EI4.png){:height="75%" width="75%"}
+![](BO_EI5.png){:height="75%" width="75%"}
+![](BO_EI6.png){:height="75%" width="75%"}
+![](BO_EI7.png){:height="75%" width="75%"}
+![](BO_EI8.png){:height="75%" width="75%"}
+![](BO_EI9.png){:height="75%" width="75%"}
+![](BO_EI10.png){:height="75%" width="75%"}
+![](BO_EI11.png){:height="75%" width="75%"}
+![](BO_EI12.png){:height="75%" width="75%"}
+![](BO_EI13.png){:height="75%" width="75%"}
+![](BO_EI14.png){:height="75%" width="75%"}
