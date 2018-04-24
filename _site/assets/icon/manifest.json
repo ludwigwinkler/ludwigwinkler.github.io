@@ -2,7 +2,7 @@
     "name": "",
     "icons": [
         {
-            "src": "/assets/icon/LW-192x192.png",
+            "src": "/assets/icon/LW-256x256.png",
             "sizes": "256x256",
             "type": "image/png"
         }
