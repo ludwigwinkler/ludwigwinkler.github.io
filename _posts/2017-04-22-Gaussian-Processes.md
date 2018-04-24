@@ -332,4 +332,4 @@ $$
 
 Here is an image of a Gaussian Process:
 
-![Hi](https://raw.githubusercontent.com/ludwigwinkler/BayesianOptimization/gh-pages/docs/GP_2Obs.png){:height="75%" width="75%"}
+![](https://raw.githubusercontent.com/ludwigwinkler/BayesianOptimization/gh-pages/docs/GP_2Obs.png){:height="75%" width="75%"}

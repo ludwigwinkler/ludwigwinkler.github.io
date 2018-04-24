@@ -41,39 +41,21 @@ $$
 \end{align}
 $$
 
-$$
-\begin{figure}[tb]
-     \centering
-     \begin{subfigure}[t]{0.45\textwidth}
-          \includegraphics[width=\textwidth]{Noise_nonoise.png}
-          \captionsetup{width=.8\linewidth}
-          \caption{Gaussian process without noisy observations.}
-          \label{fig:gull}
-     \end{subfigure}
-     \begin{subfigure}[t]{0.45\textwidth}
-          \includegraphics[width=\textwidth]{Noise_bothnoise.png}
-          \captionsetup{width=.8\linewidth}
-          \caption{Gaussian process with noisy observations}
-          \label{fig:tiger}
-     \end{subfigure}
-     \hfill
-     \begin{subfigure}[t]{0.45\textwidth}
-          \includegraphics[width=\textwidth]{Noise_meannoise.png}
-          \captionsetup{width=.8\linewidth}
-          \caption{Gaussian process with noise only on the mean of the posterior distribution.}
-          \label{fig:gull}
-     \end{subfigure}
-     \begin{subfigure}[t]{0.45\textwidth}
-          \includegraphics[width=\textwidth]{Noise_varnoise.png}
-          \captionsetup{width=.8\linewidth}
-          \caption{Gaussian process with noise only on the variance of the posterior distribution}
-          \label{fig:tiger}
-     \end{subfigure}
-     \caption{The influence of noisy observations on the posterior distribution of the Gaussian process.
-     Especially (d) would be interesting in practice as it assumes the mean as undisturbed but includes the noise in the variance of the observation.}
-     \label{fig:noise}
-\end{figure}
-$$
+Gaussian process without noisy observations:
+
+![](Noise_nonoise.png){:height="75%" width="75%"}
+
+Gaussian process with noise only on the mean of the posterior distribution:
+
+![](Noise_meannoise.png){:height="75%" width="75%"}
+
+Gaussian process with noise only on the variance of the posterior distribution:
+
+![](Noise_varnoise.png){:height="75%" width="75%"}
+
+Gaussian process with noisy observations affecting both the mean and the variance:
+
+![](Noise_bothnoise.png){:height="75%" width="75%"}
 
 This can be realized with the addition of the noise's variance to the diagonal entries of the covariance matrix of the observation kernel matrix $K\_{XX}$:
 
@@ -159,23 +141,6 @@ $$
 $$
 
 The optimization of the log-likelihood can be done with regular optimization algorithms such as limited memory BFGS.
-
-\begin{figure}[tb]
-    \centering
-    \begin{subfigure}[t]{0.45\textwidth}
-      \captionsetup{width=.8\linewidth}
-        \includegraphics[width=\textwidth]{LL_Unoptimized.png}
-        \caption{Gaussian process before hyperparameter optimization.}
-        \label{fig:gull}
-    \end{subfigure}
-    \begin{subfigure}[t]{0.45\textwidth}
-      \captionsetup{width=.8\linewidth}
-        \includegraphics[width=\textwidth]{LL_Optimized.png}
-        \caption{Optimized hyperparameters using log-likelihood minimization. The kernel parameters have been fitted to the marginal data distribution.}
-        \label{fig:tiger}
-    \end{subfigure}
-    \caption{Example of the model selection for a Gaussian process. for which the hyperparameters $\theta$ have been optimized.}
-\end{figure}
 
 ## Derivative Information
 
@@ -301,20 +266,11 @@ $$
 While derivative observations themselves are usually hard to come by for computationally expensive functions $f(x)$, derivative observations are of numerical advantage in cases where observations lie very close to each other.
 In these cases the inversion can become unstable or even impossible due to the rank definciency.
 Derivative observations pose a useful way to circumvent such rank definciencies for very close observations by combining two observations into one observation and a derivative observation.
-\begin{figure}[htb]
-    \centering
-    \begin{subfigure}[t]{0.45\textwidth}
-        \includegraphics[width=\textwidth]{GP_4Obs.png}
-        \captionsetup{width=.8\linewidth}
-        \caption{GP without derivative observations. Since the GP does not take the derivative of the function into concern and assumes a zero mean, the slope of the approximated function does not correspond to the slope of the objective function at the observations.}
-        \label{fig:gull}
-    \end{subfigure}
-    \begin{subfigure}[t]{0.45\textwidth}
-        \captionsetup{width=.8\linewidth}
-        \includegraphics[width=\textwidth]{GP_4Obs_Deriv.png}
-        \caption{The same GP with derivative observations. The true function $f(x)$ can now be modeled with a limited number of observations and derivative observations.}
-        \label{fig:tiger}
-    \end{subfigure}
-    \caption{Example for a Gaussian process with additional derivative observations.}
-    \label{fig:derivative}
-\end{figure}
+
+A Gaussian process:
+
+![](GP_4Obs.png){:height="75%" width="75%"}
+
+The same Gaussian process with derivative observations. The GP is able to fit the true function considerably better:
+
+![](GP_4Obs_Deriv.png){:height="75%" width="75%"}

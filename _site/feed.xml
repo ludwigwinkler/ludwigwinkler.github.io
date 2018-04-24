@@ -1,4 +1,100 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.2.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-04-24T20:08:40+02:00</updated><id>/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Gaussian Processes - Extensions</title><link href="/blog/Gaussian-Processes-Extensions/" rel="alternate" type="text/html" title="Gaussian Processes - Extensions" /><published>2018-04-23T00:00:00+02:00</published><updated>2018-04-23T00:00:00+02:00</updated><id>/blog/Gaussian-Processes-Extensions</id><content type="html" xml:base="/blog/Gaussian-Processes-Extensions/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.2.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-04-24T20:40:58+02:00</updated><id>/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Bayesian Optimization</title><link href="/blog/BayesianOptimization/" rel="alternate" type="text/html" title="Bayesian Optimization" /><published>2018-04-24T00:00:00+02:00</published><updated>2018-04-24T00:00:00+02:00</updated><id>/blog/BayesianOptimization</id><content type="html" xml:base="/blog/BayesianOptimization/">&lt;head&gt;
+&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
+       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
+         MathJax.Hub.Config({
+           tex2jax: {
+             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
+             displayMath: [['$$','$$']],
+             processEscapes: true
+           }
+         });
+       &lt;/script&gt;
+       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+
+&lt;h2 id=&quot;bayesian-optimization&quot;&gt;Bayesian Optimization&lt;/h2&gt;
+
+&lt;p&gt;As stated above, many problem settings in engineering and science can be formulated as optimization problems of a criterion, commonly called an objective function, $\mathcal{F}(x)$ with respect to some argument $x$.
+The goal of any optimization is to find the global optimum of such a function $\mathcal{F}(x)$.
+For linear or convex optimization problems, this is usually feasible, yet optimization becomes difficult for non-linear objective functions.
+Bayesian optimization tries to tackle such non-linear objective functions by searching for a global optimum in a probabilistical manner.&lt;/p&gt;
+
+&lt;h2 id=&quot;optimization&quot;&gt;Optimization&lt;/h2&gt;
+
+&lt;p&gt;In computer science, mathematics and operations research, mathematical optimization aims to find the best value $x^* \in \mathcal{X}$ from a set of feasible values $\mathcal{X}$ with respect to an criterion or objective function $\mathcal{F}(x)$.
+Optimization problems can be formulated as either maximization or minimization problems of the objective function:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+     \mathcal{F}(x^* ) = \min_{x \in \mathcal{X}} \mathcal{F}(x) = \max_{x \in \mathcal{X}} -\mathcal{F}(x)
+\end{align}&lt;/script&gt;
+
+&lt;p&gt;where&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+     x^* = \underset{x \in \mathcal{X}}{\operatorname{argmin}} \mathcal{F}(x) = \underset{x \in \mathcal{X}}{\operatorname{argmax}} -\mathcal{F}(x)
+\end{align}&lt;/script&gt;
+
+&lt;p&gt;Since $\mathcal{F}(x)$ is often a complicated, non-linear function the solution is searched for in an iterative manner.
+Most optimization algorithms evaluate the objective function $\mathcal{F}(x)$ through a set of succesive queries $x_{1:n}=\{ x_i \}_{i=1}^n \subset \mathcal{X}$ such that the information of the previous evaluations guide the next evaluation $x_{n+1}$ through a utility function&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+     x_{n+1} = \underset{x \in \mathcal{X}}{\operatorname{argmax}} \ \mathcal{U}(x \ | \ x_1, \ldots, x_n)
+\end{align}&lt;/script&gt;
+
+&lt;p&gt;The information contained in the past evaluations $x_{1:n}$ is thus leveraged in a way to make the evaluation $x_{n+1}$ as close as possible to the global optimum.
+The utility function $\mathcal{U}$ should balance the exploration of the set of feasible optima $\mathcal{X}$ while simultaneously exploiting existing information in $ x_{1:n}$ to find the globally optimal solution $x^* $.&lt;/p&gt;
+
+&lt;h2 id=&quot;bayesian-optimization-with-gaussian-processes&quot;&gt;Bayesian Optimization with Gaussian Processes&lt;/h2&gt;
+
+&lt;p&gt;In Bayesian optimization a Gaussian process is used to compute a probability distribution over the past evaluations $x_{1:n}$, which guides a subsequent sampling process.
+The sampling process uses an acquisition function $\Lambda(x \ | \ x_{1:n})$, which is a utility function on the posterior distribution computed by the Gaussian process.
+The acquisition function balances both the exploration as well as the exploitation of the unknown objective function $\mathcal{F}(x)$.
+The next evaluation is chosen such that it maximizes the acquisition function, i.e.
+\begin{align}
+     x_{n+1} = \underset{x \in \mathcal{X}}{\operatorname{argmax}} \ \Lambda(x \ | \ x_{1:n})
+\end{align}&lt;/p&gt;
+
+&lt;p&gt;By computing posterior distributions over all predictions at once, Gaussian processes have a powerful property which enables them to search for an optimum globally.
+The posterior distributions allow Gaussian processes to balance both exploitation and exploration of the set of feasible solutions by incorporating their uncertainty into optimization task.&lt;/p&gt;
+
+&lt;p&gt;The acqusition function $\Lambda(x \ | \ x_{1:n})$ serves as an improvement criterion for the yet unevaluated feasible solutions.
+The improvement is computed relative to the optimal solution $x^+ \in x_{1:n}$ in the set of previous evaluations $x_{1:n}$,&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+     x^+ &amp;= \underset{x \in x_{1:n}}{\operatorname{argmax}} \ \mathcal{F}(x)
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;A popular acquisition functions is the upper/lower confidence bound \cite{ucb}, which scales the mean with respect to the previously best evaluation.
+It then considers a multiple of the standard deviation and adds it for maximization problems or subtracts it for minimization problems.
+The hyperparameter $\kappa$ is usually selected as a small integer number, which can be intuitively selected due to its close relationship to confidence values of the Gaussian distribution.
+Given the mean $\mu(x)$ and covariance function $\sigma(x)$, the upper confidence bound is computed with the hyperparameter $\kappa$ via&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+     \mathbb{UCB}[x] = \mu(x) + \kappa \sigma(x) - \mathcal{F}(x^+)
+\end{align}&lt;/script&gt;
+
+&lt;p&gt;A different acquisition function is the expected improvement (EI) \cite{mockus1975bayesian} which considers the expected value at a point $x_{n+1}$ above the currently best value $x^+$.
+The expected improvement is the most Bayesian acquisition function as it incorporates the posterior in its entirety including the uncertainty.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+     \mathbb{EI}[x] &amp;= \int_{x^+}^{\infty} \left( \frac{f(x) - f(x^+)}{\sigma(x)} \right) \mathcal{N}(x | \mu(x), \sigma(x)) df(x) \\
+     &amp;= \int_{x^+}^{\infty} z(x) \ \mathcal{N}(x | \mu(x), \sigma(x)) df(x) \\
+     &amp;=\sigma(x) \left( z(x)  \Phi \left( z(x) \right) + \mathcal{N}_{0,1} \left( z(x) \right) \right) \\
+     %&amp;=\sigma(x) \left( \frac{\mu(x) - f(x^+)}{\sigma(x)}  \Phi \left( \frac{\mu(x) - f(x^+)}{\sigma(x)} \right) + \mathcal{N}_{0,1} \left( \frac{\mu(x) - f(x^+)}{\sigma(x)} \right) \right)
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;where the term $z(x)$ represents the z-score for a specific value $x$ in the yet unevaluated feasible set solutions:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+     z(x) &amp;= \frac{f(x) - f(x^+)}{\sigma(x)}
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;While the UCB acquisition function has a more straightforward interpretation, it suffers from getting stuck in local minima.
+This is due to UCB using a fixed integer multiple $\kappa$ of the variance instead of integrating over it.
+The EI acquisition utilizes the uncertainty in a fully Bayesian way and is able to explore the feasible set even after having found an optimum.&lt;/p&gt;</content><summary type="html">Using Gaussian Processes for Optimization</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="" /></entry><entry><title type="html">Gaussian Processes - Extensions</title><link href="/blog/Gaussian-Processes-Extensions/" rel="alternate" type="text/html" title="Gaussian Processes - Extensions" /><published>2018-04-23T00:00:00+02:00</published><updated>2018-04-23T00:00:00+02:00</updated><id>/blog/Gaussian-Processes-Extensions</id><content type="html" xml:base="/blog/Gaussian-Processes-Extensions/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -32,37 +128,21 @@ This is due to the assumption of independent, identical distributed noise, which
      &amp;= k(x,x') + \mathbb{1}_{y=y'}  \sigma^2_{\varepsilon}
 \end{align} %]]&gt;&lt;/script&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{figure}[tb]
-     \centering
-     \begin{subfigure}[t]{0.45\textwidth}
-          \includegraphics[width=\textwidth]{Noise_nonoise.png}
-          \captionsetup{width=.8\linewidth}
-          \caption{Gaussian process without noisy observations.}
-          \label{fig:gull}
-     \end{subfigure}
-     \begin{subfigure}[t]{0.45\textwidth}
-          \includegraphics[width=\textwidth]{Noise_bothnoise.png}
-          \captionsetup{width=.8\linewidth}
-          \caption{Gaussian process with noisy observations}
-          \label{fig:tiger}
-     \end{subfigure}
-     \hfill
-     \begin{subfigure}[t]{0.45\textwidth}
-          \includegraphics[width=\textwidth]{Noise_meannoise.png}
-          \captionsetup{width=.8\linewidth}
-          \caption{Gaussian process with noise only on the mean of the posterior distribution.}
-          \label{fig:gull}
-     \end{subfigure}
-     \begin{subfigure}[t]{0.45\textwidth}
-          \includegraphics[width=\textwidth]{Noise_varnoise.png}
-          \captionsetup{width=.8\linewidth}
-          \caption{Gaussian process with noise only on the variance of the posterior distribution}
-          \label{fig:tiger}
-     \end{subfigure}
-     \caption{The influence of noisy observations on the posterior distribution of the Gaussian process.
-     Especially (d) would be interesting in practice as it assumes the mean as undisturbed but includes the noise in the variance of the observation.}
-     \label{fig:noise}
-\end{figure}&lt;/script&gt;
+&lt;p&gt;Gaussian process without noisy observations:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;Noise_nonoise.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Gaussian process with noise only on the mean of the posterior distribution:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;Noise_meannoise.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Gaussian process with noise only on the variance of the posterior distribution:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;Noise_varnoise.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Gaussian process with noisy observations affecting both the mean and the variance:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;Noise_bothnoise.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;This can be realized with the addition of the noise’s variance to the diagonal entries of the covariance matrix of the observation kernel matrix $K_{XX}$:&lt;/p&gt;
 
@@ -142,23 +222,6 @@ Working with the log-probability offers a higher numerical stability with respec
 \end{align} %]]&gt;&lt;/script&gt;
 
 &lt;p&gt;The optimization of the log-likelihood can be done with regular optimization algorithms such as limited memory BFGS.&lt;/p&gt;
-
-&lt;p&gt;\begin{figure}[tb]
-    \centering
-    \begin{subfigure}[t]{0.45\textwidth}
-      \captionsetup{width=.8\linewidth}
-        \includegraphics[width=\textwidth]{LL_Unoptimized.png}
-        \caption{Gaussian process before hyperparameter optimization.}
-        \label{fig:gull}
-    \end{subfigure}
-    \begin{subfigure}[t]{0.45\textwidth}
-      \captionsetup{width=.8\linewidth}
-        \includegraphics[width=\textwidth]{LL_Optimized.png}
-        \caption{Optimized hyperparameters using log-likelihood minimization. The kernel parameters have been fitted to the marginal data distribution.}
-        \label{fig:tiger}
-    \end{subfigure}
-    \caption{Example of the model selection for a Gaussian process. for which the hyperparameters $\theta$ have been optimized.}
-\end{figure}&lt;/p&gt;
 
 &lt;h2 id=&quot;derivative-information&quot;&gt;Derivative Information&lt;/h2&gt;
 
@@ -276,24 +339,15 @@ In order to expand the Gaussian process with derivative observations we have to 
 
 &lt;p&gt;While derivative observations themselves are usually hard to come by for computationally expensive functions $f(x)$, derivative observations are of numerical advantage in cases where observations lie very close to each other.
 In these cases the inversion can become unstable or even impossible due to the rank definciency.
-Derivative observations pose a useful way to circumvent such rank definciencies for very close observations by combining two observations into one observation and a derivative observation.
-\begin{figure}[htb]
-    \centering
-    \begin{subfigure}[t]{0.45\textwidth}
-        \includegraphics[width=\textwidth]{GP_4Obs.png}
-        \captionsetup{width=.8\linewidth}
-        \caption{GP without derivative observations. Since the GP does not take the derivative of the function into concern and assumes a zero mean, the slope of the approximated function does not correspond to the slope of the objective function at the observations.}
-        \label{fig:gull}
-    \end{subfigure}
-    \begin{subfigure}[t]{0.45\textwidth}
-        \captionsetup{width=.8\linewidth}
-        \includegraphics[width=\textwidth]{GP_4Obs_Deriv.png}
-        \caption{The same GP with derivative observations. The true function $f(x)$ can now be modeled with a limited number of observations and derivative observations.}
-        \label{fig:tiger}
-    \end{subfigure}
-    \caption{Example for a Gaussian process with additional derivative observations.}
-    \label{fig:derivative}
-\end{figure}&lt;/p&gt;</content><summary type="html">Extensions to Gaussian Processes</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/images/GP_4Obs_Deriv.png" /></entry><entry><title type="html">Gaussian Processes - Basics</title><link href="/blog/Gaussian-Processes/" rel="alternate" type="text/html" title="Gaussian Processes - Basics" /><published>2018-04-23T00:00:00+02:00</published><updated>2018-04-23T00:00:00+02:00</updated><id>/blog/Gaussian-Processes</id><content type="html" xml:base="/blog/Gaussian-Processes/">&lt;head&gt;
+Derivative observations pose a useful way to circumvent such rank definciencies for very close observations by combining two observations into one observation and a derivative observation.&lt;/p&gt;
+
+&lt;p&gt;A Gaussian process:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;GP_4Obs.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The same Gaussian process with derivative observations. The GP is able to fit the true function considerably better:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;GP_4Obs_Deriv.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;&lt;/p&gt;</content><summary type="html">Extensions to Gaussian Processes</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/images/GP_4Obs_Deriv.png" /></entry><entry><title type="html">Gaussian Processes - Basics</title><link href="/blog/Gaussian-Processes/" rel="alternate" type="text/html" title="Gaussian Processes - Basics" /><published>2018-04-23T00:00:00+02:00</published><updated>2018-04-23T00:00:00+02:00</updated><id>/blog/Gaussian-Processes</id><content type="html" xml:base="/blog/Gaussian-Processes/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -605,7 +659,7 @@ Given the computation of both the mean and variance of the posterior distributio
 
 &lt;p&gt;Here is an image of a Gaussian Process:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://raw.githubusercontent.com/ludwigwinkler/BayesianOptimization/gh-pages/docs/GP_2Obs.png&quot; alt=&quot;Hi&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;&lt;/p&gt;</content><summary type="html">A Tutorial for Gaussian Processes</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/images/GP_2Obs.png" /></entry><entry><title type="html">RL in Challenging State Spaces and Sparse Reward Signals</title><link href="/blog/AdvRL/" rel="alternate" type="text/html" title="RL in Challenging State Spaces and Sparse Reward Signals" /><published>2017-11-06T00:00:00+01:00</published><updated>2017-11-06T00:00:00+01:00</updated><id>/blog/AdvRL</id><content type="html" xml:base="/blog/AdvRL/">&lt;head&gt;
+&lt;p&gt;&lt;img src=&quot;https://raw.githubusercontent.com/ludwigwinkler/BayesianOptimization/gh-pages/docs/GP_2Obs.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;&lt;/p&gt;</content><summary type="html">A Tutorial for Gaussian Processes</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/images/GP_2Obs.png" /></entry><entry><title type="html">RL in Challenging State Spaces and Sparse Reward Signals</title><link href="/blog/AdvRL/" rel="alternate" type="text/html" title="RL in Challenging State Spaces and Sparse Reward Signals" /><published>2017-11-06T00:00:00+01:00</published><updated>2017-11-06T00:00:00+01:00</updated><id>/blog/AdvRL</id><content type="html" xml:base="/blog/AdvRL/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
