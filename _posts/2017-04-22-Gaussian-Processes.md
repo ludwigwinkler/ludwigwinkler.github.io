@@ -1,8 +1,8 @@
 ---
 layout: post
-title:  "Bayesian Optimization - The Basics"
+title:  "Gaussian Processes - Basics"
 date:   2018-04-23
-excerpt: "Some Extensions for Bayesian Optimization"
+excerpt: "A Tutorial for Gaussian Processes"
 image: "/images/GP_2Obs.png"
 ---
 <head>
@@ -93,7 +93,7 @@ In order to compute a predictive distribution over $ y\_* $ we initially constru
 
 $$
 \begin{align}
-     p(y\_*, y, X\_* , X) &= \frac{1}{\sqrt{(2 \pi)^{ N+N_* } |K|^2}}
+     p(y_*, y, X_* , X) &= \frac{1}{\sqrt{(2 \pi)^{ N+N_* } |K|^2}}
      \exp \left[
      -\frac{1}{2}
      \begin{bmatrix}
@@ -101,7 +101,7 @@ $$
           y_*
      \end{bmatrix}^T
      \begin{bmatrix}
-          K\_{ XX } & K_{ X X_* } \\
+          K_{ XX } & K_{ X X_* } \\
           K_{ X_* X } & K_{ X_* X_* }
      \end{bmatrix}^{-1}
      \begin{bmatrix}
@@ -201,7 +201,7 @@ $$
 \begin{align}
      K^{-1}&= \begin{bmatrix}
           K_{ X X} & K_{ X X_* } \\
-          K_{ X\_* X} & K_{X\_* X\_* }
+          K_{ X_* X} & K_{X_* X_* }
      \end{bmatrix}^{-1} \label{eq:blockmatrixinversionlemma1} \\
      & =\begin{bmatrix}
           A & B \\
@@ -219,7 +219,7 @@ $$
           P & Q \\
           R & S
      \end{bmatrix} \label{eq:blockmatrixinversionlemma-1} \\
-     \Sigma &= D-CA^{-1}B = K_{X\_* X\_* } - K_{ X\_* X}{K_{ X\_* X\_* }}^{-1}K_{X X\_* }
+     \Sigma &= D-CA^{-1}B = K_{X_* X_* } - K_{ X_* X}{K_{ X_* X_* }}^{-1}K_{X X_* }
 \end{align}
 $$
 
@@ -332,4 +332,4 @@ $$
 
 Here is an image of a Gaussian Process:
 
-![Hi](https://raw.githubusercontent.com/ludwigwinkler/BayesianOptimization/gh-pages/docs/GP_2Obs.png)
+![Hi](https://raw.githubusercontent.com/ludwigwinkler/BayesianOptimization/gh-pages/docs/GP_2Obs.png){:height="75%" width="75%"}

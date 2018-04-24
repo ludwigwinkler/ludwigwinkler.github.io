@@ -81,7 +81,7 @@ sitemap:
 
 						<!-- Posts -->
 							<section class="posts">
-                                         {% for post in site.posts limit:3 %}
+                                         {% for post in site.posts limit:2 %}
                                          {% assign mod3 = forloop.index | modulo: 3 %}
   								<article>
   									<header>
@@ -96,9 +96,9 @@ sitemap:
   								</article>
                   {% if mod3 == 0 %}
                   <article>
-  									<header>
-  										<h2><a href="#">Sponsored</a></h2>
-  									</header>
+  									<!-- <header> -->
+  										<!-- <h2><a href="#">Sponsored</a></h2> -->
+  									<!-- </header> -->
 
   								</article>
                   {% endif %}
@@ -109,7 +109,7 @@ sitemap:
 						<!-- Footer -->
 							<footer>
                 <ul class="actions">
-                  <li><a href="{{ "/blog/" | absolute_url }}" class="button">Our Blog</a></li>
+                  <li><a href="{{ "/blog/" | absolute_url }}" class="button">My Blog</a></li>
                 </ul>
 							</footer>
 

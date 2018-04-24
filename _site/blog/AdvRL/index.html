@@ -10,8 +10,8 @@
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-<title>LW - Blog</title>
-<meta name="description" content="Every great website starts with a great homepage. The homepage tells your viewers what your site is all about and gives your viewers a place to come back to.">
+<title>RL in Challenging State Spaces and Sparse Reward Signals</title>
+<meta name="description" content="">
 
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/icon/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/icon/favicon-32x32.png">
@@ -26,7 +26,6 @@
 <link rel="stylesheet" href="/assets/css/main.css">
 <noscript><link rel="stylesheet" href="/assets/css/noscript.css"></noscript>
 
-
 	</head>
 	<body class="is-loading">
 
@@ -34,10 +33,9 @@
 			<div id="wrapper" class="fade-in">
 
 				<!-- Header -->
-				<header id="header">
-					<a href="/" class="logo">Ludwig Winkler</a>
-				</header>
-
+        <header id="header">
+          <a href="/" class="logo">Ludwig Winkler</a>
+        </header>
 
 				<!-- Nav -->
 					<nav id="nav">
@@ -60,82 +58,70 @@
 
 				<!-- Main -->
 				<div id="main">
+          <section class="post">
+    				<header class="major">
+      				<span class="date">06 Nov 2017</span>
+      				<h1>RL in Challenging State Spaces and Sparse Reward Signals</h1>
+      				<p>Talk on AlphaGo and Hierarchical RL</p>
+      			</header>
+      			<div class="image main"><img src="/images/AdvRL_Cover.png" alt=""></div>
+      			<p></p>
+<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
+       <script type="text/x-mathjax-config">
+         MathJax.Hub.Config({
+           tex2jax: {
+             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+             displayMath: [['$$','$$']],
+             processEscapes: true
+           }
+         });
+       </script>
+       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 
-          <article class="post featured">
-            	<header class="major">
-              	<h2><a href="#">Things I'm interested in ...</a></h2>
-          	</header>
-			<p>
-				I'm mostly writing about various topics in machine learning.
-				My motivation is that if you want to explain something it to other people, you'll first have to properly understand it yourself.
-				By breaking down a seemingly complex matter and understanding it's individual components, it's often possible to get a deeper understanding of the entire matter.
-				Then by reassembling the individual components and explaining their relationship and interaction with each other, the whole thing suddenly makes sense and you get that 'Aha!'-Moment.
-			</p>
-			<p>
-				Well, at least that's what I'm trying to do here ... :-P
-			</p></article>
-					<!-- Post -->
-					<section class="posts">
-						
-						
-							<article>
-								<header>
-									<span class="date">23 Apr 2018</span>
-									<h2><a href="/blog/Gaussian-Processes-Extensions/">Gaussian Processes - Extensions</a></h2>
-								</header>
-								<a href="/blog/Gaussian-Processes-Extensions/" class="image fit"><img src="/images/GP_4Obs_Deriv.png" alt=""></a>
-								<p>Extensions to Gaussian Processes</p>
-								<ul class="actions">
-									<li><a href="/blog/Gaussian-Processes-Extensions/" class="button">Full Story</a></li>
-								</ul>
-							</article>
-							
-						
-						
-							<article>
-								<header>
-									<span class="date">23 Apr 2018</span>
-									<h2><a href="/blog/Gaussian-Processes/">Gaussian Processes - Basics</a></h2>
-								</header>
-								<a href="/blog/Gaussian-Processes/" class="image fit"><img src="/images/GP_2Obs.png" alt=""></a>
-								<p>A Tutorial for Gaussian Processes</p>
-								<ul class="actions">
-									<li><a href="/blog/Gaussian-Processes/" class="button">Full Story</a></li>
-								</ul>
-							</article>
-							
-						
-						
-							<article>
-								<header>
-									<span class="date">06 Nov 2017</span>
-									<h2><a href="/blog/AdvRL/">RL in Challenging State Spaces and Sparse Reward Signals</a></h2>
-								</header>
-								<a href="/blog/AdvRL/" class="image fit"><img src="/images/AdvRL_Cover.png" alt=""></a>
-								<p>Talk on AlphaGo and Hierarchical RL</p>
-								<ul class="actions">
-									<li><a href="/blog/AdvRL/" class="button">Full Story</a></li>
-								</ul>
-							</article>
-							
-						
-						
-							<article>
-								<header>
-									<span class="date">03 May 2017</span>
-									<h2><a href="/blog/Intro-RL/">Introduction to Reinforcement Learning</a></h2>
-								</header>
-								<a href="/blog/Intro-RL/" class="image fit"><img src="/images/IntroRL_Cover.png" alt=""></a>
-								<p>A Tutorial Talk on RL</p>
-								<ul class="actions">
-									<li><a href="/blog/Intro-RL/" class="button">Full Story</a></li>
-								</ul>
-							</article>
-							
-						
 
-					</section>
+<h2 id="introduction">Introduction</h2>
 
+<p>This is a talk I gave at the Berlin Machine Learning Meetup on Nov 6, 2017.
+It is somewhat more high level than usual since the audience came from a broad range of backgrounds.</p>
+
+<p>The content of the talk were ‘AlphaGo’, it’s successor ‘AlphaGo Zero’ and ‘Feudal Networks’ all published by DeepMind.</p>
+
+      		</section>
+
+          <div class="comments-wrapper">
+          <div id="disqus_thread"></div>
+          <script>
+              /**
+               *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+               *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+               */
+
+              var disqus_config = function () {
+                  this.page.url = '/blog/AdvRL/';  /*Replace PAGE_URL with your page's canonical URL variable*/
+                  this.page.identifier = '/blog/AdvRL/'; /*Replace PAGE_IDENTIFIER with your page's unique identifier variable*/
+              };
+
+              (function() {  /* dont endit below this line */
+                  var d = document, s = d.createElement('script');
+
+                  s.src = 'https://default.disqus.com/embed.js';
+
+                  s.setAttribute('data-timestamp', +new Date());
+                  (d.head || d.body).appendChild(s);
+              })();
+          </script>
+          <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+</noscript>
+        </div>
+<!-- /.comments-wrapper -->
+
+
+					<!-- Footer -->
+						<footer>
+              <ul class="actions">
+                <li><a href="/blog/" class="button">Our Blog</a></li>
+              </ul>
+						</footer>
 					</div>
 
 				<!-- Footer -->
@@ -199,8 +185,8 @@
 
 			</div>
 
-			<!-- Scripts -->
-			<!-- DYN -->
+      <!-- Scripts -->
+  		<!-- DYN -->
 <script src="/assets/js/jquery.min.js"></script>
 <script src="/assets/js/jquery.scrollex.min.js"></script>
 <script src="/assets/js/jquery.scrolly.min.js"></script>

@@ -2,7 +2,7 @@
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
     <url>
-      <loc>/blog/Bayesian-Optimization-Extensions/</loc>
+      <loc>/blog/Gaussian-Processes-Extensions/</loc>
       
         <lastmod>2018-04-23T00:00:00+02:00</lastmod>
       
@@ -11,9 +11,27 @@
     </url>
   
     <url>
-      <loc>/blog/Bayesian-Optimization/</loc>
+      <loc>/blog/Gaussian-Processes/</loc>
       
         <lastmod>2018-04-23T00:00:00+02:00</lastmod>
+      
+      <changefreq>weekly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  
+    <url>
+      <loc>/blog/AdvRL/</loc>
+      
+        <lastmod>2017-11-06T00:00:00+01:00</lastmod>
+      
+      <changefreq>weekly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  
+    <url>
+      <loc>/blog/Intro-RL/</loc>
+      
+        <lastmod>2017-05-03T00:00:00+02:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -37,16 +55,6 @@
        <changefreq>weekly</changefreq>
       
        <priority>1.0</priority>
-      
-     </url>
-  
-    <url>
-      <loc>/BayesianNeuralNetworks/</loc>
-       <lastmod>2017-11-10T00:20:35+00:00</lastmod>
-      
-       <changefreq>weekly</changefreq>
-      
-       <priority>0.5</priority>
       
      </url>
   

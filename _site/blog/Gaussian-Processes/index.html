@@ -10,7 +10,7 @@
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-<title>Bayesian Optimization - Extensions</title>
+<title>Gaussian Processes - Basics</title>
 <meta name="description" content="">
 
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/icon/apple-touch-icon.png">
@@ -61,10 +61,10 @@
           <section class="post">
     				<header class="major">
       				<span class="date">23 Apr 2018</span>
-      				<h1>Bayesian Optimization - Extensions</h1>
-      				<p>A Tutorial on Bayesian Optimization</p>
+      				<h1>Gaussian Processes - Basics</h1>
+      				<p>A Tutorial for Gaussian Processes</p>
       			</header>
-      			<div class="image main"><img src="/images/GP_4Obs_Deriv.png" alt=""></div>
+      			<div class="image main"><img src="/images/GP_2Obs.png" alt=""></div>
       			<p></p>
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
        <script type="text/x-mathjax-config">
@@ -151,7 +151,7 @@ In order to compute a predictive distribution over $ y_* $ we initially construc
 
 <script type="math/tex; mode=display">% <![CDATA[
 \begin{align}
-     p(y\_*, y, X\_* , X) &= \frac{1}{\sqrt{(2 \pi)^{ N+N_* } |K|^2}}
+     p(y_*, y, X_* , X) &= \frac{1}{\sqrt{(2 \pi)^{ N+N_* } |K|^2}}
      \exp \left[
      -\frac{1}{2}
      \begin{bmatrix}
@@ -159,7 +159,7 @@ In order to compute a predictive distribution over $ y_* $ we initially construc
           y_*
      \end{bmatrix}^T
      \begin{bmatrix}
-          K\_{ XX } & K_{ X X_* } \\
+          K_{ XX } & K_{ X X_* } \\
           K_{ X_* X } & K_{ X_* X_* }
      \end{bmatrix}^{-1}
      \begin{bmatrix}
@@ -252,7 +252,7 @@ In order to derive the mean and covariance function of the posterior distributio
 \begin{align}
      K^{-1}&= \begin{bmatrix}
           K_{ X X} & K_{ X X_* } \\
-          K_{ X\_* X} & K_{X\_* X\_* }
+          K_{ X_* X} & K_{X_* X_* }
      \end{bmatrix}^{-1} \label{eq:blockmatrixinversionlemma1} \\
      & =\begin{bmatrix}
           A & B \\
@@ -270,7 +270,7 @@ In order to derive the mean and covariance function of the posterior distributio
           P & Q \\
           R & S
      \end{bmatrix} \label{eq:blockmatrixinversionlemma-1} \\
-     \Sigma &= D-CA^{-1}B = K_{X\_* X\_* } - K_{ X\_* X}{K_{ X\_* X\_* }}^{-1}K_{X X\_* }
+     \Sigma &= D-CA^{-1}B = K_{X_* X_* } - K_{ X_* X}{K_{ X_* X_* }}^{-1}K_{X X_* }
 \end{align} %]]></script>
 
 <p>Instead of computing the inverse of the entire matrix $K$, which can be computationally expensive for large covariance matrices, the precision matrix $K^{-1}$ can be computed block-wise with the block matrix inversion lemma.
@@ -377,7 +377,7 @@ Given the computation of both the mean and variance of the posterior distributio
 
 <p>Here is an image of a Gaussian Process:</p>
 
-<p><img src="https://raw.githubusercontent.com/ludwigwinkler/BayesianOptimization/gh-pages/docs/GP_2Obs.png" alt="Hi"></p>
+<p><img src="https://raw.githubusercontent.com/ludwigwinkler/BayesianOptimization/gh-pages/docs/GP_2Obs.png" alt="Hi" height="75%" width="75%"></p>
 
       		</section>
 
@@ -390,8 +390,8 @@ Given the computation of both the mean and variance of the posterior distributio
                */
 
               var disqus_config = function () {
-                  this.page.url = '/blog/Bayesian-Optimization-Extensions/';  /*Replace PAGE_URL with your page's canonical URL variable*/
-                  this.page.identifier = '/blog/Bayesian-Optimization-Extensions/'; /*Replace PAGE_IDENTIFIER with your page's unique identifier variable*/
+                  this.page.url = '/blog/Gaussian-Processes/';  /*Replace PAGE_URL with your page's canonical URL variable*/
+                  this.page.identifier = '/blog/Gaussian-Processes/'; /*Replace PAGE_IDENTIFIER with your page's unique identifier variable*/
               };
 
               (function() {  /* dont endit below this line */
