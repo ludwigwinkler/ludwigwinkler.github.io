@@ -1,0 +1,625 @@
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.2.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-04-24T14:39:04+02:00</updated><id>/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Bayesian Optimization - Extensions</title><link href="/blog/Bayesian-Optimization-Extensions/" rel="alternate" type="text/html" title="Bayesian Optimization - Extensions" /><published>2018-04-23T00:00:00+02:00</published><updated>2018-04-23T00:00:00+02:00</updated><id>/blog/Bayesian-Optimization-Extensions</id><content type="html" xml:base="/blog/Bayesian-Optimization-Extensions/">&lt;head&gt;
+&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
+       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
+         MathJax.Hub.Config({
+           tex2jax: {
+             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
+             displayMath: [['$$','$$']],
+             processEscapes: true
+           }
+         });
+       &lt;/script&gt;
+       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+
+&lt;h2 id=&quot;introduction&quot;&gt;Introduction&lt;/h2&gt;
+
+&lt;p&gt;Many problems in science and engineering can be formulated as a mathematical optimization problem in which an optimal solution is sought, either locally or globally.
+The field of global optimization is the application of applied mathematics and numerical analysis towards finding the overall optimal solution in a set of candidate solutions.
+Local optimization is considered an easier problem, in which it suffices to find an optimum which is optimal with respect to its immediate vicinity.
+Such a local optimum is obviously a suboptimal solution and, while harder to find, global optima are more preferred.&lt;/p&gt;
+
+&lt;p&gt;Generally, optimization problems are formulated as finding the optimal solution which minimizes, respectively maximizes, a criterion, which is commonly referred to as the objective function.
+Further constraints on the the set of solutions can be formulated, such that only a subset of solutions are permissible as candidates for the optimum.&lt;/p&gt;
+
+&lt;p&gt;Optimization is commonly done in an iterative manner where the objective function is evaluated for multiple candidate solutions.
+Due to the iterative nature, it becomes desirable to evaluate this function as few times as possible over the course of the entire optimization, which becomes even more crucial when the evaluation of the objective function itself is costly.
+Therefore, it would be advantageous to infer information about the objective function beyond the evaluations themselves, which only provide punctual information.&lt;/p&gt;
+
+&lt;p&gt;Bayesian inference models provide such advantages since they compute predictive distributions instead of punctual evaluations.
+One class of Bayesian inference models are Gaussian processes (GP), which can be applied to model previous evaluations of the objective function as a multi-variate Gaussian distribution.
+Given such a Gaussian distribution over the previous evaluations, information can be inferred over all candidate solutions in the feasible set at once.&lt;/p&gt;
+
+&lt;h2 id=&quot;gaussian-processes&quot;&gt;Gaussian Processes&lt;/h2&gt;
+
+&lt;p&gt;In most situations where observations have many small independent components, their distribution tends towards the Gaussian distribution.
+Compared to other probability distributions, the Gaussian distribution is tractable and it’s parameters have intuitive meaning.
+The theory of the central limit theorem (CLT) makes the Gaussian distribution a versatile distribution which is used in numerous situations in science and engineering.&lt;/p&gt;
+
+&lt;p&gt;A convenient property of the Gaussian distribution for a random variable $X$ is its complete characterization by its mean &lt;script type=&quot;math/tex&quot;&gt;\mu&lt;/script&gt; and variance $\Sigma$:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+     \mu &amp;= \mathbb{E}[X] \\
+     \Sigma &amp;= \mathbb{E}[(X-\mu)^T(X-\mu)]
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;Mathematically, a multivariate Gaussian for a vector $x \in \mathbb{R}^d$ is defined by its mean $\mu \in \mathbb{R}^d$ and covariance function $\Sigma \in \mathbb{R}^{d \times d}$:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+          \mathcal{N}(x | \mu, \Sigma) &amp;=
+               \frac{1}{\sqrt{(2 \pi)^d |\Sigma|^2}}
+               \exp \left[
+               -\frac{1}{2}
+               (x-\mu)^T \Sigma^{-1}(x-\mu)
+               \right] \\
+               &amp;\propto
+               \exp \left[
+               -\frac{1}{2}
+               (x-\mu)^T \Sigma^{-1}(x-\mu)
+               \right]
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;A useful property of the Gaussian distribution is that its shape is determined by its mean and covariance in the exponential term.
+This allows us to omitt the normalization constant and determine the relevant mean and covariance terms from the exponential term.&lt;/p&gt;
+
+&lt;p&gt;Let $y=f(x)$, where $x \in \mathbb{R}^d$ and $y \in \mathbb{R}$ be the function which we want to estimate with a Gaussian Process.
+Furthermore, let $\mathcal{D} = (X, y) = \{(x_i, y_i)\}_{i=0}^N$
+with $X \in$ $\mathbb{R}^{N \times d}$
+and $y \in \mathbb{R}^{N}$,
+be our training observations of the function $f$.&lt;/p&gt;
+
+&lt;p&gt;Lastly, let $ \mathcal{D}_* = ( X_* , y_* ) = \{ ( X_{ * j } , y_{ * j } ) \} _{j=0}^{ N_* } $ with $ X_* \in \mathbb{R}^{N_* \times d} $ and $ y_* \in \mathbb{R}^{ N_* } $ ,
+be the test observations at which we want to compute the predictive distributions of $ y_* =f( X_* ) $
+for the function $ f $.&lt;/p&gt;
+
+&lt;p&gt;A Gaussian process is defined as a stochastic process, such that every finite collection of realizations
+$ X = \{ x_i \}_{ i=0 }^N , x_i \in \mathbb{R}^d$ of the random variables
+$ X \sim \mathcal{N}( \cdot  |  \mu, \Sigma),  X \in \mathbb{R}^d $
+is a multivariate distribution.&lt;/p&gt;
+
+&lt;p&gt;A constraint of Gaussian processes as they are used in machine learning, which can be relaxed in specific cases, is that they are assumed to have a zero mean.
+In order to compute a predictive distribution over $ y_* $ we initially construct the joint distribution over the training observations $\mathcal{D} = (X,y) $ and test observations $ \mathcal{D}_* = ( X_* ,y_* ) $:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+     p(y\_*, y, X\_* , X) &amp;= \frac{1}{\sqrt{(2 \pi)^{ N+N_* } |K|^2}}
+     \exp \left[
+     -\frac{1}{2}
+     \begin{bmatrix}
+          y \\
+          y_*
+     \end{bmatrix}^T
+     \begin{bmatrix}
+          K\_{ XX } &amp; K_{ X X_* } \\
+          K_{ X_* X } &amp; K_{ X_* X_* }
+     \end{bmatrix}^{-1}
+     \begin{bmatrix}
+          y \\
+          y_*
+     \end{bmatrix}
+     \right] \\
+     &amp;\propto
+     \exp \left[
+     -\frac{1}{2}
+     \begin{bmatrix}
+          y \\
+          y_*
+     \end{bmatrix}^T
+     \begin{bmatrix}
+          K_{ X X } &amp; K_{ X X_* } \\
+          K_{ X_* X} &amp; K_{ X_* X_*}
+     \end{bmatrix}^{-1}
+     \begin{bmatrix}
+          y \\
+          y_*
+     \end{bmatrix}
+     \right] \\
+     &amp;\propto
+     \mathcal{N}
+     \left(
+     \begin{bmatrix}
+          y \\
+          y_*
+     \end{bmatrix} \middle|
+     \mathbf{0}, K
+     \right)
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;where the covariance matrix of the joint Gaussian distribution is given by&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+     K=\begin{bmatrix}
+          K_{ X X} &amp; K_{ X X_* } \\
+          K_{ X_* X} &amp; K_{ X_* X_* }
+     \end{bmatrix}
+     =
+     \begin{bmatrix}
+          k( X, X) &amp; k( X, X_*) \\
+          k(X_*, X) &amp; k(X_*, X_*)
+     \end{bmatrix}
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;and $ k(x,x’) $ is an kernel function $ k: \mathcal{X} \times \mathcal{X} \rightarrow \mathbb{R}$ that measures the similarity between two vectors $ x, x’ \in \mathcal{X}$.
+We can observe from \eqref{eq:covariance1} that the covariance between any two observations in the distribution is determined by the similarity through the kernel function $k(x, x’)$, namely&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+     \mathbb{C}[y, y'] = k(x, x')
+\end{align}&lt;/script&gt;
+
+&lt;p&gt;An essential component of a GP is the kernel function with which the covariances is computed.
+Often the kernels are engineered to incorporate prior knowledge.
+A commonly used kernel is the squared exponential kernel&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+     k(x, x' \ ; \ \theta) = \alpha \exp \left[ - \frac{|| x - x'||^2}{2 \sigma^2}\right], \quad \theta = \{ \alpha, \sigma \}
+\end{align}&lt;/script&gt;
+
+&lt;p&gt;where $\theta$ corresponds to the hyperparameters of the Gaussian process which can be independently optimized with respect to the observations $(X, y)$.&lt;/p&gt;
+
+&lt;p&gt;Gaussian Processes can be readily extended to multiple dimensions by simply adjusting the kernel to incorporate multiple dimensions.
+The individual variances $\sigma_i$ of the dimensions $\mathbb{R}^d$ in the exponential kernel can be independently adjusted, or optimized with the maximization of the marginal probability of the data.
+The expanded kernel for multidimensional input is defined as followed:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+     k(x, x'; \ \theta) &amp;= \alpha \exp \left[ - \frac{1}{2} (x-x') \Sigma^{-1} (x-x')     \right], \quad \theta=\{ \alpha, \Sigma \} \\
+     \Sigma &amp;= \text{diag}(\sigma^2_0, \sigma^2_1, \ldots, \sigma^2_d)
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;The block matrices $k(X,X) \in \mathbb{R}^{N \times N}$
+$ k(X, X_* ) \in \mathbb{R}^{N \times N_* }, $
+$k( X_* , X ) \in \mathbb{R}^{ N_* \times N }$ and
+$k(X_* , X_* ) \in \mathbb{R}^{N_* \times N_* }$ are the Gramian matrices of the training and test observations with respect to the kernel $k(x, x’)$.&lt;/p&gt;
+
+&lt;p&gt;Furthermore both $k(X,X)$ and $k( X_* , X_* )$ are symmetric matrices and $k( X, X_* )$ and $k( X_* ,X)$ are each others mutually transposed.&lt;/p&gt;
+
+&lt;p&gt;Given the joint distribution $ p(y_* , y, X_* , X) $, the aim for modeling the training and test observations with a GP is to derive the posterior distribution $ p( y_*  | y, X_* , X ) $ .
+In order to derive the mean and covariance function of the posterior distribution, the block matrix inversion lemma is used to compute the inverse of the covariance matrix.&lt;/p&gt;
+
+&lt;p&gt;For ease of reading and brevity the respective block matrices were replaced by more easily readible variables in the following identity:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+     K^{-1}&amp;= \begin{bmatrix}
+          K_{ X X} &amp; K_{ X X_* } \\
+          K_{ X\_* X} &amp; K_{X\_* X\_* }
+     \end{bmatrix}^{-1} \label{eq:blockmatrixinversionlemma1} \\
+     &amp; =\begin{bmatrix}
+          A &amp; B \\
+          C &amp; D
+     \end{bmatrix}^{-1} \\
+     &amp;=\begin{bmatrix}
+          A^{-1} + A^{-1}B(D-CA^{-1}B)^{-1}CA^{-1} &amp; -A^{-1}B(D-CA^{-1}B)^{-1} \\
+          -(D-CA^{-1}B)^{-1}CA^{-1} &amp; (D-CA^{-1}B)^{-1}
+     \end{bmatrix} \\
+     &amp;=\begin{bmatrix}
+          A^{-1} + A^{-1}B\Sigma^{-1}CA^{-1} &amp; -A^{-1}B\Sigma^{-1} \\
+          -\Sigma^{-1}CA^{-1} &amp; \Sigma^{-1}
+     \end{bmatrix} \label{eq:Sigma^-1Identity} \\
+     &amp;= \begin{bmatrix}
+          P &amp; Q \\
+          R &amp; S
+     \end{bmatrix} \label{eq:blockmatrixinversionlemma-1} \\
+     \Sigma &amp;= D-CA^{-1}B = K_{X\_* X\_* } - K_{ X\_* X}{K_{ X\_* X\_* }}^{-1}K_{X X\_* }
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;Instead of computing the inverse of the entire matrix $K$, which can be computationally expensive for large covariance matrices, the precision matrix $K^{-1}$ can be computed block-wise with the block matrix inversion lemma.
+Given the precision matrix in block matrix notation, the inner product in the exponential term of the Gaussian distribution can be computed as a sum over the inner products with the independent block matrices:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+     p(y_* , y, X_* , X)
+     &amp;\propto
+     \exp \left[
+     -\frac{1}{2}
+     \begin{bmatrix}
+          y \\
+          y_*
+     \end{bmatrix}^T
+     \begin{bmatrix}
+          K_{XX} &amp; K_{X X_* } \\
+          K_{X_* X} &amp; K_{X_* X_* }
+     \end{bmatrix}^{-1}
+     \begin{bmatrix}
+          y \\
+          y_*
+     \end{bmatrix}
+     \right] \\
+     &amp;=
+     \exp \left[
+     -\frac{1}{2}
+     \begin{bmatrix}
+          y \\
+          y_*
+     \end{bmatrix}^T
+     \begin{bmatrix}
+          P &amp; Q \\
+          R &amp; S
+     \end{bmatrix}
+     \begin{bmatrix}
+          y \\
+          y_*
+     \end{bmatrix}
+     \right] \\
+     &amp;=
+     \exp \left[
+     -\frac{1}{2}
+     \left( y^TPy + y^TQ y_* + y_*^TRy + y_* ^TS y_*
+     \right)
+     \right] \label{eq:jointdist_innersumoverblockmatrices}
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;Since we are only interested in the posterior distribution $p(y_*  | y, X_* , X )$, terms which do not include $ y_* $ can be moved into the normalization term.
+The conditional distribution can thus be simplified to:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+     p(y_* |  y, X_* , X)
+     &amp;\propto
+     \exp \left[
+     -\frac{1}{2}
+     \left( -y^TQy_* - y_*^TRy + y_*^TS y_*
+     \right)
+     \right] \\
+     &amp;=
+     \exp \left[
+     -\frac{1}{2}
+     \left( -y^TA^{-1}B\Sigma^{-1} y_* -y_*^T\Sigma^{-1}CA^{-1}y + y_*^T\Sigma^{-1}y_*
+     \right)
+     \right] \\
+     &amp;\propto
+     \exp \left[
+     -\frac{1}{2}
+     \left( -2 y_*^T\Sigma^{-1}CA^{-1}y + y_*^T\Sigma^{-1}y_*
+     \right)
+     \right] \\
+     &amp;\propto
+     \exp \left[
+     -\frac{1}{2}
+     \left( -2 y_*^T\Sigma^{-1}K_{X_* X}{K_{ X X }}^{-1} y + y_*^T\Sigma^{-1}y_*
+     \right)
+     \right]
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;with the matrices $\Sigma$ being a symmetric matrix by construction, and $B$ and $C$ being each other transposed, namely $C^T=B$, which gives rise to the identity:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+     (y^TA^{-1}B\Sigma^{-1}y_*)^T
+          &amp;= y_*^T(\Sigma^{-1})^TB^T(A^{-1})^Ty \\
+          &amp;= y_*^T\Sigma^{-1}CA^{-1}y
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Alternatively one would argue that the result of both inner products yields the same scalar value due to $B=C^T$.
+With the derivations above we obtain a posterior distribution $p(y_*  |  y, X_* , X )$ with the mean and covariance function&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+     \mu(y_*)       &amp;= K_{ X_* X}{K_{XX}}^{-1}y \\
+     \Sigma(y_*)    &amp;= K_{ X_* X_* } - K_{ X_* X}{K_{ X X }}^{-1}K_{ X X_*}
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;It should be noted that during plotting only the diagonal entries of the covariance matrix are of interest since the diagonal entries of the covariance matrix denote the variances at the evaluated points.
+Given the computation of both the mean and variance of the posterior distribution we obtain a Gaussian distribution:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+     p(y_* | y, X_*, X) &amp;= \mathcal{N} \big( \underbrace{K_{X_* X} {K_{XX}}^{-1} y}_{\mu}, \underbrace{K_{X_* X_*} - K_{X_* X}{K_{X X}}^{-1}K_{X X_*}}_{\Sigma} \big)
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Here is an image of a Gaussian Process:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://raw.githubusercontent.com/ludwigwinkler/BayesianOptimization/gh-pages/docs/GP_2Obs.png&quot; alt=&quot;Hi&quot; /&gt;&lt;/p&gt;</content><summary type="html">A Tutorial on Bayesian Optimization</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/images/GP_4Obs_Deriv.png" /></entry><entry><title type="html">Bayesian Optimization - The Basics</title><link href="/blog/Bayesian-Optimization/" rel="alternate" type="text/html" title="Bayesian Optimization - The Basics" /><published>2018-04-23T00:00:00+02:00</published><updated>2018-04-23T00:00:00+02:00</updated><id>/blog/Bayesian-Optimization</id><content type="html" xml:base="/blog/Bayesian-Optimization/">&lt;head&gt;
+&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
+       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
+         MathJax.Hub.Config({
+           tex2jax: {
+             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
+             displayMath: [['$$','$$']],
+             processEscapes: true
+           }
+         });
+       &lt;/script&gt;
+       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+
+&lt;h2 id=&quot;introduction&quot;&gt;Introduction&lt;/h2&gt;
+
+&lt;p&gt;Many problems in science and engineering can be formulated as a mathematical optimization problem in which an optimal solution is sought, either locally or globally.
+The field of global optimization is the application of applied mathematics and numerical analysis towards finding the overall optimal solution in a set of candidate solutions.
+Local optimization is considered an easier problem, in which it suffices to find an optimum which is optimal with respect to its immediate vicinity.
+Such a local optimum is obviously a suboptimal solution and, while harder to find, global optima are more preferred.&lt;/p&gt;
+
+&lt;p&gt;Generally, optimization problems are formulated as finding the optimal solution which minimizes, respectively maximizes, a criterion, which is commonly referred to as the objective function.
+Further constraints on the the set of solutions can be formulated, such that only a subset of solutions are permissible as candidates for the optimum.&lt;/p&gt;
+
+&lt;p&gt;Optimization is commonly done in an iterative manner where the objective function is evaluated for multiple candidate solutions.
+Due to the iterative nature, it becomes desirable to evaluate this function as few times as possible over the course of the entire optimization, which becomes even more crucial when the evaluation of the objective function itself is costly.
+Therefore, it would be advantageous to infer information about the objective function beyond the evaluations themselves, which only provide punctual information.&lt;/p&gt;
+
+&lt;p&gt;Bayesian inference models provide such advantages since they compute predictive distributions instead of punctual evaluations.
+One class of Bayesian inference models are Gaussian processes (GP), which can be applied to model previous evaluations of the objective function as a multi-variate Gaussian distribution.
+Given such a Gaussian distribution over the previous evaluations, information can be inferred over all candidate solutions in the feasible set at once.&lt;/p&gt;
+
+&lt;h2 id=&quot;gaussian-processes&quot;&gt;Gaussian Processes&lt;/h2&gt;
+
+&lt;p&gt;In most situations where observations have many small independent components, their distribution tends towards the Gaussian distribution.
+Compared to other probability distributions, the Gaussian distribution is tractable and it’s parameters have intuitive meaning.
+The theory of the central limit theorem (CLT) makes the Gaussian distribution a versatile distribution which is used in numerous situations in science and engineering.&lt;/p&gt;
+
+&lt;p&gt;A convenient property of the Gaussian distribution for a random variable $X$ is its complete characterization by its mean &lt;script type=&quot;math/tex&quot;&gt;\mu&lt;/script&gt; and variance $\Sigma$:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+     \mu &amp;= \mathbb{E}[X] \\
+     \Sigma &amp;= \mathbb{E}[(X-\mu)^T(X-\mu)]
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;Mathematically, a multivariate Gaussian for a vector $x \in \mathbb{R}^d$ is defined by its mean $\mu \in \mathbb{R}^d$ and covariance function $\Sigma \in \mathbb{R}^{d \times d}$:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+          \mathcal{N}(x | \mu, \Sigma) &amp;=
+               \frac{1}{\sqrt{(2 \pi)^d |\Sigma|^2}}
+               \exp \left[
+               -\frac{1}{2}
+               (x-\mu)^T \Sigma^{-1}(x-\mu)
+               \right] \\
+               &amp;\propto
+               \exp \left[
+               -\frac{1}{2}
+               (x-\mu)^T \Sigma^{-1}(x-\mu)
+               \right]
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;A useful property of the Gaussian distribution is that its shape is determined by its mean and covariance in the exponential term.
+This allows us to omitt the normalization constant and determine the relevant mean and covariance terms from the exponential term.&lt;/p&gt;
+
+&lt;p&gt;Let $y=f(x)$, where $x \in \mathbb{R}^d$ and $y \in \mathbb{R}$ be the function which we want to estimate with a Gaussian Process.
+Furthermore, let $\mathcal{D} = (X, y) = \{(x_i, y_i)\}_{i=0}^N$
+with $X \in$ $\mathbb{R}^{N \times d}$
+and $y \in \mathbb{R}^{N}$,
+be our training observations of the function $f$.&lt;/p&gt;
+
+&lt;p&gt;Lastly, let $ \mathcal{D}_* = ( X_* , y_* ) = \{ ( X_{ * j } , y_{ * j } ) \} _{j=0}^{ N_* } $ with $ X_* \in \mathbb{R}^{N_* \times d} $ and $ y_* \in \mathbb{R}^{ N_* } $ ,
+be the test observations at which we want to compute the predictive distributions of $ y_* =f( X_* ) $
+for the function $ f $.&lt;/p&gt;
+
+&lt;p&gt;A Gaussian process is defined as a stochastic process, such that every finite collection of realizations
+$ X = \{ x_i \}_{ i=0 }^N , x_i \in \mathbb{R}^d$ of the random variables
+$ X \sim \mathcal{N}( \cdot  |  \mu, \Sigma),  X \in \mathbb{R}^d $
+is a multivariate distribution.&lt;/p&gt;
+
+&lt;p&gt;A constraint of Gaussian processes as they are used in machine learning, which can be relaxed in specific cases, is that they are assumed to have a zero mean.
+In order to compute a predictive distribution over $ y_* $ we initially construct the joint distribution over the training observations $\mathcal{D} = (X,y) $ and test observations $ \mathcal{D}_* = ( X_* ,y_* ) $:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+     p(y\_*, y, X\_* , X) &amp;= \frac{1}{\sqrt{(2 \pi)^{ N+N_* } |K|^2}}
+     \exp \left[
+     -\frac{1}{2}
+     \begin{bmatrix}
+          y \\
+          y_*
+     \end{bmatrix}^T
+     \begin{bmatrix}
+          K\_{ XX } &amp; K_{ X X_* } \\
+          K_{ X_* X } &amp; K_{ X_* X_* }
+     \end{bmatrix}^{-1}
+     \begin{bmatrix}
+          y \\
+          y_*
+     \end{bmatrix}
+     \right] \\
+     &amp;\propto
+     \exp \left[
+     -\frac{1}{2}
+     \begin{bmatrix}
+          y \\
+          y_*
+     \end{bmatrix}^T
+     \begin{bmatrix}
+          K_{ X X } &amp; K_{ X X_* } \\
+          K_{ X_* X} &amp; K_{ X_* X_*}
+     \end{bmatrix}^{-1}
+     \begin{bmatrix}
+          y \\
+          y_*
+     \end{bmatrix}
+     \right] \\
+     &amp;\propto
+     \mathcal{N}
+     \left(
+     \begin{bmatrix}
+          y \\
+          y_*
+     \end{bmatrix} \middle|
+     \mathbf{0}, K
+     \right)
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;where the covariance matrix of the joint Gaussian distribution is given by&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+     K=\begin{bmatrix}
+          K_{ X X} &amp; K_{ X X_* } \\
+          K_{ X_* X} &amp; K_{ X_* X_* }
+     \end{bmatrix}
+     =
+     \begin{bmatrix}
+          k( X, X) &amp; k( X, X_*) \\
+          k(X_*, X) &amp; k(X_*, X_*)
+     \end{bmatrix}
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;and $ k(x,x’) $ is an kernel function $ k: \mathcal{X} \times \mathcal{X} \rightarrow \mathbb{R}$ that measures the similarity between two vectors $ x, x’ \in \mathcal{X}$.
+We can observe from \eqref{eq:covariance1} that the covariance between any two observations in the distribution is determined by the similarity through the kernel function $k(x, x’)$, namely&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+     \mathbb{C}[y, y'] = k(x, x')
+\end{align}&lt;/script&gt;
+
+&lt;p&gt;An essential component of a GP is the kernel function with which the covariances is computed.
+Often the kernels are engineered to incorporate prior knowledge.
+A commonly used kernel is the squared exponential kernel&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+     k(x, x' \ ; \ \theta) = \alpha \exp \left[ - \frac{|| x - x'||^2}{2 \sigma^2}\right], \quad \theta = \{ \alpha, \sigma \}
+\end{align}&lt;/script&gt;
+
+&lt;p&gt;where $\theta$ corresponds to the hyperparameters of the Gaussian process which can be independently optimized with respect to the observations $(X, y)$.&lt;/p&gt;
+
+&lt;p&gt;Gaussian Processes can be readily extended to multiple dimensions by simply adjusting the kernel to incorporate multiple dimensions.
+The individual variances $\sigma_i$ of the dimensions $\mathbb{R}^d$ in the exponential kernel can be independently adjusted, or optimized with the maximization of the marginal probability of the data.
+The expanded kernel for multidimensional input is defined as followed:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+     k(x, x'; \ \theta) &amp;= \alpha \exp \left[ - \frac{1}{2} (x-x') \Sigma^{-1} (x-x')     \right], \quad \theta=\{ \alpha, \Sigma \} \\
+     \Sigma &amp;= \text{diag}(\sigma^2_0, \sigma^2_1, \ldots, \sigma^2_d)
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;The block matrices $k(X,X) \in \mathbb{R}^{N \times N}$
+$ k(X, X_* ) \in \mathbb{R}^{N \times N_* }, $
+$k( X_* , X ) \in \mathbb{R}^{ N_* \times N }$ and
+$k(X_* , X_* ) \in \mathbb{R}^{N_* \times N_* }$ are the Gramian matrices of the training and test observations with respect to the kernel $k(x, x’)$.&lt;/p&gt;
+
+&lt;p&gt;Furthermore both $k(X,X)$ and $k( X_* , X_* )$ are symmetric matrices and $k( X, X_* )$ and $k( X_* ,X)$ are each others mutually transposed.&lt;/p&gt;
+
+&lt;p&gt;Given the joint distribution $ p(y_* , y, X_* , X) $, the aim for modeling the training and test observations with a GP is to derive the posterior distribution $ p( y_*  | y, X_* , X ) $ .
+In order to derive the mean and covariance function of the posterior distribution, the block matrix inversion lemma is used to compute the inverse of the covariance matrix.&lt;/p&gt;
+
+&lt;p&gt;For ease of reading and brevity the respective block matrices were replaced by more easily readible variables in the following identity:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+     K^{-1}&amp;= \begin{bmatrix}
+          K_{ X X} &amp; K_{ X X_* } \\
+          K_{ X\_* X} &amp; K_{X\_* X\_* }
+     \end{bmatrix}^{-1} \label{eq:blockmatrixinversionlemma1} \\
+     &amp; =\begin{bmatrix}
+          A &amp; B \\
+          C &amp; D
+     \end{bmatrix}^{-1} \\
+     &amp;=\begin{bmatrix}
+          A^{-1} + A^{-1}B(D-CA^{-1}B)^{-1}CA^{-1} &amp; -A^{-1}B(D-CA^{-1}B)^{-1} \\
+          -(D-CA^{-1}B)^{-1}CA^{-1} &amp; (D-CA^{-1}B)^{-1}
+     \end{bmatrix} \\
+     &amp;=\begin{bmatrix}
+          A^{-1} + A^{-1}B\Sigma^{-1}CA^{-1} &amp; -A^{-1}B\Sigma^{-1} \\
+          -\Sigma^{-1}CA^{-1} &amp; \Sigma^{-1}
+     \end{bmatrix} \label{eq:Sigma^-1Identity} \\
+     &amp;= \begin{bmatrix}
+          P &amp; Q \\
+          R &amp; S
+     \end{bmatrix} \label{eq:blockmatrixinversionlemma-1} \\
+     \Sigma &amp;= D-CA^{-1}B = K_{X\_* X\_* } - K_{ X\_* X}{K_{ X\_* X\_* }}^{-1}K_{X X\_* }
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;Instead of computing the inverse of the entire matrix $K$, which can be computationally expensive for large covariance matrices, the precision matrix $K^{-1}$ can be computed block-wise with the block matrix inversion lemma.
+Given the precision matrix in block matrix notation, the inner product in the exponential term of the Gaussian distribution can be computed as a sum over the inner products with the independent block matrices:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+     p(y_* , y, X_* , X)
+     &amp;\propto
+     \exp \left[
+     -\frac{1}{2}
+     \begin{bmatrix}
+          y \\
+          y_*
+     \end{bmatrix}^T
+     \begin{bmatrix}
+          K_{XX} &amp; K_{X X_* } \\
+          K_{X_* X} &amp; K_{X_* X_* }
+     \end{bmatrix}^{-1}
+     \begin{bmatrix}
+          y \\
+          y_*
+     \end{bmatrix}
+     \right] \\
+     &amp;=
+     \exp \left[
+     -\frac{1}{2}
+     \begin{bmatrix}
+          y \\
+          y_*
+     \end{bmatrix}^T
+     \begin{bmatrix}
+          P &amp; Q \\
+          R &amp; S
+     \end{bmatrix}
+     \begin{bmatrix}
+          y \\
+          y_*
+     \end{bmatrix}
+     \right] \\
+     &amp;=
+     \exp \left[
+     -\frac{1}{2}
+     \left( y^TPy + y^TQ y_* + y_*^TRy + y_* ^TS y_*
+     \right)
+     \right] \label{eq:jointdist_innersumoverblockmatrices}
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;Since we are only interested in the posterior distribution $p(y_*  | y, X_* , X )$, terms which do not include $ y_* $ can be moved into the normalization term.
+The conditional distribution can thus be simplified to:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+     p(y_* |  y, X_* , X)
+     &amp;\propto
+     \exp \left[
+     -\frac{1}{2}
+     \left( -y^TQy_* - y_*^TRy + y_*^TS y_*
+     \right)
+     \right] \\
+     &amp;=
+     \exp \left[
+     -\frac{1}{2}
+     \left( -y^TA^{-1}B\Sigma^{-1} y_* -y_*^T\Sigma^{-1}CA^{-1}y + y_*^T\Sigma^{-1}y_*
+     \right)
+     \right] \\
+     &amp;\propto
+     \exp \left[
+     -\frac{1}{2}
+     \left( -2 y_*^T\Sigma^{-1}CA^{-1}y + y_*^T\Sigma^{-1}y_*
+     \right)
+     \right] \\
+     &amp;\propto
+     \exp \left[
+     -\frac{1}{2}
+     \left( -2 y_*^T\Sigma^{-1}K_{X_* X}{K_{ X X }}^{-1} y + y_*^T\Sigma^{-1}y_*
+     \right)
+     \right]
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;with the matrices $\Sigma$ being a symmetric matrix by construction, and $B$ and $C$ being each other transposed, namely $C^T=B$, which gives rise to the identity:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+     (y^TA^{-1}B\Sigma^{-1}y_*)^T
+          &amp;= y_*^T(\Sigma^{-1})^TB^T(A^{-1})^Ty \\
+          &amp;= y_*^T\Sigma^{-1}CA^{-1}y
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Alternatively one would argue that the result of both inner products yields the same scalar value due to $B=C^T$.
+With the derivations above we obtain a posterior distribution $p(y_*  |  y, X_* , X )$ with the mean and covariance function&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+     \mu(y_*)       &amp;= K_{ X_* X}{K_{XX}}^{-1}y \\
+     \Sigma(y_*)    &amp;= K_{ X_* X_* } - K_{ X_* X}{K_{ X X }}^{-1}K_{ X X_*}
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;It should be noted that during plotting only the diagonal entries of the covariance matrix are of interest since the diagonal entries of the covariance matrix denote the variances at the evaluated points.
+Given the computation of both the mean and variance of the posterior distribution we obtain a Gaussian distribution:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+     p(y_* | y, X_*, X) &amp;= \mathcal{N} \big( \underbrace{K_{X_* X} {K_{XX}}^{-1} y}_{\mu}, \underbrace{K_{X_* X_*} - K_{X_* X}{K_{X X}}^{-1}K_{X X_*}}_{\Sigma} \big)
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Here is an image of a Gaussian Process:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://raw.githubusercontent.com/ludwigwinkler/BayesianOptimization/gh-pages/docs/GP_2Obs.png&quot; alt=&quot;Hi&quot; /&gt;&lt;/p&gt;</content><summary type="html">Some Extensions for Bayesian Optimization</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/images/GP_2Obs.png" /></entry></feed>

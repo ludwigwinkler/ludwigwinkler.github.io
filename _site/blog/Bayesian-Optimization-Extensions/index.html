@@ -1,0 +1,501 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+  Jekyll integration by somiibo.com
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+--><html>
+	<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+<title>Bayesian Optimization - Extensions</title>
+<meta name="description" content="">
+
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/icon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/icon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/icon/favicon-16x16.png">
+<link rel="manifest" href="/assets/icon/manifest.json">
+<link rel="mask-icon" href="/assets/icon/safari-pinned-tab.svg" color="#5bbad5">
+<link rel="shortcut icon" href="/assets/icon/favicon.ico">
+<meta name="msapplication-config" content="/assets/icon/browserconfig.xml">
+<meta name="theme-color" content="#ffffff">
+
+<!-- CSS -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<noscript><link rel="stylesheet" href="/assets/css/noscript.css"></noscript>
+
+	</head>
+	<body class="is-loading">
+
+		<!-- Wrapper -->
+			<div id="wrapper" class="fade-in">
+
+				<!-- Header -->
+        <header id="header">
+          <a href="/" class="logo">Ludwig Winkler</a>
+        </header>
+
+				<!-- Nav -->
+					<nav id="nav">
+
+            <ul class="links">
+  <li class=""><a href="/">Home</a></li>
+  <li class=" active "><a href="/blog/">Blog</a></li>
+  <li class=""><a href="/readinglist/">Reading List</a></li>
+  <li class=""><a href="/about/">About</a></li>
+</ul>
+
+
+						<ul class="icons">
+              <li><a href="https://twitter.com/default" class="icon fa-twitter" rel="nofollow"><span class="label">Twitter</span></a></li>
+              <li><a href="https://facebook.com/default" class="icon fa-facebook" rel="nofollow"><span class="label">Facebook</span></a></li>
+              <li><a href="https://instagram.com/default" class="icon fa-instagram" rel="nofollow"><span class="label">Instagram</span></a></li>
+              <li><a href="https://github.com/default" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+				<div id="main">
+          <section class="post">
+    				<header class="major">
+      				<span class="date">23 Apr 2018</span>
+      				<h1>Bayesian Optimization - Extensions</h1>
+      				<p>A Tutorial on Bayesian Optimization</p>
+      			</header>
+      			<div class="image main"><img src="/images/GP_4Obs_Deriv.png" alt=""></div>
+      			<p></p>
+<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
+       <script type="text/x-mathjax-config">
+         MathJax.Hub.Config({
+           tex2jax: {
+             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+             displayMath: [['$$','$$']],
+             processEscapes: true
+           }
+         });
+       </script>
+       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+
+
+<h2 id="introduction">Introduction</h2>
+
+<p>Many problems in science and engineering can be formulated as a mathematical optimization problem in which an optimal solution is sought, either locally or globally.
+The field of global optimization is the application of applied mathematics and numerical analysis towards finding the overall optimal solution in a set of candidate solutions.
+Local optimization is considered an easier problem, in which it suffices to find an optimum which is optimal with respect to its immediate vicinity.
+Such a local optimum is obviously a suboptimal solution and, while harder to find, global optima are more preferred.</p>
+
+<p>Generally, optimization problems are formulated as finding the optimal solution which minimizes, respectively maximizes, a criterion, which is commonly referred to as the objective function.
+Further constraints on the the set of solutions can be formulated, such that only a subset of solutions are permissible as candidates for the optimum.</p>
+
+<p>Optimization is commonly done in an iterative manner where the objective function is evaluated for multiple candidate solutions.
+Due to the iterative nature, it becomes desirable to evaluate this function as few times as possible over the course of the entire optimization, which becomes even more crucial when the evaluation of the objective function itself is costly.
+Therefore, it would be advantageous to infer information about the objective function beyond the evaluations themselves, which only provide punctual information.</p>
+
+<p>Bayesian inference models provide such advantages since they compute predictive distributions instead of punctual evaluations.
+One class of Bayesian inference models are Gaussian processes (GP), which can be applied to model previous evaluations of the objective function as a multi-variate Gaussian distribution.
+Given such a Gaussian distribution over the previous evaluations, information can be inferred over all candidate solutions in the feasible set at once.</p>
+
+<h2 id="gaussian-processes">Gaussian Processes</h2>
+
+<p>In most situations where observations have many small independent components, their distribution tends towards the Gaussian distribution.
+Compared to other probability distributions, the Gaussian distribution is tractable and it’s parameters have intuitive meaning.
+The theory of the central limit theorem (CLT) makes the Gaussian distribution a versatile distribution which is used in numerous situations in science and engineering.</p>
+
+<p>A convenient property of the Gaussian distribution for a random variable $X$ is its complete characterization by its mean <script type="math/tex">\mu</script> and variance $\Sigma$:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align}
+     \mu &= \mathbb{E}[X] \\
+     \Sigma &= \mathbb{E}[(X-\mu)^T(X-\mu)]
+\end{align} %]]></script>
+
+<p>Mathematically, a multivariate Gaussian for a vector $x \in \mathbb{R}^d$ is defined by its mean $\mu \in \mathbb{R}^d$ and covariance function $\Sigma \in \mathbb{R}^{d \times d}$:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align}
+          \mathcal{N}(x | \mu, \Sigma) &=
+               \frac{1}{\sqrt{(2 \pi)^d |\Sigma|^2}}
+               \exp \left[
+               -\frac{1}{2}
+               (x-\mu)^T \Sigma^{-1}(x-\mu)
+               \right] \\
+               &\propto
+               \exp \left[
+               -\frac{1}{2}
+               (x-\mu)^T \Sigma^{-1}(x-\mu)
+               \right]
+\end{align} %]]></script>
+
+<p>A useful property of the Gaussian distribution is that its shape is determined by its mean and covariance in the exponential term.
+This allows us to omitt the normalization constant and determine the relevant mean and covariance terms from the exponential term.</p>
+
+<p>Let $y=f(x)$, where $x \in \mathbb{R}^d$ and $y \in \mathbb{R}$ be the function which we want to estimate with a Gaussian Process.
+Furthermore, let $\mathcal{D} = (X, y) = \{(x_i, y_i)\}_{i=0}^N$
+with $X \in$ $\mathbb{R}^{N \times d}$
+and $y \in \mathbb{R}^{N}$,
+be our training observations of the function $f$.</p>
+
+<p>Lastly, let $ \mathcal{D}_* = ( X_* , y_* ) = \{ ( X_{ * j } , y_{ * j } ) \} _{j=0}^{ N_* } $ with $ X_* \in \mathbb{R}^{N_* \times d} $ and $ y_* \in \mathbb{R}^{ N_* } $ ,
+be the test observations at which we want to compute the predictive distributions of $ y_* =f( X_* ) $
+for the function $ f $.</p>
+
+<p>A Gaussian process is defined as a stochastic process, such that every finite collection of realizations
+$ X = \{ x_i \}_{ i=0 }^N , x_i \in \mathbb{R}^d$ of the random variables
+$ X \sim \mathcal{N}( \cdot  |  \mu, \Sigma),  X \in \mathbb{R}^d $
+is a multivariate distribution.</p>
+
+<p>A constraint of Gaussian processes as they are used in machine learning, which can be relaxed in specific cases, is that they are assumed to have a zero mean.
+In order to compute a predictive distribution over $ y_* $ we initially construct the joint distribution over the training observations $\mathcal{D} = (X,y) $ and test observations $ \mathcal{D}_* = ( X_* ,y_* ) $:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align}
+     p(y\_*, y, X\_* , X) &= \frac{1}{\sqrt{(2 \pi)^{ N+N_* } |K|^2}}
+     \exp \left[
+     -\frac{1}{2}
+     \begin{bmatrix}
+          y \\
+          y_*
+     \end{bmatrix}^T
+     \begin{bmatrix}
+          K\_{ XX } & K_{ X X_* } \\
+          K_{ X_* X } & K_{ X_* X_* }
+     \end{bmatrix}^{-1}
+     \begin{bmatrix}
+          y \\
+          y_*
+     \end{bmatrix}
+     \right] \\
+     &\propto
+     \exp \left[
+     -\frac{1}{2}
+     \begin{bmatrix}
+          y \\
+          y_*
+     \end{bmatrix}^T
+     \begin{bmatrix}
+          K_{ X X } & K_{ X X_* } \\
+          K_{ X_* X} & K_{ X_* X_*}
+     \end{bmatrix}^{-1}
+     \begin{bmatrix}
+          y \\
+          y_*
+     \end{bmatrix}
+     \right] \\
+     &\propto
+     \mathcal{N}
+     \left(
+     \begin{bmatrix}
+          y \\
+          y_*
+     \end{bmatrix} \middle|
+     \mathbf{0}, K
+     \right)
+\end{align} %]]></script>
+
+<p>where the covariance matrix of the joint Gaussian distribution is given by</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align}
+     K=\begin{bmatrix}
+          K_{ X X} & K_{ X X_* } \\
+          K_{ X_* X} & K_{ X_* X_* }
+     \end{bmatrix}
+     =
+     \begin{bmatrix}
+          k( X, X) & k( X, X_*) \\
+          k(X_*, X) & k(X_*, X_*)
+     \end{bmatrix}
+\end{align} %]]></script>
+
+<p>and $ k(x,x’) $ is an kernel function $ k: \mathcal{X} \times \mathcal{X} \rightarrow \mathbb{R}$ that measures the similarity between two vectors $ x, x’ \in \mathcal{X}$.
+We can observe from \eqref{eq:covariance1} that the covariance between any two observations in the distribution is determined by the similarity through the kernel function $k(x, x’)$, namely</p>
+
+<script type="math/tex; mode=display">\begin{align}
+     \mathbb{C}[y, y'] = k(x, x')
+\end{align}</script>
+
+<p>An essential component of a GP is the kernel function with which the covariances is computed.
+Often the kernels are engineered to incorporate prior knowledge.
+A commonly used kernel is the squared exponential kernel</p>
+
+<script type="math/tex; mode=display">\begin{align}
+     k(x, x' \ ; \ \theta) = \alpha \exp \left[ - \frac{|| x - x'||^2}{2 \sigma^2}\right], \quad \theta = \{ \alpha, \sigma \}
+\end{align}</script>
+
+<p>where $\theta$ corresponds to the hyperparameters of the Gaussian process which can be independently optimized with respect to the observations $(X, y)$.</p>
+
+<p>Gaussian Processes can be readily extended to multiple dimensions by simply adjusting the kernel to incorporate multiple dimensions.
+The individual variances $\sigma_i$ of the dimensions $\mathbb{R}^d$ in the exponential kernel can be independently adjusted, or optimized with the maximization of the marginal probability of the data.
+The expanded kernel for multidimensional input is defined as followed:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align}
+     k(x, x'; \ \theta) &= \alpha \exp \left[ - \frac{1}{2} (x-x') \Sigma^{-1} (x-x')     \right], \quad \theta=\{ \alpha, \Sigma \} \\
+     \Sigma &= \text{diag}(\sigma^2_0, \sigma^2_1, \ldots, \sigma^2_d)
+\end{align} %]]></script>
+
+<p>The block matrices $k(X,X) \in \mathbb{R}^{N \times N}$
+$ k(X, X_* ) \in \mathbb{R}^{N \times N_* }, $
+$k( X_* , X ) \in \mathbb{R}^{ N_* \times N }$ and
+$k(X_* , X_* ) \in \mathbb{R}^{N_* \times N_* }$ are the Gramian matrices of the training and test observations with respect to the kernel $k(x, x’)$.</p>
+
+<p>Furthermore both $k(X,X)$ and $k( X_* , X_* )$ are symmetric matrices and $k( X, X_* )$ and $k( X_* ,X)$ are each others mutually transposed.</p>
+
+<p>Given the joint distribution $ p(y_* , y, X_* , X) $, the aim for modeling the training and test observations with a GP is to derive the posterior distribution $ p( y_*  | y, X_* , X ) $ .
+In order to derive the mean and covariance function of the posterior distribution, the block matrix inversion lemma is used to compute the inverse of the covariance matrix.</p>
+
+<p>For ease of reading and brevity the respective block matrices were replaced by more easily readible variables in the following identity:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align}
+     K^{-1}&= \begin{bmatrix}
+          K_{ X X} & K_{ X X_* } \\
+          K_{ X\_* X} & K_{X\_* X\_* }
+     \end{bmatrix}^{-1} \label{eq:blockmatrixinversionlemma1} \\
+     & =\begin{bmatrix}
+          A & B \\
+          C & D
+     \end{bmatrix}^{-1} \\
+     &=\begin{bmatrix}
+          A^{-1} + A^{-1}B(D-CA^{-1}B)^{-1}CA^{-1} & -A^{-1}B(D-CA^{-1}B)^{-1} \\
+          -(D-CA^{-1}B)^{-1}CA^{-1} & (D-CA^{-1}B)^{-1}
+     \end{bmatrix} \\
+     &=\begin{bmatrix}
+          A^{-1} + A^{-1}B\Sigma^{-1}CA^{-1} & -A^{-1}B\Sigma^{-1} \\
+          -\Sigma^{-1}CA^{-1} & \Sigma^{-1}
+     \end{bmatrix} \label{eq:Sigma^-1Identity} \\
+     &= \begin{bmatrix}
+          P & Q \\
+          R & S
+     \end{bmatrix} \label{eq:blockmatrixinversionlemma-1} \\
+     \Sigma &= D-CA^{-1}B = K_{X\_* X\_* } - K_{ X\_* X}{K_{ X\_* X\_* }}^{-1}K_{X X\_* }
+\end{align} %]]></script>
+
+<p>Instead of computing the inverse of the entire matrix $K$, which can be computationally expensive for large covariance matrices, the precision matrix $K^{-1}$ can be computed block-wise with the block matrix inversion lemma.
+Given the precision matrix in block matrix notation, the inner product in the exponential term of the Gaussian distribution can be computed as a sum over the inner products with the independent block matrices:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align}
+     p(y_* , y, X_* , X)
+     &\propto
+     \exp \left[
+     -\frac{1}{2}
+     \begin{bmatrix}
+          y \\
+          y_*
+     \end{bmatrix}^T
+     \begin{bmatrix}
+          K_{XX} & K_{X X_* } \\
+          K_{X_* X} & K_{X_* X_* }
+     \end{bmatrix}^{-1}
+     \begin{bmatrix}
+          y \\
+          y_*
+     \end{bmatrix}
+     \right] \\
+     &=
+     \exp \left[
+     -\frac{1}{2}
+     \begin{bmatrix}
+          y \\
+          y_*
+     \end{bmatrix}^T
+     \begin{bmatrix}
+          P & Q \\
+          R & S
+     \end{bmatrix}
+     \begin{bmatrix}
+          y \\
+          y_*
+     \end{bmatrix}
+     \right] \\
+     &=
+     \exp \left[
+     -\frac{1}{2}
+     \left( y^TPy + y^TQ y_* + y_*^TRy + y_* ^TS y_*
+     \right)
+     \right] \label{eq:jointdist_innersumoverblockmatrices}
+\end{align} %]]></script>
+
+<p>Since we are only interested in the posterior distribution $p(y_*  | y, X_* , X )$, terms which do not include $ y_* $ can be moved into the normalization term.
+The conditional distribution can thus be simplified to:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align}
+     p(y_* |  y, X_* , X)
+     &\propto
+     \exp \left[
+     -\frac{1}{2}
+     \left( -y^TQy_* - y_*^TRy + y_*^TS y_*
+     \right)
+     \right] \\
+     &=
+     \exp \left[
+     -\frac{1}{2}
+     \left( -y^TA^{-1}B\Sigma^{-1} y_* -y_*^T\Sigma^{-1}CA^{-1}y + y_*^T\Sigma^{-1}y_*
+     \right)
+     \right] \\
+     &\propto
+     \exp \left[
+     -\frac{1}{2}
+     \left( -2 y_*^T\Sigma^{-1}CA^{-1}y + y_*^T\Sigma^{-1}y_*
+     \right)
+     \right] \\
+     &\propto
+     \exp \left[
+     -\frac{1}{2}
+     \left( -2 y_*^T\Sigma^{-1}K_{X_* X}{K_{ X X }}^{-1} y + y_*^T\Sigma^{-1}y_*
+     \right)
+     \right]
+\end{align} %]]></script>
+
+<p>with the matrices $\Sigma$ being a symmetric matrix by construction, and $B$ and $C$ being each other transposed, namely $C^T=B$, which gives rise to the identity:
+<script type="math/tex">% <![CDATA[
+\begin{align}
+     (y^TA^{-1}B\Sigma^{-1}y_*)^T
+          &= y_*^T(\Sigma^{-1})^TB^T(A^{-1})^Ty \\
+          &= y_*^T\Sigma^{-1}CA^{-1}y
+\end{align} %]]></script></p>
+
+<p>Alternatively one would argue that the result of both inner products yields the same scalar value due to $B=C^T$.
+With the derivations above we obtain a posterior distribution $p(y_*  |  y, X_* , X )$ with the mean and covariance function</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align}
+     \mu(y_*)       &= K_{ X_* X}{K_{XX}}^{-1}y \\
+     \Sigma(y_*)    &= K_{ X_* X_* } - K_{ X_* X}{K_{ X X }}^{-1}K_{ X X_*}
+\end{align} %]]></script>
+
+<p>It should be noted that during plotting only the diagonal entries of the covariance matrix are of interest since the diagonal entries of the covariance matrix denote the variances at the evaluated points.
+Given the computation of both the mean and variance of the posterior distribution we obtain a Gaussian distribution:
+<script type="math/tex">% <![CDATA[
+\begin{align}
+     p(y_* | y, X_*, X) &= \mathcal{N} \big( \underbrace{K_{X_* X} {K_{XX}}^{-1} y}_{\mu}, \underbrace{K_{X_* X_*} - K_{X_* X}{K_{X X}}^{-1}K_{X X_*}}_{\Sigma} \big)
+\end{align} %]]></script></p>
+
+<p>Here is an image of a Gaussian Process:</p>
+
+<p><img src="https://raw.githubusercontent.com/ludwigwinkler/BayesianOptimization/gh-pages/docs/GP_2Obs.png" alt="Hi"></p>
+
+      		</section>
+
+          <div class="comments-wrapper">
+          <div id="disqus_thread"></div>
+          <script>
+              /**
+               *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+               *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+               */
+
+              var disqus_config = function () {
+                  this.page.url = '/blog/Bayesian-Optimization-Extensions/';  /*Replace PAGE_URL with your page's canonical URL variable*/
+                  this.page.identifier = '/blog/Bayesian-Optimization-Extensions/'; /*Replace PAGE_IDENTIFIER with your page's unique identifier variable*/
+              };
+
+              (function() {  /* dont endit below this line */
+                  var d = document, s = d.createElement('script');
+
+                  s.src = 'https://default.disqus.com/embed.js';
+
+                  s.setAttribute('data-timestamp', +new Date());
+                  (d.head || d.body).appendChild(s);
+              })();
+          </script>
+          <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+</noscript>
+        </div>
+<!-- /.comments-wrapper -->
+
+
+					<!-- Footer -->
+						<footer>
+              <ul class="actions">
+                <li><a href="/blog/" class="button">Our Blog</a></li>
+              </ul>
+						</footer>
+					</div>
+
+				<!-- Footer -->
+        <footer id="footer">
+  <section>
+    <form method="POST" action="https://formspree.io/info@default.com">
+      <div class="field">
+        <label for="name">Name</label>
+        <input type="text" name="name" id="name">
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="text" name="email" id="email">
+      </div>
+      <div class="field">
+        <label for="message">Message</label>
+        <textarea name="message" id="message" rows="3"></textarea>
+      </div>
+      <ul class="actions">
+        <li><input type="submit" value="Send Message"></li>
+      </ul>
+    </form>
+  </section>
+  <section class="split contact">
+    <section class="alt">
+      <h3>Location</h3>
+      <p>Los Angeles, CA</p>
+    </section>
+    <section>
+      <h3>Phone</h3>
+      <p><a href="tel:310-318-5555">310-318-5555</a></p>
+    </section>
+    <section>
+      <h3>Email</h3>
+      <p><a href="mailto:info@default.com">info@default.com</a></p>
+    </section>
+    <section>
+      <h3>Social</h3>
+      <ul class="icons alt">
+        <li><a href="https://twitter.com/default" class="icon fa-twitter" rel="nofollow"><span class="label">Twitter</span></a></li>
+        <li><a href="https://facebook.com/default" class="icon fa-facebook" rel="nofollow"><span class="label">Facebook</span></a></li>
+        <li><a href="https://instagram.com/default" class="icon fa-instagram" rel="nofollow"><span class="label">Instagram</span></a></li>
+        <li><a href="https://github.com/default" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
+      </ul>
+    </section>
+  </section>
+</footer>
+<!-- Copyright -->
+<div id="copyright">
+  <ul>
+       <li>© HTML5 UP</li>
+       <li>Design by <a href="https://html5up.net" rel="nofollow">HTML5 UP</a>
+</li>
+       <li>Jekyll Integration by <a href="https://soundgrail.com">SoundGrail</a>
+</li>
+       <li>Theme made by <a href="https://github.com/iwiedenm/jekyll-theme-massively-src"> iwiedenm</a>
+</li>
+ </ul>
+</div>
+
+
+			</div>
+
+      <!-- Scripts -->
+  		<!-- DYN -->
+<script src="/assets/js/jquery.min.js"></script>
+<script src="/assets/js/jquery.scrollex.min.js"></script>
+<script src="/assets/js/jquery.scrolly.min.js"></script>
+<script src="/assets/js/skel.min.js"></script>
+<script src="/assets/js/util.js"></script>
+<script src="/assets/js/main.js"></script>
+
+			<script async src="https://www.googletagmanager.com/gtag/js?id=default"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments)};
+  gtag('js', new Date());
+
+  gtag('config', 'default');
+</script>
+
+
+	</body>
+</html>

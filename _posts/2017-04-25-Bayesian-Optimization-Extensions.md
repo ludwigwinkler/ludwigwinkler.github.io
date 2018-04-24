@@ -1,9 +1,9 @@
 ---
 layout: post
-title:  "Bayesian Optimization - The Basics"
+title:  "Bayesian Optimization - Extensions"
 date:   2018-04-23
-excerpt: "Some Extensions for Bayesian Optimization"
-image: "/images/GP_2Obs.png"
+excerpt: "A Tutorial on Bayesian Optimization"
+image: "/images/GP_4Obs_Deriv.png"
 ---
 <head>
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
