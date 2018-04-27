@@ -1,4 +1,51 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.2.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-04-25T09:14:09+02:00</updated><id>/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Bayesian Optimization</title><link href="/blog/BayesianOptimization/" rel="alternate" type="text/html" title="Bayesian Optimization" /><published>2018-04-24T00:00:00+02:00</published><updated>2018-04-24T00:00:00+02:00</updated><id>/blog/BayesianOptimization</id><content type="html" xml:base="/blog/BayesianOptimization/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.2.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2018-04-27T20:28:48+02:00</updated><id>/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Easter Walk Poem</title><link href="/blog/BerlinEasterPoem/" rel="alternate" type="text/html" title="Easter Walk Poem" /><published>2018-04-24T00:00:00+02:00</published><updated>2018-04-24T00:00:00+02:00</updated><id>/blog/BerlinEasterPoem</id><content type="html" xml:base="/blog/BerlinEasterPoem/">&lt;p&gt;The idea to rewrite Goethe’s famous &lt;a href=&quot;http://www.literaturwelt.com/werke/goethe/osterspaziergang.html&quot;&gt;‘Easter Walk Poem’&lt;/a&gt; came while I was sitting on my balcony on the first days of spring.
+It’s a custom to recite the poem during my family’s easter breakfast and when I was back in Berlin after Easter, I started rewriting the poem with respect to Berlin.
+This is what this little literary excursion became:&lt;/p&gt;
+
+&lt;p&gt;Berlin-Spaziergang&lt;/p&gt;
+
+&lt;p&gt;Vom Gluten befreit sind Kreuzberg und Mitte &lt;br /&gt;
+Durch des Veganers strengen, missbilligenden Blick.&lt;/p&gt;
+
+&lt;p&gt;Der alte Winter, in seiner Schwäche,&lt;br /&gt;
+Zog sich nach Spandau zurück.&lt;br /&gt;
+Von Schönefeld her sendet er, fliehend, nur&lt;br /&gt;
+Ohnmächtiges Unglauben über den BER.&lt;/p&gt;
+
+&lt;p&gt;Am Kotti regen sich die Dealer zum Streben,&lt;br /&gt;
+Den Kater wollen sie mit weissem Pulver beleben;&lt;br /&gt;
+Am Rosi geraten die Spätis ins Bewegen;&lt;br /&gt;
+Rot-Braune Sternis erhalten ihren ersten Segen.&lt;/p&gt;
+
+&lt;p&gt;Doch an richtigen Berlinern fehlts im Revier,&lt;br /&gt;
+Berlin nimmt geputzte Hipster dafür.&lt;/p&gt;
+
+&lt;p&gt;Aus dem Brandenburger Tor,&lt;br /&gt;
+Dringt ein buntes Gewimmel Richtung Tiergarten hervor.&lt;br /&gt;
+Sonntags sonnen Sich Touris im Maurpark gern.&lt;br /&gt;
+Sie feiern des Karaokes’ allsonntaglichen Lärm.&lt;/p&gt;
+
+&lt;p&gt;Denn sie sind mit Easyjet für zwei Tage gekommen:&lt;br /&gt;
+Von Barcelonas breiten Ramblas,&lt;br /&gt;
+Aus New Yorks zu teuren Bars,&lt;br /&gt;
+Von Tokyos zu schmalen Gassen,&lt;br /&gt;
+Aus Londons engen Häusern,&lt;br /&gt;
+Wurden sie alle ins schöne Berlin gelassen.&lt;/p&gt;
+
+&lt;p&gt;Sieh nur, sieh! wie behend alle Menschen,&lt;br /&gt;
+In diesem schönen Berlin zusammenleben,&lt;br /&gt;
+Selbst von des Berghains fernen Darkrooms,&lt;br /&gt;
+Blinken uns schwarze Kleider entgegen.&lt;/p&gt;
+
+&lt;p&gt;Wie der Schawarma mit seiner Würze,&lt;br /&gt;
+In FHain manch gierigen Mund bewegt,&lt;br /&gt;
+Beglückt das Watergate bei Sonnenaufgang,&lt;br /&gt;
+Ohren und Augen an der Spree.&lt;/p&gt;
+
+&lt;p&gt;Ich höre schon des Alex’ Getümmel,&lt;br /&gt;
+Hier ist des Subkulturs wahrer Himmel,&lt;br /&gt;
+Zufrieden jauchzet groß und klein:&lt;br /&gt;
+&lt;strong&gt;In Berlin bin ich Mensch, hier darf ich’s sein!&lt;/strong&gt;&lt;/p&gt;</content><summary type="html">Goethe's Easter Walk, the Berlin Version</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="" /></entry><entry><title type="html">Bayesian Optimization</title><link href="/blog/BayesianOptimization/" rel="alternate" type="text/html" title="Bayesian Optimization" /><published>2018-04-24T00:00:00+02:00</published><updated>2018-04-24T00:00:00+02:00</updated><id>/blog/BayesianOptimization</id><content type="html" xml:base="/blog/BayesianOptimization/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
