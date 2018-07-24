@@ -1,13 +1,13 @@
 ---
 layout: post
 title:  "Easter Walk Poem"
-date:   2018-04-24
+date:   2018-04-27
 excerpt: "Goethe's Easter Walk, the Berlin Version"
 image: ""
 ---
 
 The idea to rewrite Goethe's famous ['Easter Walk Poem'](http://www.literaturwelt.com/werke/goethe/osterspaziergang.html) came while I was sitting on my balcony on the first days of spring.
-It's a custom to recite the poem during my family's easter breakfast and when I was back in Berlin after Easter, I started rewriting the poem with respect to Berlin.
+It's a custom to recite the poem during my family's Easter breakfast and when I was back in Berlin after Easter, I started rewriting the poem with respect to Berlin.
 This is what this little literary excursion became:
 
 Berlin-Spaziergang
