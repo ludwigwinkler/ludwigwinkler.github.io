@@ -62,7 +62,7 @@
     				<header class="major">
       				<span class="date">18 Feb 2019</span>
       				<h1>Bayesian Non-Negative Matrix Factorization</h1>
-      				<p>Bayesian Non-Negative Matrix Factorization</p>
+      				<p>Being Unsure About What To Recommend</p>
       			</header>
       			<div class="image main"><img src="" alt=""></div>
       			<p></p>
@@ -81,9 +81,6 @@
 
 <h2 id="non-negative-matrix-factorization">Non-Negative Matrix Factorization</h2>
 
-<p>I wrote my master’s thesis on Bayesian Deep Learning and it’s application to model-based reinforcement learning.
-Bayesian neural networks can be trained either with Markov-Chain-Monte-Carlo methods and more advanced samplers such as Hamiltonian Monte Carlo and No-U-Turn-Samplers or with variational inference.</p>
-
 <p>In deterministic NMF each entry in the parameters is a fixed weight or point estimate.
 But in Bayesian NMF each entry in the parameters is a distribution which will be the trusty Normal distribution $\mathcal{N}(\mu, \sigma)$.
 Now each entry in the matrices $P, Q$, vectors $u, i$ and scalar $b$ will be a distribution, i.e.</p>
@@ -96,7 +93,298 @@ Now each entry in the matrices $P, Q$, vectors $u, i$ and scalar $b$ will be a d
 
 <p>The aim is now to find the optimal $\mu’s$ and $\sigma’s$ for all the parameters in $P, Q, u, i$ and $b$.
 In the previous post we optimized the mean squared error between our predicted matrix $\hat{R}$ and the real matrix $R$ with gradient descent.
-As it turns out we can train the distributions in the same way by applying a trick which is one of the many advantages of the Normal distribution: the reparameterization trick.</p>
+As it turns out we can train the distributions in the same way by applying a trick which is one of the many advantages of the Normal distribution: the reparameterization trick.
+I explained the reparameterization trick in detail in another blog post and will simply refer to it <a href="https://ludwigwinkler.github.io/blog/Reparam/">here</a>.</p>
+
+<p>In order to allow PyTorch (shout out to the devs!) to backpropagate to the variational parameters $\mu, sigma$ we have to reparameterize the every entry in the parameters.</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align*}
+  P_{uk} &= \mu_{uk} + \mathcal{E} \cdot \sigma_{uk} \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
+  Q_{ki} &= \mu_{ki} + \mathcal{E} \cdot \sigma_{ki} \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
+  u_u &= \mu_u + \mathcal{E} \cdot \sigma_u \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
+  i_i &= \mu_i + \mathcal{E} \cdot \sigma_i \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
+  b &= \mu_b + \mathcal{E} \cdot \sigma_b \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
+\end{align*} %]]></script>
+
+<p>We can rewrite this in matrix notation to write it more compactly with the element-wise multiplication operator $\odot$ and combining the $\mu’s$ and $\sigma’s$ into matrices, i.e. $P_\mu$ and $P_\sigma$:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align*}
+  P &= P_\mu + \mathcal{E} \odot P_\sigma \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
+  Q &= Q_\mu + \mathcal{E} \odot Q_\sigma \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
+  u &= u_\mu + \mathcal{E} \odot u_\sigma \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
+  i &= i_\mu + \mathcal{E} \odot i_\sigma \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
+  b &= b_\mu + \mathcal{E} \odot b_\sigma \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
+\end{align*} %]]></script>
+
+<p>We can now sample predictions by first sampling the above matrices and vector and then combining them into:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align*}
+  \hat{R} &= P \ Q + u^T + i + b
+\end{align*} %]]></script>
+
+<p>with $\hat{R} \in \mathbb{R}^{U \times I}, P \in \mathbb{R}^{U \times K}, Q \in \mathbb{R}^{K \times I}, u \in \mathbb{R}^{U}, i \in \mathbb{R}^I$ and $b \in \mathbb{R}$.
+Special attention for adding the vector $u \in \mathbb{R}^U$ column-wise to the matrix product $PQ$, the vector $i \in \mathbb{R}^I$ row-wise to $PQ$ and b simply to every entry in $PQ$.
+The vector $u$ is a combination of scalar biases for every user and is added to every of her/his recommendations in the columns of $\hat{R}$.
+The entries in the vector $i$ on the other hand are biases for the items and are added to each row in $\hat{R}$.</p>
+
+<p>We can sample multiple prediction matrices $\hat{R}$ by first sampling the corresponding parameters and then combining the into a prediction.
+From these predictions we can estimate the mean and standard deviation:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align*}
+  \mu_{\hat{R}} &= \mathbb{E}[ \ \hat{R} \ \ ] \approx \frac{1}{N} \sum_{i=0}^N \hat{R}_i \\\\
+  \sigma_{\hat{R}} &= \sqrt{\mathbb{V}[ \ \hat{R} \ \ ]} \approx \sqrt{ \frac{1}{N} \sum_{i=0}^N ( \hat{R}_i - \mu_{\hat{R}})^2} \\\\
+\end{align*} %]]></script>
+
+<p>Once we have the mean and standard deviation of the prediction we can construct a cost function through the negative log-likelihood of the real prediction matrix $R$ under the estimated distribution $\hat{R}$:</p>
+
+<script type="math/tex; mode=display">\begin{align*}
+\mathcal{L}(\hat{R}, R) = - \sum_{u,i}^{U,I} \delta_{ui} \left( \log \frac{1}{\sqrt{2\pi \sigma_{\hat{R}_{ui}}^2}} - \frac{1}{2 \sigma_{\hat{R}_{ui}}^2} (R_{ui} - \mu_{\hat{R}_{ui}})^2 \right)
+\end{align*}</script>
+
+<p>where $\delta_{ui}$ is a delta function which is 1 if the entry $R_{ui}$ is in the training data and 0 if the entry $R_{ui}$ is to be predicted.
+$\delta_{ui}$ serves as a filter to remove the non-existent data points from the cost function.
+Depending on the dimensionality and whether or not we’re estimating covariances as well (which we are not in this case), $N=10$ or $N=20$ is enough to stabilize the cost function.
+An important coding tweak is to predict the samples of $\hat{R}$ in parallel by creating a three-dimensional tensor $\mathcal{E}$ with a third ‘sample’ dimension.
+That third dimension will be used to compute the $\mu_{\hat{R}}$ and $\sigma_{\hat{R}}$ efficiently without having to resort to for-loops which can be very slow in Python.</p>
+
+<p>After computing the cost function we can let PyTorch do its automatic differentiation magic and we optimize the whole thing with an optimizer such as Adam.</p>
+
+<div class="highlighter-rouge">
+<pre class="highlight"><code>    import numpy as np
+    import torch
+    import torch.nn.functional as F
+
+    FloatTensor = torch.FloatTensor
+
+    np.set_printoptions(precision=4)
+
+    class BayesNMF(torch.nn.Module):
+
+            def __init__(self, R, K, lr, iterations):
+
+                    """
+                    Perform matrix factorization to predict empty
+                    entries in a matrix.
+
+                    Arguments
+                    - R (ndarray)   : user-item rating matrix
+                    - K (int)       : number of latent dimensions
+                    - alpha (float) : learning rate
+                    - beta (float)  : regularization parameter
+                    """
+                    super().__init__()
+
+                    self.R = R #The recommendation matrix
+                    self.data_mask = torch.zeros_like(R) #Mask with 1's where we have data points
+                    self.data_mask[R!=0] = 1
+                    self.missing_mask = torch.zeros_like(self.R)
+                    self.missing_mask[R==0]=1 #Mask with 1's where we don't have data points
+                    self.num_users, self.num_items = R.shape #Number of users and items
+                    self.K = K #Number of latent dimensions
+                    self.lr = lr #Learning rate for the optimizer
+                    self.iterations = iterations #Number of gradient descent steps
+
+                    exponential_dist_lambda = 5 #Parameter for exponential distribution used to initialize parameters with small positive values
+                    init_std = 0
+
+                    #Parameters with mu and untransformed variances: \sigma = log(1+exp(rho))
+                    self.P_mu = torch.nn.Parameter(FloatTensor(self.num_users, self.K).exponential_(exponential_dist_lambda))
+                    self.P_rho = torch.nn.Parameter(FloatTensor(self.num_users, self.K).fill_(init_std))
+                    self.Q_mu = torch.nn.Parameter(FloatTensor(self.num_items, self.K).exponential_(exponential_dist_lambda))
+                    self.Q_rho = torch.nn.Parameter(FloatTensor(self.num_items, self.K).fill_(init_std))
+
+                    self.b_u_mu = torch.nn.Parameter(FloatTensor(self.num_users, 1).exponential_(exponential_dist_lambda))
+                    self.b_u_rho = torch.nn.Parameter(FloatTensor(self.num_users, 1).fill_(init_std))
+                    self.b_i_mu = torch.nn.Parameter(FloatTensor(self.num_items, 1).exponential_(exponential_dist_lambda))
+                    self.b_i_rho = torch.nn.Parameter(FloatTensor(self.num_items, 1).fill_(init_std))
+                    self.b_mu = torch.nn.Parameter(FloatTensor([0.1]))
+                    self.b_rho = torch.nn.Parameter(FloatTensor([init_std]))
+
+                    #Optimizer for gradient descent
+                    self.optim = torch.optim.Adam(self.parameters(), lr=self.lr)
+
+                    #Data for stochastic gradient descent updates instead of full matrix updates
+                    self.samples = [(i, j, self.R[i,j]) for i in range(self.num_users) for j in range(self.num_items) if R[i,j]&gt;0]
+                    np.random.shuffle(self.samples)
+                    self.forward_type = 1
+
+                    #Number of prediction samples computed in parallel
+                    self.num_MC_samples = 20
+
+            def forward2(self, _u, _i):
+
+                    #Sample multiple parameters with the reparameterization trick in parallel
+                    b = self.b_mu + torch.randn(self.num_MC_samples, *self.b_rho.shape)* F.softplus(self.b_rho)
+                    b_i = self.b_i_mu[_i] + torch.randn(self.num_MC_samples, *self.b_i_rho[_i].shape)* F.softplus(self.b_i_rho[_i])
+                    b_u = self.b_u_mu[_u] + torch.randn(self.num_MC_samples, *self.b_u_rho[_u].shape)* F.softplus(self.b_u_rho[_u])
+                    P = self.P_mu[_u] + torch.randn(self.num_MC_samples, *self.P_rho[_u].shape)*F.softplus(self.P_rho[_u])
+                    Q = self.Q_mu[_i] + torch.randn(self.num_MC_samples, *self.Q_rho[_i].shape)*F.softplus(self.Q_rho[_i])
+
+                    prediction = torch.bmm(P.view(self.num_MC_samples, 1, self.K), Q.view(self.num_MC_samples, self.K, 1)).squeeze(-1)
+                    prediction += b_u
+                    prediction += b_i
+                    prediction += b
+
+                    return prediction
+
+            def forward1(self):
+                    '''
+                    Sample multipile parameters in parallel
+                    :return: Prediction matrix of shape [N_MC, U, I]
+                    '''
+
+
+                    b = self.b_mu + torch.randn(self.num_MC_samples, *self.b_rho.shape)* F.softplus(self.b_rho)
+                    b_i = self.b_i_mu + torch.randn(self.num_MC_samples, *self.b_i_rho.shape)* F.softplus(self.b_i_rho)
+                    b_u = self.b_u_mu + torch.randn(self.num_MC_samples, *self.b_u_rho.shape)* F.softplus(self.b_u_rho)
+                    P = self.P_mu + torch.randn(self.num_MC_samples, *self.P_rho.shape)*F.softplus(self.P_rho)
+                    Q = self.Q_mu + torch.randn(self.num_MC_samples, *self.Q_rho.shape)*F.softplus(self.Q_rho)
+
+                    pred = torch.bmm(P, Q.transpose_(1,2))
+                    pred += b_u
+                    pred += b_i.transpose_(1,2)
+                    pred += b.unsqueeze(-1)
+                    pred *= self.data_mask
+
+                    # Add a little of noise in order to prevent nan's during backpropagation; NaN's are caused by masking and the resulting std=0 for missing values
+                    pred += 1e-10*torch.randn(*pred.shape)*self.missing_mask
+
+                    return pred
+
+            def criterion(self, _pred, _label):
+                    '''
+
+                    :param _pred: prediction matrix of shape [N_MC, U, I]
+                    :param _label: _label matrix of shape [U, I]
+                    :return: scalar loss for gradient descent
+                    '''
+                    mu = _pred.mean(dim=0)
+                    sigma = _pred.std(dim=0)
+
+                    loss = (-torch.sum(torch.log(torch.sqrt(1/(2*np.pi*sigma.pow(2))))-1./(2*sigma**2)*(_label-mu)**2))
+                    mse_loss = F.mse_loss(_pred, _label) # MSE loss for interpretable loss
+
+                    return loss, mse_loss
+
+            def train_params(self):
+                    # Perform stochastic gradient descent for number of iterations
+                    for e in range(self.iterations):
+                            loss_ = 0
+                            for (i, j, r) in self.samples:
+                                    self.zero_grad()
+
+                                    pred = self.forward1()
+                                    loss, mse_loss = self.criterion(pred, self.R)
+
+                                    #Alternative prediction by sampling a single data point instead of the entire prediction matrix
+                                    # pred= self.forward2(i, j)
+                                    # loss, mse_loss = self.criterion(pred, r)
+
+                                    loss.backward()
+                                    self.optim.step()
+                                    loss_+=loss.detach().numpy()
+
+                            if e%1000==0 and e&gt;0:
+                                    mf.print_variational_matrix()
+
+                            if (e+1) % 100 == 0:
+                                    print("Iteration: %d ; loss = %.4f ; mse_loss=%.4f" % (e+1, loss_, mse_loss.detach().cpu().numpy().squeeze()))
+
+            def full_matrix(self):
+                    """
+                    Computer a single full matrix using the resultant biases, P and Q
+                    """
+                    b = self.b_mu + torch.randn(*self.b_rho.shape)* F.softplus(self.b_rho)
+                    b_i = self.b_i_mu + torch.randn(*self.b_i_rho.shape)* F.softplus(self.b_i_rho)
+                    b_u = self.b_u_mu + torch.randn(*self.b_u_rho.shape)* F.softplus(self.b_u_rho)
+                    P = self.P_mu + torch.randn(*self.P_rho.shape)* F.softplus(self.P_rho)
+                    Q = self.Q_mu + torch.randn(*self.Q_rho.shape)* F.softplus(self.Q_rho)
+
+                    return_ = torch.matmul(P, Q.t())
+                    return_ += b_u
+                    return_ += b_i.t()
+                    return_ += b
+
+                    return return_.detach()
+
+            def print_variational_matrix(self):
+                    '''
+                    Print the mean and variance of the prediction matrix
+                    '''
+                    #Sample 100 different prediction matrices
+                    Rs = torch.stack([mf.full_matrix() for _ in range(100)])
+
+                    print('Mean:')
+                    print(torch.mean(Rs, dim=0).detach().numpy())
+                    print('Std')
+                    print(np.around(torch.std(Rs, dim=0).detach().numpy(),3))
+
+
+
+    R = FloatTensor([       [5, 3, 5, 0],
+                            [4, 5, 5, 5],
+                            [3, 0, 0, 1],
+                            [0, 0, 0, 0],
+                            [0, 1, 0, 4],])
+
+    mf = BayesNMF(R, K=3, lr=0.001, iterations=10000)
+
+    mf.train_params()
+    mf.print_variational_matrix()
+</code></pre>
+</div>
+
+<p>The recommendation matrix $R$ in the code snippet above has a tweak: the fourth row does not contain any entries so every item has to be recommended to user 4.
+Upon inspection of the mean $\mu_{\hat{R}}$ and $\sigma_{\hat{R}}$ we can that the variance in the fourth row in markedly increased:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+P_{\sigma} =
+ \left(
+\begin{array}{cccc}
+ 0.000 & 0.001 & 0.000 & 0.000 \\
+ 0.000 & 0.000 & 0.000 & 0.000 \\
+0.918 & 1.358 & 0.833 & 0.974 \\
+0.001 & 0.001 & 0.000 & 0.000 \\
+ \end{array}\right) %]]></script>
+
+<p>Because the user hasn’t reviewed anything, we cannot leverage any latent structure through the Bayesian Non-Negative Matrix Factorization.</p>
+
+<p>Similarly, when predicting the matrix</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+R =
+\left(
+\begin{array}{cccc}
+5& 3& 5& 0 \\
+                        4& 5& 5& 0\\
+                        3& 0& 0& 0\\
+                        0& 0& 0& 1\\
+                        0& 1& 0& 0\\
+\end{array} \right) %]]></script>
+
+<p>we will obtain a standard deviation matrix $P_{\sigma}$ which has an increased standard deviation for the fourth row and the last column:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+P_{\sigma} =
+\left(
+\begin{array}{cccc}
+0  &  0  &  0 &   0.003 \\
+0  &  0  &  0 &   0.005 \\
+0  &  0.  &  0 &   0.001 \\
+0.003 & 0.006 & 0.002 &   0.001    \\
+0  &  0  &  0 &   0.001 \\
+\end{array} \right) %]]></script>
+
+<p>Since user 4 does not share any common likes with any other user the standard deviation is increased for all other movies in the fourth row.
+Similarly, movie 4 which user 4 reviewed has an increased standard deviation for the other users as not a single other user has seen it.</p>
+
+<p>As a closing remark I just want to say that the gradient descent based variational inference approach is not the best approach.
+Shinichi Nakajima, a member of my lab published an <a href="http://www.jmlr.org/papers/volume14/nakajima13a/nakajima13a.pdf">analytic solution</a> which can be somewhat involved.
+The core motivation of this post was to see whether we could use the reparameterization trick and whether the factorization would exhibit the behaviour which was expected of it with regards to independent entries in $R$.</p>
 
       		</section>
 
