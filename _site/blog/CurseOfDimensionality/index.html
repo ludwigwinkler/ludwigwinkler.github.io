@@ -1,0 +1,336 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+  Jekyll integration by somiibo.com
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+--><html>
+	<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+<title>Curse of Dimensionality</title>
+<meta name="description" content="">
+
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/icon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/icon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/icon/favicon-16x16.png">
+<link rel="manifest" href="/assets/icon/manifest.json">
+<link rel="mask-icon" href="/assets/icon/safari-pinned-tab.svg" color="#5bbad5">
+<link rel="shortcut icon" href="/assets/icon/favicon.ico">
+<meta name="msapplication-config" content="/assets/icon/browserconfig.xml">
+<meta name="theme-color" content="#ffffff">
+
+<!-- CSS -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<noscript><link rel="stylesheet" href="/assets/css/noscript.css"></noscript>
+
+	</head>
+	<body class="is-loading">
+
+		<!-- Wrapper -->
+			<div id="wrapper" class="fade-in">
+
+				<!-- Header -->
+        <header id="header">
+          <a href="/" class="logo">Ludwig Winkler</a>
+        </header>
+
+				<!-- Nav -->
+					<nav id="nav">
+
+            <ul class="links">
+  <li class=""><a href="/">Home</a></li>
+  <li class=" active "><a href="/blog/">Blog</a></li>
+  <li class=""><a href="/readinglist/">Reading List</a></li>
+  <li class=""><a href="/about/">About</a></li>
+</ul>
+
+
+						<ul class="icons">
+              <li><a href="https://twitter.com/default" class="icon fa-twitter" rel="nofollow"><span class="label">Twitter</span></a></li>
+              <li><a href="https://facebook.com/default" class="icon fa-facebook" rel="nofollow"><span class="label">Facebook</span></a></li>
+              <li><a href="https://instagram.com/default" class="icon fa-instagram" rel="nofollow"><span class="label">Instagram</span></a></li>
+              <li><a href="https://github.com/default" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+				<div id="main">
+          <section class="post">
+    				<header class="major">
+      				<span class="date">18 Feb 2019</span>
+      				<h1>Curse of Dimensionality</h1>
+      				<p>Those Darn Dimensions!</p>
+      			</header>
+      			<div class="image main"><img src="" alt=""></div>
+      			<p></p>
+<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
+       <script type="text/x-mathjax-config">
+         MathJax.Hub.Config({
+           tex2jax: {
+             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+             displayMath: [['$$','$$']],
+             processEscapes: true
+           }
+         });
+       </script>
+       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+
+
+<h2 id="non-negative-matrix-factorization">Non-Negative Matrix Factorization</h2>
+
+<p>I wrote my master’s thesis on Bayesian Deep Learning and it’s application to model-based reinforcement learning.
+Bayesian neural networks can be trained either with Markov-Chain-Monte-Carlo methods and more advanced samplers such as Hamiltonian Monte Carlo and No-U-Turn-Samplers or with variational inference.</p>
+
+<p>While sampling methods are asymptotically correct in their estimation of the posterior distribution, they do not scale well due to the curse of dimensionality.
+In a nutshell it refers to the geometric properties of high dimensional spaces.
+For example the distance between two points increases as we move into higher and higher dimensional spaces.
+A quick example is the Euclidean distance between two points which have a distance of 1 in every of their shared dimensions $\mathbb{R}^N$.
+Depending on the dimensionality $N$ we get a distance $\sqrt{\sum_{n=0}^N 1^2}$.
+In $\mathbb{R}^1$ this is simply $\sqrt{1^2}=1$, whereas in $\mathbb{R}^2$ it is $\sqrt{1^2 + 1^2}=1.41\ldots$ and in $\mathbb{R}^3$ its $\sqrt{1^2 + 1^2 + 1^2}= 1.73\ldots$.</p>
+
+<p>The more dimensions we add, the larger the space between two points with equal distance in every dimension.
+Secondly this creates the problem of requiring an increasing number of samples for higher and higher dimensional spaces.
+Let’s say we want to estimate a function by sampling in the Euclidean space spanned between two points with unit distance, ergo distance of 1.
+We want to estimate the function and want a resolution of 0.1, i.e. we need 10 samples per dimension.
+In $\mathbb{R}^1$ we only require 10 samples to estimate the pdf wit equally spaced sampling points.
+But in $\mathbb{R}^2$ we suddenly require 100 samples to estimate the function with the desired resolution.
+In $\mathbb{R}^3$ we finally need 1000 samples to estimate the function to our liking.
+The required number of samples grows exponentially with the number of dimension, i.e. $10^N$ in $\mathbb{R}^N$.
+This effectively restricts sampling algorithms to applications where we require very precise posteriors as in finance or medicine or where the run-time isn’t a problem.</p>
+
+<p>An alternative approach is to use variational inference which optimizes the distance function between two distributions.
+There are many great tutorials on the internet which give an introduction to variational inference.
+One of my favourites is <a href="https://arxiv.org/pdf/1601.00670.pdf">‘Variational Inference: A Review for Statisticians’</a> by David Blei.
+Readers well versed in variational inference and machine learning will notice that the following derivations take a lot of mathematical and statistical shortcuts.
+I wanted to circumvent a full derivation of variational inference including ELBO’s, conjugate priors and natural gradients as it entails a lot of work which is outside the scope of this simple tutorial.</p>
+
+<p>In deterministic NMF each entry in the parameters is a fixed weight or point estimate.
+But in Bayesian NMF each entry in the parameters is a distribution which will be the trusty Normal distribution $\mathcal{N}(\mu, \sigma)$.
+Now each entry in the matrices $P, Q$, vectors $u, i$ and scalar $b$ will be a distribution, i.e.</p>
+
+<script type="math/tex; mode=display">P_{uk} \sim \mathcal{N}(\mu_{uk}, \sigma_{uk}) \\
+  Q_{ki} \sim \mathcal{N}(\mu_{ki}, \sigma_{ki}) \\
+  u_u \sim \mathcal{N}(\mu_{u}, \sigma_{u}) \\
+  i_i \sim \mathcal{N}(\mu_{i}, \sigma_{i}) \\
+  b \sim \mathcal{N}(\mu_{b}, \sigma_{b}) \\</script>
+
+<p>The aim is now to find the optimal $\mu’s$ and $\sigma’s$ for all the parameters in $P, Q, u, i$ and $b$.
+In the previous post we optimized the mean squared error between our predicted matrix $\hat{R}$ and the real matrix $R$ with gradient descent.
+As it turns out we can train the distributions in the same way by applying a trick which is one of the many advantages of the Normal distribution: the reparameterization trick.</p>
+
+<p>Let’s assume we have normal standard distribution $\mathcal{E} \sim \mathcal{N}(0,1)$.
+We can draw lots of samples from it which will be distributed just like the parameterized distribution.</p>
+
+<p><img src="N01_0.png" alt="" class='align="center"' height="50%" width="50%"></p>
+
+<p>Unsuprisingly, the distribution of the samples follows the parameterized Normal distribution $\mathcal{N}(\mu=0, \sigma=1)$.
+If we were to sample millions of samples from the distribution and use a ever finer resolution of the histogram we would arrive at a perfect $\mathcal{N}(\mu=0, \sigma=1)$ distribution.</p>
+
+<p><img src="N01_1.png" alt="" class='align="center"' height="50%" width="50%"></p>
+
+<p>Let’s pick three samples $\epsilon_1, \epsilon_2, \epsilon_3$ from that standard normal distribution</p>
+
+<script type="math/tex; mode=display">\epsilon_1 = -0.5 \\
+  \epsilon_2=0.5 \\
+  \epsilon_3=1</script>
+
+<p>What would happen if we were to multiply these three samples with a constant number $\sigma=3$?
+Well since it is a linear transformation it should be a straight forward multiplication</p>
+
+<script type="math/tex; mode=display">\sigma \cdot \epsilon_1 = -1.5 \\
+  \sigma \cdot \epsilon_2 = 1.5 \\
+  \sigma \cdot \epsilon_3 = 3</script>
+
+<p>Let’s visualize this multiplication with a fixed number for thousands of samples $\epsilon$ from the standard normal distribution.
+In the next image I normalized the samples such that we’re working with a distribution:</p>
+
+<p><img src="N03_0.png" alt="" class='align="center"' height="50%" width="50%"></p>
+
+<p>As it turns out, multiplying the samples of a $\mathcal{N}(0,1)$ distribution with a constant number $\sigma$ results in a Normal distribution with the standard deviation $\sigma$!</p>
+
+<p><img src="N03_1.png" alt="" class='align="center"' height="50%" width="50%"></p>
+
+<p>The second step of the reparameterization step is to ask ourselves what would happen if we added a constant number $\mu =10$ to the samples drawn from $\mathcal{N}(0,1)$ which are already multiplied with $\sigma$.</p>
+
+<script type="math/tex; mode=display">\mu + \sigma \cdot \epsilon_1 = 8.5 \\
+  \mu + \sigma \cdot \epsilon_2 = 11.5 \\
+  \mu + \sigma \cdot \epsilon_3 = 13</script>
+
+<p>Let’s visualize this linear transformation on all the samples we drew from $\mathcal{N}(0,1)$ and multiplied with $\sigma=3$.</p>
+
+<p><img src="N103_0.png" alt="" class='align="center"' height="50%" width="50%"></p>
+
+<p>As it turns out, if we plot the Normal distribution $\mathcal{N}(10,3)$ on top of our scaled and shifted standard normal samples, we obtain the same distribution!</p>
+
+<p><img src="N103_1.png" alt="" class='align="center"' height="50%" width="50%"></p>
+
+<p>After some eye-candy we can tackle the above-mentioned transformation analytically.
+We transform any Standard-Normally distributed random variable $\mathcal{E} \sim \mathcal{N}(0,1)$ by scaling it first with $\sigma$ and shifting it afterwards with $\mu$ into a Normally distributed random variable $\mathcal{E}’ \sim \mathcal{N}(\mu, \sigma)$ through the linear transformation</p>
+
+<script type="math/tex; mode=display">\mathcal{E}' = \mu + \mathcal{E} \cdot \sigma</script>
+
+<p>The important analytical property of this reparameterization is that we can take gradients of it.
+Let’s create a simple example of linear regression of some input $x \in \mathbb{R}$ with a weight $\mathcal{E}’ \sim \mathcal{N}(\mu,\sigma)$:</p>
+
+<script type="math/tex; mode=display">y = \mathcal{E}' \cdot x</script>
+
+<p>Because $\mathcal{E}’$ is a random variable, the predicted value $y$ is also a distribution.
+This is very similar to the scaling of random variables, but in our case the scaling factor is the input $x$.
+With the reparameterization trick we can rewrite the random variable $\mathcal{E}’$ as</p>
+
+<script type="math/tex; mode=display">(\hat{y} - y)^2 = ((\mu + \mathcal{E} \cdot \sigma) \ x - y)^2</script>
+
+<p>After the reparameterization of $\mathcal{E}’$</p>
+
+<script type="math/tex; mode=display">\frac{\partial}{\partial \mu} ((\mu + \mathcal{E} \cdot \sigma) \ x - y)^2 = 2 \cdot ((\mu + \mathcal{E} \cdot \sigma) \ x - y) \cdot x \\
+  \frac{\partial}{\partial \sigma} ((\mu + \mathcal{E} \cdot \sigma) \ x - y)^2 = 2 \cdot ((\mu + \mathcal{E} \cdot \sigma) \ x - y) \cdot \sigma \cdot x \\</script>
+
+<div class="highlighter-rouge">
+<pre class="highlight"><code>import numpy as np
+
+x = np.linspace(0,5,10)
+y = 3*x
+
+mu = -3
+rho = 1
+
+lr = 0.05
+
+for _ in range(20):
+        for label, data in zip(y, x):
+
+                e = np.random.randn(1)
+                std = np.log(1+np.exp(rho))
+
+                pred = (mu + e*std)*data
+
+                mu = mu - lr * (pred - label) * data
+                rho = rho - lr * e/(1+np.exp(-rho)) * (pred - label) * data
+
+                print(mu, rho)
+</code></pre>
+</div>
+
+      		</section>
+
+          <div class="comments-wrapper">
+          <div id="disqus_thread"></div>
+          <script>
+              /**
+               *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+               *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+               */
+
+              var disqus_config = function () {
+                  this.page.url = '/blog/CurseOfDimensionality/';  /*Replace PAGE_URL with your page's canonical URL variable*/
+                  this.page.identifier = '/blog/CurseOfDimensionality/'; /*Replace PAGE_IDENTIFIER with your page's unique identifier variable*/
+              };
+
+              (function() {  /* dont endit below this line */
+                  var d = document, s = d.createElement('script');
+
+                  s.src = 'https://default.disqus.com/embed.js';
+
+                  s.setAttribute('data-timestamp', +new Date());
+                  (d.head || d.body).appendChild(s);
+              })();
+          </script>
+          <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+</noscript>
+        </div>
+<!-- /.comments-wrapper -->
+
+
+					<!-- Footer -->
+						<footer>
+              <ul class="actions">
+                <li><a href="/blog/" class="button">Our Blog</a></li>
+              </ul>
+						</footer>
+					</div>
+
+				<!-- Footer -->
+        <footer id="footer">
+  <section>
+    <form method="POST" action="https://formspree.io/">
+      <div class="field">
+        <label for="name">Name</label>
+        <input type="text" name="name" id="name">
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="text" name="email" id="email">
+      </div>
+      <div class="field">
+        <label for="message">Message</label>
+        <textarea name="message" id="message" rows="3"></textarea>
+      </div>
+      <ul class="actions">
+        <li><input type="submit" value="Send Message"></li>
+      </ul>
+    </form>
+  </section>
+  <section class="split contact">
+    <section class="alt">
+      <h3>Location</h3>
+      <p>Berlin, Germany</p>
+    </section>
+    <section>
+      <h3>Phone</h3>
+      <p><a href="tel:"></a></p>
+    </section>
+    <section>
+      <h3>Email</h3>
+      <p><a href="mailto:"></a></p>
+    </section>
+    <section>
+      <h3>Social</h3>
+      <ul class="icons alt">
+        <li><a href="https://twitter.com/ludiXIVwinkler" class="icon fa-twitter" rel="nofollow"><span class="label">Twitter</span></a></li>
+        <!-- <li><a href="https://facebook.com/default" class="icon fa-facebook" rel="nofollow"><span class="label">Facebook</span></a></li> -->
+        <!-- <li><a href="https://instagram.com/default" class="icon fa-instagram" rel="nofollow"><span class="label">Instagram</span></a></li> -->
+        <li><a href="https://github.com/ludwigwinkler" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
+      </ul>
+    </section>
+  </section>
+</footer>
+<!-- Copyright -->
+<div id="copyright">
+  <ul>
+       <li>© HTML5 UP</li>
+       <li>Design by <a href="https://html5up.net" rel="nofollow">HTML5 UP</a>
+</li>
+       <li>Jekyll Integration by <a href="https://soundgrail.com">SoundGrail</a>
+</li>
+       <li>Theme made by <a href="https://github.com/iwiedenm/jekyll-theme-massively-src"> iwiedenm</a>
+</li>
+ </ul>
+</div>
+
+
+			</div>
+
+      <!-- Scripts -->
+  		<!-- DYN -->
+<script src="/assets/js/jquery.min.js"></script>
+<script src="/assets/js/jquery.scrollex.min.js"></script>
+<script src="/assets/js/jquery.scrolly.min.js"></script>
+<script src="/assets/js/skel.min.js"></script>
+<script src="/assets/js/util.js"></script>
+<script src="/assets/js/main.js"></script>
+
+			<script async src="https://www.googletagmanager.com/gtag/js?id=default"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments)};
+  gtag('js', new Date());
+
+  gtag('config', 'default');
+</script>
+
+
+	</body>
+</html>

@@ -10,7 +10,7 @@
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-<title>NMF</title>
+<title>Non-Negative Matrix Factorization</title>
 <meta name="description" content="">
 
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/icon/apple-touch-icon.png">
@@ -61,10 +61,10 @@
           <section class="post">
     				<header class="major">
       				<span class="date">24 Jan 2019</span>
-      				<h1>NMF</h1>
-      				<p>Non-Negative Matrix Factorization</p>
+      				<h1>Non-Negative Matrix Factorization</h1>
+      				<p>What Shall We Recommend?</p>
       			</header>
-      			<div class="image main"><img src="" alt=""></div>
+      			<div class="image main"><img src="/images/NMF_01.png" alt=""></div>
       			<p></p>
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
        <script type="text/x-mathjax-config">
@@ -327,6 +327,11 @@ def forward_fullmatrix(self):
 	return prediction
 </code></pre>
 </div>
+
+<p>After converging on a set of parameters for the given recommendation matrix, we can use the existing parameters $Q, u, i, b$ to predict data on a new partially filled user vector $u^* \in \mathbb{R}^{1 \times k}$.
+All we have to do is to use the already existing codebook $Q$ and the biases $u, i, b$ and let the factorization for $p^* \in \mathbb{R}^{1 \times k}$ converge such that</p>
+
+<script type="math/tex; mode=display">u^*_i \approx \sum_{k=0}^K p^*_k Q_{ki} + u_i + i_i + b</script>
 
       		</section>
 

@@ -3,7 +3,7 @@ layout: post
 title:  "Bayesian Optimization"
 date:   2018-04-24
 excerpt: "Using Gaussian Processes for Optimization"
-image: ""
+image: "/images/BO_EI4.png"
 ---
 <head>
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>

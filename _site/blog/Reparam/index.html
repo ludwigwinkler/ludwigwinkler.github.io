@@ -1,0 +1,455 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+  Jekyll integration by somiibo.com
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+--><html>
+	<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+<title>The Reparameterization Trick</title>
+<meta name="description" content="">
+
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/icon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/icon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/icon/favicon-16x16.png">
+<link rel="manifest" href="/assets/icon/manifest.json">
+<link rel="mask-icon" href="/assets/icon/safari-pinned-tab.svg" color="#5bbad5">
+<link rel="shortcut icon" href="/assets/icon/favicon.ico">
+<meta name="msapplication-config" content="/assets/icon/browserconfig.xml">
+<meta name="theme-color" content="#ffffff">
+
+<!-- CSS -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<noscript><link rel="stylesheet" href="/assets/css/noscript.css"></noscript>
+
+	</head>
+	<body class="is-loading">
+
+		<!-- Wrapper -->
+			<div id="wrapper" class="fade-in">
+
+				<!-- Header -->
+        <header id="header">
+          <a href="/" class="logo">Ludwig Winkler</a>
+        </header>
+
+				<!-- Nav -->
+					<nav id="nav">
+
+            <ul class="links">
+  <li class=""><a href="/">Home</a></li>
+  <li class=" active "><a href="/blog/">Blog</a></li>
+  <li class=""><a href="/readinglist/">Reading List</a></li>
+  <li class=""><a href="/about/">About</a></li>
+</ul>
+
+
+						<ul class="icons">
+              <li><a href="https://twitter.com/default" class="icon fa-twitter" rel="nofollow"><span class="label">Twitter</span></a></li>
+              <li><a href="https://facebook.com/default" class="icon fa-facebook" rel="nofollow"><span class="label">Facebook</span></a></li>
+              <li><a href="https://instagram.com/default" class="icon fa-instagram" rel="nofollow"><span class="label">Instagram</span></a></li>
+              <li><a href="https://github.com/default" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+				<div id="main">
+          <section class="post">
+    				<header class="major">
+      				<span class="date">02 Feb 2019</span>
+      				<h1>The Reparameterization Trick</h1>
+      				<p>Making Normal Distributions Differentiable</p>
+      			</header>
+      			<div class="image main"><img src="/blog/ReparamTrick/ReparamTrick.png" alt=""></div>
+      			<p></p>
+<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
+       <script type="text/x-mathjax-config">
+         MathJax.Hub.Config({
+           tex2jax: {
+             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+             displayMath: [['$$','$$']],
+             processEscapes: true
+           }
+         });
+       </script>
+       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+
+
+<!-- ## Non-Negative Matrix Factorization -->
+
+<p>Let’s assume we have normal standard distribution $\mathcal{E} \sim \mathcal{N}(0,1)$.
+We can draw lots of samples from it which will be distributed just like the parameterized distribution.</p>
+
+<p><img src="/blog/img/N01_0.png" alt="" class='align="center"' height="50%" width="50%"></p>
+
+<p>Unsuprisingly, the distribution of the samples follows the parameterized Normal distribution $\mathcal{N}(\mu=0, \sigma=1)$.
+If we were to sample millions of samples from the distribution and use a ever finer resolution of the histogram we would arrive at a perfect $\mathcal{N}(\mu=0, \sigma=1)$ distribution.</p>
+
+<p><img src="/blog/img/N01_1.png" alt="" class='align="center"' height="50%" width="50%"></p>
+
+<p>Let’s pick three samples $\epsilon_1, \epsilon_2, \epsilon_3$ from that standard normal distribution</p>
+
+<script type="math/tex; mode=display">\epsilon_1 = -0.5 \\
+  \epsilon_2=0.5 \\
+  \epsilon_3=1</script>
+
+<p>What would happen if we were to multiply these three samples with a constant number $\sigma=3$?
+Well since it is a linear transformation it should be a straight forward multiplication</p>
+
+<script type="math/tex; mode=display">\sigma \cdot \epsilon_1 = -1.5 \\
+  \sigma \cdot \epsilon_2 = 1.5 \\
+  \sigma \cdot \epsilon_3 = 3</script>
+
+<p>Let’s visualize this multiplication with a fixed number for thousands of samples $\epsilon$ from the standard normal distribution.
+In the next image I normalized the samples such that we’re working with a distribution:</p>
+
+<p><img src="/blog/img/N03_0.png" alt="" class='align="center"' height="50%" width="50%"></p>
+
+<p>As it turns out, multiplying the samples of a $\mathcal{N}(0,1)$ distribution with a constant number $\sigma$ results in a Normal distribution with the standard deviation $\sigma$!</p>
+
+<p><img src="/blog/img/N03_1.png" alt="" class='align="center"' height="50%" width="50%"></p>
+
+<p>The second step of the reparameterization step is to ask ourselves what would happen if we added a constant number $\mu =10$ to the samples drawn from $\mathcal{N}(0,1)$ which are already multiplied with $\sigma$.</p>
+
+<script type="math/tex; mode=display">\mu + \sigma \cdot \epsilon_1 = 8.5 \\
+  \mu + \sigma \cdot \epsilon_2 = 11.5 \\
+  \mu + \sigma \cdot \epsilon_3 = 13</script>
+
+<p>Let’s visualize this linear transformation on all the samples we drew from $\mathcal{N}(0,1)$ and multiplied with $\sigma=3$.</p>
+
+<p><img src="/blog/img/N103_0.png" alt="" class='align="center"' height="50%" width="50%"></p>
+
+<p>As it turns out, if we plot the Normal distribution $\mathcal{N}(10,3)$ on top of our scaled and shifted standard normal samples, we obtain the same distribution!</p>
+
+<p><img src="/blog/img/N103_1.png" alt="" class='align="center"' height="50%" width="50%"></p>
+
+<p>After some eye-candy we can tackle the above-mentioned transformation analytically.
+We transform any Standard-Normally distributed random variable $\mathcal{E} \sim \mathcal{N}(0,1)$ by scaling it first with $\sigma$ and shifting it afterwards with $\mu$ into a Normally distributed random variable $w \sim \mathcal{N}(\mu, \sigma)$ through the linear transformation</p>
+
+<script type="math/tex; mode=display">\begin{align*}
+  w = t_1 (\mathcal{E}, \mu, \sigma) = \mu + \mathcal{E} \cdot \sigma
+\end{align*}</script>
+
+<p>Before we can dive into the gradients and properties we have to introduce one more non-trivial trick: keeping the standard deviation strictly positive.
+This can be achieved by reparameterizing the standard deviation itself with the transformation</p>
+
+<script type="math/tex; mode=display">\begin{align*}
+  \sigma = t_2(\rho) = \log(1+\exp(\rho)) \quad ; \sigma \in \mathbb{R}^+, \rho \in \mathbb{R}
+\end{align*}</script>
+
+<p>The transformation is important as it allows $\sigma$ to be optimized freely without having to check after every optimization step, whether it is still positive.
+The parameter $\rho$ can be optimized freely from $-\infty$ to $+\infty$ and only the $\log-\exp$ transformation above turns it into a strictly positive number.
+For readability we will only use $\rho$ when it’s absolutely necessary since most people are fairly accustomed to the $\sigma$ notation of normal distributions.</p>
+
+<p>The important analytical property of this reparameterization is that we can take gradients with respect to its parameters.
+Let’s create a simple example of linear regression of some input $x \in \mathbb{R}$ with a weight $w \sim \mathcal{N}(\mu,\sigma)$:</p>
+
+<script type="math/tex; mode=display">\begin{align*}
+  \hat{y} = f(x) = w \cdot x = (\mu + \mathcal{E} \cdot \sigma) \ x
+\end{align*}</script>
+
+<p>Since $t_1$ is nothing else than a linear transformation we can easily take the gradients with respect to it’s parameters just as we would do with any other linear function.
+The objective function for the toy example which follows is</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align*}
+  \mathcal{L}(\hat{y}, y) &= \mathcal{L}( f(x, w), y ) \\\\
+  &= (w\cdot x - y)^2 \\\\
+  &= ((\mu + \mathcal{E} \cdot \sigma) \ x - y)^2
+\end{align*} %]]></script>
+
+<p>After the double reparameterization of $w$ with $t_1$ and $t_2$ we can compute the gradient for the deterministic parameters $\mu, \rho$ for the given cost function.
+This is possible because we ‘outsourced’ the stochasticity of the distribution $w \sim \mathcal{N}(\mu, \sigma)$ into the Standard Normal random variable $\mathcal{E}$.
+We are not interested in the stochasticity of $\mathcal{E} \sim \mathcal{N}(0,1)$ but in the parameters $\mu, \sigma$.
+All the transformations of the variational parameters above are encapsulated in the cost function below:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align*}
+  \mathcal{L}(\hat{y}, y) &= \mathcal{L} (f(x, t_1(\mathcal{E}, \mu, t_2(\rho))), y)
+\end{align*} %]]></script>
+
+<p>All we have to do is to apply the chain rule and work from outside towards the inside of the nested functions $\mathcal{L}, f, t_1$ and $t_2$.
+This is what is commonly called reverse-mode auto differentiation and is applied in neural networks in the backpropagation algorithm.
+The gradient for the variational parameter $\mu$ can be computed via:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align*}
+  \frac{\partial \mathcal{L}}{\partial \mu} &= \frac{\partial \mathcal{L}}{\partial f} \frac{\partial f}{\partial w} \frac{\partial w}{\partial t_1} \frac{\partial t_1}{\partial \mu} \\\\
+  \frac{\partial \mathcal{L}(\hat{y}, y)}{\partial \mu} &= \frac{\partial \mathcal{L}(\hat{y}, y)}{\partial f(x, w)} \cdot \frac{\partial f(x, w)}{\partial w} \cdot \frac{\partial w}{\partial t_1(\mathcal{E}, \mu, \sigma)} \cdot \frac{\partial t_1(\mathcal{E}, \mu, \sigma)}{\partial \mu} \\\\
+  &= 2(\hat{y}-y) \cdot x \cdot 1 \cdot 1
+\end{align*} %]]></script>
+
+<p>and to obtain the gradient of the cost function with respect to $\rho$ we compute:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align*}
+  \frac{\partial \mathcal{L}}{\partial \rho} &= \frac{\partial \mathcal{L}}{\partial f} \cdot \frac{\partial f}{\partial w} \cdot \frac{\partial w}{\partial g} \cdot \frac{\partial g}{\partial t_2} \cdot \frac{\partial t_2}{\partial \rho} \\\\
+  \frac{\partial \mathcal{L}(\hat{y}, y)}{\partial \rho} &= \frac{\partial \mathcal{L}(\hat{y}, y)}{\partial f(x, w)} \cdot \frac{\partial f(x, w)}{\partial w} \cdot \frac{\partial w}{\partial t_1(\mathcal{E}, \mu, \sigma)} \cdot \frac{\partial t_1(\mathcal{E}, \mu, \sigma)}{\partial t_2(\rho)} \cdot \frac{t_2(\rho)}{\partial \rho} \\\\
+  &= 2(\hat{y}-y) \cdot x \cdot 1 \cdot \mathcal{E} \cdot \frac{1}{\exp(-\rho)}
+\end{align*} %]]></script>
+
+<p>In essence, it is simply an extended chain rule where we not only have to backprop to the used weight $w$ but further through the reparameterization $t_1$ to obtain the gradient for $\mu$ and even further through the reparameterization $t_2$ to obtain the gradient for $\rho$.
+Below is a graphical representation of how the the gradient is first backpropagated to the linear product $w \cdot x$ and then subsequently to the variational parameters $\mu, \rho$.
+Since we transform $\rho$ such that it will it be in $\mathbb{R}^+$ with $t_2( \cdot )$ we also have to backpropagate through the transformation to obtain the gradient for $\rho$.</p>
+
+<p><img src="/blog/ReparamTrick/ReparamTrick.png" alt="" align="center" height="50%" width="50%"></p>
+
+<p>The final point is a little code snippet which can be analyzed without much plotting</p>
+
+<div class="highlighter-rouge">
+<pre class="highlight"><code>import numpy as np
+
+#Generate 10 data points between 0 and 5
+x = np.linspace(0,5,10)
+# Scale each data point with 3 such that we get a linear function with slope 3
+y = 3*x
+
+#Initialize the variational parameters mu and rho
+mu = -3
+rho = 1
+
+#Set a learning rate
+lr = 0.05
+
+# Do a couple of epochs
+for epoch in range(20):
+    #Iterate over the training data
+    for i, (label, data) in enumerate(zip(y, x)):
+
+                #Sample from the standard normal distribution N(0,1)
+                e = np.random.randn(1)
+                #Transform the unconstrained variational parameter \rho into \sigma
+                std = np.log(1+np.exp(rho))
+
+                #Make a prediction with the sampled weight w=mu + e*std
+                pred = (mu + e*std) * data
+
+                #Backprop gradients onto the variational parameters
+                mu = mu - lr * (pred - label) * data
+                rho = rho - 3*lr * e/(1+np.exp(-rho)) * (pred - label) * data
+
+                print('Episode {} | Data Point {}: μ: {:.2f}, σ: {:.02f}'.format(epoch, i, mu.squeeze(), std.squeeze()))
+</code></pre>
+</div>
+
+<p>Running the little script we can see that the values were initialized with $\mu=-3$ and $\sigma=1.31$.
+After a couple of iterations the parameters converge on the correct values of $\mu=3$ and $\sigma=0$.</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Episode 0</td>
+      <td>Data Point 0: μ: -3.00, σ: 1.31</td>
+    </tr>
+    <tr>
+      <td>Episode 0</td>
+      <td>Data Point 1: μ: -2.93, σ: 1.31</td>
+    </tr>
+    <tr>
+      <td>Episode 0</td>
+      <td>Data Point 2: μ: -2.77, σ: 1.42</td>
+    </tr>
+    <tr>
+      <td>Episode 0</td>
+      <td>Data Point 3: μ: -1.75, σ: 2.11</td>
+    </tr>
+    <tr>
+      <td>Episode 0</td>
+      <td>Data Point 4: μ: -0.66, σ: 0.69</td>
+    </tr>
+    <tr>
+      <td>Episode 0</td>
+      <td>Data Point 5: μ: 0.64, σ: 1.15</td>
+    </tr>
+    <tr>
+      <td>Episode 0</td>
+      <td>Data Point 6: μ: 1.62, σ: 1.67</td>
+    </tr>
+    <tr>
+      <td>Episode 0</td>
+      <td>Data Point 7: μ: 3.62, σ: 2.40</td>
+    </tr>
+    <tr>
+      <td>Episode 0</td>
+      <td>Data Point 8: μ: 3.80, σ: 0.44</td>
+    </tr>
+    <tr>
+      <td>Episode 0</td>
+      <td>Data Point 9: μ: 2.20, σ: 0.33</td>
+    </tr>
+    <tr>
+      <td>Episode 1</td>
+      <td>Data Point 0: μ: 2.20, σ: 0.05</td>
+    </tr>
+    <tr>
+      <td>Episode 1</td>
+      <td>Data Point 1: μ: 2.21, σ: 0.05</td>
+    </tr>
+    <tr>
+      <td>Episode 1</td>
+      <td>Data Point 2: μ: 2.26, σ: 0.05</td>
+    </tr>
+    <tr>
+      <td>Episode 1</td>
+      <td>Data Point 3: μ: 2.36, σ: 0.05</td>
+    </tr>
+    <tr>
+      <td>Episode 1</td>
+      <td>Data Point 4: μ: 2.52, σ: 0.05</td>
+    </tr>
+    <tr>
+      <td>Episode 1</td>
+      <td>Data Point 5: μ: 2.69, σ: 0.05</td>
+    </tr>
+    <tr>
+      <td>Episode 1</td>
+      <td>Data Point 6: μ: 2.90, σ: 0.05</td>
+    </tr>
+    <tr>
+      <td>Episode 1</td>
+      <td>Data Point 7: μ: 2.95, σ: 0.05</td>
+    </tr>
+    <tr>
+      <td>Episode 1</td>
+      <td>Data Point 8: μ: 3.02, σ: 0.05</td>
+    </tr>
+    <tr>
+      <td>Episode 1</td>
+      <td>Data Point 9: μ: 2.92, σ: 0.05</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>It should be noted that the through the $\sigma = \log(1+\exp(\rho))$ transformation the gradient with respect to $\rho$ becomes very, very small for large negative values of $\rho$.
+The transformation $t_2$ is referred to as the ‘Softplus’ activation function is shown below.
+We can see that while $\rho$ is freely optimizable the ‘Softplus’ function flattens out for negative values of $\rho$ and the resulting gradient is almost zero.
+So we’re basically at the same spot deep learning was at 10 years ago with the vanishing gradient problem in very deep neural networks.
+The Glorot-Activation and ReLU activation functions solved it and maybe somebody will develop a new fancy reparameterization for the variational parameter $\rho$. =)
+That’s why it will never really converge to absolute 0, but that’s a trade-off we’re willing to make if we’re able to scale variational inference to large data sets.</p>
+
+<p><img src="/blog/ReparamTrick/Softplus.png" alt="" align="center" height="50%" width="50%"></p>
+
+      		</section>
+
+          <div class="comments-wrapper">
+          <div id="disqus_thread"></div>
+          <script>
+              /**
+               *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+               *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+               */
+
+              var disqus_config = function () {
+                  this.page.url = '/blog/Reparam/';  /*Replace PAGE_URL with your page's canonical URL variable*/
+                  this.page.identifier = '/blog/Reparam/'; /*Replace PAGE_IDENTIFIER with your page's unique identifier variable*/
+              };
+
+              (function() {  /* dont endit below this line */
+                  var d = document, s = d.createElement('script');
+
+                  s.src = 'https://default.disqus.com/embed.js';
+
+                  s.setAttribute('data-timestamp', +new Date());
+                  (d.head || d.body).appendChild(s);
+              })();
+          </script>
+          <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+</noscript>
+        </div>
+<!-- /.comments-wrapper -->
+
+
+					<!-- Footer -->
+						<footer>
+              <ul class="actions">
+                <li><a href="/blog/" class="button">Our Blog</a></li>
+              </ul>
+						</footer>
+					</div>
+
+				<!-- Footer -->
+        <footer id="footer">
+  <section>
+    <form method="POST" action="https://formspree.io/">
+      <div class="field">
+        <label for="name">Name</label>
+        <input type="text" name="name" id="name">
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="text" name="email" id="email">
+      </div>
+      <div class="field">
+        <label for="message">Message</label>
+        <textarea name="message" id="message" rows="3"></textarea>
+      </div>
+      <ul class="actions">
+        <li><input type="submit" value="Send Message"></li>
+      </ul>
+    </form>
+  </section>
+  <section class="split contact">
+    <section class="alt">
+      <h3>Location</h3>
+      <p>Berlin, Germany</p>
+    </section>
+    <section>
+      <h3>Phone</h3>
+      <p><a href="tel:"></a></p>
+    </section>
+    <section>
+      <h3>Email</h3>
+      <p><a href="mailto:"></a></p>
+    </section>
+    <section>
+      <h3>Social</h3>
+      <ul class="icons alt">
+        <li><a href="https://twitter.com/ludiXIVwinkler" class="icon fa-twitter" rel="nofollow"><span class="label">Twitter</span></a></li>
+        <!-- <li><a href="https://facebook.com/default" class="icon fa-facebook" rel="nofollow"><span class="label">Facebook</span></a></li> -->
+        <!-- <li><a href="https://instagram.com/default" class="icon fa-instagram" rel="nofollow"><span class="label">Instagram</span></a></li> -->
+        <li><a href="https://github.com/ludwigwinkler" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
+      </ul>
+    </section>
+  </section>
+</footer>
+<!-- Copyright -->
+<div id="copyright">
+  <ul>
+       <li>© HTML5 UP</li>
+       <li>Design by <a href="https://html5up.net" rel="nofollow">HTML5 UP</a>
+</li>
+       <li>Jekyll Integration by <a href="https://soundgrail.com">SoundGrail</a>
+</li>
+       <li>Theme made by <a href="https://github.com/iwiedenm/jekyll-theme-massively-src"> iwiedenm</a>
+</li>
+ </ul>
+</div>
+
+
+			</div>
+
+      <!-- Scripts -->
+  		<!-- DYN -->
+<script src="/assets/js/jquery.min.js"></script>
+<script src="/assets/js/jquery.scrollex.min.js"></script>
+<script src="/assets/js/jquery.scrolly.min.js"></script>
+<script src="/assets/js/skel.min.js"></script>
+<script src="/assets/js/util.js"></script>
+<script src="/assets/js/main.js"></script>
+
+			<script async src="https://www.googletagmanager.com/gtag/js?id=default"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments)};
+  gtag('js', new Date());
+
+  gtag('config', 'default');
+</script>
+
+
+	</body>
+</html>
