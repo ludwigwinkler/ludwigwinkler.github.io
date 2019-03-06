@@ -43,7 +43,7 @@ Wurden sie alle ins schöne Berlin gelassen.
 Sieh nur, sieh! wie behend alle Menschen,\\
 In diesem schönen Berlin zusammenleben,\\
 Selbst von des Berghains fernen Darkrooms,\\
-Blinken uns schwarze Kleider entgegen.
+Blinken uns wenig Kleider entgegen.
 
 Wie der Schawarma mit seiner Würze,\\
 In FHain manch gierigen Mund bewegt,\\

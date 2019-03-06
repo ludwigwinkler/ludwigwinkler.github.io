@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.2.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-03-06T21:02:56+01:00</updated><id>/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Curse of Dimensionality</title><link href="/blog/CurseOfDimensionality/" rel="alternate" type="text/html" title="Curse of Dimensionality" /><published>2019-02-18T00:00:00+01:00</published><updated>2019-02-18T00:00:00+01:00</updated><id>/blog/CurseOfDimensionality</id><content type="html" xml:base="/blog/CurseOfDimensionality/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.2.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-03-06T21:06:28+01:00</updated><id>/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Curse of Dimensionality</title><link href="/blog/CurseOfDimensionality/" rel="alternate" type="text/html" title="Curse of Dimensionality" /><published>2019-02-18T00:00:00+01:00</published><updated>2019-02-18T00:00:00+01:00</updated><id>/blog/CurseOfDimensionality</id><content type="html" xml:base="/blog/CurseOfDimensionality/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -1028,7 +1028,7 @@ Wurden sie alle ins schöne Berlin gelassen.&lt;/p&gt;
 &lt;p&gt;Sieh nur, sieh! wie behend alle Menschen,&lt;br /&gt;
 In diesem schönen Berlin zusammenleben,&lt;br /&gt;
 Selbst von des Berghains fernen Darkrooms,&lt;br /&gt;
-Blinken uns schwarze Kleider entgegen.&lt;/p&gt;
+Blinken uns wenig Kleider entgegen.&lt;/p&gt;
 
 &lt;p&gt;Wie der Schawarma mit seiner Würze,&lt;br /&gt;
 In FHain manch gierigen Mund bewegt,&lt;br /&gt;
