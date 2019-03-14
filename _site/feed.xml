@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.2.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-03-14T18:49:38+01:00</updated><id>/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Hamiltonian Mechanics in Monte Carlo Samplers</title><link href="/blog/CurseOfDimensionality/" rel="alternate" type="text/html" title="Hamiltonian Mechanics in Monte Carlo Samplers" /><published>2019-03-14T00:00:00+01:00</published><updated>2019-03-14T00:00:00+01:00</updated><id>/blog/CurseOfDimensionality</id><content type="html" xml:base="/blog/CurseOfDimensionality/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.2.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-03-14T18:56:37+01:00</updated><id>/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Hamiltonian Mechanics in Monte Carlo Samplers</title><link href="/blog/CurseOfDimensionality/" rel="alternate" type="text/html" title="Hamiltonian Mechanics in Monte Carlo Samplers" /><published>2019-03-14T00:00:00+01:00</published><updated>2019-03-14T00:00:00+01:00</updated><id>/blog/CurseOfDimensionality</id><content type="html" xml:base="/blog/CurseOfDimensionality/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -429,6 +429,11 @@ Since the total energy of the particle is low, it will remain in the low energy 
 &lt;p&gt;The total energy initialization of the particle at the start of each trajectory can be drawn from a distribution.
 The distribution can easily be incorporated into the detailed balance equation and marginalized out such that the sampler is unbiased.&lt;/p&gt;
 
+&lt;p&gt;Here are two links to fully implemented Hamiltonian Monte Carlo Samplers with crazy awesome animations:
+&lt;a href=&quot;http://elevanth.org/blog/2017/11/28/build-a-better-markov-chain/&quot;&gt;here&lt;/a&gt;
+and
+&lt;a href=&quot;http://arogozhnikov.github.io/2016/12/19/markov_chain_monte_carlo.html&quot;&gt;here&lt;/a&gt;&lt;/p&gt;
+
 &lt;p&gt;A closing remark about the geometry of high-dimensional spaces:&lt;/p&gt;
 
 &lt;p&gt;While sampling methods are asymptotically correct in their estimation of the posterior distribution, they do not scale well due to the curse of dimensionality.
@@ -466,14 +471,7 @@ In $\mathbb{R}^1$ we only require 10 samples to estimate the pdf wit equally spa
 &lt;p&gt;The required number of samples grows exponentially with the number of dimension, i.e. $10^N$ in $\mathbb{R}^N$ for our specific setup of 10 samples per dimension.
 By just adding two dimensions we need $100 \times$ more samples than in one dimension.
 That might not sound like a lot, but it quickly accumulates when working in high-dimensional spaces.
-This effectively restricts sampling algorithms to applications where we require very precise posteriors as in finance or medicine or where the run-time isn’t a problem.&lt;/p&gt;
-
-&lt;p&gt;While the distance in high-dimensional spaces grows exponentially to the power of 0.5, the square root, the number of required samples grows exponentially.&lt;/p&gt;
-
-&lt;p&gt;A common application of computers is solving complicated equations.
-For instance, we could use a computer to solve an integral.
-Symbolic math programs and libraries can solve integrals analytically just as we all learned in high school.
-Yet there comes a point where such integrals even overwhelm such symbolic methods.&lt;/p&gt;</content><summary type="html">Sampling with the help of physics</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/blog/HMC/HMC_2D01.png" /></entry><entry><title type="html">Bayesian Non-Negative Matrix Factorization</title><link href="/blog/BayesNMF/" rel="alternate" type="text/html" title="Bayesian Non-Negative Matrix Factorization" /><published>2019-02-18T00:00:00+01:00</published><updated>2019-02-18T00:00:00+01:00</updated><id>/blog/BayesNMF</id><content type="html" xml:base="/blog/BayesNMF/">&lt;head&gt;
+This effectively restricts sampling algorithms to applications where we require very precise posteriors as in finance or medicine or where the run-time isn’t a problem.&lt;/p&gt;</content><summary type="html">Sampling with the help of physics</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/blog/HMC/HMC_2D01.png" /></entry><entry><title type="html">Bayesian Non-Negative Matrix Factorization</title><link href="/blog/BayesNMF/" rel="alternate" type="text/html" title="Bayesian Non-Negative Matrix Factorization" /><published>2019-02-18T00:00:00+01:00</published><updated>2019-02-18T00:00:00+01:00</updated><id>/blog/BayesNMF</id><content type="html" xml:base="/blog/BayesNMF/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({

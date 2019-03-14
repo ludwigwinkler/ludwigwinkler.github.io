@@ -449,6 +449,11 @@ Since the total energy of the particle is low, it will remain in the low energy 
 The total energy initialization of the particle at the start of each trajectory can be drawn from a distribution.
 The distribution can easily be incorporated into the detailed balance equation and marginalized out such that the sampler is unbiased.
 
+Here are two links to fully implemented Hamiltonian Monte Carlo Samplers with crazy awesome animations:
+[here](http://elevanth.org/blog/2017/11/28/build-a-better-markov-chain/)
+and
+[here](http://arogozhnikov.github.io/2016/12/19/markov_chain_monte_carlo.html)
+
 A closing remark about the geometry of high-dimensional spaces:
 
 While sampling methods are asymptotically correct in their estimation of the posterior distribution, they do not scale well due to the curse of dimensionality.
@@ -488,10 +493,3 @@ The required number of samples grows exponentially with the number of dimension,
 By just adding two dimensions we need $100 \times$ more samples than in one dimension.
 That might not sound like a lot, but it quickly accumulates when working in high-dimensional spaces.
 This effectively restricts sampling algorithms to applications where we require very precise posteriors as in finance or medicine or where the run-time isn't a problem.
-
-While the distance in high-dimensional spaces grows exponentially to the power of 0.5, the square root, the number of required samples grows exponentially.
-
-A common application of computers is solving complicated equations.
-For instance, we could use a computer to solve an integral.
-Symbolic math programs and libraries can solve integrals analytically just as we all learned in high school.
-Yet there comes a point where such integrals even overwhelm such symbolic methods.
