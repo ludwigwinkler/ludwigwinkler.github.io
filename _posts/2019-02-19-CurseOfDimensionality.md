@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Hamiltonian Mechanics in Monte Carlo Samplers"
-date:   2019-02-18
+date:   2019-03-14
 excerpt: "Sampling with the help of physics"
 image: ""
 ---
