@@ -3,7 +3,7 @@ layout: post
 title:  "Hamiltonian Mechanics in Monte Carlo Samplers"
 date:   2019-03-14
 excerpt: "Sampling with the help of physics"
-image: ""
+image: "/blog/HMC/HMC_2D01.png"
 ---
 <head>
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
@@ -448,3 +448,50 @@ Since the total energy of the particle is low, it will remain in the low energy 
 
 The total energy initialization of the particle at the start of each trajectory can be drawn from a distribution.
 The distribution can easily be incorporated into the detailed balance equation and marginalized out such that the sampler is unbiased.
+
+A closing remark about the geometry of high-dimensional spaces:
+
+While sampling methods are asymptotically correct in their estimation of the posterior distribution, they do not scale well due to the curse of dimensionality.
+In a nutshell it refers to the geometric properties of high dimensional spaces.
+For example the distance between two points increases as we move into higher and higher dimensional spaces.
+A quick example is the Euclidean distance between two points which have a distance of 1 in every of their shared dimensions $\mathbb{R}^N$.
+Depending on the dimensionality $N$ we get a distance $\sqrt{\sum_{n=0}^N 1^2}$:
+
+$$
+\begin{align*}
+	\mathbb{R}^1 &: \quad \sqrt{1^2}=1 \\
+	\mathbb{R}^2 &: \quad \sqrt{1^2+1^2}=1.41 \ldots \\
+	\mathbb{R}^3 &: \quad \sqrt{1^2+1^2 +1^2}=1.73 \ldots \\
+	\vdots	&
+\end{align*}
+$$
+
+![](/blog/HMC/HMC_Distance.png){: .align="center" height="50%" width="50%"}
+
+The more dimensions we add, the larger the space between two points with equal distance in every dimension.
+Secondly this creates the problem of requiring an increasing number of samples for higher and higher dimensional spaces.
+Let's say we want to estimate a function by sampling in the Euclidean space spanned between two points with unit distance, ergo distance of 1.
+We want to estimate the function and want a resolution of 0.1, i.e. we need 10 samples per dimension.
+In $\mathbb{R}^1$ we only require 10 samples to estimate the pdf wit equally spaced sampling points.
+
+![](/blog/HMC/HMC_04.png){: .align="center" height="50%" width="50%"}
+
+But in $\mathbb{R}^2$ we suddenly require 100 samples to estimate the function with the desired resolution.
+
+![](/blog/HMC/HMC_05.png){: .align="center" height="50%" width="50%"}
+
+In $\mathbb{R}^3$ we finally need 1000 samples to estimate the function to our liking.
+
+![](/blog/HMC/HMC_06.png){: .align="center" height="50%" width="50%"}
+
+The required number of samples grows exponentially with the number of dimension, i.e. $10^N$ in $\mathbb{R}^N$ for our specific setup of 10 samples per dimension.
+By just adding two dimensions we need $100 \times$ more samples than in one dimension.
+That might not sound like a lot, but it quickly accumulates when working in high-dimensional spaces.
+This effectively restricts sampling algorithms to applications where we require very precise posteriors as in finance or medicine or where the run-time isn't a problem.
+
+While the distance in high-dimensional spaces grows exponentially to the power of 0.5, the square root, the number of required samples grows exponentially.
+
+A common application of computers is solving complicated equations.
+For instance, we could use a computer to solve an integral.
+Symbolic math programs and libraries can solve integrals analytically just as we all learned in high school.
+Yet there comes a point where such integrals even overwhelm such symbolic methods.
