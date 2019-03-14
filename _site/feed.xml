@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.2.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-03-14T18:36:17+01:00</updated><id>/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Hamiltonian Mechanics in Monte Carlo Samplers</title><link href="/blog/CurseOfDimensionality/" rel="alternate" type="text/html" title="Hamiltonian Mechanics in Monte Carlo Samplers" /><published>2019-03-14T00:00:00+01:00</published><updated>2019-03-14T00:00:00+01:00</updated><id>/blog/CurseOfDimensionality</id><content type="html" xml:base="/blog/CurseOfDimensionality/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.2.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-03-14T18:42:34+01:00</updated><id>/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Hamiltonian Mechanics in Monte Carlo Samplers</title><link href="/blog/CurseOfDimensionality/" rel="alternate" type="text/html" title="Hamiltonian Mechanics in Monte Carlo Samplers" /><published>2019-03-14T00:00:00+01:00</published><updated>2019-03-14T00:00:00+01:00</updated><id>/blog/CurseOfDimensionality</id><content type="html" xml:base="/blog/CurseOfDimensionality/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -21,33 +21,42 @@ Something that is practically very similar is that the analytical form of $f(x)$
 This means that we can’t evaluate the global shape of $f(x)$ but only the single points for some specific value of $x$.&lt;/p&gt;
 
 &lt;p&gt;The lack of knowledge of the global shape can be encountered in different scenarios which all boil down to computing a complicated integral.
-In order to offer some intuition let’s have a look at the univariate normal distribution $p(x|\mu, \sigma)$:
-\begin{align}
+In order to offer some intuition let’s have a look at the univariate normal distribution $p(x|\mu, \sigma)$:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align*}
 	p(x|\mu, \sigma) = \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x-\mu)^2}{2\sigma^2}}.
-\end{align}&lt;/p&gt;
+\end{align*}&lt;/script&gt;
 
 &lt;p&gt;The univariate normal distribution is a true and tested distribution in machine learning with many convenient mathematical properties.
-One property is the normalization of the exponential term $\smash{e^{-\frac{(x-\mu)^2}{2\sigma^2}}}$ with the scaling term $1/\sqrt{2\pi\sigma^2}$ such that
-\begin{align}
-	\int_{-\infty}^{\infty} p(x|\mu, \sigma) dx = 1.
-\end{align}
-Conversely we know that
-\begin{align}
-	\int_{-\infty}^{\infty} p(x|\mu, \sigma) dx
-	&amp;amp;= \int_{-\infty}^{\infty}  \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x-\mu)^2}{2\sigma^2}} dx &lt;br /&gt;
-	&amp;amp;= \frac{1}{\sqrt{2\pi\sigma^2}} \underbrace{\int_{-\infty}^{\infty} e^{-\frac{(x-\mu)^2}{2\sigma^2}} dx}_{=\sqrt{2\pi\sigma^2}} &lt;br /&gt;
-	&amp;amp;= 1
-\end{align}
-Obviously we now the exact form of the scaling parameter through the standard deviation $\sigma$ … but what if we didn’t?&lt;/p&gt;
+One property is the normalization of the exponential term $\smash{e^{-\frac{(x-\mu)^2}{2\sigma^2}}}$ with the scaling term $1/\sqrt{2\pi\sigma^2}$ such that&lt;/p&gt;
 
-&lt;p&gt;In that case we would encounter the distribution as
-\begin{align}
-	p(x|\mu, \sigma) &amp;amp;= \frac{1}{Z} f(x|\mu, \sigma)&lt;br /&gt;
-	&amp;amp;= \frac{1}{Z} e^{-\frac{(x-\mu)^2}{2\sigma^2}}&lt;br /&gt;
-	\text{with} \ Z  = \int_{-\infty}^{\infty} f(x| \mu, \sigma) dx &amp;amp;= \int_{-\infty}^{\infty} e^{-\frac{(x-\mu)^2}{2\sigma^2}} dx = \sqrt{2\pi\sigma^2}
-\end{align}
-In the case above we could evaluate the distribution $p(x|\mu, \sigma)$ correctly up to the scaling parameter $1/Z$ by evaluating $f(x|\mu, \sigma)$.
-The value of $Z$ is given by the shape of the distribution $p(x|\mu, \sigma)$ which we can’t determine globally but only point-wise for some value $x$.&lt;/p&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align*}
+	\int_{- \infty }^{\infty} p(x | \mu, \sigma) dx = 1.
+\end{align*}&lt;/script&gt;
+
+&lt;p&gt;Conversely we know that&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align*}
+	\int_{-\infty}^{\infty} p(x|\mu, \sigma) dx
+	&amp;= \int_{-\infty}^{\infty}  \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x-\mu)^2}{2\sigma^2}} dx \\
+	&amp;= \frac{1}{\sqrt{2\pi\sigma^2}} \underbrace{\int_{-\infty}^{\infty} e^{-\frac{(x-\mu)^2}{2\sigma^2}} dx}_{=\sqrt{2\pi\sigma^2}} \\
+	&amp;= 1
+\end{align*} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;Obviously we now the exact form of the scaling parameter through the standard deviation $\sigma$ … but what if we didn’t?&lt;/p&gt;
+
+&lt;p&gt;In that case we would encounter the distribution as&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align*}
+	p(x|\mu, \sigma) &amp;= \frac{1}{Z} f(x|\mu, \sigma)\\
+	&amp;= \frac{1}{Z} e^{-\frac{(x-\mu)^2}{2\sigma^2}}\\
+	\text{with} \ Z  = \int_{-\infty}^{\infty} f(x| \mu, \sigma) dx &amp;= \int_{-\infty}^{\infty} e^{-\frac{(x-\mu)^2}{2\sigma^2}} dx = \sqrt{2\pi\sigma^2}
+\end{align*} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;In the case above we could evaluate the distribution $p(x | \mu, \sigma)$ correctly up to the scaling parameter $1/Z$ by evaluating $f(x | \mu, \sigma)$.
+The value of $Z$ is given by the shape of the distribution $p(x | \mu, \sigma)$ which we can’t determine globally but only point-wise for some value $x$.&lt;/p&gt;
 
 &lt;p&gt;The example above is supposed to illustrate the more general problem of estimating probability distributions with intractable partition functions $Z$ while still being intuitive by working with a well known distribution such as the univariate normal distribution.&lt;/p&gt;
 
@@ -59,10 +68,10 @@ This is practically impossible due to computational and time constraints.&lt;/p&
 
 &lt;p&gt;Once we have a set which we think contains enough samples, we could approximate the integral by simply summing over our set&lt;/p&gt;
 
-&lt;p&gt;\begin{align}
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align*}
 	Z = \int_{-\infty}^{\infty} f(x|\mu, \sigma) dx
 	=\int_{-\infty}^{\infty} e^{-\frac{(x-\mu)^2}{2\sigma^2}} dx \approx \sum_{i=0}^N \frac{1}{\Delta x} e^{-\frac{(x_i-\mu)^2}{2\sigma^2}}
-\end{align}&lt;/p&gt;
+\end{align*}&lt;/script&gt;
 
 &lt;p&gt;The $\Delta x$ is required since we approximating the function $f( x | \mu, \sigma)$ with little columns where the exponential term tells us the height and $\Delta x$ the width of the column (look at the animations at Wikipedias entry for Riemann integral).&lt;/p&gt;
 
@@ -190,10 +199,10 @@ This can realized easily with a Normal distribution with constant standard devia
 Mathematically, it is required that the Markov chain is reversible which simply states that there should be equal probability when being in state $x$ and moving to $x’$ and reverse:&lt;/p&gt;
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align}
+\begin{align*}
 	p(x',x) &amp;= p(x, x') \\
 	p(x' | x) \ p(x) &amp;= p(x | x) \ p(x').
-\end{align} %]]&gt;&lt;/script&gt;
+\end{align*} %]]&gt;&lt;/script&gt;
 
 &lt;p&gt;We can now decompose the transition probability $p(x’|x)$ into the proposal distribution $q(x’|x)$ and the acceptance probability $\alpha(x’|x)$.
 \begin{align&lt;em&gt;}

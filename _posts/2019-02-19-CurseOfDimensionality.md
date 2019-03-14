@@ -29,32 +29,47 @@ This means that we can't evaluate the global shape of $f(x)$ but only the single
 
 The lack of knowledge of the global shape can be encountered in different scenarios which all boil down to computing a complicated integral.
 In order to offer some intuition let's have a look at the univariate normal distribution $p(x|\mu, \sigma)$:
-\begin{align}
+
+$$
+\begin{align*}
 	p(x|\mu, \sigma) = \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x-\mu)^2}{2\sigma^2}}.
-\end{align}
+\end{align*}
+$$
 
 The univariate normal distribution is a true and tested distribution in machine learning with many convenient mathematical properties.
 One property is the normalization of the exponential term $\smash{e^{-\frac{(x-\mu)^2}{2\sigma^2}}}$ with the scaling term $1/\sqrt{2\pi\sigma^2}$ such that
-\begin{align}
-	\int_{-\infty}^{\infty} p(x|\mu, \sigma) dx = 1.
-\end{align}
+
+$$
+\begin{align*}
+	\int_{- \infty }^{\infty} p(x | \mu, \sigma) dx = 1.
+\end{align*}
+$$
+
 Conversely we know that
-\begin{align}
+
+$$
+\begin{align*}
 	\int_{-\infty}^{\infty} p(x|\mu, \sigma) dx
 	&= \int_{-\infty}^{\infty}  \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x-\mu)^2}{2\sigma^2}} dx \\
 	&= \frac{1}{\sqrt{2\pi\sigma^2}} \underbrace{\int_{-\infty}^{\infty} e^{-\frac{(x-\mu)^2}{2\sigma^2}} dx}_{=\sqrt{2\pi\sigma^2}} \\
 	&= 1
-\end{align}
+\end{align*}
+$$
+
 Obviously we now the exact form of the scaling parameter through the standard deviation $\sigma$ ... but what if we didn't?
 
 In that case we would encounter the distribution as
-\begin{align}
+
+$$
+\begin{align*}
 	p(x|\mu, \sigma) &= \frac{1}{Z} f(x|\mu, \sigma)\\
 	&= \frac{1}{Z} e^{-\frac{(x-\mu)^2}{2\sigma^2}}\\
 	\text{with} \ Z  = \int_{-\infty}^{\infty} f(x| \mu, \sigma) dx &= \int_{-\infty}^{\infty} e^{-\frac{(x-\mu)^2}{2\sigma^2}} dx = \sqrt{2\pi\sigma^2}
-\end{align}
-In the case above we could evaluate the distribution $p(x|\mu, \sigma)$ correctly up to the scaling parameter $1/Z$ by evaluating $f(x|\mu, \sigma)$.
-The value of $Z$ is given by the shape of the distribution $p(x|\mu, \sigma)$ which we can't determine globally but only point-wise for some value $x$.
+\end{align*}
+$$
+
+In the case above we could evaluate the distribution $p(x \| \mu, \sigma)$ correctly up to the scaling parameter $1/Z$ by evaluating $f(x \| \mu, \sigma)$.
+The value of $Z$ is given by the shape of the distribution $p(x \| \mu, \sigma)$ which we can't determine globally but only point-wise for some value $x$.
 
 The example above is supposed to illustrate the more general problem of estimating probability distributions with intractable partition functions $Z$ while still being intuitive by working with a well known distribution such as the univariate normal distribution.
 
@@ -66,10 +81,12 @@ This is practically impossible due to computational and time constraints.
 
 Once we have a set which we think contains enough samples, we could approximate the integral by simply summing over our set
 
-\begin{align}
+$$
+\begin{align*}
 	Z = \int_{-\infty}^{\infty} f(x|\mu, \sigma) dx
 	=\int_{-\infty}^{\infty} e^{-\frac{(x-\mu)^2}{2\sigma^2}} dx \approx \sum_{i=0}^N \frac{1}{\Delta x} e^{-\frac{(x_i-\mu)^2}{2\sigma^2}}
-\end{align}
+\end{align*}
+$$
 
 The $\Delta x$ is required since we approximating the function $f( x \| \\mu, \\sigma)$ with little columns where the exponential term tells us the height and $\Delta x$ the width of the column (look at the animations at Wikipedias entry for Riemann integral).
 
@@ -195,10 +212,10 @@ This can realized easily with a Normal distribution with constant standard devia
 Mathematically, it is required that the Markov chain is reversible which simply states that there should be equal probability when being in state $x$ and moving to $x'$ and reverse:
 
 $$
-\begin{align}
+\begin{align*}
 	p(x',x) &= p(x, x') \\
 	p(x' | x) \ p(x) &= p(x | x) \ p(x').
-\end{align}
+\end{align*}
 $$
 
 We can now decompose the transition probability $p(x'|x)$ into the proposal distribution $q(x'|x)$ and the acceptance probability $\alpha(x'|x)$.
