@@ -434,6 +434,89 @@ We can see nicely how the particle runs up the slope at the edge of the low ener
 After all its momentum has been converted into potential energy, it makes a u-turn and heads back down the slope.
 (That's actually something we want to prevent which lead to the development of the No-U-Turn-Sampler (NUTS)).
 
+Here's some code with PyTorch:
+
+		import numpy as np
+		import matplotlib
+		import matplotlib.pyplot as plt
+		import torch
+
+		FloatTensor = torch.FloatTensor
+
+		pi = FloatTensor([np.pi])
+
+
+		class Potential:
+
+			#GMM with three different clusters
+			def __init__(self):
+				self.mean1 = FloatTensor([-2, -2])
+				self.covar1 = FloatTensor([[2, -0.5],[-0.5, 1]])
+				self.mean2 = FloatTensor([1.4, 1.6])
+				self.covar2 = FloatTensor([[2, 0],[0, 1]])
+				self.mean3 = FloatTensor([2, -2])
+				self.covar3 = FloatTensor([[2, 0],[0, 2]])
+
+			def log_eval(self, x):
+
+				dist1 = torch.distributions.MultivariateNormal(self.mean1, self.covar1)
+				dist2 = torch.distributions.MultivariateNormal(self.mean2, self.covar2)
+				dist3 = torch.distributions.MultivariateNormal(self.mean3, self.covar3)
+
+				return torch.log(1/3*torch.exp(dist1.log_prob(x))
+						 + 1/3*torch.exp(dist2.log_prob(x))
+						 +1/3*torch.exp(dist3.log_prob(x)))
+
+		#Initialize potential
+		potential = Potential()
+
+		#Data for plotting the surface  
+		res = 50
+		x = np.linspace(-5,5,res)
+		y = np.linspace(-5,5,res)
+		X,Y = np.meshgrid(x, y)
+		points = FloatTensor(np.stack((X.ravel(),Y.ravel())).T).requires_grad_()
+		probs = FloatTensor([potential.log_eval(point).exp() for point in points]).view(res,res)
+
+		#Data for plotting the gradients
+		res_coarse = 25
+		x_coarse = np.linspace(-5, 5, res_coarse)
+		y_coarse = np.linspace(-5, 5, res_coarse)
+		X_coarse,Y_coarse = np.meshgrid(x_coarse, y_coarse)
+		points_coarse = FloatTensor(np.stack((X_coarse.ravel(),Y_coarse.ravel())).T).requires_grad_()
+		grads = [torch.autograd.grad(outputs=potential.log_eval(point), inputs=point)[0] for point in points_coarse]
+		grads = torch.stack(grads, dim=0).numpy()
+
+		#Plotting both surface and gradients
+		plt.figure(figsize=(10,10))
+		plt.contourf(X, Y, probs.numpy(), levels=10)
+		plt.quiver(X_coarse, Y_coarse, grads[:,0], grads[:,1], color='black', alpha=0.5)
+
+		#The two lists store the trajectory data
+		traj = []
+		nuts_criterion = []
+
+		#Initialize the starting position and momentum for the particle
+		x = FloatTensor([-2,-2.5]).requires_grad_() # Position
+		p = FloatTensor([1,0]) # Momentum
+
+		for i in range(600):
+
+			p = p + 0.05 * torch.autograd.grad(outputs=potential.log_eval(x), inputs=x)[0]
+			x = x + 0.05 * p
+
+			traj.append(x.detach())
+			nuts_criterion.append((x - x_init).dot(p).detach())
+
+		traj = torch.stack(traj, dim=0).numpy()
+		nuts_criterion = torch.stack(nuts_criterion).numpy()
+		nuts_criterion = (nuts_criterion-nuts_criterion.min())/(nuts_criterion.max() - nuts_criterion.min())
+
+		for i in range(traj.shape[0]-1):
+			plt.plot([traj[i,0], traj[i+1,0]], [traj[i,1],traj[i+1,1]], c=(1-nuts_criterion[i], 0, nuts_criterion[i]))
+
+		plt.show()
+
 ![](/blog/HMC/HMC_2D01.png){: .align="center" height="50%" width="50%"}
 
 The total energy of the particle is conserved between the potential and the momentum.
