@@ -173,12 +173,12 @@ I'll get into the geometric details of high dimensional spaces later.
 
 ![](/blog/HMC/HMC_01.png){: .align="center" height="50%" width="50%"}
 
-Can we do any better? ... In fact we can with the help of two physicists from the Manhattan Project and a chain.
+Can we do any better? ... In fact we can with the help of physicists from the Manhattan Project and a chain.
 
 In the example above we want to sample as often as possible in the areas which greatly contribute to the integral $Z = \int_{-\infty}^{\infty} f(x|\mu, \sigma) dx$.
 So we could say that once we happen to sample close to $\mu$ we would like to sample as often as possible in the same area, effectively staying in the area around $\mu$.
 
-The achievement of Mr Metropolis and Mr Hastings (is the Netflix-Founder related to him?) was to elaborate precisely that idea and introduce the concept of a sampling chain to our problem.
+The achievement of Mr Metropolis et al. and the extensions by Mr Hastings (is the Netflix-Founder related to him?) was to elaborate precisely that idea and introduce the concept of a sampling chain to our problem.
 
 The sampling chain is a sequence of samples $\{x_0, x_1, \ldots, x_N\}$ which is constructed iteratively by sampling a proposal point $x_t'$ and accepting it as the next sample $x_{t+1}$ based on an acceptance condition.
 The proposal sample $x'_t$ can be obviously be rejected and in that case a new proposal sample $x'_t$ has to be proposed.
@@ -346,6 +346,10 @@ We can visualize the two samplers next to each other to visualize the increased 
 ![](/blog/HMC/Uniform_SamplingDist.png){: .align="center" height="50%" width="50%"}
 ![](/blog/HMC/MH_SamplingDist.png){: .align="center" height="50%" width="50%"}
 
+We can even visualize a Metropolis-Hastings sampler in two dimensions with the accepted and rejected samples:
+
+![](/blog/HMC/MH_2D.png){: .align="center" height="50%" width="50%"}
+
 We can even improve our sampler even further by treating the surface of the distribution as a physical model.
 In order to illustrate we should first take the $-\log$ of the unnormalized function $f(x|\mu, \sigma)$:
 
@@ -354,7 +358,7 @@ In order to illustrate we should first take the $-\log$ of the unnormalized func
 By working with $-\log f(x \| \mu, \sigma)$ we get rid of the pesky exponential term, effectively working with a linear function in case of the Normal distribution.
 Additionally, we have transformed the function $f(x|\mu, \sigma)$ into a nice representation where the bottom of the curve $-\log f(x|\mu, \sigma)$ represents the areas in $f(x|\mu, \sigma)/Z$ with the highest probabilities.
 
-Remember that the Metropolis-Hastings sampler was developed by two physicists at the Manhattan Project to tackle the problem in statistical mechanics of estimating the partition function $Z$.
+Remember that the Metropolis-Hastings sampler was developed by the physicists at the Manhattan Project to tackle the problem in statistical mechanics of estimating the partition function $Z$.
 In statistical mechanics, the function $f(x)$ is the energy function $E(x)$ of a system in state $x$ and the probability of the system being in state $x$ is defined by
 
 $$
