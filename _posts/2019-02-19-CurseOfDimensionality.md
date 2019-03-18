@@ -350,6 +350,9 @@ We can even visualize a Metropolis-Hastings sampler in two dimensions with the a
 
 ![](/blog/HMC/MH_2D.png){: .align="center" height="50%" width="50%"}
 
+It's observable how moves closer to the center of the probability distribution are always accepted whereas moves away are sometimes accepted.
+In the cases where the proposed sample is in significantly lower value areas, the move will be rejected. 
+
 We can even improve our sampler even further by treating the surface of the distribution as a physical model.
 In order to illustrate we should first take the $-\log$ of the unnormalized function $f(x|\mu, \sigma)$:
 
