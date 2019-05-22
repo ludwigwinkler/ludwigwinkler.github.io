@@ -1,4 +1,36 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.2.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-03-14T18:56:37+01:00</updated><id>/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Hamiltonian Mechanics in Monte Carlo Samplers</title><link href="/blog/CurseOfDimensionality/" rel="alternate" type="text/html" title="Hamiltonian Mechanics in Monte Carlo Samplers" /><published>2019-03-14T00:00:00+01:00</published><updated>2019-03-14T00:00:00+01:00</updated><id>/blog/CurseOfDimensionality</id><content type="html" xml:base="/blog/CurseOfDimensionality/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.2.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-05-22T21:17:14+02:00</updated><id>/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">GPyTorch</title><link href="/blog/GPyTorch/" rel="alternate" type="text/html" title="GPyTorch" /><published>2019-05-15T00:00:00+02:00</published><updated>2019-05-15T00:00:00+02:00</updated><id>/blog/GPyTorch</id><content type="html" xml:base="/blog/GPyTorch/">&lt;head&gt;
+&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
+       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
+         MathJax.Hub.Config({
+           tex2jax: {
+             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
+             displayMath: [['$$','$$']],
+             processEscapes: true
+           }
+         });
+       &lt;/script&gt;
+       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+
+&lt;!-- ## Non-Negative Matrix Factorization --&gt;
+
+&lt;p&gt;This is a talk I gave at the Berlin Machine Learning Seminar hosted by Ben in the offices of &lt;a href=&quot;https://lateral.io&quot;&gt;Lateral&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Gaussian Processes are a class of popular and powerful probabilistic models which can be derived straight from a Normal distribution.
+While vanilla GP’s are very flexible due to their nonparametric formulation, inference and training both rely on the evaluation of the entire data set through several kernel matrices, their products, log determinants and inverses.&lt;/p&gt;
+
+&lt;p&gt;These kernel matrices over the entire training data set and their numerous use in matrix matrix pdocuts, log determinants and inverses result in poor scalability to large data sets.
+The advent of GPU’s in machine learning has offered the possibility of computing matrix vector and matrix matrix products efficiently and in parallel.&lt;/p&gt;
+
+&lt;p&gt;GPyTorch introduces several randomized and parallelized algorithms as replacements for exact computations which reduce the complexity of inference and training in GP’s.
+These include stochastic approximations of the trace, parallel conjugate gradient descent and several efficient applications of eigendecompositions.&lt;/p&gt;
+
+&lt;p&gt;More importantly, all of these adaptations allow full utilization of parallel hardware during inference and training.
+Considerable focus will be on conjugated gradient descent which allows the efficient optimization of quadratic optimization problems through the use of line search and conjugate search directions.&lt;/p&gt;
+
+&lt;p&gt;The core idea of the original paper is to exploit a parallel version of conjugate gradient descent to the fullest such that all relevant terms for the cost function and the gradients of the kernels can be obtained from a single modified batch conjugate descent run.&lt;/p&gt;
+
+&lt;p&gt;The talk can be downloaded &lt;a href=&quot;/blog/GPyTorch/GPytorch.pdf&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;</content><summary type="html">GPU Acceleration for Gaussian Processes</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/blog/GPyTorch/GPyTorch_cover.png" /></entry><entry><title type="html">Hamiltonian Mechanics in Monte Carlo Samplers</title><link href="/blog/CurseOfDimensionality/" rel="alternate" type="text/html" title="Hamiltonian Mechanics in Monte Carlo Samplers" /><published>2019-03-14T00:00:00+01:00</published><updated>2019-03-14T00:00:00+01:00</updated><id>/blog/CurseOfDimensionality</id><content type="html" xml:base="/blog/CurseOfDimensionality/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -160,12 +192,12 @@ I’ll get into the geometric details of high dimensional spaces later.&lt;/p&gt
 
 &lt;p&gt;&lt;img src=&quot;/blog/HMC/HMC_01.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;Can we do any better? … In fact we can with the help of two physicists from the Manhattan Project and a chain.&lt;/p&gt;
+&lt;p&gt;Can we do any better? … In fact we can with the help of physicists from the Manhattan Project and a chain.&lt;/p&gt;
 
 &lt;p&gt;In the example above we want to sample as often as possible in the areas which greatly contribute to the integral $Z = \int_{-\infty}^{\infty} f(x|\mu, \sigma) dx$.
 So we could say that once we happen to sample close to $\mu$ we would like to sample as often as possible in the same area, effectively staying in the area around $\mu$.&lt;/p&gt;
 
-&lt;p&gt;The achievement of Mr Metropolis and Mr Hastings (is the Netflix-Founder related to him?) was to elaborate precisely that idea and introduce the concept of a sampling chain to our problem.&lt;/p&gt;
+&lt;p&gt;The achievement of Mr Metropolis et al. and the extensions by Mr Hastings (is the Netflix-Founder related to him?) was to elaborate precisely that idea and introduce the concept of a sampling chain to our problem.&lt;/p&gt;
 
 &lt;p&gt;The sampling chain is a sequence of samples ${x_0, x_1, \ldots, x_N}$ which is constructed iteratively by sampling a proposal point $x_t’$ and accepting it as the next sample $x_{t+1}$ based on an acceptance condition.
 The proposal sample $x’_t$ can be obviously be rejected and in that case a new proposal sample $x’_t$ has to be proposed.
@@ -333,6 +365,13 @@ We can visualize the two samplers next to each other to visualize the increased 
 &lt;p&gt;&lt;img src=&quot;/blog/HMC/Uniform_SamplingDist.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;
 &lt;img src=&quot;/blog/HMC/MH_SamplingDist.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
 
+&lt;p&gt;We can even visualize a Metropolis-Hastings sampler in two dimensions with the accepted and rejected samples:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/HMC/MH_2D.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;It’s observable how moves closer to the center of the probability distribution are always accepted whereas moves away are sometimes accepted.
+In the cases where the proposed sample is in significantly lower value areas, the move will be rejected.&lt;/p&gt;
+
 &lt;p&gt;We can even improve our sampler even further by treating the surface of the distribution as a physical model.
 In order to illustrate we should first take the $-\log$ of the unnormalized function $f(x|\mu, \sigma)$:&lt;/p&gt;
 
@@ -341,7 +380,7 @@ In order to illustrate we should first take the $-\log$ of the unnormalized func
 &lt;p&gt;By working with $-\log f(x | \mu, \sigma)$ we get rid of the pesky exponential term, effectively working with a linear function in case of the Normal distribution.
 Additionally, we have transformed the function $f(x|\mu, \sigma)$ into a nice representation where the bottom of the curve $-\log f(x|\mu, \sigma)$ represents the areas in $f(x|\mu, \sigma)/Z$ with the highest probabilities.&lt;/p&gt;
 
-&lt;p&gt;Remember that the Metropolis-Hastings sampler was developed by two physicists at the Manhattan Project to tackle the problem in statistical mechanics of estimating the partition function $Z$.
+&lt;p&gt;Remember that the Metropolis-Hastings sampler was developed by the physicists at the Manhattan Project to tackle the problem in statistical mechanics of estimating the partition function $Z$.
 In statistical mechanics, the function $f(x)$ is the energy function $E(x)$ of a system in state $x$ and the probability of the system being in state $x$ is defined by&lt;/p&gt;
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align*}
@@ -413,6 +452,91 @@ I plotted the $- \log f(x(t)|\mu, \sigma)$ surface with the resulting gradients 
 We can see nicely how the particle runs up the slope at the edge of the low energy basins.
 After all its momentum has been converted into potential energy, it makes a u-turn and heads back down the slope.
 (That’s actually something we want to prevent which lead to the development of the No-U-Turn-Sampler (NUTS)).&lt;/p&gt;
+
+&lt;p&gt;Here’s some code with PyTorch:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	import numpy as np
+	import matplotlib
+	import matplotlib.pyplot as plt
+	import torch
+
+	FloatTensor = torch.FloatTensor
+
+	pi = FloatTensor([np.pi])
+
+
+	class Potential:
+
+		#GMM with three different clusters
+		def __init__(self):
+			self.mean1 = FloatTensor([-2, -2])
+			self.covar1 = FloatTensor([[2, -0.5],[-0.5, 1]])
+			self.mean2 = FloatTensor([1.4, 1.6])
+			self.covar2 = FloatTensor([[2, 0],[0, 1]])
+			self.mean3 = FloatTensor([2, -2])
+			self.covar3 = FloatTensor([[2, 0],[0, 2]])
+
+		def log_eval(self, x):
+
+			dist1 = torch.distributions.MultivariateNormal(self.mean1, self.covar1)
+			dist2 = torch.distributions.MultivariateNormal(self.mean2, self.covar2)
+			dist3 = torch.distributions.MultivariateNormal(self.mean3, self.covar3)
+
+			return torch.log(1/3*torch.exp(dist1.log_prob(x))
+					 + 1/3*torch.exp(dist2.log_prob(x))
+					 +1/3*torch.exp(dist3.log_prob(x)))
+
+	#Initialize potential
+	potential = Potential()
+
+	#Data for plotting the surface  
+	res = 50
+	x = np.linspace(-5,5,res)
+	y = np.linspace(-5,5,res)
+	X,Y = np.meshgrid(x, y)
+	points = FloatTensor(np.stack((X.ravel(),Y.ravel())).T).requires_grad_()
+	probs = FloatTensor([potential.log_eval(point).exp() for point in points]).view(res,res)
+
+	#Data for plotting the gradients
+	res_coarse = 25
+	x_coarse = np.linspace(-5, 5, res_coarse)
+	y_coarse = np.linspace(-5, 5, res_coarse)
+	X_coarse,Y_coarse = np.meshgrid(x_coarse, y_coarse)
+	points_coarse = FloatTensor(np.stack((X_coarse.ravel(),Y_coarse.ravel())).T).requires_grad_()
+	grads = [torch.autograd.grad(outputs=potential.log_eval(point), inputs=point)[0] for point in points_coarse]
+	grads = torch.stack(grads, dim=0).numpy()
+
+	#Plotting both surface and gradients
+	plt.figure(figsize=(10,10))
+	plt.contourf(X, Y, probs.numpy(), levels=10)
+	plt.quiver(X_coarse, Y_coarse, grads[:,0], grads[:,1], color='black', alpha=0.5)
+
+	#The two lists store the trajectory data
+	traj = []
+	nuts_criterion = []
+
+	#Initialize the starting position and momentum for the particle
+	x = FloatTensor([-2,-2.5]).requires_grad_() # Position
+	p = FloatTensor([1,0]) # Momentum
+
+	for i in range(600):
+
+		p = p + 0.05 * torch.autograd.grad(outputs=potential.log_eval(x), inputs=x)[0]
+		x = x + 0.05 * p
+
+		traj.append(x.detach())
+		nuts_criterion.append((x - x_init).dot(p).detach())
+
+	traj = torch.stack(traj, dim=0).numpy()
+	nuts_criterion = torch.stack(nuts_criterion).numpy()
+	nuts_criterion = (nuts_criterion-nuts_criterion.min())/(nuts_criterion.max() - nuts_criterion.min())
+
+	for i in range(traj.shape[0]-1):
+		plt.plot([traj[i,0], traj[i+1,0]], [traj[i,1],traj[i+1,1]], c=(1-nuts_criterion[i], 0, nuts_criterion[i]))
+
+	plt.show()
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 
 &lt;p&gt;&lt;img src=&quot;/blog/HMC/HMC_2D01.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
 
@@ -2042,24 +2166,4 @@ Given the computation of both the mean and variance of the posterior distributio
 
 &lt;p&gt;Here is an image of a Gaussian Process:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;https://raw.githubusercontent.com/ludwigwinkler/BayesianOptimization/gh-pages/docs/GP_2Obs.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;&lt;/p&gt;</content><summary type="html">A Tutorial for Gaussian Processes</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/images/GP_2Obs.png" /></entry><entry><title type="html">RL in Challenging State Spaces and Sparse Reward Signals</title><link href="/blog/AdvRL/" rel="alternate" type="text/html" title="RL in Challenging State Spaces and Sparse Reward Signals" /><published>2017-11-06T00:00:00+01:00</published><updated>2017-11-06T00:00:00+01:00</updated><id>/blog/AdvRL</id><content type="html" xml:base="/blog/AdvRL/">&lt;head&gt;
-&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
-       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       &lt;/script&gt;
-       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
-&lt;/head&gt;
-
-&lt;h2 id=&quot;introduction&quot;&gt;Introduction&lt;/h2&gt;
-
-&lt;p&gt;This is a talk I gave at the Berlin Machine Learning Meetup on Nov 6, 2017.
-It is somewhat more high level than usual since the audience came from a broad range of backgrounds.&lt;/p&gt;
-
-&lt;p&gt;The content of the talk were ‘AlphaGo’, it’s successor ‘AlphaGo Zero’ and ‘Feudal Networks’ all published by DeepMind.
-The talk can be downloaded &lt;a href=&quot;BML-AdvRL.pdf&quot;&gt;here&lt;/a&gt;&lt;/p&gt;</content><summary type="html">Talk on AlphaGo and Hierarchical RL</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/images/AdvRL_Cover.png" /></entry></feed>
+&lt;p&gt;&lt;img src=&quot;https://raw.githubusercontent.com/ludwigwinkler/BayesianOptimization/gh-pages/docs/GP_2Obs.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;&lt;/p&gt;</content><summary type="html">A Tutorial for Gaussian Processes</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/images/GP_2Obs.png" /></entry></feed>
