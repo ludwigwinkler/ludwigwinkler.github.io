@@ -111,7 +111,7 @@ One property is the normalization of the exponential term $\smash{e^{-\frac{(x-\
 	&= 1
 \end{align*} %]]></script>
 
-<p>Obviously we now the exact form of the scaling parameter through the standard deviation $\sigma$ … but what if we didn’t?</p>
+<p>Obviously we know the exact form of the scaling parameter through the standard deviation $\sigma$ … but what if we didn’t?</p>
 
 <p>In that case we would encounter the distribution as</p>
 
@@ -218,9 +218,9 @@ Estimated Z: 2.5824146
 <p>As it turns out $ \approx 74\%$ of the values $x \in [-10,10]$ are below $0.01$.
 That means that by sampling randomly from a uniform distribution $\mathcal{U}(-10,10)$ we would evaluate $72\%$ of our randomly selected values $x$ with a probability below $0.01$ thus effectively wasting a large number of samples.
 Conversely only $28\%$ of the samples would lie in probability regions around the mean $\mu$ with a probability higher than $0.01$.
-The evaluation of the area $\mu$ would therefore be highly inefficient as we waste a considerable amount of samples in areas which do not contribute to the integral of $Z$.</p>
+The evaluation of the area close to $\mu$ would therefore be highly inefficient as we waste a considerable amount of samples in areas which do not contribute to the integral of $Z$.</p>
 
-<p>Obviously we could restrict the uniform distribution $\mathcal{U}(x_{min}, x_{max})$ to better values but we could only do this in this easy toy problem and not on more complex distributions.
+<p>Obviously we could restrict the uniform distribution $\mathcal{U}(x_{min}, x_{max})$ to be closer to the value of $\mu$ but this could only be efficiently be done if we were to have specific prior information about the distribution.
 Similarly, the area with probabilities below 0.01 decreases if we increase the variance of the Normal distribution.
 Again, this is just a toy example to visualize the problems when sampling from high-dimensional spaces.
 The main take way point is that one has to pay close attention to what the sampler is doing and how sampling algorithms are designed to make efficient use of computational resources.
@@ -236,7 +236,7 @@ So we could say that once we happen to sample close to $\mu$ we would like to sa
 <p>The achievement of Mr Metropolis et al. and the extensions by Mr Hastings (is the Netflix-Founder related to him?) was to elaborate precisely that idea and introduce the concept of a sampling chain to our problem.</p>
 
 <p>The sampling chain is a sequence of samples ${x_0, x_1, \ldots, x_N}$ which is constructed iteratively by sampling a proposal point $x_t’$ and accepting it as the next sample $x_{t+1}$ based on an acceptance condition.
-The proposal sample $x’_t$ can be obviously be rejected and in that case a new proposal sample $x’_t$ has to be proposed.
+The proposal sample $x’_t$ can be be rejected and in that case a new proposal sample $x’_t$ has to be proposed.
 The important part is how the proposed samples in the chain are generated, accepted and rejected.</p>
 
 <p>In order to stay in areas which contribute to the value of Z, we can propose a sample $x’_t$ which is close to our current sample $x_t$ and evaluate $f(x’_t|\mu, \sigma)$.
@@ -263,7 +263,7 @@ The Markov chain property and the Monte Carlo sampling process together define t
 <p>An important criterion while constructing such a Markovian chain of samples is that the sampler can move through the state space in an unbiased way.
 The acceptance probability and the proposal distribution should therefore guarantee that the sampler can reach every state if we sample long enough.
 For the Metropolis-Hastings algorithm it is required that the proposal density is symmetric such that $q(x’|x) = q(x|x’)$.
-This can realized easily with a Normal distribution with constant standard deviation.
+This can be realized easily with a Normal distribution with constant standard deviation.
 Mathematically, it is required that the Markov chain is reversible which simply states that there should be equal probability when being in state $x$ and moving to $x’$ and reverse:</p>
 
 <script type="math/tex; mode=display">% <![CDATA[
@@ -272,11 +272,20 @@ Mathematically, it is required that the Markov chain is reversible which simply 
 	p(x' | x) \ p(x) &= p(x | x) \ p(x').
 \end{align*} %]]></script>
 
-<p>We can now decompose the transition probability $p(x’|x)$ into the proposal distribution $q(x’|x)$ and the acceptance probability $\alpha(x’|x)$.
-\begin{align<em>}
-	\alpha(x’|x) q(x’|x) p(x) = \alpha(x|x’) q(x|x’) p(x’)
-\end{align</em>}
-The equation above simply states that the probability of being in state $x$, proposing to go to state $x’$ and finally accepting to go the state $x’$ should be the same as doing the three steps in reverse.
+<table>
+  <tbody>
+    <tr>
+      <td>We can now decompose the transition probability $p(x’</td>
+      <td>x)$ into the proposal distribution $q(x’</td>
+      <td>x)$ and the acceptance probability $\alpha(x’</td>
+      <td>x)$:</td>
+    </tr>
+  </tbody>
+</table>
+
+<script type="math/tex; mode=display">\alpha(x'|x) q(x'|x) p(x) = \alpha(x|x') q(x|x') p(x')</script>
+
+<p>The equation above simply states that the probability of being in state $x$, proposing to go to state $x’$ and finally accepting to go the state $x’$ should be the same as doing the three steps in reverse.
 This guarantees that no state $x$ is favored in any particular way and that the final Markov chain asymptotically approaches the true value of $Z$.</p>
 
 <p>We can now plug in the acceptance probability of the Metropolis-Hastings sampler and pull the transition and stationary probabilities into the minimum operator:</p>
