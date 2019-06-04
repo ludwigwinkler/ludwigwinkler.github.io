@@ -211,15 +211,21 @@ For the Metropolis-Hastings algorithm it is required that the proposal density i
 This can be realized easily with a Normal distribution with constant standard deviation.
 Mathematically, it is required that the Markov chain is reversible which simply states that there should be equal probability when being in state $x$ and moving to $x'$ and reverse:
 
+$$
 \begin{align*}
 	p(x',x) &= p(x, x') \\
 	p(x' | x) \ p(x) &= p(x | x) \ p(x').
 \end{align*}
+$$
 
 We can now decompose the transition probability $p(x'|x)$ into the proposal distribution $q(x'|x)$ and the acceptance probability $\alpha(x'|x)$.
+
+$$
 \begin{align*}
 	\alpha(x'|x) q(x'|x) p(x) = \alpha(x|x') q(x|x') p(x')
 \end{align*}
+$$
+
 The equation above simply states that the probability of being in state $x$, proposing to go to state $x'$ and finally accepting to go the state $x'$ should be the same as doing the three steps in reverse.
 This guarantees that no state $x$ is favored in any particular way and that the final Markov chain asymptotically approaches the true value of $Z$.
 
