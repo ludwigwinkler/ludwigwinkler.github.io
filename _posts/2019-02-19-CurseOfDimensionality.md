@@ -181,7 +181,7 @@ So we could say that once we happen to sample close to $\mu$ we would like to sa
 The achievement of Mr Metropolis et al. and the extensions by Mr Hastings (is the Netflix-Founder related to him?) was to elaborate precisely that idea and introduce the concept of a sampling chain to our problem.
 
 The sampling chain is a sequence of samples $\{x_0, x_1, \ldots, x_N\}$ which is constructed iteratively by sampling a proposal point $x_t'$ and accepting it as the next sample $x_{t+1}$ based on an acceptance condition.
-The proposal sample $x'_t$ can be obviously be rejected and in that case a new proposal sample $x'_t$ has to be proposed.
+The proposal sample $x'_t$ can be be rejected and in that case a new proposal sample $x'_t$ has to be proposed.
 The important part is how the proposed samples in the chain are generated, accepted and rejected.
 
 In order to stay in areas which contribute to the value of Z, we can propose a sample $x'_t$ which is close to our current sample $x_t$ and evaluate $f(x'_t\|\mu, \sigma)$.
@@ -208,15 +208,13 @@ The Markov chain property and the Monte Carlo sampling process together define t
 An important criterion while constructing such a Markovian chain of samples is that the sampler can move through the state space in an unbiased way.
 The acceptance probability and the proposal distribution should therefore guarantee that the sampler can reach every state if we sample long enough.
 For the Metropolis-Hastings algorithm it is required that the proposal density is symmetric such that $q(x'|x) = q(x|x')$.
-This can realized easily with a Normal distribution with constant standard deviation.
+This can be realized easily with a Normal distribution with constant standard deviation.
 Mathematically, it is required that the Markov chain is reversible which simply states that there should be equal probability when being in state $x$ and moving to $x'$ and reverse:
 
-$$
 \begin{align*}
 	p(x',x) &= p(x, x') \\
 	p(x' | x) \ p(x) &= p(x | x) \ p(x').
 \end{align*}
-$$
 
 We can now decompose the transition probability $p(x'|x)$ into the proposal distribution $q(x'|x)$ and the acceptance probability $\alpha(x'|x)$.
 \begin{align*}
