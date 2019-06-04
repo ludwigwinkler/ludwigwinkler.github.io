@@ -56,7 +56,7 @@ $$
 \end{align*}
 $$
 
-Obviously we now the exact form of the scaling parameter through the standard deviation $\sigma$ ... but what if we didn't?
+Obviously we know the exact form of the scaling parameter through the standard deviation $\sigma$ ... but what if we didn't?
 
 In that case we would encounter the distribution as
 
@@ -163,9 +163,9 @@ Furthermore we consider all probabilities of $\mathcal{N}(0,1)$ interesting whic
 As it turns out $ \approx 74\%$ of the values $x \in [-10,10]$ are below $0.01$.
 That means that by sampling randomly from a uniform distribution $\mathcal{U}(-10,10)$ we would evaluate $72\%$ of our randomly selected values $x$ with a probability below $0.01$ thus effectively wasting a large number of samples.
 Conversely only $28\%$ of the samples would lie in probability regions around the mean $\mu$ with a probability higher than $0.01$.
-The evaluation of the area $\mu$ would therefore be highly inefficient as we waste a considerable amount of samples in areas which do not contribute to the integral of $Z$.
+The evaluation of the area close to $\mu$ would therefore be highly inefficient as we waste a considerable amount of samples in areas which do not contribute to the integral of $Z$.
 
-Obviously we could restrict the uniform distribution $\mathcal{U}(x_{min}, x_{max})$ to better values but we could only do this in this easy toy problem and not on more complex distributions.
+Obviously we could restrict the uniform distribution $\mathcal{U}(x_{min}, x_{max})$ to be closer to the value of $\mu$ but this could only be efficiently be done if we were to have specific prior information about the distribution.
 Similarly, the area with probabilities below 0.01 decreases if we increase the variance of the Normal distribution.
 Again, this is just a toy example to visualize the problems when sampling from high-dimensional spaces.
 The main take way point is that one has to pay close attention to what the sampler is doing and how sampling algorithms are designed to make efficient use of computational resources.
@@ -351,7 +351,7 @@ We can even visualize a Metropolis-Hastings sampler in two dimensions with the a
 ![](/blog/HMC/MH_2D.png){: .align="center" height="50%" width="50%"}
 
 It's observable how moves closer to the center of the probability distribution are always accepted whereas moves away are sometimes accepted.
-In the cases where the proposed sample is in significantly lower value areas, the move will be rejected. 
+In the cases where the proposed sample is in significantly lower value areas, the move will be rejected.
 
 We can even improve our sampler even further by treating the surface of the distribution as a physical model.
 In order to illustrate we should first take the $-\log$ of the unnormalized function $f(x|\mu, \sigma)$:
