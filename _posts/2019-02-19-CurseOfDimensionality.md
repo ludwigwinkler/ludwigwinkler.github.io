@@ -88,7 +88,7 @@ $$
 \end{align*}
 $$
 
-The $\Delta x$ is required since we approximating the function $f( x \| \\mu, \\sigma)$ with little columns where the exponential term tells us the height and $\Delta x$ the width of the column (look at the animations at Wikipedias entry for Riemann integral).
+The $\Delta x$ is required since are we approximating the function $f( x \| \\mu, \\sigma)$ with little columns where the exponential term tells us the height and $\Delta x$ the width of the column (look at the animations at Wikipedias entry for Riemann integral).
 
 This would get the job done as our approximation would asymptotically approach the true value of $Z$ for large enough sample sizes.
 Yet, upon closer examination we can see that the univariate normal distribution has a specific shape which concentrates a lot of information (or more precisely probability) in the area around $\mu$.
