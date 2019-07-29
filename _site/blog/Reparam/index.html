@@ -189,7 +189,7 @@ The gradient for the variational parameter $\mu$ can be computed via:</p>
 \begin{align*}
   \frac{\partial \mathcal{L}}{\partial \rho} &= \frac{\partial \mathcal{L}}{\partial f} \cdot \frac{\partial f}{\partial w} \cdot \frac{\partial w}{\partial g} \cdot \frac{\partial g}{\partial t_2} \cdot \frac{\partial t_2}{\partial \rho} \\\\
   \frac{\partial \mathcal{L}(\hat{y}, y)}{\partial \rho} &= \frac{\partial \mathcal{L}(\hat{y}, y)}{\partial f(x, w)} \cdot \frac{\partial f(x, w)}{\partial w} \cdot \frac{\partial w}{\partial t_1(\mathcal{E}, \mu, \sigma)} \cdot \frac{\partial t_1(\mathcal{E}, \mu, \sigma)}{\partial t_2(\rho)} \cdot \frac{t_2(\rho)}{\partial \rho} \\\\
-  &= 2(\hat{y}-y) \cdot x \cdot 1 \cdot \mathcal{E} \cdot \frac{1}{\exp(-\rho)}
+  &= 2(\hat{y}-y) \cdot x \cdot 1 \cdot \mathcal{E} \cdot \frac{1}{1 + \exp(-\rho)}
 \end{align*} %]]></script>
 
 <p>In essence, it is simply an extended chain rule where we not only have to backprop to the used weight $w$ but further through the reparameterization $t_1$ to obtain the gradient for $\mu$ and even further through the reparameterization $t_2$ to obtain the gradient for $\rho$.
