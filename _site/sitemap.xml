@@ -141,11 +141,11 @@
   
     <url>
       <loc>/</loc>
-       <lastmod>2017-11-02T00:00:00+01:00</lastmod>
+       <lastmod>2017-11-10T00:20:35+00:00</lastmod>
       
        <changefreq>weekly</changefreq>
       
-       <priority>1.0</priority>
+       <priority>0.5</priority>
       
      </url>
   
@@ -191,21 +191,21 @@
   
     <url>
       <loc>/blog/page2/</loc>
-       <lastmod>2017-11-02T00:00:00+01:00</lastmod>
+       <lastmod>2017-11-10T00:20:35+00:00</lastmod>
       
        <changefreq>weekly</changefreq>
       
-       <priority>1.0</priority>
+       <priority>0.5</priority>
       
      </url>
   
     <url>
       <loc>/blog/page3/</loc>
-       <lastmod>2017-11-02T00:00:00+01:00</lastmod>
+       <lastmod>2017-11-10T00:20:35+00:00</lastmod>
       
        <changefreq>weekly</changefreq>
       
-       <priority>1.0</priority>
+       <priority>0.5</priority>
       
      </url>
   

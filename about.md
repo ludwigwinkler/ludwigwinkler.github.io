@@ -21,9 +21,5 @@ On the side I was an assistant teacher for the 'Signals & Systems I/II' lectures
 
 It was in fact speech recognition that sparked my interest in machine learning and I am very grateful to [Elmar Nöth](https://www5.cs.fau.de/our-team/noeth-elmar) who introduced me to academic conferences as an undergraduate student and enabled me to be a volunteer at the [Interspeech conference](http://www.interspeech2016.org) in 2015 and 2016.
 Talking about machine learning, one could say that 'speech made me do it', since it still up to this day fascinates me how mathematicians, computational linguists and computer scientists are able to decode something seemingly so intricate as the human speech.
-Since then my interest has shifted to neural machine translation and reinforcement learning, which pose yet unsolved tasks in machine learning.
+Since then my interest has shifted to probabilistic modeling, neural networks for differential equations and graph processing with neural networks.
 <!-- After the 2016 Interspeech, I did a kick-ass road trip through the Western United States where we drove 7.000km from San Francisco, California through Austin, Texas and finishing in Ocean Isle Beach, North Carolina. -->
-
-Now I'm a graduate student at the TU Berlin where I also work as an assistant student researcher at the Machine Learning Group.
-In Berlin, [Wendelin Böhmer](https://www.cs.ox.ac.uk/people/wendelin.boehmer/) sparked my interest in reinforcement learning which subsequently became the focus of my research work.
-Currently I am writing my master's thesis on reinforcement learning with Bayesian neural networks, and we'll see whether that even works respectively where it will lead me. =)
