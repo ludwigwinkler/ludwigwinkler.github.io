@@ -150,7 +150,9 @@ $$
 So let's code that down in PyTorch!
 
 So we already have the data.
-Next up is the base class for the GP:
+Next up is the base class for the GP.
+The most straight-forward way of using inducing points is to simply declare them as parameters which have gradients.
+Remember that both the objective function via the logarithm of the Normal distribution as well as the predictions consist of linear terms, so we can easily backpropagate through these operations to obtain the gradients for the kernel parameters and inducing points from the log probability of the true data under the Normal distribution of the GP.
 
 	class GP_InducingPoints(torch.nn.Module):
 
