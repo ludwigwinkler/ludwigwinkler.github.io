@@ -218,7 +218,7 @@ $$
 \end{align*}
 $$
 
-We can now decompose the transition probability $p(x'|x)$ into the proposal distribution $q(x'|x)$ and the acceptance probability $\alpha(x'|x)$:
+We can now decompose the transition probability $p(x'|x)$ into the proposal distribution $q(x'|x)$ and the acceptance probability $\alpha (x'|x) $:
 
 $$
 	\alpha(x'|x) q(x'|x) p(x) = \alpha(x|x') q(x|x') p(x')

@@ -1,4 +1,305 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.2.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-07-31T16:34:53+02:00</updated><id>/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Sinkhorn Iterations</title><link href="/blog/Sinkhorn/" rel="alternate" type="text/html" title="Sinkhorn Iterations" /><published>2019-07-15T00:00:00+02:00</published><updated>2019-07-15T00:00:00+02:00</updated><id>/blog/Sinkhorn</id><content type="html" xml:base="/blog/Sinkhorn/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.2.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2019-09-02T08:53:26+02:00</updated><id>/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Inducing Points in Gaussian Processes</title><link href="/blog/InducingPoints/" rel="alternate" type="text/html" title="Inducing Points in Gaussian Processes" /><published>2019-07-15T00:00:00+02:00</published><updated>2019-07-15T00:00:00+02:00</updated><id>/blog/InducingPoints</id><content type="html" xml:base="/blog/InducingPoints/">&lt;head&gt;
+&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
+       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
+         MathJax.Hub.Config({
+           tex2jax: {
+             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
+             displayMath: [['$$','$$']],
+             processEscapes: true
+           }
+         });
+       &lt;/script&gt;
+       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+
+&lt;p&gt;Gaussian processes (GP) are extremely flexible probabilistic models with a sound theoretical footing.
+In essence, you treat your available data as a giant Normal distribution and infer the covariances between the data points via a kernel.
+Now every data point becomes a dimension of the Normal distribution.
+This is in contrast to how we normally think about Normal distributions and data where each feature has its own dimension in a Normal distribution.
+So for example, a data set with 200 data points $x_n$, five features per data point and a scalar target value would create a Normal distribution of dimensionality 200.&lt;/p&gt;
+
+&lt;p&gt;Usually the squared exponential kernel to compute the covariance between two data points $x_i$ and $x_j$ via&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align*}
+  K_{ij} = k(x_i, x_j ; l) =  exp \left[ \frac{(x_i - x_j)^2}{2l^2} \right]
+\end{align*}&lt;/script&gt;
+
+&lt;p&gt;Once you get a new data points $X_*$, you compare it via the kernel to your existing data set $X$, compute a couple of linear operations with the resulting kernel matrices and the target information in your data set and voila, you arrive at your prediction.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align*}
+  \mu(x_*) = K_{XX_*} (K_{XX} + \sigma^2 I)^{-1} y \\
+  \Sigma(x_*) = K_{X_*X_*} - (K_{XX} + \sigma^2 I)^{-1} K_{XX_*}
+\end{align*}&lt;/script&gt;
+
+&lt;p&gt;The training of GP’s consists of finding the right parameters, namely the length scale $l$ in the kernel and the variance in the data $\sigma^2$.
+These two terms can be found via the non-linear optimization problem which minimizes the negative log-likelihood of the available training data in the GP defined by the length scale and kernel parameter:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align*}
+     \min_{\theta}  -\log{p(\mathcal{D};\theta)}
+     &amp;= \min_{\theta} \ \frac{N}{2} \log\left[ 2 \pi \right] + \log\left[ |k(XX;\theta) + \sigma^2 I|\right] + \frac{1}{2} y^T  (K_{XX} + \sigma^2 I)^{-1} y
+\end{align*} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;While the necessary computations for training the GP and predicting new data points are only linear, they have quadratic memory and cubic computational cost due to square kernel matrix and the required inversions of the kernel matrix.
+The memory and computational cost arises mainly from the fact that kernel methods like SVM’s or GP’s require the training data set at hand to compute new predictions.
+Neural networks in comparison store the “learned information” in their weights, whereas GP’s and SVM’s always need the full training data set to accomplish anything.
+A lot of work has therefore gone into making GP’s more scalable and finding ways of reducing their memory and computational cost.&lt;/p&gt;
+
+&lt;p&gt;A majority of the efforts focus on the reducing the size of the training data set kernel matrix $K_{XX}$ while keeping as much information of the full kernel matrix as possible.
+One idea in this line of research has been the introduction of inducing points.
+A number of inducing points are selected which are meant to represent the full training data set.
+One can think of this along the line of k-means clustering of the training data set.&lt;/p&gt;
+
+&lt;p&gt;Let’s first set up the environment and import all the necessary libraries:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import torch
+import torch.distributions
+from torch.distributions import Normal, MultivariateNormal
+from torch.utils.data import DataLoader, TensorDataset
+
+import sklearn
+from sklearn.datasets import make_moons
+from sklearn.preprocessing import scale
+
+import numpy as np
+import matplotlib.pyplot as plt
+import time
+import copy
+import sys, os, argparse, datetime, time
+
+device = torch.device(&quot;cuda:0&quot; if torch.cuda.is_available() else &quot;cpu&quot;)
+
+if torch.cuda.is_available():
+	FloatTensor = torch.cuda.FloatTensor
+elif not torch.cuda.is_available():
+	FloatTensor = torch.FloatTensor
+
+import torch.nn.functional as F
+
+params = argparse.ArgumentParser()
+params.add_argument('-logging',                   type=int,           default=0)
+
+params.add_argument('-num_samples',               type=int,           default=200)
+params.add_argument('-num_inducing_points',       type=int,           default=6)
+params.add_argument('-x_noise_std',               type=float,         default=0.01)
+params.add_argument('-y_noise_std',               type=float,         default=0.1)
+params.add_argument('-zoom',                      type=int,           default=10)
+
+params.add_argument('-lr_kernel',                 type=float,         default=0.01)
+params.add_argument('-lr_ip',                     type=float,         default=0.1)
+
+params.add_argument('-num_epochs',                type=int,           default=300)
+
+params = params.parse_args()
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now we can do some plotting:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;def generate_weightuncertainty_data():
+
+	x = np.linspace(-0.35, 0.55, params.num_samples)
+	x_noise = np.random.normal(0., params.x_noise_std, size=x.shape)
+	y_noise = np.random.normal(0., params.y_noise_std, size=x.shape)
+
+	y = x + 0.3 * np.sin(2 * np.pi * (x + x_noise)) + 0.3 * np.sin(4 * np.pi * (x + x_noise)) + y_noise
+
+	x, y = x.reshape(-1, 1), y.reshape(-1, 1)
+
+	mu = np.array([[-0.3,-0.3],[-0.18, -0.8],[0,0], [0.15, 0.8], [0.35,0.3], [0.55, 0.6]])
+
+	if True:
+		plt.scatter(x, y, alpha=0.5)
+		plt.scatter(mu[:,0], mu[:,1], color='red', marker='+', s=100)
+		plt.show()
+
+	return x, y
+
+generate_weightuncertainty_data()
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/InducingPoints/Data.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Judging from the regression data, we can see that the function which is represented by the noise data points can be approximated quite reasonably with 6 data points.
+And this is what inducing points are all about: finding a set of representative points which capture the original data distribution sufficiently well while reducing the memory and computational cost of the GP.
+Remember that we went from 200 data points to 6 data points, ergo a memory cost of $\mathcal{O}(200^2) = \mathcal{O}(40000)$ to just $\mathcal{O}(6^2) = \mathcal{O}(36)$.&lt;/p&gt;
+
+&lt;p&gt;The training objective consists now of maximizing the probability of the training data under the distribution of the GP with the inducing points $\widetilde{\mathcal{D}} = \{ \widetilde{X}, \widetilde{y} \}$.
+Thus we have the following objective function&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align*}
+ \min_{\theta, \widetilde{\mathcal{D}}}  -\log p(\mathcal{D};\theta, \widetilde{\mathcal{D}})
+&amp;= \min_{\theta, \widetilde{\mathcal{D}}}  -\log p(y| X; \theta, \widetilde{\mathcal{D}}) \\
+&amp;= \min_{\theta, \widetilde{\mathcal{D}}} -\log \mathcal{N} \Big(
+	\overbrace{ K_{X \widetilde{X}} ( K_{\widetilde{X}, \widetilde{X}} + \sigma^2 I)^{-1} y}^{\mu(X)},
+	\overbrace{ K_{XX} - K_{X \widetilde{X}} (K_{\widetilde{X} \widetilde{X}} + \sigma^2 I)^{-1} K_{\widetilde{X} X} + \sigma^2 I }^{\Sigma(X)}
+	\Big)
+\end{align*} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;So let’s code that down in PyTorch!&lt;/p&gt;
+
+&lt;p&gt;So we already have the data.
+Next up is the base class for the GP:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;class GP_InducingPoints(torch.nn.Module):
+
+	def __init__(self, _x=None, _y=None, _num_inducing_points = params.num_inducing_points, _dim=1):
+
+		super().__init__()
+
+		assert type(_x) != type(None) # some sanity checking
+		assert type(_y) != type(None) # some sanity checking for the correct input
+
+		self.x = _x # save data set for convenience sake, not recommended for large data sets
+		self.y = _y
+
+		self.num_inducing_points = _num_inducing_points
+
+		inducing_x = torch.linspace(_x.min().item(), _x.max().item(), self.num_inducing_points).reshape(-1,1) 	# distribute the data points as a linspace between x.min() and x.max() to get a good initializaiton of the inducing points
+		self.inducing_x_mu = torch.nn.Parameter(inducing_x + torch.randn_like(inducing_x).clamp(-0.1,0.1)) 			# add some noise to the x values of the inducing points
+		self.inducing_y_mu = torch.nn.Parameter(FloatTensor(_num_inducing_points, _dim).uniform_(-0.5,0.5)) 		# since we normalized the data to N(0,1) we initialize the y values in the middle of N(0,1)
+
+		self.length_scale = torch.nn.Parameter(torch.scalar_tensor(0.1)) 	# the kernel hyperparameter to be optimized alongside inducing points
+		self.noise = torch.nn.Parameter(torch.scalar_tensor(0.5)) 				# the noise hyperparameter to model the inherent variance in the data
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now we need the kernel method to compute the kernel/covariance matrix between arbitrary points:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	def compute_kernel_matrix(self, x1, x2):
+
+			assert x1.shape[1] == x2.shape[1] # check dimension
+			assert x1.numel() &amp;gt;= 0 # sanity check
+			assert x2.numel() &amp;gt;= 0 # sanity check
+
+			pdist = ( x1 - x2.T)**2 # outer difference
+			kernel_matrix = torch.exp(-0.5*1/(self.length_scale+0.001)*pdist)
+
+			return kernel_matrix
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The third class method of the GP class to implement is the forward method of the GP such that we can take the gradients through PyTorch AutoDiff library:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	def forward(self, _X):
+
+			# compute all the kernel matrices
+			self.K_XsX = self.compute_kernel_matrix(_X, self.inducing_x_mu)
+			self.K_XX = self.compute_kernel_matrix(self.inducing_x_mu, self.inducing_x_mu)
+			self.K_XsXs = self.compute_kernel_matrix(_X, _X)
+
+			# invert K_XX and regularizing it for numerical stability
+			self.K_XX_inv = torch.inverse(self.K_XX + 1e-10*torch.eye(self.K_XX.shape[0]))
+
+			#compute mean and covariance for forward prediction
+			mu = self.K_XsX @ self.K_XX_inv @ self.inducing_y_mu
+			sigma = self.K_XsXs - self.K_XsX @ self.K_XX_inv @ self.K_XsX.T + self.noise*torch.eye(self.K_XsXs.shape[0])
+
+			# for each point in _X output MAP estimate and variance of prediction ( that's the torch.diag (...) )
+			return mu, torch.diag(sigma)[:, None]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Up next is the loss function as described above:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	def NMLL(self, _X, _y):
+
+			# set reasonable constraints on the optimizable parameters
+			self.length_scale.data   = self.length_scale.data.clamp( 0.00001, 3.0)
+			self.noise.data          = self.noise.data.clamp(0.000001,3)
+
+			# compute all the kernel matrices again ... now you see why we want to use inducing points
+			K_XsXs = self.compute_kernel_matrix(_X, _X)
+			K_XsX = self.compute_kernel_matrix(_X, self.inducing_x_mu)
+			K_XX = self.compute_kernel_matrix(self.inducing_x_mu, self.inducing_x_mu)
+			K_XX_inv = torch.inverse(K_XX + 1e-10*torch.eye(K_XX.shape[0]))
+
+			Q_XX = K_XsXs - K_XsX @ K_XX_inv @ K_XsX.T
+
+			# compute mean and covariance and GP distribution itself
+			mu = K_XsX @ K_XX_inv @ self.inducing_y_mu
+			Sigma = Q_XX + self.noise**2*torch.eye(Q_XX.shape[0]) # noise regularized covariance
+
+			p_y = MultivariateNormal(mu.squeeze(), covariance_matrix=Sigma)
+			mll = p_y.log_prob(_y.squeeze()) # evaluate the probability of the target values in the training data set under the distribution of the GP
+
+			mll -= 1/( 2 * self.noise**2) * torch.trace(Q_XX) # add a regularization term to regularize variance
+
+			return -mll
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;And finally a nice plotting function:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	def plot(self, _title=&quot;&quot;):
+
+			x = torch.linspace(self.x.min()*1.5, self.x.max()*1.5, 200).reshape(-1,1)
+
+			with torch.no_grad():
+				mu, sigma = self.forward(x)
+
+			x = x.numpy().squeeze()
+			mu = mu.numpy().squeeze()
+			sigma = sigma.numpy().squeeze()
+
+			plt.title(_title)
+			plt.scatter(self.inducing_x_mu.detach().numpy(), self.inducing_y_mu.detach().numpy())
+			plt.scatter(self.x.detach().numpy(), self.y.detach().numpy(), alpha=0.1, c='r')
+			plt.fill_between(x, mu-3*sigma, mu+3*sigma, alpha = 0.1, color='blue')
+			plt.plot(x, mu)
+			plt.xlim(self.x.min()*1.5, self.x.max()*1.5)
+			plt.ylim(-3,3)
+			plt.show()
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now we can let the whole thing train via the following script:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# generating data and normalizing it
+X, y = generate_weightuncertainty_data()
+X = FloatTensor(scale(X))
+y = FloatTensor(scale(y))
+
+# initialize the GP and plot initial prediction
+gp = GP_InducingPoints(_x=X, _y=y)
+gp.plot(_title=&quot;Init&quot;)
+
+# use two different learning rates since inducing points need to potentially cover a far larger distance than kernel parameters
+optim = torch.optim.Adam([{&quot;params&quot;: [gp.length_scale, gp.noise], &quot;lr&quot;: params.lr_kernel},
+                          {&quot;params&quot;: [gp.inducing_x_mu, gp.inducing_y_mu,], &quot;lr&quot;: params.lr_ip}])
+
+# put it all in a data loader ...
+train_loader = DataLoader(TensorDataset(FloatTensor(X), FloatTensor(y)),
+                        batch_size=params.num_samples,
+                        shuffle=True,
+                        num_workers=1)
+
+# ... and let it train
+for epoch in range(params.num_epochs):
+	for i, (data, label) in enumerate(train_loader):
+		optim.zero_grad()
+
+		mll = gp.NMLL(data, label)
+
+		mll.backward()
+		optim.step()
+
+		if epoch%(params.num_epochs//10)==0:
+			print(f'Epoch: {epoch} \t NMLL:{mll:.2f} \t LS {gp.length_scale:.2f} \t Noise: {gp.noise:.2f}')
+			gp.plot(_title=f&quot;Training Epoch {epoch:.0f}&quot;)
+
+gp.plot(_title=&quot;Post Training&quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;I combined the entire training loop into a nice little gif which shows how the inducing points and the kernel parameters are adjusted to the data:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/InducingPoints/IP_GP.gif&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;One can see nicely how the inducing points are moved to precisely the points in space which we predicted earlier in the image at the top.
+This training routine would even be amenable to mini batch training, we would introduce more variance though.&lt;/p&gt;</content><summary type="html">Tackling the memory cost of GP's</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/blog/InducingPoints/Cover.png" /></entry><entry><title type="html">Sinkhorn Iterations</title><link href="/blog/Sinkhorn/" rel="alternate" type="text/html" title="Sinkhorn Iterations" /><published>2019-07-15T00:00:00+02:00</published><updated>2019-07-15T00:00:00+02:00</updated><id>/blog/Sinkhorn</id><content type="html" xml:base="/blog/Sinkhorn/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -662,8 +963,8 @@ Mathematically, it is required that the Markov chain is reversible which simply 
     &lt;tr&gt;
       &lt;td&gt;We can now decompose the transition probability $p(x’&lt;/td&gt;
       &lt;td&gt;x)$ into the proposal distribution $q(x’&lt;/td&gt;
-      &lt;td&gt;x)$ and the acceptance probability $\alpha(x’&lt;/td&gt;
-      &lt;td&gt;x)$:&lt;/td&gt;
+      &lt;td&gt;x)$ and the acceptance probability $\alpha (x’&lt;/td&gt;
+      &lt;td&gt;x) $:&lt;/td&gt;
     &lt;/tr&gt;
   &lt;/tbody&gt;
 &lt;/table&gt;
@@ -2031,257 +2332,4 @@ The EI acquisition utilizes the uncertainty in a fully Bayesian way and is able 
 &lt;img src=&quot;BO_EI11.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
 &lt;img src=&quot;BO_EI12.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
 &lt;img src=&quot;BO_EI13.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
-&lt;img src=&quot;BO_EI14.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;&lt;/p&gt;</content><summary type="html">Using Gaussian Processes for Optimization</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/images/BO_EI4.png" /></entry><entry><title type="html">Gaussian Processes - Extensions</title><link href="/blog/Gaussian-Processes-Extensions/" rel="alternate" type="text/html" title="Gaussian Processes - Extensions" /><published>2018-04-23T00:00:00+02:00</published><updated>2018-04-23T00:00:00+02:00</updated><id>/blog/Gaussian-Processes-Extensions</id><content type="html" xml:base="/blog/Gaussian-Processes-Extensions/">&lt;head&gt;
-&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
-       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       &lt;/script&gt;
-       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
-&lt;/head&gt;
-
-&lt;h2 id=&quot;noise&quot;&gt;Noise&lt;/h2&gt;
-
-&lt;p&gt;In the real world, the observations onto which the Gaussian process is fitted are often influenced and distorted by noise.
-This noise is modeled as a independent, identically distributed normal distribution around zero with an error variance $\sigma^2_{\varepsilon}$:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align}
-     y &amp;= f(x) + \varepsilon, \quad \quad \text{i.i.d.} \ \varepsilon \sim \mathcal{N}(0, \sigma^2_{\varepsilon})
-\end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;The covariance matrix between the respective observations with noise is modified on the diagonal entries.
-The linear covariance operator can be applied independently to both the objective function evaluation and the noise, yet the noise variance can only be included for the diagonal entries of the covariance matrix.
-This is due to the assumption of independent, identical distributed noise, which is uncorrelated between observations.&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align}
-     \mathbb{C}[y,y'] &amp;= k(x,x') + \mathbb{1}_{y=y'}  \mathbb{V}[\varepsilon]\\
-     &amp;= k(x,x') + \mathbb{1}_{y=y'}  \sigma^2_{\varepsilon}
-\end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;Gaussian process without noisy observations:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;Noise_nonoise.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Gaussian process with noise only on the mean of the posterior distribution:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;Noise_meannoise.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Gaussian process with noise only on the variance of the posterior distribution:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;Noise_varnoise.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Gaussian process with noisy observations affecting both the mean and the variance:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;Noise_bothnoise.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;This can be realized with the addition of the noise’s variance to the diagonal entries of the covariance matrix of the observation kernel matrix $K_{XX}$:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align}
-     \mathbf{K} =
-     \begin{bmatrix}
-          K_{XX}+\sigma^2_{\varepsilon} \cdot I  &amp; K_{XX_*} \\
-          K_{X_*X} &amp; K_{X_*X_*}
-     \end{bmatrix} =
-     \begin{bmatrix}
-          k(X, X) + \sigma_{\varepsilon} \cdot I &amp; k(X, X_*) \\
-          k(X_*, X) &amp; k(X_*, X_*)
-     \end{bmatrix}
-\end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;where $I$ is an identity matrix $I\in \mathbb{R}^{N \times N}$.
-While the noise itself decreases the precision with which we can fit the GP to the observations, it has convenient numerical properties.
-The Gramian block matrix $K_{XX}$ has to be inverted during the computation of the mean and covariance function.
-Due to possible rank defincencies, $K_{XX}$ can become singular which prohibits its inversion.
-Rank definencies in the covariance matrix can arise when two observations are numerically almost identical.
-Incorporating the noise variance into the covariance matrix can be thus regarded as a regularization of the Gaussian process.
-This opens the possibility of different regularization themes as both the mean and variance can be independently regularized with respect to the inverse of $K_{XX}$ in $\mu(y_* )$ and $\Sigma(y_* )$.&lt;/p&gt;
-
-&lt;h2 id=&quot;model-selection&quot;&gt;Model Selection&lt;/h2&gt;
-
-&lt;p&gt;The optimization of hyperparameters in machine learning is a pivotal process which can influence the performance significantly.
-In this regard, Bayesian methods offer a substantial advantage over non-Bayesian methods as the optimal hyperparameters can be automatically recovered from the Bayesian model.
-For a supervised learning task, the objective is to maximize the likelihood probability of the targets $p(\mathcal{D})$.&lt;/p&gt;
-
-&lt;p&gt;A central aspect of Bayesian methods is the placement of a prior $p(\theta)$ over possible values of $\theta$ which encodes the prior belief what values of $\theta$ are regarded as probable.
-Instead of considering a single value for $\theta$ a probability distribution is used that assigns a different weighting to different values of $\theta$.
-This is especially important in tasks with small datasets where the likelihood is sensitive to the variability in the data.&lt;/p&gt;
-
-&lt;p&gt;The prior can be marginalized to evaluate its influence on the data likelihood.
-The objective is therefore to find suitable distributions for $\theta$ which increase the likelihood of the data, ie.&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
-     p(\mathcal{D}) = \int p(\mathcal{D}, \theta) \ p(\theta) \ d\theta
-\end{align}&lt;/script&gt;
-
-&lt;p&gt;In the case of Gaussian processes with the squared exponential kernel, the hyperparameters are $\theta = \{ \alpha, \sigma \}$ for which we seek values that maximize the probability of the data, i.e.&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align}
-     \max_{\theta} \ p(\mathcal{D}; \theta)
-     &amp;= \max_{\theta} \ p(y, X ; \theta) \\
-     &amp;= \max_{\theta} \ p(y, X  | \theta) \ p(\theta) \\
-     &amp;= \max_{\theta}
-     \frac{1}{\sqrt{(2 \pi)^{N} |K_{XX}|^2}}
-     \exp \left[
-     -\frac{1}{2}
-          y ^T
-          {K_{XX}}^{-1}
-          y
-     \right]
-     \\
-     &amp;= \max_{\theta}
-     \frac{1}{\sqrt{(2 \pi)^{N} |k(X, X; \theta)|^2}}
-     \exp \left[
-     -\frac{1}{2}
-          y ^T
-          k(X, X;\theta)^{-1}
-          y
-     \right]
-\end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;where the parameters $\theta$ determine the Gramian matrix $k(XX;\theta)$.
-The maximization of the data likelihood is commonly reformulated as a minimzation of the negative log-likelihood.
-Working with the log-probability offers a higher numerical stability with respect to floating-point arithmetic of modern computers.&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align}
-     \min_{\theta}  -\log{p(\mathcal{D};\theta)}
-     &amp;= \min_{\theta} \ \frac{N}{2} \log\left[ 2 \pi \right] + \log\left[ |K_{XX}|\right] + \frac{1}{2} y^TK_{XX}^{-1}y \\
-     &amp;= \min_{\theta} \ \frac{N}{2} \log\left[ 2 \pi \right] + \log\left[ |k(XX;\theta)|\right] + \frac{1}{2} y^Tk(X,X;\theta)^{-1}y
-\end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;The optimization of the log-likelihood can be done with regular optimization algorithms such as limited memory BFGS.&lt;/p&gt;
-
-&lt;h2 id=&quot;derivative-information&quot;&gt;Derivative Information&lt;/h2&gt;
-
-&lt;p&gt;Gaussian processes in their traditional definition are described as a Gaussian distribution over possibly infinite observations.
-A Gaussian process computes a predictive distribution for $y_*$ such that predictions are close to observations in their vicinity.
-We can expand the Gaussian process by including derivative observations into the set of observations which enforces a similarity in the gradients of the predictions with respect to observations in their vicinity:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
-     \begin{bmatrix}
-          y \\
-          \nabla y \\
-          y_*
-     \end{bmatrix}
-     \sim
-     \mathcal{N}\left(\ \cdot \ | \mathbf{0}, \mathbf{K}^{\nabla}\right)
-\end{align}&lt;/script&gt;
-
-&lt;p&gt;The joint distribution over predictions, derivative observations and observations can be modeled as a Gaussian over all three types of observations:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align}
-p(y_*, \nabla y, y, X_*, X)
-&amp;\propto
-\exp \left[
--\frac{1}{2}
-\begin{bmatrix}
-     y \\
-     \nabla y \\
-     y_*
-\end{bmatrix}^T
-\left[
-\begin{array}{c c | c}
-     K_{XX} &amp; K^{\nabla}_{XX} &amp; K_{XX_*} \\
-     K^{\nabla T}_{XX} &amp; K^{\nabla\nabla}_{XX} &amp; K^{\nabla}_{XX_*} \\
-     \hline
-     K_{X_*X} &amp; K^{\nabla}_{X_*X} &amp; K_{X_*X_*}
-\end{array}
-\right]^{-1}
-\begin{bmatrix}
-     y \\
-     \nabla y \\
-     y_*
-\end{bmatrix}
-\right]
-\end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;with the expanded covariance matrix which now includes similarity measures between predictions, observations and derivative observations:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-     \mathbf{K}^{\nabla}
-     &amp;=
-     \left[
-     \begin{array}{c | c}
-          K^{\nabla, \nabla \nabla}_{X X} &amp; K^{\nabla}_{X X_*} \\
-          \hline
-          K^{\nabla}_{X_*X} &amp; K_{X_* X_*}
-     \end{array}
-     \right]\\
-     &amp;=
-     \left[
-          \begin{array}{c c | c}
-               K_{XX} &amp; K^{\nabla}_{XX} &amp; K_{XX_*} \\
-               K^{\nabla T}_{XX} &amp; K^{\nabla\nabla}_{XX} &amp; K^{\nabla}_{XX_*} \\
-               \hline
-               K_{X_*X} &amp; K^{\nabla}_{X_*X} &amp; K_{X_*X_*}
-          \end{array}
-     \right] \\
-     &amp;=
-     \left[
-     \renewcommand*{\array_*tretch}{1.5}
-          \begin{array}{c c | c}
-               k_{y,y}(X, X) &amp; k_{y, \nabla y}(X, X) &amp; k_{y,y_*}(X, X_*) \\
-               k_{\nabla y, y}(X, X) &amp; k_{ \nabla y, \nabla y}(X, X) &amp; k_{\nabla y, y_*}(X, X_*) \\
-               \hline
-               k_{y_*, y}(X_*, X) &amp; k_{y_*, \nabla y}(X_*, X) &amp; k_{y_*, y_*}(X_*, X_*)
-          \end{array}
-     \right] \label{eq:derivobs_kernelmatrix-1}
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;The posterior distribution including derivative observations can be derived from the joint distribution with the matrix inversion lemma in the same manner as seen above.
-The mean and covariance of the posterior distribution with derivative observations can be computed with the expanded kernel matrices:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align*}
-     p(y_* | \nabla y, y, X_*, X) &amp;= \mathcal{N} \big( K^{\nabla}_{X_*X} {K^{\nabla, \nabla \nabla}_{XX}}^{-1} y, K_{X_*X_*} - K^{\nabla}_{X_*X} {K^{\nabla, \nabla \nabla}_{XX}}^{-1} K^{\nabla}_{XX_*} \big)
-\end{align*} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;The Gramian block matrices between predictions, observations and derivative observations can be computed with updated kernels with incorporate the derivative observations.
-More precisely, the covariance between two any entries in the observation respectively prediction vector are defined as&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align}
-     \mathbb{C}[y, y'] &amp;= k_{y, y'}(x, x') \\
-     \mathbb{C}[y, \nabla y'] &amp;= k_{y, \nabla y'}(x, x') \\
-     \mathbb{C}[\nabla y, y'] &amp;= k_{\nabla y, y'}(x, x') \\
-     \mathbb{C}[\nabla y, \nabla y'] &amp;= k_{\nabla y, \nabla y'}(x, x')
-\end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;These updated kernels can be derived in a fairly straightforward manner since the covariance with the zero mean assumption is a linear operator.
-In order to expand the Gaussian process with derivative observations we have to take the derivative of the kernel and expand the covariance matrix with the respective entries:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align}
-     \mathbb{C}[y, y'] &amp;= \frac{1}{N}\sum_{i=0}^N y_i \cdot y_i' \\
-          &amp;= k(x,x') \\
-     \mathbb{C}[y, \nabla_{x'}y'] &amp;= \frac{1}{N} \sum_{i=0}^N y_i \cdot \nabla_{x'}y_i' \\
-          &amp;= \nabla_{x'} \frac{1}{N} \sum_{i=0}^N y_i \cdot y_i' \\
-          &amp;= \nabla_{x'} \mathbb{C}[y,y'] \\
-          &amp;= \nabla_{x'} k(x,x')\\
-     \mathbb{C}[\nabla_{x}y, \nabla_{x'}y'] &amp;= \frac{1}{N} \sum_{i=0}^N \nabla_{x} y_i \cdot \nabla_{x'}y_i' \\
-          &amp;= \nabla_{x} \nabla_{x'} \frac{1}{N}\sum_{i=0}^N y_i \cdot y_i' \\
-          &amp;= \nabla_{x}\nabla_{x'} \mathbb{C}[y, y'] \\
-          &amp;= \nabla_{x}\nabla_{x'} k(x,x')
-\end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;While derivative observations themselves are usually hard to come by for computationally expensive functions $f(x)$, derivative observations are of numerical advantage in cases where observations lie very close to each other.
-In these cases the inversion can become unstable or even impossible due to the rank definciency.
-Derivative observations pose a useful way to circumvent such rank definciencies for very close observations by combining two observations into one observation and a derivative observation.&lt;/p&gt;
-
-&lt;p&gt;A Gaussian process:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;GP_4Obs.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;The same Gaussian process with derivative observations. The GP is able to fit the true function considerably better:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;GP_4Obs_Deriv.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;&lt;/p&gt;</content><summary type="html">Extensions to Gaussian Processes</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/images/GP_4Obs_Deriv.png" /></entry></feed>
+&lt;img src=&quot;BO_EI14.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;&lt;/p&gt;</content><summary type="html">Using Gaussian Processes for Optimization</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/images/BO_EI4.png" /></entry></feed>
