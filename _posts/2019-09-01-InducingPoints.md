@@ -25,7 +25,7 @@ Now every data point becomes a dimension of the Normal distribution.
 This is in contrast to how we normally think about Normal distributions and data where each feature has its own dimension in a Normal distribution.
 So for example, a data set with 200 data points $x_n$, five features per data point and a scalar target value would create a Normal distribution of dimensionality 200.
 
-Usually the squared exponential kernel to compute the covariance between two data points $x_i$ and $x_j$ via
+Usually the squared exponential kernel is used to compute the covariance between two data points $x_i$ and $x_j$ via
 
 $$
 \begin{align*}
@@ -33,7 +33,7 @@ $$
 \end{align*}
 $$
 
-Once you get a new data points $X_*$, you compare it via the kernel to your existing data set $X$, compute a couple of linear operations with the resulting kernel matrices and the target information in your data set and voila, you arrive at your prediction.
+Once new data points $X_*$ are obtained, we compare it via the kernel to our existing data set $X$, compute a couple of linear operations with the resulting kernel matrices and the target information in your data set and voila, you arrive at your prediction:
 
 $$
 \begin{align*}
@@ -57,7 +57,7 @@ The memory and computational cost arises mainly from the fact that kernel method
 Neural networks in comparison store the "learned information" in their weights, whereas GP's and SVM's always need the full training data set to accomplish anything.
 A lot of work has therefore gone into making GP's more scalable and finding ways of reducing their memory and computational cost.
 
-A majority of the efforts focus on the reducing the size of the training data set kernel matrix $K_{XX}$ while keeping as much information of the full kernel matrix as possible.
+A majority of the efforts focus on the reduction of the training data set kernel matrix $K_{XX}$ while keeping as much information of the full kernel matrix as possible.
 One idea in this line of research has been the introduction of inducing points.
 A number of inducing points are selected which are meant to represent the full training data set.
 One can think of this along the line of k-means clustering of the training data set.
