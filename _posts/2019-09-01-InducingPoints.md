@@ -129,8 +129,8 @@ Now we can do some plotting:
 
 ![](/blog/InducingPoints/Data.png){: .align="center" height="50%" width="50%"}
 
-Judging from the regression data, we can see that the function which is represented by the noise data points can be approximated quite reasonably with 6 data points.
-And this is what inducing points are all about: finding a set of representative points which capture the original data distribution sufficiently well while reducing the memory and computational cost of the GP.
+Judging from the regression data, we can see that the function which is represented by the noisy data points can be approximated quite reasonably with 6 data points.
+And this is what inducing points are all about: finding a set of representative points $\\{ \widetilde{X}, \widetilde{y} \\} $ which capture the original data structure $\\{ X, y \\}$ sufficiently well while reducing the memory and computational cost of the GP.
 Remember that we went from 200 data points to 6 data points, ergo a memory cost of $\mathcal{O}(200^2) = \mathcal{O}(40000)$ to just $\mathcal{O}(6^2) = \mathcal{O}(36)$.
 
 The training objective consists now of maximizing the probability of the training data under the distribution of the GP with the inducing points $\widetilde{\mathcal{D}} = \\{ \widetilde{X}, \widetilde{y} \\}$.
