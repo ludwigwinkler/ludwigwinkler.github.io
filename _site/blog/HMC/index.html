@@ -272,18 +272,15 @@ Mathematically, it is required that the Markov chain is reversible which simply 
 	p(x' | x) \ p(x) &= p(x | x) \ p(x').
 \end{align*} %]]></script>
 
-<table>
-  <tbody>
-    <tr>
-      <td>We can now decompose the transition probability $p(x’</td>
-      <td>x)$ into the proposal distribution $q(x’</td>
-      <td>x)$ and the acceptance probability $\alpha (x’</td>
-      <td>x) $:</td>
-    </tr>
-  </tbody>
-</table>
+<p>We can now decompose the transition probability
+$ p(x’|x) $
+into the proposal distribution $q(x’|x)$
+and the acceptance probability
+$\alpha(x’|x)$:</p>
 
-<script type="math/tex; mode=display">\alpha(x'|x) q(x'|x) p(x) = \alpha(x|x') q(x|x') p(x')</script>
+<script type="math/tex; mode=display">\begin{align*}
+	\alpha(x'|x) q(x'|x) p(x) = \alpha(x|x') q(x|x') p(x')
+\end{align*}</script>
 
 <p>The equation above simply states that the probability of being in state $x$, proposing to go to state $x’$ and finally accepting to go the state $x’$ should be the same as doing the three steps in reverse.
 This guarantees that no state $x$ is favored in any particular way and that the final Markov chain asymptotically approaches the true value of $Z$.</p>
@@ -655,8 +652,8 @@ This effectively restricts sampling algorithms to applications where we require 
                */
 
               var disqus_config = function () {
-                  this.page.url = '/blog/CurseOfDimensionality/';  /*Replace PAGE_URL with your page's canonical URL variable*/
-                  this.page.identifier = '/blog/CurseOfDimensionality/'; /*Replace PAGE_IDENTIFIER with your page's unique identifier variable*/
+                  this.page.url = '/blog/HMC/';  /*Replace PAGE_URL with your page's canonical URL variable*/
+                  this.page.identifier = '/blog/HMC/'; /*Replace PAGE_IDENTIFIER with your page's unique identifier variable*/
               };
 
               (function() {  /* dont endit below this line */

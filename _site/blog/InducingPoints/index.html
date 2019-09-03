@@ -60,7 +60,7 @@
 				<div id="main">
           <section class="post">
     				<header class="major">
-      				<span class="date">15 Jul 2019</span>
+      				<span class="date">30 Aug 2019</span>
       				<h1>Inducing Points in Gaussian Processes</h1>
       				<p>Tackling the memory cost of GP's</p>
       			</header>
@@ -85,13 +85,13 @@ Now every data point becomes a dimension of the Normal distribution.
 This is in contrast to how we normally think about Normal distributions and data where each feature has its own dimension in a Normal distribution.
 So for example, a data set with 200 data points $x_n$, five features per data point and a scalar target value would create a Normal distribution of dimensionality 200.</p>
 
-<p>Usually the squared exponential kernel to compute the covariance between two data points $x_i$ and $x_j$ via</p>
+<p>Usually the squared exponential kernel is used to compute the covariance between two data points $x_i$ and $x_j$ via</p>
 
 <script type="math/tex; mode=display">\begin{align*}
   K_{ij} = k(x_i, x_j ; l) =  exp \left[ \frac{(x_i - x_j)^2}{2l^2} \right]
 \end{align*}</script>
 
-<p>Once you get a new data points $X_*$, you compare it via the kernel to your existing data set $X$, compute a couple of linear operations with the resulting kernel matrices and the target information in your data set and voila, you arrive at your prediction.</p>
+<p>Once new data points $X_*$ are obtained, we compare it via the kernel to our existing data set $X$, compute a couple of linear operations with the resulting kernel matrices and the target information in your data set and voila, you arrive at your prediction:</p>
 
 <script type="math/tex; mode=display">\begin{align*}
   \mu(x_*) = K_{XX_*} (K_{XX} + \sigma^2 I)^{-1} y \\
@@ -112,7 +112,7 @@ The memory and computational cost arises mainly from the fact that kernel method
 Neural networks in comparison store the “learned information” in their weights, whereas GP’s and SVM’s always need the full training data set to accomplish anything.
 A lot of work has therefore gone into making GP’s more scalable and finding ways of reducing their memory and computational cost.</p>
 
-<p>A majority of the efforts focus on the reducing the size of the training data set kernel matrix $K_{XX}$ while keeping as much information of the full kernel matrix as possible.
+<p>A majority of the efforts focus on the reduction of the training data set kernel matrix $K_{XX}$ while keeping as much information of the full kernel matrix as possible.
 One idea in this line of research has been the introduction of inducing points.
 A number of inducing points are selected which are meant to represent the full training data set.
 One can think of this along the line of k-means clustering of the training data set.</p>
@@ -190,8 +190,8 @@ generate_weightuncertainty_data()
 
 <p><img src="/blog/InducingPoints/Data.png" alt="" class='align="center"' height="50%" width="50%"></p>
 
-<p>Judging from the regression data, we can see that the function which is represented by the noise data points can be approximated quite reasonably with 6 data points.
-And this is what inducing points are all about: finding a set of representative points which capture the original data distribution sufficiently well while reducing the memory and computational cost of the GP.
+<p>Judging from the regression data, we can see that the function which is represented by the noisy data points can be approximated quite reasonably with 6 data points.
+And this is what inducing points are all about: finding a set of representative points $\{ \widetilde{X}, \widetilde{y} \} $ which capture the original data structure $\{ X, y \}$ sufficiently well while reducing the memory and computational cost of the GP.
 Remember that we went from 200 data points to 6 data points, ergo a memory cost of $\mathcal{O}(200^2) = \mathcal{O}(40000)$ to just $\mathcal{O}(6^2) = \mathcal{O}(36)$.</p>
 
 <p>The training objective consists now of maximizing the probability of the training data under the distribution of the GP with the inducing points $\widetilde{\mathcal{D}} = \{ \widetilde{X}, \widetilde{y} \}$.
@@ -210,7 +210,9 @@ Thus we have the following objective function</p>
 <p>So let’s code that down in PyTorch!</p>
 
 <p>So we already have the data.
-Next up is the base class for the GP:</p>
+Next up is the base class for the GP.
+The most straight-forward way of using inducing points is to simply declare them as parameters which have gradients.
+Remember that both the objective function via the logarithm of the Normal distribution as well as the predictions consist of linear terms, so we can easily backpropagate through these operations to obtain the gradients for the kernel parameters and inducing points from the log probability of the true data under the Normal distribution of the GP.</p>
 
 <div class="highlighter-rouge">
 <pre class="highlight"><code>class GP_InducingPoints(torch.nn.Module):
