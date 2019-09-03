@@ -3,7 +3,7 @@ layout: post
 title:  "Inducing Points in Gaussian Processes"
 date:   2019-07-15
 excerpt: "Tackling the memory cost of GP's"
-image: "/blog/InducingPoints/IP_GP.gif.png"
+image: "/blog/InducingPoints/Cover.png"
 ---
 <head>
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
