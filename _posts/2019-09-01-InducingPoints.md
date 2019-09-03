@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Inducing Points in Gaussian Processes"
-date:   2019-07-15
+date:   2019-08-30
 excerpt: "Tackling the memory cost of GP's"
 image: "/blog/InducingPoints/Cover.png"
 ---
