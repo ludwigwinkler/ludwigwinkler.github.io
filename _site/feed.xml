@@ -1,20 +1,4 @@
-<<<<<<< Updated upstream
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.2.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2020-04-05T16:56:45+02:00</updated><id>/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Intro to Stochastic Differential Equations</title><link href="/blog/SDE/" rel="alternate" type="text/html" title="Intro to Stochastic Differential Equations" /><published>2020-03-20T00:00:00+01:00</published><updated>2020-03-20T00:00:00+01:00</updated><id>/blog/SDE</id><content type="html" xml:base="/blog/SDE/">&lt;head&gt;
-=======
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.2.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2020-04-05T16:55:38+02:00</updated><id>/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Intro to Stochastic Differential Equations</title><link href="/blog/SDE/" rel="alternate" type="text/html" title="Intro to Stochastic Differential Equations" /><published>2020-03-20T00:00:00+01:00</published><updated>2020-03-20T00:00:00+01:00</updated><id>/blog/SDE</id><content type="html" xml:base="/blog/SDE/">&lt;head&gt;
->>>>>>> Stashed changes
-&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
-       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       &lt;/script&gt;
-       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
-&lt;/head&gt;</content><summary type="html">Wiener twist for differential equations</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/blog/InducingPoints/Cover.png" /></entry><entry><title type="html">Intro to Bayesian Inference</title><link href="/blog/BayesianInference/" rel="alternate" type="text/html" title="Intro to Bayesian Inference" /><published>2020-02-13T00:00:00+01:00</published><updated>2020-02-13T00:00:00+01:00</updated><id>/blog/BayesianInference</id><content type="html" xml:base="/blog/BayesianInference/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.2.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2020-04-05T16:56:45+02:00</updated><id>/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Intro to Bayesian Inference</title><link href="/blog/BayesianInference/" rel="alternate" type="text/html" title="Intro to Bayesian Inference" /><published>2020-02-13T00:00:00+01:00</published><updated>2020-02-13T00:00:00+01:00</updated><id>/blog/BayesianInference</id><content type="html" xml:base="/blog/BayesianInference/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -2253,4 +2237,116 @@ Ohren und Augen an der Spree.&lt;/p&gt;
 &lt;p&gt;Ich höre schon des Alex’ Getümmel,&lt;br /&gt;
 Hier ist des Subkulturs wahrer Himmel,&lt;br /&gt;
 Zufrieden jauchzet groß und klein:&lt;br /&gt;
-&lt;strong&gt;In Berlin bin ich Mensch, hier darf ich’s sein!&lt;/strong&gt;&lt;/p&gt;</content><summary type="html">Goethe's Easter Walk, the Berlin Version</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="" /></entry></feed>
+&lt;strong&gt;In Berlin bin ich Mensch, hier darf ich’s sein!&lt;/strong&gt;&lt;/p&gt;</content><summary type="html">Goethe's Easter Walk, the Berlin Version</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="" /></entry><entry><title type="html">Bayesian Optimization</title><link href="/blog/BayesianOptimization/" rel="alternate" type="text/html" title="Bayesian Optimization" /><published>2018-04-24T00:00:00+02:00</published><updated>2018-04-24T00:00:00+02:00</updated><id>/blog/BayesianOptimization</id><content type="html" xml:base="/blog/BayesianOptimization/">&lt;head&gt;
+&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
+       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
+         MathJax.Hub.Config({
+           tex2jax: {
+             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
+             displayMath: [['$$','$$']],
+             processEscapes: true
+           }
+         });
+       &lt;/script&gt;
+       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+
+&lt;h2 id=&quot;bayesian-optimization&quot;&gt;Bayesian Optimization&lt;/h2&gt;
+
+&lt;p&gt;As stated above, many problem settings in engineering and science can be formulated as optimization problems of a criterion, commonly called an objective function, $\mathcal{F}(x)$ with respect to some argument $x$.
+The goal of any optimization is to find the global optimum of such a function $\mathcal{F}(x)$.
+For linear or convex optimization problems, this is usually feasible, yet optimization becomes difficult for non-linear objective functions.
+Bayesian optimization tries to tackle such non-linear objective functions by searching for a global optimum in a probabilistical manner.&lt;/p&gt;
+
+&lt;h2 id=&quot;optimization&quot;&gt;Optimization&lt;/h2&gt;
+
+&lt;p&gt;In computer science, mathematics and operations research, mathematical optimization aims to find the best value $x^* \in \mathcal{X}$ from a set of feasible values $\mathcal{X}$ with respect to an criterion or objective function $\mathcal{F}(x)$.
+Optimization problems can be formulated as either maximization or minimization problems of the objective function:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+     \mathcal{F}(x^* ) = \min_{x \in \mathcal{X}} \mathcal{F}(x) = \max_{x \in \mathcal{X}} -\mathcal{F}(x)
+\end{align}&lt;/script&gt;
+
+&lt;p&gt;where&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+     x^* = \underset{x \in \mathcal{X}}{\operatorname{argmin}} \mathcal{F}(x) = \underset{x \in \mathcal{X}}{\operatorname{argmax}} -\mathcal{F}(x)
+\end{align}&lt;/script&gt;
+
+&lt;p&gt;Since $\mathcal{F}(x)$ is often a complicated, non-linear function the solution is searched for in an iterative manner.
+Most optimization algorithms evaluate the objective function $\mathcal{F}(x)$ through a set of succesive queries $x_{1:n}=\{ x_i \}_{i=1}^n \subset \mathcal{X}$ such that the information of the previous evaluations guide the next evaluation $x_{n+1}$ through a utility function&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+     x_{n+1} = \underset{x \in \mathcal{X}}{\operatorname{argmax}} \ \mathcal{U}(x \ | \ x_1, \ldots, x_n)
+\end{align}&lt;/script&gt;
+
+&lt;p&gt;The information contained in the past evaluations $x_{1:n}$ is thus leveraged in a way to make the evaluation $x_{n+1}$ as close as possible to the global optimum.
+The utility function $\mathcal{U}$ should balance the exploration of the set of feasible optima $\mathcal{X}$ while simultaneously exploiting existing information in $ x_{1:n}$ to find the globally optimal solution $x^* $.&lt;/p&gt;
+
+&lt;h2 id=&quot;bayesian-optimization-with-gaussian-processes&quot;&gt;Bayesian Optimization with Gaussian Processes&lt;/h2&gt;
+
+&lt;p&gt;In Bayesian optimization a Gaussian process is used to compute a probability distribution over the past evaluations $x_{1:n}$, which guides a subsequent sampling process.
+The sampling process uses an acquisition function $\Lambda(x \ | \ x_{1:n})$, which is a utility function on the posterior distribution computed by the Gaussian process.
+The acquisition function balances both the exploration as well as the exploitation of the unknown objective function $\mathcal{F}(x)$.
+The next evaluation is chosen such that it maximizes the acquisition function, i.e.
+\begin{align}
+     x_{n+1} = \underset{x \in \mathcal{X}}{\operatorname{argmax}} \ \Lambda(x \ | \ x_{1:n})
+\end{align}&lt;/p&gt;
+
+&lt;p&gt;By computing posterior distributions over all predictions at once, Gaussian processes have a powerful property which enables them to search for an optimum globally.
+The posterior distributions allow Gaussian processes to balance both exploitation and exploration of the set of feasible solutions by incorporating their uncertainty into optimization task.&lt;/p&gt;
+
+&lt;p&gt;The acqusition function $\Lambda(x \ | \ x_{1:n})$ serves as an improvement criterion for the yet unevaluated feasible solutions.
+The improvement is computed relative to the optimal solution $x^+ \in x_{1:n}$ in the set of previous evaluations $x_{1:n}$,&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+     x^+ &amp;= \underset{x \in x_{1:n}}{\operatorname{argmax}} \ \mathcal{F}(x)
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;A popular acquisition functions is the upper/lower confidence bound \cite{ucb}, which scales the mean with respect to the previously best evaluation.
+It then considers a multiple of the standard deviation and adds it for maximization problems or subtracts it for minimization problems.
+The hyperparameter $\kappa$ is usually selected as a small integer number, which can be intuitively selected due to its close relationship to confidence values of the Gaussian distribution.
+Given the mean $\mu(x)$ and covariance function $\sigma(x)$, the upper confidence bound is computed with the hyperparameter $\kappa$ via&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+     \mathbb{UCB}[x] = \mu(x) + \kappa \sigma(x) - \mathcal{F}(x^+)
+\end{align}&lt;/script&gt;
+
+&lt;p&gt;A different acquisition function is the expected improvement (EI) \cite{mockus1975bayesian} which considers the expected value at a point $x_{n+1}$ above the currently best value $x^+$.
+The expected improvement is the most Bayesian acquisition function as it incorporates the posterior in its entirety including the uncertainty.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+     \mathbb{EI}[x] &amp;= \int_{x^+}^{\infty} \left( \frac{f(x) - f(x^+)}{\sigma(x)} \right) \mathcal{N}(x | \mu(x), \sigma(x)) df(x) \\
+     &amp;= \int_{x^+}^{\infty} z(x) \ \mathcal{N}(x | \mu(x), \sigma(x)) df(x) \\
+     &amp;=\sigma(x) \left( z(x)  \Phi \left( z(x) \right) + \mathcal{N}_{0,1} \left( z(x) \right) \right) \\
+     %&amp;=\sigma(x) \left( \frac{\mu(x) - f(x^+)}{\sigma(x)}  \Phi \left( \frac{\mu(x) - f(x^+)}{\sigma(x)} \right) + \mathcal{N}_{0,1} \left( \frac{\mu(x) - f(x^+)}{\sigma(x)} \right) \right)
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;where the term $z(x)$ represents the z-score for a specific value $x$ in the yet unevaluated feasible set solutions:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+     z(x) &amp;= \frac{f(x) - f(x^+)}{\sigma(x)}
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;While the UCB acquisition function has a more straightforward interpretation, it suffers from getting stuck in local minima.
+This is due to UCB using a fixed integer multiple $\kappa$ of the variance instead of integrating over it.
+The EI acquisition utilizes the uncertainty in a fully Bayesian way and is able to explore the feasible set even after having found an optimum.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;BO_EI0.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
+&lt;img src=&quot;BO_EI1.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
+&lt;img src=&quot;BO_EI2.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
+&lt;img src=&quot;BO_EI3.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
+&lt;img src=&quot;BO_EI4.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
+&lt;img src=&quot;BO_EI5.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
+&lt;img src=&quot;BO_EI6.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
+&lt;img src=&quot;BO_EI7.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
+&lt;img src=&quot;BO_EI8.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
+&lt;img src=&quot;BO_EI9.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
+&lt;img src=&quot;BO_EI10.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
+&lt;img src=&quot;BO_EI11.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
+&lt;img src=&quot;BO_EI12.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
+&lt;img src=&quot;BO_EI13.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;
+&lt;img src=&quot;BO_EI14.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;75%&quot; /&gt;&lt;/p&gt;</content><summary type="html">Using Gaussian Processes for Optimization</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/images/BO_EI4.png" /></entry></feed>
