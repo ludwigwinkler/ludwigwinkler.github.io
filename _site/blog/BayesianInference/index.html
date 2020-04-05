@@ -10,8 +10,8 @@
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
-<title>LW - About</title>
-<meta name="description" content="About Ludwig Winkler">
+<title>Intro to Bayesian Inference</title>
+<meta name="description" content="">
 
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/icon/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/icon/favicon-32x32.png">
@@ -33,58 +33,92 @@
 			<div id="wrapper" class="fade-in">
 
 				<!-- Header -->
-				<header id="header">
-					<a href="/" class="logo">Ludwig Winkler</a>
-				</header>
+        <header id="header">
+          <a href="/" class="logo">Ludwig Winkler</a>
+        </header>
 
 				<!-- Nav -->
 					<nav id="nav">
 
             <ul class="links">
   <li class=""><a href="/">Home</a></li>
-  <li class=""><a href="/blog/">Blog</a></li>
+  <li class=" active "><a href="/blog/">Blog</a></li>
   <li class=""><a href="/readinglist/">Reading List</a></li>
-  <li class=" active "><a href="/about/">About</a></li>
+  <li class=""><a href="/about/">About</a></li>
 </ul>
 
 
 						<ul class="icons">
-              <li><a href="https://twitter.com/ludiXIVwinkler" class="icon fa-twitter" rel="nofollow"><span class="label">Twitter</span></a></li>
-              <!-- <li><a href="https://facebook.com/default" class="icon fa-facebook" rel="nofollow"><span class="label">Facebook</span></a></li> -->
-              <!-- <li><a href="https://instagram.com/default" class="icon fa-instagram" rel="nofollow"><span class="label">Instagram</span></a></li> -->
-              <li><a href="https://github.com/ludwigwinkler" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
+              <li><a href="https://twitter.com/default" class="icon fa-twitter" rel="nofollow"><span class="label">Twitter</span></a></li>
+              <li><a href="https://facebook.com/default" class="icon fa-facebook" rel="nofollow"><span class="label">Facebook</span></a></li>
+              <li><a href="https://instagram.com/default" class="icon fa-instagram" rel="nofollow"><span class="label">Instagram</span></a></li>
+              <li><a href="https://github.com/default" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
 						</ul>
 					</nav>
 
 				<!-- Main -->
 				<div id="main">
+          <section class="post">
+    				<header class="major">
+      				<span class="date">13 Feb 2020</span>
+      				<h1>Intro to Bayesian Inference</h1>
+      				<p>Do you have a minute to talk about our lord and saviour, Thomas Bayes ... ?</p>
+      			</header>
+      			<div class="image main"><img src="/blog/BayesianInference/BayesML.png" alt=""></div>
+      			<p></p>
+<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
+       <script type="text/x-mathjax-config">
+         MathJax.Hub.Config({
+           tex2jax: {
+             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+             displayMath: [['$$','$$']],
+             processEscapes: true
+           }
+         });
+       </script>
+       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 
-					<!-- Post -->
-					<section class="post">
-						<p></p>
-<h2 id="some-info-about-me">Some Info about Me</h2>
 
-<p><span class="image left"><img src="/images/LudwigWinkler_AlexSmall.jpg" alt=""></span></p>
+<p>This is a talk I was invited to give at Europe’s largest robo advisor <a href="https://uk.scalable.capital">Scalable Capital</a> in Munich .
+It serves as an introduction to Bayesian Inference covering the two main approaches of Markov <a href="https://ludwigwinkler.github.io/blog/HMC/">Chain Monte Carlo sampling</a> and Variational Inference.
+It is fairly high-level since it was given to a large audience with diverse professional backgrounds.</p>
 
-<p>I spent my kindergarten and elementary school years in Austin, Texas where, among other things, I enjoyed the best BBQ west of the Mississippi.
-During high school I lived in Lille, France where I learned French and experienced superb food and the charming little differences between Germany and France.
-After graduating from high school I wanted to learn more about China and the Chinese language and did my volunteer community service in China, working as a volunteer teacher in a local kindergarten in the suburbs of Beijing.</p>
+<p>The slides can be downloaded <a href="BayesML.pdf">here</a> with corrected typos.</p>
 
-<p>Before my graduate studies at the TU Berlin, I did my undergraduate studies in biomedical engineering at the <a href="https://www5.cs.fau.de">Pattern Recognition Lab</a> at FAU Erlangen-Nurnberg.
-I mostly worked on machine learning for medical images and computer vision.
-On the side I was an assistant teacher for the ‘Signals &amp; Systems I/II’ lectures for a year where I oversaw the exercises and tutored younger students taking the class.</p>
+      		</section>
 
-<p>It was in fact speech recognition that sparked my interest in machine learning and I am very grateful to <a href="https://www5.cs.fau.de/our-team/noeth-elmar">Elmar Nöth</a> who introduced me to academic conferences as an undergraduate student and enabled me to be a volunteer at the <a href="http://www.interspeech2016.org">Interspeech conference</a> in 2015 and 2016.
-Talking about machine learning, one could say that ‘speech made me do it’, since it still up to this day fascinates me how mathematicians, computational linguists and computer scientists are able to decode something seemingly so intricate as the human speech.
-Since then my interest has shifted to probabilistic modeling, neural networks for differential equations and graph processing with neural networks.
-<!-- After the 2016 Interspeech, I did a kick-ass road trip through the Western United States where we drove 7.000km from San Francisco, California through Austin, Texas and finishing in Ocean Isle Beach, North Carolina. --></p>
+          <div class="comments-wrapper">
+          <div id="disqus_thread"></div>
+          <script>
+              /**
+               *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+               *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+               */
 
-					</section>
+              var disqus_config = function () {
+                  this.page.url = '/blog/BayesianInference/';  /*Replace PAGE_URL with your page's canonical URL variable*/
+                  this.page.identifier = '/blog/BayesianInference/'; /*Replace PAGE_IDENTIFIER with your page's unique identifier variable*/
+              };
+
+              (function() {  /* dont endit below this line */
+                  var d = document, s = d.createElement('script');
+
+                  s.src = 'https://default.disqus.com/embed.js';
+
+                  s.setAttribute('data-timestamp', +new Date());
+                  (d.head || d.body).appendChild(s);
+              })();
+          </script>
+          <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+</noscript>
+        </div>
+<!-- /.comments-wrapper -->
+
 
 					<!-- Footer -->
 						<footer>
               <ul class="actions">
-								<li><a href="/blog/" class="button">Our Blog</a></li>
+                <li><a href="/blog/" class="button">Our Blog</a></li>
               </ul>
 						</footer>
 					</div>
@@ -150,8 +184,8 @@ Since then my interest has shifted to probabilistic modeling, neural networks fo
 
 			</div>
 
-			<!-- Scripts -->
-			<!-- DYN -->
+      <!-- Scripts -->
+  		<!-- DYN -->
 <script src="/assets/js/jquery.min.js"></script>
 <script src="/assets/js/jquery.scrollex.min.js"></script>
 <script src="/assets/js/jquery.scrolly.min.js"></script>

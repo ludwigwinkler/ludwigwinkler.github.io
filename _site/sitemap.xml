@@ -2,9 +2,27 @@
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
     <url>
+      <loc>/blog/SDE/</loc>
+      
+        <lastmod>2020-03-20T00:00:00+01:00</lastmod>
+      
+      <changefreq>weekly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  
+    <url>
+      <loc>/blog/BayesianInference/</loc>
+      
+        <lastmod>2020-02-13T00:00:00+01:00</lastmod>
+      
+      <changefreq>weekly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  
+    <url>
       <loc>/blog/InducingPoints/</loc>
       
-        <lastmod>2019-08-30T00:00:00+02:00</lastmod>
+        <lastmod>2019-09-30T00:00:00+02:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -59,15 +77,6 @@
       <loc>/blog/NMF/</loc>
       
         <lastmod>2019-01-24T00:00:00+01:00</lastmod>
-      
-      <changefreq>weekly</changefreq>
-      <priority>0.7</priority>
-    </url>
-  
-    <url>
-      <loc>/blog/BayesianNeuralNetworks/</loc>
-      
-        <lastmod>2018-06-08T00:00:00+02:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
