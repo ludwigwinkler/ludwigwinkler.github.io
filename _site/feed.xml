@@ -1,4 +1,278 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.2.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2020-04-05T17:03:38+02:00</updated><id>/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Intro to Bayesian Inference</title><link href="/blog/SDE/" rel="alternate" type="text/html" title="Intro to Bayesian Inference" /><published>2020-02-13T00:00:00+01:00</published><updated>2020-02-13T00:00:00+01:00</updated><id>/blog/SDE</id><content type="html" xml:base="/blog/SDE/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-04-12T18:36:13+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Stochastic Differential Equations</title><link href="http://localhost:4000/blog/SDE/" rel="alternate" type="text/html" title="Stochastic Differential Equations" /><published>2020-03-30T00:00:00+02:00</published><updated>2020-03-30T00:00:00+02:00</updated><id>http://localhost:4000/blog/SDE</id><content type="html" xml:base="http://localhost:4000/blog/SDE/">&lt;head&gt;
+&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
+       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
+         MathJax.Hub.Config({
+           tex2jax: {
+             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
+             displayMath: [['$$','$$']],
+             processEscapes: true
+           }
+         });
+       &lt;/script&gt;
+       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+
+&lt;h4 id=&quot;non-differential-equations&quot;&gt;Non-Differential Equations&lt;/h4&gt;
+
+&lt;p&gt;Most of us are quite familiar with linear and non-linear equations from our 101 math classes and lectures.
+These equations define an equality between the two terms left and right of the equal sign:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;y = f(x)&lt;/script&gt;
+
+&lt;p&gt;These functions assert an equality between $y$ and $x$ through the function $f(\cdot)$ and describe a “static” relationship between a value $x$ and its corresponding value $y$.
+Examples of these functions are numerous and we can list a couple of them here:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Linear equations: $y = A x + b$&lt;/li&gt;
+  &lt;li&gt;Exponential equations: $y = e^x$&lt;/li&gt;
+  &lt;li&gt;Polynomials: $y = \sum_{k=0}^n a_k x^k$&lt;/li&gt;
+  &lt;li&gt;Trigonometric equations: $y = \sin(x)$&lt;/li&gt;
+  &lt;li&gt;and the list goes on and on …&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;All the equations above share the characteristic that they equate two separate values $y$ and $x$ through the equal sign “$=$”.
+The equation assert an equality between to distinct values $y$ and $x$.&lt;/p&gt;
+
+&lt;h4 id=&quot;differential-equations&quot;&gt;Differential Equations&lt;/h4&gt;
+
+&lt;p&gt;As you can guess from the title there is another important class of equations: differential equations.
+These equations relate one or more functions to their derivatives.
+Mathematically this looks like the following:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\underbrace{\frac{d y}{dx}}_{\text{derivative}} = f(x)&lt;/script&gt;
+
+&lt;p&gt;As we can see from above the one thing that changed to our earlier, non-differential equation is the derivative.
+Instead of telling us what the value $y$ is given the function $f(x)$ as in the case of non-differential equations, the differential equation above tells us the change of $y$ with respect to $x$.
+In plain English, it tells us how much $y$ changes if we change $x$ by simply evaluating the function $f(x)$.&lt;/p&gt;
+
+&lt;p&gt;Naturally, the question arises where we ask ourselves what the heck do these equations tell us.
+In non-differential equations, the relationship between input to a function and output is quite straight forward.&lt;/p&gt;
+
+&lt;p&gt;I struggled for quite some time to arrive at an intuitive interpretation of what differential equations actually represent.
+Fortunately, one field where differential equations pop up en masse is physics (which apart from quantum physics tends to be quite intuitive for humans).
+So we’ll make a detour through physics to keep the intuition alive while diving into differential equations.&lt;/p&gt;
+
+&lt;p&gt;Differential equations are often employed in physics when a physical system is &lt;strong&gt;most accurately described through its instantaneous change in time&lt;/strong&gt;.
+It should be noted that the differential could be defined with respect to any argument of the function $f(\cdot)$, but in physics the time differential $d / dt$ is often the differential of interest as we want to predict things into the future.
+In the simplest case, a physical object $x(t)$ moves through time and space according to some function:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\underbrace{\frac{d}{dt} \ x(t)}_{\text{change over time}}  = \underbrace{f(t, x(t))}_{\text{value of change}} \quad \cong \quad f(x(t))&lt;/script&gt;
+
+&lt;p&gt;The equation above simply states that the change over time, $d  x(t) / dt$ is equivalent to the function $f(t, x(t))$.
+Mathematically, we require the time $t$ to appear in the function $f(t, x(t))$ since otherwise the time derivative wouldn’t exist.
+For a more intuitive notation we can drop it and equate the change $d/dt x(t)$ with the function $f( \cdot )$ with the ‘essentially the same’ symbol $\cong$.&lt;/p&gt;
+
+&lt;p&gt;We can write the differential equation in a shorter way by using the &lt;a href=&quot;https://en.wikipedia.org/wiki/Differential_(infinitesimal)&quot;&gt;infinitesimal differential&lt;/a&gt; by pulling $dt$ over to the other side:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;dx(t) = f(t, x(t)) dt&lt;/script&gt;
+
+&lt;p&gt;which simply states that a “super small” change $dx(t)$ in $x(t)$ corresponds to function $f(t, x(t))$ “scaled” by the “super small” time difference $dt$.&lt;/p&gt;
+
+&lt;p&gt;Below is an image juxtaposing what we refer to as non-differential equations and a differential equations with respect to time:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/SDE/EqVsDiffEq.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;100%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Instead of working with a “absolute” equation as shown on the left side, the differential equation on the right gives us the change $dx(t)$ for any point $x(t)$ at any point in time $t$ (which is mathematically a vector field).
+&lt;strong&gt;Each arrow in the right plot is an evaluation of the differential equation $dx(t)$ at a specific point $x(t)$ at a specific point in time $t$.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;A more intuitive example of the right hand plot above is the temperature of a hot coffee mug.
+The hotter the coffee mug, the larger the temperature gradient between coffee mug and the surrounding.
+So the larger the gradient the more temperature (thermal energy) is passed off into the environment of the hot coffee mug, ergo the temperature decrease is faster for coffee mugs with high temperatures.
+(To be frank, this is not the most physically correct way of how energy behaves, but this is just for an intuitive visualization.)&lt;/p&gt;
+
+&lt;p&gt;The grey lines in in the right plot model the changing temperatures over time of three coffee mugs with different temperatures.
+We model the thermal energy dissipation through a (ordinary) differential equation and would like to know what the temperature of the three coffee mugs will be at a later point in time.
+Computing the later temperature amounts to “little more” than following the arrows.
+These arrows are computed through the differential equation and tell us what the temperature change $dx(t)$ is for a mug with a specific temperature $x(t)$ at time $t$.&lt;/p&gt;
+
+&lt;p&gt;On a side note: Notice how the arrows don’t change in their direction and magnitude for a specific value $x(t)$ while we progress in time. This signals that $dx(t)$ doesn’t actually use $t$ to compute the change in temperature.&lt;/p&gt;
+
+&lt;p&gt;The way we solve differential equations is to start at some initial point $x(0)$ and add up all the temperature changes $dx(t)$ that the hot coffee mug is exposed to over time.
+Mathematically, this amounts to little more than:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;x(T) = x(0) + \underbrace{\int_{t=0}^T dx(t)}_{\text{sum up all the changes}}&lt;/script&gt;
+
+&lt;p&gt;the solution of which is shown as the grey line in the right plot.&lt;/p&gt;
+
+&lt;p&gt;Another analogy would be kicking a soccer ball over a soccer field.
+The ball starts somewhere $x(0)$ and you kick it repeatedly in some direction (adding $dx(t)$ repeatedly).
+Each kick changes the location of the soccer ball and results in the ball lying in a new position $x(t)$.
+After we kicked the soccer ball about the soccer field enough, we’ll finally leave it at $x(T)$.&lt;/p&gt;
+
+&lt;p&gt;Unfortunately, computers can’t really work with infinitesimal small number like $dx(t)$ or $dt$ since numbers in computers are stored with a finite amount of bits.
+As so often, the (approximate) solution is to discretize the changes to very small, yet still representable values of $\Delta x(t)$ and $\Delta t$:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+x(T) &amp;= x(0) + \underbrace{\int_{t=0}^T dx(t)}_{\text{sum up all the changes}} \\
+&amp; \underbrace{\approx}_{\text{discretize}} x(0) + \sum_{t=0}^T \Delta x(t)
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;where $t$ is some finite partition of time into discrete values.&lt;/p&gt;
+
+&lt;p&gt;It turns out that the integral above (and its respective discrete approximation) is all we need to solve (ordinary) differential equations.
+More importantly it’s all we need to get a basic understanding of stochastic differential equations.
+But before we can proceed to stochastic differential equations, we have to talk above stochasticity over time.&lt;/p&gt;
+
+&lt;p&gt;Enter Wiener processes …&lt;/p&gt;
+
+&lt;h4 id=&quot;wiener-process&quot;&gt;Wiener Process&lt;/h4&gt;
+
+&lt;p&gt;In order to understand Wiener processes we need to think about the position of a particle in an Euclidean space that moves purely randomly.
+The question is how we could model such a particle.&lt;/p&gt;
+
+&lt;p&gt;The first idea would be to determine that at any point in time the particle has the tendency to move randomly in space.
+Therefore it does not jiggle and bounce at discrete time steps but will always move an infinitesimally small distance $dx(t)$ in a random direction $\epsilon$ for any infinitesimally short period of time $dt$.
+&lt;!-- We can also conclude, that the longer the particle moves, the farther the particle can actually move from its starting point. --&gt;
+&lt;!-- This introduces a relationship between how long and how far the little jiggly particle can move. --&gt;&lt;/p&gt;
+
+&lt;p&gt;Visually we want the random moving particle looking something like this in two dimensions:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/SDE/BrownianMotion.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We can thus proclaim the following, somewhat un-mathematical property of this rambunctious little particle:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\underbrace{dx_t}_{\text{change in space}} \equiv \overbrace{\epsilon}^{\text{random move}} \underbrace{&quot;dt&quot;}_{\text{some change in time}}&lt;/script&gt;
+
+&lt;p&gt;There are a couple of things to observe here:&lt;/p&gt;
+
+&lt;!-- * First is the modified notation of $dx_t$ which is simply a more compact notation for $dx(t)$ and is completely equivalent. --&gt;
+&lt;ul&gt;
+  &lt;li&gt;First we introduced a random variable $\epsilon$ which follows some probability distribution.&lt;/li&gt;
+  &lt;li&gt;Secondly, through the infinitesimal differentials on both sides we equated the random move in space with the duration of the movement just like in a differential equation.&lt;/li&gt;
+  &lt;li&gt;Thirdly, the infinitesimal movements of $x_t$ through time are completely independent since $\epsilon$ is sampled uncorrelated through time.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;It turns out that if we choose the random movements $\epsilon$ and the change in time $”dt”$ smartly, we can derive convenient theoretical properties about the movement of the little random particle $x_t$.&lt;/p&gt;
+
+&lt;p&gt;Since $\epsilon$ is a random variable at any point in time, the position of $x_t$ will never be predictable with absolute certainty.
+Instead we have to treat the position of the particle $x_t$ itself as a random variable, the behavior of which is governed by the differential equation above.&lt;/p&gt;
+
+&lt;p&gt;First up is the choice of $\epsilon$.
+The usage of the Normal distribution $\mathcal{N}(\mu, \sigma)$ is prevalent in a lot of modelling approaches due to the convergence of sequences of random variables and it furthermore has nice theoretical properties.
+For that reason we will model the probability of the random movement $\epsilon$ with a standard normal distribution, namely $\epsilon \sim \mathcal{N}(0,1)$.&lt;/p&gt;
+
+&lt;p&gt;Secondly we will chose the “amount of time $dt$” to actually be $\sqrt{dt}$, the reason of which will be clear in an instant.&lt;/p&gt;
+
+&lt;p&gt;Thirdly, we want to particle to start at zero, so $x_0 = 0$.&lt;/p&gt;
+
+&lt;p&gt;Given these modelling assumptions, we are interested where the particle could turn up at a later point in time, so we want to know what $x_T$ is:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+  x_T &amp;= x_0 + \int_{t=0}^T dx_t \\
+  &amp;= \underbrace{x_0}_{\text{$=0$}} + \int_{t=0}^T \epsilon \sqrt{dt} \\
+  &amp;= \int_{t=0}^T \epsilon \sqrt{dt}
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;But since $\epsilon$ is a random variable we actually have to treat the position of the particle at $x_T$ as a random variable.
+The most that we can do is thus to treat $x_T$ as a probability distribution for which we can compute the first two moments, the mean and the variance:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+  \mathbb{E}\left[ x_T \right] &amp;= \mathbb{E}\left[\int_{t=0}^T dx_t \right] \\
+  &amp;= \int_{t=0}^T \underbrace{\mathbb{E}\left[ \epsilon \right]}_{\mathcal{N}(0,1)} \sqrt{dt} \\
+  &amp;= 0
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+  \mathbb{V}\left[ x_T \right] &amp;= \mathbb{V}\left[\int_{t=0}^T dx_t \right] \\
+  &amp;= \int_{t=0}^T \underbrace{\mathbb{V}\left[ \epsilon \sqrt{dt} \right]}_{\mathbb{V}[a X] = a^2 \mathbb{V}[X]}  \\
+  &amp;= \int_{t=0}^T dt \underbrace{\mathbb{V}\left[ \epsilon \right]}_{\epsilon \sim \mathcal{N}(0,1)}  \\
+  &amp;= \int_{t=0}^T dt  \\
+  &amp;= T
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;We can validate the properties of the Wiener process experimentally through what a good friend of mine calls “computational evidence”:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/SDE/BrownianMotionExperiment.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We can observe both the sampled mean and the variance (in red) of our 100 Wiener processes match the expected mean and variance (in gray) up to the noise that we introduce through sampling.
+Basically all the paths stay around zero where they start and they spread out according to our analytical computed variance of $\mathbb{V}[x_t] = t$ over time.&lt;/p&gt;
+
+&lt;p&gt;Since we chose $\epsilon$ and $”dt”$ smartly, we arrive at quite succinct definitions for the mean and variance of this random variable $x_T$.
+In fact, this specific kind of stochastic process has a specific name.
+By choosing the random movement $\epsilon \sim \mathcal{N}(0,1)$, the starting value $x_0=0$ and the time differential $\sqrt{dt}$ we have defined our little, rambunctious particle to follow a &lt;strong&gt;Wiener process&lt;/strong&gt; which is a specific kind of stochastic process.
+The defining properties of a Wiener process $W_t$ ( $W_t$ being the common notation of a Wiener process) that describes the infinitesimal movement of a particle through $dx_t = \epsilon \sqrt{dt}$ are the following:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;$W_0 = 0$ &lt;br /&gt;
+This means that the Wiener process always starts at zero.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Independent increments: $\mathbb{C}[W_{t+u} - W_s, W_s] =0$ for $u \geq 0$ and $s \leq t$ &lt;br /&gt;
+Increments (the movement of the Wiener process) are independent from the past movements. $\mathbb{C}[\cdot , \cdot ]$ is the covariance between two random variables.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Gaussian increments: $W_{t+u} - W_t \sim \mathcal{N}(0, u)$ &lt;br /&gt;
+The difference between any two realizations is Gaussian distributed accordingly to the time difference between these two realizations.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Continuous paths in time $t$.&lt;br /&gt;
+We can basically zoom infinitely far into the movements on the time axis and we will never find a discontinuous jump. Yet, due to it being a stochastic process it turns out that the Wiener process is not differentiable.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;In order to be all set up for the final chapter of this post, we will define an infinitesimal version of the Gaussian increment property of the Wiener process:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;W_{t+u} - W_t \sim \mathcal{N}(0, u) \quad \Leftrightarrow \quad dW_t \sim \mathcal{N}(0,dt)&lt;/script&gt;
+
+&lt;h4 id=&quot;stochastic-differential-equations--differential-equations--wiener-processes&quot;&gt;Stochastic Differential Equations (= Differential Equations + Wiener Processes)&lt;/h4&gt;
+
+&lt;p&gt;Once we understood differential equations and Wiener processes, we’ll realize that (basic) stochastic differential equations are just the combination of the two.
+We can thus define a stochastic differential equation as&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\underbrace{dX_t}_{\text{total change}} = \underbrace{\mu_t dt}_{\text{deterministic}} + \underbrace{\sigma_t dW_t}_{\text{stochastic}}&lt;/script&gt;
+
+&lt;p&gt;which defines the infinitesimal change in the random variable $X_t$ at time $t$ as the combination of a deterministic change $\mu_t dt$ and a scaled Wiener process $\sigma_t dW_t \sim \mathcal{N}(0,\sigma_t^2 dt)$.&lt;/p&gt;
+
+&lt;p&gt;With a constant drift, this looks something like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/SDE/SDEDriftDiff.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;For such drift-diffusion processes, or more specifically Ito drift-diffusion processes, we can compute the analytical mean and variance of how $X_t$ will be distributed in the future.
+To keep things simple, we will work with a constant mean $\mu = \mu_t$ and diffusion $\sigma = \sigma_t$.
+Solving the SDE amounts to:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+  X_T &amp;= \int_{t=0}^T dX_t \\ 
+  &amp;= \int_{t=0}^T \mu dt + \sigma dW_t \\
+  &amp;= \mu \int_{t=0}^T dt + \sigma \int_{t=0}^T dW_t \\
+  &amp;= \mu T + \sigma \int_{t=0}^T dW_t \\
+  &amp;= \mu T + \sigma W_T \\
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;Similarly to earlier, the Brownian motion $W_T \sim \mathcal{N}(0,T)$ is a random variable, which entices us to compute the mean and variance of the term above:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+  \mathbb{E}[X_T] &amp;= \mathbb{E}[\mu T + \sigma W_T] \\
+  &amp;= \mu T + \sigma \mathbb{E}[W_T] \\
+  &amp;= \mu T
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+  \mathbb{V}[X_T] &amp;= \mathbb{V}[\mu T + \sigma W_T] \\
+  &amp;= \underbrace{\mathbb{V}[\mu T]}_{=0} + \mathbb{V}[\sigma W_T] \\
+  &amp;= \sigma^2 \mathbb{V}[ W_T] \\
+  &amp;= \sigma^2 T \\
+  \mathbb{Std}[X_T] &amp;= \sigma \sqrt{T}
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;which we were able to validate with our “computational evidence” in the plot above.
+The mean increases constantly as time progresses and the standard deviation above and below the mean increases asymptotically due to the $\sqrt{T}$.&lt;/p&gt;
+
+&lt;p&gt;This is a fairly simple SDE since we assume that $\mu_t$ and $\sigma_t$ are constant in time and do not depend on the value of $X_t$.
+Things get significantly more interesting when both $\mu_t$ and $\sigma_t$ change over time depending on the value of $X_t$ such that we are working with&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;dX_t = \mu(t, X_t) dt + \sigma(t, X_t) dW_t&lt;/script&gt;
+
+&lt;p&gt;The drift $\mu(t, X_t)$ and $\sigma(t, X_t)$ can now be potentially highly non-linear and complex functions which could even take in other stochastic processes as additional input.
+But Ito’s lemma, Ornstein-Uhlenbeck processes and Geometric Brownian Motion are topics for another time …&lt;/p&gt;</content><summary type="html">A Wiener twist to differential equations</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/SDE/EqVsDiffEq.png" /></entry><entry><title type="html">Intro to Bayesian Inference</title><link href="http://localhost:4000/blog/BayesianInference/" rel="alternate" type="text/html" title="Intro to Bayesian Inference" /><published>2020-02-13T00:00:00+01:00</published><updated>2020-02-13T00:00:00+01:00</updated><id>http://localhost:4000/blog/BayesianInference</id><content type="html" xml:base="http://localhost:4000/blog/BayesianInference/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -16,25 +290,7 @@
 It serves as an introduction to Bayesian Inference covering the two main approaches of Markov &lt;a href=&quot;https://ludwigwinkler.github.io/blog/HMC/&quot;&gt;Chain Monte Carlo sampling&lt;/a&gt; and Variational Inference.
 It is fairly high-level since it was given to a large audience with diverse professional backgrounds.&lt;/p&gt;
 
-&lt;p&gt;The slides can be downloaded &lt;a href=&quot;BayesML.pdf&quot;&gt;here&lt;/a&gt; with corrected typos.&lt;/p&gt;</content><summary type="html">Do you have a minute to talk about our lord and saviour, Thomas Bayes ... ?</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/blog/BayesianInference/BayesML.png" /></entry><entry><title type="html">Intro to Bayesian Inference</title><link href="/blog/BayesianInference/" rel="alternate" type="text/html" title="Intro to Bayesian Inference" /><published>2020-02-13T00:00:00+01:00</published><updated>2020-02-13T00:00:00+01:00</updated><id>/blog/BayesianInference</id><content type="html" xml:base="/blog/BayesianInference/">&lt;head&gt;
-&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
-       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       &lt;/script&gt;
-       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
-&lt;/head&gt;
-
-&lt;p&gt;This is a talk I was invited to give at Europe’s largest robo advisor &lt;a href=&quot;https://uk.scalable.capital&quot;&gt;Scalable Capital&lt;/a&gt; in Munich .
-It serves as an introduction to Bayesian Inference covering the two main approaches of Markov &lt;a href=&quot;https://ludwigwinkler.github.io/blog/HMC/&quot;&gt;Chain Monte Carlo sampling&lt;/a&gt; and Variational Inference.
-It is fairly high-level since it was given to a large audience with diverse professional backgrounds.&lt;/p&gt;
-
-&lt;p&gt;The slides can be downloaded &lt;a href=&quot;BayesML.pdf&quot;&gt;here&lt;/a&gt; with corrected typos.&lt;/p&gt;</content><summary type="html">Do you have a minute to talk about our lord and saviour, Thomas Bayes ... ?</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/blog/BayesianInference/BayesML.png" /></entry><entry><title type="html">(Basic) Inducing Points in Gaussian Processes</title><link href="/blog/InducingPoints/" rel="alternate" type="text/html" title="(Basic) Inducing Points in Gaussian Processes" /><published>2019-09-30T00:00:00+02:00</published><updated>2019-09-30T00:00:00+02:00</updated><id>/blog/InducingPoints</id><content type="html" xml:base="/blog/InducingPoints/">&lt;head&gt;
+&lt;p&gt;The slides can be downloaded &lt;a href=&quot;BayesML.pdf&quot;&gt;here&lt;/a&gt; with corrected typos.&lt;/p&gt;</content><summary type="html">Do you have a minute to talk about our lord and saviour, Thomas Bayes ... ?</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/BayesianInference/BayesML.png" /></entry><entry><title type="html">(Basic) Inducing Points in Gaussian Processes</title><link href="http://localhost:4000/blog/InducingPoints/" rel="alternate" type="text/html" title="(Basic) Inducing Points in Gaussian Processes" /><published>2019-09-30T00:00:00+02:00</published><updated>2019-09-30T00:00:00+02:00</updated><id>http://localhost:4000/blog/InducingPoints</id><content type="html" xml:base="http://localhost:4000/blog/InducingPoints/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -88,7 +344,7 @@ One can think of this along the line of k-means clustering of the training data 
 
 &lt;p&gt;Let’s first set up the environment and import all the necessary libraries:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import torch
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import torch
 import torch.distributions
 from torch.distributions import Normal, MultivariateNormal
 from torch.utils.data import DataLoader, TensorDataset
@@ -127,12 +383,11 @@ params.add_argument('-lr_ip',                     type=float,         default=0.
 params.add_argument('-num_epochs',                type=int,           default=300)
 
 params = params.parse_args()
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Now we can do some plotting:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;def generate_weightuncertainty_data():
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;def generate_weightuncertainty_data():
 
 	x = np.linspace(-0.35, 0.55, params.num_samples)
 	x_noise = np.random.normal(0., params.x_noise_std, size=x.shape)
@@ -152,8 +407,7 @@ params = params.parse_args()
 	return x, y
 
 generate_weightuncertainty_data()
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;&lt;img src=&quot;/blog/InducingPoints/Data.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
 
@@ -181,7 +435,7 @@ Next up is the base class for the GP.
 The most straight-forward way of using inducing points is to simply declare them as parameters which have gradients.
 Remember that both the objective function via the logarithm of the Normal distribution as well as the predictions consist of linear terms, so we can easily backpropagate through these operations to obtain the gradients for the kernel parameters and inducing points from the log probability of the true data under the Normal distribution of the GP.&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;class GP_InducingPoints(torch.nn.Module):
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;class GP_InducingPoints(torch.nn.Module):
 
 	def __init__(self, _x=None, _y=None, _num_inducing_points = params.num_inducing_points, _dim=1):
 
@@ -201,12 +455,11 @@ Remember that both the objective function via the logarithm of the Normal distri
 
 		self.length_scale = torch.nn.Parameter(torch.scalar_tensor(0.1)) 	# the kernel hyperparameter to be optimized alongside inducing points
 		self.noise = torch.nn.Parameter(torch.scalar_tensor(0.5)) 				# the noise hyperparameter to model the inherent variance in the data
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Now we need the kernel method to compute the kernel/covariance matrix between arbitrary points:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	def compute_kernel_matrix(self, x1, x2):
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	def compute_kernel_matrix(self, x1, x2):
 
 			assert x1.shape[1] == x2.shape[1] # check dimension
 			assert x1.numel() &amp;gt;= 0 # sanity check
@@ -216,12 +469,11 @@ Remember that both the objective function via the logarithm of the Normal distri
 			kernel_matrix = torch.exp(-0.5*1/(self.length_scale+0.001)*pdist)
 
 			return kernel_matrix
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;The third class method of the GP class to implement is the forward method of the GP such that we can take the gradients through PyTorch AutoDiff library:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	def forward(self, _X):
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	def forward(self, _X):
 
 			# compute all the kernel matrices
 			self.K_XsX = self.compute_kernel_matrix(_X, self.inducing_x_mu)
@@ -237,12 +489,11 @@ Remember that both the objective function via the logarithm of the Normal distri
 
 			# for each point in _X output MAP estimate and variance of prediction ( that's the torch.diag (...) )
 			return mu, torch.diag(sigma)[:, None]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Up next is the loss function as described above:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	def NMLL(self, _X, _y):
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	def NMLL(self, _X, _y):
 
 			# set reasonable constraints on the optimizable parameters
 			self.length_scale.data   = self.length_scale.data.clamp( 0.00001, 3.0)
@@ -266,12 +517,11 @@ Remember that both the objective function via the logarithm of the Normal distri
 			mll -= 1/( 2 * self.noise**2) * torch.trace(Q_XX) # add a regularization term to regularize variance
 
 			return -mll
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;And finally a nice plotting function:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	def plot(self, _title=&quot;&quot;):
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	def plot(self, _title=&quot;&quot;):
 
 			x = torch.linspace(self.x.min()*1.5, self.x.max()*1.5, 200).reshape(-1,1)
 
@@ -290,12 +540,11 @@ Remember that both the objective function via the logarithm of the Normal distri
 			plt.xlim(self.x.min()*1.5, self.x.max()*1.5)
 			plt.ylim(-3,3)
 			plt.show()
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Now we can let the whole thing train via the following script:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# generating data and normalizing it
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# generating data and normalizing it
 X, y = generate_weightuncertainty_data()
 X = FloatTensor(scale(X))
 y = FloatTensor(scale(y))
@@ -329,15 +578,14 @@ for epoch in range(params.num_epochs):
 			gp.plot(_title=f&quot;Training Epoch {epoch:.0f}&quot;)
 
 gp.plot(_title=&quot;Post Training&quot;)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;I combined the entire training loop into a nice little gif which shows how the inducing points and the kernel parameters are adjusted to the data:&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/blog/InducingPoints/IP_GP.gif&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;One can see nicely how the inducing points are moved to precisely the points in space which we predicted earlier in the image at the top.
-This training routine would even be amenable to mini batch training, we would introduce more variance though.&lt;/p&gt;</content><summary type="html">Tackling the computational cost of GP's</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/blog/InducingPoints/Cover.png" /></entry><entry><title type="html">Sinkhorn Iterations</title><link href="/blog/Sinkhorn/" rel="alternate" type="text/html" title="Sinkhorn Iterations" /><published>2019-07-15T00:00:00+02:00</published><updated>2019-07-15T00:00:00+02:00</updated><id>/blog/Sinkhorn</id><content type="html" xml:base="/blog/Sinkhorn/">&lt;head&gt;
+This training routine would even be amenable to mini batch training, we would introduce more variance though.&lt;/p&gt;</content><summary type="html">Tackling the computational cost of GP's</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/InducingPoints/Cover.png" /></entry><entry><title type="html">Sinkhorn Iterations</title><link href="http://localhost:4000/blog/Sinkhorn/" rel="alternate" type="text/html" title="Sinkhorn Iterations" /><published>2019-07-15T00:00:00+02:00</published><updated>2019-07-15T00:00:00+02:00</updated><id>http://localhost:4000/blog/Sinkhorn</id><content type="html" xml:base="http://localhost:4000/blog/Sinkhorn/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -643,7 +891,7 @@ The entire point of using duality in optimization is that we can solve an altern
 &lt;p&gt;How does all of this look in code?
 Well … here you go&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import numpy as np
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import numpy as np
 import torch
 import ot
 import math
@@ -668,14 +916,13 @@ C = np.abs(np.expand_dims(dist, axis=1) - np.expand_dims(dist, 0))
 P = ot.sinkhorn(p.data.numpy(), q.data.numpy(), C, reg=1./lambda_reg, method='sinkhorn')
 print('dist:', np.sum(P * C), np.sum(P))
 print()
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Now we’ve set up the the two distributions and are ready to optimize.&lt;/p&gt;
 
 &lt;p&gt;The Sinkhorn iteration function takes the two distributions performs the Sinkhorn iterations and returns the gradient for the proposal distribution which is computed from alpha:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;def sinkhorn_iteration(p, q, lambda_reg, log=True): # the main sinkhorn iteration function
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;def sinkhorn_iteration(p, q, lambda_reg, log=True): # the main sinkhorn iteration function
 	'''
 
 	:param a: target / parameterized distribution
@@ -727,13 +974,12 @@ print()
 	grad = torch.log(alpha)/lambda_reg #- torch.mean(torch.log(alpha))/lambda_reg
 
 	return d, P, grad
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Finally we’ll use the optimizer provided by PyTorch to do a couple of hundred steps to let the proposal distribution converge to the true distribution.
 While we’re at it, we’ll also plot a couple of sanity checks such as the distributions still summing up to one&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;optim = torch.optim.SGD([q], lr=0.001)
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;optim = torch.optim.SGD([q], lr=0.001)
 
 epochs = 2000
 for epoch in range(epochs):
@@ -750,15 +996,14 @@ for epoch in range(epochs):
 	if epoch &amp;lt;10: print('Epoch: ', epoch, dist.detach(), torch.sum(P).detach(), q.detach())
 
 print(q.detach(), 'sum(source_dist)=', torch.sum(q).detach().item())
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Interestingly, I was only able to make it work with the plain SGD optimizer.
 ADAM for some reason went NaN on my after a couple of iterations.
 I suspect it has to do something with the second-order estimations and maybe the gradient I provide somewhere let’s these second-order moments explode.&lt;/p&gt;
 
 &lt;p&gt;Up to this point we had a look at discrete distributions and how to compute an optimal transport plan.
-It turns out, that the optimal transport plan for continuous distributions (at least for the Normal distribution) is quite compact and doesn’t require an auxiliary optimization problem via the Sinkhorn iterations.&lt;/p&gt;</content><summary type="html">Computing Wasserstein Distances</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/blog/Sinkhorn/Sinkhorn.png" /></entry><entry><title type="html">GPyTorch</title><link href="/blog/GPyTorch/" rel="alternate" type="text/html" title="GPyTorch" /><published>2019-05-15T00:00:00+02:00</published><updated>2019-05-15T00:00:00+02:00</updated><id>/blog/GPyTorch</id><content type="html" xml:base="/blog/GPyTorch/">&lt;head&gt;
+It turns out, that the optimal transport plan for continuous distributions (at least for the Normal distribution) is quite compact and doesn’t require an auxiliary optimization problem via the Sinkhorn iterations.&lt;/p&gt;</content><summary type="html">Computing Wasserstein Distances</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/Sinkhorn/Sinkhorn.png" /></entry><entry><title type="html">GPyTorch</title><link href="http://localhost:4000/blog/GPyTorch/" rel="alternate" type="text/html" title="GPyTorch" /><published>2019-05-15T00:00:00+02:00</published><updated>2019-05-15T00:00:00+02:00</updated><id>http://localhost:4000/blog/GPyTorch</id><content type="html" xml:base="http://localhost:4000/blog/GPyTorch/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -790,7 +1035,7 @@ Considerable focus will be on conjugated gradient descent which allows the effic
 
 &lt;p&gt;The core idea of the original paper is to exploit a parallel version of conjugate gradient descent to the fullest such that all relevant terms for the cost function and the gradients of the kernels can be obtained from a single modified batch conjugate descent run.&lt;/p&gt;
 
-&lt;p&gt;The talk can be downloaded &lt;a href=&quot;/blog/GPyTorch/GPytorch.pdf&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;</content><summary type="html">GPU Acceleration for Gaussian Processes</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/blog/GPyTorch/GPyTorch_Cover.png" /></entry><entry><title type="html">Hamiltonian Mechanics in Monte Carlo Samplers</title><link href="/blog/HMC/" rel="alternate" type="text/html" title="Hamiltonian Mechanics in Monte Carlo Samplers" /><published>2019-03-14T00:00:00+01:00</published><updated>2019-03-14T00:00:00+01:00</updated><id>/blog/HMC</id><content type="html" xml:base="/blog/HMC/">&lt;head&gt;
+&lt;p&gt;The talk can be downloaded &lt;a href=&quot;/blog/GPyTorch/GPytorch.pdf&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;</content><summary type="html">GPU Acceleration for Gaussian Processes</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/GPyTorch/GPyTorch_Cover.png" /></entry><entry><title type="html">Hamiltonian Mechanics in Monte Carlo Samplers</title><link href="http://localhost:4000/blog/HMC/" rel="alternate" type="text/html" title="Hamiltonian Mechanics in Monte Carlo Samplers" /><published>2019-03-14T00:00:00+01:00</published><updated>2019-03-14T00:00:00+01:00</updated><id>http://localhost:4000/blog/HMC</id><content type="html" xml:base="http://localhost:4000/blog/HMC/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -877,7 +1122,7 @@ If we chose $x_{min}$ and $x_{max}$ at the very extreme ends of the number line,
 We choose a standard normal distribution $\mathcal{N}(0,1)$ and sample $200$ values of $x$ from the uniform distribution $\mathcal{U}(-10,10)$.
 Furthermore we consider all probabilities of $\mathcal{N}(0,1)$ interesting which have a probability above $p(x|\mu, \sigma) \geq 0.01$.&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;print()
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;print()
 print('###########################################')
 print('Uniform Sampler')
 print('###########################################')
@@ -936,8 +1181,7 @@ Uniform Sampler
 True Z: 2.5066282746310002
 Estimated Z: 2.5824146
 1D Uniform Sampler: P(x)&amp;gt;=0.01:  26.1 %
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;As it turns out $ \approx 74\%$ of the values $x \in [-10,10]$ are below $0.01$.
 That means that by sampling randomly from a uniform distribution $\mathcal{U}(-10,10)$ we would evaluate $72\%$ of our randomly selected values $x$ with a probability below $0.01$ thus effectively wasting a large number of samples.
@@ -1023,7 +1267,7 @@ This guarantees that no state $x$ is favored in any particular way and that the 
 &lt;p&gt;The above equation is valid and states that the ‘detailed balance’ property holds for the acceptance ratio of the Metropolis-Hastings sampler.
 Thus in statistical lingo, we have an unbiased estimator of the true $Z$ which will asymptotically approach the true of value of $Z$!&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	print()
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	print()
 	print('###########################################')
 	print('Metropolis-Hastings')
 	print('###########################################')
@@ -1122,8 +1366,7 @@ Thus in statistical lingo, we have an unbiased estimator of the true $Z$ which w
 	Accepted/Rejected:  701 / 299
 	Estimated Z: 2.4467572424682826
 	1D MH Sampler: P(x)&amp;gt;=0.01:  69.69999999999999 %
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;The uniform sampled used $26 \%$ of its samples in useful areas whereas the Metropolis-Hastings sampler uses almost $70 \%$!
 We can visualize the two samplers next to each other to visualize the increased efficiency of the Metropolis-Hastings Sampler.&lt;/p&gt;
@@ -1221,7 +1464,7 @@ After all its momentum has been converted into potential energy, it makes a u-tu
 
 &lt;p&gt;Here’s some code with PyTorch:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	import numpy as np
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	import numpy as np
 	import matplotlib
 	import matplotlib.pyplot as plt
 	import torch
@@ -1301,8 +1544,7 @@ After all its momentum has been converted into potential energy, it makes a u-tu
 		plt.plot([traj[i,0], traj[i+1,0]], [traj[i,1],traj[i+1,1]], c=(1-nuts_criterion[i], 0, nuts_criterion[i]))
 
 	plt.show()
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;&lt;img src=&quot;/blog/HMC/HMC_2D01.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
 
@@ -1361,7 +1603,7 @@ In $\mathbb{R}^1$ we only require 10 samples to estimate the pdf wit equally spa
 &lt;p&gt;The required number of samples grows exponentially with the number of dimension, i.e. $10^N$ in $\mathbb{R}^N$ for our specific setup of 10 samples per dimension.
 By just adding two dimensions we need $100 \times$ more samples than in one dimension.
 That might not sound like a lot, but it quickly accumulates when working in high-dimensional spaces.
-This effectively restricts sampling algorithms to applications where we require very precise posteriors as in finance or medicine or where the run-time isn’t a problem.&lt;/p&gt;</content><summary type="html">Sampling with the help of physics</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/blog/HMC/HMC_2D01.png" /></entry><entry><title type="html">Bayesian Non-Negative Matrix Factorization</title><link href="/blog/BayesNMF/" rel="alternate" type="text/html" title="Bayesian Non-Negative Matrix Factorization" /><published>2019-02-18T00:00:00+01:00</published><updated>2019-02-18T00:00:00+01:00</updated><id>/blog/BayesNMF</id><content type="html" xml:base="/blog/BayesNMF/">&lt;head&gt;
+This effectively restricts sampling algorithms to applications where we require very precise posteriors as in finance or medicine or where the run-time isn’t a problem.&lt;/p&gt;</content><summary type="html">Sampling with the help of physics</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/HMC/HMC_2D01.png" /></entry><entry><title type="html">Bayesian Non-Negative Matrix Factorization</title><link href="http://localhost:4000/blog/BayesNMF/" rel="alternate" type="text/html" title="Bayesian Non-Negative Matrix Factorization" /><published>2019-02-18T00:00:00+01:00</published><updated>2019-02-18T00:00:00+01:00</updated><id>http://localhost:4000/blog/BayesNMF</id><content type="html" xml:base="http://localhost:4000/blog/BayesNMF/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -1449,7 +1691,7 @@ That third dimension will be used to compute the $\mu_{\hat{R}}$ and $\sigma_{\h
 
 &lt;p&gt;After computing the cost function we can let PyTorch do its automatic differentiation magic and we optimize the whole thing with an optimizer such as Adam.&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    import numpy as np
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    import numpy as np
     import torch
     import torch.nn.functional as F
 
@@ -1630,8 +1872,7 @@ That third dimension will be used to compute the $\mu_{\hat{R}}$ and $\sigma_{\h
 
     mf.train_params()
     mf.print_variational_matrix()
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;The recommendation matrix $R$ in the code snippet above has a tweak: the fourth row does not contain any entries so every item has to be recommended to user 4.
 Upon inspection of the mean $\mu_{\hat{R}}$ and $\sigma_{\hat{R}}$ we can that the variance in the fourth row in markedly increased:&lt;/p&gt;
@@ -1679,7 +1920,7 @@ Similarly, movie 4 which user 4 reviewed has an increased standard deviation for
 
 &lt;p&gt;As a closing remark I just want to say that the gradient descent based variational inference approach is not the best approach.
 Shinichi Nakajima, a member of my lab published an &lt;a href=&quot;http://www.jmlr.org/papers/volume14/nakajima13a/nakajima13a.pdf&quot;&gt;analytic solution&lt;/a&gt; which can be somewhat involved.
-The core motivation of this post was to see whether we could use the reparameterization trick and whether the factorization would exhibit the behaviour which was expected of it with regards to independent entries in $R$.&lt;/p&gt;</content><summary type="html">Being Unsure About What To Recommend</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="" /></entry><entry><title type="html">The Reparameterization Trick</title><link href="/blog/Reparam/" rel="alternate" type="text/html" title="The Reparameterization Trick" /><published>2019-02-02T00:00:00+01:00</published><updated>2019-02-02T00:00:00+01:00</updated><id>/blog/Reparam</id><content type="html" xml:base="/blog/Reparam/">&lt;head&gt;
+The core motivation of this post was to see whether we could use the reparameterization trick and whether the factorization would exhibit the behaviour which was expected of it with regards to independent entries in $R$.&lt;/p&gt;</content><summary type="html">Being Unsure About What To Recommend</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000" /></entry><entry><title type="html">The Reparameterization Trick</title><link href="http://localhost:4000/blog/Reparam/" rel="alternate" type="text/html" title="The Reparameterization Trick" /><published>2019-02-02T00:00:00+01:00</published><updated>2019-02-02T00:00:00+01:00</updated><id>http://localhost:4000/blog/Reparam</id><content type="html" xml:base="http://localhost:4000/blog/Reparam/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -1814,7 +2055,7 @@ Since we transform $\rho$ such that it will it be in $\mathbb{R}^+$ with $t_2( \
 
 &lt;p&gt;The final point is a little code snippet which can be analyzed without much plotting&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import numpy as np
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import numpy as np
 
 #Generate 10 data points between 0 and 5
 x = np.linspace(0,5,10)
@@ -1846,8 +2087,7 @@ for epoch in range(20):
                 rho = rho - 3*lr * e/(1+np.exp(-rho)) * (pred - label) * data
 
                 print('Episode {} | Data Point {}: μ: {:.2f}, σ: {:.02f}'.format(epoch, i, mu.squeeze(), std.squeeze()))
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;Running the little script we can see that the values were initialized with $\mu=-3$ and $\sigma=1.31$.
 After a couple of iterations the parameters converge on the correct values of $\mu=3$ and $\sigma=0$.&lt;/p&gt;
@@ -1944,7 +2184,7 @@ So we’re basically at the same spot deep learning was at 10 years ago with the
 The Glorot-Activation and ReLU activation functions solved it and maybe somebody will develop a new fancy reparameterization for the variational parameter $\rho$. =)
 That’s why it will never really converge to absolute 0, but that’s a trade-off we’re willing to make if we’re able to scale variational inference to large data sets.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/blog/ReparamTrick/Softplus.png&quot; alt=&quot;&quot; align=&quot;center&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;</content><summary type="html">Outsourcing Stochasticity and Making Normal Distributions Differentiable</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/blog/ReparamTrick/ReparamTrick.png" /></entry><entry><title type="html">Non-Negative Matrix Factorization</title><link href="/blog/NMF/" rel="alternate" type="text/html" title="Non-Negative Matrix Factorization" /><published>2019-01-24T00:00:00+01:00</published><updated>2019-01-24T00:00:00+01:00</updated><id>/blog/NMF</id><content type="html" xml:base="/blog/NMF/">&lt;head&gt;
+&lt;p&gt;&lt;img src=&quot;/blog/ReparamTrick/Softplus.png&quot; alt=&quot;&quot; align=&quot;center&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;</content><summary type="html">Outsourcing Stochasticity and Making Normal Distributions Differentiable</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/ReparamTrick/ReparamTrick.png" /></entry><entry><title type="html">Non-Negative Matrix Factorization</title><link href="http://localhost:4000/blog/NMF/" rel="alternate" type="text/html" title="Non-Negative Matrix Factorization" /><published>2019-01-24T00:00:00+01:00</published><updated>2019-01-24T00:00:00+01:00</updated><id>http://localhost:4000/blog/NMF</id><content type="html" xml:base="http://localhost:4000/blog/NMF/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -2043,7 +2283,7 @@ The latter approach can easily be accomplished with a mask of zeros and ones whi
 
 &lt;p&gt;Let’s jump into some code!&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import numpy as np
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import numpy as np
 import torch
 
 FloatTensor = torch.FloatTensor
@@ -2170,8 +2410,7 @@ mf = NMF(R, K=3, lr=0.005, iterations=300)
 mf.train()
 
 print(mf.full_matrix())
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;I prefer to encapsulate my code in objects/Python classes.
 We initialize the NMF-Algorithm by defining all the relevant parameters and data matrices.
@@ -2184,7 +2423,7 @@ In this case special attention has to be paid over which values the loss functio
 &lt;p&gt;In the above example, unknown data points in $R$ were denoted with ‘0’.
 After predicting $\hat{R}$, we simply multiply the entries in $\hat{R}$ with 0 such that loss with respect to these unknown entries is zero.&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;self.zero_mask = torch.zeros_like(R)
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;self.zero_mask = torch.zeros_like(R)
 self.zero_mask[R!=0] = 1
 
 . . .
@@ -2202,13 +2441,12 @@ def forward_fullmatrix(self):
 	prediction *= self.zero_mask
 
 	return prediction
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;After converging on a set of parameters for the given recommendation matrix, we can use the existing parameters $Q, u, i, b$ to predict data on a new partially filled user vector $u^* \in \mathbb{R}^{1 \times k}$.
 All we have to do is to use the already existing codebook $Q$ and the biases $u, i, b$ and let the factorization for $p^* \in \mathbb{R}^{1 \times k}$ converge such that&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;u^*_i \approx \sum_{k=0}^K p^*_k Q_{ki} + u_i + i_i + b&lt;/script&gt;</content><summary type="html">What Shall We Recommend?</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="/images/NMF_01.png" /></entry><entry><title type="html">Easter Walk Poem</title><link href="/blog/BerlinEasterPoem/" rel="alternate" type="text/html" title="Easter Walk Poem" /><published>2018-04-27T00:00:00+02:00</published><updated>2018-04-27T00:00:00+02:00</updated><id>/blog/BerlinEasterPoem</id><content type="html" xml:base="/blog/BerlinEasterPoem/">&lt;p&gt;The idea to rewrite Goethe’s famous &lt;a href=&quot;http://www.literaturwelt.com/werke/goethe/osterspaziergang.html&quot;&gt;‘Easter Walk Poem’&lt;/a&gt; came while I was sitting on my balcony on the first days of spring.
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;u^*_i \approx \sum_{k=0}^K p^*_k Q_{ki} + u_i + i_i + b&lt;/script&gt;</content><summary type="html">What Shall We Recommend?</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/images/NMF_01.png" /></entry><entry><title type="html">Easter Walk Poem</title><link href="http://localhost:4000/blog/BerlinEasterPoem/" rel="alternate" type="text/html" title="Easter Walk Poem" /><published>2018-04-27T00:00:00+02:00</published><updated>2018-04-27T00:00:00+02:00</updated><id>http://localhost:4000/blog/BerlinEasterPoem</id><content type="html" xml:base="http://localhost:4000/blog/BerlinEasterPoem/">&lt;p&gt;The idea to rewrite Goethe’s famous &lt;a href=&quot;http://www.literaturwelt.com/werke/goethe/osterspaziergang.html&quot;&gt;‘Easter Walk Poem’&lt;/a&gt; came while I was sitting on my balcony on the first days of spring.
 It’s a custom to recite the poem during my family’s Easter breakfast and when I was back in Berlin after Easter, I started rewriting the poem with respect to Berlin.
 This is what this little literary excursion became:&lt;/p&gt;
 
@@ -2255,4 +2493,4 @@ Ohren und Augen an der Spree.&lt;/p&gt;
 &lt;p&gt;Ich höre schon des Alex’ Getümmel,&lt;br /&gt;
 Hier ist des Subkulturs wahrer Himmel,&lt;br /&gt;
 Zufrieden jauchzet groß und klein:&lt;br /&gt;
-&lt;strong&gt;In Berlin bin ich Mensch, hier darf ich’s sein!&lt;/strong&gt;&lt;/p&gt;</content><summary type="html">Goethe's Easter Walk, the Berlin Version</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="" /></entry></feed>
+&lt;strong&gt;In Berlin bin ich Mensch, hier darf ich’s sein!&lt;/strong&gt;&lt;/p&gt;</content><summary type="html">Goethe's Easter Walk, the Berlin Version</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000" /></entry></feed>

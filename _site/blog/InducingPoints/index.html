@@ -13,18 +13,18 @@
 <title>(Basic) Inducing Points in Gaussian Processes</title>
 <meta name="description" content="">
 
-<link rel="apple-touch-icon" sizes="180x180" href="/assets/icon/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/assets/icon/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/assets/icon/favicon-16x16.png">
-<link rel="manifest" href="/assets/icon/manifest.json">
-<link rel="mask-icon" href="/assets/icon/safari-pinned-tab.svg" color="#5bbad5">
-<link rel="shortcut icon" href="/assets/icon/favicon.ico">
-<meta name="msapplication-config" content="/assets/icon/browserconfig.xml">
+<link rel="apple-touch-icon" sizes="180x180" href="http://localhost:4000/assets/icon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:4000/assets/icon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:4000/assets/icon/favicon-16x16.png">
+<link rel="manifest" href="http://localhost:4000/assets/icon/manifest.json">
+<link rel="mask-icon" href="http://localhost:4000/assets/icon/safari-pinned-tab.svg" color="#5bbad5">
+<link rel="shortcut icon" href="http://localhost:4000/assets/icon/favicon.ico">
+<meta name="msapplication-config" content="http://localhost:4000/assets/icon/browserconfig.xml">
 <meta name="theme-color" content="#ffffff">
 
 <!-- CSS -->
-<link rel="stylesheet" href="/assets/css/main.css">
-<noscript><link rel="stylesheet" href="/assets/css/noscript.css"></noscript>
+<link rel="stylesheet" href="http://localhost:4000/assets/css/main.css">
+<noscript><link rel="stylesheet" href="http://localhost:4000/assets/css/noscript.css"></noscript>
 
 	</head>
 	<body class="is-loading">
@@ -34,17 +34,17 @@
 
 				<!-- Header -->
         <header id="header">
-          <a href="/" class="logo">Ludwig Winkler</a>
+          <a href="http://localhost:4000/" class="logo">Ludwig Winkler</a>
         </header>
 
 				<!-- Nav -->
 					<nav id="nav">
 
             <ul class="links">
-  <li class=""><a href="/">Home</a></li>
-  <li class=" active "><a href="/blog/">Blog</a></li>
-  <li class=""><a href="/readinglist/">Reading List</a></li>
-  <li class=""><a href="/about/">About</a></li>
+  <li class=""><a href="http://localhost:4000/">Home</a></li>
+  <li class=" active "><a href="http://localhost:4000/blog/">Blog</a></li>
+  <li class=""><a href="http://localhost:4000/readinglist/">Reading List</a></li>
+  <li class=""><a href="http://localhost:4000/about/">About</a></li>
 </ul>
 
 
@@ -119,8 +119,7 @@ One can think of this along the line of k-means clustering of the training data 
 
 <p>Let’s first set up the environment and import all the necessary libraries:</p>
 
-<div class="highlighter-rouge">
-<pre class="highlight"><code>import torch
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import torch
 import torch.distributions
 from torch.distributions import Normal, MultivariateNormal
 from torch.utils.data import DataLoader, TensorDataset
@@ -159,13 +158,11 @@ params.add_argument('-lr_ip',                     type=float,         default=0.
 params.add_argument('-num_epochs',                type=int,           default=300)
 
 params = params.parse_args()
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Now we can do some plotting:</p>
 
-<div class="highlighter-rouge">
-<pre class="highlight"><code>def generate_weightuncertainty_data():
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>def generate_weightuncertainty_data():
 
 	x = np.linspace(-0.35, 0.55, params.num_samples)
 	x_noise = np.random.normal(0., params.x_noise_std, size=x.shape)
@@ -185,8 +182,7 @@ params = params.parse_args()
 	return x, y
 
 generate_weightuncertainty_data()
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><img src="/blog/InducingPoints/Data.png" alt="" class='align="center"' height="50%" width="50%"></p>
 
@@ -214,8 +210,7 @@ Next up is the base class for the GP.
 The most straight-forward way of using inducing points is to simply declare them as parameters which have gradients.
 Remember that both the objective function via the logarithm of the Normal distribution as well as the predictions consist of linear terms, so we can easily backpropagate through these operations to obtain the gradients for the kernel parameters and inducing points from the log probability of the true data under the Normal distribution of the GP.</p>
 
-<div class="highlighter-rouge">
-<pre class="highlight"><code>class GP_InducingPoints(torch.nn.Module):
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class GP_InducingPoints(torch.nn.Module):
 
 	def __init__(self, _x=None, _y=None, _num_inducing_points = params.num_inducing_points, _dim=1):
 
@@ -235,13 +230,11 @@ Remember that both the objective function via the logarithm of the Normal distri
 
 		self.length_scale = torch.nn.Parameter(torch.scalar_tensor(0.1)) 	# the kernel hyperparameter to be optimized alongside inducing points
 		self.noise = torch.nn.Parameter(torch.scalar_tensor(0.5)) 				# the noise hyperparameter to model the inherent variance in the data
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Now we need the kernel method to compute the kernel/covariance matrix between arbitrary points:</p>
 
-<div class="highlighter-rouge">
-<pre class="highlight"><code>	def compute_kernel_matrix(self, x1, x2):
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	def compute_kernel_matrix(self, x1, x2):
 
 			assert x1.shape[1] == x2.shape[1] # check dimension
 			assert x1.numel() &gt;= 0 # sanity check
@@ -251,13 +244,11 @@ Remember that both the objective function via the logarithm of the Normal distri
 			kernel_matrix = torch.exp(-0.5*1/(self.length_scale+0.001)*pdist)
 
 			return kernel_matrix
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>The third class method of the GP class to implement is the forward method of the GP such that we can take the gradients through PyTorch AutoDiff library:</p>
 
-<div class="highlighter-rouge">
-<pre class="highlight"><code>	def forward(self, _X):
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	def forward(self, _X):
 
 			# compute all the kernel matrices
 			self.K_XsX = self.compute_kernel_matrix(_X, self.inducing_x_mu)
@@ -273,13 +264,11 @@ Remember that both the objective function via the logarithm of the Normal distri
 
 			# for each point in _X output MAP estimate and variance of prediction ( that's the torch.diag (...) )
 			return mu, torch.diag(sigma)[:, None]
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Up next is the loss function as described above:</p>
 
-<div class="highlighter-rouge">
-<pre class="highlight"><code>	def NMLL(self, _X, _y):
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	def NMLL(self, _X, _y):
 
 			# set reasonable constraints on the optimizable parameters
 			self.length_scale.data   = self.length_scale.data.clamp( 0.00001, 3.0)
@@ -303,13 +292,11 @@ Remember that both the objective function via the logarithm of the Normal distri
 			mll -= 1/( 2 * self.noise**2) * torch.trace(Q_XX) # add a regularization term to regularize variance
 
 			return -mll
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>And finally a nice plotting function:</p>
 
-<div class="highlighter-rouge">
-<pre class="highlight"><code>	def plot(self, _title=""):
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	def plot(self, _title=""):
 
 			x = torch.linspace(self.x.min()*1.5, self.x.max()*1.5, 200).reshape(-1,1)
 
@@ -328,13 +315,11 @@ Remember that both the objective function via the logarithm of the Normal distri
 			plt.xlim(self.x.min()*1.5, self.x.max()*1.5)
 			plt.ylim(-3,3)
 			plt.show()
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Now we can let the whole thing train via the following script:</p>
 
-<div class="highlighter-rouge">
-<pre class="highlight"><code># generating data and normalizing it
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># generating data and normalizing it
 X, y = generate_weightuncertainty_data()
 X = FloatTensor(scale(X))
 y = FloatTensor(scale(y))
@@ -368,8 +353,7 @@ for epoch in range(params.num_epochs):
 			gp.plot(_title=f"Training Epoch {epoch:.0f}")
 
 gp.plot(_title="Post Training")
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>I combined the entire training loop into a nice little gif which shows how the inducing points and the kernel parameters are adjusted to the data:</p>
 
@@ -411,7 +395,7 @@ This training routine would even be amenable to mini batch training, we would in
 					<!-- Footer -->
 						<footer>
               <ul class="actions">
-                <li><a href="/blog/" class="button">Our Blog</a></li>
+                <li><a href="http://localhost:4000/blog/" class="button">Our Blog</a></li>
               </ul>
 						</footer>
 					</div>
@@ -479,12 +463,12 @@ This training routine would even be amenable to mini batch training, we would in
 
       <!-- Scripts -->
   		<!-- DYN -->
-<script src="/assets/js/jquery.min.js"></script>
-<script src="/assets/js/jquery.scrollex.min.js"></script>
-<script src="/assets/js/jquery.scrolly.min.js"></script>
-<script src="/assets/js/skel.min.js"></script>
-<script src="/assets/js/util.js"></script>
-<script src="/assets/js/main.js"></script>
+<script src="http://localhost:4000/assets/js/jquery.min.js"></script>
+<script src="http://localhost:4000/assets/js/jquery.scrollex.min.js"></script>
+<script src="http://localhost:4000/assets/js/jquery.scrolly.min.js"></script>
+<script src="http://localhost:4000/assets/js/skel.min.js"></script>
+<script src="http://localhost:4000/assets/js/util.js"></script>
+<script src="http://localhost:4000/assets/js/main.js"></script>
 
 			<script async src="https://www.googletagmanager.com/gtag/js?id=default"></script>
 <script>

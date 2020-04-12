@@ -2,7 +2,16 @@
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
     <url>
-      <loc>/blog/SDE/</loc>
+      <loc>http://localhost:4000/blog/SDE/</loc>
+      
+        <lastmod>2020-03-30T00:00:00+02:00</lastmod>
+      
+      <changefreq>weekly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  
+    <url>
+      <loc>http://localhost:4000/blog/BayesianInference/</loc>
       
         <lastmod>2020-02-13T00:00:00+01:00</lastmod>
       
@@ -11,16 +20,7 @@
     </url>
   
     <url>
-      <loc>/blog/BayesianInference/</loc>
-      
-        <lastmod>2020-02-13T00:00:00+01:00</lastmod>
-      
-      <changefreq>weekly</changefreq>
-      <priority>0.7</priority>
-    </url>
-  
-    <url>
-      <loc>/blog/InducingPoints/</loc>
+      <loc>http://localhost:4000/blog/InducingPoints/</loc>
       
         <lastmod>2019-09-30T00:00:00+02:00</lastmod>
       
@@ -29,7 +29,7 @@
     </url>
   
     <url>
-      <loc>/blog/Sinkhorn/</loc>
+      <loc>http://localhost:4000/blog/Sinkhorn/</loc>
       
         <lastmod>2019-07-15T00:00:00+02:00</lastmod>
       
@@ -38,7 +38,7 @@
     </url>
   
     <url>
-      <loc>/blog/GPyTorch/</loc>
+      <loc>http://localhost:4000/blog/GPyTorch/</loc>
       
         <lastmod>2019-05-15T00:00:00+02:00</lastmod>
       
@@ -47,7 +47,7 @@
     </url>
   
     <url>
-      <loc>/blog/HMC/</loc>
+      <loc>http://localhost:4000/blog/HMC/</loc>
       
         <lastmod>2019-03-14T00:00:00+01:00</lastmod>
       
@@ -56,7 +56,7 @@
     </url>
   
     <url>
-      <loc>/blog/BayesNMF/</loc>
+      <loc>http://localhost:4000/blog/BayesNMF/</loc>
       
         <lastmod>2019-02-18T00:00:00+01:00</lastmod>
       
@@ -65,7 +65,7 @@
     </url>
   
     <url>
-      <loc>/blog/Reparam/</loc>
+      <loc>http://localhost:4000/blog/Reparam/</loc>
       
         <lastmod>2019-02-02T00:00:00+01:00</lastmod>
       
@@ -74,7 +74,7 @@
     </url>
   
     <url>
-      <loc>/blog/NMF/</loc>
+      <loc>http://localhost:4000/blog/NMF/</loc>
       
         <lastmod>2019-01-24T00:00:00+01:00</lastmod>
       
@@ -83,7 +83,7 @@
     </url>
   
     <url>
-      <loc>/blog/BerlinEasterPoem/</loc>
+      <loc>http://localhost:4000/blog/BerlinEasterPoem/</loc>
       
         <lastmod>2018-04-27T00:00:00+02:00</lastmod>
       
@@ -92,7 +92,7 @@
     </url>
   
     <url>
-      <loc>/blog/BayesianOptimization/</loc>
+      <loc>http://localhost:4000/blog/BayesianOptimization/</loc>
       
         <lastmod>2018-04-24T00:00:00+02:00</lastmod>
       
@@ -101,7 +101,7 @@
     </url>
   
     <url>
-      <loc>/blog/Gaussian-Processes-Extensions/</loc>
+      <loc>http://localhost:4000/blog/Gaussian-Processes-Extensions/</loc>
       
         <lastmod>2018-04-23T00:00:00+02:00</lastmod>
       
@@ -110,7 +110,7 @@
     </url>
   
     <url>
-      <loc>/blog/Gaussian-Processes/</loc>
+      <loc>http://localhost:4000/blog/Gaussian-Processes/</loc>
       
         <lastmod>2018-04-23T00:00:00+02:00</lastmod>
       
@@ -119,7 +119,7 @@
     </url>
   
     <url>
-      <loc>/blog/AdvRL/</loc>
+      <loc>http://localhost:4000/blog/AdvRL/</loc>
       
         <lastmod>2017-11-06T00:00:00+01:00</lastmod>
       
@@ -128,7 +128,7 @@
     </url>
   
     <url>
-      <loc>/blog/IntroRL/</loc>
+      <loc>http://localhost:4000/blog/IntroRL/</loc>
       
         <lastmod>2017-05-03T00:00:00+02:00</lastmod>
       
@@ -138,7 +138,7 @@
   
   
     <url>
-      <loc>/about/</loc>
+      <loc>http://localhost:4000/about/</loc>
        <lastmod>2017-11-02T00:00:00+01:00</lastmod>
       
        <changefreq>weekly</changefreq>
@@ -148,7 +148,7 @@
      </url>
   
     <url>
-      <loc>/blog/</loc>
+      <loc>http://localhost:4000/blog/</loc>
        <lastmod>2017-11-02T00:00:00+01:00</lastmod>
       
        <changefreq>weekly</changefreq>
@@ -158,7 +158,7 @@
      </url>
   
     <url>
-      <loc>/</loc>
+      <loc>http://localhost:4000/</loc>
        <lastmod>2017-11-10T00:20:35+00:00</lastmod>
       
        <changefreq>weekly</changefreq>
@@ -168,7 +168,7 @@
      </url>
   
     <url>
-      <loc>/readinglist/</loc>
+      <loc>http://localhost:4000/readinglist/</loc>
        <lastmod>2017-11-10T00:20:35+00:00</lastmod>
       
        <changefreq>weekly</changefreq>
@@ -178,7 +178,7 @@
      </url>
   
     <url>
-      <loc>/sitemap.xml</loc>
+      <loc>http://localhost:4000/sitemap.xml</loc>
        <lastmod>2017-11-10T00:20:35+00:00</lastmod>
       
        <changefreq>weekly</changefreq>
@@ -188,7 +188,7 @@
      </url>
   
     <url>
-      <loc>/feed.xml</loc>
+      <loc>http://localhost:4000/feed.xml</loc>
        <lastmod>2017-11-10T00:20:35+00:00</lastmod>
       
        <changefreq>weekly</changefreq>
@@ -198,7 +198,7 @@
      </url>
   
     <url>
-      <loc>/feed.xslt.xml</loc>
+      <loc>http://localhost:4000/feed.xslt.xml</loc>
        <lastmod>2017-11-10T00:20:35+00:00</lastmod>
       
        <changefreq>weekly</changefreq>
@@ -208,7 +208,7 @@
      </url>
   
     <url>
-      <loc>/blog/page2/</loc>
+      <loc>http://localhost:4000/blog/page2/</loc>
        <lastmod>2017-11-10T00:20:35+00:00</lastmod>
       
        <changefreq>weekly</changefreq>
@@ -218,7 +218,7 @@
      </url>
   
     <url>
-      <loc>/blog/page3/</loc>
+      <loc>http://localhost:4000/blog/page3/</loc>
        <lastmod>2017-11-10T00:20:35+00:00</lastmod>
       
        <changefreq>weekly</changefreq>

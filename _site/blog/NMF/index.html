@@ -13,18 +13,18 @@
 <title>Non-Negative Matrix Factorization</title>
 <meta name="description" content="">
 
-<link rel="apple-touch-icon" sizes="180x180" href="/assets/icon/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/assets/icon/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/assets/icon/favicon-16x16.png">
-<link rel="manifest" href="/assets/icon/manifest.json">
-<link rel="mask-icon" href="/assets/icon/safari-pinned-tab.svg" color="#5bbad5">
-<link rel="shortcut icon" href="/assets/icon/favicon.ico">
-<meta name="msapplication-config" content="/assets/icon/browserconfig.xml">
+<link rel="apple-touch-icon" sizes="180x180" href="http://localhost:4000/assets/icon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:4000/assets/icon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:4000/assets/icon/favicon-16x16.png">
+<link rel="manifest" href="http://localhost:4000/assets/icon/manifest.json">
+<link rel="mask-icon" href="http://localhost:4000/assets/icon/safari-pinned-tab.svg" color="#5bbad5">
+<link rel="shortcut icon" href="http://localhost:4000/assets/icon/favicon.ico">
+<meta name="msapplication-config" content="http://localhost:4000/assets/icon/browserconfig.xml">
 <meta name="theme-color" content="#ffffff">
 
 <!-- CSS -->
-<link rel="stylesheet" href="/assets/css/main.css">
-<noscript><link rel="stylesheet" href="/assets/css/noscript.css"></noscript>
+<link rel="stylesheet" href="http://localhost:4000/assets/css/main.css">
+<noscript><link rel="stylesheet" href="http://localhost:4000/assets/css/noscript.css"></noscript>
 
 	</head>
 	<body class="is-loading">
@@ -34,17 +34,17 @@
 
 				<!-- Header -->
         <header id="header">
-          <a href="/" class="logo">Ludwig Winkler</a>
+          <a href="http://localhost:4000/" class="logo">Ludwig Winkler</a>
         </header>
 
 				<!-- Nav -->
 					<nav id="nav">
 
             <ul class="links">
-  <li class=""><a href="/">Home</a></li>
-  <li class=" active "><a href="/blog/">Blog</a></li>
-  <li class=""><a href="/readinglist/">Reading List</a></li>
-  <li class=""><a href="/about/">About</a></li>
+  <li class=""><a href="http://localhost:4000/">Home</a></li>
+  <li class=" active "><a href="http://localhost:4000/blog/">Blog</a></li>
+  <li class=""><a href="http://localhost:4000/readinglist/">Reading List</a></li>
+  <li class=""><a href="http://localhost:4000/about/">About</a></li>
 </ul>
 
 
@@ -164,8 +164,7 @@ The latter approach can easily be accomplished with a mask of zeros and ones whi
 
 <p>Let’s jump into some code!</p>
 
-<div class="highlighter-rouge">
-<pre class="highlight"><code>import numpy as np
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import numpy as np
 import torch
 
 FloatTensor = torch.FloatTensor
@@ -292,8 +291,7 @@ mf = NMF(R, K=3, lr=0.005, iterations=300)
 mf.train()
 
 print(mf.full_matrix())
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>I prefer to encapsulate my code in objects/Python classes.
 We initialize the NMF-Algorithm by defining all the relevant parameters and data matrices.
@@ -306,8 +304,7 @@ In this case special attention has to be paid over which values the loss functio
 <p>In the above example, unknown data points in $R$ were denoted with ‘0’.
 After predicting $\hat{R}$, we simply multiply the entries in $\hat{R}$ with 0 such that loss with respect to these unknown entries is zero.</p>
 
-<div class="highlighter-rouge">
-<pre class="highlight"><code>self.zero_mask = torch.zeros_like(R)
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>self.zero_mask = torch.zeros_like(R)
 self.zero_mask[R!=0] = 1
 
 . . .
@@ -325,8 +322,7 @@ def forward_fullmatrix(self):
 	prediction *= self.zero_mask
 
 	return prediction
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>After converging on a set of parameters for the given recommendation matrix, we can use the existing parameters $Q, u, i, b$ to predict data on a new partially filled user vector $u^* \in \mathbb{R}^{1 \times k}$.
 All we have to do is to use the already existing codebook $Q$ and the biases $u, i, b$ and let the factorization for $p^* \in \mathbb{R}^{1 \times k}$ converge such that</p>
@@ -366,7 +362,7 @@ All we have to do is to use the already existing codebook $Q$ and the biases $u,
 					<!-- Footer -->
 						<footer>
               <ul class="actions">
-                <li><a href="/blog/" class="button">Our Blog</a></li>
+                <li><a href="http://localhost:4000/blog/" class="button">Our Blog</a></li>
               </ul>
 						</footer>
 					</div>
@@ -434,12 +430,12 @@ All we have to do is to use the already existing codebook $Q$ and the biases $u,
 
       <!-- Scripts -->
   		<!-- DYN -->
-<script src="/assets/js/jquery.min.js"></script>
-<script src="/assets/js/jquery.scrollex.min.js"></script>
-<script src="/assets/js/jquery.scrolly.min.js"></script>
-<script src="/assets/js/skel.min.js"></script>
-<script src="/assets/js/util.js"></script>
-<script src="/assets/js/main.js"></script>
+<script src="http://localhost:4000/assets/js/jquery.min.js"></script>
+<script src="http://localhost:4000/assets/js/jquery.scrollex.min.js"></script>
+<script src="http://localhost:4000/assets/js/jquery.scrolly.min.js"></script>
+<script src="http://localhost:4000/assets/js/skel.min.js"></script>
+<script src="http://localhost:4000/assets/js/util.js"></script>
+<script src="http://localhost:4000/assets/js/main.js"></script>
 
 			<script async src="https://www.googletagmanager.com/gtag/js?id=default"></script>
 <script>
