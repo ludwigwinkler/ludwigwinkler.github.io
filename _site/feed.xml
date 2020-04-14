@@ -1,4 +1,672 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-04-12T18:43:49+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Stochastic Differential Equations</title><link href="http://localhost:4000/blog/SDE/" rel="alternate" type="text/html" title="Stochastic Differential Equations" /><published>2020-03-30T00:00:00+02:00</published><updated>2020-03-30T00:00:00+02:00</updated><id>http://localhost:4000/blog/SDE</id><content type="html" xml:base="http://localhost:4000/blog/SDE/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-04-14T11:08:07+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Ito’s (Di)Lemma</title><link href="http://localhost:4000/blog/ItosLemma/" rel="alternate" type="text/html" title="Ito's (Di)Lemma" /><published>2020-04-10T00:00:00+02:00</published><updated>2020-04-10T00:00:00+02:00</updated><id>http://localhost:4000/blog/ItosLemma</id><content type="html" xml:base="http://localhost:4000/blog/ItosLemma/">&lt;head&gt;
+&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
+       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
+         MathJax.Hub.Config({
+           tex2jax: {
+             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
+             displayMath: [['$$','$$']],
+             processEscapes: true
+           }
+         });
+       &lt;/script&gt;
+       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+
+&lt;h3 id=&quot;differentiability&quot;&gt;Differentiability&lt;/h3&gt;
+
+&lt;p&gt;Probably one of the most fundamental uses of calculus is the derivation of functions.
+A function $f$ is differentiable if the following value $f’(x)$ exists:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;f'(x) = \lim_{h\rightarrow 0} \frac{f(x+h) - f(x)}{h}&lt;/script&gt;
+
+&lt;p&gt;If we let $h$ go towards zero, a function is called differentiable, if the fraction converges towards some constant value (at least in the basic case … mathematicians tend to cook up very special functions for which more general rules need to be applied … but we’ll stick with the straight-forward stuff).&lt;/p&gt;
+
+&lt;p&gt;Let’s look at an example of how this might work.
+We’ll need an additional mathematical trick called &lt;a href=&quot;https://en.wikipedia.org/wiki/L%27Hôpital%27s_rule&quot;&gt;L’Hopitals rule&lt;/a&gt; which says that for evaluating the limit of a fraction we can simply derive both nominator and denominator with respect to the same variable and still obtain the valid result.
+Applying L’Hopitals rule often simplifies the computation of the derivative since we’re always working with the limit of a fraction.&lt;/p&gt;
+
+&lt;p&gt;Let’s try to compute the derivative of the squared function $f(x) = x^2$:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+  f'(x) &amp;= \lim_{h\rightarrow 0} \frac{f(x+h) - f(x)}{h} \\
+  &amp;= \lim_{h\rightarrow 0} \frac{(x+h)^2 - x^2}{h} \\
+  &amp;= \lim_{h\rightarrow 0} \frac{x^2 + 2hx + h^2 - x^2}{h} \\
+  &amp;= \lim_{h\rightarrow 0} \frac{\frac{\partial }{\partial h} \ 2hx + h^2}{\frac{\partial }{\partial h}h} \quad \quad \quad &amp;&amp;\Leftarrow \text{Applying L'Hopitals rule} \\
+  &amp;= \lim_{h\rightarrow 0} \frac{2x + 2h}{1} &amp;&amp; \Leftarrow \text{Evaluating $h$ to zero} \\ 
+  &amp;= 2x
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;Sure enough it’s the correct result which we anticipated.
+In effect, we’re zooming infinitely far into the function and ask ourselves how the function changes in this tiny window $h$.
+Visually, this looks something like this for the exponential function $f(x) = e^x$:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/ItosLemma/Diff01.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;What this functions tells us is that we can approximate an arbitrarily complex, differentiable function with a linear function for a extremely small window $\lim h \rightarrow 0 $.
+But in order for the function to be differentiable, the limit has to actually converge to a linear function as we decrease the window size $h$.&lt;/p&gt;
+
+&lt;p&gt;Unfortunately, for stochastic processes this is not as straight forward and we will require some more elaborate tools to show some notion of differentiability.&lt;/p&gt;
+
+&lt;h3 id=&quot;stochastic-processes&quot;&gt;Stochastic Processes&lt;/h3&gt;
+
+&lt;p&gt;In order to keep things simple in the following steps, we will work with the Brownian Motion. &lt;br /&gt;
+Brownian motion $W_t$ is defined through the following properties:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;$W_0 = 0$&lt;/li&gt;
+  &lt;li&gt;Independent increments: covariance $\mathbb{C}[W_{t+u} - W_s, W_s] =0$ for $u \geq 0$ and $s \leq t$&lt;/li&gt;
+  &lt;li&gt;Gaussian increments: $W_{t+u} - W_t \sim \mathcal{N}(0, u)$&lt;/li&gt;
+  &lt;li&gt;Continuous paths in time $t$.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Now it turns out that there exists a stochastic differential equation which fulfills all of the properties above.
+This SDE in question is&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;dx_t = dW_t = \epsilon \sqrt{dt} \quad \quad \quad ;\epsilon \sim \mathcal{N}(0,1)&lt;/script&gt;
+
+&lt;p&gt;Intuitively, we equate the infinitesimal change in $x_t$ with Brownian Motion which in turn is defined as the standard normally distributed random variable $\epsilon$ scaled by $\sqrt{dt}$.
+The problem of classical differentiability of stochastic processes lies precisely in this SDE as we defined the change with respect to $dt$.
+By defining the infinitesimal change $dt$ we are acknowledging that we could always use a shorter $dt$ and zoom even further into the time axis.
+After all, the infinitesimal change of the Brownian Motion $dW_t$ is defined as a limit in time not unlike the limit we used to show the differentiability of the quadratic function:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;dW_t = \lim_{\Delta t \rightarrow 0} W_{t + \Delta t} - W_t \quad \sim \mathcal{N}(0, \Delta t)&lt;/script&gt;
+
+&lt;p&gt;While $\Delta t$ goes rapidly towards zero, it will actually never be exactly zero.
+Thus, if we were to zoom into the time axis we would realize that the Brownian Motion keeps moving randomly for whatever time resolution we choose.
+In turns out that Brownian Motion actually has &lt;a href=&quot;https://en.wikipedia.org/wiki/Fractal&quot;&gt;fractal properties&lt;/a&gt; which are probably the trippiest mathematical animations you can experience without doing actual acid.&lt;/p&gt;
+
+&lt;p&gt;No matter how far we zoom into the Brownian Motion, we will always encounter a Brownian Motion on a finer time scale since $dx_t$ moves randomly on any time scale we choose.
+Probably the best animation for that is directly from the &lt;a href=&quot;https://en.wikipedia.org/wiki/Wiener_process&quot;&gt;Wikipedia page&lt;/a&gt; of Brownian Motion:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/ItosLemma/WienerProcess.gif&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;100%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You might wonder: Well, why is that a problem with respect to classical differentiability?
+For that we can simply evaluate the differential&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\lim_{\Delta t\rightarrow 0} \frac{W_{t+\Delta t} - W_t}{\Delta t}&lt;/script&gt;
+
+&lt;p&gt;but alas, $W_t$ is by definition a Normally distributed random variable.
+So let’s have a look at the mean and variance of the differential operator:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	\lim_{\Delta t\rightarrow 0} \mathbb{E}\left[ \frac{W_{t+\Delta t} - W_t}{\Delta t} \right] 
+	&amp;= \lim_{\Delta t} \frac{1}{\Delta t} \mathbb{E} [ \underbrace{W_{t+\Delta t} - W_t}_{\sim \mathcal{N}(0,\Delta t)} ] \\
+	&amp;= \lim_{\Delta t} \frac{1}{\Delta t} 0 \\
+	&amp;= 0
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	\lim_{\Delta t\rightarrow 0} \mathbb{V} \left[\frac{W_{t+\Delta t} - W_t}{\Delta t} \right]
+	&amp;= \lim_{\Delta t\rightarrow 0} \frac{1}{\Delta t^2} \mathbb{V} [ \underbrace{W_{t+\Delta t} - W_t}_{\sim \mathcal{N}(0,\Delta t)} ] \\
+	&amp;= \lim_{\Delta t\rightarrow 0} \frac{1}{\Delta t^2} \Delta t \\
+	&amp;= \lim_{\Delta t\rightarrow 0} \frac{1}{\Delta t} \\
+	&amp;= \infty
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;Both the mean and the variance are possibly the worst values you can expect in terms of functional analysis.
+The mean is zero, indicating we have no derivative what so ever while the variance goes to infinity which is equally unusable.
+Ultimately, we can’t derive a Wiener process in the classical sense.&lt;/p&gt;
+
+&lt;p&gt;It turns out that &lt;a href=&quot;https://en.wikipedia.org/wiki/Kiyosi_Itô&quot;&gt;Kiyosi Ito&lt;/a&gt; had a series of great insights that we can use.
+But before we can dive into his ideas, we first have to learn about Taylor expansions …&lt;/p&gt;
+
+&lt;h3 id=&quot;taylor-expansion&quot;&gt;Taylor Expansion&lt;/h3&gt;
+
+&lt;p&gt;The Taylor expansions or Taylor series is one of the most ubiquitous mathematical tools in applied math.
+Once at the DeepBayes summer school in Moscow, a fellow attendee and physicist said that if you have no clue what to do next with your equations, do a Taylor expansion and see if it gets you ahead.&lt;/p&gt;
+
+&lt;p&gt;The core idea of a Taylor expansion is to approximate a function locally around a root point with a series of terms which rely on the derivatives of the function.
+So for example a function might be a polynomial of order 10 but locally, we only need a quadratic function to approximate it quite well.&lt;/p&gt;
+
+&lt;p&gt;Mathematically, a Taylor expansion of a infinitely differentiable function $f(x)$ around a root point $x_0$ is defined as&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;f(x)|_{x_0} = \sum_{n=0}^\infty \frac{f^{(n)}(x_0)}{n!}(x-x_0)^n&lt;/script&gt;
+
+&lt;p&gt;In order to keep things simple we will only work with a Taylor expansion of the second order, meaning that we will stop the sum after the term with the second order derivative.
+Practically, many problems are posed as linear or quadratic problems so the need seldomly arises to compute higher order Taylor expansions (at least in machine learning where computing higher order gradients at scale can be expensive).&lt;/p&gt;
+
+&lt;p&gt;So we’ll be working with the following sum:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+  f(x)|_{x_0} &amp;\approx f(x_0) + \frac{f'(x_0)}{1!}(x-x_0) + \frac{f''(x_0)}{2!}(x-x_0)^2 \\
+  &amp;= f(x_0) + f'(x_0) \underbrace{(x-x_0)}_{\Delta x} + \frac{1}{2!}f''(x_0) \underbrace{(x-x_0)^2}_{\Delta x^2} \\
+  &amp;= f(x_0) + \underbrace{f'(x_0) \ \Delta x}_{\text{linear in $\Delta x$}} + \underbrace{\frac{1}{2}f''(x_0) \ \Delta x^2}_{\text{quadratic in $\Delta x$}} \\
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;where $\Delta x = (x - x_0)$ signifies the distance of x to the root point $x_0$.
+By using the second order Taylor expansion we approximate the higher order polynomial $f(x)$ with just its first and second order derivative packed into a polynomial in $\Delta x$.
+The locality of the Taylor expansion around the $x_0$ is essential for the approximation since we use the first order order derivative $f’(x_0)$ and second order derivative &lt;script type=&quot;math/tex&quot;&gt;f''(x_0)&lt;/script&gt; explicitly evaluated at $x_0$.&lt;/p&gt;
+
+&lt;p&gt;We can visually the individual points of the Taylor expansion around the root point:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/ItosLemma/Taylor01.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;100%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We can observe a couple of things in these plots:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;The root point $x_0$ stays the same for all plots since this is the point around which we try to locally approximate the function $f(x)$ with a lower order polynomial&lt;/li&gt;
+  &lt;li&gt;The first order derivative $f’(x_0) \Delta x$ is a linear function that goes through $x_0$. I omitted the constant term $f(x_0)$ for visual clarity what the individual components contribute to the overall approximation. Strictly speaking it would need to be $f(x_0) + f’(x_0) \Delta x$.&lt;/li&gt;
+  &lt;li&gt;The second order derivative &lt;script type=&quot;math/tex&quot;&gt;f''(x_0)\Delta x^2&lt;/script&gt; is a constant value which doesn’t change.
+The root $x_0$ lies on a stretch with almost no curvature ergo &lt;script type=&quot;math/tex&quot;&gt;f''(x_0)&lt;/script&gt; is almost constant and doesn’t contribute much to the final approximation.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Now let’s move the root point $x_0$ and plot the different terms again to see the second order derivative &lt;script type=&quot;math/tex&quot;&gt;f''(x_0)&lt;/script&gt; in action:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/ItosLemma/Taylor02.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;100%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/ItosLemma/Taylor03.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;100%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;With this root point $x_0$ we can see the second order derivatives actually contribute to the final approximation:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Now the root point lies in an area in which there is high curvature.&lt;/li&gt;
+  &lt;li&gt;The second order term of the Taylor approximation plays a more significant role and we can see that it tries to approximate the function around $x_0$ with a quadratic function.&lt;/li&gt;
+  &lt;li&gt;Furthermore the sum of the two terms approximate the original function around the root point more precisely than either could have done on its own.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Now the question can be raised on how this could be applied to stochastic processes …&lt;/p&gt;
+
+&lt;h3 id=&quot;itos-lemma&quot;&gt;Ito’s Lemma&lt;/h3&gt;
+
+&lt;p&gt;Let’s assume we a classic SDE with a drift term $\mu(t, X_t)$ and a diffusion term $\sigma(t, X_t)$ which together form:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;dX_t = \mu(t, X_t) dt + \sigma(t, X_t) dW_t&lt;/script&gt;
+
+&lt;p&gt;and $dW_t$ is the infinitesimal differential of a Wiener process $W_t$.
+Such a process is commonly called an Ito drift-diffusion process.&lt;/p&gt;
+
+&lt;p&gt;Now let’s say that we have some function $f(t, X_t)$ that takes whatever value $X_t$ is at the moment $t$ and returns some other value $Y_t$ such that we have&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;Y_t = f(t, X_t)&lt;/script&gt;
+
+&lt;p&gt;We could use relatively easy functions such as as the exponential function $e^{X_t}$ or the quadratic function $X_t^2$ for starters.
+In the financial markets, these functions $f$ quickly get very complex as stock prices are routinely modeled as stochastic differential equations with $f$ capturing complex relationships like a portfolio performance or default probability.&lt;/p&gt;
+
+&lt;p&gt;Since we are working with infinitesimal differentials we would like to know how $Y_t$ changes for very small time differentials $dt$.
+So we actually want to be able to define the following equation:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;dY_t = df(t, X_t)&lt;/script&gt;
+
+&lt;p&gt;&lt;strong&gt;In order to answer that question, Ito’s lemma applies a Taylor expansion to $f(t, X_t)$ with special numerical conditions for the infinitesimal values.&lt;/strong&gt;
+There are a few constraints on $f$, though.
+It has to be twice differentiable with respect to $X_t$ and at least once differentiable with respect to $t$.
+If these equations are met we can start deriving!&lt;/p&gt;
+
+&lt;p&gt;The first step is to define the Taylor expansion for $f(t, X_t)$ in it’s general form around the root point $(t_0, X_0)$:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+  f(t, X_t) &amp;\approx f(t_0, X_0) + \frac{\partial f(t_0, X_0)}{\partial t} \underbrace{(t - t_0)}_{\Delta t}
+  + \frac{\partial f(t_0, X_0)}{\partial X_t}\underbrace{(X_t - X_0)}_{\Delta X_t}
+  + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\underbrace{(X_t - X_0)^2}_{\Delta X_t^2} \\
+  &amp;= f(t_0, X_0) + \frac{\partial f(t_0, X_0)}{\partial t} \Delta t
+  + \frac{\partial f(t_0, X_0)}{\partial X_t}\Delta X_t
+  + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\Delta X_t^2 \\
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;The next step is to examine the Taylor expansion in the limit $\lim [t \rightarrow t_0, X_t \rightarrow X_0]$.
+This is of interest as we are again interested in the infinitesimal behavior of $f(t, X_t)$, namely $df(t, X_t)$:
+By pulling the root evaluation $f(t_0, X_0)$ over to the left side we lay the groundwork for the differential.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+\lim_{t\rightarrow t_0, X_t \rightarrow X_0} f(t, X_t) - f(t_0, X_0) 
+&amp;= \lim_{t\rightarrow t_0, X_t \rightarrow X_0} \frac{\partial f(t_0, X_0)}{\partial t} \Delta t
+  + \frac{\partial f(t_0, X_0)}{\partial X_t}\Delta X_t
+  + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\Delta X_t^2
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;In fact the limit above is precisely the differentiability operator from the very beginning.
+Remember that we define the differentiability as the difference of two evaluations for an ever more decreasing difference in their arguments.
+This is precisely what we are defining in the limit above by moving $t$ ever closer to $t_0$ and simultaneously $X_t$ towards $X_0$.
+Furthermore the limit also allows us to rewrite the difference $\Delta t$ and $\Delta X_t$ in their infinitesimal differential form $dt$ and $dX_t$.&lt;/p&gt;
+
+&lt;p&gt;So we obtain the following:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+\lim_{t\rightarrow t_0, X_t \rightarrow X_0} f(t, X_t) - f(t_0, X_0) 
+&amp;= \lim_{t\rightarrow t_0, X_t \rightarrow X_0} \frac{\partial f(t_0, X_0)}{\partial t} \Delta t
+  + \frac{\partial f(t_0, X_0)}{\partial X_t}\Delta X_t
+  + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\Delta X_t^2 \\
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\Downarrow&lt;/script&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+  df(t, X_t) &amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt
+  + \frac{\partial f(t_0, X_0)}{\partial X_t} dX_t
+  + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} dX_t^2
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;The next step is substituting $dX_t = \mu(t, X_t)dt + \sigma(t, X_t)dW_t$ into the equation:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+  df(t, X_t) &amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt
+  + \frac{\partial f(t_0, X_0)}{\partial X_t} dX_t
+  + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} dX_t^2 \\
+  &amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt
+  + \frac{\partial f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t)
+  + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t)^2 \\
+  &amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt
+  + \frac{\partial f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t) \\
+  &amp; \quad + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)^2 dt^2 + 2 \mu(t, X_t) \sigma(t, X_t)^2 dt dW_t + \sigma(t, X_t)^2 dW_t^2) \\
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;Now comes a pivotal part in the derivation in which examine how $dt$ and $dW_t$ behave when multiplied or squared.
+The differential Wiener process can be rewritten as $dW_t = \epsilon \sqrt{dt}$.
+Thus we have the following time-dependent terms appearing in the equation above: $dt^2$, $dt dW_t = \epsilon dt^{1.5}$ and $dW_t^2 = \epsilon^2  dt = dt$ under the mean-square interpretation which states $\mathbb{E}[\epsilon^2] = \mathbb{V}[\epsilon] = 1$ for $\epsilon \sim \mathcal{N}(0,1)$.&lt;/p&gt;
+
+&lt;p&gt;The important aspect of simplifying Ito’s lemma is to think about how $dt^2$, $dt^{1.5}$ and $dt$ behave for infinitesimal changes.
+Any $dt^k$ with $k&amp;gt;1$ and $dt &amp;lt; 1$ will decrease by an order of magnitude faster to zero than $dt$ itself for the infinitely small values that we’re dealing with.
+So if we evaluate for a infinitesimal small $dt$, the terms $dt^2$ and $dt^{1.5}$ will be smaller by larger order of magnitudes.
+This allows us to simply drop them from our equation.&lt;/p&gt;
+
+&lt;p&gt;So we now have:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+  df(t, X_t)
+  &amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt
+  + \frac{\partial f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t) \\
+  &amp; \quad + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)^2 \overbrace{dt^2}^{\rightarrow 0} + 2 \mu(t, X_t) \sigma(t, X_t)^2 \overbrace{dt dW_t}^{\rightarrow 0} + \sigma(t, X_t)^2 \overbrace{dW_t^2}^{=dt}) \\
+  &amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt
+  + \frac{\partial f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t) + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} \sigma(t, X_t)^2 dt \\
+  &amp;= \underbrace{\left(\frac{\partial f(t_0, X_0)}{\partial t} + \frac{\partial f(t_0, X_0)}{\partial X_t} \mu(t, X_t) + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} \sigma(t, X_t)^2 \right)dt}_{\text{deterministic}} + \underbrace{\frac{\partial f(t_0, X_0)}{\partial X_t} \sigma(t, X_t)dW_t}_{\text{stochastic}} \\
+  &amp;= \mu_f\left(t, \mu(t, X_t), \frac{\partial f(t_0, X_0)}{\partial t}, \frac{\partial f(t_0, X_0)}{\partial X_t}, \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} \sigma(t, X_t)^2 \right)dt + \sigma_f\left(t, \sigma(t, X_t), \frac{\partial f(t_0, X_0)}{\partial X_t} \right) dW_t
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;So ultimately, it turns out that the derivative of the function $f(t, X)$ with an Ito drift-diffusion process as input is an Ito drift-diffusion process itself.
+Albeit with a few first and second order derivatives sprinkled in between.&lt;/p&gt;
+
+&lt;p&gt;Thus we can model the function $f(t, X_t)$ just like any other drift-diffusion process and can evaluate the distribution of such a process at a later point in time.&lt;/p&gt;</content><summary type="html">Or how to differentiate a function of a stochastic process.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/ItosLemma/WienerProcess.gif" /></entry><entry><title type="html">Solving (Some) SDEs</title><link href="http://localhost:4000/blog/SolvingSDEs/" rel="alternate" type="text/html" title="Solving (Some) SDEs" /><published>2020-03-30T00:00:00+02:00</published><updated>2020-03-30T00:00:00+02:00</updated><id>http://localhost:4000/blog/SolvingSDEs</id><content type="html" xml:base="http://localhost:4000/blog/SolvingSDEs/">&lt;head&gt;
+&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
+       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
+         MathJax.Hub.Config({
+           tex2jax: {
+             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
+             displayMath: [['$$','$$']],
+             processEscapes: true
+           }
+         });
+       &lt;/script&gt;
+       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+
+&lt;h4 id=&quot;non-differential-equations&quot;&gt;Non-Differential Equations&lt;/h4&gt;
+
+&lt;p&gt;Most of us are quite familiar with linear and non-linear equations from our 101 math classes and lectures.
+These equations define an equality between the two terms left and right of the equal sign:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;y = f(x)&lt;/script&gt;
+
+&lt;p&gt;These functions assert an equality between $y$ and $x$ through the function $f(\cdot)$ and describe a “static” relationship between a value $x$ and its corresponding value $y$.
+Examples of these functions are numerous and we can list a couple of them here:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Linear equations: $y = A x + b$&lt;/li&gt;
+  &lt;li&gt;Exponential equations: $y = e^x$&lt;/li&gt;
+  &lt;li&gt;Polynomials: $y = \sum_{k=0}^n a_k x^k$&lt;/li&gt;
+  &lt;li&gt;Trigonometric equations: $y = \sin(x)$&lt;/li&gt;
+  &lt;li&gt;and the list goes on and on …&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;All the equations above share the characteristic that they equate two separate values $y$ and $f(x)$.&lt;/p&gt;
+&lt;h4 id=&quot;differential-equations&quot;&gt;Differential Equations&lt;/h4&gt;
+
+&lt;p&gt;As you can guess from the title there is another important class of equations: differential equations.
+These equations relate one or more functions to their derivatives.
+Mathematically this looks like the following:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\underbrace{\frac{d y}{dx}}_{\text{derivative}} = f(x)&lt;/script&gt;
+
+&lt;p&gt;As we can see from above the one thing that changed to our earlier, non-differential equation is the derivative.
+Instead of telling us what the value $y$ is given the function $f(x)$ as in the case of non-differential equations, the differential equation above tells us the change of $y$ with respect to $x$.
+In plain English, it tells us how much $y$ changes if we change $x$ by simply evaluating the function $f(x)$.&lt;/p&gt;
+
+&lt;p&gt;Naturally, the question arises where we ask ourselves what the heck do these equations tell us.
+In non-differential equations, the relationship between input to a function and output is quite straight forward.&lt;/p&gt;
+
+&lt;p&gt;I struggled for quite some time to arrive at an intuitive interpretation of what differential equations actually represent.
+Fortunately, one field where differential equations pop up en masse is physics (which apart from quantum physics tends to be quite intuitive for humans).
+So we’ll make a detour through physics to keep the intuition alive while diving into differential equations.&lt;/p&gt;
+
+&lt;p&gt;Differential equations are often employed in physics when a physical system is &lt;strong&gt;most accurately described through its instantaneous change in time&lt;/strong&gt;.
+It should be noted that the differential could be defined with respect to any argument of the function $f(\cdot)$, but in physics the time differential $d / dt$ is often the differential of interest as we want to predict things into the future.
+In the simplest case, a physical object $x(t)$ moves through time and space according to some function:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\underbrace{\frac{d}{dt} \ x(t)}_{\text{change over time}}  = \underbrace{f(t, x(t))}_{\text{value of change}} \quad \cong \quad f(x(t))&lt;/script&gt;
+
+&lt;p&gt;The equation above simply states that the change over time, $d  x(t) / dt$ is equivalent to the function $f(t, x(t))$.
+Mathematically, we require the time $t$ to appear in the function $f(t, x(t))$ since otherwise the time derivative wouldn’t exist.
+For a more intuitive notation we can drop it and equate the change $d/dt x(t)$ with the function $f( \cdot )$ with the ‘essentially the same’ symbol $\cong$.&lt;/p&gt;
+
+&lt;p&gt;We can write the differential equation in a shorter way by using the &lt;a href=&quot;https://en.wikipedia.org/wiki/Differential_(infinitesimal)&quot;&gt;infinitesimal differential&lt;/a&gt; by pulling $dt$ over to the other side:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;dx(t) = f(t, x(t)) dt&lt;/script&gt;
+
+&lt;p&gt;which simply states that a “super small” change $dx(t)$ in $x(t)$ corresponds to function $f(t, x(t))$ “scaled” by the “super small” time difference $dt$.&lt;/p&gt;
+
+&lt;p&gt;Below is an image juxtaposing what we refer to as non-differential equations and a differential equations with respect to time:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/SDE/EqVsDiffEq.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;100%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Instead of working with a “absolute” equation as shown on the left side, the differential equation on the right gives us the change $dx(t)$ for any point $x(t)$ at any point in time $t$ (which is mathematically a vector field).
+&lt;strong&gt;Each arrow in the right plot is an evaluation of the differential equation $dx(t)$ at a specific point $x(t)$ at a specific point in time $t$.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;A more intuitive example of the right hand plot above is the temperature of a hot coffee mug.
+The hotter the coffee mug, the larger the temperature gradient between coffee mug and the surrounding.
+So the larger the gradient the more temperature (thermal energy) is passed off into the environment of the hot coffee mug, ergo the temperature decrease is faster for coffee mugs with high temperatures.
+(To be frank, this is not the most physically correct way of how energy behaves, but this is just for an intuitive visualization.)&lt;/p&gt;
+
+&lt;p&gt;The grey lines in in the right plot model the changing temperatures over time of three coffee mugs with different temperatures.
+We model the thermal energy dissipation through a (ordinary) differential equation and would like to know what the temperature of the three coffee mugs will be at a later point in time.
+Computing the later temperature amounts to “little more” than following the arrows.
+These arrows are computed through the differential equation and tell us what the temperature change $dx(t)$ is for a mug with a specific temperature $x(t)$ at time $t$.&lt;/p&gt;
+
+&lt;p&gt;On a side note: Notice how the arrows don’t change in their direction and magnitude for a specific value $x(t)$ while we progress in time. This signals that $dx(t)$ doesn’t actually use $t$ to compute the change in temperature.&lt;/p&gt;
+
+&lt;p&gt;The way we solve differential equations is to start at some initial point $x(0)$ and add up all the temperature changes $dx(t)$ that the hot coffee mug is exposed to over time.
+Mathematically, this amounts to little more than:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;x(T) = x(0) + \underbrace{\int_{t=0}^T dx(t)}_{\text{sum up all the changes}}&lt;/script&gt;
+
+&lt;p&gt;the solution of which is shown as the grey line in the right plot.&lt;/p&gt;
+
+&lt;p&gt;Another analogy would be kicking a soccer ball over a soccer field.
+The ball starts somewhere $x(0)$ and you kick it repeatedly in some direction (adding $dx(t)$ repeatedly).
+Each kick changes the location of the soccer ball and results in the ball lying in a new position $x(t)$.
+After we kicked the soccer ball about the soccer field enough, we’ll finally leave it at $x(T)$.&lt;/p&gt;
+
+&lt;p&gt;Unfortunately, computers can’t really work with infinitesimal small number like $dx(t)$ or $dt$ since numbers in computers are stored with a finite amount of bits.
+As so often, the (approximate) solution is to discretize the changes to very small, yet still representable values of $\Delta x(t)$ and $\Delta t$:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+x(T) &amp;= x(0) + \underbrace{\int_{t=0}^T dx(t)}_{\text{sum up all the changes}} \\
+&amp; \underbrace{\approx}_{\text{discretize}} x(0) + \sum_{t=0}^T \Delta x(t)
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;where $t$ is some finite partition of time into discrete values.&lt;/p&gt;
+
+&lt;p&gt;It turns out that the integral above (and its respective discrete approximation) is all we need to solve (ordinary) differential equations.
+More importantly it’s all we need to get a basic understanding of stochastic differential equations.
+But before we can proceed to stochastic differential equations, we have to talk above stochasticity over time.&lt;/p&gt;
+
+&lt;p&gt;Enter Wiener processes …&lt;/p&gt;
+
+&lt;h4 id=&quot;wiener-process&quot;&gt;Wiener Process&lt;/h4&gt;
+
+&lt;p&gt;In order to understand Wiener processes we need to think about the position of a particle in an Euclidean space that moves purely randomly.
+The question is how we could model such a particle.&lt;/p&gt;
+
+&lt;p&gt;The first idea would be to determine that at any point in time the particle has the tendency to move randomly in space.
+Therefore it does not jiggle and bounce at discrete time steps but will always move an infinitesimally small distance $dx(t)$ in a random direction $\epsilon$ for any infinitesimally short period of time $dt$.
+&lt;!-- We can also conclude, that the longer the particle moves, the farther the particle can actually move from its starting point. --&gt;
+&lt;!-- This introduces a relationship between how long and how far the little jiggly particle can move. --&gt;&lt;/p&gt;
+
+&lt;p&gt;Visually we want the random moving particle looking something like this in two dimensions:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/SDE/BrownianMotion.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We can thus proclaim the following, somewhat un-mathematical property of this rambunctious little particle:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\underbrace{dx_t}_{\text{change in space}} \equiv \overbrace{\epsilon}^{\text{random move}} \underbrace{&quot;dt&quot;}_{\text{some change in time}}&lt;/script&gt;
+
+&lt;p&gt;There are a couple of things to observe here:&lt;/p&gt;
+
+&lt;!-- * First is the modified notation of $dx_t$ which is simply a more compact notation for $dx(t)$ and is completely equivalent. --&gt;
+&lt;ul&gt;
+  &lt;li&gt;First we introduced a random variable $\epsilon$ which follows some probability distribution.&lt;/li&gt;
+  &lt;li&gt;Secondly, through the infinitesimal differentials on both sides we equated the random move in space with the duration of the movement just like in a differential equation.&lt;/li&gt;
+  &lt;li&gt;Thirdly, the infinitesimal movements of $x_t$ through time are completely independent since $\epsilon$ is sampled uncorrelated through time.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;It turns out that if we choose the random movements $\epsilon$ and the change in time $”dt”$ smartly, we can derive convenient theoretical properties about the movement of the little random particle $x_t$.&lt;/p&gt;
+
+&lt;p&gt;Since $\epsilon$ is a random variable at any point in time, the position of $x_t$ will never be predictable with absolute certainty.
+Instead we have to treat the position of the particle $x_t$ itself as a random variable, the behavior of which is governed by the differential equation above.&lt;/p&gt;
+
+&lt;p&gt;First up is the choice of $\epsilon$.
+The usage of the Normal distribution $\mathcal{N}(\mu, \sigma)$ is prevalent in a lot of modelling approaches due to the convergence of sequences of random variables and it furthermore has nice theoretical properties.
+For that reason we will model the probability of the random movement $\epsilon$ with a standard normal distribution, namely $\epsilon \sim \mathcal{N}(0,1)$.&lt;/p&gt;
+
+&lt;p&gt;Secondly we will chose the “amount of time $dt$” to actually be $\sqrt{dt}$, the reason of which will be clear in an instant.&lt;/p&gt;
+
+&lt;p&gt;Thirdly, we want to particle to start at zero, so $x_0 = 0$.&lt;/p&gt;
+
+&lt;p&gt;Given these modelling assumptions, we are interested where the particle could turn up at a later point in time, so we want to know what $x_T$ is:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+  x_T &amp;= x_0 + \int_{t=0}^T dx_t \\
+  &amp;= \underbrace{x_0}_{\text{$=0$}} + \int_{t=0}^T \epsilon \sqrt{dt} \\
+  &amp;= \int_{t=0}^T \epsilon \sqrt{dt}
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;But since $\epsilon$ is a random variable we actually have to treat the position of the particle at $x_T$ as a random variable.
+The most that we can do is thus to treat $x_T$ as a probability distribution for which we can compute the first two moments, the mean and the variance:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+  \mathbb{E}\left[ x_T \right] &amp;= \mathbb{E}\left[\int_{t=0}^T dx_t \right] \\
+  &amp;= \int_{t=0}^T \underbrace{\mathbb{E}\left[ \epsilon \right]}_{\mathcal{N}(0,1)} \sqrt{dt} \\
+  &amp;= 0
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+  \mathbb{V}\left[ x_T \right] &amp;= \mathbb{V}\left[\int_{t=0}^T dx_t \right] \\
+  &amp;= \int_{t=0}^T \underbrace{\mathbb{V}\left[ \epsilon \sqrt{dt} \right]}_{\mathbb{V}[a X] = a^2 \mathbb{V}[X]}  \\
+  &amp;= \int_{t=0}^T dt \underbrace{\mathbb{V}\left[ \epsilon \right]}_{\epsilon \sim \mathcal{N}(0,1)}  \\
+  &amp;= \int_{t=0}^T dt  \\
+  &amp;= T
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;We can validate the properties of the Wiener process experimentally through what a good friend of mine calls “computational evidence”:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/SDE/BrownianMotionExperiment.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;with the following code&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;MC&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.0&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;sigma&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.1&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;drift&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;diffusion&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sigma&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sigma&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# start at zero&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zeros&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MC&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# simulate Brownian Motion in parallel&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;drift&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;diffusion&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sigma&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;fig&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;figure&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fig&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add_subplot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;111&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# plot all the trajectories&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'red'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;alpha&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# compute the analytical means and variances of the Brownian Motion&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;analytic_var&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sigma&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;analytic_std&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;analytic_var&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.5&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;analytic_mean&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# compute the empirical mean and variance from the sampled Brownian Motion&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;empiric_var&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;var&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;axis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;empiric_std&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;empiric_var&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.5&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;empiric_mean&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mean&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;axis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;empiric_mean&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;empiric_std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ls&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'--'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'red'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;empiric_mean&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;empiric_std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ls&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'--'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'red'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mean&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;axis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ls&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'-.'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'red'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fill_between&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;analytic_mean&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;analytic_std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;analytic_mean&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;analytic_std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'gray'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;alpha&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;analytic_mean&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'gray'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ls&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'-.'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;grid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_xlim&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_ylim&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_xticklabels&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([],[])&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_yticklabels&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([],[])&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;show&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We can observe both the sampled mean and the variance (in red) of our 100 Wiener processes match the expected mean and variance (in gray) up to the noise that we introduce through sampling.
+Basically all the paths stay around zero where they start and they spread out according to our analytical computed variance of $\mathbb{V}[x_t] = t$ over time.&lt;/p&gt;
+
+&lt;p&gt;Since we chose $\epsilon$ and $”dt”$ smartly, we arrive at quite succinct definitions for the mean and variance of this random variable $x_T$.
+In fact, this specific kind of stochastic process has a specific name.
+By choosing the random movement $\epsilon \sim \mathcal{N}(0,1)$, the starting value $x_0=0$ and the time differential $\sqrt{dt}$ we have defined our little, rambunctious particle to follow a &lt;strong&gt;Wiener process&lt;/strong&gt; which is a specific kind of stochastic process.
+The defining properties of a Wiener process $W_t$ ( $W_t$ being the common notation of a Wiener process) that describes the infinitesimal movement of a particle through $dx_t = \epsilon \sqrt{dt}$ are the following:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;$W_0 = 0$ &lt;br /&gt;
+This means that the Wiener process always starts at zero.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Independent increments: $\mathbb{C}[W_{t+u} - W_s, W_s] =0$ for $u \geq 0$ and $s \leq t$ &lt;br /&gt;
+Increments (the movement of the Wiener process) are independent from the past movements. $\mathbb{C}[\cdot , \cdot ]$ is the covariance between two random variables.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Gaussian increments: $W_{t+u} - W_t \sim \mathcal{N}(0, u)$ &lt;br /&gt;
+The difference between any two realizations is Gaussian distributed accordingly to the time difference between these two realizations.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Continuous paths in time $t$.&lt;br /&gt;
+We can basically zoom infinitely far into the movements on the time axis and we will never find a discontinuous jump. Yet, due to it being a stochastic process it turns out that the Wiener process is not differentiable.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;In order to be all set up for the final chapter of this post, we will define an infinitesimal version of the Gaussian increment property of the Wiener process:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;W_{t+u} - W_t \sim \mathcal{N}(0, u) \quad \Leftrightarrow \quad dW_t \sim \mathcal{N}(0,dt)&lt;/script&gt;
+
+&lt;h4 id=&quot;stochastic-differential-equations--differential-equations--wiener-processes&quot;&gt;Stochastic Differential Equations (= Differential Equations + Wiener Processes)&lt;/h4&gt;
+
+&lt;p&gt;Once we understood differential equations and Wiener processes, we’ll realize that (basic) stochastic differential equations are just the combination of the two.
+We can thus define a stochastic differential equation as&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\underbrace{dX_t}_{\text{total change}} = \underbrace{\mu_t dt}_{\text{deterministic}} + \underbrace{\sigma_t dW_t}_{\text{stochastic}}&lt;/script&gt;
+
+&lt;p&gt;which defines the infinitesimal change in the random variable $X_t$ at time $t$ as the combination of a deterministic change $\mu_t dt$ and a scaled Wiener process $\sigma_t dW_t \sim \mathcal{N}(0,\sigma_t^2 dt)$.&lt;/p&gt;
+
+&lt;p&gt;With a constant drift, this looks something like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/SDE/SDEDriftDiff.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;through&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;MC&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.1&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;sigma&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.1&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;drift&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;diffusion&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sigma&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sigma&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# start at zero&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zeros&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MC&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# simulate Brownian Motion in parallel&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;drift&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;diffusion&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sigma&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;fig&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;figure&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fig&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add_subplot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;111&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# plot all the trajectories&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'red'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;alpha&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# compute the analytical means and variances of the Brownian Motion&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;analytic_var&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sigma&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;analytic_std&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;analytic_var&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.5&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;analytic_mean&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# compute the empirical mean and variance from the sampled Brownian Motion&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;empiric_var&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;var&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;axis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;empiric_std&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;empiric_var&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.5&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;empiric_mean&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mean&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;axis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;empiric_mean&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;empiric_std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ls&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'--'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'red'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;empiric_mean&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;empiric_std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ls&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'--'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'red'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mean&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;axis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ls&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'-.'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'red'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fill_between&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;analytic_mean&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;analytic_std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;analytic_mean&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;analytic_std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'gray'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;alpha&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;analytic_mean&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'gray'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ls&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'-.'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;grid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_xlim&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_ylim&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_xticklabels&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([],[])&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_yticklabels&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([],[])&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;show&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;For such drift-diffusion processes, or more specifically Ito drift-diffusion processes, we can compute the analytical mean and variance of how $X_t$ will be distributed in the future.
+To keep things simple, we will work with a constant mean $\mu = \mu_t$ and diffusion $\sigma = \sigma_t$.
+Solving the SDE amounts to:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+  X_T &amp;= \int_{t=0}^T dX_t \\ 
+  &amp;= \int_{t=0}^T \mu dt + \sigma dW_t \\
+  &amp;= \mu \int_{t=0}^T dt + \sigma \int_{t=0}^T dW_t \\
+  &amp;= \mu T + \sigma \int_{t=0}^T dW_t \\
+  &amp;= \mu T + \sigma W_T \\
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;Similarly to earlier, the Brownian motion $W_T \sim \mathcal{N}(0,T)$ is a random variable, which entices us to compute the mean and variance of the term above:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+  \mathbb{E}[X_T] &amp;= \mathbb{E}[\mu T + \sigma W_T] \\
+  &amp;= \mu T + \sigma \mathbb{E}[W_T] \\
+  &amp;= \mu T
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+  \mathbb{V}[X_T] &amp;= \mathbb{V}[\mu T + \sigma W_T] \\
+  &amp;= \underbrace{\mathbb{V}[\mu T]}_{=0} + \mathbb{V}[\sigma W_T] \\
+  &amp;= \sigma^2 \mathbb{V}[ W_T] \\
+  &amp;= \sigma^2 T \\
+  \mathbb{Std}[X_T] &amp;= \sigma \sqrt{T}
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;which we were able to validate with our “computational evidence” in the plot above.
+The mean increases constantly as time progresses and the standard deviation above and below the mean increases asymptotically due to the $\sqrt{T}$.&lt;/p&gt;
+
+&lt;p&gt;This is a fairly simple SDE since we assume that $\mu_t$ and $\sigma_t$ are constant in time and do not depend on the value of $X_t$.
+Things get significantly more interesting when both $\mu_t$ and $\sigma_t$ change over time depending on the value of $X_t$ such that we are working with&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;dX_t = \mu(t, X_t) dt + \sigma(t, X_t) dW_t&lt;/script&gt;
+
+&lt;p&gt;The drift $\mu(t, X_t)$ and $\sigma(t, X_t)$ can now be potentially highly non-linear and complex functions which could even take in other stochastic processes as additional input.
+But Ito’s lemma, Ornstein-Uhlenbeck processes and Geometric Brownian Motion are topics for another time …&lt;/p&gt;</content><summary type="html">Geometric Brownian Motion &amp; Ornstein-Uhlenbeck Process</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/SDE/EqVsDiffEq.png" /></entry><entry><title type="html">Stochastic Differential Equations</title><link href="http://localhost:4000/blog/SDE/" rel="alternate" type="text/html" title="Stochastic Differential Equations" /><published>2020-03-30T00:00:00+02:00</published><updated>2020-03-30T00:00:00+02:00</updated><id>http://localhost:4000/blog/SDE</id><content type="html" xml:base="http://localhost:4000/blog/SDE/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -2291,313 +2959,4 @@ So we’re basically at the same spot deep learning was at 10 years ago with the
 The Glorot-Activation and ReLU activation functions solved it and maybe somebody will develop a new fancy reparameterization for the variational parameter $\rho$. =)
 That’s why it will never really converge to absolute 0, but that’s a trade-off we’re willing to make if we’re able to scale variational inference to large data sets.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/blog/ReparamTrick/Softplus.png&quot; alt=&quot;&quot; align=&quot;center&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;</content><summary type="html">Outsourcing Stochasticity and Making Normal Distributions Differentiable</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/ReparamTrick/ReparamTrick.png" /></entry><entry><title type="html">Non-Negative Matrix Factorization</title><link href="http://localhost:4000/blog/NMF/" rel="alternate" type="text/html" title="Non-Negative Matrix Factorization" /><published>2019-01-24T00:00:00+01:00</published><updated>2019-01-24T00:00:00+01:00</updated><id>http://localhost:4000/blog/NMF</id><content type="html" xml:base="http://localhost:4000/blog/NMF/">&lt;head&gt;
-&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
-       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       &lt;/script&gt;
-       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
-&lt;/head&gt;
-
-&lt;h2 id=&quot;non-negative-matrix-factorization&quot;&gt;Non-Negative Matrix Factorization&lt;/h2&gt;
-
-&lt;p&gt;Recently while I was browsing reddit, an article was linked about the Netflix challenge from the late 2000’s.
-It sparked my interest and it was a nice article to read.
-Back then large-scale machine learning was still hampered through the lack of big data sets but when Netflix dumped a large recommendation data set onto the internet a lot of people went wild.&lt;/p&gt;
-
-&lt;p&gt;It had been the first time that such a large data set with millions of data points had been published.
-And this wasn’t just some obscure data set but real-world data from a major tech company itself.
-Back then Netflix proclaimed that the first group/person to develop a recommendation system which would be 10\% better than their own would get a million dollars.&lt;/p&gt;
-
-&lt;p&gt;A method that has been popping up repeatedly with the Netflix challenge has been non-negative matrix factorization (NMF).
-I always made a big detour around the topic since it sounded complicated and but after the article I became interested in it and as it turns out, NMF isn’t too hard to understand.&lt;/p&gt;
-
-&lt;p&gt;It all starts with the aim to factorize the matrix $R \in \mathbb{R}^{U \times I}$ into two smaller matrices $P \in \mathbb{R}^{U \times K}$ and $Q \in \mathbb{R}^{K \times I}$, such that their matrix product is approximately the original matrix $R$,&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;R \approx P \ Q = \hat{R}.&lt;/script&gt;
-
-&lt;p&gt;The approximation results from the fact that we want the dimension $K$ to be somewhat or significantly smaller than either $U$ or $I$, namely $K \ll U, I$.&lt;/p&gt;
-
-&lt;p&gt;Why do we want this? Well foremost to find some latent structure in the matrix which allows us to compress the information in $R$ into two smaller matrices $U, I$ with only little loss in information.&lt;/p&gt;
-
-&lt;p&gt;The idea is very similar to auto-encoders which use a reduced dimensionality in their middle to find a meaningful, but more compact representation of the original data.
-Another example would be the well-known PCA which uses the data’s principal components (directions in the data space which exhibit the highest variance) to project the data itself into a subspace which is lower dimensional and more meaningful.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;NMF_01.png&quot; alt=&quot;&quot; height=&quot;75%&quot; width=&quot;100%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;In the example above we factorize the matrix $R \in \mathbb{R}^{3 \times 4}$ into two matrices $P \in \mathbb{R}^{3 \times 3}, Q \in \mathbb{R}^{3 \times 4}$ which share the common latent dimensionality $K=3$.
-The latent factors correspond to the latent information which we can discover between the movies and what movies the users liked.
-In our case the latent factors are ‘James Cameron’, ‘Action’ and ‘Romantic’.&lt;/p&gt;
-
-&lt;p&gt;The important intuition is that the column vectors of $P$ represent the strength of association between users and latent factors and the row vectors of $Q$ represent the strength of association between the movies and the latent factors.&lt;/p&gt;
-
-&lt;p&gt;In the matrix ‘P’ we can see that ‘User 1’ reacts normally to ‘James Cameron’, strongly to ‘Action’ and weakly to ‘Romance’.
-‘User 2’ only reacts strongly to ‘Romance’ and doesn’t care much about either ‘James Cameron’ or ‘Action’.
-The final ‘User 3’ on the other hand reacts strongly to ‘James Cameron’ and weakly to both ‘Action’ and ‘Romance’.&lt;/p&gt;
-
-&lt;p&gt;In matrix $Q$ there also some information.
-Obviously ‘James Cameron’ reacts strongly to ‘Titanic’, ‘Terminator 2’ and ‘Avatar’ since he’s the director of all three movies.
-The latent factor ‘Romance’ reacts somewhat strongly to ‘Titanic’ and very strongly to ‘The Notebook’.&lt;/p&gt;
-
-&lt;p&gt;Once we have the full factorization, we can use both matrices to fill in the missing values.
-Because ‘User 1’ reacts strongly to ‘Action’, he will probably only react somewhat weakly to ‘The Notebook’.
-Since ‘User 2’ favours ‘Romance’ above all else, the probable review of ‘Terminator 2’ will be very weak. Better not recommend it to the user!
-‘User 3’ could react normally to ‘The Notebook’ since he doesn’t care too much about any specific latent factor.&lt;/p&gt;
-
-&lt;p&gt;The infilling, or imputation, is made possible by computing the two factorized matrices $P$ and $Q$ from all observed data points in the data matrix $R$ and subsequently generalizing to the unseen data points.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;NMF_02.png&quot; alt=&quot;&quot; align=&quot;center&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;We’ve seen above that we can determine clear preferences of the users.
-Instead of encoding the preferences of the users implicitly in $P$ we can encode them explicitly with biases.
-By using biases we can let $P$ concentrate on finding strong weights with the items and offload the user preference onto the biases.
-For each user there will be a bias which we can aggregate into a vector $u \in \mathbb{R}^{U}$.
-Similarly we will introduce a bias for each movie in a vector $i \in \mathbb{R}^{I}$.
-And for good measure we’ll include a overall scalar bias $b \in \mathbb{R}$.
-Since these are vectors and we want to compute matrices, it’s easier to write down the full reconstruction of the matrix $R$ element-wise:&lt;/p&gt;
-
-&lt;p&gt;\begin{align}
-	R_{ui} \approx \sum_{k=0}^K P_{uk} Q_{ki} + u_u + i_i + b = \hat{R}_{ui}
-\end{align}&lt;/p&gt;
-
-&lt;p&gt;The above example is a made-up example which doesn’t correspond to a true factorization.
-I only created it to demonstrate the core idea of NMF.
-In reality we would have to infer the names of the latent factors by looking at the data.
-Furthermore the values aren’t integer values like above but float values.&lt;/p&gt;
-
-&lt;p&gt;Surprisingly, NMF is not hard to implement when using gradient descent.
-As we are living in the age of automatic differentiation frameworks implementing NMF is a breeze.&lt;/p&gt;
-
-&lt;p&gt;The recipe to obtain a full factorization is quite easy:&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;Initialize $P, Q, u, i$ and $b$ randomly and positively&lt;/li&gt;
-  &lt;li&gt;Compute $\hat{R}$ and compute a loss to $R$&lt;/li&gt;
-  &lt;li&gt;Take the gradient of the loss w.r.t. all entries in $P, Q, u, i$ and $b$ and do a gradient descent step&lt;/li&gt;
-  &lt;li&gt;Repeat until converged&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;There are two approaches how we can compute the loss.
-We could iterate through all existing data points in $R$ individually and compute the loss between $R_{ui}$ and $\hat{R}_{ui}$.
-Alternatively we can compute the loss between $R$ and $\hat{R}$ directly and we have to pay attention on what entries we compute the loss.
-The latter approach can easily be accomplished with a mask of zeros and ones which eliminates the unknown entries in $R$ from the loss function.&lt;/p&gt;
-
-&lt;p&gt;Let’s jump into some code!&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import numpy as np
-import torch
-
-FloatTensor = torch.FloatTensor
-
-class NMF(torch.nn.Module):
-
-        def __init__(self, R, K, lr, iterations):
-
-                '''
-                :param R: The recommendation matrix in which we want to fill in missing values
-                :param K: The number of latent factors
-                :param lr: The learning rate for the gradient descent
-                :param iterations: The number of iterations of gradient descent
-                :param zero_mask: The zero mask for the full matrix update
-                '''
-
-                super().__init__()
-
-                self.R = R
-                self.zero_mask = torch.zeros_like(R)
-                self.zero_mask[R!=0] = 1
-                self.num_users, self.num_items = R.shape
-                self.K = K
-                self.lr = lr
-                self.iterations = iterations
-
-                # We'll use an exponential function to initialize the values since it's support is in R^+
-                exponential_dist_lambda = 5
-
-                # Initialize the P and Q matrices
-                self.P = torch.nn.Parameter(FloatTensor(self.num_users, self.K).exponential_(exponential_dist_lambda))
-                self.Q = torch.nn.Parameter(FloatTensor(self.num_items, self.K).exponential_(exponential_dist_lambda))
-
-                # Initialize the biases
-                self.b_u = torch.nn.Parameter(FloatTensor(self.num_users, 1).exponential_(exponential_dist_lambda))
-                self.b_i = torch.nn.Parameter(FloatTensor(self.num_items, 1).exponential_(exponential_dist_lambda))
-                self.b = torch.nn.Parameter(FloatTensor([[0.1]]))
-
-                # Criterion and optimizer for the gradient descent
-                self.criterion = torch.nn.MSELoss()
-                self.optim = torch.optim.Adam(self.parameters(), lr=self.lr)
-
-                # Generate the training data from the existing data points in R
-                self.samples = [(i, j, self.R[i,j]) for i in range(self.num_users) for j in range(self.num_items) if R[i,j]&amp;gt;0]
-                np.random.shuffle(self.samples)
-
-                # Define entry-wise or full-matrix-wise updates ... Hint: Full matrix converges faster
-                self.forward_type = 1
-
-        def forward(self, _u, _i):
-                '''
-                Elementwise prediction of the data matrix
-                :param _u: The user
-                :param _i: The item
-                :return: \hat{R}_{ui}, the predicted rating through the parameters
-                '''
-
-                prediction = self.b + self.b_u[_u]
-                prediction += self.b_i[_i]
-                prediction += self.P[_u].dot(self.Q[_i])
-
-                return prediction
-
-        def forward_fullmatrix(self):
-                '''
-                Full matrix prediction where special care is given such that only the data point in the full prediction matrix are used for the loss
-                :return: Full R matrix
-                '''
-                prediction = torch.matmul(self.P, self.Q.t())
-                prediction += self.b + self.b_u
-                prediction += self.b_i.t()
-
-                # The points we want to predict are 0 in R, so the entries in the predicted matrx \hat{R} at the same position should also be zero
-                prediction *= self.zero_mask
-
-                return prediction
-
-        def train(self):
-                '''
-                Trusty old SGD: Predict \hat{R} -&amp;gt; Compute loss(R, \hat{R}) -&amp;gt; Update matrices and vectors with negative gradient
-                :return: Hopefully a converged recommendation matrix! ;-)
-                '''
-                for e in range(self.iterations):
-                        loss_ = 0
-                        for (i, j, r) in self.samples:
-                                self.zero_grad()
-
-                                if self.forward_type==1:
-                                        pred = self.forward_fullmatrix()
-                                        loss = self.criterion(pred, R)
-
-                                elif self.forward_type==2:
-                                        pred = self.forward(i, j)
-                                        loss = self.criterion(pred, r)
-
-                                loss.backward()
-                                self.optim.step()
-                                loss_+=loss.detach().numpy()
-
-                        if (e+1) % 10 == 0:
-                                print(&quot;Iteration: %d ; error = %.4f&quot; % (e+1, loss_))
-
-        def full_matrix(self):
-                '''
-                Compute the full prediction \hat{R}
-                :return:
-                '''
-                return_ = torch.matmul(self.P, self.Q.t())
-                return_ += self.b_u
-                return_ += self.b_i.t()
-                return_ += self.b
-
-                return return_.detach()
-
-R = np.array([  [5, 3, 0, 1],
-                [4, 0, 0, 5],
-                [1, 1, 0, 1],
-                [1, 0, 0, 1],
-                [0, 1, 5, 4],])
-
-R = FloatTensor(R)
-
-mf = NMF(R, K=3, lr=0.005, iterations=300)
-mf.train()
-
-print(mf.full_matrix())
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;I prefer to encapsulate my code in objects/Python classes.
-We initialize the NMF-Algorithm by defining all the relevant parameters and data matrices.
-Here we’re using an exponential distribution with a larger $\lambda$ to initialize $P, Q, u, i, b$ such that the their values and small and positive.&lt;/p&gt;
-
-&lt;p&gt;The classic additive NMF algorithm iterates through all existing data points in the data matrix and minimizes the mean squared error loss between the prediction and the true data matrix.
-I rewrote the gradient descent to compute the entire matrix in parallel and do one gradient descent step after evaluating the entire data matrix.
-In this case special attention has to be paid over which values the loss function is computed.&lt;/p&gt;
-
-&lt;p&gt;In the above example, unknown data points in $R$ were denoted with ‘0’.
-After predicting $\hat{R}$, we simply multiply the entries in $\hat{R}$ with 0 such that loss with respect to these unknown entries is zero.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;self.zero_mask = torch.zeros_like(R)
-self.zero_mask[R!=0] = 1
-
-. . .
-
-def forward_fullmatrix(self):
-	'''
-	Full matrix prediction where special care is given such that only the data point in the full prediction matrix are used for the loss
-	:return: Full R matrix
-	'''
-	prediction = torch.matmul(self.P, self.Q.t())
-	prediction += self.b + self.b_u
-	prediction += self.b_i.t()
-
-	# The points we want to predict are 0 in R, so the entries in the predicted matrx \hat{R} at the same position should also be zero
-	prediction *= self.zero_mask
-
-	return prediction
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;After converging on a set of parameters for the given recommendation matrix, we can use the existing parameters $Q, u, i, b$ to predict data on a new partially filled user vector $u^* \in \mathbb{R}^{1 \times k}$.
-All we have to do is to use the already existing codebook $Q$ and the biases $u, i, b$ and let the factorization for $p^* \in \mathbb{R}^{1 \times k}$ converge such that&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;u^*_i \approx \sum_{k=0}^K p^*_k Q_{ki} + u_i + i_i + b&lt;/script&gt;</content><summary type="html">What Shall We Recommend?</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/images/NMF_01.png" /></entry><entry><title type="html">Easter Walk Poem</title><link href="http://localhost:4000/blog/BerlinEasterPoem/" rel="alternate" type="text/html" title="Easter Walk Poem" /><published>2018-04-27T00:00:00+02:00</published><updated>2018-04-27T00:00:00+02:00</updated><id>http://localhost:4000/blog/BerlinEasterPoem</id><content type="html" xml:base="http://localhost:4000/blog/BerlinEasterPoem/">&lt;p&gt;The idea to rewrite Goethe’s famous &lt;a href=&quot;http://www.literaturwelt.com/werke/goethe/osterspaziergang.html&quot;&gt;‘Easter Walk Poem’&lt;/a&gt; came while I was sitting on my balcony on the first days of spring.
-It’s a custom to recite the poem during my family’s Easter breakfast and when I was back in Berlin after Easter, I started rewriting the poem with respect to Berlin.
-This is what this little literary excursion became:&lt;/p&gt;
-
-&lt;p&gt;Berlin-Spaziergang&lt;/p&gt;
-
-&lt;p&gt;Vom Gluten befreit sind Kreuzberg und Mitte &lt;br /&gt;
-Durch des Veganers strengen, missbilligenden Blick.&lt;/p&gt;
-
-&lt;p&gt;Der alte Winter, in seiner Schwäche,&lt;br /&gt;
-Zog sich nach Spandau zurück.&lt;br /&gt;
-Von Schönefeld her sendet er, fliehend, nur&lt;br /&gt;
-Ohnmächtiges Unglauben über den BER.&lt;/p&gt;
-
-&lt;p&gt;Am Kotti regen sich die Dealer zum Streben,&lt;br /&gt;
-Den Kater wollen sie mit weissem Pulver beleben;&lt;br /&gt;
-Am Rosi geraten die Spätis ins Bewegen;&lt;br /&gt;
-Rot-Braune Sternis erhalten ihren ersten Segen.&lt;/p&gt;
-
-&lt;p&gt;Doch an richtigen Berlinern fehlts im Revier,&lt;br /&gt;
-Berlin nimmt geputzte Hipster dafür.&lt;/p&gt;
-
-&lt;p&gt;Aus dem Brandenburger Tor,&lt;br /&gt;
-Dringt ein buntes Gewimmel Richtung Tiergarten hervor.&lt;br /&gt;
-Sonntags sonnen Sich Touris im Maurpark gern.&lt;br /&gt;
-Sie feiern des Karaokes’ allsonntaglichen Lärm.&lt;/p&gt;
-
-&lt;p&gt;Denn sie sind mit Easyjet für zwei Tage gekommen:&lt;br /&gt;
-Von Barcelonas breiten Ramblas,&lt;br /&gt;
-Aus New Yorks zu teuren Bars,&lt;br /&gt;
-Von Tokyos zu schmalen Gassen,&lt;br /&gt;
-Aus Londons engen Häusern,&lt;br /&gt;
-Wurden sie alle ins schöne Berlin gelassen.&lt;/p&gt;
-
-&lt;p&gt;Sieh nur, sieh! wie behend alle Menschen,&lt;br /&gt;
-In diesem schönen Berlin zusammenleben,&lt;br /&gt;
-Selbst von des Berghains fernen Darkrooms,&lt;br /&gt;
-Blinken uns wenig Kleider entgegen.&lt;/p&gt;
-
-&lt;p&gt;Wie der Schawarma mit seiner Würze,&lt;br /&gt;
-In FHain manch gierigen Mund bewegt,&lt;br /&gt;
-Beglückt das Watergate bei Sonnenaufgang,&lt;br /&gt;
-Ohren und Augen an der Spree.&lt;/p&gt;
-
-&lt;p&gt;Ich höre schon des Alex’ Getümmel,&lt;br /&gt;
-Hier ist des Subkulturs wahrer Himmel,&lt;br /&gt;
-Zufrieden jauchzet groß und klein:&lt;br /&gt;
-&lt;strong&gt;In Berlin bin ich Mensch, hier darf ich’s sein!&lt;/strong&gt;&lt;/p&gt;</content><summary type="html">Goethe's Easter Walk, the Berlin Version</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000" /></entry></feed>
+&lt;p&gt;&lt;img src=&quot;/blog/ReparamTrick/Softplus.png&quot; alt=&quot;&quot; align=&quot;center&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;</content><summary type="html">Outsourcing Stochasticity and Making Normal Distributions Differentiable</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/ReparamTrick/ReparamTrick.png" /></entry></feed>

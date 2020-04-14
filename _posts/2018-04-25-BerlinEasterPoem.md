@@ -3,7 +3,7 @@ layout: post
 title:  "Easter Walk Poem"
 date:   2018-04-27
 excerpt: "Goethe's Easter Walk, the Berlin Version"
-image: ""
+image: "blog/img/CoolGoethe.jpg"
 ---
 
 The idea to rewrite Goethe's famous ['Easter Walk Poem'](http://www.literaturwelt.com/werke/goethe/osterspaziergang.html) came while I was sitting on my balcony on the first days of spring.
