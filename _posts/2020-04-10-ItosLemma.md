@@ -28,7 +28,7 @@ $$
  f'(x) = \lim_{h\rightarrow 0} \frac{f(x+h) - f(x)}{h}
 $$
 
-If we let $h$ go towards zero, a function is called differentiable, if the fraction converges towards some constant value (at least in the basic case ... mathematicians tend to cook up very special functions for which more general rules need to be applied ... but we'll stick with the straight-forward stuff).
+If we let $h$ go towards zero, a function is called differentiable, if the fraction converges towards some constant value.
 
 Let's look at an example of how this might work.
 We'll need an additional mathematical trick called [L'Hopitals rule](https://en.wikipedia.org/wiki/L%27Hôpital%27s_rule) which says that for evaluating the limit of a fraction we can simply derive both nominator and denominator with respect to the same variable and still obtain the valid result.
