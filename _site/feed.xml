@@ -1,4 +1,112 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-04-14T14:16:56+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Solving (Some) SDEs</title><link href="http://localhost:4000/blog/SolvingSDEs/" rel="alternate" type="text/html" title="Solving (Some) SDEs" /><published>2020-04-14T00:00:00+02:00</published><updated>2020-04-14T00:00:00+02:00</updated><id>http://localhost:4000/blog/SolvingSDEs</id><content type="html" xml:base="http://localhost:4000/blog/SolvingSDEs/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-05-31T18:25:20+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">The Adjoint Method in Neural Ordinary Differential Equations</title><link href="http://localhost:4000/blog/AdjointMethod/" rel="alternate" type="text/html" title="The Adjoint Method in Neural Ordinary Differential Equations" /><published>2020-04-14T00:00:00+02:00</published><updated>2020-04-14T00:00:00+02:00</updated><id>http://localhost:4000/blog/AdjointMethod</id><content type="html" xml:base="http://localhost:4000/blog/AdjointMethod/">&lt;head&gt;
+&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
+       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
+         MathJax.Hub.Config({
+           tex2jax: {
+             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
+             displayMath: [['$$','$$']],
+             processEscapes: true
+           }
+         });
+       &lt;/script&gt;
+       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+
+&lt;h3 id=&quot;the-adjoint-method-in-neural-ordinary-differential-equations&quot;&gt;The Adjoint Method in Neural Ordinary Differential Equations&lt;/h3&gt;
+
+&lt;p&gt;Back at NeurIPS 2018 the best paper award was given to the authors of &lt;a href=&quot;https://arxiv.org/pdf/1806.07366.pdf&quot;&gt;Neural Ordinary Differential Equations&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;The motivation of the paper was the mainly given through the interpretation of the ResNet architectures being interpreted as the Euler discretization of ordinary differential equations (ODE).
+The paper took this insight to its logical extreme and asked the question whether we really have to remain content with just the Euler discretization of an ODE or whether we can go deeper … or more continuous in our case.&lt;/p&gt;
+
+&lt;p&gt;By definition an ODE is defined in its differential form as&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;dz_t = f(z_t, t, \theta)&lt;/script&gt;
+
+&lt;p&gt;which basically means that the function $f$ computes the rate of change of $z_t$ at timestep $t$ with its parameters $\theta$.
+Often these equations $f$ are constructed analytically or are known from physics but a more interesting question cane be posed by asking whether this function $f$ can actually be learned … with a neural network for example.&lt;/p&gt;
+
+&lt;p&gt;Ultimately, if we want to use gradient based optimization to train a neural network we need to compute a scalar loss function and compute the gradients of the parameters $\theta$ through reverse-mode autodifferentiation.&lt;/p&gt;
+
+&lt;p&gt;An important part of solving/simulating differential equations is that although they are defined in the continuous space, we have to discretize eventually in order to make the problem amenable to a solution with computers.&lt;/p&gt;
+
+&lt;p&gt;For that reason we will work with four samples ${z_0, z_1, z_2, z_3 }$ from a differential equation as shown in the image below. Our prediction with a neural network will be denoted as ${\hat{z}_1, \hat{z}_2, \hat{z}_3 }$.&lt;/p&gt;
+
+&lt;p&gt;Working with neural networks, we want to obtain gradients which which we can perform gradient descent at the end of the day. In order to do that we will need a scalar cost function on which we can perform reverse-mode autodifferentiation which is very efficient for models with potentially a lot of parameters. If the model were to be very small we could also do forward-mode autodifferentiation but that’s another topic.&lt;/p&gt;
+
+&lt;p&gt;Let’s define such a scalar cost function $\mathcal{L}(\text{ODESolver}(z_0, t_0, t_3, f))$ that takes in $z_0$ and solves the ODE for four timesteps by integrating forward $f(z_t, t, \theta)$ in time until it reaches $t=3$ and compares the prediction with the true values ${z_0, z_1, z_2, z_3 }$.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/Adjoint/Adjoint1.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;80%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now comes the interesting part: How do we actually compute the gradients with respect to the parameters, namely $\frac{\partial \mathcal{L}}{\partial \theta}$?&lt;/p&gt;
+
+&lt;p&gt;The thing is that the parameters $\theta$ occur at multiple timesteps in the prediction.
+The key insight is now that we actually have to ask ourselves two questions: “How much did each timestep contribute to the loss?” and “At each timestep how much did each parameter contribute to the loss?”.&lt;/p&gt;
+
+&lt;p&gt;Enter adjoint sensitivity analysis …&lt;/p&gt;
+
+&lt;p&gt;The first question can be answered by examining the sensitivity of the scalar loss with respect to the different timesteps $\frac{\partial \mathcal{L}}{\partial z_t}$.&lt;/p&gt;
+
+&lt;p&gt;The sensitivity $\frac{\partial L}{\partial z_3}$ of the loss with respect to the last timestep can be readily evaluated.
+More interesting is how we could propagate the sensitivity backwards in time to all evaluated timesteps.
+The solution to this problem is the use of the Jacobian of the output $z_t$ with respect to the input $z_{t-1}$:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+J(f)= \frac{\partial f(z, t, \theta)}{\partial z} = 
+\left[
+\begin{array}{cccc}
+\frac{\partial f(z, t\theta)_1}{\partial z_1} &amp; \dots &amp; \frac{\partial f(z, t\theta)_D}{\partial z_1} \\
+\vdots &amp; \ddots &amp; \vdots \\
+\frac{\partial f(z, t\theta)_1}{\partial z_D} &amp; \dots &amp; \frac{\partial f(z, t\theta)_D}{\partial z_D} \\
+\end{array}
+\right]
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;The Jacobian of the function $f$ with respect to the input tells us how sensitive the output is to the input.
+Since the solution of the ODE is theoretically an infinite series of evaluations of the neural network $f$ we can similarly backpropagate the initial sensitivity $\frac{\partial \mathcal{L}}{\partial z_t}$ by repeatedly multiplying it with the Jacobian with respect to the input but backward in time.
+Said differently, we simply reweight the initial sensitivity repeatedly with the Jacobian backwards through time.&lt;/p&gt;
+
+&lt;p&gt;The sensitivity backward pass for our discretized ODE problem would then look something akin to this:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+\frac{\partial \mathcal{L}}{\partial z_1} =
+ \frac{\partial \mathcal{L}}{\partial z_3} 
+ \frac{\partial f(z_2, t, \theta)}{\partial z_2} 
+ \frac{\partial f(z_1 t, \theta)}{\partial z_1} 
+\end{align}&lt;/script&gt;
+
+&lt;p&gt;This procedure is actually very similar to how the normal backpropagation pass is done.
+In a neural network we use the chain rule to first compute the gradients for the last layer, and then repeatedly reweight the gradients as they are passed through the network.
+Take a three layer network as an example with $y = f_3(f_2(f_1(x, \theta_1), \theta_2), \theta_3)$.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/Adjoint/Adjoint2.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;80%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Computing the gradients for $\theta_1$ from the loss amounts to little more than:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+\frac{\partial \mathcal{L}}{\partial \theta_1} =
+ \frac{\partial \mathcal{L}}{\partial y_3} 
+ \frac{\partial y_3}{\partial y_2} 
+ \frac{\partial y_2}{\partial y_1} 
+ \frac{\partial y_1}{\partial \theta_1} 
+\end{align}&lt;/script&gt;
+
+&lt;p&gt;This is what the authors in the paper refer to as “… which can be thought of as an instantaneous analog of the chain rule.”.
+In essence, the adjoint sensitivity pass allows us to propagate the importance of each timestep to the overall loss backwards through time.&lt;/p&gt;
+
+&lt;p&gt;Once we propagated the sensitivity backwards through time, we can answer the second question by computing the gradient of the output with respect to the parameter in question.&lt;/p&gt;
+
+&lt;p&gt;While the authors of the paper use the term &lt;em&gt;adjoint state $a(t)$&lt;/em&gt; I find the term &lt;em&gt;sensitivity $s(t)$&lt;/em&gt; more intuitive and appealing.
+The beauty of the adjoint state training became apparent to me when I used sensitivity $s(t)$ in equation (5):&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+\frac{\partial L}{\partial \theta} = \int_{t_1}^{t_0} s(t)^T \frac{\partial f(z(t), t, \theta)}{\partial \theta} dt
+\end{align}&lt;/script&gt;
+
+&lt;p&gt;The integral above states that we scale the gradient of the output $\partial_\theta f(z(t), t, \theta)$ with the sensitivity $s(t)$ to the overall loss.&lt;/p&gt;
+
+&lt;p&gt;Interestingly, the reception by the differential equation community was not as unanimous as one would think as this method has been used for a fairly long time. The key insight was its application to neural networks since we only need the Jacobians of the neural network irrespective of what goes on inside the neural network. One of the coauthors said as much in a &lt;a href=&quot;https://www.youtube.com/watch?v=YZ-_E7A3V2w&quot;&gt;talk a year later&lt;/a&gt;.&lt;/p&gt;</content><summary type="html">Reverse-Mode Sensitivity Training</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/Adjoint/Adjoint1.png" /></entry><entry><title type="html">Solving (Some) SDEs</title><link href="http://localhost:4000/blog/SolvingSDEs/" rel="alternate" type="text/html" title="Solving (Some) SDEs" /><published>2020-04-14T00:00:00+02:00</published><updated>2020-04-14T00:00:00+02:00</updated><id>http://localhost:4000/blog/SolvingSDEs</id><content type="html" xml:base="http://localhost:4000/blog/SolvingSDEs/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -229,7 +337,7 @@ A function $f$ is differentiable if the following value $f’(x)$ exists:&lt;/p&
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;f'(x) = \lim_{h\rightarrow 0} \frac{f(x+h) - f(x)}{h}&lt;/script&gt;
 
-&lt;p&gt;If we let $h$ go towards zero, a function is called differentiable, if the fraction converges towards some constant value (at least in the basic case … mathematicians tend to cook up very special functions for which more general rules need to be applied … but we’ll stick with the straight-forward stuff).&lt;/p&gt;
+&lt;p&gt;If we let $h$ go towards zero, a function is called differentiable, if the fraction converges towards some constant value.&lt;/p&gt;
 
 &lt;p&gt;Let’s look at an example of how this might work.
 We’ll need an additional mathematical trick called &lt;a href=&quot;https://en.wikipedia.org/wiki/L%27Hôpital%27s_rule&quot;&gt;L’Hopitals rule&lt;/a&gt; which says that for evaluating the limit of a fraction we can simply derive both nominator and denominator with respect to the same variable and still obtain the valid result.
@@ -2524,268 +2632,4 @@ Similarly, movie 4 which user 4 reviewed has an increased standard deviation for
 
 &lt;p&gt;As a closing remark I just want to say that the gradient descent based variational inference approach is not the best approach.
 Shinichi Nakajima, a member of my lab published an &lt;a href=&quot;http://www.jmlr.org/papers/volume14/nakajima13a/nakajima13a.pdf&quot;&gt;analytic solution&lt;/a&gt; which can be somewhat involved.
-The core motivation of this post was to see whether we could use the reparameterization trick and whether the factorization would exhibit the behaviour which was expected of it with regards to independent entries in $R$.&lt;/p&gt;</content><summary type="html">Being Unsure About What To Recommend</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000" /></entry><entry><title type="html">The Reparameterization Trick</title><link href="http://localhost:4000/blog/Reparam/" rel="alternate" type="text/html" title="The Reparameterization Trick" /><published>2019-02-02T00:00:00+01:00</published><updated>2019-02-02T00:00:00+01:00</updated><id>http://localhost:4000/blog/Reparam</id><content type="html" xml:base="http://localhost:4000/blog/Reparam/">&lt;head&gt;
-&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
-       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       &lt;/script&gt;
-       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
-&lt;/head&gt;
-
-&lt;!-- ## Non-Negative Matrix Factorization --&gt;
-
-&lt;p&gt;Let’s assume we have normal standard distribution $\mathcal{E} \sim \mathcal{N}(0,1)$.
-We can draw lots of samples from it which will be distributed just like the parameterized distribution.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/img/N01_0.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Unsuprisingly, the distribution of the samples follows the parameterized Normal distribution $\mathcal{N}(\mu=0, \sigma=1)$.
-If we were to sample millions of samples from the distribution and use a ever finer resolution of the histogram we would arrive at a perfect $\mathcal{N}(\mu=0, \sigma=1)$ distribution.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/img/N01_1.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Let’s pick three samples $\epsilon_1, \epsilon_2, \epsilon_3$ from that standard normal distribution&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\epsilon_1 = -0.5 \\
-  \epsilon_2=0.5 \\
-  \epsilon_3=1&lt;/script&gt;
-
-&lt;p&gt;What would happen if we were to multiply these three samples with a constant number $\sigma=3$?
-Well since it is a linear transformation it should be a straight forward multiplication&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\sigma \cdot \epsilon_1 = -1.5 \\
-  \sigma \cdot \epsilon_2 = 1.5 \\
-  \sigma \cdot \epsilon_3 = 3&lt;/script&gt;
-
-&lt;p&gt;Let’s visualize this multiplication with a fixed number for thousands of samples $\epsilon$ from the standard normal distribution.
-In the next image I normalized the samples such that we’re working with a distribution:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/img/N03_0.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;As it turns out, multiplying the samples of a $\mathcal{N}(0,1)$ distribution with a constant number $\sigma$ results in a Normal distribution with the standard deviation $\sigma$!&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/img/N03_1.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;The second step of the reparameterization step is to ask ourselves what would happen if we added a constant number $\mu =10$ to the samples drawn from $\mathcal{N}(0,1)$ which are already multiplied with $\sigma$.&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\mu + \sigma \cdot \epsilon_1 = 8.5 \\
-  \mu + \sigma \cdot \epsilon_2 = 11.5 \\
-  \mu + \sigma \cdot \epsilon_3 = 13&lt;/script&gt;
-
-&lt;p&gt;Let’s visualize this linear transformation on all the samples we drew from $\mathcal{N}(0,1)$ and multiplied with $\sigma=3$.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/img/N103_0.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;As it turns out, if we plot the Normal distribution $\mathcal{N}(10,3)$ on top of our scaled and shifted standard normal samples, we obtain the same distribution!&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/img/N103_1.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;After some eye-candy we can tackle the above-mentioned transformation analytically.
-We transform any Standard-Normally distributed random variable $\mathcal{E} \sim \mathcal{N}(0,1)$ by scaling it first with $\sigma$ and shifting it afterwards with $\mu$ into a Normally distributed random variable $w \sim \mathcal{N}(\mu, \sigma)$ through the linear transformation&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align*}
-  w = t_1 (\mathcal{E}, \mu, \sigma) = \mu + \mathcal{E} \cdot \sigma
-\end{align*}&lt;/script&gt;
-
-&lt;p&gt;Before we can dive into the gradients and properties we have to introduce one more non-trivial trick: keeping the standard deviation strictly positive.
-This can be achieved by reparameterizing the standard deviation itself with the transformation&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align*}
-  \sigma = t_2(\rho) = \log(1+\exp(\rho)) \quad ; \sigma \in \mathbb{R}^+, \rho \in \mathbb{R}
-\end{align*}&lt;/script&gt;
-
-&lt;p&gt;The transformation is important as it allows $\sigma$ to be optimized freely without having to check after every optimization step, whether it is still positive.
-The parameter $\rho$ can be optimized freely from $-\infty$ to $+\infty$ and only the $\log-\exp$ transformation above turns it into a strictly positive number.
-For readability we will only use $\rho$ when it’s absolutely necessary since most people are fairly accustomed to the $\sigma$ notation of normal distributions.&lt;/p&gt;
-
-&lt;p&gt;The important analytical property of this reparameterization is that we can take gradients with respect to its parameters.
-Let’s create a simple example of linear regression of some input $x \in \mathbb{R}$ with a weight $w \sim \mathcal{N}(\mu,\sigma)$:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align*}
-  \hat{y} = f(x) = w \cdot x = (\mu + \mathcal{E} \cdot \sigma) \ x
-\end{align*}&lt;/script&gt;
-
-&lt;p&gt;Since $t_1$ is nothing else than a linear transformation we can easily take the gradients with respect to it’s parameters just as we would do with any other linear function.
-The objective function for the toy example which follows is&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align*}
-  \mathcal{L}(\hat{y}, y) &amp;= \mathcal{L}( f(x, w), y ) \\\\
-  &amp;= (w\cdot x - y)^2 \\\\
-  &amp;= ((\mu + \mathcal{E} \cdot \sigma) \ x - y)^2
-\end{align*} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;After the double reparameterization of $w$ with $t_1$ and $t_2$ we can compute the gradient for the deterministic parameters $\mu, \rho$ for the given cost function.
-This is possible because we ‘outsourced’ the stochasticity of the distribution $w \sim \mathcal{N}(\mu, \sigma)$ into the Standard Normal random variable $\mathcal{E}$.
-We are not interested in the stochasticity of $\mathcal{E} \sim \mathcal{N}(0,1)$ but in the parameters $\mu, \sigma$.
-All the transformations of the variational parameters above are encapsulated in the cost function below:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align*}
-  \mathcal{L}(\hat{y}, y) &amp;= \mathcal{L} (f(x, t_1(\mathcal{E}, \mu, t_2(\rho))), y)
-\end{align*} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;All we have to do is to apply the chain rule and work from outside towards the inside of the nested functions $\mathcal{L}, f, t_1$ and $t_2$.
-This is what is commonly called reverse-mode auto differentiation and is applied in neural networks in the backpropagation algorithm.
-The gradient for the variational parameter $\mu$ can be computed via:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align*}
-  \frac{\partial \mathcal{L}}{\partial \mu} &amp;= \frac{\partial \mathcal{L}}{\partial f} \frac{\partial f}{\partial w} \frac{\partial w}{\partial t_1} \frac{\partial t_1}{\partial \mu} \\\\
-  \frac{\partial \mathcal{L}(\hat{y}, y)}{\partial \mu} &amp;= \frac{\partial \mathcal{L}(\hat{y}, y)}{\partial f(x, w)} \cdot \frac{\partial f(x, w)}{\partial w} \cdot \frac{\partial w}{\partial t_1(\mathcal{E}, \mu, \sigma)} \cdot \frac{\partial t_1(\mathcal{E}, \mu, \sigma)}{\partial \mu} \\\\
-  &amp;= 2(\hat{y}-y) \cdot x \cdot 1 \cdot 1
-\end{align*} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;and to obtain the gradient of the cost function with respect to $\rho$ we compute:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align*}
-  \frac{\partial \mathcal{L}}{\partial \rho} &amp;= \frac{\partial \mathcal{L}}{\partial f} \cdot \frac{\partial f}{\partial w} \cdot \frac{\partial w}{\partial g} \cdot \frac{\partial g}{\partial t_2} \cdot \frac{\partial t_2}{\partial \rho} \\\\
-  \frac{\partial \mathcal{L}(\hat{y}, y)}{\partial \rho} &amp;= \frac{\partial \mathcal{L}(\hat{y}, y)}{\partial f(x, w)} \cdot \frac{\partial f(x, w)}{\partial w} \cdot \frac{\partial w}{\partial t_1(\mathcal{E}, \mu, \sigma)} \cdot \frac{\partial t_1(\mathcal{E}, \mu, \sigma)}{\partial t_2(\rho)} \cdot \frac{t_2(\rho)}{\partial \rho} \\\\
-  &amp;= 2(\hat{y}-y) \cdot x \cdot 1 \cdot \mathcal{E} \cdot \frac{1}{1 + \exp(-\rho)}
-\end{align*} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;In essence, it is simply an extended chain rule where we not only have to backprop to the used weight $w$ but further through the reparameterization $t_1$ to obtain the gradient for $\mu$ and even further through the reparameterization $t_2$ to obtain the gradient for $\rho$.
-Below is a graphical representation of how the the gradient is first backpropagated to the linear product $w \cdot x$ and then subsequently to the variational parameters $\mu, \rho$.
-Since we transform $\rho$ such that it will it be in $\mathbb{R}^+$ with $t_2( \cdot )$ we also have to backpropagate through the transformation to obtain the gradient for $\rho$.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/ReparamTrick/ReparamTrick.png&quot; alt=&quot;&quot; align=&quot;center&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;The final point is a little code snippet which can be analyzed without much plotting&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import numpy as np
-
-#Generate 10 data points between 0 and 5
-x = np.linspace(0,5,10)
-# Scale each data point with 3 such that we get a linear function with slope 3
-y = 3*x
-
-#Initialize the variational parameters mu and rho
-mu = -3
-rho = 1
-
-#Set a learning rate
-lr = 0.05
-
-# Do a couple of epochs
-for epoch in range(20):
-    #Iterate over the training data
-    for i, (label, data) in enumerate(zip(y, x)):
-
-                #Sample from the standard normal distribution N(0,1)
-                e = np.random.randn(1)
-                #Transform the unconstrained variational parameter \rho into \sigma
-                std = np.log(1+np.exp(rho))
-
-                #Make a prediction with the sampled weight w=mu + e*std
-                pred = (mu + e*std) * data
-
-                #Backprop gradients onto the variational parameters
-                mu = mu - lr * (pred - label) * data
-                rho = rho - 3*lr * e/(1+np.exp(-rho)) * (pred - label) * data
-
-                print('Episode {} | Data Point {}: μ: {:.2f}, σ: {:.02f}'.format(epoch, i, mu.squeeze(), std.squeeze()))
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Running the little script we can see that the values were initialized with $\mu=-3$ and $\sigma=1.31$.
-After a couple of iterations the parameters converge on the correct values of $\mu=3$ and $\sigma=0$.&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Episode 0&lt;/td&gt;
-      &lt;td&gt;Data Point 0: μ: -3.00, σ: 1.31&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Episode 0&lt;/td&gt;
-      &lt;td&gt;Data Point 1: μ: -2.93, σ: 1.31&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Episode 0&lt;/td&gt;
-      &lt;td&gt;Data Point 2: μ: -2.77, σ: 1.42&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Episode 0&lt;/td&gt;
-      &lt;td&gt;Data Point 3: μ: -1.75, σ: 2.11&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Episode 0&lt;/td&gt;
-      &lt;td&gt;Data Point 4: μ: -0.66, σ: 0.69&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Episode 0&lt;/td&gt;
-      &lt;td&gt;Data Point 5: μ: 0.64, σ: 1.15&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Episode 0&lt;/td&gt;
-      &lt;td&gt;Data Point 6: μ: 1.62, σ: 1.67&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Episode 0&lt;/td&gt;
-      &lt;td&gt;Data Point 7: μ: 3.62, σ: 2.40&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Episode 0&lt;/td&gt;
-      &lt;td&gt;Data Point 8: μ: 3.80, σ: 0.44&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Episode 0&lt;/td&gt;
-      &lt;td&gt;Data Point 9: μ: 2.20, σ: 0.33&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Episode 1&lt;/td&gt;
-      &lt;td&gt;Data Point 0: μ: 2.20, σ: 0.05&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Episode 1&lt;/td&gt;
-      &lt;td&gt;Data Point 1: μ: 2.21, σ: 0.05&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Episode 1&lt;/td&gt;
-      &lt;td&gt;Data Point 2: μ: 2.26, σ: 0.05&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Episode 1&lt;/td&gt;
-      &lt;td&gt;Data Point 3: μ: 2.36, σ: 0.05&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Episode 1&lt;/td&gt;
-      &lt;td&gt;Data Point 4: μ: 2.52, σ: 0.05&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Episode 1&lt;/td&gt;
-      &lt;td&gt;Data Point 5: μ: 2.69, σ: 0.05&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Episode 1&lt;/td&gt;
-      &lt;td&gt;Data Point 6: μ: 2.90, σ: 0.05&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Episode 1&lt;/td&gt;
-      &lt;td&gt;Data Point 7: μ: 2.95, σ: 0.05&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Episode 1&lt;/td&gt;
-      &lt;td&gt;Data Point 8: μ: 3.02, σ: 0.05&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Episode 1&lt;/td&gt;
-      &lt;td&gt;Data Point 9: μ: 2.92, σ: 0.05&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;It should be noted that the through the $\sigma = \log(1+\exp(\rho))$ transformation the gradient with respect to $\rho$ becomes very, very small for large negative values of $\rho$.
-The transformation $t_2$ is referred to as the ‘Softplus’ activation function is shown below.
-We can see that while $\rho$ is freely optimizable the ‘Softplus’ function flattens out for negative values of $\rho$ and the resulting gradient is almost zero.
-So we’re basically at the same spot deep learning was at 10 years ago with the vanishing gradient problem in very deep neural networks.
-The Glorot-Activation and ReLU activation functions solved it and maybe somebody will develop a new fancy reparameterization for the variational parameter $\rho$. =)
-That’s why it will never really converge to absolute 0, but that’s a trade-off we’re willing to make if we’re able to scale variational inference to large data sets.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/ReparamTrick/Softplus.png&quot; alt=&quot;&quot; align=&quot;center&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;</content><summary type="html">Outsourcing Stochasticity and Making Normal Distributions Differentiable</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/ReparamTrick/ReparamTrick.png" /></entry></feed>
+The core motivation of this post was to see whether we could use the reparameterization trick and whether the factorization would exhibit the behaviour which was expected of it with regards to independent entries in $R$.&lt;/p&gt;</content><summary type="html">Being Unsure About What To Recommend</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000" /></entry></feed>

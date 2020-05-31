@@ -1,0 +1,297 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+  Jekyll integration by somiibo.com
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+--><html>
+	<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+<title>The Adjoint Method in Neural Ordinary Differential Equations</title>
+<meta name="description" content="">
+
+<link rel="apple-touch-icon" sizes="180x180" href="http://localhost:4000/assets/icon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:4000/assets/icon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:4000/assets/icon/favicon-16x16.png">
+<link rel="manifest" href="http://localhost:4000/assets/icon/manifest.json">
+<link rel="mask-icon" href="http://localhost:4000/assets/icon/safari-pinned-tab.svg" color="#5bbad5">
+<link rel="shortcut icon" href="http://localhost:4000/assets/icon/favicon.ico">
+<meta name="msapplication-config" content="http://localhost:4000/assets/icon/browserconfig.xml">
+<meta name="theme-color" content="#ffffff">
+
+<!-- CSS -->
+<link rel="stylesheet" href="http://localhost:4000/assets/css/main.css">
+<noscript><link rel="stylesheet" href="http://localhost:4000/assets/css/noscript.css"></noscript>
+
+	</head>
+	<body class="is-loading">
+
+		<!-- Wrapper -->
+			<div id="wrapper" class="fade-in">
+
+				<!-- Header -->
+        <header id="header">
+          <a href="http://localhost:4000/" class="logo">Ludwig Winkler</a>
+        </header>
+
+				<!-- Nav -->
+					<nav id="nav">
+
+            <ul class="links">
+  <li class=""><a href="http://localhost:4000/">Home</a></li>
+  <li class=" active "><a href="http://localhost:4000/blog/">Blog</a></li>
+  <li class=""><a href="http://localhost:4000/readinglist/">Reading List</a></li>
+  <li class=""><a href="http://localhost:4000/about/">About</a></li>
+</ul>
+
+
+						<ul class="icons">
+              <li><a href="https://twitter.com/default" class="icon fa-twitter" rel="nofollow"><span class="label">Twitter</span></a></li>
+              <li><a href="https://facebook.com/default" class="icon fa-facebook" rel="nofollow"><span class="label">Facebook</span></a></li>
+              <li><a href="https://instagram.com/default" class="icon fa-instagram" rel="nofollow"><span class="label">Instagram</span></a></li>
+              <li><a href="https://github.com/default" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+				<div id="main">
+          <section class="post">
+    				<header class="major">
+      				<span class="date">14 Apr 2020</span>
+      				<h1>The Adjoint Method in Neural Ordinary Differential Equations</h1>
+      				<p>Reverse-Mode Sensitivity Training</p>
+      			</header>
+      			<div class="image main"><img src="/blog/Adjoint/Adjoint1.png" alt=""></div>
+      			<p></p>
+<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
+       <script type="text/x-mathjax-config">
+         MathJax.Hub.Config({
+           tex2jax: {
+             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+             displayMath: [['$$','$$']],
+             processEscapes: true
+           }
+         });
+       </script>
+       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+
+
+<h3 id="the-adjoint-method-in-neural-ordinary-differential-equations">The Adjoint Method in Neural Ordinary Differential Equations</h3>
+
+<p>Back at NeurIPS 2018 the best paper award was given to the authors of <a href="https://arxiv.org/pdf/1806.07366.pdf">Neural Ordinary Differential Equations</a>.</p>
+
+<p>The motivation of the paper was the mainly given through the interpretation of the ResNet architectures being interpreted as the Euler discretization of ordinary differential equations (ODE).
+The paper took this insight to its logical extreme and asked the question whether we really have to remain content with just the Euler discretization of an ODE or whether we can go deeper … or more continuous in our case.</p>
+
+<p>By definition an ODE is defined in its differential form as</p>
+
+<script type="math/tex; mode=display">dz_t = f(z_t, t, \theta)</script>
+
+<p>which basically means that the function $f$ computes the rate of change of $z_t$ at timestep $t$ with its parameters $\theta$.
+Often these equations $f$ are constructed analytically or are known from physics but a more interesting question cane be posed by asking whether this function $f$ can actually be learned … with a neural network for example.</p>
+
+<p>Ultimately, if we want to use gradient based optimization to train a neural network we need to compute a scalar loss function and compute the gradients of the parameters $\theta$ through reverse-mode autodifferentiation.</p>
+
+<p>An important part of solving/simulating differential equations is that although they are defined in the continuous space, we have to discretize eventually in order to make the problem amenable to a solution with computers.</p>
+
+<p>For that reason we will work with four samples ${z_0, z_1, z_2, z_3 }$ from a differential equation as shown in the image below. Our prediction with a neural network will be denoted as ${\hat{z}_1, \hat{z}_2, \hat{z}_3 }$.</p>
+
+<p>Working with neural networks, we want to obtain gradients which which we can perform gradient descent at the end of the day. In order to do that we will need a scalar cost function on which we can perform reverse-mode autodifferentiation which is very efficient for models with potentially a lot of parameters. If the model were to be very small we could also do forward-mode autodifferentiation but that’s another topic.</p>
+
+<p>Let’s define such a scalar cost function $\mathcal{L}(\text{ODESolver}(z_0, t_0, t_3, f))$ that takes in $z_0$ and solves the ODE for four timesteps by integrating forward $f(z_t, t, \theta)$ in time until it reaches $t=3$ and compares the prediction with the true values ${z_0, z_1, z_2, z_3 }$.</p>
+
+<p><img src="/blog/Adjoint/Adjoint1.png" alt="" class='align="center"' height="50%" width="80%"></p>
+
+<p>Now comes the interesting part: How do we actually compute the gradients with respect to the parameters, namely $\frac{\partial \mathcal{L}}{\partial \theta}$?</p>
+
+<p>The thing is that the parameters $\theta$ occur at multiple timesteps in the prediction.
+The key insight is now that we actually have to ask ourselves two questions: “How much did each timestep contribute to the loss?” and “At each timestep how much did each parameter contribute to the loss?”.</p>
+
+<p>Enter adjoint sensitivity analysis …</p>
+
+<p>The first question can be answered by examining the sensitivity of the scalar loss with respect to the different timesteps $\frac{\partial \mathcal{L}}{\partial z_t}$.</p>
+
+<p>The sensitivity $\frac{\partial L}{\partial z_3}$ of the loss with respect to the last timestep can be readily evaluated.
+More interesting is how we could propagate the sensitivity backwards in time to all evaluated timesteps.
+The solution to this problem is the use of the Jacobian of the output $z_t$ with respect to the input $z_{t-1}$:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+\begin{align}
+J(f)= \frac{\partial f(z, t, \theta)}{\partial z} = 
+\left[
+\begin{array}{cccc}
+\frac{\partial f(z, t\theta)_1}{\partial z_1} & \dots & \frac{\partial f(z, t\theta)_D}{\partial z_1} \\
+\vdots & \ddots & \vdots \\
+\frac{\partial f(z, t\theta)_1}{\partial z_D} & \dots & \frac{\partial f(z, t\theta)_D}{\partial z_D} \\
+\end{array}
+\right]
+\end{align} %]]></script>
+
+<p>The Jacobian of the function $f$ with respect to the input tells us how sensitive the output is to the input.
+Since the solution of the ODE is theoretically an infinite series of evaluations of the neural network $f$ we can similarly backpropagate the initial sensitivity $\frac{\partial \mathcal{L}}{\partial z_t}$ by repeatedly multiplying it with the Jacobian with respect to the input but backward in time.
+Said differently, we simply reweight the initial sensitivity repeatedly with the Jacobian backwards through time.</p>
+
+<p>The sensitivity backward pass for our discretized ODE problem would then look something akin to this:</p>
+
+<script type="math/tex; mode=display">\begin{align}
+\frac{\partial \mathcal{L}}{\partial z_1} =
+ \frac{\partial \mathcal{L}}{\partial z_3} 
+ \frac{\partial f(z_2, t, \theta)}{\partial z_2} 
+ \frac{\partial f(z_1 t, \theta)}{\partial z_1} 
+\end{align}</script>
+
+<p>This procedure is actually very similar to how the normal backpropagation pass is done.
+In a neural network we use the chain rule to first compute the gradients for the last layer, and then repeatedly reweight the gradients as they are passed through the network.
+Take a three layer network as an example with $y = f_3(f_2(f_1(x, \theta_1), \theta_2), \theta_3)$.</p>
+
+<p><img src="/blog/Adjoint/Adjoint2.png" alt="" class='align="center"' height="50%" width="80%"></p>
+
+<p>Computing the gradients for $\theta_1$ from the loss amounts to little more than:</p>
+
+<script type="math/tex; mode=display">\begin{align}
+\frac{\partial \mathcal{L}}{\partial \theta_1} =
+ \frac{\partial \mathcal{L}}{\partial y_3} 
+ \frac{\partial y_3}{\partial y_2} 
+ \frac{\partial y_2}{\partial y_1} 
+ \frac{\partial y_1}{\partial \theta_1} 
+\end{align}</script>
+
+<p>This is what the authors in the paper refer to as “… which can be thought of as an instantaneous analog of the chain rule.”.
+In essence, the adjoint sensitivity pass allows us to propagate the importance of each timestep to the overall loss backwards through time.</p>
+
+<p>Once we propagated the sensitivity backwards through time, we can answer the second question by computing the gradient of the output with respect to the parameter in question.</p>
+
+<p>While the authors of the paper use the term <em>adjoint state $a(t)$</em> I find the term <em>sensitivity $s(t)$</em> more intuitive and appealing.
+The beauty of the adjoint state training became apparent to me when I used sensitivity $s(t)$ in equation (5):</p>
+
+<script type="math/tex; mode=display">\begin{align}
+\frac{\partial L}{\partial \theta} = \int_{t_1}^{t_0} s(t)^T \frac{\partial f(z(t), t, \theta)}{\partial \theta} dt
+\end{align}</script>
+
+<p>The integral above states that we scale the gradient of the output $\partial_\theta f(z(t), t, \theta)$ with the sensitivity $s(t)$ to the overall loss.</p>
+
+<p>Interestingly, the reception by the differential equation community was not as unanimous as one would think as this method has been used for a fairly long time. The key insight was its application to neural networks since we only need the Jacobians of the neural network irrespective of what goes on inside the neural network. One of the coauthors said as much in a <a href="https://www.youtube.com/watch?v=YZ-_E7A3V2w">talk a year later</a>.</p>
+
+      		</section>
+
+          <div class="comments-wrapper">
+          <div id="disqus_thread"></div>
+          <script>
+              /**
+               *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+               *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+               */
+
+              var disqus_config = function () {
+                  this.page.url = '/blog/AdjointMethod/';  /*Replace PAGE_URL with your page's canonical URL variable*/
+                  this.page.identifier = '/blog/AdjointMethod/'; /*Replace PAGE_IDENTIFIER with your page's unique identifier variable*/
+              };
+
+              (function() {  /* dont endit below this line */
+                  var d = document, s = d.createElement('script');
+
+                  s.src = 'https://default.disqus.com/embed.js';
+
+                  s.setAttribute('data-timestamp', +new Date());
+                  (d.head || d.body).appendChild(s);
+              })();
+          </script>
+          <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a>
+</noscript>
+        </div>
+<!-- /.comments-wrapper -->
+
+
+					<!-- Footer -->
+						<footer>
+              <ul class="actions">
+                <li><a href="http://localhost:4000/blog/" class="button">Our Blog</a></li>
+              </ul>
+						</footer>
+					</div>
+
+				<!-- Footer -->
+        <footer id="footer">
+  <section>
+    <form method="POST" action="https://formspree.io/">
+      <div class="field">
+        <label for="name">Name</label>
+        <input type="text" name="name" id="name">
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="text" name="email" id="email">
+      </div>
+      <div class="field">
+        <label for="message">Message</label>
+        <textarea name="message" id="message" rows="3"></textarea>
+      </div>
+      <ul class="actions">
+        <li><input type="submit" value="Send Message"></li>
+      </ul>
+    </form>
+  </section>
+  <section class="split contact">
+    <section class="alt">
+      <h3>Location</h3>
+      <p>Berlin, Germany</p>
+    </section>
+    <section>
+      <h3>Phone</h3>
+      <p><a href="tel:"></a></p>
+    </section>
+    <section>
+      <h3>Email</h3>
+      <p><a href="mailto:"></a></p>
+    </section>
+    <section>
+      <h3>Social</h3>
+      <ul class="icons alt">
+        <li><a href="https://twitter.com/ludiXIVwinkler" class="icon fa-twitter" rel="nofollow"><span class="label">Twitter</span></a></li>
+        <!-- <li><a href="https://facebook.com/default" class="icon fa-facebook" rel="nofollow"><span class="label">Facebook</span></a></li> -->
+        <!-- <li><a href="https://instagram.com/default" class="icon fa-instagram" rel="nofollow"><span class="label">Instagram</span></a></li> -->
+        <li><a href="https://github.com/ludwigwinkler" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
+      </ul>
+    </section>
+  </section>
+</footer>
+<!-- Copyright -->
+<div id="copyright">
+  <ul>
+       <li>© HTML5 UP</li>
+       <li>Design by <a href="https://html5up.net" rel="nofollow">HTML5 UP</a>
+</li>
+       <li>Jekyll Integration by <a href="https://soundgrail.com">SoundGrail</a>
+</li>
+       <li>Theme made by <a href="https://github.com/iwiedenm/jekyll-theme-massively-src"> iwiedenm</a>
+</li>
+ </ul>
+</div>
+
+
+			</div>
+
+      <!-- Scripts -->
+  		<!-- DYN -->
+<script src="http://localhost:4000/assets/js/jquery.min.js"></script>
+<script src="http://localhost:4000/assets/js/jquery.scrollex.min.js"></script>
+<script src="http://localhost:4000/assets/js/jquery.scrolly.min.js"></script>
+<script src="http://localhost:4000/assets/js/skel.min.js"></script>
+<script src="http://localhost:4000/assets/js/util.js"></script>
+<script src="http://localhost:4000/assets/js/main.js"></script>
+
+			<script async src="https://www.googletagmanager.com/gtag/js?id=default"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments)};
+  gtag('js', new Date());
+
+  gtag('config', 'default');
+</script>
+
+
+	</body>
+</html>
