@@ -65,9 +65,9 @@ $$
 J(f)= \frac{\partial f(z, t, \theta)}{\partial z} = 
 \left[
 \begin{array}{cccc}
-\frac{\partial f(z, t\theta)_1}{\partial z_1} & \dots & \frac{\partial f(z, t\theta)_D}{\partial z_1} \\
+\frac{\partial f(z, t, \theta)_1}{\partial z_1} & \dots & \frac{\partial f(z, t, \theta)_D}{\partial z_1} \\
 \vdots & \ddots & \vdots \\
-\frac{\partial f(z, t\theta)_1}{\partial z_D} & \dots & \frac{\partial f(z, t\theta)_D}{\partial z_D} \\
+\frac{\partial f(z, t, \theta)_1}{\partial z_D} & \dots & \frac{\partial f(z, t, \theta)_D}{\partial z_D} \\
 \end{array}
 \right]
 \end{align}
