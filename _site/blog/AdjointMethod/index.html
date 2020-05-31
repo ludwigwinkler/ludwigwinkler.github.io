@@ -131,7 +131,7 @@ J(f)= \frac{\partial f(z, t, \theta)}{\partial z} =
 \end{align} %]]></script>
 
 <p>The Jacobian of the function $f$ with respect to the input tells us how sensitive the output is to the input.
-Since the solution of the ODE is theoretically an infinite series of evaluations of the neural network $f$ we can similarly backpropagate the initial sensitivity $\frac{\partial \mathcal{L}}{\partial z_t}$ by repeatedly multiplying it with the Jacobian with respect to the input but backward in time.
+Since the solution of the ODE is theoretically an infinite series of evaluations of the neural network $f$ we can similarly backpropagate the initial sensitivity $\frac{\partial \mathcal{L}}{\partial z_t}$ by repeatedly multiplying it with the Jacobian with respect to the input but backward in time, which is an ODE again but this time it’s backwards.
 Said differently, we simply reweight the initial sensitivity repeatedly with the Jacobian backwards through time.</p>
 
 <p>The sensitivity backward pass for our discretized ODE problem would then look something akin to this:</p>
