@@ -233,7 +233,7 @@ $$
 \end{align}
 $$
 
-While the mean $\mu$ is somewhat expected, the variance can be interpreted intuitively: If the momentum is large, the process is very slow to change and thus the stationary distribution does move far away from $\mu$.
+While the mean $\mu$ is somewhat expected, the variance can be interpreted intuitively: If the momentum is large, the process is very slow to change and thus the stationary distribution does not move far away from $\mu$.
 If the momentum is only small, the Wiener process can exert a stronger influence and the stationary distribution has a wider variance.
 
 More importantly, since the Wiener process is the only random influence on the process and is Gaussian, the entire process is a Gaussian process.
