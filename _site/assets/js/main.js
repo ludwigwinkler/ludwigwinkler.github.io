@@ -4,21 +4,6 @@
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 */
 
-var collapsible = document.getElementsByClassName("collapsible");
-var i;
-
-for (i = 0; i < collapsible.length; i++) {
-  collapsible[i].addEventListener("click", function() {
-    this.classList.toggle("active");
-    var content = this.nextElementSibling;
-    if (content.style.display === "block") {
-      content.style.display = "none";
-    } else {
-      content.style.display = "block";
-    }
-  });
-}
-
 (function($) {
 
 	skel.breakpoints({
