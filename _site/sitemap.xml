@@ -4,7 +4,7 @@
     <url>
       <loc>http://localhost:4000/blog/AdjointMethod/</loc>
       
-        <lastmod>2020-04-14T00:00:00+02:00</lastmod>
+        <lastmod>2020-04-14T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -13,7 +13,7 @@
     <url>
       <loc>http://localhost:4000/blog/SolvingSDEs/</loc>
       
-        <lastmod>2020-04-14T00:00:00+02:00</lastmod>
+        <lastmod>2020-04-14T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -22,7 +22,7 @@
     <url>
       <loc>http://localhost:4000/blog/ItosLemma/</loc>
       
-        <lastmod>2020-04-10T00:00:00+02:00</lastmod>
+        <lastmod>2020-04-10T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -31,7 +31,7 @@
     <url>
       <loc>http://localhost:4000/blog/SDE/</loc>
       
-        <lastmod>2020-03-30T00:00:00+02:00</lastmod>
+        <lastmod>2020-03-30T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -40,7 +40,7 @@
     <url>
       <loc>http://localhost:4000/blog/BayesianInference/</loc>
       
-        <lastmod>2020-02-13T00:00:00+01:00</lastmod>
+        <lastmod>2020-02-13T00:00:00+00:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -49,7 +49,7 @@
     <url>
       <loc>http://localhost:4000/blog/InducingPoints/</loc>
       
-        <lastmod>2019-09-30T00:00:00+02:00</lastmod>
+        <lastmod>2019-09-30T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -58,7 +58,7 @@
     <url>
       <loc>http://localhost:4000/blog/Sinkhorn/</loc>
       
-        <lastmod>2019-07-15T00:00:00+02:00</lastmod>
+        <lastmod>2019-07-15T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -67,7 +67,7 @@
     <url>
       <loc>http://localhost:4000/blog/GPyTorch/</loc>
       
-        <lastmod>2019-05-15T00:00:00+02:00</lastmod>
+        <lastmod>2019-05-15T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -76,7 +76,7 @@
     <url>
       <loc>http://localhost:4000/blog/HMC/</loc>
       
-        <lastmod>2019-03-14T00:00:00+01:00</lastmod>
+        <lastmod>2019-03-14T00:00:00+00:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -85,7 +85,7 @@
     <url>
       <loc>http://localhost:4000/blog/BayesNMF/</loc>
       
-        <lastmod>2019-02-18T00:00:00+01:00</lastmod>
+        <lastmod>2019-02-18T00:00:00+00:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -94,7 +94,7 @@
     <url>
       <loc>http://localhost:4000/blog/Reparam/</loc>
       
-        <lastmod>2019-02-02T00:00:00+01:00</lastmod>
+        <lastmod>2019-02-02T00:00:00+00:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -103,7 +103,7 @@
     <url>
       <loc>http://localhost:4000/blog/NMF/</loc>
       
-        <lastmod>2019-01-24T00:00:00+01:00</lastmod>
+        <lastmod>2019-01-24T00:00:00+00:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -112,7 +112,7 @@
     <url>
       <loc>http://localhost:4000/blog/BerlinEasterPoem/</loc>
       
-        <lastmod>2018-04-27T00:00:00+02:00</lastmod>
+        <lastmod>2018-04-27T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -121,7 +121,7 @@
     <url>
       <loc>http://localhost:4000/blog/BayesianOptimization/</loc>
       
-        <lastmod>2018-04-24T00:00:00+02:00</lastmod>
+        <lastmod>2018-04-24T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -130,7 +130,7 @@
     <url>
       <loc>http://localhost:4000/blog/Gaussian-Processes-Extensions/</loc>
       
-        <lastmod>2018-04-23T00:00:00+02:00</lastmod>
+        <lastmod>2018-04-23T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -139,7 +139,7 @@
     <url>
       <loc>http://localhost:4000/blog/Gaussian-Processes/</loc>
       
-        <lastmod>2018-04-23T00:00:00+02:00</lastmod>
+        <lastmod>2018-04-23T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -148,7 +148,7 @@
     <url>
       <loc>http://localhost:4000/blog/AdvRL/</loc>
       
-        <lastmod>2017-11-06T00:00:00+01:00</lastmod>
+        <lastmod>2017-11-06T00:00:00+00:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -157,7 +157,7 @@
     <url>
       <loc>http://localhost:4000/blog/IntroRL/</loc>
       
-        <lastmod>2017-05-03T00:00:00+02:00</lastmod>
+        <lastmod>2017-05-03T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -166,7 +166,7 @@
   
     <url>
       <loc>http://localhost:4000/about/</loc>
-       <lastmod>2017-11-02T00:00:00+01:00</lastmod>
+       <lastmod>2017-11-02T00:00:00+00:00</lastmod>
       
        <changefreq>weekly</changefreq>
       
@@ -176,7 +176,7 @@
   
     <url>
       <loc>http://localhost:4000/blog/</loc>
-       <lastmod>2017-11-02T00:00:00+01:00</lastmod>
+       <lastmod>2017-11-02T00:00:00+00:00</lastmod>
       
        <changefreq>weekly</changefreq>
       
