@@ -6,45 +6,48 @@
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 -->
 <html>
-	<head>
-    {% include head.html %}
 
-	</head>
-	<body class="is-loading">
+<head>
+	{% include head.html %}
+</head>
 
-		<!-- Wrapper -->
-			<div id="wrapper" class="fade-in">
+<body class="is-loading">
 
-				<!-- Header -->
-				<header id="header">
-					<a href="{{ "/" | absolute_url }}" class="logo">{{site.title}}</a>
+	<!-- Wrapper -->
+	<div id="wrapper" class="fade-in">
+
+		<!-- Header -->
+		<header id="header">
+			<a href="{{ "/" | absolute_url }}" class="logo">{{site.title}}</a>
+		</header>
+
+
+		<!-- Nav -->
+		<nav id="nav">
+
+			{% include nav.html %}
+
+			<ul class="icons">
+				<li><a href="https://twitter.com/ludiXIVwinkler" class="icon fa-twitter" rel="nofollow"><span
+							class="label">Twitter</span></a></li>
+				<!-- <li><a href="https://facebook.com/{{site.facebook}}" class="icon fa-facebook" rel="nofollow"><span class="label">Facebook</span></a></li> -->
+				<!-- <li><a href="https://instagram.com/{{site.instagram}}" class="icon fa-instagram" rel="nofollow"><span class="label">Instagram</span></a></li> -->
+				<li><a href="https://github.com/ludwigwinkler" class="icon fa-github" rel="nofollow"><span
+							class="label">GitHub</span></a></li>
+			</ul>
+		</nav>
+
+		<!-- Main -->
+		<div id="main">
+
+			<article class="post featured">
+				<header class="major">
+					<h2><a href="#">Things I'm interested in ...</a></h2>
 				</header>
-
-
-				<!-- Nav -->
-					<nav id="nav">
-
-            {% include nav.html %}
-
-						<ul class="icons">
-              <li><a href="https://twitter.com/ludiXIVwinkler" class="icon fa-twitter" rel="nofollow"><span class="label">Twitter</span></a></li>
-              <!-- <li><a href="https://facebook.com/{{site.facebook}}" class="icon fa-facebook" rel="nofollow"><span class="label">Facebook</span></a></li> -->
-              <!-- <li><a href="https://instagram.com/{{site.instagram}}" class="icon fa-instagram" rel="nofollow"><span class="label">Instagram</span></a></li> -->
-              <li><a href="https://github.com/ludwigwinkler" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
-						</ul>
-					</nav>
-
-				<!-- Main -->
-				<div id="main">
-
-          <article class="post featured">
-            	<header class="major">
-              	<h2><a href="#">Things I'm interested in ...</a></h2>
-          	</header>
-			<p>
-				I'm mostly writing about various topics in machine learning.
-				The posts here are the result of the notes I write as I dig into these topics.
-			<!-- </p>
+				<p>
+					I'm mostly writing about various topics in machine learning.
+					The posts here are the result of the notes I write as I dig into these topics.
+					<!-- </p>
 			
 				There are three sayings which I find tremendously appealing and which I heard during after-conference parties:
 				<ul>
@@ -54,45 +57,47 @@
 				</ul>
 			</p>
 			<p> -->
-		
+
 			</article>
-					<!-- Post -->
-					<section class="posts">
-						{% for post in site.posts %}
-						{% assign mod3 = forloop.index | modulo: 10 %}
-							<article>
-								<header>
-									<span class="date">{{ post.date | date_to_string }}</span>
-									<h2><a href="{{ post.url | absolute_url }}">{{ post.title }}</a></h2>
-								</header>
-								<a href="{{ post.url | absolute_url }}" class="image fit"><img src="{{ post.image | absolute_url }}" alt="" /></a>
-								<p>{{ post.excerpt }}</p>
-								<ul class="actions">
-									<li><a href="{{ post.url | absolute_url }}" class="button">Full Story</a></li>
-								</ul>
-							</article>
-							<!-- {% if mod3 == 0 %}
+			<!-- Post -->
+			<section class="posts">
+				{% for post in site.posts %}
+				{% assign mod3 = forloop.index | modulo: 10 %}
+				<article>
+					<header>
+						<span class="date">{{ post.date | date_to_string }}</span>
+						<h2><a href="{{ post.url | absolute_url }}">{{ post.title }}</a></h2>
+					</header>
+					<a href="{{ post.url | absolute_url }}" class="image fit"><img src="{{ post.image | absolute_url }}"
+							alt="" /></a>
+					<p>{{ post.excerpt }}</p>
+					<ul class="actions">
+						<li><a href="{{ post.url | absolute_url }}" class="button">Full Story</a></li>
+					</ul>
+				</article>
+				<!-- {% if mod3 == 0 %}
 							<article>
 								<header>
 									<h2><a href="#">Sponsored</a></h2>
 								</header>
 
 							</article> -->
-							<!-- {% endif %} -->
-						{% endfor %}
+				<!-- {% endif %} -->
+				{% endfor %}
 
-					</section>
+			</section>
 
-					</div>
+		</div>
 
-				<!-- Footer -->
-        {% include foot.html %}
+		<!-- Footer -->
+		{% include foot.html %}
 
-			</div>
+	</div>
 
-			<!-- Scripts -->
-			{% include scripts-main.html %}
-			{% include tracking.html %}
+	<!-- Scripts -->
+	{% include scripts-main.html %}
+	{% include tracking.html %}
 
-	</body>
+</body>
+
 </html>
