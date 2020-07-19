@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "The Adjoint Method in Neural Ordinary Differential Equations"
-date:   2020-04-14
+date:   2020-05-20
 excerpt: "Reverse-Mode Sensitivity Training"
 image: "/blog/Adjoint/Adjoint1.png"
 ---
