@@ -146,10 +146,9 @@ Now let’s turn our attention to $p(x|z)$: We will change the unknown $p(x|z)$ 
 
 <p>Now we have the following objective function:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align}
-	\log p(x) &\geq -\mathbb{KL} \left[ q_\phi(z|x) || p(z) \right] + \mathbb{E}_{q_\phi(z|x)} \left[ \log p_\theta(x|z) \right]
-\end{align} %]]></script>
+<script type="math/tex; mode=display">\begin{align}
+	\log p(x) \geq -\mathbb{KL} \left[ q_\phi(z|x) || p(z) \right] + \mathbb{E}_{q_\phi(z|x)} \left[ \log p_\theta(x|z) \right]
+\end{align}</script>
 
 <p>which, upon closer inspection, has a lot of similarities to an autoencoder, except that it’s probabilistic!
 We use the distribution $q_\phi(z|x)$ to infer some latent code from a given sample.
