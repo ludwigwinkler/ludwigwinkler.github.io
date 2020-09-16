@@ -210,15 +210,10 @@ It has to be twice differentiable with respect to $X_t$ and at least once differ
 If these equations are met we can start deriving!
 
 The first step is to define the Taylor expansion for $f(t, X_t)$ in it's general form around the root point $(t_0, X_0)$:
-
 $$
 \begin{align}
-  f(t, X_t) &\approx f(t_0, X_0) + \frac{\partial f(t_0, X_0)}{\partial t} \underbrace{(t - t_0)}_{\Delta t}
-  + \frac{\partial f(t_0, X_0)}{\partial X_t}\underbrace{(X_t - X_0)}_{\Delta X_t}
-  + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\underbrace{(X_t - X_0)^2}_{\Delta X_t^2} \\
-  &= f(t_0, X_0) + \frac{\partial f(t_0, X_0)}{\partial t} \Delta t
-  + \frac{\partial f(t_0, X_0)}{\partial X_t}\Delta X_t
-  + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\Delta X_t^2
+f(t, X_t) &\approx f(t_0, X_0) + \frac{\partial f(t_0, X_0)}{\partial t} \underbrace{(t - t_0)}_{\Delta t} + \frac{\partial f(t_0, X_0)}{\partial X_t} \underbrace{ (X_t - X_0) }_{\Delta X_t} + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\underbrace{(X_t - X_0)^2}_{\Delta X_t^2} \\
+&= f(t_0, X_0) + \frac{\partial f(t_0, X_0)}{\partial t} \Delta t + \frac{\partial f(t_0, X_0)}{\partial X_t}\Delta X_t + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\Delta X_t^2
 \end{align}
 $$
 
