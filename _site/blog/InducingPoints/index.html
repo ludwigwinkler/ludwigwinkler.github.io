@@ -92,10 +92,11 @@ So for example, a data set with 200 data points $x_n$, five features per data po
 \end{align}</script></p>
 
 <p>Once new data points $X_*$ are obtained, we compare it via the kernel to our existing data set $X$, compute a couple of linear operations with the resulting kernel matrices and the target information in your data set and voila, you arrive at your prediction:
-<script type="math/tex">\begin{align}
-  \mu(x_*) = K_{XX_*} (K_{XX} + \sigma^2 I)^{-1} y \\
-  \Sigma(x_*) = K_{X_*X_*} - (K_{XX} + \sigma^2 I)^{-1} K_{XX_*}
-\end{align}</script></p>
+<script type="math/tex">% <![CDATA[
+\begin{align}
+  \mu(x_*) &= K_{XX_*} (K_{XX} + \sigma^2 I)^{-1} y \\
+  \Sigma(x_*) &= K_{X_*X_*} - (K_{XX} + \sigma^2 I)^{-1} K_{XX_*}
+\end{align} %]]></script></p>
 
 <p>The training of GP’s consists of finding the right parameters, namely the length scale $l$ in the kernel and the variance in the data $\sigma^2$.
 These two terms can be found via the non-linear optimization problem which minimizes the negative log-likelihood of the available training data in the GP defined by the length scale and kernel parameter:

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-16T16:37:46+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Variational Autoencoders Derived</title><link href="http://localhost:4000/blog/VAE/" rel="alternate" type="text/html" title="Variational Autoencoders Derived" /><published>2020-08-10T00:00:00+02:00</published><updated>2020-08-10T00:00:00+02:00</updated><id>http://localhost:4000/blog/VAE</id><content type="html" xml:base="http://localhost:4000/blog/VAE/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-16T16:37:52+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Variational Autoencoders Derived</title><link href="http://localhost:4000/blog/VAE/" rel="alternate" type="text/html" title="Variational Autoencoders Derived" /><published>2020-08-10T00:00:00+02:00</published><updated>2020-08-10T00:00:00+02:00</updated><id>http://localhost:4000/blog/VAE</id><content type="html" xml:base="http://localhost:4000/blog/VAE/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -1050,10 +1050,11 @@ So for example, a data set with 200 data points $x_n$, five features per data po
 \end{align}&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;Once new data points $X_*$ are obtained, we compare it via the kernel to our existing data set $X$, compute a couple of linear operations with the resulting kernel matrices and the target information in your data set and voila, you arrive at your prediction:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-  \mu(x_*) = K_{XX_*} (K_{XX} + \sigma^2 I)^{-1} y \\
-  \Sigma(x_*) = K_{X_*X_*} - (K_{XX} + \sigma^2 I)^{-1} K_{XX_*}
-\end{align}&lt;/script&gt;&lt;/p&gt;
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+  \mu(x_*) &amp;= K_{XX_*} (K_{XX} + \sigma^2 I)^{-1} y \\
+  \Sigma(x_*) &amp;= K_{X_*X_*} - (K_{XX} + \sigma^2 I)^{-1} K_{XX_*}
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;The training of GP’s consists of finding the right parameters, namely the length scale $l$ in the kernel and the variance in the data $\sigma^2$.
 These two terms can be found via the non-linear optimization problem which minimizes the negative log-likelihood of the available training data in the GP defined by the length scale and kernel parameter:
