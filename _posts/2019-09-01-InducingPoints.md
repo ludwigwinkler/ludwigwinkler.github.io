@@ -43,10 +43,10 @@ $$
 The training of GP's consists of finding the right parameters, namely the length scale $l$ in the kernel and the variance in the data $\sigma^2$.
 These two terms can be found via the non-linear optimization problem which minimizes the negative log-likelihood of the available training data in the GP defined by the length scale and kernel parameter:
 $$
-\begin{align*}
+\begin{align}
      \min_{\theta}  -\log{p(\mathcal{D};\theta)}
      &= \min_{\theta} \ \frac{N}{2} \log\left[ 2 \pi \right] + \log\left[ |k(XX;\theta) + \sigma^2 I|\right] + \frac{1}{2} y^T  (K_{XX} + \sigma^2 I)^{-1} y
-\end{align*}
+\end{align}
 $$
 
 While the necessary computations for training the GP and predicting new data points are only linear, they have quadratic memory and cubic computational cost due to square kernel matrix and the required inversions of the kernel matrix.
@@ -133,14 +133,11 @@ Remember that we went from 200 data points to 6 data points, ergo a memory cost 
 The training objective consists now of maximizing the probability of the training data under the distribution of the GP with the inducing points $\widetilde{\mathcal{D}} = \\{ \widetilde{X}, \widetilde{y} \\}$.
 Thus we have the following objective function
 $$
-\begin{align*}
+\begin{align}
  \min_{\theta, \widetilde{\mathcal{D}}}  -\log p(\mathcal{D};\theta, \widetilde{\mathcal{D}})
 &= \min_{\theta, \widetilde{\mathcal{D}}}  -\log p(y| X; \theta, \widetilde{\mathcal{D}}) \\
-&= \min_{\theta, \widetilde{\mathcal{D}}} -\log \mathcal{N} \Big(
-	\overbrace{ K_{X \widetilde{X}} ( K_{\widetilde{X}, \widetilde{X}} + \sigma^2 I)^{-1} y}^{\mu(X)},
-	\overbrace{ K_{XX} - K_{X \widetilde{X}} (K_{\widetilde{X} \widetilde{X}} + \sigma^2 I)^{-1} K_{\widetilde{X} X} + \sigma^2 I }^{\Sigma(X)}
-	\Big)
-\end{align*}
+&= \min_{\theta, \widetilde{\mathcal{D}}} -\log \mathcal{N} \Big( \overbrace{ K_{X \widetilde{X}} ( K_{\widetilde{X}, \widetilde{X}} + \sigma^2 I)^{-1} y}^{\mu(X)},\overbrace{ K_{XX} - K_{X \widetilde{X}} (K_{\widetilde{X} \widetilde{X}} + \sigma^2 I)^{-1} K_{\widetilde{X} X} + \sigma^2 I }^{\Sigma(X)} \Big)
+\end{align}
 $$
 
 So let's code that down in PyTorch!
