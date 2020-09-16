@@ -69,14 +69,18 @@ Brownian motion $W_t$ is defined through the following properties:
 Now it turns out that there exists a stochastic differential equation which fulfills all of the properties above.
 This SDE in question is
 $$
+\begin{align}
   dx_t = dW_t = \epsilon \sqrt{dt} \quad \quad \quad ;\epsilon \sim \mathcal{N}(0,1)
+\end{align}
 $$
 Intuitively, we equate the infinitesimal change in $x_t$ with Brownian Motion which in turn is defined as the standard normally distributed random variable $\epsilon$ scaled by $\sqrt{dt}$.
 The problem of classical differentiability of stochastic processes lies precisely in this SDE as we defined the change with respect to $dt$.
 By defining the infinitesimal change $dt$ we are acknowledging that we could always use a shorter $dt$ and zoom even further into the time axis.
 After all, the infinitesimal change of the Brownian Motion $dW_t$ is defined as a limit in time not unlike the limit we used to show the differentiability of the quadratic function:
 $$
+\begin{align}
 dW_t = \lim_{\Delta t \rightarrow 0} W_{t + \Delta t} - W_t \quad \sim \mathcal{N}(0, \Delta t)
+\end{align}
 $$
 While $\Delta t$ goes rapidly towards zero, it will actually never be exactly zero.
 Thus, if we were to zoom into the time axis we would realize that the Brownian Motion keeps moving randomly for whatever time resolution we choose.
@@ -90,7 +94,9 @@ Probably the best animation for that is directly from the [Wikipedia page](https
 You might wonder: Well, why is that a problem with respect to classical differentiability?
 For that we can simply evaluate the differential 
 $$
+\begin{align}
   \lim_{\Delta t\rightarrow 0} \frac{W_{t+\Delta t} - W_t}{\Delta t}
+\end{align}
 $$
 but alas, $W_t$ is by definition a Normally distributed random variable.
 So let's have a look at the mean and variance of the differential operator:
@@ -102,7 +108,7 @@ $$
 	&= 0
 \end{align}
 $$
-
+and
 $$
 \begin{align}
 	\lim_{\Delta t\rightarrow 0} \mathbb{V} \left[\frac{W_{t+\Delta t} - W_t}{\Delta t} \right]
@@ -175,15 +181,19 @@ Now the question can be raised on how this could be applied to stochastic proces
 
 Let's assume we a classic SDE with a drift term $\mu(t, X_t)$ and a diffusion term $\sigma(t, X_t)$ which together form:
 $$
+\begin{align}
 dX_t = \mu(t, X_t) dt + \sigma(t, X_t) dW_t
+\end{align}
 $$
 and $dW_t$ is the infinitesimal differential of a Wiener process $W_t$.
 Such a process is commonly called an Ito drift-diffusion process.
 
 Now let's say that we have some function $f(t, X_t)$ that takes whatever value $X_t$ is at the moment $t$ and returns some other value $Y_t$ such that we have
+
 $$
 Y_t = f(t, X_t)
 $$
+
 We could use relatively easy functions such as as the exponential function $e^{X_t}$ or the quadratic function $X_t^2$ for starters.
 In the financial markets, these functions $f$ quickly get very complex as stock prices are routinely modeled as stochastic differential equations with $f$ capturing complex relationships like a portfolio performance or default probability.
 
