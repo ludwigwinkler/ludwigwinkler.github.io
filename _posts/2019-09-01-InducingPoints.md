@@ -35,8 +35,8 @@ $$
 Once new data points $X_*$ are obtained, we compare it via the kernel to our existing data set $X$, compute a couple of linear operations with the resulting kernel matrices and the target information in your data set and voila, you arrive at your prediction:
 $$
 \begin{align}
-  \mu(x_*) = K_{XX_*} (K_{XX} + \sigma^2 I)^{-1} y \\
-  \Sigma(x_*) = K_{X_*X_*} - (K_{XX} + \sigma^2 I)^{-1} K_{XX_*}
+  \mu(x_*) &= K_{XX_*} (K_{XX} + \sigma^2 I)^{-1} y \\
+  \Sigma(x_*) &= K_{X_*X_*} - (K_{XX} + \sigma^2 I)^{-1} K_{XX_*}
 \end{align}
 $$
 
