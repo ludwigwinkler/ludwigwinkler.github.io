@@ -27,17 +27,17 @@ So for example, a data set with 200 data points $x_n$, five features per data po
 
 Usually the squared exponential kernel is used to compute the covariance between two data points $x_i$ and $x_j$ via
 $$
-\begin{align*}
+\begin{align}
   K_{ij} = k(x_i, x_j ; l) =  exp \left[ \frac{(x_i - x_j)^2}{2l^2} \right]
-\end{align*}
+\end{align}
 $$
 
 Once new data points $X_*$ are obtained, we compare it via the kernel to our existing data set $X$, compute a couple of linear operations with the resulting kernel matrices and the target information in your data set and voila, you arrive at your prediction:
 $$
-\begin{align*}
+\begin{align}
   \mu(x_*) = K_{XX_*} (K_{XX} + \sigma^2 I)^{-1} y \\
   \Sigma(x_*) = K_{X_*X_*} - (K_{XX} + \sigma^2 I)^{-1} K_{XX_*}
-\end{align*}
+\end{align}
 $$
 
 The training of GP's consists of finding the right parameters, namely the length scale $l$ in the kernel and the variance in the data $\sigma^2$.
