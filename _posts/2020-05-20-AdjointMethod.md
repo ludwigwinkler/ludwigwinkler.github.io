@@ -62,13 +62,13 @@ The solution to this problem is the use of the Jacobian of the output $z_t$ with
 
 $$
 \begin{align}
-J(f)= \frac{\partial f(z, t, \theta)}{\partial z} = 
+J(f)= \frac{\partial f(z, t, \theta)}{\partial z} =
 \left[
 \begin{array}{cccc}
 \frac{\partial f(z, t, \theta)_1}{\partial z_1} & \dots & \frac{\partial f(z, t, \theta)_D}{\partial z_1} \\
 \vdots & \ddots & \vdots \\
 \frac{\partial f(z, t, \theta)_1}{\partial z_D} & \dots & \frac{\partial f(z, t, \theta)_D}{\partial z_D} \\
-\end{array} 
+\end{array}
 \right]
 \end{align}
 $$
@@ -82,9 +82,9 @@ The sensitivity backward pass for our discretized ODE problem would then look so
 $$
 \begin{align}
 \frac{\partial \mathcal{L}}{\partial z_1} =
- \frac{\partial \mathcal{L}}{\partial z_3} 
- \frac{\partial f(z_2, t, \theta)}{\partial z_2} 
- \frac{\partial f(z_1 t, \theta)}{\partial z_1} 
+ \frac{\partial \mathcal{L}}{\partial z_3}
+ \frac{\partial f(z_2, t, \theta)}{\partial z_2}
+ \frac{\partial f(z_1 t, \theta)}{\partial z_1}
 \end{align}
 $$
 

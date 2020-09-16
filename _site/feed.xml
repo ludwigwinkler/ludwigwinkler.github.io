@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-07T11:35:20+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Variational Autoencoders Derived</title><link href="http://localhost:4000/blog/VAE/" rel="alternate" type="text/html" title="Variational Autoencoders Derived" /><published>2020-08-10T00:00:00+02:00</published><updated>2020-08-10T00:00:00+02:00</updated><id>http://localhost:4000/blog/VAE</id><content type="html" xml:base="http://localhost:4000/blog/VAE/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-16T14:43:58+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Variational Autoencoders Derived</title><link href="http://localhost:4000/blog/VAE/" rel="alternate" type="text/html" title="Variational Autoencoders Derived" /><published>2020-08-10T00:00:00+02:00</published><updated>2020-08-10T00:00:00+02:00</updated><id>http://localhost:4000/blog/VAE</id><content type="html" xml:base="http://localhost:4000/blog/VAE/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -110,11 +110,11 @@ The KL divergence between the latent code $q_\phi(z|x)$ and the prior $p_\theta(
 &lt;p&gt;The motivation of the paper was the mainly given through the interpretation of the ResNet architectures being interpreted as the Euler discretization of ordinary differential equations (ODE).
 The paper took this insight to its logical extreme and asked the question whether we really have to remain content with just the Euler discretization of an ODE or whether we can go deeper … or more continuous in our case.&lt;/p&gt;
 
-&lt;p&gt;By definition an ODE is defined in its differential form as&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;dz_t = f(z_t, t, \theta)&lt;/script&gt;
-
-&lt;p&gt;which basically means that the function $f$ computes the rate of change of $z_t$ at timestep $t$ with its parameters $\theta$.
+&lt;p&gt;By definition an ODE is defined in its differential form as
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+dz_t = f(z_t, t, \theta)
+\end{align}&lt;/script&gt;
+which basically means that the function $f$ computes the rate of change of $z_t$ at timestep $t$ with its parameters $\theta$.
 Often these equations $f$ are constructed analytically or are known from physics but a more interesting question cane be posed by asking whether this function $f$ can actually be learned … with a neural network for example.&lt;/p&gt;
 
 &lt;p&gt;Ultimately, if we want to use gradient based optimization to train a neural network we need to compute a scalar loss function and compute the gradients of the parameters $\theta$ through reverse-mode autodifferentiation.&lt;/p&gt;
@@ -144,13 +144,13 @@ The solution to this problem is the use of the Jacobian of the output $z_t$ with
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
 \begin{align}
-J(f)= \frac{\partial f(z, t, \theta)}{\partial z} = 
+J(f)= \frac{\partial f(z, t, \theta)}{\partial z} =
 \left[
 \begin{array}{cccc}
 \frac{\partial f(z, t, \theta)_1}{\partial z_1} &amp; \dots &amp; \frac{\partial f(z, t, \theta)_D}{\partial z_1} \\
 \vdots &amp; \ddots &amp; \vdots \\
 \frac{\partial f(z, t, \theta)_1}{\partial z_D} &amp; \dots &amp; \frac{\partial f(z, t, \theta)_D}{\partial z_D} \\
-\end{array} 
+\end{array}
 \right]
 \end{align} %]]&gt;&lt;/script&gt;
 
@@ -162,9 +162,9 @@ Said differently, we simply reweight the initial sensitivity repeatedly with the
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
 \frac{\partial \mathcal{L}}{\partial z_1} =
- \frac{\partial \mathcal{L}}{\partial z_3} 
- \frac{\partial f(z_2, t, \theta)}{\partial z_2} 
- \frac{\partial f(z_1 t, \theta)}{\partial z_1} 
+ \frac{\partial \mathcal{L}}{\partial z_3}
+ \frac{\partial f(z_2, t, \theta)}{\partial z_2}
+ \frac{\partial f(z_1 t, \theta)}{\partial z_1}
 \end{align}&lt;/script&gt;
 
 &lt;p&gt;This procedure is actually very similar to how the normal backpropagation pass is done.

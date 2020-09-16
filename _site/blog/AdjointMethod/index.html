@@ -87,11 +87,11 @@
 <p>The motivation of the paper was the mainly given through the interpretation of the ResNet architectures being interpreted as the Euler discretization of ordinary differential equations (ODE).
 The paper took this insight to its logical extreme and asked the question whether we really have to remain content with just the Euler discretization of an ODE or whether we can go deeper … or more continuous in our case.</p>
 
-<p>By definition an ODE is defined in its differential form as</p>
-
-<script type="math/tex; mode=display">dz_t = f(z_t, t, \theta)</script>
-
-<p>which basically means that the function $f$ computes the rate of change of $z_t$ at timestep $t$ with its parameters $\theta$.
+<p>By definition an ODE is defined in its differential form as
+<script type="math/tex">\begin{align}
+dz_t = f(z_t, t, \theta)
+\end{align}</script>
+which basically means that the function $f$ computes the rate of change of $z_t$ at timestep $t$ with its parameters $\theta$.
 Often these equations $f$ are constructed analytically or are known from physics but a more interesting question cane be posed by asking whether this function $f$ can actually be learned … with a neural network for example.</p>
 
 <p>Ultimately, if we want to use gradient based optimization to train a neural network we need to compute a scalar loss function and compute the gradients of the parameters $\theta$ through reverse-mode autodifferentiation.</p>
@@ -121,13 +121,13 @@ The solution to this problem is the use of the Jacobian of the output $z_t$ with
 
 <script type="math/tex; mode=display">% <![CDATA[
 \begin{align}
-J(f)= \frac{\partial f(z, t, \theta)}{\partial z} = 
+J(f)= \frac{\partial f(z, t, \theta)}{\partial z} =
 \left[
 \begin{array}{cccc}
 \frac{\partial f(z, t, \theta)_1}{\partial z_1} & \dots & \frac{\partial f(z, t, \theta)_D}{\partial z_1} \\
 \vdots & \ddots & \vdots \\
 \frac{\partial f(z, t, \theta)_1}{\partial z_D} & \dots & \frac{\partial f(z, t, \theta)_D}{\partial z_D} \\
-\end{array} 
+\end{array}
 \right]
 \end{align} %]]></script>
 
@@ -139,9 +139,9 @@ Said differently, we simply reweight the initial sensitivity repeatedly with the
 
 <script type="math/tex; mode=display">\begin{align}
 \frac{\partial \mathcal{L}}{\partial z_1} =
- \frac{\partial \mathcal{L}}{\partial z_3} 
- \frac{\partial f(z_2, t, \theta)}{\partial z_2} 
- \frac{\partial f(z_1 t, \theta)}{\partial z_1} 
+ \frac{\partial \mathcal{L}}{\partial z_3}
+ \frac{\partial f(z_2, t, \theta)}{\partial z_2}
+ \frac{\partial f(z_1 t, \theta)}{\partial z_1}
 \end{align}</script>
 
 <p>This procedure is actually very similar to how the normal backpropagation pass is done.
