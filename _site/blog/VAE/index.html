@@ -89,13 +89,11 @@ We are interested in the latent distribution of $p(z||x)$ given the data $x$ and
 Intuitively, we want to know for a given $x$ what the latent variables $z$ were that generated them.
 This is akin to observing some observation $x$ and being able to say: I know the $z$ ‘s that generated that!.</p>
 
-<p>By Bayes rule we now that for a distribution $ p ( x | z ) $ there also exists the distribution $ p ( z | x ) $, the distribution we are interested in.</p>
-
-<script type="math/tex; mode=display">\begin{align}
+<p>By Bayes rule we now that for a distribution $ p ( x | z ) $ there also exists the distribution $ p ( z | x ) $, the distribution we are interested in.
+<script type="math/tex">\begin{align}
 p(z|x) = \frac{p(z,x)}{p(x)} = \frac{p(x|z)p(z)}{p(x)}
 \end{align}</script>
-
-<p>The crux of the problem is that we can only observe the data distribution $p(x)$ through a data set $\mathcal{D}= \{ x_i \}_{i=0}^N$.
+The crux of the problem is that we can only observe the data distribution $p(x)$ through a data set $\mathcal{D}= \{ x_i \}_{i=0}^N$.
 So we neither know what form the data generating process $p(x|z)$ has nor what the true latent distribution $p(z)$ is.
 Additionally, the data probability $p(x)$ is even more obscure.
 How would you even answer the question of how probable your data set is?</p>
@@ -144,13 +142,11 @@ We could assume any other family of distributions but the standard normal distri
 This might seem bold but if the generative model $p(x|z)$ is flexible enough it can generate any $x$ from this comparatively simpel $z$.
 Now let’s turn our attention to $p(x|z)$: We will change the unknown $p(x|z)$ to a parameterized and differentiable $p_\theta(x|z)$ such that we can maximize the probability of the data $x$ for a given $z$.</p>
 
-<p>Now we have the following objective function:</p>
-
-<script type="math/tex; mode=display">\begin{align}
+<p>Now we have the following objective function:
+<script type="math/tex">\begin{align}
 	\log p(x) \geq -\mathbb{KL} \left[ q_\phi(z|x) || p(z) \right] + \mathbb{E}_{q_\phi(z|x)} \left[ \log p_\theta(x|z) \right]
 \end{align}</script>
-
-<p>which, upon closer inspection, has a lot of similarities to an autoencoder, except that it’s probabilistic!
+which, upon closer inspection, has a lot of similarities to an autoencoder, except that it’s probabilistic!
 We use the distribution $q_\phi(z|x)$ to infer some latent code from a given sample.
 Through the KL divergence we enforce that the latent representation should be close to the simplified assumption of $p(z) = \mathcal{N}(0,I)$.
 The same latent code $z$ should be reconstructed to the true sample $x$ by the generative model $p_\theta(x|z)$.

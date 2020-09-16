@@ -179,6 +179,7 @@ $$
 	&= \mu + e^{-\theta t}(X_0 - \mu)
 \end{align}
 $$
+and
 $$
 \begin{align}
 \mathbb{V} \left[ X_t \right] &= \mathbb{E} \left[ \left( X_t - \mathbb{E}[X_t] \right)^2 \right] \\

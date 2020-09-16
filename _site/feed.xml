@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-16T14:56:17+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Variational Autoencoders Derived</title><link href="http://localhost:4000/blog/VAE/" rel="alternate" type="text/html" title="Variational Autoencoders Derived" /><published>2020-08-10T00:00:00+02:00</published><updated>2020-08-10T00:00:00+02:00</updated><id>http://localhost:4000/blog/VAE</id><content type="html" xml:base="http://localhost:4000/blog/VAE/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-16T15:01:34+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Variational Autoencoders Derived</title><link href="http://localhost:4000/blog/VAE/" rel="alternate" type="text/html" title="Variational Autoencoders Derived" /><published>2020-08-10T00:00:00+02:00</published><updated>2020-08-10T00:00:00+02:00</updated><id>http://localhost:4000/blog/VAE</id><content type="html" xml:base="http://localhost:4000/blog/VAE/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -21,13 +21,11 @@ We are interested in the latent distribution of $p(z||x)$ given the data $x$ and
 Intuitively, we want to know for a given $x$ what the latent variables $z$ were that generated them.
 This is akin to observing some observation $x$ and being able to say: I know the $z$ ‘s that generated that!.&lt;/p&gt;
 
-&lt;p&gt;By Bayes rule we now that for a distribution $ p ( x | z ) $ there also exists the distribution $ p ( z | x ) $, the distribution we are interested in.&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+&lt;p&gt;By Bayes rule we now that for a distribution $ p ( x | z ) $ there also exists the distribution $ p ( z | x ) $, the distribution we are interested in.
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
 p(z|x) = \frac{p(z,x)}{p(x)} = \frac{p(x|z)p(z)}{p(x)}
 \end{align}&lt;/script&gt;
-
-&lt;p&gt;The crux of the problem is that we can only observe the data distribution $p(x)$ through a data set $\mathcal{D}= \{ x_i \}_{i=0}^N$.
+The crux of the problem is that we can only observe the data distribution $p(x)$ through a data set $\mathcal{D}= \{ x_i \}_{i=0}^N$.
 So we neither know what form the data generating process $p(x|z)$ has nor what the true latent distribution $p(z)$ is.
 Additionally, the data probability $p(x)$ is even more obscure.
 How would you even answer the question of how probable your data set is?&lt;/p&gt;
@@ -76,13 +74,11 @@ We could assume any other family of distributions but the standard normal distri
 This might seem bold but if the generative model $p(x|z)$ is flexible enough it can generate any $x$ from this comparatively simpel $z$.
 Now let’s turn our attention to $p(x|z)$: We will change the unknown $p(x|z)$ to a parameterized and differentiable $p_\theta(x|z)$ such that we can maximize the probability of the data $x$ for a given $z$.&lt;/p&gt;
 
-&lt;p&gt;Now we have the following objective function:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+&lt;p&gt;Now we have the following objective function:
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
 	\log p(x) \geq -\mathbb{KL} \left[ q_\phi(z|x) || p(z) \right] + \mathbb{E}_{q_\phi(z|x)} \left[ \log p_\theta(x|z) \right]
 \end{align}&lt;/script&gt;
-
-&lt;p&gt;which, upon closer inspection, has a lot of similarities to an autoencoder, except that it’s probabilistic!
+which, upon closer inspection, has a lot of similarities to an autoencoder, except that it’s probabilistic!
 We use the distribution $q_\phi(z|x)$ to infer some latent code from a given sample.
 Through the KL divergence we enforce that the latent representation should be close to the simplified assumption of $p(z) = \mathcal{N}(0,I)$.
 The same latent code $z$ should be reconstructed to the true sample $x$ by the generative model $p_\theta(x|z)$.
@@ -343,6 +339,7 @@ In order to show that we can compute the mean and variance of the process and th
 	&amp;= \mu + e^{-\theta t}(X_0 - \mu) + \underbrace{\mathbb{E} \left[ \sigma \int_{s=0}^t e^{-\theta (t-s)} dW_s\right]}_{\text{Wiener process} \rightarrow \mathbb{E}[W_t]=0} \\
 	&amp;= \mu + e^{-\theta t}(X_0 - \mu)
 \end{align} %]]&gt;&lt;/script&gt;
+and
 &lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
 \mathbb{V} \left[ X_t \right] &amp;= \mathbb{E} \left[ \left( X_t - \mathbb{E}[X_t] \right)^2 \right] \\
@@ -382,19 +379,18 @@ Thus the stationary distribution is a Gaussian distribution as well.&lt;/p&gt;</
 &lt;h3 id=&quot;differentiability&quot;&gt;Differentiability&lt;/h3&gt;
 
 &lt;p&gt;Probably one of the most fundamental uses of calculus is the derivation of functions.
-A function $f$ is differentiable if the following value $f’(x)$ exists:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;f'(x) = \lim_{h\rightarrow 0} \frac{f(x+h) - f(x)}{h}&lt;/script&gt;
-
-&lt;p&gt;If we let $h$ go towards zero, a function is called differentiable, if the fraction converges towards some constant value.&lt;/p&gt;
+A function $f$ is differentiable if the following value $f’(x)$ exists:
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+ f'(x) = \lim_{h\rightarrow 0} \frac{f(x+h) - f(x)}{h}
+\end{align}&lt;/script&gt;
+If we let $h$ go towards zero, a function is called differentiable, if the fraction converges towards some constant value.&lt;/p&gt;
 
 &lt;p&gt;Let’s look at an example of how this might work.
 We’ll need an additional mathematical trick called &lt;a href=&quot;https://en.wikipedia.org/wiki/L%27Hôpital%27s_rule&quot;&gt;L’Hopitals rule&lt;/a&gt; which says that for evaluating the limit of a fraction we can simply derive both nominator and denominator with respect to the same variable and still obtain the valid result.
 Applying L’Hopitals rule often simplifies the computation of the derivative since we’re always working with the limit of a fraction.&lt;/p&gt;
 
-&lt;p&gt;Let’s try to compute the derivative of the squared function $f(x) = x^2$:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+&lt;p&gt;Let’s try to compute the derivative of the squared function $f(x) = x^2$:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
   f'(x) &amp;= \lim_{h\rightarrow 0} \frac{f(x+h) - f(x)}{h} \\
   &amp;= \lim_{h\rightarrow 0} \frac{(x+h)^2 - x^2}{h} \\
@@ -403,8 +399,7 @@ Applying L’Hopitals rule often simplifies the computation of the derivative si
   &amp;= \lim_{h\rightarrow 0} \frac{2x + 2h}{1} &amp;&amp; \Leftarrow \text{Evaluating $h$ to zero} \\ 
   &amp;= 2x
 \end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;Sure enough it’s the correct result which we anticipated.
+Sure enough it’s the correct result which we anticipated.
 In effect, we’re zooming infinitely far into the function and ask ourselves how the function changes in this tiny window $h$.
 Visually, this looks something like this for the exponential function $f(x) = e^x$:&lt;/p&gt;
 
@@ -428,18 +423,14 @@ Brownian motion $W_t$ is defined through the following properties:&lt;/p&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;Now it turns out that there exists a stochastic differential equation which fulfills all of the properties above.
-This SDE in question is&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;dx_t = dW_t = \epsilon \sqrt{dt} \quad \quad \quad ;\epsilon \sim \mathcal{N}(0,1)&lt;/script&gt;
-
-&lt;p&gt;Intuitively, we equate the infinitesimal change in $x_t$ with Brownian Motion which in turn is defined as the standard normally distributed random variable $\epsilon$ scaled by $\sqrt{dt}$.
+This SDE in question is
+&lt;script type=&quot;math/tex&quot;&gt;dx_t = dW_t = \epsilon \sqrt{dt} \quad \quad \quad ;\epsilon \sim \mathcal{N}(0,1)&lt;/script&gt;
+Intuitively, we equate the infinitesimal change in $x_t$ with Brownian Motion which in turn is defined as the standard normally distributed random variable $\epsilon$ scaled by $\sqrt{dt}$.
 The problem of classical differentiability of stochastic processes lies precisely in this SDE as we defined the change with respect to $dt$.
 By defining the infinitesimal change $dt$ we are acknowledging that we could always use a shorter $dt$ and zoom even further into the time axis.
-After all, the infinitesimal change of the Brownian Motion $dW_t$ is defined as a limit in time not unlike the limit we used to show the differentiability of the quadratic function:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;dW_t = \lim_{\Delta t \rightarrow 0} W_{t + \Delta t} - W_t \quad \sim \mathcal{N}(0, \Delta t)&lt;/script&gt;
-
-&lt;p&gt;While $\Delta t$ goes rapidly towards zero, it will actually never be exactly zero.
+After all, the infinitesimal change of the Brownian Motion $dW_t$ is defined as a limit in time not unlike the limit we used to show the differentiability of the quadratic function:
+&lt;script type=&quot;math/tex&quot;&gt;dW_t = \lim_{\Delta t \rightarrow 0} W_{t + \Delta t} - W_t \quad \sim \mathcal{N}(0, \Delta t)&lt;/script&gt;
+While $\Delta t$ goes rapidly towards zero, it will actually never be exactly zero.
 Thus, if we were to zoom into the time axis we would realize that the Brownian Motion keeps moving randomly for whatever time resolution we choose.
 In turns out that Brownian Motion actually has &lt;a href=&quot;https://en.wikipedia.org/wiki/Fractal&quot;&gt;fractal properties&lt;/a&gt; which are probably the trippiest mathematical animations you can experience without doing actual acid.&lt;/p&gt;
 
@@ -449,22 +440,19 @@ Probably the best animation for that is directly from the &lt;a href=&quot;https
 &lt;p&gt;&lt;img src=&quot;/blog/ItosLemma/WienerProcess.gif&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;100%&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;You might wonder: Well, why is that a problem with respect to classical differentiability?
-For that we can simply evaluate the differential&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\lim_{\Delta t\rightarrow 0} \frac{W_{t+\Delta t} - W_t}{\Delta t}&lt;/script&gt;
-
-&lt;p&gt;but alas, $W_t$ is by definition a Normally distributed random variable.
-So let’s have a look at the mean and variance of the differential operator:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+For that we can simply evaluate the differential 
+&lt;script type=&quot;math/tex&quot;&gt;\lim_{\Delta t\rightarrow 0} \frac{W_{t+\Delta t} - W_t}{\Delta t}&lt;/script&gt;
+but alas, $W_t$ is by definition a Normally distributed random variable.
+So let’s have a look at the mean and variance of the differential operator:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
 	\lim_{\Delta t\rightarrow 0} \mathbb{E}\left[ \frac{W_{t+\Delta t} - W_t}{\Delta t} \right] 
 	&amp;= \lim_{\Delta t} \frac{1}{\Delta t} \mathbb{E} [ \underbrace{W_{t+\Delta t} - W_t}_{\sim \mathcal{N}(0,\Delta t)} ] \\
 	&amp;= \lim_{\Delta t} \frac{1}{\Delta t} 0 \\
 	&amp;= 0
-\end{align} %]]&gt;&lt;/script&gt;
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+&lt;p&gt;&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
 	\lim_{\Delta t\rightarrow 0} \mathbb{V} \left[\frac{W_{t+\Delta t} - W_t}{\Delta t} \right]
 	&amp;= \lim_{\Delta t\rightarrow 0} \frac{1}{\Delta t^2} \mathbb{V} [ \underbrace{W_{t+\Delta t} - W_t}_{\sim \mathcal{N}(0,\Delta t)} ] \\
@@ -472,8 +460,7 @@ So let’s have a look at the mean and variance of the differential operator:&lt
 	&amp;= \lim_{\Delta t\rightarrow 0} \frac{1}{\Delta t} \\
 	&amp;= \infty
 \end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;Both the mean and the variance are possibly the worst values you can expect in terms of functional analysis.
+Both the mean and the variance are possibly the worst values you can expect in terms of functional analysis.
 The mean is zero, indicating we have no derivative what so ever while the variance goes to infinity which is equally unusable.
 Ultimately, we can’t derive a Wiener process in the classical sense.&lt;/p&gt;
 
@@ -488,23 +475,19 @@ Once at the DeepBayes summer school in Moscow, a fellow attendee and physicist s
 &lt;p&gt;The core idea of a Taylor expansion is to approximate a function locally around a root point with a series of terms which rely on the derivatives of the function.
 So for example a function might be a polynomial of order 10 but locally, we only need a quadratic function to approximate it quite well.&lt;/p&gt;
 
-&lt;p&gt;Mathematically, a Taylor expansion of a infinitely differentiable function $f(x)$ around a root point $x_0$ is defined as&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;f(x)|_{x_0} = \sum_{n=0}^\infty \frac{f^{(n)}(x_0)}{n!}(x-x_0)^n&lt;/script&gt;
-
-&lt;p&gt;In order to keep things simple we will only work with a Taylor expansion of the second order, meaning that we will stop the sum after the term with the second order derivative.
+&lt;p&gt;Mathematically, a Taylor expansion of a infinitely differentiable function $f(x)$ around a root point $x_0$ is defined as
+&lt;script type=&quot;math/tex&quot;&gt;f(x)|_{x_0} = \sum_{n=0}^\infty \frac{f^{(n)}(x_0)}{n!}(x-x_0)^n&lt;/script&gt;
+In order to keep things simple we will only work with a Taylor expansion of the second order, meaning that we will stop the sum after the term with the second order derivative.
 Practically, many problems are posed as linear or quadratic problems so the need seldomly arises to compute higher order Taylor expansions (at least in machine learning where computing higher order gradients at scale can be expensive).&lt;/p&gt;
 
-&lt;p&gt;So we’ll be working with the following sum:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+&lt;p&gt;So we’ll be working with the following sum:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
   f(x)|_{x_0} &amp;\approx f(x_0) + \frac{f'(x_0)}{1!}(x-x_0) + \frac{f''(x_0)}{2!}(x-x_0)^2 \\
   &amp;= f(x_0) + f'(x_0) \underbrace{(x-x_0)}_{\Delta x} + \frac{1}{2!}f''(x_0) \underbrace{(x-x_0)^2}_{\Delta x^2} \\
   &amp;= f(x_0) + \underbrace{f'(x_0) \ \Delta x}_{\text{linear in $\Delta x$}} + \underbrace{\frac{1}{2}f''(x_0) \ \Delta x^2}_{\text{quadratic in $\Delta x$}} \\
 \end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;where $\Delta x = (x - x_0)$ signifies the distance of x to the root point $x_0$.
+where $\Delta x = (x - x_0)$ signifies the distance of x to the root point $x_0$.
 By using the second order Taylor expansion we approximate the higher order polynomial $f(x)$ with just its first and second order derivative packed into a polynomial in $\Delta x$.
 The locality of the Taylor expansion around the $x_0$ is essential for the approximation since we use the first order order derivative $f’(x_0)$ and second order derivative &lt;script type=&quot;math/tex&quot;&gt;f''(x_0)&lt;/script&gt; explicitly evaluated at $x_0$.&lt;/p&gt;
 
@@ -539,118 +522,114 @@ The root $x_0$ lies on a stretch with almost no curvature ergo &lt;script type=&
 
 &lt;h3 id=&quot;itos-lemma&quot;&gt;Ito’s Lemma&lt;/h3&gt;
 
-&lt;p&gt;Let’s assume we a classic SDE with a drift term $\mu(t, X_t)$ and a diffusion term $\sigma(t, X_t)$ which together form:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;dX_t = \mu(t, X_t) dt + \sigma(t, X_t) dW_t&lt;/script&gt;
-
-&lt;p&gt;and $dW_t$ is the infinitesimal differential of a Wiener process $W_t$.
+&lt;p&gt;Let’s assume we a classic SDE with a drift term $\mu(t, X_t)$ and a diffusion term $\sigma(t, X_t)$ which together form:
+&lt;script type=&quot;math/tex&quot;&gt;dX_t = \mu(t, X_t) dt + \sigma(t, X_t) dW_t&lt;/script&gt;
+and $dW_t$ is the infinitesimal differential of a Wiener process $W_t$.
 Such a process is commonly called an Ito drift-diffusion process.&lt;/p&gt;
 
-&lt;p&gt;Now let’s say that we have some function $f(t, X_t)$ that takes whatever value $X_t$ is at the moment $t$ and returns some other value $Y_t$ such that we have&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;Y_t = f(t, X_t)&lt;/script&gt;
-
-&lt;p&gt;We could use relatively easy functions such as as the exponential function $e^{X_t}$ or the quadratic function $X_t^2$ for starters.
+&lt;p&gt;Now let’s say that we have some function $f(t, X_t)$ that takes whatever value $X_t$ is at the moment $t$ and returns some other value $Y_t$ such that we have
+&lt;script type=&quot;math/tex&quot;&gt;Y_t = f(t, X_t)&lt;/script&gt;
+We could use relatively easy functions such as as the exponential function $e^{X_t}$ or the quadratic function $X_t^2$ for starters.
 In the financial markets, these functions $f$ quickly get very complex as stock prices are routinely modeled as stochastic differential equations with $f$ capturing complex relationships like a portfolio performance or default probability.&lt;/p&gt;
 
 &lt;p&gt;Since we are working with infinitesimal differentials we would like to know how $Y_t$ changes for very small time differentials $dt$.
-So we actually want to be able to define the following equation:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;dY_t = df(t, X_t)&lt;/script&gt;
-
-&lt;p&gt;&lt;strong&gt;In order to answer that question, Ito’s lemma applies a Taylor expansion to $f(t, X_t)$ with special numerical conditions for the infinitesimal values.&lt;/strong&gt;
+So we actually want to be able to define the following equation:
+&lt;script type=&quot;math/tex&quot;&gt;dY_t = df(t, X_t)&lt;/script&gt;
+&lt;strong&gt;In order to answer that question, Ito’s lemma applies a Taylor expansion to $f(t, X_t)$ with special numerical conditions for the infinitesimal values.&lt;/strong&gt;
 There are a few constraints on $f$, though.
 It has to be twice differentiable with respect to $X_t$ and at least once differentiable with respect to $t$.
 If these equations are met we can start deriving!&lt;/p&gt;
 
-&lt;p&gt;The first step is to define the Taylor expansion for $f(t, X_t)$ in it’s general form around the root point $(t_0, X_0)$:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+&lt;p&gt;The first step is to define the Taylor expansion for $f(t, X_t)$ in it’s general form around the root point $(t_0, X_0)$:
+$$
 \begin{align}
-  f(t, X_t) &amp;\approx f(t_0, X_0) + \frac{\partial f(t_0, X_0)}{\partial t} \underbrace{(t - t_0)}_{\Delta t}
-  + \frac{\partial f(t_0, X_0)}{\partial X_t}\underbrace{(X_t - X_0)}_{\Delta X_t}
-  + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\underbrace{(X_t - X_0)^2}_{\Delta X_t^2} \\
-  &amp;= f(t_0, X_0) + \frac{\partial f(t_0, X_0)}{\partial t} \Delta t
-  + \frac{\partial f(t_0, X_0)}{\partial X_t}\Delta X_t
-  + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\Delta X_t^2 \\
-\end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;The next step is to examine the Taylor expansion in the limit $\lim [t \rightarrow t_0, X_t \rightarrow X_0]$.
+  f(t, X_t) &amp;amp;\approx f(t_0, X_0) + \frac{\partial f(t_0, X_0)}{\partial t} \underbrace{(t - t_0)}_{\Delta t}&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;\frac{\partial f(t_0, X_0)}{\partial X_t}\underbrace{(X_t - X_0)}_{\Delta X_t}&lt;/li&gt;
+  &lt;li&gt;\frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\underbrace{(X_t - X_0)^2}_{\Delta X_t^2} &lt;br /&gt;
+  &amp;amp;= f(t_0, X_0) + \frac{\partial f(t_0, X_0)}{\partial t} \Delta t&lt;/li&gt;
+  &lt;li&gt;\frac{\partial f(t_0, X_0)}{\partial X_t}\Delta X_t&lt;/li&gt;
+  &lt;li&gt;\frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\Delta X_t^2 &lt;br /&gt;
+\end{align}
+&lt;script type=&quot;math/tex&quot;&gt;The next step is to examine the Taylor expansion in the limit $\lim [t \rightarrow t_0, X_t \rightarrow X_0]$.
 This is of interest as we are again interested in the infinitesimal behavior of $f(t, X_t)$, namely $df(t, X_t)$:
-By pulling the root evaluation $f(t_0, X_0)$ over to the left side we lay the groundwork for the differential.&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+By pulling the root evaluation $f(t_0, X_0)$ over to the left side we lay the groundwork for the differential.&lt;/script&gt;
 \begin{align}
 \lim_{t\rightarrow t_0, X_t \rightarrow X_0} f(t, X_t) - f(t_0, X_0) 
-&amp;= \lim_{t\rightarrow t_0, X_t \rightarrow X_0} \frac{\partial f(t_0, X_0)}{\partial t} \Delta t
-  + \frac{\partial f(t_0, X_0)}{\partial X_t}\Delta X_t
-  + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\Delta X_t^2
-\end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;In fact the limit above is precisely the differentiability operator from the very beginning.
+&amp;amp;= \lim_{t\rightarrow t_0, X_t \rightarrow X_0} \frac{\partial f(t_0, X_0)}{\partial t} \Delta t&lt;/li&gt;
+  &lt;li&gt;\frac{\partial f(t_0, X_0)}{\partial X_t}\Delta X_t&lt;/li&gt;
+  &lt;li&gt;\frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\Delta X_t^2
+\end{align}
+$$
+In fact the limit above is precisely the differentiability operator from the very beginning.
 Remember that we define the differentiability as the difference of two evaluations for an ever more decreasing difference in their arguments.
 This is precisely what we are defining in the limit above by moving $t$ ever closer to $t_0$ and simultaneously $X_t$ towards $X_0$.
-Furthermore the limit also allows us to rewrite the difference $\Delta t$ and $\Delta X_t$ in their infinitesimal differential form $dt$ and $dX_t$.&lt;/p&gt;
+Furthermore the limit also allows us to rewrite the difference $\Delta t$ and $\Delta X_t$ in their infinitesimal differential form $dt$ and $dX_t$.&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;p&gt;So we obtain the following:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+&lt;p&gt;So we obtain the following:
+$$
 \begin{align}
 \lim_{t\rightarrow t_0, X_t \rightarrow X_0} f(t, X_t) - f(t_0, X_0) 
-&amp;= \lim_{t\rightarrow t_0, X_t \rightarrow X_0} \frac{\partial f(t_0, X_0)}{\partial t} \Delta t
-  + \frac{\partial f(t_0, X_0)}{\partial X_t}\Delta X_t
-  + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\Delta X_t^2 \\
-\end{align} %]]&gt;&lt;/script&gt;
+&amp;amp;= \lim_{t\rightarrow t_0, X_t \rightarrow X_0} \frac{\partial f(t_0, X_0)}{\partial t} \Delta t&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;\frac{\partial f(t_0, X_0)}{\partial X_t}\Delta X_t&lt;/li&gt;
+  &lt;li&gt;\frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\Delta X_t^2 &lt;br /&gt;
+\end{align}
+$$&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\Downarrow&lt;/script&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+\Downarrow
+\end{align}&lt;/script&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+&lt;p&gt;$$
 \begin{align}
-  df(t, X_t) &amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt
-  + \frac{\partial f(t_0, X_0)}{\partial X_t} dX_t
-  + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} dX_t^2
-\end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;The next step is substituting $dX_t = \mu(t, X_t)dt + \sigma(t, X_t)dW_t$ into the equation:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+  df(t, X_t) &amp;amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;\frac{\partial f(t_0, X_0)}{\partial X_t} dX_t&lt;/li&gt;
+  &lt;li&gt;\frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} dX_t^2
+\end{align}
+&lt;script type=&quot;math/tex&quot;&gt;The next step is substituting $dX_t = \mu(t, X_t)dt + \sigma(t, X_t)dW_t$ into the equation:&lt;/script&gt;
 \begin{align}
-  df(t, X_t) &amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt
-  + \frac{\partial f(t_0, X_0)}{\partial X_t} dX_t
-  + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} dX_t^2 \\
-  &amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt
-  + \frac{\partial f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t)
-  + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t)^2 \\
-  &amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt
-  + \frac{\partial f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t) \\
-  &amp; \quad + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)^2 dt^2 + 2 \mu(t, X_t) \sigma(t, X_t)^2 dt dW_t + \sigma(t, X_t)^2 dW_t^2) \\
-\end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;Now comes a pivotal part in the derivation in which examine how $dt$ and $dW_t$ behave when multiplied or squared.
+  df(t, X_t) &amp;amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt&lt;/li&gt;
+  &lt;li&gt;\frac{\partial f(t_0, X_0)}{\partial X_t} dX_t&lt;/li&gt;
+  &lt;li&gt;\frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} dX_t^2 &lt;br /&gt;
+  &amp;amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt&lt;/li&gt;
+  &lt;li&gt;\frac{\partial f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t)&lt;/li&gt;
+  &lt;li&gt;\frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t)^2 &lt;br /&gt;
+  &amp;amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt&lt;/li&gt;
+  &lt;li&gt;\frac{\partial f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t) &lt;br /&gt;
+  &amp;amp; \quad + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)^2 dt^2 + 2 \mu(t, X_t) \sigma(t, X_t)^2 dt dW_t + \sigma(t, X_t)^2 dW_t^2) &lt;br /&gt;
+\end{align}
+$$
+Now comes a pivotal part in the derivation in which examine how $dt$ and $dW_t$ behave when multiplied or squared.
 The differential Wiener process can be rewritten as $dW_t = \epsilon \sqrt{dt}$.
-Thus we have the following time-dependent terms appearing in the equation above: $dt^2$, $dt dW_t = \epsilon dt^{1.5}$ and $dW_t^2 = \epsilon^2  dt = dt$ under the mean-square interpretation which states $\mathbb{E}[\epsilon^2] = \mathbb{V}[\epsilon] = 1$ for $\epsilon \sim \mathcal{N}(0,1)$.&lt;/p&gt;
+Thus we have the following time-dependent terms appearing in the equation above: $dt^2$, $dt dW_t = \epsilon dt^{1.5}$ and $dW_t^2 = \epsilon^2  dt = dt$ under the mean-square interpretation which states $\mathbb{E}[\epsilon^2] = \mathbb{V}[\epsilon] = 1$ for $\epsilon \sim \mathcal{N}(0,1)$.&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;p&gt;The important aspect of simplifying Ito’s lemma is to think about how $dt^2$, $dt^{1.5}$ and $dt$ behave for infinitesimal changes.
 Any $dt^k$ with $k&amp;gt;1$ and $dt &amp;lt; 1$ will decrease by an order of magnitude faster to zero than $dt$ itself for the infinitely small values that we’re dealing with.
 So if we evaluate for a infinitesimal small $dt$, the terms $dt^2$ and $dt^{1.5}$ will be smaller by larger order of magnitudes.
 This allows us to simply drop them from our equation.&lt;/p&gt;
 
-&lt;p&gt;So we now have:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+&lt;p&gt;So we now have:
+$$
 \begin{align}
   df(t, X_t)
-  &amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt
-  + \frac{\partial f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t) \\
-  &amp; \quad + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)^2 \overbrace{dt^2}^{\rightarrow 0} + 2 \mu(t, X_t) \sigma(t, X_t)^2 \overbrace{dt dW_t}^{\rightarrow 0} + \sigma(t, X_t)^2 \overbrace{dW_t^2}^{=dt}) \\
-  &amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt
-  + \frac{\partial f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t) + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} \sigma(t, X_t)^2 dt \\
-  &amp;= \underbrace{\left(\frac{\partial f(t_0, X_0)}{\partial t} + \frac{\partial f(t_0, X_0)}{\partial X_t} \mu(t, X_t) + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} \sigma(t, X_t)^2 \right)dt}_{\text{deterministic}} + \underbrace{\frac{\partial f(t_0, X_0)}{\partial X_t} \sigma(t, X_t)dW_t}_{\text{stochastic}} \\
-  &amp;= \mu_f\left(t, \mu(t, X_t), \frac{\partial f(t_0, X_0)}{\partial t}, \frac{\partial f(t_0, X_0)}{\partial X_t}, \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} \sigma(t, X_t)^2 \right)dt + \sigma_f\left(t, \sigma(t, X_t), \frac{\partial f(t_0, X_0)}{\partial X_t} \right) dW_t
-\end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;So ultimately, it turns out that the derivative of the function $f(t, X)$ with an Ito drift-diffusion process as input is an Ito drift-diffusion process itself.
-Albeit with a few first and second order derivatives sprinkled in between.&lt;/p&gt;
+  &amp;amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;\frac{\partial f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t) &lt;br /&gt;
+  &amp;amp; \quad + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)^2 \overbrace{dt^2}^{\rightarrow 0} + 2 \mu(t, X_t) \sigma(t, X_t)^2 \overbrace{dt dW_t}^{\rightarrow 0} + \sigma(t, X_t)^2 \overbrace{dW_t^2}^{=dt}) &lt;br /&gt;
+  &amp;amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt&lt;/li&gt;
+  &lt;li&gt;\frac{\partial f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t) + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} \sigma(t, X_t)^2 dt &lt;br /&gt;
+  &amp;amp;= \underbrace{\left(\frac{\partial f(t_0, X_0)}{\partial t} + \frac{\partial f(t_0, X_0)}{\partial X_t} \mu(t, X_t) + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} \sigma(t, X_t)^2 \right)dt}&lt;em&gt;{\text{deterministic}} + \underbrace{\frac{\partial f(t_0, X_0)}{\partial X_t} \sigma(t, X_t)dW_t}&lt;/em&gt;{\text{stochastic}} &lt;br /&gt;
+  &amp;amp;= \mu_f\left(t, \mu(t, X_t), \frac{\partial f(t_0, X_0)}{\partial t}, \frac{\partial f(t_0, X_0)}{\partial X_t}, \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} \sigma(t, X_t)^2 \right)dt + \sigma_f\left(t, \sigma(t, X_t), \frac{\partial f(t_0, X_0)}{\partial X_t} \right) dW_t
+\end{align}
+$$
+So ultimately, it turns out that the derivative of the function $f(t, X)$ with an Ito drift-diffusion process as input is an Ito drift-diffusion process itself.
+Albeit with a few first and second order derivatives sprinkled in between.&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;p&gt;Thus we can model the function $f(t, X_t)$ just like any other drift-diffusion process and can evaluate the distribution of such a process at a later point in time.&lt;/p&gt;</content><summary type="html">Or how to differentiate a function of a stochastic process.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/ItosLemma/WienerProcess.gif" /></entry><entry><title type="html">Stochastic Differential Equations</title><link href="http://localhost:4000/blog/SDE/" rel="alternate" type="text/html" title="Stochastic Differential Equations" /><published>2020-03-30T00:00:00+02:00</published><updated>2020-03-30T00:00:00+02:00</updated><id>http://localhost:4000/blog/SDE</id><content type="html" xml:base="http://localhost:4000/blog/SDE/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
