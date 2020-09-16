@@ -86,27 +86,24 @@ Now every data point becomes a dimension of the Normal distribution.
 This is in contrast to how we normally think about Normal distributions and data where each feature has its own dimension in a Normal distribution.
 So for example, a data set with 200 data points $x_n$, five features per data point and a scalar target value would create a Normal distribution of dimensionality 200.</p>
 
-<p>Usually the squared exponential kernel is used to compute the covariance between two data points $x_i$ and $x_j$ via</p>
-
-<script type="math/tex; mode=display">\begin{align*}
+<p>Usually the squared exponential kernel is used to compute the covariance between two data points $x_i$ and $x_j$ via
+<script type="math/tex">\begin{align*}
   K_{ij} = k(x_i, x_j ; l) =  exp \left[ \frac{(x_i - x_j)^2}{2l^2} \right]
-\end{align*}</script>
+\end{align*}</script></p>
 
-<p>Once new data points $X_*$ are obtained, we compare it via the kernel to our existing data set $X$, compute a couple of linear operations with the resulting kernel matrices and the target information in your data set and voila, you arrive at your prediction:</p>
-
-<script type="math/tex; mode=display">\begin{align*}
+<p>Once new data points $X_*$ are obtained, we compare it via the kernel to our existing data set $X$, compute a couple of linear operations with the resulting kernel matrices and the target information in your data set and voila, you arrive at your prediction:
+<script type="math/tex">\begin{align*}
   \mu(x_*) = K_{XX_*} (K_{XX} + \sigma^2 I)^{-1} y \\
   \Sigma(x_*) = K_{X_*X_*} - (K_{XX} + \sigma^2 I)^{-1} K_{XX_*}
-\end{align*}</script>
+\end{align*}</script></p>
 
 <p>The training of GP’s consists of finding the right parameters, namely the length scale $l$ in the kernel and the variance in the data $\sigma^2$.
-These two terms can be found via the non-linear optimization problem which minimizes the negative log-likelihood of the available training data in the GP defined by the length scale and kernel parameter:</p>
-
-<script type="math/tex; mode=display">% <![CDATA[
+These two terms can be found via the non-linear optimization problem which minimizes the negative log-likelihood of the available training data in the GP defined by the length scale and kernel parameter:
+<script type="math/tex">% <![CDATA[
 \begin{align*}
      \min_{\theta}  -\log{p(\mathcal{D};\theta)}
      &= \min_{\theta} \ \frac{N}{2} \log\left[ 2 \pi \right] + \log\left[ |k(XX;\theta) + \sigma^2 I|\right] + \frac{1}{2} y^T  (K_{XX} + \sigma^2 I)^{-1} y
-\end{align*} %]]></script>
+\end{align*} %]]></script></p>
 
 <p>While the necessary computations for training the GP and predicting new data points are only linear, they have quadratic memory and cubic computational cost due to square kernel matrix and the required inversions of the kernel matrix.
 The memory and computational cost arises mainly from the fact that kernel methods like SVM’s or GP’s require the training data set at hand to compute new predictions.
@@ -192,9 +189,8 @@ And this is what inducing points are all about: finding a set of representative 
 Remember that we went from 200 data points to 6 data points, ergo a memory cost of $\mathcal{O}(200^2) = \mathcal{O}(40000)$ to just $\mathcal{O}(6^2) = \mathcal{O}(36)$.</p>
 
 <p>The training objective consists now of maximizing the probability of the training data under the distribution of the GP with the inducing points $\widetilde{\mathcal{D}} = \{ \widetilde{X}, \widetilde{y} \}$.
-Thus we have the following objective function</p>
-
-<script type="math/tex; mode=display">% <![CDATA[
+Thus we have the following objective function
+<script type="math/tex">% <![CDATA[
 \begin{align*}
  \min_{\theta, \widetilde{\mathcal{D}}}  -\log p(\mathcal{D};\theta, \widetilde{\mathcal{D}})
 &= \min_{\theta, \widetilde{\mathcal{D}}}  -\log p(y| X; \theta, \widetilde{\mathcal{D}}) \\
@@ -202,7 +198,7 @@ Thus we have the following objective function</p>
 	\overbrace{ K_{X \widetilde{X}} ( K_{\widetilde{X}, \widetilde{X}} + \sigma^2 I)^{-1} y}^{\mu(X)},
 	\overbrace{ K_{XX} - K_{X \widetilde{X}} (K_{\widetilde{X} \widetilde{X}} + \sigma^2 I)^{-1} K_{\widetilde{X} X} + \sigma^2 I }^{\Sigma(X)}
 	\Big)
-\end{align*} %]]></script>
+\end{align*} %]]></script></p>
 
 <p>So let’s code that down in PyTorch!</p>
 

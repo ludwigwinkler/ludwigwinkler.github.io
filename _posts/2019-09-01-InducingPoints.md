@@ -26,7 +26,6 @@ This is in contrast to how we normally think about Normal distributions and data
 So for example, a data set with 200 data points $x_n$, five features per data point and a scalar target value would create a Normal distribution of dimensionality 200.
 
 Usually the squared exponential kernel is used to compute the covariance between two data points $x_i$ and $x_j$ via
-
 $$
 \begin{align*}
   K_{ij} = k(x_i, x_j ; l) =  exp \left[ \frac{(x_i - x_j)^2}{2l^2} \right]
@@ -34,7 +33,6 @@ $$
 $$
 
 Once new data points $X_*$ are obtained, we compare it via the kernel to our existing data set $X$, compute a couple of linear operations with the resulting kernel matrices and the target information in your data set and voila, you arrive at your prediction:
-
 $$
 \begin{align*}
   \mu(x_*) = K_{XX_*} (K_{XX} + \sigma^2 I)^{-1} y \\
@@ -44,7 +42,6 @@ $$
 
 The training of GP's consists of finding the right parameters, namely the length scale $l$ in the kernel and the variance in the data $\sigma^2$.
 These two terms can be found via the non-linear optimization problem which minimizes the negative log-likelihood of the available training data in the GP defined by the length scale and kernel parameter:
-
 $$
 \begin{align*}
      \min_{\theta}  -\log{p(\mathcal{D};\theta)}
@@ -135,7 +132,6 @@ Remember that we went from 200 data points to 6 data points, ergo a memory cost 
 
 The training objective consists now of maximizing the probability of the training data under the distribution of the GP with the inducing points $\widetilde{\mathcal{D}} = \\{ \widetilde{X}, \widetilde{y} \\}$.
 Thus we have the following objective function
-
 $$
 \begin{align*}
  \min_{\theta, \widetilde{\mathcal{D}}}  -\log p(\mathcal{D};\theta, \widetilde{\mathcal{D}})

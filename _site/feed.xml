@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-16T16:31:54+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Variational Autoencoders Derived</title><link href="http://localhost:4000/blog/VAE/" rel="alternate" type="text/html" title="Variational Autoencoders Derived" /><published>2020-08-10T00:00:00+02:00</published><updated>2020-08-10T00:00:00+02:00</updated><id>http://localhost:4000/blog/VAE</id><content type="html" xml:base="http://localhost:4000/blog/VAE/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-16T16:33:06+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Variational Autoencoders Derived</title><link href="http://localhost:4000/blog/VAE/" rel="alternate" type="text/html" title="Variational Autoencoders Derived" /><published>2020-08-10T00:00:00+02:00</published><updated>2020-08-10T00:00:00+02:00</updated><id>http://localhost:4000/blog/VAE</id><content type="html" xml:base="http://localhost:4000/blog/VAE/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -1044,27 +1044,24 @@ Now every data point becomes a dimension of the Normal distribution.
 This is in contrast to how we normally think about Normal distributions and data where each feature has its own dimension in a Normal distribution.
 So for example, a data set with 200 data points $x_n$, five features per data point and a scalar target value would create a Normal distribution of dimensionality 200.&lt;/p&gt;
 
-&lt;p&gt;Usually the squared exponential kernel is used to compute the covariance between two data points $x_i$ and $x_j$ via&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align*}
+&lt;p&gt;Usually the squared exponential kernel is used to compute the covariance between two data points $x_i$ and $x_j$ via
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align*}
   K_{ij} = k(x_i, x_j ; l) =  exp \left[ \frac{(x_i - x_j)^2}{2l^2} \right]
-\end{align*}&lt;/script&gt;
+\end{align*}&lt;/script&gt;&lt;/p&gt;
 
-&lt;p&gt;Once new data points $X_*$ are obtained, we compare it via the kernel to our existing data set $X$, compute a couple of linear operations with the resulting kernel matrices and the target information in your data set and voila, you arrive at your prediction:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align*}
+&lt;p&gt;Once new data points $X_*$ are obtained, we compare it via the kernel to our existing data set $X$, compute a couple of linear operations with the resulting kernel matrices and the target information in your data set and voila, you arrive at your prediction:
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align*}
   \mu(x_*) = K_{XX_*} (K_{XX} + \sigma^2 I)^{-1} y \\
   \Sigma(x_*) = K_{X_*X_*} - (K_{XX} + \sigma^2 I)^{-1} K_{XX_*}
-\end{align*}&lt;/script&gt;
+\end{align*}&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;The training of GP’s consists of finding the right parameters, namely the length scale $l$ in the kernel and the variance in the data $\sigma^2$.
-These two terms can be found via the non-linear optimization problem which minimizes the negative log-likelihood of the available training data in the GP defined by the length scale and kernel parameter:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+These two terms can be found via the non-linear optimization problem which minimizes the negative log-likelihood of the available training data in the GP defined by the length scale and kernel parameter:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align*}
      \min_{\theta}  -\log{p(\mathcal{D};\theta)}
      &amp;= \min_{\theta} \ \frac{N}{2} \log\left[ 2 \pi \right] + \log\left[ |k(XX;\theta) + \sigma^2 I|\right] + \frac{1}{2} y^T  (K_{XX} + \sigma^2 I)^{-1} y
-\end{align*} %]]&gt;&lt;/script&gt;
+\end{align*} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;While the necessary computations for training the GP and predicting new data points are only linear, they have quadratic memory and cubic computational cost due to square kernel matrix and the required inversions of the kernel matrix.
 The memory and computational cost arises mainly from the fact that kernel methods like SVM’s or GP’s require the training data set at hand to compute new predictions.
@@ -1150,9 +1147,8 @@ And this is what inducing points are all about: finding a set of representative 
 Remember that we went from 200 data points to 6 data points, ergo a memory cost of $\mathcal{O}(200^2) = \mathcal{O}(40000)$ to just $\mathcal{O}(6^2) = \mathcal{O}(36)$.&lt;/p&gt;
 
 &lt;p&gt;The training objective consists now of maximizing the probability of the training data under the distribution of the GP with the inducing points $\widetilde{\mathcal{D}} = \{ \widetilde{X}, \widetilde{y} \}$.
-Thus we have the following objective function&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+Thus we have the following objective function
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align*}
  \min_{\theta, \widetilde{\mathcal{D}}}  -\log p(\mathcal{D};\theta, \widetilde{\mathcal{D}})
 &amp;= \min_{\theta, \widetilde{\mathcal{D}}}  -\log p(y| X; \theta, \widetilde{\mathcal{D}}) \\
@@ -1160,7 +1156,7 @@ Thus we have the following objective function&lt;/p&gt;
 	\overbrace{ K_{X \widetilde{X}} ( K_{\widetilde{X}, \widetilde{X}} + \sigma^2 I)^{-1} y}^{\mu(X)},
 	\overbrace{ K_{XX} - K_{X \widetilde{X}} (K_{\widetilde{X} \widetilde{X}} + \sigma^2 I)^{-1} K_{\widetilde{X} X} + \sigma^2 I }^{\Sigma(X)}
 	\Big)
-\end{align*} %]]&gt;&lt;/script&gt;
+\end{align*} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;So let’s code that down in PyTorch!&lt;/p&gt;
 
@@ -1371,16 +1367,15 @@ We can simply use different Euclidean distance between two vectors $x$ and $y$ f
 &lt;p&gt;The cost matrix $T$ for categorical distributions should be a symmetric matrix which increases its values as it moves away from the diagonal.
 But of course if you are dealing with a different transport problem, the cost matrix could be different and non-symmetric depending on your transport manifold.&lt;/p&gt;
 
-&lt;p&gt;For a categorical distribution with three possible events (intuitively bins) ${ 0, 1, 2}$ it should be:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+&lt;p&gt;For a categorical distribution with three possible events (intuitively bins) ${ 0, 1, 2}$ it should be:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
 	C = \begin{bmatrix}
 		0 &amp; 1 &amp; 2 \\
 		1&amp; 0 &amp; 1\\
 		2 &amp; 1 &amp; 0
 \end{bmatrix}
-\end{align} %]]&gt;&lt;/script&gt;
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;All this cost matrix says is that we have to ‘hop’ twice to move probability mass from bin 0 to bin 2.&lt;/p&gt;
 
@@ -1396,9 +1391,8 @@ The purpose of the coupling matrix $T$ is to quantify a way to move probability 
 The next logical step should be to guarantee that a valid coupling matrix $T$ moves the exact amount of probability mass such that we obtain both the distribution vectors $p$ and $q$ if we sum up the rows and columns of the matrix.&lt;/p&gt;
 
 &lt;p&gt;For a small example let $p = [ 1, 0, 0]^T$ and $q = [ 0, 0, 1]^T$.
-The only valid coupling matrix $T$ would be&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+The only valid coupling matrix $T$ would be
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
 	T &amp;= p q^T\\
 	&amp;= 	\begin{bmatrix}
@@ -1417,7 +1411,7 @@ The only valid coupling matrix $T$ would be&lt;/p&gt;
 		0 &amp; 0 &amp; 1
 		\end{bmatrix} \\
 		&amp; \quad = T^T \mathbb{1} = q
-\end{align} %]]&gt;&lt;/script&gt;
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;A closer look at the coupling matrix shows the expected behaviour that we move all the probability mass from bin 1 in $p$ to bin 3 in $q$.&lt;/p&gt;
 
@@ -1554,13 +1548,12 @@ The repeated divisions and multiplications can lead to numerical under- or overf
 Just imagine multiplying $0.1^{100}$ and you’ll quickly see that numerical issues can arise due to a limited bit number.&lt;/p&gt;
 
 &lt;p&gt;In order to stabilize the computations, the logarithm is used.
-For numerical computations, the logarithm has the nice practical property that it turns multiplications and divisions into additions and subtractions.&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+For numerical computations, the logarithm has the nice practical property that it turns multiplications and divisions into additions and subtractions.
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
 	\log v &amp; \leftarrow \log p - \log[K^T u] \\
 	\log u &amp; \leftarrow \log q - \log[K v]
-\end{align} %]]&gt;&lt;/script&gt;
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;The logarithm of the vector matrix multiplication $\log[K^Tu]$ and $\log[Kv]$ need some extra handling.
 For simplicities sake, we will continue the derivation for $\log[Kv]$ but it holds for $\log[K^Tv]$ as well:
@@ -1582,16 +1575,18 @@ A small algebraic proof follows here which $x_{max} = \max { x_0, x_1, x_2, \ldo
 	&amp; \log \left[ \sum_i \exp[x_i] \right] + x_{max} + \log \exp[ -x_{max}] \\
 	= &amp; \log \left[ \sum_i \exp[x_i] \exp[ -x_{max}] \right] + x_{max} \\
 	= &amp; \log \left[ \sum_i \exp[x_i -x_{max}] \right] + x_{max}.
-\end{align} %]]&gt;&lt;/script&gt;
-Intuitively, the log-sum-exp trick rescales the terms which are exponentiated into the well-behaved area around zero.
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Intuitively, the log-sum-exp trick rescales the terms which are exponentiated into the well-behaved area around zero.
 This rescaling is then undone by simply adding the maximum value back.
 This updated computations of the log-sum-exp is done in most linear algebra packages under the hood.&lt;/p&gt;
 
 &lt;p&gt;Let’s get back to our original problem of computing the log of the matrix-vector product.
 &lt;script type=&quot;math/tex&quot;&gt;\begin{align}
 	\log[Kv]_i = \log\left[ \sum_j \exp\left[-\frac{1}{\lambda}C_{ij} -1 + \log v_j \right] \right].
-\end{align}&lt;/script&gt;
-We can compute the logarithmized matrix vector product by simply adding $\log v$ to each row of the rescaled cost matrix $C$ and the log-sum-exp trick is applied automatically.
+\end{align}&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;We can compute the logarithmized matrix vector product by simply adding $\log v$ to each row of the rescaled cost matrix $C$ and the log-sum-exp trick is applied automatically.
 &lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
 	\log v &amp; \leftarrow \log p - \log \left[ \sum_{rows} \left[ - \frac{1}{\lambda}C + \log u \right] \right] \\
