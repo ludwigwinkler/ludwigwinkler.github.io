@@ -99,10 +99,10 @@ Computing the gradients for $\theta_1$ from the loss amounts to little more than
 $$
 \begin{align}
 \frac{\partial \mathcal{L}}{\partial \theta_1} =
- \frac{\partial \mathcal{L}}{\partial y_3} 
- \frac{\partial y_3}{\partial y_2} 
- \frac{\partial y_2}{\partial y_1} 
- \frac{\partial y_1}{\partial \theta_1} 
+ \frac{\partial \mathcal{L}}{\partial y_3}
+ \frac{\partial y_3}{\partial y_2}
+ \frac{\partial y_2}{\partial y_1}
+ \frac{\partial y_1}{\partial \theta_1}
 \end{align}
 $$
 
@@ -112,8 +112,7 @@ In essence, the adjoint sensitivity pass allows us to propagate the importance o
 Once we propagated the sensitivity backwards through time, we can answer the second question by computing the gradient of the output with respect to the parameter in question.
 
 While the authors of the paper use the term *adjoint state $a(t)$* I find the term *sensitivity $s(t)$* more intuitive and appealing.
-The beauty of the adjoint state training became apparent to me when I used sensitivity $s(t)$ in equation (5): 
-
+The beauty of the adjoint state training became apparent to me when I used sensitivity $s(t)$ in equation (5):
 $$
 \begin{align}
 \frac{\partial L}{\partial \theta} = \int_{t_1}^{t_0} s(t)^T \frac{\partial f(z(t), t, \theta)}{\partial \theta} dt

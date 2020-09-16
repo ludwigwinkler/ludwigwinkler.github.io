@@ -154,10 +154,10 @@ Take a three layer network as an example with $y = f_3(f_2(f_1(x, \theta_1), \th
 
 <script type="math/tex; mode=display">\begin{align}
 \frac{\partial \mathcal{L}}{\partial \theta_1} =
- \frac{\partial \mathcal{L}}{\partial y_3} 
- \frac{\partial y_3}{\partial y_2} 
- \frac{\partial y_2}{\partial y_1} 
- \frac{\partial y_1}{\partial \theta_1} 
+ \frac{\partial \mathcal{L}}{\partial y_3}
+ \frac{\partial y_3}{\partial y_2}
+ \frac{\partial y_2}{\partial y_1}
+ \frac{\partial y_1}{\partial \theta_1}
 \end{align}</script>
 
 <p>This is what the authors in the paper refer to as “… which can be thought of as an instantaneous analog of the chain rule.”.
@@ -166,11 +166,10 @@ In essence, the adjoint sensitivity pass allows us to propagate the importance o
 <p>Once we propagated the sensitivity backwards through time, we can answer the second question by computing the gradient of the output with respect to the parameter in question.</p>
 
 <p>While the authors of the paper use the term <em>adjoint state $a(t)$</em> I find the term <em>sensitivity $s(t)$</em> more intuitive and appealing.
-The beauty of the adjoint state training became apparent to me when I used sensitivity $s(t)$ in equation (5):</p>
-
-<script type="math/tex; mode=display">\begin{align}
+The beauty of the adjoint state training became apparent to me when I used sensitivity $s(t)$ in equation (5):
+<script type="math/tex">\begin{align}
 \frac{\partial L}{\partial \theta} = \int_{t_1}^{t_0} s(t)^T \frac{\partial f(z(t), t, \theta)}{\partial \theta} dt
-\end{align}</script>
+\end{align}</script></p>
 
 <p>The integral above states that we scale the gradient of the output $\partial_\theta f(z(t), t, \theta)$ with the sensitivity $s(t)$ to the overall loss.</p>
 
