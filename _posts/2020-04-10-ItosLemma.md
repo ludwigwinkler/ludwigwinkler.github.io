@@ -210,6 +210,7 @@ It has to be twice differentiable with respect to $X_t$ and at least once differ
 If these equations are met we can start deriving!
 
 The first step is to define the Taylor expansion for $f(t, X_t)$ in it's general form around the root point $(t_0, X_0)$:
+
 $$
 \begin{align}
   f(t, X_t) &\approx f(t_0, X_0) + \frac{\partial f(t_0, X_0)}{\partial t} \underbrace{(t - t_0)}_{\Delta t}
@@ -220,6 +221,7 @@ $$
   + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\Delta X_t^2
 \end{align}
 $$
+
 The next step is to examine the Taylor expansion in the limit $\lim [t \rightarrow t_0, X_t \rightarrow X_0]$.
 This is of interest as we are again interested in the infinitesimal behavior of $f(t, X_t)$, namely $df(t, X_t)$:
 By pulling the root evaluation $f(t_0, X_0)$ over to the left side we lay the groundwork for the differential.
@@ -231,6 +233,7 @@ $$
   + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\Delta X_t^2
 \end{align}
 $$
+
 In fact the limit above is precisely the differentiability operator from the very beginning.
 Remember that we define the differentiability as the difference of two evaluations for an ever more decreasing difference in their arguments.
 This is precisely what we are defining in the limit above by moving $t$ ever closer to $t_0$ and simultaneously $X_t$ towards $X_0$.
