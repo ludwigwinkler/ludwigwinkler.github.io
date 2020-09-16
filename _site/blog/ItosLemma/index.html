@@ -128,12 +128,16 @@ Brownian motion $W_t$ is defined through the following properties:</p>
 
 <p>Now it turns out that there exists a stochastic differential equation which fulfills all of the properties above.
 This SDE in question is
-<script type="math/tex">dx_t = dW_t = \epsilon \sqrt{dt} \quad \quad \quad ;\epsilon \sim \mathcal{N}(0,1)</script>
+<script type="math/tex">\begin{align}
+  dx_t = dW_t = \epsilon \sqrt{dt} \quad \quad \quad ;\epsilon \sim \mathcal{N}(0,1)
+\end{align}</script>
 Intuitively, we equate the infinitesimal change in $x_t$ with Brownian Motion which in turn is defined as the standard normally distributed random variable $\epsilon$ scaled by $\sqrt{dt}$.
 The problem of classical differentiability of stochastic processes lies precisely in this SDE as we defined the change with respect to $dt$.
 By defining the infinitesimal change $dt$ we are acknowledging that we could always use a shorter $dt$ and zoom even further into the time axis.
 After all, the infinitesimal change of the Brownian Motion $dW_t$ is defined as a limit in time not unlike the limit we used to show the differentiability of the quadratic function:
-<script type="math/tex">dW_t = \lim_{\Delta t \rightarrow 0} W_{t + \Delta t} - W_t \quad \sim \mathcal{N}(0, \Delta t)</script>
+<script type="math/tex">\begin{align}
+dW_t = \lim_{\Delta t \rightarrow 0} W_{t + \Delta t} - W_t \quad \sim \mathcal{N}(0, \Delta t)
+\end{align}</script>
 While $\Delta t$ goes rapidly towards zero, it will actually never be exactly zero.
 Thus, if we were to zoom into the time axis we would realize that the Brownian Motion keeps moving randomly for whatever time resolution we choose.
 In turns out that Brownian Motion actually has <a href="https://en.wikipedia.org/wiki/Fractal">fractal properties</a> which are probably the trippiest mathematical animations you can experience without doing actual acid.</p>
@@ -145,7 +149,9 @@ Probably the best animation for that is directly from the <a href="https://en.wi
 
 <p>You might wonder: Well, why is that a problem with respect to classical differentiability?
 For that we can simply evaluate the differential 
-<script type="math/tex">\lim_{\Delta t\rightarrow 0} \frac{W_{t+\Delta t} - W_t}{\Delta t}</script>
+<script type="math/tex">\begin{align}
+  \lim_{\Delta t\rightarrow 0} \frac{W_{t+\Delta t} - W_t}{\Delta t}
+\end{align}</script>
 but alas, $W_t$ is by definition a Normally distributed random variable.
 So let’s have a look at the mean and variance of the differential operator:
 <script type="math/tex">% <![CDATA[
@@ -154,9 +160,9 @@ So let’s have a look at the mean and variance of the differential operator:
 	&= \lim_{\Delta t} \frac{1}{\Delta t} \mathbb{E} [ \underbrace{W_{t+\Delta t} - W_t}_{\sim \mathcal{N}(0,\Delta t)} ] \\
 	&= \lim_{\Delta t} \frac{1}{\Delta t} 0 \\
 	&= 0
-\end{align} %]]></script></p>
-
-<p><script type="math/tex">% <![CDATA[
+\end{align} %]]></script>
+and
+<script type="math/tex">% <![CDATA[
 \begin{align}
 	\lim_{\Delta t\rightarrow 0} \mathbb{V} \left[\frac{W_{t+\Delta t} - W_t}{\Delta t} \right]
 	&= \lim_{\Delta t\rightarrow 0} \frac{1}{\Delta t^2} \mathbb{V} [ \underbrace{W_{t+\Delta t} - W_t}_{\sim \mathcal{N}(0,\Delta t)} ] \\
@@ -227,18 +233,24 @@ The root $x_0$ lies on a stretch with almost no curvature ergo <script type="mat
 <h3 id="itos-lemma">Ito’s Lemma</h3>
 
 <p>Let’s assume we a classic SDE with a drift term $\mu(t, X_t)$ and a diffusion term $\sigma(t, X_t)$ which together form:
-<script type="math/tex">dX_t = \mu(t, X_t) dt + \sigma(t, X_t) dW_t</script>
+<script type="math/tex">\begin{align}
+dX_t = \mu(t, X_t) dt + \sigma(t, X_t) dW_t
+\end{align}</script>
 and $dW_t$ is the infinitesimal differential of a Wiener process $W_t$.
 Such a process is commonly called an Ito drift-diffusion process.</p>
 
 <p>Now let’s say that we have some function $f(t, X_t)$ that takes whatever value $X_t$ is at the moment $t$ and returns some other value $Y_t$ such that we have
-<script type="math/tex">Y_t = f(t, X_t)</script>
+<script type="math/tex">\begin{align}
+Y_t = f(t, X_t)
+\end{align}</script>
 We could use relatively easy functions such as as the exponential function $e^{X_t}$ or the quadratic function $X_t^2$ for starters.
 In the financial markets, these functions $f$ quickly get very complex as stock prices are routinely modeled as stochastic differential equations with $f$ capturing complex relationships like a portfolio performance or default probability.</p>
 
 <p>Since we are working with infinitesimal differentials we would like to know how $Y_t$ changes for very small time differentials $dt$.
 So we actually want to be able to define the following equation:
-<script type="math/tex">dY_t = df(t, X_t)</script>
+<script type="math/tex">\begin{align}
+dY_t = df(t, X_t)
+\end{align}</script>
 <strong>In order to answer that question, Ito’s lemma applies a Taylor expansion to $f(t, X_t)$ with special numerical conditions for the infinitesimal values.</strong>
 There are a few constraints on $f$, though.
 It has to be twice differentiable with respect to $X_t$ and at least once differentiable with respect to $t$.
@@ -253,13 +265,13 @@ $$
   <li>\frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\underbrace{(X_t - X_0)^2}_{\Delta X_t^2} <br>
   &amp;= f(t_0, X_0) + \frac{\partial f(t_0, X_0)}{\partial t} \Delta t</li>
   <li>\frac{\partial f(t_0, X_0)}{\partial X_t}\Delta X_t</li>
-  <li>\frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\Delta X_t^2 <br>
+  <li>\frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\Delta X_t^2
 \end{align}
 <script type="math/tex">The next step is to examine the Taylor expansion in the limit $\lim [t \rightarrow t_0, X_t \rightarrow X_0]$.
 This is of interest as we are again interested in the infinitesimal behavior of $f(t, X_t)$, namely $df(t, X_t)$:
 By pulling the root evaluation $f(t_0, X_0)$ over to the left side we lay the groundwork for the differential.</script>
 \begin{align}
-\lim_{t\rightarrow t_0, X_t \rightarrow X_0} f(t, X_t) - f(t_0, X_0) 
+\lim_{t\rightarrow t_0, X_t \rightarrow X_0} f(t, X_t) - f(t_0, X_0)
 &amp;= \lim_{t\rightarrow t_0, X_t \rightarrow X_0} \frac{\partial f(t_0, X_0)}{\partial t} \Delta t</li>
   <li>\frac{\partial f(t_0, X_0)}{\partial X_t}\Delta X_t</li>
   <li>\frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\Delta X_t^2

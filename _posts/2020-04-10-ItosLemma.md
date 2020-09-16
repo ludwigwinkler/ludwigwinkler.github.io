@@ -217,7 +217,7 @@ $$
   + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\underbrace{(X_t - X_0)^2}_{\Delta X_t^2} \\
   &= f(t_0, X_0) + \frac{\partial f(t_0, X_0)}{\partial t} \Delta t
   + \frac{\partial f(t_0, X_0)}{\partial X_t}\Delta X_t
-  + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\Delta X_t^2 \\
+  + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\Delta X_t^2
 \end{align}
 $$
 The next step is to examine the Taylor expansion in the limit $\lim [t \rightarrow t_0, X_t \rightarrow X_0]$.
@@ -225,7 +225,7 @@ This is of interest as we are again interested in the infinitesimal behavior of 
 By pulling the root evaluation $f(t_0, X_0)$ over to the left side we lay the groundwork for the differential.
 $$
 \begin{align}
-\lim_{t\rightarrow t_0, X_t \rightarrow X_0} f(t, X_t) - f(t_0, X_0) 
+\lim_{t\rightarrow t_0, X_t \rightarrow X_0} f(t, X_t) - f(t_0, X_0)
 &= \lim_{t\rightarrow t_0, X_t \rightarrow X_0} \frac{\partial f(t_0, X_0)}{\partial t} \Delta t
   + \frac{\partial f(t_0, X_0)}{\partial X_t}\Delta X_t
   + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\Delta X_t^2
