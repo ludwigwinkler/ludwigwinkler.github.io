@@ -85,15 +85,13 @@
 <p>Brownian motion can have both positive and negative values as long as its mean is centered around zero and the distribution over time follows the characteristics of the Wiener process.
 Yet certain quantities can only have positive values such as stocks.</p>
 
-<p>In order to accomodate the specific requires of such quantities we can work with geometric Brownian motion,</p>
-
-<script type="math/tex; mode=display">% <![CDATA[
+<p>In order to accomodate the specific requires of such quantities we can work with geometric Brownian motion,
+<script type="math/tex">% <![CDATA[
 \begin{align}
-	dS_t &= \mu_t S_t dt + \sigma_t S_t dW_t \\
-	\frac{dS_t}{S_t} &= \mu_t dt + \sigma_t dW_t
+dS_t &= \mu_t S_t dt + \sigma_t S_t dW_t \\
+\frac{dS_t}{S_t} &= \mu_t dt + \sigma_t dW_t
 \end{align} %]]></script>
-
-<p>which has the nice property that as $S_t$ approaches zero, so does the change.
+which has the nice property that as $S_t$ approaches zero, so does the change.
 This effectively limits $S_t$ to positive values, $S_t \geq 0$.</p>
 
 <p><img src="/blog/SolvingSDEs/GeomBM.png" alt="" class='align="center"' height="10%" width="50%"></p>
@@ -103,7 +101,7 @@ In order to show this analytic solution we will examine the quantity $dS_t/ S_t$
 The quantity $dS_t/S_t$ has a striking familiarity to</p>
 
 <script type="math/tex; mode=display">\begin{align}
-	\frac{\partial \ln S(x)}{\partial x} = \frac{1}{S(x)} \frac{\partial S(x)}{\partial x}
+\frac{\partial \ln S(x)}{\partial x} = \frac{1}{S(x)} \frac{\partial S(x)}{\partial x}
 \end{align}</script>
 
 <p>But since we are working with stochastic processes, we can’t apply regular calculus to derive such a stochastic process but use Ito’s lemma instead:</p>

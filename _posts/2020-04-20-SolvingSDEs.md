@@ -25,14 +25,12 @@ Brownian motion can have both positive and negative values as long as its mean i
 Yet certain quantities can only have positive values such as stocks.
 
 In order to accomodate the specific requires of such quantities we can work with geometric Brownian motion,
-
 $$
 \begin{align}
-	dS_t &= \mu_t S_t dt + \sigma_t S_t dW_t \\
-	\frac{dS_t}{S_t} &= \mu_t dt + \sigma_t dW_t
+dS_t &= \mu_t S_t dt + \sigma_t S_t dW_t \\
+\frac{dS_t}{S_t} &= \mu_t dt + \sigma_t dW_t
 \end{align}
 $$
-
 which has the nice property that as $S_t$ approaches zero, so does the change.
 This effectively limits $S_t$ to positive values, $S_t \geq 0$.
 
@@ -44,7 +42,7 @@ The quantity $dS_t/S_t$ has a striking familiarity to
 
 $$
 \begin{align}
-	\frac{\partial \ln S(x)}{\partial x} = \frac{1}{S(x)} \frac{\partial S(x)}{\partial x}
+\frac{\partial \ln S(x)}{\partial x} = \frac{1}{S(x)} \frac{\partial S(x)}{\partial x}
 \end{align}
 $$
 
