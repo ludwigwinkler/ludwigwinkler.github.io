@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-16T14:47:35+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Variational Autoencoders Derived</title><link href="http://localhost:4000/blog/VAE/" rel="alternate" type="text/html" title="Variational Autoencoders Derived" /><published>2020-08-10T00:00:00+02:00</published><updated>2020-08-10T00:00:00+02:00</updated><id>http://localhost:4000/blog/VAE</id><content type="html" xml:base="http://localhost:4000/blog/VAE/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-16T14:56:17+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Variational Autoencoders Derived</title><link href="http://localhost:4000/blog/VAE/" rel="alternate" type="text/html" title="Variational Autoencoders Derived" /><published>2020-08-10T00:00:00+02:00</published><updated>2020-08-10T00:00:00+02:00</updated><id>http://localhost:4000/blog/VAE</id><content type="html" xml:base="http://localhost:4000/blog/VAE/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -169,17 +169,15 @@ Take a three layer network as an example with $y = f_3(f_2(f_1(x, \theta_1), \th
 
 &lt;p&gt;&lt;img src=&quot;/blog/Adjoint/Adjoint2.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;80%&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;Computing the gradients for $\theta_1$ from the loss amounts to little more than:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+&lt;p&gt;Computing the gradients for $\theta_1$ from the loss amounts to little more than:
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
 \frac{\partial \mathcal{L}}{\partial \theta_1} =
  \frac{\partial \mathcal{L}}{\partial y_3}
  \frac{\partial y_3}{\partial y_2}
  \frac{\partial y_2}{\partial y_1}
  \frac{\partial y_1}{\partial \theta_1}
 \end{align}&lt;/script&gt;
-
-&lt;p&gt;This is what the authors in the paper refer to as “… which can be thought of as an instantaneous analog of the chain rule.”.
+This is what the authors in the paper refer to as “… which can be thought of as an instantaneous analog of the chain rule.”.
 In essence, the adjoint sensitivity pass allows us to propagate the importance of each timestep to the overall loss backwards through time.&lt;/p&gt;
 
 &lt;p&gt;Once we propagated the sensitivity backwards through time, we can answer the second question by computing the gradient of the output with respect to the parameter in question.&lt;/p&gt;
@@ -188,9 +186,8 @@ In essence, the adjoint sensitivity pass allows us to propagate the importance o
 The beauty of the adjoint state training became apparent to me when I used sensitivity $s(t)$ in equation (5):
 &lt;script type=&quot;math/tex&quot;&gt;\begin{align}
 \frac{\partial L}{\partial \theta} = \int_{t_1}^{t_0} s(t)^T \frac{\partial f(z(t), t, \theta)}{\partial \theta} dt
-\end{align}&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;The integral above states that we scale the gradient of the output $\partial_\theta f(z(t), t, \theta)$ with the sensitivity $s(t)$ to the overall loss.&lt;/p&gt;
+\end{align}&lt;/script&gt;
+The integral above states that we scale the gradient of the output $\partial_\theta f(z(t), t, \theta)$ with the sensitivity $s(t)$ to the overall loss.&lt;/p&gt;
 
 &lt;p&gt;Interestingly, the reception by the differential equation community was not as unanimous as one would think as this method has been used for a fairly long time. The key insight was its application to neural networks since we only need the Jacobians of the neural network irrespective of what goes on inside the neural network. One of the coauthors said as much in a &lt;a href=&quot;https://www.youtube.com/watch?v=YZ-_E7A3V2w&quot;&gt;talk a year later&lt;/a&gt;.&lt;/p&gt;</content><summary type="html">Reverse-Mode Sensitivity Training</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/Adjoint/Adjoint1.png" /></entry><entry><title type="html">Solving (Some) SDEs</title><link href="http://localhost:4000/blog/SolvingSDEs/" rel="alternate" type="text/html" title="Solving (Some) SDEs" /><published>2020-04-14T00:00:00+02:00</published><updated>2020-04-14T00:00:00+02:00</updated><id>http://localhost:4000/blog/SolvingSDEs</id><content type="html" xml:base="http://localhost:4000/blog/SolvingSDEs/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
@@ -224,15 +221,12 @@ This effectively limits $S_t$ to positive values, $S_t \geq 0$.&lt;/p&gt;
 
 &lt;p&gt;The question is as so often with differential equation, whether there exists an analytic solution.
 In order to show this analytic solution we will examine the quantity $dS_t/ S_t$ and apply the stochastic version of the log-derivative trick.
-The quantity $dS_t/S_t$ has a striking familiarity to&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+The quantity $dS_t/S_t$ has a striking familiarity to
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
 \frac{\partial \ln S(x)}{\partial x} = \frac{1}{S(x)} \frac{\partial S(x)}{\partial x}
 \end{align}&lt;/script&gt;
-
-&lt;p&gt;But since we are working with stochastic processes, we can’t apply regular calculus to derive such a stochastic process but use Ito’s lemma instead:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+But since we are working with stochastic processes, we can’t apply regular calculus to derive such a stochastic process but use Ito’s lemma instead:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
 	d \ln S_t &amp;= \underbrace{\frac{\partial \ln S_t}{\partial t}}_{=0} dt + \frac{\partial \ln S_t}{\partial S_t} dS_t + \frac{1}{2} \frac{\partial^2 \ln S_t}{\partial S_t^2} dS_t^2 \\
 	&amp;= \frac{dS_t}{S_t} - \frac{1}{2} \frac{1}{S_t^2} (\mu_t S_t + \sigma_t S_t dW_t)^2 \\
@@ -241,29 +235,24 @@ The quantity $dS_t/S_t$ has a striking familiarity to&lt;/p&gt;
 	&amp;= \frac{dS_t}{S_t} - \frac{1}{2} \sigma_t^2 dt \\
 	\frac{dS_t}{S_t} &amp;= d \ln S_t + \frac{1}{2} \sigma_t^2 dt
 \end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;Since $\ln S_t$ does not have $t$ as an argument, the first term evaluates to zero.
-Plugging our alternative definition of &lt;script type=&quot;math/tex&quot;&gt;\frac{dS_t}{S_t}&lt;/script&gt; into the original SDE and integrating it we obtain:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+Since $\ln S_t$ does not have $t$ as an argument, the first term evaluates to zero.
+Plugging our alternative definition of &lt;script type=&quot;math/tex&quot;&gt;\frac{dS_t}{S_t}&lt;/script&gt; into the original SDE and integrating it we obtain:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
 	d \ln S_t + \frac{1}{2} \sigma^2 dt &amp;= \mu_t dt + \sigma_t dW_t \\
 	\int_0^t d \ln S_s &amp;= \int_0^t \mu_s ds + - \int_0^t \frac{1}{2} \sigma_s^2 ds + \int_0^t \sigma_s dW_s  \\
 	\ln S_t - \ln S_0 &amp;= \mu_t t - \frac{1}{2} \sigma_t^2 t + \sigma_t W_t  \\
 	\ln \frac{S_t}{S_0} &amp;= \mu_t t - \frac{1}{2} \sigma_t^2 t + \sigma_t W_t  \\
 	S_t &amp;= S_0 \ e^{\mu_t t - \frac{1}{2} \sigma_t^2 t + \sigma_t W_t}  \\
-\end{align} %]]&gt;&lt;/script&gt;
-
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 &lt;h3 id=&quot;ornstein-uhlenbeck-process&quot;&gt;Ornstein-Uhlenbeck Process&lt;/h3&gt;
 
 &lt;p&gt;The Ornstein-Uhlenbeck (OU) process is a SDE that exhibits mean reversion and momentum properties.
-Mathematically it is defined as:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+Mathematically it is defined as:
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
 dX_t = \theta(\mu - X_t)dt + \sigma dW_t
 \end{align}&lt;/script&gt;
-
-&lt;p&gt;where $\theta$ is the momentum parameter that makes the OU process undulate around the mean.
+where $\theta$ is the momentum parameter that makes the OU process undulate around the mean.
 The mean parameter $\mu$ sets the value around which the OU process moves in somewhat smooth arcs.
 Visually it looks like this:&lt;/p&gt;
 
@@ -274,73 +263,59 @@ Once in the vicinity of the mean they move about it in arcs through the momentum
 
 &lt;p&gt;The first time I heard of the OU process was in a &lt;a href=&quot;https://arxiv.org/pdf/1706.01905.pdf&quot;&gt;reinforcement learning paper&lt;/a&gt; where it was used to force an agent to repeat the same action a couple of times through the momentum property.&lt;/p&gt;
 
-&lt;p&gt;First, let’s try to clean up the notation to something more succinct and define a new random variable $Y_t$:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+&lt;p&gt;First, let’s try to clean up the notation to something more succinct and define a new random variable $Y_t$:
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
 Y_t = X_t - \mu
 \end{align}&lt;/script&gt;
-
-&lt;p&gt;We can easily compute the infinitesimal differential $dY_t$ of $Y_t$ via:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+We can easily compute the infinitesimal differential $dY_t$ of $Y_t$ via:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
 dY_t &amp;= dX_t \\
 &amp;= \theta(\mu - X_t)dt + \sigma dW_t \\
 &amp;= - \theta \underbrace{(X_t - \mu)}_{Y_t}dt + \sigma dW_t \\
 &amp;= - \theta Y_tdt + \sigma dW_t \\
 \end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;The next step is to recognize that we are equating the derivative of a random variable with itself.
+The next step is to recognize that we are equating the derivative of a random variable with itself.
 We’ll abuse the mathematical notation for brief period to make the point more clear:
 &lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
 dY_t &amp; \propto \theta Y_t dt \\
 \frac{dY_t}{dt} &amp;\propto \theta Y_t \Leftrightarrow \frac{d e^{ax}}{dx} = ae^x
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;The proportional equation above has a striking similarity to the derivative of a scaled exponential $e^{ax}$.
+\end{align} %]]&gt;&lt;/script&gt;
+The proportional equation above has a striking similarity to the derivative of a scaled exponential $e^{ax}$.
 In our case the derivative is not with respect to $x$ but to $t$.
-To solidify this intuition let’s define another random variable $Z_t$ as a function of $Y_t$:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+To solidify this intuition let’s define another random variable $Z_t$ as a function of $Y_t$:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
 Z_t &amp;= f(t, \theta, Y_t) \\
 &amp;= e^{\theta t} Y_t
 \end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;The question naturally arises how $Z_T$ behaves in the infinitesimal differential $dZ_t$.
+The question naturally arises how $Z_T$ behaves in the infinitesimal differential $dZ_t$.
 But since $Z_t$ is a function of a stochastic process we will have to apply Ito’s lemma in order to compute the differential.
-Since $Z_t = f(t, \theta, Y_t)$ is linear in $Y_t$, we will deal with a simplified version of Ito’s lemma because the second derivative of a linear function is zero:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+Since $Z_t = f(t, \theta, Y_t)$ is linear in $Y_t$, we will deal with a simplified version of Ito’s lemma because the second derivative of a linear function is zero:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
 df(t, \theta, Y_t) &amp;= \partial_t \ f(t, \theta, Y_t) dt + \partial_{Y_t} \ f(t, \theta, Y_t) dY_t + \frac{1}{2} \overbrace{\partial_{Y_t}^2 \ f(t, \theta, Y_t)}^{=0} dY_t^2 \\
 &amp;=\partial_t \ f(t, \theta, Y_t) dt + \partial_{Y_t} \ f(t, \theta, Y_t) dY_t
 \end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;Applying the simplified Ito’s lemma to our equation at hand yields:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+Applying the simplified Ito’s lemma to our equation at hand yields: 
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
 	dZ_t &amp;= \partial_{t} \left[e^{\theta t}Y_t \right] dt + \partial_{Y_t} \left[e^{\theta t}Y_t \right] dY_t \\
 	&amp;= \theta e^{\theta t}Y_t dt + e^{\theta t} dY_t \\
 	&amp;= \theta e^{\theta t}Y_t dt + e^{ \theta t}\left(-\theta Y_t dt + \sigma dW_t \right) \\
 	&amp;= e^{\theta t} \sigma dW_t
 \end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;This can be easily solved via&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+This can be easily solved via
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
 	Z_T &amp;= Z_S + \int_{S}^T dZ_t \\
 	&amp;= Z_S + \sigma \int_{S}^T e^{\theta t} dW_t
 \end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;where $S$ is the start of the integration through time.
+where $S$ is the start of the integration through time.
 Now that we found a solution to the random variable $Z_t$ it is time to go back through the substitutions to find the solution to $X_t$.
-In order to achieve that we first reverse the exponential component in the relationship between $Y_t$ and $Z_t$.&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+In order to achieve that we first reverse the exponential component in the relationship between $Y_t$ and $Z_t$.
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
 	Y_t &amp;= e^{-\theta t}Z_t \\
 	Y_T &amp;= e^{-\theta T} Z_T \\
@@ -349,54 +324,44 @@ In order to achieve that we first reverse the exponential component in the relat
 	&amp;=e^{-\theta(T-S)} Y_S + \sigma e^{-\theta T} \int_{S}^T e^{\theta t} dW_t \\
 	&amp;=e^{-\theta(T-S)} Y_S + \sigma \int_{S}^T e^{\theta(t-T)} dW_t \\
 \end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;Finally plugging $Y_t =X_t -\mu$ back in yields:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+Finally plugging $Y_t =X_t -\mu$ back in yields:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
 	Y_T &amp;=e^{-\theta(T-S)} Y_S + \sigma \int_{S}^T e^{\theta(t-T)} dW_t \\
 	X_T - \mu &amp;=e^{-\theta(T-S)} (X_S - \mu) + \sigma \int_{S}^T e^{\theta(t-T)} dW_t \\
 	X_T &amp;= \mu + e^{-\theta(T-S)} (X_S - \mu) + \sigma \int_{S}^T e^{\theta(t-T)} dW_t \\
 \end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;Starting from $S=0$ we obtain&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+Starting from $S=0$ we obtain
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
 	X_T = \mu + e^{-\theta T}(X_0 - \mu) + \sigma \int_{S=0}^T e^{-\theta (T-t)} dW_t
 \end{align}&lt;/script&gt;
-
-&lt;p&gt;In fact the Ornstein-Uhlenbeck process is one of the few stochastic processes that has a stationary distribution under the assumption of a Normal initial value.
-In order to show that we can compute the mean and variance of the process and then evaluate it in infinity with the limit of $\lim t\rightarrow 0$:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+In fact the Ornstein-Uhlenbeck process is one of the few stochastic processes that has a stationary distribution under the assumption of a Normal initial value.
+In order to show that we can compute the mean and variance of the process and then evaluate it in infinity with the limit of $\lim t\rightarrow 0$:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
 	\mathbb{E} \left[ X_t \right] &amp;= \mathbb{E} \left[ \mu + e^{-\theta t}(X_0 - \mu) + \sigma \int_{s=0}^t e^{-\theta (t-s)} dW_s\right] \\
 	&amp;= \mu + e^{-\theta t}(X_0 - \mu) + \underbrace{\mathbb{E} \left[ \sigma \int_{s=0}^t e^{-\theta (t-s)} dW_s\right]}_{\text{Wiener process} \rightarrow \mathbb{E}[W_t]=0} \\
 	&amp;= \mu + e^{-\theta t}(X_0 - \mu)
 \end{align} %]]&gt;&lt;/script&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
-	\mathbb{V} \left[ X_t \right] &amp;= \mathbb{E} \left[ \left( X_t - \mathbb{E}[X_t] \right)^2 \right] \\
-	&amp;= \mathbb{E} \Bigg[ \Big( \underbrace{\mu + e^{-\theta t}(X_0 - \mu)}_{=\mathbb{E}[X_t]} + \sigma \int_{s=0}^t e^{-\theta (t-s)} dW_s - \mathbb{E}[X_t] \Big)^2 \Bigg] \\
-	&amp;= \mathbb{E} \left[ \left(\sigma \int_{s=0}^t e^{-\theta (t-s)} dW_s \right)^2 \right] \quad \leftarrow \text{Ito Isometry} \\
-	&amp;= \sigma^2 \int_{s=0}^t e^{-2\theta (t-s)} ds  \\
-	&amp;= \sigma^2 \left[ \frac{1}{2\theta} e^{-2\theta (t-s)} \right]_{s=0}^t \\
-	&amp;= \frac{\sigma^2}{2\theta} (e^{-2\theta*0} - e^{-2\theta t}) \\
-	&amp;= \frac{\sigma^2}{2\theta} (1 - e^{-2\theta t})
+\mathbb{V} \left[ X_t \right] &amp;= \mathbb{E} \left[ \left( X_t - \mathbb{E}[X_t] \right)^2 \right] \\
+&amp;= \mathbb{E} \Bigg[ \Big( \underbrace{\mu + e^{-\theta t}(X_0 - \mu)}_{=\mathbb{E}[X_t]} + \sigma \int_{s=0}^t e^{-\theta (t-s)} dW_s - \mathbb{E}[X_t] \Big)^2 \Bigg] \\
+&amp;= \mathbb{E} \left[ \left(\sigma \int_{s=0}^t e^{-\theta (t-s)} dW_s \right)^2 \right] \quad \leftarrow \text{Ito Isometry} \\
+&amp;= \sigma^2 \int_{s=0}^t e^{-2\theta (t-s)} ds  \\
+&amp;= \sigma^2 \left[ \frac{1}{2\theta} e^{-2\theta (t-s)} \right]_{s=0}^t \\
+&amp;= \frac{\sigma^2}{2\theta} (e^{-2\theta*0} - e^{-2\theta t}) \\
+&amp;= \frac{\sigma^2}{2\theta} (1 - e^{-2\theta t})
 \end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;Applying the limit $\lim t \rightarrow \infty$ allows us to recover the stationary distribution:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+Applying the limit $\lim t \rightarrow \infty$ allows us to recover the stationary distribution:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
 	\lim_{t\rightarrow 0} \mathbb{E} \left[X_t\right] &amp;= \lim_{t\rightarrow 0} \mu + \underbrace{e^{-\theta t}}_{=0}(X_0 - \mu) \\
 	&amp;= \mu \\
 	\lim_{t\rightarrow 0} \mathbb{V}\left[ X_t \right] &amp;= \lim_{t\rightarrow 0} \frac{\sigma^2}{2\theta} (1 - \underbrace{e^{-2\theta t}}_{=0}) \\
 	&amp;= \frac{\sigma^2}{2\theta}
 \end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;While the mean $\mu$ is somewhat expected, the variance can be interpreted intuitively: If the momentum is large, the process is very slow to change and thus the stationary distribution does not move far away from $\mu$.
+While the mean $\mu$ is somewhat expected, the variance can be interpreted intuitively: If the momentum is large, the process is very slow to change and thus the stationary distribution does not move far away from $\mu$.
 If the momentum is only small, the Wiener process can exert a stronger influence and the stationary distribution has a wider variance.&lt;/p&gt;
 
 &lt;p&gt;More importantly, since the Wiener process is the only random influence on the process and is Gaussian, the entire process is a Gaussian process.

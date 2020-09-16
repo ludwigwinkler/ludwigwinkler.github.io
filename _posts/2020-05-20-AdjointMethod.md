@@ -91,7 +91,6 @@ Take a three layer network as an example with $y = f_3(f_2(f_1(x, \theta_1), \th
 ![](/blog/Adjoint/Adjoint2.png){: .align="center" height="50%" width="80%"}
 
 Computing the gradients for $\theta_1$ from the loss amounts to little more than:
-
 $$
 \begin{align}
 \frac{\partial \mathcal{L}}{\partial \theta_1} =
@@ -101,7 +100,6 @@ $$
  \frac{\partial y_1}{\partial \theta_1}
 \end{align}
 $$
-
 This is what the authors in the paper refer to as "... which can be thought of as an instantaneous analog of the chain rule.".
 In essence, the adjoint sensitivity pass allows us to propagate the importance of each timestep to the overall loss backwards through time.
 
@@ -114,7 +112,6 @@ $$
 \frac{\partial L}{\partial \theta} = \int_{t_1}^{t_0} s(t)^T \frac{\partial f(z(t), t, \theta)}{\partial \theta} dt
 \end{align}
 $$
-
 The integral above states that we scale the gradient of the output $\partial_\theta f(z(t), t, \theta)$ with the sensitivity $s(t)$ to the overall loss.
 
 Interestingly, the reception by the differential equation community was not as unanimous as one would think as this method has been used for a fairly long time. The key insight was its application to neural networks since we only need the Jacobians of the neural network irrespective of what goes on inside the neural network. One of the coauthors said as much in a [talk a year later](https://www.youtube.com/watch?v=YZ-_E7A3V2w).
