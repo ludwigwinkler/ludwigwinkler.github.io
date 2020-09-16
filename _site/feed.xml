@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-16T15:30:03+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Variational Autoencoders Derived</title><link href="http://localhost:4000/blog/VAE/" rel="alternate" type="text/html" title="Variational Autoencoders Derived" /><published>2020-08-10T00:00:00+02:00</published><updated>2020-08-10T00:00:00+02:00</updated><id>http://localhost:4000/blog/VAE</id><content type="html" xml:base="http://localhost:4000/blog/VAE/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-16T16:31:54+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Variational Autoencoders Derived</title><link href="http://localhost:4000/blog/VAE/" rel="alternate" type="text/html" title="Variational Autoencoders Derived" /><published>2020-08-10T00:00:00+02:00</published><updated>2020-08-10T00:00:00+02:00</updated><id>http://localhost:4000/blog/VAE</id><content type="html" xml:base="http://localhost:4000/blog/VAE/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -576,10 +576,15 @@ Furthermore the limit also allows us to rewrite the difference $\Delta t$ and $\
 &lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
 \lim_{t\rightarrow t_0, X_t \rightarrow X_0} f(t, X_t) - f(t_0, X_0)  &amp;= \lim_{t\rightarrow t_0, X_t \rightarrow X_0} \frac{\partial f(t_0, X_0)}{\partial t} \Delta t + \frac{\partial f(t_0, X_0)}{\partial X_t}\Delta X_t + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\Delta X_t^2 \\
-&amp;\Downarrow \\
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;where the left sides simplifies to the differential of the function $f$:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
   df(t, X_t) &amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt + \frac{\partial f(t_0, X_0)}{\partial X_t} dX_t + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} dX_t^2
-\end{align} %]]&gt;&lt;/script&gt;
-The next step is substituting $dX_t = \mu(t, X_t)dt + \sigma(t, X_t)dW_t$ into the equation:
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The next step is substituting $dX_t = \mu(t, X_t)dt + \sigma(t, X_t)dW_t$ into the equation:
 &lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
   df(t, X_t) &amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt + \frac{\partial f(t_0, X_0)}{\partial X_t} dX_t+ \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} dX_t^2 \\
@@ -606,8 +611,9 @@ This allows us to simply drop them from our equation.&lt;/p&gt;
   &amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt + \frac{\partial f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t) + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} \sigma(t, X_t)^2 dt \\
   &amp;= \underbrace{\left(\frac{\partial f(t_0, X_0)}{\partial t} + \frac{\partial f(t_0, X_0)}{\partial X_t} \mu(t, X_t) + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} \sigma(t, X_t)^2 \right)dt}_{\text{deterministic}} + \underbrace{\frac{\partial f(t_0, X_0)}{\partial X_t} \sigma(t, X_t)dW_t}_{\text{stochastic}} \\
   &amp;= \mu_f\left(t, \mu(t, X_t), \frac{\partial f(t_0, X_0)}{\partial t}, \frac{\partial f(t_0, X_0)}{\partial X_t}, \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} \sigma(t, X_t)^2 \right)dt + \sigma_f\left(t, \sigma(t, X_t), \frac{\partial f(t_0, X_0)}{\partial X_t} \right) dW_t
-\end{align} %]]&gt;&lt;/script&gt;
-So ultimately, it turns out that the derivative of the function $f(t, X)$ with an Ito drift-diffusion process as input is an Ito drift-diffusion process itself.
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;So ultimately, it turns out that the derivative of the function $f(t, X)$ with an Ito drift-diffusion process as input is an Ito drift-diffusion process itself.
 Albeit with a few first and second order derivatives sprinkled in between.&lt;/p&gt;
 
 &lt;p&gt;Thus we can model the function $f(t, X_t)$ just like any other drift-diffusion process and can evaluate the distribution of such a process at a later point in time.&lt;/p&gt;</content><summary type="html">Or how to differentiate a function of a stochastic process.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/ItosLemma/WienerProcess.gif" /></entry><entry><title type="html">Stochastic Differential Equations</title><link href="http://localhost:4000/blog/SDE/" rel="alternate" type="text/html" title="Stochastic Differential Equations" /><published>2020-03-30T00:00:00+02:00</published><updated>2020-03-30T00:00:00+02:00</updated><id>http://localhost:4000/blog/SDE</id><content type="html" xml:base="http://localhost:4000/blog/SDE/">&lt;head&gt;
@@ -627,9 +633,10 @@ Albeit with a few first and second order derivatives sprinkled in between.&lt;/p
 &lt;h4 id=&quot;non-differential-equations&quot;&gt;Non-Differential Equations&lt;/h4&gt;
 
 &lt;p&gt;Most of us are quite familiar with linear and non-linear equations from our 101 math classes and lectures.
-These equations define an equality between the two terms left and right of the equal sign:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;y = f(x)&lt;/script&gt;
+These equations define an equality between the two terms left and right of the equal sign:
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+y = f(x)
+\end{align}&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;These functions assert an equality between $y$ and $x$ through the function $f(\cdot)$ and describe a “static” relationship between a value $x$ and its corresponding value $y$.
 Examples of these functions are numerous and we can list a couple of them here:&lt;/p&gt;
@@ -647,9 +654,10 @@ Examples of these functions are numerous and we can list a couple of them here:&
 
 &lt;p&gt;As you can guess from the title there is another important class of equations: differential equations.
 These equations relate one or more functions to their derivatives.
-Mathematically this looks like the following:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\underbrace{\frac{d y}{dx}}_{\text{derivative}} = f(x)&lt;/script&gt;
+Mathematically this looks like the following:
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+  \underbrace{\frac{d y}{dx}}_{\text{derivative}} = f(x)
+\end{align}&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;As we can see from above the one thing that changed to our earlier, non-differential equation is the derivative.
 Instead of telling us what the value $y$ is given the function $f(x)$ as in the case of non-differential equations, the differential equation above tells us the change of $y$ with respect to $x$.
@@ -664,17 +672,19 @@ So we’ll make a detour through physics to keep the intuition alive while divin
 
 &lt;p&gt;Differential equations are often employed in physics when a physical system is &lt;strong&gt;most accurately described through its instantaneous change in time&lt;/strong&gt;.
 It should be noted that the differential could be defined with respect to any argument of the function $f(\cdot)$, but in physics the time differential $d / dt$ is often the differential of interest as we want to predict things into the future.
-In the simplest case, a physical object $x(t)$ moves through time and space according to some function:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\underbrace{\frac{d}{dt} \ x(t)}_{\text{change over time}}  = \underbrace{f(t, x(t))}_{\text{value of change}} \quad \cong \quad f(x(t))&lt;/script&gt;
+In the simplest case, a physical object $x(t)$ moves through time and space according to some function:
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+  \underbrace{\frac{d}{dt} \ x(t)}_{\text{change over time}}  = \underbrace{f(t, x(t))}_{\text{value of change}} \quad \cong \quad f(x(t))
+\end{align}&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;The equation above simply states that the change over time, $d  x(t) / dt$ is equivalent to the function $f(t, x(t))$.
 Mathematically, we require the time $t$ to appear in the function $f(t, x(t))$ since otherwise the time derivative wouldn’t exist.
 For a more intuitive notation we can drop it and equate the change $d/dt x(t)$ with the function $f( \cdot )$ with the ‘essentially the same’ symbol $\cong$.&lt;/p&gt;
 
-&lt;p&gt;We can write the differential equation in a shorter way by using the &lt;a href=&quot;https://en.wikipedia.org/wiki/Differential_(infinitesimal)&quot;&gt;infinitesimal differential&lt;/a&gt; by pulling $dt$ over to the other side:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;dx(t) = f(t, x(t)) dt&lt;/script&gt;
+&lt;p&gt;We can write the differential equation in a shorter way by using the &lt;a href=&quot;https://en.wikipedia.org/wiki/Differential_(infinitesimal)&quot;&gt;infinitesimal differential&lt;/a&gt; by pulling $dt$ over to the other side:
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+  dx(t) = f(t, x(t)) dt
+\end{align}&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;which simply states that a “super small” change $dx(t)$ in $x(t)$ corresponds to function $f(t, x(t))$ “scaled” by the “super small” time difference $dt$.&lt;/p&gt;
 
@@ -700,7 +710,9 @@ These arrows are computed through the differential equation and tell us what the
 &lt;p&gt;The way we solve differential equations is to start at some initial point $x(0)$ and add up all the temperature changes $dx(t)$ that the hot coffee mug is exposed to over time.
 Mathematically, this amounts to little more than:&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;x(T) = x(0) + \underbrace{\int_{t=0}^T dx(t)}_{\text{sum up all the changes}}&lt;/script&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+x(T) = x(0) + \underbrace{\int_{t=0}^T dx(t)}_{\text{sum up all the changes}}
+\end{align}&lt;/script&gt;
 
 &lt;p&gt;the solution of which is shown as the grey line in the right plot.&lt;/p&gt;
 
@@ -710,13 +722,12 @@ Each kick changes the location of the soccer ball and results in the ball lying 
 After we kicked the soccer ball about the soccer field enough, we’ll finally leave it at $x(T)$.&lt;/p&gt;
 
 &lt;p&gt;Unfortunately, computers can’t really work with infinitesimal small number like $dx(t)$ or $dt$ since numbers in computers are stored with a finite amount of bits.
-As so often, the (approximate) solution is to discretize the changes to very small, yet still representable values of $\Delta x(t)$ and $\Delta t$:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+As so often, the (approximate) solution is to discretize the changes to very small, yet still representable values of $\Delta x(t)$ and $\Delta t$:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
 x(T) &amp;= x(0) + \underbrace{\int_{t=0}^T dx(t)}_{\text{sum up all the changes}} \\
 &amp; \underbrace{\approx}_{\text{discretize}} x(0) + \sum_{t=0}^T \Delta x(t)
-\end{align} %]]&gt;&lt;/script&gt;
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;where $t$ is some finite partition of time into discrete values.&lt;/p&gt;
 
@@ -742,7 +753,9 @@ Therefore it does not jiggle and bounce at discrete time steps but will always m
 
 &lt;p&gt;We can thus proclaim the following, somewhat un-mathematical property of this rambunctious little particle:&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\underbrace{dx_t}_{\text{change in space}} \equiv \overbrace{\epsilon}^{\text{random move}} \underbrace{&quot;dt&quot;}_{\text{some change in time}}&lt;/script&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{aling}
+  \underbrace{dx_t}_{\text{change in space}} \equiv \overbrace{\epsilon}^{\text{random move}} \underbrace{&quot;dt&quot;}_{\text{some change in time}}
+\begin{align}&lt;/script&gt;
 
 &lt;p&gt;There are a couple of things to observe here:&lt;/p&gt;
 
@@ -766,33 +779,32 @@ For that reason we will model the probability of the random movement $\epsilon$ 
 
 &lt;p&gt;Thirdly, we want to particle to start at zero, so $x_0 = 0$.&lt;/p&gt;
 
-&lt;p&gt;Given these modelling assumptions, we are interested where the particle could turn up at a later point in time, so we want to know what $x_T$ is:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+&lt;p&gt;Given these modelling assumptions, we are interested where the particle could turn up at a later point in time, so we want to know what $x_T$ is:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
   x_T &amp;= x_0 + \int_{t=0}^T dx_t \\
   &amp;= \underbrace{x_0}_{\text{$=0$}} + \int_{t=0}^T \epsilon \sqrt{dt} \\
   &amp;= \int_{t=0}^T \epsilon \sqrt{dt}
-\end{align} %]]&gt;&lt;/script&gt;
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;But since $\epsilon$ is a random variable we actually have to treat the position of the particle at $x_T$ as a random variable.
-The most that we can do is thus to treat $x_T$ as a probability distribution for which we can compute the first two moments, the mean and the variance:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+The most that we can do is thus to treat $x_T$ as a probability distribution for which we can compute the first two moments, the mean and the variance:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
   \mathbb{E}\left[ x_T \right] &amp;= \mathbb{E}\left[\int_{t=0}^T dx_t \right] \\
   &amp;= \int_{t=0}^T \underbrace{\mathbb{E}\left[ \epsilon \right]}_{\mathcal{N}(0,1)} \sqrt{dt} \\
   &amp;= 0
-\end{align} %]]&gt;&lt;/script&gt;
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+&lt;p&gt;and
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
   \mathbb{V}\left[ x_T \right] &amp;= \mathbb{V}\left[\int_{t=0}^T dx_t \right] \\
   &amp;= \int_{t=0}^T \underbrace{\mathbb{V}\left[ \epsilon \sqrt{dt} \right]}_{\mathbb{V}[a X] = a^2 \mathbb{V}[X]}  \\
   &amp;= \int_{t=0}^T dt \underbrace{\mathbb{V}\left[ \epsilon \right]}_{\epsilon \sim \mathcal{N}(0,1)}  \\
   &amp;= \int_{t=0}^T dt  \\
   &amp;= T
-\end{align} %]]&gt;&lt;/script&gt;
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;We can validate the properties of the Wiener process experimentally through what a good friend of mine calls “computational evidence”:&lt;/p&gt;
 
@@ -882,14 +894,18 @@ We can basically zoom infinitely far into the movements on the time axis and we 
 
 &lt;p&gt;In order to be all set up for the final chapter of this post, we will define an infinitesimal version of the Gaussian increment property of the Wiener process:&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;W_{t+u} - W_t \sim \mathcal{N}(0, u) \quad \Leftrightarrow \quad dW_t \sim \mathcal{N}(0,dt)&lt;/script&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+W_{t+u} - W_t \sim \mathcal{N}(0, u) \quad \Leftrightarrow \quad dW_t \sim \mathcal{N}(0,dt)
+\end{align}&lt;/script&gt;
 
 &lt;h4 id=&quot;stochastic-differential-equations--differential-equations--wiener-processes&quot;&gt;Stochastic Differential Equations (= Differential Equations + Wiener Processes)&lt;/h4&gt;
 
 &lt;p&gt;Once we understood differential equations and Wiener processes, we’ll realize that (basic) stochastic differential equations are just the combination of the two.
 We can thus define a stochastic differential equation as&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\underbrace{dX_t}_{\text{total change}} = \underbrace{\mu_t dt}_{\text{deterministic}} + \underbrace{\sigma_t dW_t}_{\text{stochastic}}&lt;/script&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+  \underbrace{dX_t}_{\text{total change}} = \underbrace{\mu_t dt}_{\text{deterministic}} + \underbrace{\sigma_t dW_t}_{\text{stochastic}}
+\end{align}&lt;/script&gt;
 
 &lt;p&gt;which defines the infinitesimal change in the random variable $X_t$ at time $t$ as the combination of a deterministic change $\mu_t dt$ and a scaled Wiener process $\sigma_t dW_t \sim \mathcal{N}(0,\sigma_t^2 dt)$.&lt;/p&gt;
 
@@ -953,42 +969,41 @@ We can thus define a stochastic differential equation as&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;p&gt;For such drift-diffusion processes, or more specifically Ito drift-diffusion processes, we can compute the analytical mean and variance of how $X_t$ will be distributed in the future.
 To keep things simple, we will work with a constant mean $\mu = \mu_t$ and diffusion $\sigma = \sigma_t$.
-Solving the SDE amounts to:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+Solving the SDE amounts to:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
   X_T &amp;= \int_{t=0}^T dX_t \\ 
   &amp;= \int_{t=0}^T \mu dt + \sigma dW_t \\
   &amp;= \mu \int_{t=0}^T dt + \sigma \int_{t=0}^T dW_t \\
   &amp;= \mu T + \sigma \int_{t=0}^T dW_t \\
   &amp;= \mu T + \sigma W_T \\
-\end{align} %]]&gt;&lt;/script&gt;
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
-&lt;p&gt;Similarly to earlier, the Brownian motion $W_T \sim \mathcal{N}(0,T)$ is a random variable, which entices us to compute the mean and variance of the term above:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+&lt;p&gt;Similarly to earlier, the Brownian motion $W_T \sim \mathcal{N}(0,T)$ is a random variable, which entices us to compute the mean and variance of the term above:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
   \mathbb{E}[X_T] &amp;= \mathbb{E}[\mu T + \sigma W_T] \\
   &amp;= \mu T + \sigma \mathbb{E}[W_T] \\
   &amp;= \mu T
 \end{align} %]]&gt;&lt;/script&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+and
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
   \mathbb{V}[X_T] &amp;= \mathbb{V}[\mu T + \sigma W_T] \\
   &amp;= \underbrace{\mathbb{V}[\mu T]}_{=0} + \mathbb{V}[\sigma W_T] \\
   &amp;= \sigma^2 \mathbb{V}[ W_T] \\
   &amp;= \sigma^2 T \\
   \mathbb{Std}[X_T] &amp;= \sigma \sqrt{T}
-\end{align} %]]&gt;&lt;/script&gt;
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;which we were able to validate with our “computational evidence” in the plot above.
 The mean increases constantly as time progresses and the standard deviation above and below the mean increases asymptotically due to the $\sqrt{T}$.&lt;/p&gt;
 
 &lt;p&gt;This is a fairly simple SDE since we assume that $\mu_t$ and $\sigma_t$ are constant in time and do not depend on the value of $X_t$.
-Things get significantly more interesting when both $\mu_t$ and $\sigma_t$ change over time depending on the value of $X_t$ such that we are working with&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;dX_t = \mu(t, X_t) dt + \sigma(t, X_t) dW_t&lt;/script&gt;
+Things get significantly more interesting when both $\mu_t$ and $\sigma_t$ change over time depending on the value of $X_t$ such that we are working with
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+  dX_t = \mu(t, X_t) dt + \sigma(t, X_t) dW_t
+\end{align}&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;The drift $\mu(t, X_t)$ and $\sigma(t, X_t)$ can now be potentially highly non-linear and complex functions which could even take in other stochastic processes as additional input.
 But Ito’s lemma, Ornstein-Uhlenbeck processes and Geometric Brownian Motion are topics for another time …&lt;/p&gt;</content><summary type="html">A Wiener twist to differential equations</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/SDE/EqVsDiffEq.png" /></entry><entry><title type="html">Intro to Bayesian Inference</title><link href="http://localhost:4000/blog/BayesianInference/" rel="alternate" type="text/html" title="Intro to Bayesian Inference" /><published>2020-02-13T00:00:00+01:00</published><updated>2020-02-13T00:00:00+01:00</updated><id>http://localhost:4000/blog/BayesianInference</id><content type="html" xml:base="http://localhost:4000/blog/BayesianInference/">&lt;head&gt;
