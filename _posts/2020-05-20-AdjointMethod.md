@@ -27,11 +27,11 @@ The motivation of the paper was the mainly given through the interpretation of t
 The paper took this insight to its logical extreme and asked the question whether we really have to remain content with just the Euler discretization of an ODE or whether we can go deeper ... or more continuous in our case.
 
 By definition an ODE is defined in its differential form as
-
-$$ 
-dz_t = f(z_t, t, \theta)
 $$
-
+\begin{align}
+dz_t = f(z_t, t, \theta)
+\end{align}
+$$
 which basically means that the function $f$ computes the rate of change of $z_t$ at timestep $t$ with its parameters $\theta$.
 Often these equations $f$ are constructed analytically or are known from physics but a more interesting question cane be posed by asking whether this function $f$ can actually be learned ... with a neural network for example.
 
