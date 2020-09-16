@@ -189,18 +189,20 @@ and $dW_t$ is the infinitesimal differential of a Wiener process $W_t$.
 Such a process is commonly called an Ito drift-diffusion process.
 
 Now let's say that we have some function $f(t, X_t)$ that takes whatever value $X_t$ is at the moment $t$ and returns some other value $Y_t$ such that we have
-
 $$
+\begin{align}
 Y_t = f(t, X_t)
+\end{align}
 $$
-
 We could use relatively easy functions such as as the exponential function $e^{X_t}$ or the quadratic function $X_t^2$ for starters.
 In the financial markets, these functions $f$ quickly get very complex as stock prices are routinely modeled as stochastic differential equations with $f$ capturing complex relationships like a portfolio performance or default probability.
 
 Since we are working with infinitesimal differentials we would like to know how $Y_t$ changes for very small time differentials $dt$.
 So we actually want to be able to define the following equation:
 $$
-  dY_t = df(t, X_t)
+\begin{align}
+dY_t = df(t, X_t)
+\end{align}
 $$
 __In order to answer that question, Ito's lemma applies a Taylor expansion to $f(t, X_t)$ with special numerical conditions for the infinitesimal values.__
 There are a few constraints on $f$, though.
