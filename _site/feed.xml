@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-16T15:23:15+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Variational Autoencoders Derived</title><link href="http://localhost:4000/blog/VAE/" rel="alternate" type="text/html" title="Variational Autoencoders Derived" /><published>2020-08-10T00:00:00+02:00</published><updated>2020-08-10T00:00:00+02:00</updated><id>http://localhost:4000/blog/VAE</id><content type="html" xml:base="http://localhost:4000/blog/VAE/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-16T15:27:54+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Variational Autoencoders Derived</title><link href="http://localhost:4000/blog/VAE/" rel="alternate" type="text/html" title="Variational Autoencoders Derived" /><published>2020-08-10T00:00:00+02:00</published><updated>2020-08-10T00:00:00+02:00</updated><id>http://localhost:4000/blog/VAE</id><content type="html" xml:base="http://localhost:4000/blog/VAE/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -576,29 +576,28 @@ Furthermore the limit also allows us to rewrite the difference $\Delta t$ and $\
 &lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
 \lim_{t\rightarrow t_0, X_t \rightarrow X_0} f(t, X_t) - f(t_0, X_0)  &amp;= \lim_{t\rightarrow t_0, X_t \rightarrow X_0} \frac{\partial f(t_0, X_0)}{\partial t} \Delta t + \frac{\partial f(t_0, X_0)}{\partial X_t}\Delta X_t + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\Delta X_t^2 \\
-\end{align} %]]&gt;&lt;/script&gt;
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
 \Downarrow
 \end{align}&lt;/script&gt;
-$$
+
+&lt;p&gt;&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
-  df(t, X_t) &amp;amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;\frac{\partial f(t_0, X_0)}{\partial X_t} dX_t&lt;/li&gt;
-  &lt;li&gt;\frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} dX_t^2
-\end{align}
-&lt;script type=&quot;math/tex&quot;&gt;The next step is substituting $dX_t = \mu(t, X_t)dt + \sigma(t, X_t)dW_t$ into the equation:&lt;/script&gt;
+  df(t, X_t) &amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt + \frac{\partial f(t_0, X_0)}{\partial X_t} dX_t + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} dX_t^2
+\end{align} %]]&gt;&lt;/script&gt;
+The next step is substituting $dX_t = \mu(t, X_t)dt + \sigma(t, X_t)dW_t$ into the equation:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
-  df(t, X_t) &amp;amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt + \frac{\partial f(t_0, X_0)}{\partial X_t} dX_t+ \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} dX_t^2 &lt;br /&gt;
-  &amp;amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt + \frac{\partial f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t) + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t)^2 &lt;br /&gt;
-  &amp;amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt + \frac{\partial f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t) &lt;br /&gt;
-  &amp;amp; \quad + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)^2 dt^2 + 2 \mu(t, X_t) \sigma(t, X_t)^2 dt dW_t + \sigma(t, X_t)^2 dW_t^2) &lt;br /&gt;
-\end{align}
-$$
-Now comes a pivotal part in the derivation in which examine how $dt$ and $dW_t$ behave when multiplied or squared.
+  df(t, X_t) &amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt + \frac{\partial f(t_0, X_0)}{\partial X_t} dX_t+ \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} dX_t^2 \\
+  &amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt + \frac{\partial f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t) + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t)^2 \\
+  &amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt + \frac{\partial f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t) \\
+  &amp; \quad + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)^2 dt^2 + 2 \mu(t, X_t) \sigma(t, X_t)^2 dt dW_t + \sigma(t, X_t)^2 dW_t^2) \\
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Now comes a pivotal part in the derivation in which examine how $dt$ and $dW_t$ behave when multiplied or squared.
 The differential Wiener process can be rewritten as $dW_t = \epsilon \sqrt{dt}$.
-Thus we have the following time-dependent terms appearing in the equation above: $dt^2$, $dt dW_t = \epsilon dt^{1.5}$ and $dW_t^2 = \epsilon^2  dt = dt$ under the mean-square interpretation which states $\mathbb{E}[\epsilon^2] = \mathbb{V}[\epsilon] = 1$ for $\epsilon \sim \mathcal{N}(0,1)$.&lt;/li&gt;
-&lt;/ul&gt;
+Thus we have the following time-dependent terms appearing in the equation above: $dt^2$, $dt dW_t = \epsilon dt^{1.5}$ and $dW_t^2 = \epsilon^2  dt = dt$ under the mean-square interpretation which states $\mathbb{E}[\epsilon^2] = \mathbb{V}[\epsilon] = 1$ for $\epsilon \sim \mathcal{N}(0,1)$.&lt;/p&gt;
 
 &lt;p&gt;The important aspect of simplifying Ito’s lemma is to think about how $dt^2$, $dt^{1.5}$ and $dt$ behave for infinitesimal changes.
 Any $dt^k$ with $k&amp;gt;1$ and $dt &amp;lt; 1$ will decrease by an order of magnitude faster to zero than $dt$ itself for the infinitely small values that we’re dealing with.

@@ -280,29 +280,28 @@ Furthermore the limit also allows us to rewrite the difference $\Delta t$ and $\
 <script type="math/tex">% <![CDATA[
 \begin{align}
 \lim_{t\rightarrow t_0, X_t \rightarrow X_0} f(t, X_t) - f(t_0, X_0)  &= \lim_{t\rightarrow t_0, X_t \rightarrow X_0} \frac{\partial f(t_0, X_0)}{\partial t} \Delta t + \frac{\partial f(t_0, X_0)}{\partial X_t}\Delta X_t + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\Delta X_t^2 \\
-\end{align} %]]></script>
-<script type="math/tex">\begin{align}
+\end{align} %]]></script></p>
+
+<script type="math/tex; mode=display">\begin{align}
 \Downarrow
 \end{align}</script>
-$$
+
+<p><script type="math/tex">% <![CDATA[
 \begin{align}
-  df(t, X_t) &amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt</p>
-<ul>
-  <li>\frac{\partial f(t_0, X_0)}{\partial X_t} dX_t</li>
-  <li>\frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} dX_t^2
-\end{align}
-<script type="math/tex">The next step is substituting $dX_t = \mu(t, X_t)dt + \sigma(t, X_t)dW_t$ into the equation:</script>
+  df(t, X_t) &= \frac{\partial f(t_0, X_0)}{\partial t} dt + \frac{\partial f(t_0, X_0)}{\partial X_t} dX_t + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} dX_t^2
+\end{align} %]]></script>
+The next step is substituting $dX_t = \mu(t, X_t)dt + \sigma(t, X_t)dW_t$ into the equation:
+<script type="math/tex">% <![CDATA[
 \begin{align}
-  df(t, X_t) &amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt + \frac{\partial f(t_0, X_0)}{\partial X_t} dX_t+ \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} dX_t^2 <br>
-  &amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt + \frac{\partial f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t) + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t)^2 <br>
-  &amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt + \frac{\partial f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t) <br>
-  &amp; \quad + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)^2 dt^2 + 2 \mu(t, X_t) \sigma(t, X_t)^2 dt dW_t + \sigma(t, X_t)^2 dW_t^2) <br>
-\end{align}
-$$
-Now comes a pivotal part in the derivation in which examine how $dt$ and $dW_t$ behave when multiplied or squared.
+  df(t, X_t) &= \frac{\partial f(t_0, X_0)}{\partial t} dt + \frac{\partial f(t_0, X_0)}{\partial X_t} dX_t+ \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} dX_t^2 \\
+  &= \frac{\partial f(t_0, X_0)}{\partial t} dt + \frac{\partial f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t) + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t)^2 \\
+  &= \frac{\partial f(t_0, X_0)}{\partial t} dt + \frac{\partial f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t) \\
+  & \quad + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)^2 dt^2 + 2 \mu(t, X_t) \sigma(t, X_t)^2 dt dW_t + \sigma(t, X_t)^2 dW_t^2) \\
+\end{align} %]]></script></p>
+
+<p>Now comes a pivotal part in the derivation in which examine how $dt$ and $dW_t$ behave when multiplied or squared.
 The differential Wiener process can be rewritten as $dW_t = \epsilon \sqrt{dt}$.
-Thus we have the following time-dependent terms appearing in the equation above: $dt^2$, $dt dW_t = \epsilon dt^{1.5}$ and $dW_t^2 = \epsilon^2  dt = dt$ under the mean-square interpretation which states $\mathbb{E}[\epsilon^2] = \mathbb{V}[\epsilon] = 1$ for $\epsilon \sim \mathcal{N}(0,1)$.</li>
-</ul>
+Thus we have the following time-dependent terms appearing in the equation above: $dt^2$, $dt dW_t = \epsilon dt^{1.5}$ and $dW_t^2 = \epsilon^2  dt = dt$ under the mean-square interpretation which states $\mathbb{E}[\epsilon^2] = \mathbb{V}[\epsilon] = 1$ for $\epsilon \sim \mathcal{N}(0,1)$.</p>
 
 <p>The important aspect of simplifying Ito’s lemma is to think about how $dt^2$, $dt^{1.5}$ and $dt$ behave for infinitesimal changes.
 Any $dt^k$ with $k&gt;1$ and $dt &lt; 1$ will decrease by an order of magnitude faster to zero than $dt$ itself for the infinitely small values that we’re dealing with.

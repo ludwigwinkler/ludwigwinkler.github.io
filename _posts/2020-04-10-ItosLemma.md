@@ -237,16 +237,16 @@ $$
 \lim_{t\rightarrow t_0, X_t \rightarrow X_0} f(t, X_t) - f(t_0, X_0)  &= \lim_{t\rightarrow t_0, X_t \rightarrow X_0} \frac{\partial f(t_0, X_0)}{\partial t} \Delta t + \frac{\partial f(t_0, X_0)}{\partial X_t}\Delta X_t + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\Delta X_t^2 \\
 \end{align}
 $$
+
 $$
 \begin{align}
 \Downarrow
 \end{align}
 $$
+
 $$
 \begin{align}
-  df(t, X_t) &= \frac{\partial f(t_0, X_0)}{\partial t} dt
-  + \frac{\partial f(t_0, X_0)}{\partial X_t} dX_t
-  + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} dX_t^2
+  df(t, X_t) &= \frac{\partial f(t_0, X_0)}{\partial t} dt + \frac{\partial f(t_0, X_0)}{\partial X_t} dX_t + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} dX_t^2
 \end{align}
 $$
 The next step is substituting $dX_t = \mu(t, X_t)dt + \sigma(t, X_t)dW_t$ into the equation:
@@ -258,6 +258,7 @@ $$
   & \quad + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)^2 dt^2 + 2 \mu(t, X_t) \sigma(t, X_t)^2 dt dW_t + \sigma(t, X_t)^2 dW_t^2) \\
 \end{align}
 $$
+
 Now comes a pivotal part in the derivation in which examine how $dt$ and $dW_t$ behave when multiplied or squared.
 The differential Wiener process can be rewritten as $dW_t = \epsilon \sqrt{dt}$.
 Thus we have the following time-dependent terms appearing in the equation above: $dt^2$, $dt dW_t = \epsilon dt^{1.5}$ and $dW_t^2 = \epsilon^2  dt = dt$ under the mean-square interpretation which states $\mathbb{E}[\epsilon^2] = \mathbb{V}[\epsilon] = 1$ for $\epsilon \sim \mathcal{N}(0,1)$.
