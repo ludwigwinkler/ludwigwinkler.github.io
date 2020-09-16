@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-16T14:46:29+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Variational Autoencoders Derived</title><link href="http://localhost:4000/blog/VAE/" rel="alternate" type="text/html" title="Variational Autoencoders Derived" /><published>2020-08-10T00:00:00+02:00</published><updated>2020-08-10T00:00:00+02:00</updated><id>http://localhost:4000/blog/VAE</id><content type="html" xml:base="http://localhost:4000/blog/VAE/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-16T14:47:35+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Variational Autoencoders Derived</title><link href="http://localhost:4000/blog/VAE/" rel="alternate" type="text/html" title="Variational Autoencoders Derived" /><published>2020-08-10T00:00:00+02:00</published><updated>2020-08-10T00:00:00+02:00</updated><id>http://localhost:4000/blog/VAE</id><content type="html" xml:base="http://localhost:4000/blog/VAE/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -140,9 +140,8 @@ The key insight is now that we actually have to ask ourselves two questions: “
 
 &lt;p&gt;The sensitivity $\frac{\partial L}{\partial z_3}$ of the loss with respect to the last timestep can be readily evaluated.
 More interesting is how we could propagate the sensitivity backwards in time to all evaluated timesteps.
-The solution to this problem is the use of the Jacobian of the output $z_t$ with respect to the input $z_{t-1}$:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+The solution to this problem is the use of the Jacobian of the output $z_t$ with respect to the input $z_{t-1}$:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
 J(f)= \frac{\partial f(z, t, \theta)}{\partial z} =
 \left[
@@ -153,21 +152,18 @@ J(f)= \frac{\partial f(z, t, \theta)}{\partial z} =
 \end{array}
 \right]
 \end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;The Jacobian of the function $f$ with respect to the input tells us how sensitive the output is to the input.
+The Jacobian of the function $f$ with respect to the input tells us how sensitive the output is to the input.
 Since the solution of the ODE is theoretically an infinite series of evaluations of the neural network $f$ we can similarly backpropagate the initial sensitivity $\frac{\partial \mathcal{L}}{\partial z_t}$ by repeatedly multiplying it with the Jacobian with respect to the input but backward in time, which is an ODE again but this time it’s backwards.
 Said differently, we simply reweight the initial sensitivity repeatedly with the Jacobian backwards through time.&lt;/p&gt;
 
-&lt;p&gt;The sensitivity backward pass for our discretized ODE problem would then look something akin to this:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+&lt;p&gt;The sensitivity backward pass for our discretized ODE problem would then look something akin to this:
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
 \frac{\partial \mathcal{L}}{\partial z_1} =
  \frac{\partial \mathcal{L}}{\partial z_3}
  \frac{\partial f(z_2, t, \theta)}{\partial z_2}
  \frac{\partial f(z_1 t, \theta)}{\partial z_1}
 \end{align}&lt;/script&gt;
-
-&lt;p&gt;This procedure is actually very similar to how the normal backpropagation pass is done.
+This procedure is actually very similar to how the normal backpropagation pass is done.
 In a neural network we use the chain rule to first compute the gradients for the last layer, and then repeatedly reweight the gradients as they are passed through the network.
 Take a three layer network as an example with $y = f_3(f_2(f_1(x, \theta_1), \theta_2), \theta_3)$.&lt;/p&gt;
 

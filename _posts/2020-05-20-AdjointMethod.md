@@ -59,7 +59,6 @@ The first question can be answered by examining the sensitivity of the scalar lo
 The sensitivity $\frac{\partial L}{\partial z_3}$ of the loss with respect to the last timestep can be readily evaluated.
 More interesting is how we could propagate the sensitivity backwards in time to all evaluated timesteps.
 The solution to this problem is the use of the Jacobian of the output $z_t$ with respect to the input $z_{t-1}$:
-
 $$
 \begin{align}
 J(f)= \frac{\partial f(z, t, \theta)}{\partial z} =
@@ -72,13 +71,11 @@ J(f)= \frac{\partial f(z, t, \theta)}{\partial z} =
 \right]
 \end{align}
 $$
-
 The Jacobian of the function $f$ with respect to the input tells us how sensitive the output is to the input.
 Since the solution of the ODE is theoretically an infinite series of evaluations of the neural network $f$ we can similarly backpropagate the initial sensitivity $\frac{\partial \mathcal{L}}{\partial z_t}$ by repeatedly multiplying it with the Jacobian with respect to the input but backward in time, which is an ODE again but this time it's backwards.
 Said differently, we simply reweight the initial sensitivity repeatedly with the Jacobian backwards through time. 
 
 The sensitivity backward pass for our discretized ODE problem would then look something akin to this:
-
 $$
 \begin{align}
 \frac{\partial \mathcal{L}}{\partial z_1} =
@@ -87,7 +84,6 @@ $$
  \frac{\partial f(z_1 t, \theta)}{\partial z_1}
 \end{align}
 $$
-
 This procedure is actually very similar to how the normal backpropagation pass is done.
 In a neural network we use the chain rule to first compute the gradients for the last layer, and then repeatedly reweight the gradients as they are passed through the network.
 Take a three layer network as an example with $y = f_3(f_2(f_1(x, \theta_1), \theta_2), \theta_3)$.
