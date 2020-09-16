@@ -235,10 +235,16 @@ So we obtain the following:
 $$
 \begin{align}
 \lim_{t\rightarrow t_0, X_t \rightarrow X_0} f(t, X_t) - f(t_0, X_0)  &= \lim_{t\rightarrow t_0, X_t \rightarrow X_0} \frac{\partial f(t_0, X_0)}{\partial t} \Delta t + \frac{\partial f(t_0, X_0)}{\partial X_t}\Delta X_t + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\Delta X_t^2 \\
-&\Downarrow \\
+\end{align}
+$$
+
+where the left sides simplifies to the differential of the function $f$:
+$$
+\begin{align}
   df(t, X_t) &= \frac{\partial f(t_0, X_0)}{\partial t} dt + \frac{\partial f(t_0, X_0)}{\partial X_t} dX_t + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} dX_t^2
 \end{align}
 $$
+
 The next step is substituting $dX_t = \mu(t, X_t)dt + \sigma(t, X_t)dW_t$ into the equation:
 $$
 \begin{align}
@@ -269,6 +275,7 @@ $$
   &= \mu_f\left(t, \mu(t, X_t), \frac{\partial f(t_0, X_0)}{\partial t}, \frac{\partial f(t_0, X_0)}{\partial X_t}, \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} \sigma(t, X_t)^2 \right)dt + \sigma_f\left(t, \sigma(t, X_t), \frac{\partial f(t_0, X_0)}{\partial X_t} \right) dW_t
 \end{align}
 $$
+
 So ultimately, it turns out that the derivative of the function $f(t, X)$ with an Ito drift-diffusion process as input is an Ito drift-diffusion process itself.
 Albeit with a few first and second order derivatives sprinkled in between.
 
