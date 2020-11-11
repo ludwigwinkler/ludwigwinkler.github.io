@@ -1,4 +1,241 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-16T16:37:52+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Variational Autoencoders Derived</title><link href="http://localhost:4000/blog/VAE/" rel="alternate" type="text/html" title="Variational Autoencoders Derived" /><published>2020-08-10T00:00:00+02:00</published><updated>2020-08-10T00:00:00+02:00</updated><id>http://localhost:4000/blog/VAE</id><content type="html" xml:base="http://localhost:4000/blog/VAE/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-11-11T23:55:28+01:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">From Bernoulli to Poisson Point Processes</title><link href="http://localhost:4000/blog/Poisson/" rel="alternate" type="text/html" title="From Bernoulli to Poisson Point Processes" /><published>2020-08-10T00:00:00+02:00</published><updated>2020-08-10T00:00:00+02:00</updated><id>http://localhost:4000/blog/Poisson</id><content type="html" xml:base="http://localhost:4000/blog/Poisson/">&lt;head&gt;
+&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
+       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
+         MathJax.Hub.Config({
+           tex2jax: {
+             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
+             displayMath: [['$$','$$']],
+             processEscapes: true
+           }
+         });
+       &lt;/script&gt;
+       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+
+&lt;!-- Recently I got interested in jump processes as the natural extension to Wiener processes. --&gt;
+&lt;!-- While Wiener process model continuous processes, jump processes are defined by instantaneous, discrete jumps.  --&gt;
+
+&lt;p&gt;Recently I got interested in Poisson point processes which model the probabilities of phenomena or objects in some type of space.
+These types of spaces can be anything from a real line to a Cartesian plane.&lt;/p&gt;
+
+&lt;p&gt;The most direct application of point processes is queueing theory with which we can model how many packages will arrive at a certain node in a network over time.
+Mathematically it looks like this:
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+	\mathbb{P}\left[ N(t) = k \right] = \frac{( \ \lambda t \ )^k}{k!} e^{-\lambda t}
+\end{align}&lt;/script&gt;
+where $t$ is the time, $N(t)$ is a counting process and $\lambda$ is the intensity of the Poisson point process.
+The first time I saw this probability, I frankly didn’t know what I was supposed to make of this probability so I started reading.
+And the following paragraphs are the trip I took to understand the probability above.&lt;/p&gt;
+
+&lt;h3 id=&quot;counting-process&quot;&gt;Counting Process&lt;/h3&gt;
+
+&lt;p&gt;Let us first start with the notion of discrete jumps in stochastic processes.&lt;/p&gt;
+
+&lt;p&gt;A counting process is a stochastic process &lt;script type=&quot;math/tex&quot;&gt;\{ N(t), t \in \mathbb{R}_+ \}&lt;/script&gt; with values that are non-negative, integer and non-decreasing.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/blog/Poisson/CountingProcess.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;80%&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The gist of the figure above is that a counting process increases monotonically over time $t \in \mathbb{R}_+$ with integer steps of 1.
+Mathematically, a counting process $N(t)$ is defined in the following way
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	N(t) &amp;= \sum_{k \geq 1} \mathbb{1}_{(T_k, \infty)} (t) \\
+	\mathbb{1}_{(T_k, \infty)} (t) 
+	&amp; = 
+	\begin{cases}
+	1, &amp; \text{if } \ t \geq T_k \\
+	0, &amp; \text{if } \ 0 \leq t \leq T_k \\
+	\end{cases}
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;In order to determine $N(t)$ for some specific value of $t$, all you have to do is to compare $t$ to each $T_k$ that you have recorded, and if $t\geq T_k$, add it to $N(t)$.
+The stochastic part comes from the fact that the jump times $T_k$ are stochastic and follow some distribution.&lt;/p&gt;
+
+&lt;h3 id=&quot;bernoulli-distribution&quot;&gt;Bernoulli Distribution&lt;/h3&gt;
+
+&lt;p&gt;A binary random variable &lt;script type=&quot;math/tex&quot;&gt;X \in \{0,1\}&lt;/script&gt; follows a Bernoulli distribution if it takes on the value $1$ with probability $p$ and the value $0$ with probability $q=1-p$.
+More succinctly, we can write
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	\mathbb{P}\left[X=0 \right] &amp;= 1-p = q \\
+	\mathbb{P}\left[X=1 \right] &amp;= p \\
+	\mathbb{P}\left[X=k \right] &amp;= p^k (1-p)^{1-k} \quad \text{with} \quad k \in \{0,1\}
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;For a single binary experiment, the Bernoulli distribution models the probability that each outcome has.
+But what if we would like to conduct multiple experiments?
+Enter the Binomial distribution.&lt;/p&gt;
+
+&lt;h3 id=&quot;binomial-distribution&quot;&gt;Binomial Distribution&lt;/h3&gt;
+
+&lt;p&gt;Let’s say you want to conduct $n$ experiments with a binary outcome (yes/no, true/false, 1/0 etc) given some probability of success $p$ and some probability of defeat $q=1-p$.
+Obviously, you can run the $n$ separate experiments and count the number of total successes from your $n$ experiments.
+The expected number of successes for $n$ trials with a success probability $p$ amounts to $np$.
+For example, if $n=100$ and $p=0.6$, on average we will obtain $k=60$ successful trials.&lt;/p&gt;
+
+&lt;p&gt;But a more interesting question looms in the background.
+It is certainly nice to know that if we run those $n=100$ trials a million times, we will eventually converge to $k=60$ succesfull runs per $n=100$ trials with a success probability of $p=0.6$.
+But we shouldn’t forget that each time we run the $n=100$ experiments, we will obtain a different result for &lt;script type=&quot;math/tex&quot;&gt;k \in \{0, n\}&lt;/script&gt;.
+So it could certainly happen that one run has exactly $k=60$ while the other run has $k=43$.&lt;/p&gt;
+
+&lt;p&gt;In the grander scope of things, we would like to know what the probabilities are for each success rate $k$.
+More specifically, we are interested in the probability of $\mathbb{P}\left[k=60 \right]$ trials versus $\mathbb{P}\left[k=43 \right]$, for example.&lt;/p&gt;
+
+&lt;p&gt;This appears to be similar to the Bernoulli distribution except that we do $n$ trials instead of just one trial,
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	\mathbb{P}\left[k,n, p \right] &amp;\propto p^k (1-p)^{n-k} \quad \text{with} \quad k \in \{0,n\}.
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The proportional sign was chosen on purpose to denote that this does not denote a valid distribution.
+We made no assumption with regards to the ordering of the successful trials.
+All we are interested in is the total number of successful trials and not the order.
+Naturally, one could simply assume an ordering in which all successful trials occur subsequently and the final $n-k$ trials are the unsuccessful trials.
+But since the trials are inherently stochastic, it could also occur that the first $n-k$ trials are unsuccessful and only the last $k$ trials are successful or any possible other ordering with $k$ successful trials and $n-k$ unsuccessful trials.
+Since we are not interested in the ordering, we have to basically sum up all the possibilities of ordering.&lt;/p&gt;
+
+&lt;p&gt;We can derive the number of possible orderings by thinking of how the successful trials $k$ are drawn from the number of trials $n$.
+First of all we know that for $k$ successful draws, any combination of exactly $k$ successful draws is permissible.
+So we could have &lt;script type=&quot;math/tex&quot;&gt;(47, 1, 13, \ldots, 16 )&lt;/script&gt; or &lt;script type=&quot;math/tex&quot;&gt;(1, 2, 3, \ldots, 98 )&lt;/script&gt; as long as number of draws in those tuples is exactly $k$.
+The first time we draw, we have 100 options, but the second time we draw we only have 99 options left and the the third time we draw we only have 98 left and so on.
+In order to express this mathematically, we can conclude the following with regards to “k out of n” orderings:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	\text{&quot;60 out of 100&quot;} &amp;= 100 \cdot 99 \cdot 98 \cdot \ldots \cdot 42 \cdot 41\\
+	&amp;= \frac{100 \cdot 99 \cdot 98 \cdot \ldots \cdot 2 \cdot 1 }{40 \cdot 49 \cdot \ldots \cdot 2 \cdot 1} \\
+	&amp;= \frac{100!}{(100-60)!}
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;So in general we can conclude that if we want to draw $k$ ordered, successful trials out of $n$ total trials we have
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	\text{&quot;k out of n&quot;} &amp;= \frac{n!}{(n-k)!}.
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;But there is a catch.
+So far we have only considered cases of unique orderings, such as &lt;script type=&quot;math/tex&quot;&gt;(47, 1, 13, 16) \&lt;/script&gt; and &lt;script type=&quot;math/tex&quot;&gt;(1, 47, 13, 16 )&lt;/script&gt; which have the same elements just in a different order.
+But we are only interested whether the trials are successful, not how the successful trials are ordered.
+The notion of interest is whether the draws occur in the set such as &lt;script type=&quot;math/tex&quot;&gt;\{(47, 1, 13, 16), (1, 47, 13, 16 ) \} \subset \{1, 13, 16, 47 \}&lt;/script&gt; (which I ordered for convenience’s sake) and not their order.
+Fortunately, there is a quick fix to this: Simply divide by the number of possible permutations of the set $k!$:
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+	\binom{n}{k} = \underbrace{\frac{1}{k!}}_{\text{unordered correction}} \underbrace{\frac{n!}{(n-k)!}}_{\text{# of unique orderings}}
+\end{align}&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The binomial coefficient is the normalization constant which corrects the original probability $p^k (1-p)^{n-k}$ by the number of possible permutations.&lt;/p&gt;
+
+&lt;p&gt;Thus we obtain the binomial distribution which states
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	\mathbb{P}\left[k,n, p \right] &amp;= \binom{n}{k} p^k (1-p)^{n-k} \\
+	&amp;= \frac{n!}{k! (n-k)!} p^k (1-p)^{n-k}
+\end{align} %]]&gt;&lt;/script&gt;
+which tells us what the probability of a certain number of successful trials $k$ is, if we run $n$ trials with a success rate of $p$.&lt;/p&gt;
+
+&lt;h3 id=&quot;poisson-distribution&quot;&gt;Poisson Distribution&lt;/h3&gt;
+
+&lt;p&gt;The binomial distribution defines the probability of $k$ successful trials for a fixed set of trials $n$ for a success probability $p$.
+For example, we can observe a logistics network and can ask every second whether a package has arrived or not.
+Remember that the binomial distribution is only defined for binary outcomes.
+We can then model how many packages arrive per minute or even hour by multiplying the number of seconds per minute or hour by the probability $p$ of a package arriving.&lt;/p&gt;
+
+&lt;p&gt;That time partition is still discrete, though, and the real world is continuous.
+We can let $\lim n \rightarrow \infty$ to model an infinitely fine partition of time.
+But now we’re confronted with the inconvenient &lt;script type=&quot;math/tex&quot;&gt;\lim_{n \rightarrow \infty} np = \infty&lt;/script&gt; which we can’t really work with.
+instead we can redefine the probability &lt;script type=&quot;math/tex&quot;&gt;p = \frac{\lambda}{n}&lt;/script&gt; with an intensity $\lambda$ which will be invariant to time, so to speak, because &lt;script type=&quot;math/tex&quot;&gt;\lim_{n \rightarrow \infty} np = \lim_{n \rightarrow \infty} n \frac{\lambda}{n} = \lambda&lt;/script&gt;.&lt;/p&gt;
+
+&lt;p&gt;We can then substitute $p = \frac{\lambda}{n}$ into the binomial distribution and see where that takes us:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+\lim_{n \rightarrow \infty} \mathbb{P} \left[ n, k, p \right]
+&amp;= \lim_{n \rightarrow \infty} \frac{n!}{k!(n-k)!} p^k (1-p)^{n-k} \\
+&amp;= \lim_{n \rightarrow \infty} \frac{n!}{k!(n-k)!} \left( \frac{\lambda}{n} \right)^k \left( 1-\frac{\lambda}{n} \right)^{n-k} \\
+&amp;= \lim_{n \rightarrow \infty} \frac{n!}{k!(n-k)!} \left( \frac{\lambda}{n} \right)^k \left(1-\frac{\lambda}{n} \right)^{n-k} \\
+&amp;= \frac{\lambda^k}{k!} \lim_{n \rightarrow \infty} \frac{n!}{k!(n-k)!} \frac{1}{n^k} \left(1-\frac{\lambda}{n} \right)^{n-k} \\
+&amp;= \frac{\lambda^k}{k!} \lim_{n \rightarrow \infty} \frac{n!}{(n-k)!} \frac{1}{n^k} \left(1-\frac{\lambda}{n} \right)^n \left(1-\frac{\lambda}{n} \right)^{-k} \\
+&amp;= \frac{\lambda^k}{k!} \lim_{n \rightarrow \infty} \frac{n \cdot (n-1) \cdot (n-1) \cdot \ldots \cdot (n-k)}{n^k} \left(1-\frac{\lambda}{n} \right)^n \left(1-\frac{\lambda}{n} \right)^{-k} \\
+&amp;= \frac{\lambda^k}{k!} \lim_{n \rightarrow \infty} \underbrace{\frac{n}{n} \cdot \frac{(n-1)}{n} \cdot \frac{(n-1)}{n} \cdot \ldots \cdot \frac{(n-k)}{n}}_{1 \text{ for } \lim_{n \rightarrow \infty}}  \underbrace{\left(1+\frac{1}{\frac{n}{-\lambda}} \right)^{-\lambda \frac{n}{-\lambda}}}_{=e^{-\lambda}} \underbrace{\left(1+\frac{\lambda}{n} \right)^{-k}}_{1 \text{ for } \lim_{n \rightarrow \infty}} \\
+&amp;= \frac{\lambda^k}{k!} e^{-\lambda} \\
+&amp;= \text{Poisson} [ \lambda]
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The Poisson distribution is a discrete distribution with support $k \in \mathbb{N}_+$ that quantifies the probability of $k$ events happening in an interval of time or space with $\lambda$ denoting the intensity of events (like how often they occur).&lt;/p&gt;
+
+&lt;h3 id=&quot;poisson-point-process&quot;&gt;Poisson Point Process&lt;/h3&gt;
+
+&lt;p&gt;The Poisson distribution above allows us to compute the probability of $k$ events for a given fixed interval of time or space.
+We can generalize the Poisson distribution to a Poisson point process over varying intervals by integrating over the (possibly changing) intensities that the space exhibits.
+For a Poisson point process defined over a time interval $(t_0, t_1]$, we could compute the number of expected events by integrating the intensity of $\lambda(t)$ which is a function of time $t$:
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+\mathbb{P}[N(t_0, t_1]=k, \lambda(s)] = \frac{\left( \int_{t_0}^{t_1} \lambda(s) ds \right)^k}{k!} e^{-\int_{t_0}^{t_1} \lambda(s) ds}
+\end{align}&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;We can recover the original Poisson distribution through a homogeneous Poisson point process which has a constant $\lambda$ and for which the, in our case time, integral evaluates to $\int_{t_0}^{t_1} ds = 1$.
+In fact, a meaningful intensity $\lambda$ for a Poisson distribution can only be determined for a-priori defined, fixed interval of time or space.
+The Poisson point process is then the natural extension to varying intervals of time or space by defining a varying intensity $\lambda(s)$.
+A homogeneous Poisson point process for a fixed interval $\int_{t_0}^{t_1} = 1$ can be obtained through
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+\mathbb{P}[N(t_0, t_1]=k, \lambda] &amp;= \frac{\left( \int_{t_0}^{t_1} \lambda ds \right)^k}{k!} e^{-\int_{t_0}^{t_1} \lambda ds} \\
+&amp;= \frac{\left( \lambda \int_{t_0}^{t_1} ds \right)^k}{k!} e^{-\lambda \int_{t_0}^{t_1} ds} \\
+&amp;= \frac{\left( \lambda \right)^k}{k!} e^{-\lambda}
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The definition above unfortunately only tells us the number of events occuring over the entire interval $(t_0, t_1]$.
+What if we wanted to now the probability of an event happening at a singular moment $t$?
+We should remember that a Poisson point process can be interpreted as a counting process $N(t)$ since it starts at zero, is monotonically increasing and the probability of an event happening is randomly distributed with $\int_{t_0}^{t_1} \lambda(s) ds$ which simplifies to just $\lambda t$ for a constant intensity and $t_0 = 0$, $t_1 = t$.
+Our derivation showed us that if we expand the Bernoulli distribution to a Binomial distribution with an infinite number of trials we arrive at the Poisson distribution which lies at the heart of a Poisson point process.
+Nevertheless the counting process always increases by a single integer step.
+Thus we can ask the question what the probability is of an event at an arbitrary point in the interval.&lt;/p&gt;
+
+&lt;p&gt;We can therefore inquire about the probability of an event not happening, ergo $N(t_0, t_1]=0$:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+\mathbb{P}[N(t_0, t_1]=0, \lambda(s)] &amp;= \frac{\left( \int_{t_0}^{t_1} \lambda(s) ds \right)^0}{0!} e^{-\int_{t_0}^{t_1} \lambda(s) ds} \\
+&amp;= e^{-\int_{t_0}^{t_1} \lambda(s) ds}
+\end{align} %]]&gt;&lt;/script&gt;
+which is the probability that no event will occur until $t_1$.
+As the intensity is a strictly positive quantity, the integral $\int_{t_0}^{t_1} \lambda(s) ds$ increases monotonically over time until an event occurs.
+Naturally since the integral is monotonically increasing, the probability of no event is monotonically decreasing through the negated exponential.
+This is quite intuitive as it states that the probability of no event happening decreases monotonically as time progresses.
+On the flip side, this means that the probability of an event occuring is monotonically increasing as time progresses:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+\mathbb{P}[N(t_0, t_1]=1, \lambda(s)] &amp;= 1 - e^{-\int_{t_0}^{t_1} \lambda(s) ds}.
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The reason why we analyze only a single event $k=1$ lies with the fact that the events are i.i.d. distributed which in case for the Poisson distribution means that the integral is reset after each event.
+This is the reason why we only integrate to $t_1$.
+Since $\mathbb{P}[N(t_0, t_1]=1, \lambda(s)]$ is a cumulative probability distribution as it approaches 1 in infinity, we call simply derive it with respect to $t_1$ to obtain the probability density function:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+\mathbb{P}[N(t_1)=1, \lambda(s)] &amp;= \frac{d}{dt_1} \left[ 1 - e^{-\int_{t_0}^{t_1} \lambda(s) ds} \right] \\
+&amp;= \lambda(t_1) e^{-\int_{t_0}^{t_1} \lambda(s) ds}.
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Another fun fact of the Poisson process is that its derivative is in fact a Bernoulli distribution.
+To see this we inspect the Poisson process for an extremely small time frame $\lim_{\Delta t \rightarrow 0} [t, t+ \Delta t]$:
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+\lim_{\Delta t \rightarrow 0} \mathbb{P}[N(t, t + \Delta t]=k, \lambda(s)] = \lim_{\Delta t \rightarrow 0} \frac{\left( \int_{t}^{t + \Delta t} \lambda(s) ds \right)^k}{k!} e^{-\int_{t}^{t + \Delta t} \lambda(s) ds}
+\end{align}&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;which for &lt;script type=&quot;math/tex&quot;&gt;k=\{0, 1\}&lt;/script&gt; and a first order exponential series expansion &lt;script type=&quot;math/tex&quot;&gt;e^x = \sum_{k=0}^\infty \frac{x^k}{k!}&lt;/script&gt; yields&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+\lim_{\Delta t \rightarrow 0} \mathbb{P}[N(t, t + \Delta t]=0, \lambda(s)] &amp;= \lim_{\Delta t \rightarrow 0} \frac{\left( \int_{t}^{t + \Delta t} \lambda(s) ds \right)^0}{0!} e^{-\int_{t}^{t + \Delta t} \lambda(s) ds} \\
+&amp; \approx e^{- \lambda(t)\Delta t} \\
+&amp; \approx 1 - \lambda(t) \Delta t
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+\lim_{\Delta t \rightarrow 0} \mathbb{P}[N(t, t + \Delta t]=1, \lambda(s)] &amp; = \lim_{\Delta t \rightarrow 0} \frac{\left( \int_{t}^{t + \Delta t} \lambda(s) ds \right)^k}{k!} e^{-\int_{t}^{t + \Delta t} \lambda(s) ds} \\
+&amp; \approx \lambda(t) \Delta t e^{- \lambda(t)\Delta t} \\
+&amp; \approx \lambda \Delta t - \underbrace{\lambda(t)^2 \Delta t^2}_{=0, \Delta t \rightarrow 0} \\
+&amp;= \lambda \Delta t
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;which are precisely the probabilities for a Bernoulli distribution.&lt;/p&gt;</content><summary type="html">A lot of distributions with Latin names ...</summary></entry><entry><title type="html">Variational Autoencoders Derived</title><link href="http://localhost:4000/blog/VAE/" rel="alternate" type="text/html" title="Variational Autoencoders Derived" /><published>2020-08-10T00:00:00+02:00</published><updated>2020-08-10T00:00:00+02:00</updated><id>http://localhost:4000/blog/VAE</id><content type="html" xml:base="http://localhost:4000/blog/VAE/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -1762,572 +1999,4 @@ Considerable focus will be on conjugated gradient descent which allows the effic
 
 &lt;p&gt;The core idea of the original paper is to exploit a parallel version of conjugate gradient descent to the fullest such that all relevant terms for the cost function and the gradients of the kernels can be obtained from a single modified batch conjugate descent run.&lt;/p&gt;
 
-&lt;p&gt;The talk can be downloaded &lt;a href=&quot;/blog/GPyTorch/GPytorch.pdf&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;</content><summary type="html">GPU Acceleration for Gaussian Processes</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/GPyTorch/GPyTorch_Cover.png" /></entry><entry><title type="html">Hamiltonian Mechanics in Monte Carlo Samplers</title><link href="http://localhost:4000/blog/HMC/" rel="alternate" type="text/html" title="Hamiltonian Mechanics in Monte Carlo Samplers" /><published>2019-03-14T00:00:00+01:00</published><updated>2019-03-14T00:00:00+01:00</updated><id>http://localhost:4000/blog/HMC</id><content type="html" xml:base="http://localhost:4000/blog/HMC/">&lt;head&gt;
-&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
-       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       &lt;/script&gt;
-       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
-&lt;/head&gt;
-
-&lt;p&gt;Here’s a common problem: You want to estimate some function $f$.
-The function $f$ takes some input $x$ and outputs some value $y$ thus giving you $y=f(x)$.
-The important part is that you don’t have access to the global shape of $f$.&lt;/p&gt;
-
-&lt;p&gt;This could be due to $f(x)$ being an absolute black-box model such that you can only interact with it by handing it some value $x$ and receiving some value $y=f(x)$.
-Something that is practically very similar is that the analytical form of $f(x)$ is very, very complicated but can be evaluated in a pointwise manner.
-This means that we can’t evaluate the global shape of $f(x)$ but only the single points for some specific value of $x$.&lt;/p&gt;
-
-&lt;p&gt;The lack of knowledge of the global shape can be encountered in different scenarios which all boil down to computing a complicated integral.
-In order to offer some intuition let’s have a look at the univariate normal distribution $p(x|\mu, \sigma)$:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align*}
-	p(x|\mu, \sigma) = \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x-\mu)^2}{2\sigma^2}}.
-\end{align*}&lt;/script&gt;
-
-&lt;p&gt;The univariate normal distribution is a true and tested distribution in machine learning with many convenient mathematical properties.
-One property is the normalization of the exponential term $\smash{e^{-\frac{(x-\mu)^2}{2\sigma^2}}}$ with the scaling term $1/\sqrt{2\pi\sigma^2}$ such that&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align*}
-	\int_{- \infty }^{\infty} p(x | \mu, \sigma) dx = 1.
-\end{align*}&lt;/script&gt;
-
-&lt;p&gt;Conversely we know that&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align*}
-	\int_{-\infty}^{\infty} p(x|\mu, \sigma) dx
-	&amp;= \int_{-\infty}^{\infty}  \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x-\mu)^2}{2\sigma^2}} dx \\
-	&amp;= \frac{1}{\sqrt{2\pi\sigma^2}} \underbrace{\int_{-\infty}^{\infty} e^{-\frac{(x-\mu)^2}{2\sigma^2}} dx}_{=\sqrt{2\pi\sigma^2}} \\
-	&amp;= 1
-\end{align*} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;Obviously we know the exact form of the scaling parameter through the standard deviation $\sigma$ … but what if we didn’t?&lt;/p&gt;
-
-&lt;p&gt;In that case we would encounter the distribution as&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align*}
-	p(x|\mu, \sigma) &amp;= \frac{1}{Z} f(x|\mu, \sigma)\\
-	&amp;= \frac{1}{Z} e^{-\frac{(x-\mu)^2}{2\sigma^2}}\\
-	\text{with} \ Z  = \int_{-\infty}^{\infty} f(x| \mu, \sigma) dx &amp;= \int_{-\infty}^{\infty} e^{-\frac{(x-\mu)^2}{2\sigma^2}} dx = \sqrt{2\pi\sigma^2}
-\end{align*} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;In the case above we could evaluate the distribution $p(x | \mu, \sigma)$ correctly up to the scaling parameter $1/Z$ by evaluating $f(x | \mu, \sigma)$.
-The value of $Z$ is given by the shape of the distribution $p(x | \mu, \sigma)$ which we can’t determine globally but only point-wise for some value $x$.&lt;/p&gt;
-
-&lt;p&gt;The example above is supposed to illustrate the more general problem of estimating probability distributions with intractable partition functions $Z$ while still being intuitive by working with a well known distribution such as the univariate normal distribution.&lt;/p&gt;
-
-&lt;p&gt;The most naive idea for computing $Z$ is to evaluate random values of $x$ and compute an approximate integral.
-More precisely we would sample $N$ different $x$ from a uniform distribution $U(x_{min}, x_{max})$ with equal probability.
-This set $\{ x_i \}_{i=0}^N$ serves as an approximation of the true function which becomes better and better, the more samples $x_i$ we obtain.
-If we were to choose $N=\infty$ then the sample set would replicate the true shape perfectly.
-This is practically impossible due to computational and time constraints.&lt;/p&gt;
-
-&lt;p&gt;Once we have a set which we think contains enough samples, we could approximate the integral by simply summing over our set&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align*}
-	Z = \int_{-\infty}^{\infty} f(x|\mu, \sigma) dx
-	=\int_{-\infty}^{\infty} e^{-\frac{(x-\mu)^2}{2\sigma^2}} dx \approx \sum_{i=0}^N \frac{1}{\Delta x} e^{-\frac{(x_i-\mu)^2}{2\sigma^2}}
-\end{align*}&lt;/script&gt;
-
-&lt;p&gt;The $\Delta x$ is required since are we approximating the function $f( x | \mu, \sigma)$ with little columns where the exponential term tells us the height and $\Delta x$ the width of the column (look at the animations at Wikipedias entry for Riemann integral).&lt;/p&gt;
-
-&lt;p&gt;This would get the job done as our approximation would asymptotically approach the true value of $Z$ for large enough sample sizes.
-Yet, upon closer examination we can see that the univariate normal distribution has a specific shape which concentrates a lot of information (or more precisely probability) in the area around $\mu$.&lt;/p&gt;
-
-&lt;p&gt;Remember that a the bulk of the integral $\smash{\int_{-\infty}^{\infty} f(x|\mu, \sigma) dx}$ is evaluated around $\mu$.
-If we chose $x_{min}$ and $x_{max}$ at the very extreme ends of the number line, our $N$ samples would be very dispersed and our approximation of $Z$ would be very poor.&lt;/p&gt;
-
-&lt;p&gt;Let’s examine a concrete problem.
-We choose a standard normal distribution $\mathcal{N}(0,1)$ and sample $200$ values of $x$ from the uniform distribution $\mathcal{U}(-10,10)$.
-Furthermore we consider all probabilities of $\mathcal{N}(0,1)$ interesting which have a probability above $p(x|\mu, \sigma) \geq 0.01$.&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;print()
-print('###########################################')
-print('Uniform Sampler')
-print('###########################################')
-
-import numpy
-import numpy as np
-import scipy as sp
-import matplotlib.pyplot as plt
-import torch
-import math
-
-FloatTensor = torch.FloatTensor
-
-class Gaussian:
-
-	def __init__(self, _mu, _sigma):
-		self.mu = _mu
-		self.std = _sigma
-		self.dist = torch.distributions.Normal(self.mu, self.std)
-
-	def eval(self, _x):
-		return self.dist.log_prob(_x).exp()
-
-	def unnorm_eval(self, _x):
-		return torch.exp(-1/(2*self.std**2)*(_x - self.mu)**2)
-std = 1
-print('True Z:', np.sqrt(2*np.pi*std**2))
-P = Gaussian(FloatTensor([0]), FloatTensor([std]))
-U = torch.distributions.Uniform(0,1)
-num_samples=1000
-
-res = 100
-x_min=-10
-x_max=10
-points = torch.from_numpy(np.linspace(x_min,x_max,res))
-probs = FloatTensor([P.eval(point) for point in points])
-
-plt.figure(figsize=(10,10))
-plt.plot(points.numpy(), probs.numpy())
-sample_points = torch.distributions.Uniform(x_min, x_max).sample((num_samples,))
-sample_probs = FloatTensor([P.unnorm_eval(point) for point in sample_points])
-
-# Compute Z
-Z = sample_probs.sum()/(num_samples/(x_max - x_min))
-sample_probs /= Z
-print('Estimated Z:', Z.numpy())
-
-print('1D Uniform Sampler: P(x)&amp;gt;=0.01: ', sample_probs[sample_probs&amp;gt;=0.01].shape[0]/sample_points.shape[0]*100, '%')
-
-plt.scatter(sample_points.numpy(), sample_probs.numpy())
-plt.show()
-
-###########################################
-Uniform Sampler
-###########################################
-True Z: 2.5066282746310002
-Estimated Z: 2.5824146
-1D Uniform Sampler: P(x)&amp;gt;=0.01:  26.1 %
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;As it turns out $ \approx 74\%$ of the values $x \in [-10,10]$ are below $0.01$.
-That means that by sampling randomly from a uniform distribution $\mathcal{U}(-10,10)$ we would evaluate $72\%$ of our randomly selected values $x$ with a probability below $0.01$ thus effectively wasting a large number of samples.
-Conversely only $28\%$ of the samples would lie in probability regions around the mean $\mu$ with a probability higher than $0.01$.
-The evaluation of the area close to $\mu$ would therefore be highly inefficient as we waste a considerable amount of samples in areas which do not contribute to the integral of $Z$.&lt;/p&gt;
-
-&lt;p&gt;Obviously we could restrict the uniform distribution $\mathcal{U}(x_{min}, x_{max})$ to be closer to the value of $\mu$ but this could only be efficiently be done if we were to have specific prior information about the distribution.
-Similarly, the area with probabilities below 0.01 decreases if we increase the variance of the Normal distribution.
-Again, this is just a toy example to visualize the problems when sampling from high-dimensional spaces.
-The main take way point is that one has to pay close attention to what the sampler is doing and how sampling algorithms are designed to make efficient use of computational resources.
-I’ll get into the geometric details of high dimensional spaces later.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/HMC/HMC_01.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Can we do any better? … In fact we can with the help of physicists from the Manhattan Project and a chain.&lt;/p&gt;
-
-&lt;p&gt;In the example above we want to sample as often as possible in the areas which greatly contribute to the integral $Z = \int_{-\infty}^{\infty} f(x|\mu, \sigma) dx$.
-So we could say that once we happen to sample close to $\mu$ we would like to sample as often as possible in the same area, effectively staying in the area around $\mu$.&lt;/p&gt;
-
-&lt;p&gt;The achievement of Mr Metropolis et al. and the extensions by Mr Hastings (is the Netflix-Founder related to him?) was to elaborate precisely that idea and introduce the concept of a sampling chain to our problem.&lt;/p&gt;
-
-&lt;p&gt;The sampling chain is a sequence of samples ${x_0, x_1, \ldots, x_N}$ which is constructed iteratively by sampling a proposal point $x_t’$ and accepting it as the next sample $x_{t+1}$ based on an acceptance condition.
-The proposal sample $x’_t$ can be be rejected and in that case a new proposal sample $x’_t$ has to be proposed.
-The important part is how the proposed samples in the chain are generated, accepted and rejected.&lt;/p&gt;
-
-&lt;p&gt;In order to stay in areas which contribute to the value of Z, we can propose a sample $x’_t$ which is close to our current sample $x_t$ and evaluate $f(x’_t|\mu, \sigma)$.
-We can then compare the new evaluated sample $f(x’_t|\mu, \sigma)$ and the current evaluated sample $f(x_t|\mu, \sigma)$ and accept the proposed sample $x’_t$ as the next sample if $f(x’_t|\mu, \sigma) \geq f(x|\mu, \sigma)$.&lt;/p&gt;
-
-&lt;p&gt;Before long the straight-forward acceptance rule $f(x’_t|\mu, \sigma) \geq f(x_t|\mu, \sigma)$ would take us straight to $x = \mu$.
-The problem is that we would be stuck in $x = \mu$ as every value $x \neq \mu$ has a lower evaluation $f(x\neq\mu |\mu, \sigma)$ than $f(x = \mu|\mu, \sigma)$.
-You can verify that by simply looking at a plot of a normal distribution.&lt;/p&gt;
-
-&lt;p&gt;In order to stay in the high value area around $\mu$ but also not get stuck in it, a proposal distribution $q(x’|x)$ is evaluated, the ratio $f(x’_t|\mu, \sigma)/f(x_t|\mu, \sigma)$ is used which is then compared to an auxiliary sample: $U \sim \mathcal{U}(0,1)$.
-This is done in the following way:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/HMC/HMC_MHAlgo.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;The acceptance ratio $\alpha$ is computed in a smart way, namely that $f(x’_t|\mu, \sigma)/f(x_t|\mu, \sigma) \in (0,\infty)$.
-If $f(x’_t|\mu, \sigma)$ is larger than $f(x_t|\mu, \sigma)$, then $f(x’_t|\mu, \sigma)/f(x_t|\mu, \sigma) \geq 1$ and the proposal sample will always be accepted.
-If on the other hand $f(x’_t|\mu, \sigma) \leq f(x_t|\mu, \sigma)$, then $f(x’_t|\mu, \sigma)/f(x_t|\mu, \sigma) \in (0,1)$ there is a chance that we accept the proposed sample $x’_t$ anyway if $u &amp;gt; \alpha$.
-By sampling $u \sim \mathcal{U}(0,1)$, occasional steps into areas with lower values $f(x)$ are allowed.&lt;/p&gt;
-
-&lt;p&gt;The final component is the proposal distribution $q(x’|x)$ which is chosen in its simplest form as a standard normal distribution around $x$, namely $x’ \sim \mathcal{N}(x, 1)$.
-The chain $\{ x_t \}_ { i=0 }^N$ that is constructed during sampling exhibits the Markov property such that each state $x_t$ is only dependent on the previous state $x_{t-1}$ through the proposal distribution $q(x’|x)$ (and after the proposal was accepted).
-The Markov chain property and the Monte Carlo sampling process together define the broader class of sampling algorithms called ‘Markov Chain Monte Carlo’ (MCMC).&lt;/p&gt;
-
-&lt;p&gt;An important criterion while constructing such a Markovian chain of samples is that the sampler can move through the state space in an unbiased way.
-The acceptance probability and the proposal distribution should therefore guarantee that the sampler can reach every state if we sample long enough.
-For the Metropolis-Hastings algorithm it is required that the proposal density is symmetric such that $q(x’|x) = q(x|x’)$.
-This can be realized easily with a Normal distribution with constant standard deviation.
-Mathematically, it is required that the Markov chain is reversible which simply states that there should be equal probability when being in state $x$ and moving to $x’$ and reverse:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align*}
-	p(x',x) &amp;= p(x, x') \\
-	p(x' | x) \ p(x) &amp;= p(x | x) \ p(x').
-\end{align*} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;We can now decompose the transition probability
-$ p(x’|x) $
-into the proposal distribution $q(x’|x)$
-and the acceptance probability
-$\alpha(x’|x)$:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align*}
-	\alpha(x'|x) q(x'|x) p(x) = \alpha(x|x') q(x|x') p(x')
-\end{align*}&lt;/script&gt;
-
-&lt;p&gt;The equation above simply states that the probability of being in state $x$, proposing to go to state $x’$ and finally accepting to go the state $x’$ should be the same as doing the three steps in reverse.
-This guarantees that no state $x$ is favored in any particular way and that the final Markov chain asymptotically approaches the true value of $Z$.&lt;/p&gt;
-
-&lt;p&gt;We can now plug in the acceptance probability of the Metropolis-Hastings sampler and pull the transition and stationary probabilities into the minimum operator:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align*}
-	\min\left(1, \frac{p(x')}{p(x)} \right) q(x'|x) p(x) &amp;= \min \left(1, \frac{p(x)}{p(x')} \right) q(x|x') p(x') \\
-	\min\left( q(x'|x) p(x), \frac{p(x') q(x'|x) p(x)}{p(x)} \right) &amp;= \min \left(q(x|x') p(x'), \frac{p(x)q(x|x') p(x')}{p(x')} \right) \\
-	\min\big( q(x'|x) p(x), p(x') \underbrace{q(x'|x)}_{=q(x|x')} \big) &amp;= \min \big(q(x|x') p(x'), p(x) \underbrace{q(x|x')}_{=q(x'|x)} \big) \\
-	% \min\big( q(x'|x) p(x), p(x') \underbrace{q(x'|x)}_{=q(x|x')} \big) &amp;= \min \big(q(x|x') p(x'), p(x) \underbrace{q(x|x')}_{=q(x'|x)} \big)\\
-	\min\big( q(x'|x) p(x), p(x') q(x|x') \big) &amp;= \min \big( q(x|x') p(x'), p(x) q(x'|x) \big)
-\end{align*} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;The above equation is valid and states that the ‘detailed balance’ property holds for the acceptance ratio of the Metropolis-Hastings sampler.
-Thus in statistical lingo, we have an unbiased estimator of the true $Z$ which will asymptotically approach the true of value of $Z$!&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	print()
-	print('###########################################')
-	print('Metropolis-Hastings')
-	print('###########################################')
-
-
-	import numpy
-	import numpy as np
-	import scipy as sp
-	import matplotlib.pyplot as plt
-	import torch
-	import math
-
-	FloatTensor = torch.FloatTensor
-
-	class Gaussian:
-
-		def __init__(self, _mu, _sigma):
-			self.mu = _mu
-			self.std = _sigma
-			self.dist = torch.distributions.Normal(self.mu, self.std)
-
-		def eval(self, _x):
-			return self.dist.log_prob(_x).exp()
-
-		def unnorm_eval(self, _x):
-			return torch.exp(-1/(2*self.std**2)*(_x - self.mu)**2)
-
-	std = 1
-	print('True Z:', np.sqrt(2*np.pi*std**2))
-	P = Gaussian(FloatTensor([0]), FloatTensor([std]))
-	Q = torch.distributions.Normal(FloatTensor([0]), FloatTensor([1]))
-	U = torch.distributions.Uniform(0,1)
-	num_samples=100
-
-	res = 200
-	x_min=-10
-	x_max=10
-
-	#Deterministic evaluation for plotting purposes
-	points = torch.from_numpy(np.linspace(x_min,x_max,res))
-	probs = FloatTensor([P.eval(point) for point in points])
-	plt.figure(figsize=(10,10))
-	plt.plot(points.numpy(), probs.numpy())
-
-	# Initialize starting point of chain randomly in U(-10,10)
-	x_init = torch.distributions.Uniform(x_min, x_max).sample((1,))
-	x = x_init
-
-	accepted_x = []
-	accepted_y = []
-	rejected_x = []
-
-	num_samples=1000
-	burn_in = 200 # Burn_in to make up for random initialization
-	for i in range(num_samples+burn_in):
-
-		x_ = Q.sample()
-		a = P.unnorm_eval(x+x_)/P.unnorm_eval(x)
-		if a &amp;gt;= U.sample():
-			if i &amp;gt;= burn_in:
-				accepted_x.append(x+x_)
-				accepted_y.append(P.unnorm_eval(x+x_))
-			x = x+ x_
-		else:
-			if i &amp;gt;= burn_in: rejected_x.append(x+x_)
-
-	accepted_x = torch.stack(accepted_x, dim=0)
-	accepted_y = torch.stack(accepted_y, dim=0)
-	rejected_x = torch.stack(rejected_x, dim=0)
-	print('Accepted/Rejected: ', accepted_x.shape[0], '/', rejected_x.shape[0])
-
-	#Computing Z
-	num_bins = 200
-	bins = np.linspace(x_min, x_max, num_bins)
-	index = np.digitize(accepted_x, bins)
-
-
-	bin_counts = np.array([np.sum([index == i]) for i in range(1, len(bins))])
-	bin_y_sums = np.array([accepted_y.numpy()[index == i].sum() for i in range(1, len(bins))])
-
-	tmp = bin_y_sums/bin_counts
-	tmp[np.isnan(tmp)]=0
-
-	print('Estimated Z:', sum(tmp)/(num_bins/(x_max-x_min)))
-
-	accepted_probs = FloatTensor([P.eval(point) for point in accepted_x])
-	print('1D MH Sampler: P(x)&amp;gt;=0.01: ', accepted_probs[accepted_probs&amp;gt;=0.01].shape[0]/num_samples*100, '%')
-
-	plt.scatter(accepted_x.numpy(), accepted_probs.numpy())
-	plt.show()
-
-	###########################################
-	Metropolis-Hastings
-	###########################################
-	True Z: 2.5066282746310002
-	Accepted/Rejected:  701 / 299
-	Estimated Z: 2.4467572424682826
-	1D MH Sampler: P(x)&amp;gt;=0.01:  69.69999999999999 %
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;The uniform sampled used $26 \%$ of its samples in useful areas whereas the Metropolis-Hastings sampler uses almost $70 \%$!
-We can visualize the two samplers next to each other to visualize the increased efficiency of the Metropolis-Hastings Sampler.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/HMC/Uniform_SamplingDist.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;
-&lt;img src=&quot;/blog/HMC/MH_SamplingDist.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;We can even visualize a Metropolis-Hastings sampler in two dimensions with the accepted and rejected samples:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/HMC/MH_2D.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;It’s observable how moves closer to the center of the probability distribution are always accepted whereas moves away are sometimes accepted.
-In the cases where the proposed sample is in significantly lower value areas, the move will be rejected.&lt;/p&gt;
-
-&lt;p&gt;We can even improve our sampler even further by treating the surface of the distribution as a physical model.
-In order to illustrate we should first take the $-\log$ of the unnormalized function $f(x|\mu, \sigma)$:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/HMC/HMC_02.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;By working with $-\log f(x | \mu, \sigma)$ we get rid of the pesky exponential term, effectively working with a linear function in case of the Normal distribution.
-Additionally, we have transformed the function $f(x|\mu, \sigma)$ into a nice representation where the bottom of the curve $-\log f(x|\mu, \sigma)$ represents the areas in $f(x|\mu, \sigma)/Z$ with the highest probabilities.&lt;/p&gt;
-
-&lt;p&gt;Remember that the Metropolis-Hastings sampler was developed by the physicists at the Manhattan Project to tackle the problem in statistical mechanics of estimating the partition function $Z$.
-In statistical mechanics, the function $f(x)$ is the energy function $E(x)$ of a system in state $x$ and the probability of the system being in state $x$ is defined by&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align*}
-	p(x) = \frac{1}{Z} e^{-E[x]}
-\end{align*}&lt;/script&gt;
-
-&lt;p&gt;The probability of a system being in state $x$ increases if the energy of that state $x$ is small.
-This corresponds to the basic physical behavior, that physical systems want to be in a minimal energy state.
-If a piece of metal is hot, it emanates heat and cools down and decreases its energy.
-If a ball has high potential energy, it will decrease this energy by dropping down.
-If a coil is being compressed, it will expand once the force relents to enter into a low energy state.&lt;/p&gt;
-
-&lt;p&gt;We will now introduce a second idea from physics: Hamiltonian Mechanics.
-Let’s say you have physical system $\mathcal{H}(x, p, t)$ in which two properties describes everything you know.
-These two properties are the position $x(t)$ and the momentum $p(t)$.
-For some position $x(0)$ and the momentum $p(0)$, the physical system $\mathcal{H}(x, p, t)$ will be able to predict every future position $x(t)$ and momentum $p(t)$.&lt;/p&gt;
-
-&lt;p&gt;This is possible due to the following Hamiltonian mechanics:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align*}
-	\frac{d p(t)}{d t} &amp;= -\frac{\partial \mathcal{H}(x, p, t)}{\partial x(t)}\\
-	\frac{d x(t)}{d t} &amp;= \frac{\partial \mathcal{H}(x, p, t)}{\partial p(t)}
-\end{align*} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;The Hamiltonian $\mathcal{H}(x, p, t)$ corresponds in our simple case to the energy of the system.
-The two differential equations above describes how the energy of the system is allocated to either the momentum $p(t)$ or the position $x(t)$ as time progresses.&lt;/p&gt;
-
-&lt;p&gt;The energy of the system $\mathcal{H}(x, p, t)$ consists of the potential energy $E_p(x(t))$ and the kinetic energy $E_k(p(t)) = p(t)^2/2m$ for a particle of mass $m$:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align*}
-	\mathcal{H}(x, p, t) = E_p(x(t)) + E_k(p(t)) = E_p(x(t)) + \frac{p(t)^2}{2m}
-\end{align*}&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;We can apply the Hamiltonian mechanics from above to our function $-\log f(x | \mu ,\sigma)$ and simulate the trajectory of a particle with $m=1$.
-For that to happen we first derive both $dp(t)/dt$ and $dx(t)/dt$ for the potential energy provided by $ E_p(x(t)) = - \log f(x(t) | \mu, \sigma)$:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align*}
-	\frac{d p(t)}{d t} &amp;= -\frac{\partial \mathcal{H}(x, p, t)}{\partial x(t)} \\
-	&amp;= \frac{\partial }{\partial x(t)} \log f(x(t) | \mu, \sigma) \\
-	&amp;= \frac{1}{f(x(t) | \mu, \sigma)} \frac{\partial}{\partial x(t)} f(x(t) | \mu, \sigma) \\
-	\frac{d x(t)}{d t} &amp;= \frac{\partial \mathcal{H}(x, p, t)}{\partial p(t)} \\
-	&amp;= \frac{\partial }{ \partial p(t)} \frac{p(t)^2}{2} \\
-	&amp;= p(t)
-\end{align*} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;We can now use the derivations above to simulate the trajectory of a particle on the surface of $-\log f(x(t) | \mu, \sigma)$ applying the following update steps to the position $x(t)$ and momentum $p(t)$ of the particle:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align*}
-	x(t+\epsilon) &amp;= x(t) + \epsilon \frac{d p(t)}{d t} \\
-	&amp;= x(t) + \epsilon p(t) \\
-	p(t+ \epsilon) &amp;= p(t) - \epsilon \frac{d p(t)}{dt} \\
-	&amp;= p(t) - \epsilon \frac{\partial }{\partial x(t)} \log f(x(t)|\mu, \sigma)
-\end{align*} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;These two update rules have very intuitive explanations once we have look at the shape of $-\log f(x(t) | \mu, \sigma)$:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/HMC/HMC_03.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;The particle starts at $x(t_0)$ with a high potential energy and some initial momentum $p(t_0)$.
-The gradient of $-\log f(x(t_0)|\mu, \sigma)$ is very steep and thus a lot of extra momentum is added to the particles kinetic energy.
-The direction of steepest descent $-\partial \log f(x(t)|\mu, \sigma)/dx(t)$ points in the negative direction on the x-axis and thus extra momentum is added due to the minus sign.
-The potential energy  $-\log f(x(t)|\mu, \sigma)$ decreases as the particle moves to the lower area.
-Once the particle moved past $x(t)=0$ the trend reverses and the gradient $\partial \log f(x(t)|\mu, \sigma)/dx(t)$ is positive, thus decreasing the momentum.&lt;/p&gt;
-
-&lt;p&gt;While the one dimensional case above is nice to gain an intuition, this whole simulation looks significantly cooler in two dimensions.
-I plotted the $- \log f(x(t)|\mu, \sigma)$ surface with the resulting gradients of the surface as arrows.
-We can see nicely how the particle runs up the slope at the edge of the low energy basins.
-After all its momentum has been converted into potential energy, it makes a u-turn and heads back down the slope.
-(That’s actually something we want to prevent which lead to the development of the No-U-Turn-Sampler (NUTS)).&lt;/p&gt;
-
-&lt;p&gt;Here’s some code with PyTorch:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	import numpy as np
-	import matplotlib
-	import matplotlib.pyplot as plt
-	import torch
-
-	FloatTensor = torch.FloatTensor
-
-	pi = FloatTensor([np.pi])
-
-
-	class Potential:
-
-		#GMM with three different clusters
-		def __init__(self):
-			self.mean1 = FloatTensor([-2, -2])
-			self.covar1 = FloatTensor([[2, -0.5],[-0.5, 1]])
-			self.mean2 = FloatTensor([1.4, 1.6])
-			self.covar2 = FloatTensor([[2, 0],[0, 1]])
-			self.mean3 = FloatTensor([2, -2])
-			self.covar3 = FloatTensor([[2, 0],[0, 2]])
-
-		def log_eval(self, x):
-
-			dist1 = torch.distributions.MultivariateNormal(self.mean1, self.covar1)
-			dist2 = torch.distributions.MultivariateNormal(self.mean2, self.covar2)
-			dist3 = torch.distributions.MultivariateNormal(self.mean3, self.covar3)
-
-			return torch.log(1/3*torch.exp(dist1.log_prob(x))
-					 + 1/3*torch.exp(dist2.log_prob(x))
-					 +1/3*torch.exp(dist3.log_prob(x)))
-
-	#Initialize potential
-	potential = Potential()
-
-	#Data for plotting the surface  
-	res = 50
-	x = np.linspace(-5,5,res)
-	y = np.linspace(-5,5,res)
-	X,Y = np.meshgrid(x, y)
-	points = FloatTensor(np.stack((X.ravel(),Y.ravel())).T).requires_grad_()
-	probs = FloatTensor([potential.log_eval(point).exp() for point in points]).view(res,res)
-
-	#Data for plotting the gradients
-	res_coarse = 25
-	x_coarse = np.linspace(-5, 5, res_coarse)
-	y_coarse = np.linspace(-5, 5, res_coarse)
-	X_coarse,Y_coarse = np.meshgrid(x_coarse, y_coarse)
-	points_coarse = FloatTensor(np.stack((X_coarse.ravel(),Y_coarse.ravel())).T).requires_grad_()
-	grads = [torch.autograd.grad(outputs=potential.log_eval(point), inputs=point)[0] for point in points_coarse]
-	grads = torch.stack(grads, dim=0).numpy()
-
-	#Plotting both surface and gradients
-	plt.figure(figsize=(10,10))
-	plt.contourf(X, Y, probs.numpy(), levels=10)
-	plt.quiver(X_coarse, Y_coarse, grads[:,0], grads[:,1], color='black', alpha=0.5)
-
-	#The two lists store the trajectory data
-	traj = []
-	nuts_criterion = []
-
-	#Initialize the starting position and momentum for the particle
-	x = FloatTensor([-2,-2.5]).requires_grad_() # Position
-	p = FloatTensor([1,0]) # Momentum
-
-	for i in range(600):
-
-		p = p + 0.05 * torch.autograd.grad(outputs=potential.log_eval(x), inputs=x)[0]
-		x = x + 0.05 * p
-
-		traj.append(x.detach())
-		nuts_criterion.append((x - x_init).dot(p).detach())
-
-	traj = torch.stack(traj, dim=0).numpy()
-	nuts_criterion = torch.stack(nuts_criterion).numpy()
-	nuts_criterion = (nuts_criterion-nuts_criterion.min())/(nuts_criterion.max() - nuts_criterion.min())
-
-	for i in range(traj.shape[0]-1):
-		plt.plot([traj[i,0], traj[i+1,0]], [traj[i,1],traj[i+1,1]], c=(1-nuts_criterion[i], 0, nuts_criterion[i]))
-
-	plt.show()
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/HMC/HMC_2D01.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;The total energy of the particle is conserved between the potential and the momentum.
-We show this by initializing the particle with a very high potential energy and a high momentum and watch it slide over the surface of the distribution in wide arcs.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/HMC/HMC_HighEnergy.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Alternatively we could initialize the particle with little potential energy and little momentum.
-Since the total energy of the particle is low, it will remain in the low energy (=high probability) basin and sample amply from there.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/HMC/HMC_LowEnergy.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;The total energy initialization of the particle at the start of each trajectory can be drawn from a distribution.
-The distribution can easily be incorporated into the detailed balance equation and marginalized out such that the sampler is unbiased.&lt;/p&gt;
-
-&lt;p&gt;Here are two links to fully implemented Hamiltonian Monte Carlo Samplers with crazy awesome animations:
-&lt;a href=&quot;http://elevanth.org/blog/2017/11/28/build-a-better-markov-chain/&quot;&gt;here&lt;/a&gt;
-and
-&lt;a href=&quot;http://arogozhnikov.github.io/2016/12/19/markov_chain_monte_carlo.html&quot;&gt;here&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;A closing remark about the geometry of high-dimensional spaces:&lt;/p&gt;
-
-&lt;p&gt;While sampling methods are asymptotically correct in their estimation of the posterior distribution, they do not scale well due to the curse of dimensionality.
-In a nutshell it refers to the geometric properties of high dimensional spaces.
-For example the distance between two points increases as we move into higher and higher dimensional spaces.
-A quick example is the Euclidean distance between two points which have a distance of 1 in every of their shared dimensions $\mathbb{R}^N$.
-Depending on the dimensionality $N$ we get a distance $\sqrt{\sum_{n=0}^N 1^2}$:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align*}
-	\mathbb{R}^1 &amp;: \quad \sqrt{1^2}=1 \\
-	\mathbb{R}^2 &amp;: \quad \sqrt{1^2+1^2}=1.41 \ldots \\
-	\mathbb{R}^3 &amp;: \quad \sqrt{1^2+1^2 +1^2}=1.73 \ldots \\
-	\vdots	&amp;
-\end{align*} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/HMC/HMC_Distance.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;The more dimensions we add, the larger the space between two points with equal distance in every dimension.
-Secondly this creates the problem of requiring an increasing number of samples for higher and higher dimensional spaces.
-Let’s say we want to estimate a function by sampling in the Euclidean space spanned between two points with unit distance, ergo distance of 1.
-We want to estimate the function and want a resolution of 0.1, i.e. we need 10 samples per dimension.
-In $\mathbb{R}^1$ we only require 10 samples to estimate the pdf wit equally spaced sampling points.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/HMC/HMC_04.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;But in $\mathbb{R}^2$ we suddenly require 100 samples to estimate the function with the desired resolution.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/HMC/HMC_05.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;In $\mathbb{R}^3$ we finally need 1000 samples to estimate the function to our liking.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/HMC/HMC_06.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;The required number of samples grows exponentially with the number of dimension, i.e. $10^N$ in $\mathbb{R}^N$ for our specific setup of 10 samples per dimension.
-By just adding two dimensions we need $100 \times$ more samples than in one dimension.
-That might not sound like a lot, but it quickly accumulates when working in high-dimensional spaces.
-This effectively restricts sampling algorithms to applications where we require very precise posteriors as in finance or medicine or where the run-time isn’t a problem.&lt;/p&gt;</content><summary type="html">Sampling with the help of physics</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/HMC/HMC_2D01.png" /></entry></feed>
+&lt;p&gt;The talk can be downloaded &lt;a href=&quot;/blog/GPyTorch/GPytorch.pdf&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;</content><summary type="html">GPU Acceleration for Gaussian Processes</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/GPyTorch/GPyTorch_Cover.png" /></entry></feed>
