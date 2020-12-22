@@ -272,6 +272,13 @@ Visually, sampling more samples $x_n$ in the figure above asymptotically lets th
 The closer the estimated mean is, the tighter the bound.
 This is precisely whats happening when we draw more samples in the expectation of the importance weighted VAE.</p>
 
+<p>Finally, for we can use the probabilistic version of Jensen’s inequality to derive the positive constraint of the variance of a random variable $x$:
+<script type="math/tex">% <![CDATA[
+\begin{align}
+\mathbb{E}[x]^2 &\leq \mathbb{E}[x^2] \\
+0 &\leq \mathbb{E}[x^2] - \mathbb{E}[x]^2 = \mathbb{V}[x]
+\end{align} %]]></script></p>
+
       		</section>
 
           <!-- <div class="comments-wrapper">
