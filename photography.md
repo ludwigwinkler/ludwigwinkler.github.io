@@ -11,14 +11,14 @@ sitemap:
 ## Berlin
 {% include image-gallery.html folder="photo_gallery/berlin" %}
 
-## South America
-{% include image-gallery.html folder="photo_gallery/southamerica" %}
-
-## Greece
-{% include image-gallery.html folder="photo_gallery/greece" %}
+## Portugal
+{% include image-gallery.html folder="photo_gallery/portugal" %}
 
 ## New Zealand
 {% include image-gallery.html folder="photo_gallery/nz" %}
 
-## Portugal
-{% include image-gallery.html folder="photo_gallery/portugal" %}
+## Greece
+{% include image-gallery.html folder="photo_gallery/greece" %}
+
+## South America
+{% include image-gallery.html folder="photo_gallery/southamerica" %}
