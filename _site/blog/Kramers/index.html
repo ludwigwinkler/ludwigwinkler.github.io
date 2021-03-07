@@ -1,0 +1,351 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+  Jekyll integration by somiibo.com
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+--><html>
+	<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+<title>Fokker, Planck, Kolmogorov, Kramers and Moyals</title>
+<meta name="description" content="">
+
+<link rel="apple-touch-icon" sizes="180x180" href="http://localhost:4000/assets/icon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:4000/assets/icon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:4000/assets/icon/favicon-16x16.png">
+<link rel="manifest" href="http://localhost:4000/assets/icon/manifest.json">
+<link rel="mask-icon" href="http://localhost:4000/assets/icon/safari-pinned-tab.svg" color="#5bbad5">
+<link rel="shortcut icon" href="http://localhost:4000/assets/icon/favicon.ico">
+<meta name="msapplication-config" content="http://localhost:4000/assets/icon/browserconfig.xml">
+<meta name="theme-color" content="#ffffff">
+
+<!-- CSS -->
+<link rel="stylesheet" href="http://localhost:4000/assets/css/main.css">
+<noscript><link rel="stylesheet" href="http://localhost:4000/assets/css/noscript.css"></noscript>
+
+	</head>
+	<body class="is-loading">
+
+		<!-- Wrapper -->
+			<div id="wrapper" class="fade-in">
+
+				<!-- Header -->
+        <header id="header">
+          <a href="http://localhost:4000/" class="logo">Ludwig Winkler</a>
+        </header>
+
+				<!-- Nav -->
+					<nav id="nav">
+
+            <ul class="links">
+  <li class=""><a href="http://localhost:4000/">Home</a></li>
+  <li class=" active "><a href="http://localhost:4000/blog/">Blog</a></li>
+  <li class=""><a href="http://localhost:4000/readinglist/">Reading List</a></li>
+  <li class=""><a href="http://localhost:4000/photography/">Photography</a></li>
+  <li class=""><a href="http://localhost:4000/about/">About</a></li>
+</ul>
+
+
+						<ul class="icons">
+              <li><a href="https://twitter.com/default" class="icon fa-twitter" rel="nofollow"><span class="label">Twitter</span></a></li>
+              <!-- <li><a href="https://facebook.com/default" class="icon fa-facebook" rel="nofollow"><span class="label">Facebook</span></a></li> -->
+              <!-- <li><a href="https://instagram.com/default" class="icon fa-instagram" rel="nofollow"><span class="label">Instagram</span></a></li> -->
+              <li><a href="https://github.com/default" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+				<div id="main">
+          <section class="post">
+    				<header class="major">
+      				<span class="date">04 Feb 2021</span>
+      				<h1>Fokker, Planck, Kolmogorov, Kramers and Moyals</h1>
+      				<p>Distributions over time </p>
+      			</header>
+      			<div class="image main"><img src="" alt=""></div>
+      			<p></p>
+<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
+       <script type="text/x-mathjax-config">
+         MathJax.Hub.Config({
+           tex2jax: {
+             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+             displayMath: [['$$','$$']],
+             processEscapes: true
+           }
+         });
+       </script>
+       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+
+
+<p>At the core of the partial differential equations that will describe the change of a distribution lies the Chapman-Kolmogorov equation
+<script type="math/tex">% <![CDATA[
+\begin{align}
+	p(x_{t + \tau}) = & \int p(x_{t + \tau} | x'_{t}) \ p(x'_t) \ dx'_t \\
+	& = \int p(x_{t + \tau} , x'_{t}) \ dx'_t
+\end{align} %]]></script>
+which is simply a way to write joint probabilities over time as conditionals.</p>
+
+<p>We will assume a stochastic differential equation the first two orders of which can be estimated with
+<script type="math/tex">\begin{align}
+	M^{(n)} (x'_t) = \int (x_{t+\tau} - x'_t)^n  p(x_{t + \tau} | x'_t) dx_{t+\tau}
+\end{align}</script>
+such that the dynamics are described by the Ito drift-diffusion process
+<script type="math/tex">% <![CDATA[
+\begin{align}
+	dX'_t = & M^{(1)}(X'_t) dt + M^{(2)}(X'_t) dW_t \\
+	= & \mu(X'_t, t) dt + \sigma(X'_t, t) dW_t \\
+\end{align} %]]></script>
+with the Wiener process <script type="math/tex">W_t</script>.</p>
+
+<h3 id="forward-equation">Forward Equation</h3>
+
+<p>The Chapman-Kolmogorov equation fro the forward Kramers-Moyal expansion can be rewritten with the help of an auxilliary variable as
+<script type="math/tex">% <![CDATA[
+\begin{align}
+	p(x_{t + \tau}) = & \int p(x_{t + \tau} | x'_{t}) \ p(x'_t) \ dx'_t \\
+	= & \int_{X'} \int_{Y} \delta(y_{t+\tau} - x_{t+\tau}) p(y_{t + \tau} | x'_{t}) \ dy_{t+\tau} p(x'_t) dx'_t
+\end{align} %]]></script></p>
+
+<p>We can then first expand the delta function $\delta ( y_{t+\tau} - x_{t+\tau} )$ with $\pm x_t$ and subsequently expand the Taylor series to obtain
+<script type="math/tex">% <![CDATA[
+\begin{align}
+	\delta(y_{t+\tau} - x_{t+\tau}) = & \delta(y_{t+\tau} - x'_t + x'_t - x_{t+\tau}) = \delta(y_{t+\tau} - x'_t) \delta(x'_t - x_{t+\tau}) \\
+	= & \sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ \partial_{x'_t}^{n} \ \delta(x'_t - x_{t+\tau})
+\end{align} %]]></script></p>
+
+<p>We can plug the expanded Taylor series back in to get
+<script type="math/tex">% <![CDATA[
+\begin{align}
+p(x_{t + \tau}) 
+= & \int_{X'} \int_{Y} \delta(y_{t+\tau} - x_{t+\tau}) p(y_{t + \tau} | x'_{t}) \ dy_{t+\tau} \ p(x'_t) dx'_t \\
+= & \int_{X'} \int_{Y} \sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ \underbrace{ \partial_{x'_t}^{n} \ \delta(x'_t - x_{t+\tau})}_{!} p(y_{t + \tau} | x'_{t}) \ dy_{t+\tau} \ p(x'_t) \underbrace{dx'_t}_{!} \\
+\end{align} %]]></script></p>
+
+<p>But now we’re in a sort of a pickle, since we’re integrating over <script type="math/tex">x'_t</script> but the Dirac function <script type="math/tex">\delta(x'_t - x_{t+\tau})</script> will serve as a sort of selector for the integral discarding anything for which the value for <script type="math/tex">x'_t</script> does not correspond to the future value <script type="math/tex">x_{t+\tau}</script>.</p>
+
+<p>Since for any subtraction <script type="math/tex">x'_{t} - x_{t+\tau}</script> and function <script type="math/tex">f(x'_{t} - x_{t+\tau})</script> we can employ the relation <script type="math/tex">\partial_{x'_t} f(x'_{t} - x_{t+\tau}) = - \partial_{x_{t}} f(x'_{t} - x_{t+\tau})</script> via the change of variables, we switch the derivative to 
+<script type="math/tex">% <![CDATA[
+\begin{align}
+	\sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ \partial_{x'_{t}}^{n} \ \delta(x'_t - x_{t+\tau}) = & \sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ (- \partial_{x_{t}})^{n} \ \delta(x'_t - x_{t+\tau})
+\end{align} %]]></script></p>
+
+<p>The question that remains to be answered is what motivates us to do the derivative switch in the first place.
+In terms of algebra and calculus, the switch is mathematically valid, yet the holistic reason for it is still a mystery.
+It turns out that due to the Chapman-Kolmogorov equation, we will integrate out the variable <script type="math/tex">x'_t</script>, so a derivative with respect to a latent variable is not of much use.
+More holistically, we want to obtain the change in the probability from <script type="math/tex">p(x_t)</script> to <script type="math/tex">p(x_{t+\tau})</script> for which the values of <script type="math/tex">x'_t</script> are not of much use.</p>
+
+<!-- The Taylor expansion of the Dirac impulse above is used for the entire distribution of $p(y_{t+\tau} | x_t)$ since $y$ originates, so to say, from the distribution $p(y_{t + \tau}|x'_t)$ such that we obtain
+$$
+\begin{align}
+	p(x_{t + \tau} | x'_t) = & \int \sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_{t})^n \ (- \partial_{x_{t+\tau}})^{n} \ \delta(x'_t - x_{t+\tau}) p(y_{t+\tau} | x'_t) dy \\
+\end{align}
+$$ -->
+
+<p>For the special case of $n=0$ where the factorial, powers and derivatives evaluate to 1 and we can marginalize out over $y$, the sum simplifies to 
+<script type="math/tex">% <![CDATA[
+\begin{align}
+	&\int \sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ (- \partial_{x_{t}})^{n} \ \delta(x'_t - x_{t+\tau}) p(y_{t+\tau} | x'_t) dy_{t+\tau} \\
+	= & \Big( 1 + \sum_{n=1}^\infty \frac{1}{n!} (- \partial_{x_{t}})^{n} \underbrace{\int ( y_{t+\tau} - x'_{t})^n \ p(y_{t+\tau} | x'_t) \ dy_{t+\tau}}_{M^{(n)}(x'_t)} \Big) \ \delta(x'_t - x_{t+\tau}) \\
+	= & \Big( 1 + \sum_{n=1}^\infty \frac{1}{n!} (- \partial_{x_{t}})^{n} M^{(n)}(x'_t) \Big) \ \delta(x'_t - x_{t+\tau})
+\end{align} %]]></script></p>
+
+<p>Plugging the expanded transition probability back into the Chapman-Kolmogorov equation and noting that the Dirac impulse <script type="math/tex">\delta(x'_t-x_{t+\tau})</script> eliminates the integral with respect to <script type="math/tex">x'_t</script> by eliminating every value of <script type="math/tex">x'</script> different from <script type="math/tex">x</script> irrespective of time, we get
+<script type="math/tex">% <![CDATA[
+\begin{align}
+	p(x_{t + \tau}) = & \int p(x_{t + \tau} | x'_{t}) \ p(x'_t) \ dx'_t \\
+	= & \int \int \delta(y_{t+\tau} - x_{t+\tau}) p(y_{t + \tau} | x'_{t}) dy_{t+\tau} \ p(x'_t) \ dx'_{t} \\
+	= & \int \int \sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ \partial_{x'_t}^{n} \ \delta(x'_t - x_{t+\tau}) p(y_{t + \tau} | x'_{t}) \ dy_{t+\tau} \ p(x'_t) dx'_t \\
+	= & \int_{X'} \Big( 1 + \sum_{n=1}^\infty \frac{1}{n!} (- \partial_{x_{t}})^{n} M^{(n)}(x'_t) \Big) \ \delta(x'_t - x_{t+\tau}) \ p(x'_t) \ dx'_t \\
+	= & p(x_t) + \underbrace{\sum_{n=1}^\infty \frac{1}{n!} (- \partial_{x_{t}})^{n} \left[ M^{(n)}(x_t) \ p(x_t) \right]}_{\lim_{\tau \rightarrow 0} : \partial_t p(x_t) \tau}
+\end{align} %]]></script>
+where we note that the evaluation of $n=0$ applies in the same way to any value or function that we multiply into the simplified Taylor expansion.
+Pulling <script type="math/tex">p(x'_t)</script> to the left side and finding that the change between <script type="math/tex">p(x_{t+\tau})</script> and <script type="math/tex">p(x'_t)</script> should be proportional to <script type="math/tex">\partial_t p(x_t) \tau</script> for a small step size <script type="math/tex">\tau</script> analogously to th Euler discretization, we obtain
+<script type="math/tex">% <![CDATA[
+\begin{align}
+	p(x_{t+\tau}) - p(x_t) = & \partial_t p(x_t) \tau \\
+	\frac{p(x_{t+\tau}) - p(x_t)}{\tau} = & \partial_t p(x_t).
+\end{align} %]]></script></p>
+
+<p>Finally we can note that we can could cut off the Taylor expansion after the second order and realize that Taylor expansion is equivalent to the time derivative in the limit of time, i.e. <script type="math/tex">\lim_{\tau \rightarrow 0}</script> and we can proclaim that
+<script type="math/tex">% <![CDATA[
+\begin{align}
+	\partial_t p(x_t) = & - \partial_x \left[ M^{(1)}(x_t) p(x_t) \right] + \frac{1}{2} \partial_x^2 \left[M^{(2)}(x_t) p(x_t) \right] \\
+	= & - \partial_{x_t} \left[ \mu(x_t) p(x_t) \right] + \frac{1}{2} \partial_{x_t}^2 \left[ \sigma^2(x_t) p(x_t) \right] \\
+\end{align} %]]></script></p>
+
+<h3 id="backward-equation">Backward Equation</h3>
+
+<p>The Kolmogorov backward equation (KBE) can be derived in the same way while paying attention to the derivatives.</p>
+
+<p>Again we start with the Chapman-Kolmogorov equation:
+<script type="math/tex">\begin{align}
+	p(x_T | x'_t) = \int p(x_T | x''_{t+\tau}) p(x''_{t+\tau} | x'_t) dx''_{t+\tau}
+\end{align}</script></p>
+
+<p>We expand the transition probability $p(x’<em>t | x’‘</em>{t+\tau})$ again with a Dirac function 
+<script type="math/tex">\begin{align}
+	p(x''_{t+\tau} | x'_t) = \int \delta(y_{t+\tau} - x''_{t+\tau}) p(y_{t+\tau} | x_{t}) dy_{t+\tau}
+\end{align}</script></p>
+
+<p>Then we expand the Dirac function and expand it with the Taylor series to obtain
+<script type="math/tex">% <![CDATA[
+\begin{align}
+	\delta(y_{t+\tau} - x''_{t+\tau}) = & \delta(y_{t+\tau} - x''_{t+\tau} + x'_t - x'_t) \\
+	= & \delta (y_{t+\tau} - x'_t)  \delta(x'_t - x_{t + \tau}) \\
+	= & \sum_{n=0}^\infty \frac{1}{n!} (y_{t + \tau} - x'_t)^n \ \partial_{x'_{t}}^n \ \delta(x'_t - x''_{t+\tau})
+\end{align} %]]></script></p>
+
+<p>Plugging the expanded Dirac function back into the transition probability we obtain
+<script type="math/tex">% <![CDATA[
+\begin{align}
+	p(x''_{t+\tau} | x'_t) = & \int \delta(y_{t+\tau} - x''_{t+\tau}) p(y_{t+\tau} | x_{t}) dy_{t+\tau} \\
+	= & \int \sum_{n=0}^\infty \frac{1}{n!} (y_{t + \tau} - x'_t)^n \ \partial_{x'_{t}}^n \ \delta(x'_t - x''_{t+\tau}) p(y_{t+\tau} | x_{t}) dy_{t+\tau}
+\end{align} %]]></script></p>
+
+<p>When we compare the derivation of the forward Kramers-Moyals expansion with the backwards Kramers-Moyals expansion we should immediately detect that the only difference is the partial derivative.
+The subtle but important difference lies in direction to which we differentiate.
+For the forward expansion we are interested how the PDF changes with respect to the future values <script type="math/tex">x''_{t+\tau}</script> whereas for the backward expansion we want to ultimately know how the PDF changes backward in time, ergo <script type="math/tex">\partial_{x'_t}</script> and not <script type="math/tex">\partial_{x''_{t+\tau}}</script> since obviously <script type="math/tex">% <![CDATA[
+t < t + \tau %]]></script>.</p>
+
+<p>This is consequential for whether we include the moments <script type="math/tex">M^{(n)}(x'_t)</script> in the differentiation or not.
+Remember that the moments are defined with a fixed value at time <script type="math/tex">t</script> and that they are defined as as a forward differentiation <script type="math/tex">y_{t+\tau} - x'_t</script>.
+If we now differentiate with respect to time <script type="math/tex">t</script>, the moments will not be differentiated as the value <script type="math/tex">x'_t</script> is assumed fixed in the moments.</p>
+
+<p>Thus substituting the expanded transition probability back into the Chapman-Kolmogorov equation we obtain,
+<script type="math/tex">% <![CDATA[
+\begin{align}
+	p(x_T | x'_t) = & \int p(x_T | x''_{t+\tau}) \ \int \sum_{n=0}^\infty \frac{1}{n!} (y_{t + \tau} - x'_t)^n \ \partial_{x'_{t}}^n \ \delta(x'_t - x''_{t+\tau}) p(y_{t+\tau} | x_{t}) dy_{t+\tau} dx''_{t+\tau} \\
+	= & \int p(x_T | x''_{t+\tau}) \ \sum_{n=0}^\infty \frac{1}{n!} \underbrace{\int (y_{t + \tau} - x'_t)^n p(y_{t+\tau} | x'_t) dy_{t+\tau}}_{M^{(n)}(x'_t)} \ \partial_{x'_t}^n \ \delta(x'_t - x''_{t+\tau}) dx''_{t+\tau} \\
+	= & p(x_T | x'_{t+\tau}) + M^{(1)}(x'_t) \partial_{x'_t} p(x_T | x'_{t+\tau}) + \frac{1}{2} M^{(2)}(x'_t) \partial_{x'_t}^2 p(x_T | x'_{t+\tau})
+	% = & p(x_T | x'_{t+\tau}) + \mu(x'_t) \partial_{x'_{t}} p(x_T | x'_t) + \frac{1}{2} \sigma^2(x'_t) \partial^2_{x'_{t}} p(x_T | x'_{t+\tau}).
+\end{align} %]]></script>
+Dividing both sides by $\tau$ and evaluating in the limit of $\lim_{\tau \rightarrow 0}$, we get 
+<script type="math/tex">% <![CDATA[
+\begin{align}
+	- \partial_t p(x_T| x'_t) = & \mu(x'_t) \partial_{x'_t} p(x_T | x'_t) + \frac{1}{2} \sigma^2(x'_t) \partial^2_{x'_{t}} p(x_T | x'_{t}).
+\end{align} %]]></script></p>
+
+<p>The equation above is a partial differential equation which characterizes how the probability of $x_T$ changes as we go backwards in time.
+It essentially answers the question of how much the probability $p(x_T)$ changes after conditioning the process on $x’_t$ and at earlier point in time $t$.</p>
+
+      		</section>
+
+          <!-- <div class="comments-wrapper">
+          <div id="disqus_thread"></div> -->
+          <!-- <script>
+              /**
+               *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+               *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+               */
+
+              var disqus_config = function () {
+                  this.page.url = '/blog/Kramers/';  /*Replace PAGE_URL with your page's canonical URL variable*/
+                  this.page.identifier = '/blog/Kramers/'; /*Replace PAGE_IDENTIFIER with your page's unique identifier variable*/
+              };
+
+              (function() {  /* dont endit below this line */
+                  var d = document, s = d.createElement('script');
+
+                  s.src = 'https://default.disqus.com/embed.js';
+
+                  s.setAttribute('data-timestamp', +new Date());
+                  (d.head || d.body).appendChild(s);
+              })();
+          </script> -->
+          <!-- <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript> -->
+        <!-- </div>/.comments-wrapper -->
+
+
+					<!-- Footer -->
+						<footer>
+              <ul class="actions">
+                <li><a href="http://localhost:4000/blog/" class="button">My Blog</a></li>
+              </ul>
+						</footer>
+					</div>
+
+				<!-- Footer -->
+        <!-- <footer id="footer">
+  <section>
+    <form method="POST" action="https://formspree.io/">
+      <div class="field">
+        <label for="name">Name</label>
+        <input type="text" name="name" id="name" />
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="text" name="email" id="email" />
+      </div>
+      <div class="field">
+        <label for="message">Message</label>
+        <textarea name="message" id="message" rows="3"></textarea>
+      </div>
+      <ul class="actions">
+        <li><input type="submit" value="Send Message" /></li>
+      </ul>
+    </form>
+  </section>
+  <section class="split contact">
+    <section class="alt">
+      <h3>Location</h3>
+      <p>Berlin, Germany</p>
+    </section>
+    <section>
+      <h3>Phone</h3>
+      <p><a href="tel:"></a></p>
+    </section>
+    <section>
+      <h3>Email</h3>
+      <p><a href="mailto:"></a></p>
+    </section>
+    <section>
+      <h3>Social</h3>
+      <ul class="icons alt">
+        <li><a href="https://twitter.com/ludiXIVwinkler" class="icon fa-twitter" rel="nofollow"><span class="label">Twitter</span></a></li>
+        <!-- <li><a href="https://facebook.com/default" class="icon fa-facebook" rel="nofollow"><span class="label">Facebook</span></a></li> -->
+        <!-- <li><a href="https://instagram.com/default" class="icon fa-instagram" rel="nofollow"><span class="label">Instagram</span></a></li> -->
+        <li><a href="https://github.com/ludwigwinkler" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
+      
+    
+  
+
+<!-- Copyright -->
+<div id="copyright">
+  <ul>
+       <li>© HTML5 UP</li>
+       <li>Design by <a href="https://html5up.net" rel="nofollow">HTML5 UP</a>
+</li>
+       <li>Jekyll Integration by <a href="https://soundgrail.com">SoundGrail</a>
+</li>
+       <li>Theme made by <a href="https://github.com/iwiedenm/jekyll-theme-massively-src"> iwiedenm</a>
+</li>
+ </ul>
+</div>
+ --&gt;
+
+			</div>
+
+      <!-- Scripts -->
+  		<!-- <!-- DYN -->
+<script src="http://localhost:4000/assets/js/jquery.min.js"></script>
+<script src="http://localhost:4000/assets/js/jquery.scrollex.min.js"></script>
+<script src="http://localhost:4000/assets/js/jquery.scrolly.min.js"></script>
+<script src="http://localhost:4000/assets/js/skel.min.js"></script>
+<script src="http://localhost:4000/assets/js/util.js"></script>
+<script src="http://localhost:4000/assets/js/main.js"></script>
+ --&gt;
+			<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=default"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments)};
+  gtag('js', new Date());
+
+  gtag('config', 'default');
+</script>
+ -->
+
+	</body>
+</html>

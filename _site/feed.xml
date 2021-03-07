@@ -1,4 +1,167 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-12-22T15:43:18+01:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">From Bernoulli to Poisson Point Processes</title><link href="http://localhost:4000/blog/Poisson/" rel="alternate" type="text/html" title="From Bernoulli to Poisson Point Processes" /><published>2020-11-10T00:00:00+01:00</published><updated>2020-11-10T00:00:00+01:00</updated><id>http://localhost:4000/blog/Poisson</id><content type="html" xml:base="http://localhost:4000/blog/Poisson/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-03-07T19:14:19+01:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Fokker, Planck, Kolmogorov, Kramers and Moyals</title><link href="http://localhost:4000/blog/Kramers/" rel="alternate" type="text/html" title="Fokker, Planck, Kolmogorov, Kramers and Moyals" /><published>2021-02-04T00:00:00+01:00</published><updated>2021-02-04T00:00:00+01:00</updated><id>http://localhost:4000/blog/Kramers</id><content type="html" xml:base="http://localhost:4000/blog/Kramers/">&lt;head&gt;
+&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
+       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
+         MathJax.Hub.Config({
+           tex2jax: {
+             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
+             displayMath: [['$$','$$']],
+             processEscapes: true
+           }
+         });
+       &lt;/script&gt;
+       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+
+&lt;p&gt;At the core of the partial differential equations that will describe the change of a distribution lies the Chapman-Kolmogorov equation
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	p(x_{t + \tau}) = &amp; \int p(x_{t + \tau} | x'_{t}) \ p(x'_t) \ dx'_t \\
+	&amp; = \int p(x_{t + \tau} , x'_{t}) \ dx'_t
+\end{align} %]]&gt;&lt;/script&gt;
+which is simply a way to write joint probabilities over time as conditionals.&lt;/p&gt;
+
+&lt;p&gt;We will assume a stochastic differential equation the first two orders of which can be estimated with
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+	M^{(n)} (x'_t) = \int (x_{t+\tau} - x'_t)^n  p(x_{t + \tau} | x'_t) dx_{t+\tau}
+\end{align}&lt;/script&gt;
+such that the dynamics are described by the Ito drift-diffusion process
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	dX'_t = &amp; M^{(1)}(X'_t) dt + M^{(2)}(X'_t) dW_t \\
+	= &amp; \mu(X'_t, t) dt + \sigma(X'_t, t) dW_t \\
+\end{align} %]]&gt;&lt;/script&gt;
+with the Wiener process &lt;script type=&quot;math/tex&quot;&gt;W_t&lt;/script&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;forward-equation&quot;&gt;Forward Equation&lt;/h3&gt;
+
+&lt;p&gt;The Chapman-Kolmogorov equation fro the forward Kramers-Moyal expansion can be rewritten with the help of an auxilliary variable as
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	p(x_{t + \tau}) = &amp; \int p(x_{t + \tau} | x'_{t}) \ p(x'_t) \ dx'_t \\
+	= &amp; \int_{X'} \int_{Y} \delta(y_{t+\tau} - x_{t+\tau}) p(y_{t + \tau} | x'_{t}) \ dy_{t+\tau} p(x'_t) dx'_t
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;We can then first expand the delta function $\delta ( y_{t+\tau} - x_{t+\tau} )$ with $\pm x_t$ and subsequently expand the Taylor series to obtain
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	\delta(y_{t+\tau} - x_{t+\tau}) = &amp; \delta(y_{t+\tau} - x'_t + x'_t - x_{t+\tau}) = \delta(y_{t+\tau} - x'_t) \delta(x'_t - x_{t+\tau}) \\
+	= &amp; \sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ \partial_{x'_t}^{n} \ \delta(x'_t - x_{t+\tau})
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;We can plug the expanded Taylor series back in to get
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+p(x_{t + \tau}) 
+= &amp; \int_{X'} \int_{Y} \delta(y_{t+\tau} - x_{t+\tau}) p(y_{t + \tau} | x'_{t}) \ dy_{t+\tau} \ p(x'_t) dx'_t \\
+= &amp; \int_{X'} \int_{Y} \sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ \underbrace{ \partial_{x'_t}^{n} \ \delta(x'_t - x_{t+\tau})}_{!} p(y_{t + \tau} | x'_{t}) \ dy_{t+\tau} \ p(x'_t) \underbrace{dx'_t}_{!} \\
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;But now we’re in a sort of a pickle, since we’re integrating over &lt;script type=&quot;math/tex&quot;&gt;x'_t&lt;/script&gt; but the Dirac function &lt;script type=&quot;math/tex&quot;&gt;\delta(x'_t - x_{t+\tau})&lt;/script&gt; will serve as a sort of selector for the integral discarding anything for which the value for &lt;script type=&quot;math/tex&quot;&gt;x'_t&lt;/script&gt; does not correspond to the future value &lt;script type=&quot;math/tex&quot;&gt;x_{t+\tau}&lt;/script&gt;.&lt;/p&gt;
+
+&lt;p&gt;Since for any subtraction &lt;script type=&quot;math/tex&quot;&gt;x'_{t} - x_{t+\tau}&lt;/script&gt; and function &lt;script type=&quot;math/tex&quot;&gt;f(x'_{t} - x_{t+\tau})&lt;/script&gt; we can employ the relation &lt;script type=&quot;math/tex&quot;&gt;\partial_{x'_t} f(x'_{t} - x_{t+\tau}) = - \partial_{x_{t}} f(x'_{t} - x_{t+\tau})&lt;/script&gt; via the change of variables, we switch the derivative to 
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	\sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ \partial_{x'_{t}}^{n} \ \delta(x'_t - x_{t+\tau}) = &amp; \sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ (- \partial_{x_{t}})^{n} \ \delta(x'_t - x_{t+\tau})
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The question that remains to be answered is what motivates us to do the derivative switch in the first place.
+In terms of algebra and calculus, the switch is mathematically valid, yet the holistic reason for it is still a mystery.
+It turns out that due to the Chapman-Kolmogorov equation, we will integrate out the variable &lt;script type=&quot;math/tex&quot;&gt;x'_t&lt;/script&gt;, so a derivative with respect to a latent variable is not of much use.
+More holistically, we want to obtain the change in the probability from &lt;script type=&quot;math/tex&quot;&gt;p(x_t)&lt;/script&gt; to &lt;script type=&quot;math/tex&quot;&gt;p(x_{t+\tau})&lt;/script&gt; for which the values of &lt;script type=&quot;math/tex&quot;&gt;x'_t&lt;/script&gt; are not of much use.&lt;/p&gt;
+
+&lt;!-- The Taylor expansion of the Dirac impulse above is used for the entire distribution of $p(y_{t+\tau} | x_t)$ since $y$ originates, so to say, from the distribution $p(y_{t + \tau}|x'_t)$ such that we obtain
+$$
+\begin{align}
+	p(x_{t + \tau} | x'_t) = &amp; \int \sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_{t})^n \ (- \partial_{x_{t+\tau}})^{n} \ \delta(x'_t - x_{t+\tau}) p(y_{t+\tau} | x'_t) dy \\
+\end{align}
+$$ --&gt;
+
+&lt;p&gt;For the special case of $n=0$ where the factorial, powers and derivatives evaluate to 1 and we can marginalize out over $y$, the sum simplifies to 
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	&amp;\int \sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ (- \partial_{x_{t}})^{n} \ \delta(x'_t - x_{t+\tau}) p(y_{t+\tau} | x'_t) dy_{t+\tau} \\
+	= &amp; \Big( 1 + \sum_{n=1}^\infty \frac{1}{n!} (- \partial_{x_{t}})^{n} \underbrace{\int ( y_{t+\tau} - x'_{t})^n \ p(y_{t+\tau} | x'_t) \ dy_{t+\tau}}_{M^{(n)}(x'_t)} \Big) \ \delta(x'_t - x_{t+\tau}) \\
+	= &amp; \Big( 1 + \sum_{n=1}^\infty \frac{1}{n!} (- \partial_{x_{t}})^{n} M^{(n)}(x'_t) \Big) \ \delta(x'_t - x_{t+\tau})
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Plugging the expanded transition probability back into the Chapman-Kolmogorov equation and noting that the Dirac impulse &lt;script type=&quot;math/tex&quot;&gt;\delta(x'_t-x_{t+\tau})&lt;/script&gt; eliminates the integral with respect to &lt;script type=&quot;math/tex&quot;&gt;x'_t&lt;/script&gt; by eliminating every value of &lt;script type=&quot;math/tex&quot;&gt;x'&lt;/script&gt; different from &lt;script type=&quot;math/tex&quot;&gt;x&lt;/script&gt; irrespective of time, we get
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	p(x_{t + \tau}) = &amp; \int p(x_{t + \tau} | x'_{t}) \ p(x'_t) \ dx'_t \\
+	= &amp; \int \int \delta(y_{t+\tau} - x_{t+\tau}) p(y_{t + \tau} | x'_{t}) dy_{t+\tau} \ p(x'_t) \ dx'_{t} \\
+	= &amp; \int \int \sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ \partial_{x'_t}^{n} \ \delta(x'_t - x_{t+\tau}) p(y_{t + \tau} | x'_{t}) \ dy_{t+\tau} \ p(x'_t) dx'_t \\
+	= &amp; \int_{X'} \Big( 1 + \sum_{n=1}^\infty \frac{1}{n!} (- \partial_{x_{t}})^{n} M^{(n)}(x'_t) \Big) \ \delta(x'_t - x_{t+\tau}) \ p(x'_t) \ dx'_t \\
+	= &amp; p(x_t) + \underbrace{\sum_{n=1}^\infty \frac{1}{n!} (- \partial_{x_{t}})^{n} \left[ M^{(n)}(x_t) \ p(x_t) \right]}_{\lim_{\tau \rightarrow 0} : \partial_t p(x_t) \tau}
+\end{align} %]]&gt;&lt;/script&gt;
+where we note that the evaluation of $n=0$ applies in the same way to any value or function that we multiply into the simplified Taylor expansion.
+Pulling &lt;script type=&quot;math/tex&quot;&gt;p(x'_t)&lt;/script&gt; to the left side and finding that the change between &lt;script type=&quot;math/tex&quot;&gt;p(x_{t+\tau})&lt;/script&gt; and &lt;script type=&quot;math/tex&quot;&gt;p(x'_t)&lt;/script&gt; should be proportional to &lt;script type=&quot;math/tex&quot;&gt;\partial_t p(x_t) \tau&lt;/script&gt; for a small step size &lt;script type=&quot;math/tex&quot;&gt;\tau&lt;/script&gt; analogously to th Euler discretization, we obtain
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	p(x_{t+\tau}) - p(x_t) = &amp; \partial_t p(x_t) \tau \\
+	\frac{p(x_{t+\tau}) - p(x_t)}{\tau} = &amp; \partial_t p(x_t).
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Finally we can note that we can could cut off the Taylor expansion after the second order and realize that Taylor expansion is equivalent to the time derivative in the limit of time, i.e. &lt;script type=&quot;math/tex&quot;&gt;\lim_{\tau \rightarrow 0}&lt;/script&gt; and we can proclaim that
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	\partial_t p(x_t) = &amp; - \partial_x \left[ M^{(1)}(x_t) p(x_t) \right] + \frac{1}{2} \partial_x^2 \left[M^{(2)}(x_t) p(x_t) \right] \\
+	= &amp; - \partial_{x_t} \left[ \mu(x_t) p(x_t) \right] + \frac{1}{2} \partial_{x_t}^2 \left[ \sigma^2(x_t) p(x_t) \right] \\
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;backward-equation&quot;&gt;Backward Equation&lt;/h3&gt;
+
+&lt;p&gt;The Kolmogorov backward equation (KBE) can be derived in the same way while paying attention to the derivatives.&lt;/p&gt;
+
+&lt;p&gt;Again we start with the Chapman-Kolmogorov equation:
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+	p(x_T | x'_t) = \int p(x_T | x''_{t+\tau}) p(x''_{t+\tau} | x'_t) dx''_{t+\tau}
+\end{align}&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;We expand the transition probability $p(x’&lt;em&gt;t | x’‘&lt;/em&gt;{t+\tau})$ again with a Dirac function 
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+	p(x''_{t+\tau} | x'_t) = \int \delta(y_{t+\tau} - x''_{t+\tau}) p(y_{t+\tau} | x_{t}) dy_{t+\tau}
+\end{align}&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Then we expand the Dirac function and expand it with the Taylor series to obtain
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	\delta(y_{t+\tau} - x''_{t+\tau}) = &amp; \delta(y_{t+\tau} - x''_{t+\tau} + x'_t - x'_t) \\
+	= &amp; \delta (y_{t+\tau} - x'_t)  \delta(x'_t - x_{t + \tau}) \\
+	= &amp; \sum_{n=0}^\infty \frac{1}{n!} (y_{t + \tau} - x'_t)^n \ \partial_{x'_{t}}^n \ \delta(x'_t - x''_{t+\tau})
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Plugging the expanded Dirac function back into the transition probability we obtain
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	p(x''_{t+\tau} | x'_t) = &amp; \int \delta(y_{t+\tau} - x''_{t+\tau}) p(y_{t+\tau} | x_{t}) dy_{t+\tau} \\
+	= &amp; \int \sum_{n=0}^\infty \frac{1}{n!} (y_{t + \tau} - x'_t)^n \ \partial_{x'_{t}}^n \ \delta(x'_t - x''_{t+\tau}) p(y_{t+\tau} | x_{t}) dy_{t+\tau}
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;When we compare the derivation of the forward Kramers-Moyals expansion with the backwards Kramers-Moyals expansion we should immediately detect that the only difference is the partial derivative.
+The subtle but important difference lies in direction to which we differentiate.
+For the forward expansion we are interested how the PDF changes with respect to the future values &lt;script type=&quot;math/tex&quot;&gt;x''_{t+\tau}&lt;/script&gt; whereas for the backward expansion we want to ultimately know how the PDF changes backward in time, ergo &lt;script type=&quot;math/tex&quot;&gt;\partial_{x'_t}&lt;/script&gt; and not &lt;script type=&quot;math/tex&quot;&gt;\partial_{x''_{t+\tau}}&lt;/script&gt; since obviously &lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+t &lt; t + \tau %]]&gt;&lt;/script&gt;.&lt;/p&gt;
+
+&lt;p&gt;This is consequential for whether we include the moments &lt;script type=&quot;math/tex&quot;&gt;M^{(n)}(x'_t)&lt;/script&gt; in the differentiation or not.
+Remember that the moments are defined with a fixed value at time &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt; and that they are defined as as a forward differentiation &lt;script type=&quot;math/tex&quot;&gt;y_{t+\tau} - x'_t&lt;/script&gt;.
+If we now differentiate with respect to time &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt;, the moments will not be differentiated as the value &lt;script type=&quot;math/tex&quot;&gt;x'_t&lt;/script&gt; is assumed fixed in the moments.&lt;/p&gt;
+
+&lt;p&gt;Thus substituting the expanded transition probability back into the Chapman-Kolmogorov equation we obtain,
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	p(x_T | x'_t) = &amp; \int p(x_T | x''_{t+\tau}) \ \int \sum_{n=0}^\infty \frac{1}{n!} (y_{t + \tau} - x'_t)^n \ \partial_{x'_{t}}^n \ \delta(x'_t - x''_{t+\tau}) p(y_{t+\tau} | x_{t}) dy_{t+\tau} dx''_{t+\tau} \\
+	= &amp; \int p(x_T | x''_{t+\tau}) \ \sum_{n=0}^\infty \frac{1}{n!} \underbrace{\int (y_{t + \tau} - x'_t)^n p(y_{t+\tau} | x'_t) dy_{t+\tau}}_{M^{(n)}(x'_t)} \ \partial_{x'_t}^n \ \delta(x'_t - x''_{t+\tau}) dx''_{t+\tau} \\
+	= &amp; p(x_T | x'_{t+\tau}) + M^{(1)}(x'_t) \partial_{x'_t} p(x_T | x'_{t+\tau}) + \frac{1}{2} M^{(2)}(x'_t) \partial_{x'_t}^2 p(x_T | x'_{t+\tau})
+	% = &amp; p(x_T | x'_{t+\tau}) + \mu(x'_t) \partial_{x'_{t}} p(x_T | x'_t) + \frac{1}{2} \sigma^2(x'_t) \partial^2_{x'_{t}} p(x_T | x'_{t+\tau}).
+\end{align} %]]&gt;&lt;/script&gt;
+Dividing both sides by $\tau$ and evaluating in the limit of $\lim_{\tau \rightarrow 0}$, we get 
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	- \partial_t p(x_T| x'_t) = &amp; \mu(x'_t) \partial_{x'_t} p(x_T | x'_t) + \frac{1}{2} \sigma^2(x'_t) \partial^2_{x'_{t}} p(x_T | x'_{t}).
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The equation above is a partial differential equation which characterizes how the probability of $x_T$ changes as we go backwards in time.
+It essentially answers the question of how much the probability $p(x_T)$ changes after conditioning the process on $x’_t$ and at earlier point in time $t$.&lt;/p&gt;</content><summary type="html">Distributions over time</summary></entry><entry><title type="html">From Bernoulli to Poisson Point Processes</title><link href="http://localhost:4000/blog/Poisson/" rel="alternate" type="text/html" title="From Bernoulli to Poisson Point Processes" /><published>2020-11-10T00:00:00+01:00</published><updated>2020-11-10T00:00:00+01:00</updated><id>http://localhost:4000/blog/Poisson</id><content type="html" xml:base="http://localhost:4000/blog/Poisson/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -2086,36 +2249,4 @@ ADAM for some reason went NaN on my after a couple of iterations.
 I suspect it has to do something with the second-order estimations and maybe the gradient I provide somewhere let’s these second-order moments explode.&lt;/p&gt;
 
 &lt;p&gt;Up to this point we had a look at discrete distributions and how to compute an optimal transport plan.
-It turns out, that the optimal transport plan for continuous distributions (at least for the Normal distribution) is quite compact and doesn’t require an auxiliary optimization problem via the Sinkhorn iterations.&lt;/p&gt;</content><summary type="html">Computing Wasserstein Distances</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/Sinkhorn/Sinkhorn.png" /></entry><entry><title type="html">GPyTorch</title><link href="http://localhost:4000/blog/GPyTorch/" rel="alternate" type="text/html" title="GPyTorch" /><published>2019-05-15T00:00:00+02:00</published><updated>2019-05-15T00:00:00+02:00</updated><id>http://localhost:4000/blog/GPyTorch</id><content type="html" xml:base="http://localhost:4000/blog/GPyTorch/">&lt;head&gt;
-&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
-       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       &lt;/script&gt;
-       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
-&lt;/head&gt;
-
-&lt;!-- ## Non-Negative Matrix Factorization --&gt;
-
-&lt;p&gt;This is a talk I gave at the Berlin Machine Learning Seminar hosted by Ben in the offices of &lt;a href=&quot;https://lateral.io&quot;&gt;Lateral&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;Gaussian Processes are a class of popular and powerful probabilistic models which can be derived straight from a Normal distribution.
-While vanilla GP’s are very flexible due to their nonparametric formulation, inference and training both rely on the evaluation of the entire data set through several kernel matrices, their products, log determinants and inverses.&lt;/p&gt;
-
-&lt;p&gt;These kernel matrices over the entire training data set and their numerous use in matrix matrix pdocuts, log determinants and inverses result in poor scalability to large data sets.
-The advent of GPU’s in machine learning has offered the possibility of computing matrix vector and matrix matrix products efficiently and in parallel.&lt;/p&gt;
-
-&lt;p&gt;GPyTorch introduces several randomized and parallelized algorithms as replacements for exact computations which reduce the complexity of inference and training in GP’s.
-These include stochastic approximations of the trace, parallel conjugate gradient descent and several efficient applications of eigendecompositions.&lt;/p&gt;
-
-&lt;p&gt;More importantly, all of these adaptations allow full utilization of parallel hardware during inference and training.
-Considerable focus will be on conjugated gradient descent which allows the efficient optimization of quadratic optimization problems through the use of line search and conjugate search directions.&lt;/p&gt;
-
-&lt;p&gt;The core idea of the original paper is to exploit a parallel version of conjugate gradient descent to the fullest such that all relevant terms for the cost function and the gradients of the kernels can be obtained from a single modified batch conjugate descent run.&lt;/p&gt;
-
-&lt;p&gt;The talk can be downloaded &lt;a href=&quot;/blog/GPyTorch/GPytorch.pdf&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;</content><summary type="html">GPU Acceleration for Gaussian Processes</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/GPyTorch/GPyTorch_Cover.png" /></entry></feed>
+It turns out, that the optimal transport plan for continuous distributions (at least for the Normal distribution) is quite compact and doesn’t require an auxiliary optimization problem via the Sinkhorn iterations.&lt;/p&gt;</content><summary type="html">Computing Wasserstein Distances</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/Sinkhorn/Sinkhorn.png" /></entry></feed>
