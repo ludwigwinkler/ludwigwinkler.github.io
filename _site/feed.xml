@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-03-07T19:14:19+01:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Fokker, Planck, Kolmogorov, Kramers and Moyals</title><link href="http://localhost:4000/blog/Kramers/" rel="alternate" type="text/html" title="Fokker, Planck, Kolmogorov, Kramers and Moyals" /><published>2021-02-04T00:00:00+01:00</published><updated>2021-02-04T00:00:00+01:00</updated><id>http://localhost:4000/blog/Kramers</id><content type="html" xml:base="http://localhost:4000/blog/Kramers/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-04-08T14:39:06+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Fokker, Planck &amp;amp; Kolmogorov</title><link href="http://localhost:4000/blog/Kramers/" rel="alternate" type="text/html" title="Fokker, Planck &amp; Kolmogorov" /><published>2021-02-04T00:00:00+01:00</published><updated>2021-02-04T00:00:00+01:00</updated><id>http://localhost:4000/blog/Kramers</id><content type="html" xml:base="http://localhost:4000/blog/Kramers/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -117,18 +117,19 @@ Pulling &lt;script type=&quot;math/tex&quot;&gt;p(x'_t)&lt;/script&gt; to the le
 	p(x_T | x'_t) = \int p(x_T | x''_{t+\tau}) p(x''_{t+\tau} | x'_t) dx''_{t+\tau}
 \end{align}&lt;/script&gt;&lt;/p&gt;
 
-&lt;p&gt;We expand the transition probability $p(x’&lt;em&gt;t | x’‘&lt;/em&gt;{t+\tau})$ again with a Dirac function 
+&lt;p&gt;We expand the transition probability &lt;script type=&quot;math/tex&quot;&gt;p(x'_t | x''_{t+\tau})&lt;/script&gt; again with a Dirac function 
 &lt;script type=&quot;math/tex&quot;&gt;\begin{align}
 	p(x''_{t+\tau} | x'_t) = \int \delta(y_{t+\tau} - x''_{t+\tau}) p(y_{t+\tau} | x_{t}) dy_{t+\tau}
 \end{align}&lt;/script&gt;&lt;/p&gt;
 
-&lt;p&gt;Then we expand the Dirac function and expand it with the Taylor series to obtain
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+&lt;p&gt;Then we expand the Dirac function and expand it with the Taylor series to obtain&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
 \begin{align}
 	\delta(y_{t+\tau} - x''_{t+\tau}) = &amp; \delta(y_{t+\tau} - x''_{t+\tau} + x'_t - x'_t) \\
 	= &amp; \delta (y_{t+\tau} - x'_t)  \delta(x'_t - x_{t + \tau}) \\
 	= &amp; \sum_{n=0}^\infty \frac{1}{n!} (y_{t + \tau} - x'_t)^n \ \partial_{x'_{t}}^n \ \delta(x'_t - x''_{t+\tau})
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+\end{align} %]]&gt;&lt;/script&gt;
 
 &lt;p&gt;Plugging the expanded Dirac function back into the transition probability we obtain
 &lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
