@@ -190,14 +190,13 @@ Pulling <script type="math/tex">p(x'_t)</script> to the left side and finding th
 	p(x''_{t+\tau} | x'_t) = \int \delta(y_{t+\tau} - x''_{t+\tau}) p(y_{t+\tau} | x_{t}) dy_{t+\tau}
 \end{align}</script></p>
 
-<p>Then we expand the Dirac function and expand it with the Taylor series to obtain</p>
-
-<script type="math/tex; mode=display">% <![CDATA[
+<p>Then we expand the Dirac function and expand it with the Taylor series to obtain
+<script type="math/tex">% <![CDATA[
 \begin{align}
 	\delta(y_{t+\tau} - x''_{t+\tau}) = & \delta(y_{t+\tau} - x''_{t+\tau} + x'_t - x'_t) \\
 	= & \delta (y_{t+\tau} - x'_t)  \delta(x'_t - x_{t + \tau}) \\
 	= & \sum_{n=0}^\infty \frac{1}{n!} (y_{t + \tau} - x'_t)^n \ \partial_{x'_{t}}^n \ \delta(x'_t - x''_{t+\tau})
-\end{align} %]]></script>
+\end{align} %]]></script></p>
 
 <p>Plugging the expanded Dirac function back into the transition probability we obtain
 <script type="math/tex">% <![CDATA[
