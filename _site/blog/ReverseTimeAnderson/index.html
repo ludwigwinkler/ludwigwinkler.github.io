@@ -130,17 +130,13 @@ The derivatives of the probabilities are the following
 \begin{align}
 	\partial_{x_t} p(x_s|x_t) &= \partial_{x_t} \left[ \frac{p(x_s, x_t)}{p(x_t)} \right] \\
 	& = \frac{\partial_{x_t} p(x_s, x_t) p(x_t) - p(x_s, x_t) \partial_{x_t} p(x_t)}{p^2(x_t)} \\
-	& = \frac{\partial_{x_t} p(x_s, x_t)}{p(x_t)} - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p^2(x_t)}
-\end{align} %]]></script></p>
-
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align}
+	& = \frac{\partial_{x_t} p(x_s, x_t)}{p(x_t)} - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p^2(x_t)} \\
 	\partial_{x_t}^2 p(x_s|x_t) = & \partial_{x_t}^2 \left[ \frac{p(x_s, x_t)}{p(x_t)} \right] \\
 	= & \frac{\partial_{x_t}^2 p(x_s, x_t)}{p(x_t)} 
 	- \frac{2 \ \partial_{x_t}p(x_s, x_t) \partial_{x_t}p( x_t)}{p^2( x_t)} \\
 	& - \frac{p(x_s, x_t) \partial_{x_t}^2 p(x_t)}{p^2(x_t)}
 	+ \frac{2 \ p(x_s, x_t) \left(\partial_{x_t} p(x_t)\right)^2}{p^3(x_t)}
-\end{align} %]]></script>
+\end{align} %]]></script></p>
 
 <p>The next step is to evaluate the derivative of the products in the forward Kolmogorov equation.
 <script type="math/tex">% <![CDATA[

@@ -78,12 +78,7 @@ $$
 \begin{align}
 	\partial_{x_t} p(x_s|x_t) &= \partial_{x_t} \left[ \frac{p(x_s, x_t)}{p(x_t)} \right] \\
 	& = \frac{\partial_{x_t} p(x_s, x_t) p(x_t) - p(x_s, x_t) \partial_{x_t} p(x_t)}{p^2(x_t)} \\
-	& = \frac{\partial_{x_t} p(x_s, x_t)}{p(x_t)} - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p^2(x_t)}
-\end{align}
-$$
-
-$$
-\begin{align}
+	& = \frac{\partial_{x_t} p(x_s, x_t)}{p(x_t)} - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p^2(x_t)} \\
 	\partial_{x_t}^2 p(x_s|x_t) = & \partial_{x_t}^2 \left[ \frac{p(x_s, x_t)}{p(x_t)} \right] \\
 	= & \frac{\partial_{x_t}^2 p(x_s, x_t)}{p(x_t)} 
 	- \frac{2 \ \partial_{x_t}p(x_s, x_t) \partial_{x_t}p( x_t)}{p^2( x_t)} \\
