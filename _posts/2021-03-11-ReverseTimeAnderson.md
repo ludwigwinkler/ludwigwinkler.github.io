@@ -151,14 +151,14 @@ $$
 	= & \partial_{x_t} \left[ f(x_t) \ p(x_s, x_t) \right] \\
 	& + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] \\
 	= & \partial_{x_t} \left[ f(x_t) \ p(x_s, x_t) \right] \\
-	& + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \underbrace{ \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] }_{-\frac{1}{2} X = -X + \frac{1}{2} X} \\
+	& + \frac{1}{2} \ g(x_t) g(x_t) \ p(x_t) \ \partial_{x_t}^2 p(x_s | x_t) - \underbrace{ \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] }_{-\frac{1}{2} X = -X + \frac{1}{2} X} \\
 	& \pm \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) g(x_t) g(x_t) \right] \\
 	= & \partial_{x_t} \left[ f(x_t) \ p(x_s, x_t) \right] \\
-	& + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) \\
-	& \underbrace{ - p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] + \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] }_{-\frac{1}{2} X = -X + \frac{1}{2} X} \\
-	& \pm \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) g(x_t) g(x_t) \right] \\
-	= & \partial_{x_t} \left[ f(x_t) \ p(x_s, x_t) \right] + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s | x_t) p(x_t) g(x_t) g(x_t) \right] \\
-	& - p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] - \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) g(x_t) g(x_t) \right] \\
+	& \textcolor{red}{+ \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t)} \\
+	& \underbrace{ - p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] + \textcolor{red}{\frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right]} }_{-\frac{1}{2} X = -X + \frac{1}{2} X} \\
+	& \textcolor{red}{\pm \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) g(x_t) g(x_t) \right]} \\
+	= & \partial_{x_t} \left[ f(x_t) \ p(x_s, x_t) \right] + \textcolor{red}{\frac{1}{2} \partial_{x_t}^2 \left[ p( x_s | x_t) p(x_t) g(x_t) g(x_t) \right]} \\
+	& \underbrace{- p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] - \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) g(x_t) g(x_t) \right]}_{=- \partial_{x_t} \left[ p(x_s| x_t) \partial_{x_t} \left[ g(x_t) g(x_t) \ p(x_t) \right] \right]} \\
 	= & \partial_{x_t} \left[ f(x_t) \ p(x_s, x_t) \right] + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) g(x_t) g(x_t) \right] \\
 	& - \partial_{x_t} \left[ p(x_s| x_t) \partial_{x_t} \left[ g(x_t) g(x_t) \ p(x_t) \right] \right] \\
 	= & \partial_{x_t} \left[ f(x_t) \ p(x_s, x_t) - p(x_s| x_t) \partial_{x_t} \left[ g(x_t) g(x_t) \ p(x_t) \right] \right] \\
