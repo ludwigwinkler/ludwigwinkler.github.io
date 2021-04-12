@@ -34,7 +34,7 @@ For notational brevity we will use the term $\mu(x_t)$ for the drift and $\sigma
 The Kolmogorov forward equation is identical to the Fokker Planck equation and states
 $$
 \begin{align}
-	\partial_t p(x_t) = -\partial_{x_t} \left[ f(x_t) p(x_t) \right] + \frac{1}{2} \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right].
+	\partial_t p(x_t) = -\partial_{x_t} \left[ \mu(x_t) p(x_t) \right] + \frac{1}{2} \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right].
 \end{align}
 $$
 
@@ -44,7 +44,7 @@ We can quite frankly think of it as, for example, a Normal distribution being sl
 The Kolmogorov backward equation for $t \leq s$ is defined as
 $$
 \begin{align}
-	- \partial_t p(x_s | x_t) = f(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t)
+	- \partial_t p(x_s | x_t) = \mu(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t)
 \end{align}
 $$
 and it basically answers the question how the probability of $x_s$ at a later point in time changes as we change $x_t$.
@@ -67,8 +67,8 @@ into which we can plug in the Kolmogorov forward and backward equations,
 $$
 \begin{align}
 	& -\partial_t p(x_s|x_t) p(x_t) - p(x_s | x_t) \partial_t p(x_t) \\
-	&= \left( f(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \right) p(x_t) \\
-	& + p(x_s| x_t) \left( \partial_{x_t} \left[ f(x_t) p(x_t) \right] - \frac{1}{2} \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] \right)
+	&= \left( \mu(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \right) p(x_t) \\
+	& + p(x_s| x_t) \left( \partial_{x_t} \left[ \mu(x_t) p(x_t) \right] - \frac{1}{2} \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \right)
 \end{align}
 $$
 
@@ -95,8 +95,8 @@ $$
 The next step is to evaluate the derivative of the products in the forward Kolmogorov equation.
 $$
 \begin{align}
-	\partial_{x_t} \left[ f(x_t) p(x_t) \right] & = \partial_{x_t} f(x_t) \ p(x_t) + f(x_t) \ \partial_{x_t} p(x_t) \\
-	\partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] & = \partial_{x_t}^2 g(x_t) g(x_t) \ p(x_t) + 2 \ \partial_{x_t} g(x_t) g(x_t) \ \partial_{x_t} p(x_t) + g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_t)
+	\partial_{x_t} \left[ \mu(x_t) p(x_t) \right] & = \partial_{x_t} \mu(x_t) \ p(x_t) + \mu(x_t) \ \partial_{x_t} p(x_t) \\
+	\partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] & = \partial_{x_t}^2 \sigma^2(x_t) \ p(x_t) + 2 \ \partial_{x_t} \sigma^2(x_t) \ \partial_{x_t} p(x_t) + \sigma^2(x_t) \ \partial_{x_t}^2 p(x_t)
 \end{align}
 $$
 
@@ -106,25 +106,25 @@ $$
 	- \partial_t p(x_s, x_t)
 	= & - \partial_t \left[ p(x_s| x_t) p(x_t) \right] \\
 	= & -\partial_t p(x_s|x_t) p(x_t) - p(x_s | x_t) \partial_t p(x_t) \\
-	= & \left( f(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \right) p(x_t) \\
-	& + p(x_s| x_t) \left( \partial_{x_t} \left[ f(x_t) p(x_t) \right] - \frac{1}{2} \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] \right) \\
-	= & f(x_t) \ \partial_{x_t} p(x_s|x_t) \ p(x_t) \\
-	& + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) \\
-	& + p(x_s| x_t) \partial_{x_t} f(x_t) \ p(x_t) + p(x_s| x_t) f(x_t) \ \partial_{x_t} p(x_t) \\
-	& - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] \\
-	= & f(x_t) \ \left(\frac{\partial_{x_t} p(x_s, x_t)}{p(x_t)} - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p^2(x_t)} \right) \ p(x_t) \\
-	& + p(x_s| x_t) \partial_{x_t} f(x_t) \ p(x_t) + p(x_s| x_t) f(x_t) \ \partial_{x_t} p(x_t) \\
-	& + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] \\
-	= & f(x_t) \ \left(\partial_{x_t} p(x_s, x_t) - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p(x_t)} \right) \\
-	& + p(x_s| x_t) \partial_{x_t} f(x_t) \ p(x_t) + p(x_s| x_t) f(x_t) \ \partial_{x_t} p(x_t) \\
-	& + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] \\
-	= & f(x_t) \ \left(\partial_{x_t} p(x_s, x_t) - \cancel{p(x_s| x_t) \partial_{x_t} p(x_t)} \right) \\
-	& + p(x_s, x_t) \partial_{x_t} f(x_t) + \cancel{p(x_s| x_t) f(x_t) \ \partial_{x_t} p(x_t)} \\
-	& + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] \\
-	= & f(x_t) \ \partial_{x_t} p(x_s, x_t) + p(x_s, x_t) \partial_{x_t} f(x_t) \\
-	& + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] \\
-	= & \partial_{x_t} \left[ f(x_t) \ p(x_s, x_t) \right] \\
-	& + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right]
+	= & \left( \mu(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \right) p(x_t) \\
+	& + p(x_s| x_t) \left( \partial_{x_t} \left[ \mu(x_t) p(x_t) \right] - \frac{1}{2} \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \right) \\
+	= & \mu(x_t) \ \partial_{x_t} p(x_s|x_t) \ p(x_t) \\
+	& + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) \\
+	& + p(x_s| x_t) \partial_{x_t} \mu(x_t) \ p(x_t) + p(x_s| x_t) \mu(x_t) \ \partial_{x_t} p(x_t) \\
+	& - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
+	= & \mu(x_t) \ \left(\frac{\partial_{x_t} p(x_s, x_t)}{p(x_t)} - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p^2(x_t)} \right) \ p(x_t) \\
+	& + p(x_s| x_t) \partial_{x_t} \mu(x_t) \ p(x_t) + p(x_s| x_t) \mu(x_t) \ \partial_{x_t} p(x_t) \\
+	& + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
+	= & \mu(x_t) \ \left(\partial_{x_t} p(x_s, x_t) - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p(x_t)} \right) \\
+	& + p(x_s| x_t) \partial_{x_t} \mu(x_t) \ p(x_t) + p(x_s| x_t) \mu(x_t) \ \partial_{x_t} p(x_t) \\
+	& + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
+	= & \mu(x_t) \ \left(\partial_{x_t} p(x_s, x_t) - \cancel{p(x_s| x_t) \partial_{x_t} p(x_t)} \right) \\
+	& + p(x_s, x_t) \partial_{x_t} \mu(x_t) + \cancel{p(x_s| x_t) \mu(x_t) \ \partial_{x_t} p(x_t)} \\
+	& + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
+	= & \mu(x_t) \ \partial_{x_t} p(x_s, x_t) + p(x_s, x_t) \partial_{x_t} \mu(x_t) \\
+	& + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
+	= & \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
+	& + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right]
 \end{align} 
 $$
 
@@ -132,14 +132,14 @@ We can see now that the drift term already fulfills the requirements of the forw
 What we're left with and which we have to take care of are the two terms with the diffusion terms.
 The goal is to fuse the two terms into one which resembles the diffusion term in the forward Kolmogorov equation.
 
-Following the gracious help from Anderson himself in an email from down under, we can simplify the terms with $g(x_t) g(x_t)$ by expanding the last term.
+Following the gracious help from Anderson himself in an email from down under, we can simplify the terms with $\sigma^2(x_t)$ by expanding the last term.
 The important step is to factorize the joint distribution $p(x_s, x_t) = p(x_s| x_t) p(x_t)$ and invoke the product rule.
 $$
 \begin{align}
-	& \frac{1}{2} \partial_{x_t}^2 \left[ p(x_s, x_t) g(x_t) g(x_t) \right] \\
-	= & \frac{1}{2} \partial_{x_t}^2 \left[ p(x_s | x_t) p(x_t) g(x_t) g(x_t) \right] \\
-	= & \frac{1}{2} \partial_{x_t}^2 p(x_s | x_t) p(x_t) g(x_t) g(x_t) + \partial_{x_t} \left[ p(x_t) g(x_t) g(x_t) \right] \partial_{x_t} p(x_s| x_t)
-	 + \frac{1}{2} \partial_{x_t}^2 \left[ p(x_t) g(x_t) g(x_t) \right] p(x_s| x_t)
+	& \frac{1}{2} \partial_{x_t}^2 \left[ p(x_s, x_t) \sigma^2(x_t) \right] \\
+	= & \frac{1}{2} \partial_{x_t}^2 \left[ p(x_s | x_t) p(x_t) \sigma^2(x_t) \right] \\
+	= & \frac{1}{2} \partial_{x_t}^2 p(x_s | x_t) p(x_t) \sigma^2(x_t) + \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right] \partial_{x_t} p(x_s| x_t)
+	 + \frac{1}{2} \partial_{x_t}^2 \left[ p(x_t) \sigma^2(x_t) \right] p(x_s| x_t)
 \end{align}
 $$
 
@@ -148,22 +148,32 @@ Furthermore we can employ the identity $-\frac{1}{2} X = -X + \frac{1}{2} X$ to 
 $$
 \begin{align}
 	-\partial_t p(x_s, x_t)
-	= & \partial_{x_t} \left[ f(x_t) \ p(x_s, x_t) \right] \\
-	& + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] \\
-	= & \partial_{x_t} \left[ f(x_t) \ p(x_s, x_t) \right] \\
-	& + \frac{1}{2} \ g(x_t) g(x_t) \ p(x_t) \ \partial_{x_t}^2 p(x_s | x_t) - \underbrace{ \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] }_{-\frac{1}{2} X = -X + \frac{1}{2} X} \\
-	& \pm \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) g(x_t) g(x_t) \right] \\
-	= & \partial_{x_t} \left[ f(x_t) \ p(x_s, x_t) \right] \\
-	& \textcolor{red}{+ \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t)} \\
-	& \underbrace{ - p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] + \textcolor{red}{\frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right]} }_{-\frac{1}{2} X = -X + \frac{1}{2} X} \\
-	& \textcolor{red}{\pm \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) g(x_t) g(x_t) \right]} \\
-	= & \partial_{x_t} \left[ f(x_t) \ p(x_s, x_t) \right] + \textcolor{red}{\frac{1}{2} \partial_{x_t}^2 \left[ p( x_s | x_t) p(x_t) g(x_t) g(x_t) \right]} \\
-	& \underbrace{- p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] - \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) g(x_t) g(x_t) \right]}_{=- \partial_{x_t} \left[ p(x_s| x_t) \partial_{x_t} \left[ g(x_t) g(x_t) \ p(x_t) \right] \right]} \\
-	= & \partial_{x_t} \left[ f(x_t) \ p(x_s, x_t) \right] + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) g(x_t) g(x_t) \right] \\
-	& - \partial_{x_t} \left[ p(x_s| x_t) \partial_{x_t} \left[ g(x_t) g(x_t) \ p(x_t) \right] \right] \\
-	= & \partial_{x_t} \left[ f(x_t) \ p(x_s, x_t) - p(x_s| x_t) \partial_{x_t} \left[ g(x_t) g(x_t) \ p(x_t) \right] \right] \\
-	& + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) g(x_t) g(x_t) \right] \\
-	= & \partial_{x_t} \left[ p(x_s, x_t) \left( f(x_t) - \frac{1}{p(x_t)} \partial_{x_t} \left[ g(x_t) g(x_t) \ p(x_t) \right] \right) \right] \\
-	& + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) g(x_t) g(x_t) \right]
+	= & \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
+	& + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
+	= & \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
+	& + \frac{1}{2} \ \sigma^2(x_t) \ p(x_t) \ \partial_{x_t}^2 p(x_s | x_t) - \underbrace{ \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] }_{-\frac{1}{2} X = -X + \frac{1}{2} X} \\
+	& \pm \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right] \\
+	= & \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
+	& \textcolor{red}{+ \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t)} \\
+	& \underbrace{ - p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] + \textcolor{red}{\frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right]} }_{-\frac{1}{2} X = -X + \frac{1}{2} X} \\
+	& \textcolor{red}{\pm \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right]} \\
+	= & \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] + \textcolor{red}{\frac{1}{2} \partial_{x_t}^2 \left[ p( x_s | x_t) p(x_t) \sigma^2(x_t) \right]} \\
+	& \underbrace{- p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] - \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right]}_{
+		- \partial_{x_t} \left[ p(x_s| x_t) \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right] \text{ (product rule) }
+		} \\
+	= & \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right] \\
+	& - \partial_{x_t} \left[ p(x_s| x_t) \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right] \\
+	= & \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) - p(x_s| x_t) \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right] \\
+	& + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right] \\
+	= & \partial_{x_t} \left[ p(x_s, x_t) \left( \mu(x_t) - \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) \right] \\
+	& + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right]
 \end{align}
 $$
+
+which finally gives us a stochastic differential equation that we can solve backward in time:
+$$
+\begin{align}
+dX_t = \left(\mu(x_t) - \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) dt + \sigma(x_t) d\tilde{W}_t
+\end{align}
+$$
+where $\tilde{W}_t$ is a Wiener process that flows backward in time.

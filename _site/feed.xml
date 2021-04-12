@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-04-13T00:11:03+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Reverse Time Stochastic Differential Equations</title><link href="http://localhost:4000/blog/ReverseTimeAnderson/" rel="alternate" type="text/html" title="Reverse Time Stochastic Differential Equations" /><published>2021-04-09T00:00:00+02:00</published><updated>2021-04-09T00:00:00+02:00</updated><id>http://localhost:4000/blog/ReverseTimeAnderson</id><content type="html" xml:base="http://localhost:4000/blog/ReverseTimeAnderson/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-04-13T00:31:48+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Reverse Time Stochastic Differential Equations</title><link href="http://localhost:4000/blog/ReverseTimeAnderson/" rel="alternate" type="text/html" title="Reverse Time Stochastic Differential Equations" /><published>2021-04-09T00:00:00+02:00</published><updated>2021-04-09T00:00:00+02:00</updated><id>http://localhost:4000/blog/ReverseTimeAnderson</id><content type="html" xml:base="http://localhost:4000/blog/ReverseTimeAnderson/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -23,7 +23,7 @@ For notational brevity we will use the term $\mu(x_t)$ for the drift and $\sigma
 
 &lt;p&gt;The Kolmogorov forward equation is identical to the Fokker Planck equation and states
 &lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	\partial_t p(x_t) = -\partial_{x_t} \left[ f(x_t) p(x_t) \right] + \frac{1}{2} \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right].
+	\partial_t p(x_t) = -\partial_{x_t} \left[ \mu(x_t) p(x_t) \right] + \frac{1}{2} \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right].
 \end{align}&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;It describes the evolution of a probability distribution $p(x_t)$ forward in time.
@@ -31,7 +31,7 @@ We can quite frankly think of it as, for example, a Normal distribution being sl
 
 &lt;p&gt;The Kolmogorov backward equation for $t \leq s$ is defined as
 &lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	- \partial_t p(x_s | x_t) = f(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t)
+	- \partial_t p(x_s | x_t) = \mu(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t)
 \end{align}&lt;/script&gt;
 and it basically answers the question how the probability of $x_s$ at a later point in time changes as we change $x_t$.
 The Kolmogorov backward equation is somewhat confounding with respect to time as we’re taking the partial derivative with respect to time to the value $x_t$ on which we are coniditoning.
@@ -52,8 +52,8 @@ into which we can plug in the Kolmogorov forward and backward equations,
 &lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
 	&amp; -\partial_t p(x_s|x_t) p(x_t) - p(x_s | x_t) \partial_t p(x_t) \\
-	&amp;= \left( f(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \right) p(x_t) \\
-	&amp; + p(x_s| x_t) \left( \partial_{x_t} \left[ f(x_t) p(x_t) \right] - \frac{1}{2} \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] \right)
+	&amp;= \left( \mu(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \right) p(x_t) \\
+	&amp; + p(x_s| x_t) \left( \partial_{x_t} \left[ \mu(x_t) p(x_t) \right] - \frac{1}{2} \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \right)
 \end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;The derivative occuring in the backward Kolmogorov equation are
@@ -77,8 +77,8 @@ The derivatives of the probabilities are the following
 &lt;p&gt;The next step is to evaluate the derivative of the products in the forward Kolmogorov equation.
 &lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
-	\partial_{x_t} \left[ f(x_t) p(x_t) \right] &amp; = \partial_{x_t} f(x_t) \ p(x_t) + f(x_t) \ \partial_{x_t} p(x_t) \\
-	\partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] &amp; = \partial_{x_t}^2 g(x_t) g(x_t) \ p(x_t) + 2 \ \partial_{x_t} g(x_t) g(x_t) \ \partial_{x_t} p(x_t) + g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_t)
+	\partial_{x_t} \left[ \mu(x_t) p(x_t) \right] &amp; = \partial_{x_t} \mu(x_t) \ p(x_t) + \mu(x_t) \ \partial_{x_t} p(x_t) \\
+	\partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] &amp; = \partial_{x_t}^2 \sigma^2(x_t) \ p(x_t) + 2 \ \partial_{x_t} \sigma^2(x_t) \ \partial_{x_t} p(x_t) + \sigma^2(x_t) \ \partial_{x_t}^2 p(x_t)
 \end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;Plugging in the derivatives of the probability distributions we obtain
@@ -87,39 +87,39 @@ The derivatives of the probabilities are the following
 	- \partial_t p(x_s, x_t)
 	= &amp; - \partial_t \left[ p(x_s| x_t) p(x_t) \right] \\
 	= &amp; -\partial_t p(x_s|x_t) p(x_t) - p(x_s | x_t) \partial_t p(x_t) \\
-	= &amp; \left( f(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \right) p(x_t) \\
-	&amp; + p(x_s| x_t) \left( \partial_{x_t} \left[ f(x_t) p(x_t) \right] - \frac{1}{2} \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] \right) \\
-	= &amp; f(x_t) \ \partial_{x_t} p(x_s|x_t) \ p(x_t) \\
-	&amp; + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) \\
-	&amp; + p(x_s| x_t) \partial_{x_t} f(x_t) \ p(x_t) + p(x_s| x_t) f(x_t) \ \partial_{x_t} p(x_t) \\
-	&amp; - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] \\
-	= &amp; f(x_t) \ \left(\frac{\partial_{x_t} p(x_s, x_t)}{p(x_t)} - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p^2(x_t)} \right) \ p(x_t) \\
-	&amp; + p(x_s| x_t) \partial_{x_t} f(x_t) \ p(x_t) + p(x_s| x_t) f(x_t) \ \partial_{x_t} p(x_t) \\
-	&amp; + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] \\
-	= &amp; f(x_t) \ \left(\partial_{x_t} p(x_s, x_t) - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p(x_t)} \right) \\
-	&amp; + p(x_s| x_t) \partial_{x_t} f(x_t) \ p(x_t) + p(x_s| x_t) f(x_t) \ \partial_{x_t} p(x_t) \\
-	&amp; + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] \\
-	= &amp; f(x_t) \ \left(\partial_{x_t} p(x_s, x_t) - \cancel{p(x_s| x_t) \partial_{x_t} p(x_t)} \right) \\
-	&amp; + p(x_s, x_t) \partial_{x_t} f(x_t) + \cancel{p(x_s| x_t) f(x_t) \ \partial_{x_t} p(x_t)} \\
-	&amp; + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] \\
-	= &amp; f(x_t) \ \partial_{x_t} p(x_s, x_t) + p(x_s, x_t) \partial_{x_t} f(x_t) \\
-	&amp; + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] \\
-	= &amp; \partial_{x_t} \left[ f(x_t) \ p(x_s, x_t) \right] \\
-	&amp; + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right]
+	= &amp; \left( \mu(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \right) p(x_t) \\
+	&amp; + p(x_s| x_t) \left( \partial_{x_t} \left[ \mu(x_t) p(x_t) \right] - \frac{1}{2} \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \right) \\
+	= &amp; \mu(x_t) \ \partial_{x_t} p(x_s|x_t) \ p(x_t) \\
+	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) \\
+	&amp; + p(x_s| x_t) \partial_{x_t} \mu(x_t) \ p(x_t) + p(x_s| x_t) \mu(x_t) \ \partial_{x_t} p(x_t) \\
+	&amp; - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
+	= &amp; \mu(x_t) \ \left(\frac{\partial_{x_t} p(x_s, x_t)}{p(x_t)} - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p^2(x_t)} \right) \ p(x_t) \\
+	&amp; + p(x_s| x_t) \partial_{x_t} \mu(x_t) \ p(x_t) + p(x_s| x_t) \mu(x_t) \ \partial_{x_t} p(x_t) \\
+	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
+	= &amp; \mu(x_t) \ \left(\partial_{x_t} p(x_s, x_t) - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p(x_t)} \right) \\
+	&amp; + p(x_s| x_t) \partial_{x_t} \mu(x_t) \ p(x_t) + p(x_s| x_t) \mu(x_t) \ \partial_{x_t} p(x_t) \\
+	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
+	= &amp; \mu(x_t) \ \left(\partial_{x_t} p(x_s, x_t) - \cancel{p(x_s| x_t) \partial_{x_t} p(x_t)} \right) \\
+	&amp; + p(x_s, x_t) \partial_{x_t} \mu(x_t) + \cancel{p(x_s| x_t) \mu(x_t) \ \partial_{x_t} p(x_t)} \\
+	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
+	= &amp; \mu(x_t) \ \partial_{x_t} p(x_s, x_t) + p(x_s, x_t) \partial_{x_t} \mu(x_t) \\
+	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
+	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
+	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right]
 \end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;We can see now that the drift term already fulfills the requirements of the forward Kolmogorov equation.
 What we’re left with and which we have to take care of are the two terms with the diffusion terms.
 The goal is to fuse the two terms into one which resembles the diffusion term in the forward Kolmogorov equation.&lt;/p&gt;
 
-&lt;p&gt;Following the gracious help from Anderson himself in an email from down under, we can simplify the terms with $g(x_t) g(x_t)$ by expanding the last term.
+&lt;p&gt;Following the gracious help from Anderson himself in an email from down under, we can simplify the terms with $\sigma^2(x_t)$ by expanding the last term.
 The important step is to factorize the joint distribution $p(x_s, x_t) = p(x_s| x_t) p(x_t)$ and invoke the product rule.
 &lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
-	&amp; \frac{1}{2} \partial_{x_t}^2 \left[ p(x_s, x_t) g(x_t) g(x_t) \right] \\
-	= &amp; \frac{1}{2} \partial_{x_t}^2 \left[ p(x_s | x_t) p(x_t) g(x_t) g(x_t) \right] \\
-	= &amp; \frac{1}{2} \partial_{x_t}^2 p(x_s | x_t) p(x_t) g(x_t) g(x_t) + \partial_{x_t} \left[ p(x_t) g(x_t) g(x_t) \right] \partial_{x_t} p(x_s| x_t)
-	 + \frac{1}{2} \partial_{x_t}^2 \left[ p(x_t) g(x_t) g(x_t) \right] p(x_s| x_t)
+	&amp; \frac{1}{2} \partial_{x_t}^2 \left[ p(x_s, x_t) \sigma^2(x_t) \right] \\
+	= &amp; \frac{1}{2} \partial_{x_t}^2 \left[ p(x_s | x_t) p(x_t) \sigma^2(x_t) \right] \\
+	= &amp; \frac{1}{2} \partial_{x_t}^2 p(x_s | x_t) p(x_t) \sigma^2(x_t) + \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right] \partial_{x_t} p(x_s| x_t)
+	 + \frac{1}{2} \partial_{x_t}^2 \left[ p(x_t) \sigma^2(x_t) \right] p(x_s| x_t)
 \end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;We can see from the expansion of the derivative above that we can combine the terms in our derivation if we expand the “center term”.
@@ -127,24 +127,32 @@ Furthermore we can employ the identity $-\frac{1}{2} X = -X + \frac{1}{2} X$ to 
 &lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
 	-\partial_t p(x_s, x_t)
-	= &amp; \partial_{x_t} \left[ f(x_t) \ p(x_s, x_t) \right] \\
-	&amp; + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] \\
-	= &amp; \partial_{x_t} \left[ f(x_t) \ p(x_s, x_t) \right] \\
-	&amp; + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \underbrace{ \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] }_{-\frac{1}{2} X = -X + \frac{1}{2} X} \\
-	&amp; \pm \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) g(x_t) g(x_t) \right] \\
-	= &amp; \partial_{x_t} \left[ f(x_t) \ p(x_s, x_t) \right] \\
-	&amp; + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) \\
-	&amp; \underbrace{ - p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] + \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] }_{-\frac{1}{2} X = -X + \frac{1}{2} X} \\
-	&amp; \pm \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) g(x_t) g(x_t) \right] \\
-	= &amp; \partial_{x_t} \left[ f(x_t) \ p(x_s, x_t) \right] + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s | x_t) p(x_t) g(x_t) g(x_t) \right] \\
-	&amp; - p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] - \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) g(x_t) g(x_t) \right] \\
-	= &amp; \partial_{x_t} \left[ f(x_t) \ p(x_s, x_t) \right] + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) g(x_t) g(x_t) \right] \\
-	&amp; - \partial_{x_t} \left[ p(x_s| x_t) \partial_{x_t} \left[ g(x_t) g(x_t) \ p(x_t) \right] \right] \\
-	= &amp; \partial_{x_t} \left[ f(x_t) \ p(x_s, x_t) - p(x_s| x_t) \partial_{x_t} \left[ g(x_t) g(x_t) \ p(x_t) \right] \right] \\
-	&amp; + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) g(x_t) g(x_t) \right] \\
-	= &amp; \partial_{x_t} \left[ p(x_s, x_t) \left( f(x_t) - \frac{1}{p(x_t)} \partial_{x_t} \left[ g(x_t) g(x_t) \ p(x_t) \right] \right) \right] \\
-	&amp; + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) g(x_t) g(x_t) \right]
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;</content><summary type="html">'If I Could Turn Back Time' by Cher (1989)</summary></entry><entry><title type="html">Fokker, Planck &amp;amp; Kolmogorov</title><link href="http://localhost:4000/blog/Kramers/" rel="alternate" type="text/html" title="Fokker, Planck &amp; Kolmogorov" /><published>2021-02-04T00:00:00+01:00</published><updated>2021-02-04T00:00:00+01:00</updated><id>http://localhost:4000/blog/Kramers</id><content type="html" xml:base="http://localhost:4000/blog/Kramers/">&lt;head&gt;
+	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
+	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
+	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
+	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ p(x_t) \ \partial_{x_t}^2 p(x_s | x_t) - \underbrace{ \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] }_{-\frac{1}{2} X = -X + \frac{1}{2} X} \\
+	&amp; \pm \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right] \\
+	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
+	&amp; \textcolor{red}{+ \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t)} \\
+	&amp; \underbrace{ - p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] + \textcolor{red}{\frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right]} }_{-\frac{1}{2} X = -X + \frac{1}{2} X} \\
+	&amp; \textcolor{red}{\pm \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right]} \\
+	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] + \textcolor{red}{\frac{1}{2} \partial_{x_t}^2 \left[ p( x_s | x_t) p(x_t) \sigma^2(x_t) \right]} \\
+	&amp; \underbrace{- p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] - \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right]}_{
+		- \partial_{x_t} \left[ p(x_s| x_t) \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right] \text{ (product rule) }
+		} \\
+	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right] \\
+	&amp; - \partial_{x_t} \left[ p(x_s| x_t) \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right] \\
+	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) - p(x_s| x_t) \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right] \\
+	&amp; + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right] \\
+	= &amp; \partial_{x_t} \left[ p(x_s, x_t) \left( \mu(x_t) - \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) \right] \\
+	&amp; + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right]
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;which finally gives us a stochastic differential equation that we can solve backward in time:
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+dX_t = \left(\mu(x_t) - \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) dt + \sigma(x_t) d\tilde{W}_t
+\end{align}&lt;/script&gt;
+where $\tilde{W}_t$ is a Wiener process that flows backward in time.&lt;/p&gt;</content><summary type="html">'If I Could Turn Back Time' by Cher (1989)</summary></entry><entry><title type="html">Fokker, Planck &amp;amp; Kolmogorov</title><link href="http://localhost:4000/blog/Kramers/" rel="alternate" type="text/html" title="Fokker, Planck &amp; Kolmogorov" /><published>2021-02-04T00:00:00+01:00</published><updated>2021-02-04T00:00:00+01:00</updated><id>http://localhost:4000/blog/Kramers</id><content type="html" xml:base="http://localhost:4000/blog/Kramers/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
