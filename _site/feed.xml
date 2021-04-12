@@ -1,4 +1,150 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-04-08T14:41:10+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Fokker, Planck &amp;amp; Kolmogorov</title><link href="http://localhost:4000/blog/Kramers/" rel="alternate" type="text/html" title="Fokker, Planck &amp; Kolmogorov" /><published>2021-02-04T00:00:00+01:00</published><updated>2021-02-04T00:00:00+01:00</updated><id>http://localhost:4000/blog/Kramers</id><content type="html" xml:base="http://localhost:4000/blog/Kramers/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-04-13T00:11:03+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Reverse Time Stochastic Differential Equations</title><link href="http://localhost:4000/blog/ReverseTimeAnderson/" rel="alternate" type="text/html" title="Reverse Time Stochastic Differential Equations" /><published>2021-04-09T00:00:00+02:00</published><updated>2021-04-09T00:00:00+02:00</updated><id>http://localhost:4000/blog/ReverseTimeAnderson</id><content type="html" xml:base="http://localhost:4000/blog/ReverseTimeAnderson/">&lt;head&gt;
+&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
+       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
+         MathJax.Hub.Config({
+           tex2jax: {
+             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
+             displayMath: [['$$','$$']],
+             processEscapes: true
+           },
+		   TeX: {extensions:[&quot;autoload-all.js&quot;]}
+         });
+       &lt;/script&gt;
+       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+
+&lt;p&gt;What follows is a derivation of the main result of ‘Reverse-Time Diffusion Equation Models’ by Brian D.O. Anderson (1982).
+Earlier we learned that for a stochastic differential equation of the form
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+	dX_t = \mu(X_t, t) dt + \sigma(X_t, t) dW_t
+\end{align}&lt;/script&gt;
+with the derivative of Wiener process $W_t$ admits to types of equations, called the forward Kolmogorov or Fokker-Planck equation and the backward Kolmogorov equation.
+For notational brevity we will use the term $\mu(x_t)$ for the drift and $\sigma(x_t)$ as the diffusion parameter and omit the explicit time dependency.&lt;/p&gt;
+
+&lt;p&gt;The Kolmogorov forward equation is identical to the Fokker Planck equation and states
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+	\partial_t p(x_t) = -\partial_{x_t} \left[ f(x_t) p(x_t) \right] + \frac{1}{2} \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right].
+\end{align}&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;It describes the evolution of a probability distribution $p(x_t)$ forward in time.
+We can quite frankly think of it as, for example, a Normal distribution being slowly transformed into an arbitrary complex distribution according to the drift and diffusion parameters.&lt;/p&gt;
+
+&lt;p&gt;The Kolmogorov backward equation for $t \leq s$ is defined as
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+	- \partial_t p(x_s | x_t) = f(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t)
+\end{align}&lt;/script&gt;
+and it basically answers the question how the probability of $x_s$ at a later point in time changes as we change $x_t$.
+The Kolmogorov backward equation is somewhat confounding with respect to time as we’re taking the partial derivative with respect to time to the value $x_t$ on which we are coniditoning.
+But we can think of it as asking ‘How does the probability of $x_s$ change, as we slowly evolve the probability distribution backwards through time and condition on $x_t$’.&lt;/p&gt;
+
+&lt;p&gt;The backward equation gives us a partial differential equation which we can solve backward in time, which would correspond to evolving the arbitrarily complex distribution backwards to our original Normal distribution. 
+Unfortunately there is no corresponding stochastic differential equation with a drift and diffusion term that describes the evolution of a random variable backwards through time.
+This is where the remarkable result from Anderson (1982) comes into play.&lt;/p&gt;
+
+&lt;p&gt;Bayes theorem tells us that $p(x_s , x_t) = p(x_s|x_t) p(x_t)$ and we can ask ourselves what the partial differential equation would be that describes the evolution of the joint distribution over time.
+First multiplying both sides of Bayes theorem with minus one and taking the derivative with respect to time $t$, we obtain via the product rule
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	- \partial_t p(x_s, x_t) &amp;= - \partial_t \left[ p(x_s| x_t) p(x_t) \right] \\
+	&amp;= -\partial_t p(x_s|x_t) p(x_t) - p(x_s | x_t) \partial_t p(x_t)
+\end{align} %]]&gt;&lt;/script&gt;
+into which we can plug in the Kolmogorov forward and backward equations, 
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	&amp; -\partial_t p(x_s|x_t) p(x_t) - p(x_s | x_t) \partial_t p(x_t) \\
+	&amp;= \left( f(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \right) p(x_t) \\
+	&amp; + p(x_s| x_t) \left( \partial_{x_t} \left[ f(x_t) p(x_t) \right] - \frac{1}{2} \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] \right)
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The derivative occuring in the backward Kolmogorov equation are
+The derivatives of the probabilities are the following
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	\partial_{x_t} p(x_s|x_t) &amp;= \partial_{x_t} \left[ \frac{p(x_s, x_t)}{p(x_t)} \right] \\
+	&amp; = \frac{\partial_{x_t} p(x_s, x_t) p(x_t) - p(x_s, x_t) \partial_{x_t} p(x_t)}{p^2(x_t)} \\
+	&amp; = \frac{\partial_{x_t} p(x_s, x_t)}{p(x_t)} - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p^2(x_t)}
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	\partial_{x_t}^2 p(x_s|x_t) = &amp; \partial_{x_t}^2 \left[ \frac{p(x_s, x_t)}{p(x_t)} \right] \\
+	= &amp; \frac{\partial_{x_t}^2 p(x_s, x_t)}{p(x_t)} 
+	- \frac{2 \ \partial_{x_t}p(x_s, x_t) \partial_{x_t}p( x_t)}{p^2( x_t)} \\
+	&amp; - \frac{p(x_s, x_t) \partial_{x_t}^2 p(x_t)}{p^2(x_t)}
+	+ \frac{2 \ p(x_s, x_t) \left(\partial_{x_t} p(x_t)\right)^2}{p^3(x_t)}
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;The next step is to evaluate the derivative of the products in the forward Kolmogorov equation.
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	\partial_{x_t} \left[ f(x_t) p(x_t) \right] &amp; = \partial_{x_t} f(x_t) \ p(x_t) + f(x_t) \ \partial_{x_t} p(x_t) \\
+	\partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] &amp; = \partial_{x_t}^2 g(x_t) g(x_t) \ p(x_t) + 2 \ \partial_{x_t} g(x_t) g(x_t) \ \partial_{x_t} p(x_t) + g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_t)
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Plugging in the derivatives of the probability distributions we obtain
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	- \partial_t p(x_s, x_t)
+	= &amp; - \partial_t \left[ p(x_s| x_t) p(x_t) \right] \\
+	= &amp; -\partial_t p(x_s|x_t) p(x_t) - p(x_s | x_t) \partial_t p(x_t) \\
+	= &amp; \left( f(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \right) p(x_t) \\
+	&amp; + p(x_s| x_t) \left( \partial_{x_t} \left[ f(x_t) p(x_t) \right] - \frac{1}{2} \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] \right) \\
+	= &amp; f(x_t) \ \partial_{x_t} p(x_s|x_t) \ p(x_t) \\
+	&amp; + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) \\
+	&amp; + p(x_s| x_t) \partial_{x_t} f(x_t) \ p(x_t) + p(x_s| x_t) f(x_t) \ \partial_{x_t} p(x_t) \\
+	&amp; - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] \\
+	= &amp; f(x_t) \ \left(\frac{\partial_{x_t} p(x_s, x_t)}{p(x_t)} - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p^2(x_t)} \right) \ p(x_t) \\
+	&amp; + p(x_s| x_t) \partial_{x_t} f(x_t) \ p(x_t) + p(x_s| x_t) f(x_t) \ \partial_{x_t} p(x_t) \\
+	&amp; + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] \\
+	= &amp; f(x_t) \ \left(\partial_{x_t} p(x_s, x_t) - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p(x_t)} \right) \\
+	&amp; + p(x_s| x_t) \partial_{x_t} f(x_t) \ p(x_t) + p(x_s| x_t) f(x_t) \ \partial_{x_t} p(x_t) \\
+	&amp; + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] \\
+	= &amp; f(x_t) \ \left(\partial_{x_t} p(x_s, x_t) - \cancel{p(x_s| x_t) \partial_{x_t} p(x_t)} \right) \\
+	&amp; + p(x_s, x_t) \partial_{x_t} f(x_t) + \cancel{p(x_s| x_t) f(x_t) \ \partial_{x_t} p(x_t)} \\
+	&amp; + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] \\
+	= &amp; f(x_t) \ \partial_{x_t} p(x_s, x_t) + p(x_s, x_t) \partial_{x_t} f(x_t) \\
+	&amp; + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] \\
+	= &amp; \partial_{x_t} \left[ f(x_t) \ p(x_s, x_t) \right] \\
+	&amp; + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right]
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;We can see now that the drift term already fulfills the requirements of the forward Kolmogorov equation.
+What we’re left with and which we have to take care of are the two terms with the diffusion terms.
+The goal is to fuse the two terms into one which resembles the diffusion term in the forward Kolmogorov equation.&lt;/p&gt;
+
+&lt;p&gt;Following the gracious help from Anderson himself in an email from down under, we can simplify the terms with $g(x_t) g(x_t)$ by expanding the last term.
+The important step is to factorize the joint distribution $p(x_s, x_t) = p(x_s| x_t) p(x_t)$ and invoke the product rule.
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	&amp; \frac{1}{2} \partial_{x_t}^2 \left[ p(x_s, x_t) g(x_t) g(x_t) \right] \\
+	= &amp; \frac{1}{2} \partial_{x_t}^2 \left[ p(x_s | x_t) p(x_t) g(x_t) g(x_t) \right] \\
+	= &amp; \frac{1}{2} \partial_{x_t}^2 p(x_s | x_t) p(x_t) g(x_t) g(x_t) + \partial_{x_t} \left[ p(x_t) g(x_t) g(x_t) \right] \partial_{x_t} p(x_s| x_t)
+	 + \frac{1}{2} \partial_{x_t}^2 \left[ p(x_t) g(x_t) g(x_t) \right] p(x_s| x_t)
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;We can see from the expansion of the derivative above that we can combine the terms in our derivation if we expand the “center term”.
+Furthermore we can employ the identity $-\frac{1}{2} X = -X + \frac{1}{2} X$ to obtain
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	-\partial_t p(x_s, x_t)
+	= &amp; \partial_{x_t} \left[ f(x_t) \ p(x_s, x_t) \right] \\
+	&amp; + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] \\
+	= &amp; \partial_{x_t} \left[ f(x_t) \ p(x_s, x_t) \right] \\
+	&amp; + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \underbrace{ \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] }_{-\frac{1}{2} X = -X + \frac{1}{2} X} \\
+	&amp; \pm \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) g(x_t) g(x_t) \right] \\
+	= &amp; \partial_{x_t} \left[ f(x_t) \ p(x_s, x_t) \right] \\
+	&amp; + \frac{1}{2} \ g(x_t) g(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) \\
+	&amp; \underbrace{ - p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] + \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] }_{-\frac{1}{2} X = -X + \frac{1}{2} X} \\
+	&amp; \pm \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) g(x_t) g(x_t) \right] \\
+	= &amp; \partial_{x_t} \left[ f(x_t) \ p(x_s, x_t) \right] + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s | x_t) p(x_t) g(x_t) g(x_t) \right] \\
+	&amp; - p(x_s| x_t) \partial_{x_t}^2 \left[ g(x_t) g(x_t) \ p(x_t) \right] - \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) g(x_t) g(x_t) \right] \\
+	= &amp; \partial_{x_t} \left[ f(x_t) \ p(x_s, x_t) \right] + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) g(x_t) g(x_t) \right] \\
+	&amp; - \partial_{x_t} \left[ p(x_s| x_t) \partial_{x_t} \left[ g(x_t) g(x_t) \ p(x_t) \right] \right] \\
+	= &amp; \partial_{x_t} \left[ f(x_t) \ p(x_s, x_t) - p(x_s| x_t) \partial_{x_t} \left[ g(x_t) g(x_t) \ p(x_t) \right] \right] \\
+	&amp; + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) g(x_t) g(x_t) \right] \\
+	= &amp; \partial_{x_t} \left[ p(x_s, x_t) \left( f(x_t) - \frac{1}{p(x_t)} \partial_{x_t} \left[ g(x_t) g(x_t) \ p(x_t) \right] \right) \right] \\
+	&amp; + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) g(x_t) g(x_t) \right]
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;</content><summary type="html">'If I Could Turn Back Time' by Cher (1989)</summary></entry><entry><title type="html">Fokker, Planck &amp;amp; Kolmogorov</title><link href="http://localhost:4000/blog/Kramers/" rel="alternate" type="text/html" title="Fokker, Planck &amp; Kolmogorov" /><published>2021-02-04T00:00:00+01:00</published><updated>2021-02-04T00:00:00+01:00</updated><id>http://localhost:4000/blog/Kramers</id><content type="html" xml:base="http://localhost:4000/blog/Kramers/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -161,7 +307,7 @@ Dividing both sides by $\tau$ and evaluating in the limit of $\lim_{\tau \righta
 \end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;The equation above is a partial differential equation which characterizes how the probability of $x_T$ changes as we go backwards in time.
-It essentially answers the question of how much the probability $p(x_T)$ changes after conditioning the process on $x’_t$ and at earlier point in time $t$.&lt;/p&gt;</content><summary type="html">Distributions over time</summary></entry><entry><title type="html">From Bernoulli to Poisson Point Processes</title><link href="http://localhost:4000/blog/Poisson/" rel="alternate" type="text/html" title="From Bernoulli to Poisson Point Processes" /><published>2020-11-10T00:00:00+01:00</published><updated>2020-11-10T00:00:00+01:00</updated><id>http://localhost:4000/blog/Poisson</id><content type="html" xml:base="http://localhost:4000/blog/Poisson/">&lt;head&gt;
+It essentially answers the question of how much the probability $p(x_T)$ changes after conditioning the process on $x’_t$ and at earlier point in time $t$.&lt;/p&gt;</content><summary type="html">Distributions as partial differential equations over time</summary></entry><entry><title type="html">From Bernoulli Distributions to Poisson Point Processes</title><link href="http://localhost:4000/blog/Poisson/" rel="alternate" type="text/html" title="From Bernoulli Distributions to Poisson Point Processes" /><published>2020-11-10T00:00:00+01:00</published><updated>2020-11-10T00:00:00+01:00</updated><id>http://localhost:4000/blog/Poisson</id><content type="html" xml:base="http://localhost:4000/blog/Poisson/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -393,7 +539,7 @@ To see this we inspect the Poisson process for an extremely small time frame $\l
 &amp;= \lambda \Delta t
 \end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
-&lt;p&gt;which are precisely the probabilities for a Bernoulli distribution.&lt;/p&gt;</content><summary type="html">A lot of distributions with Latin names ...</summary></entry><entry><title type="html">(Importance Weighted) Variational Autoencoders Derived</title><link href="http://localhost:4000/blog/VAE/" rel="alternate" type="text/html" title="(Importance Weighted) Variational Autoencoders Derived" /><published>2020-08-10T00:00:00+02:00</published><updated>2020-08-10T00:00:00+02:00</updated><id>http://localhost:4000/blog/VAE</id><content type="html" xml:base="http://localhost:4000/blog/VAE/">&lt;head&gt;
+&lt;p&gt;which are precisely the probabilities for a Bernoulli distribution.&lt;/p&gt;</content><summary type="html">From binary to fishy if you're francophil</summary></entry><entry><title type="html">(Importance Weighted) Variational Autoencoders Derived</title><link href="http://localhost:4000/blog/VAE/" rel="alternate" type="text/html" title="(Importance Weighted) Variational Autoencoders Derived" /><published>2020-08-10T00:00:00+02:00</published><updated>2020-08-10T00:00:00+02:00</updated><id>http://localhost:4000/blog/VAE</id><content type="html" xml:base="http://localhost:4000/blog/VAE/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -1832,421 +1978,4 @@ gp.plot(_title=&quot;Post Training&quot;)
 &lt;p&gt;&lt;img src=&quot;/blog/InducingPoints/IP_GP.gif&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;One can see nicely how the inducing points are moved to precisely the points in space which we predicted earlier in the image at the top.
-This training routine would even be amenable to mini batch training, we would introduce more variance though.&lt;/p&gt;</content><summary type="html">Tackling the computational cost of GP's</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/InducingPoints/Cover.png" /></entry><entry><title type="html">Sinkhorn Iterations</title><link href="http://localhost:4000/blog/Sinkhorn/" rel="alternate" type="text/html" title="Sinkhorn Iterations" /><published>2019-07-15T00:00:00+02:00</published><updated>2019-07-15T00:00:00+02:00</updated><id>http://localhost:4000/blog/Sinkhorn</id><content type="html" xml:base="http://localhost:4000/blog/Sinkhorn/">&lt;head&gt;
-&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
-       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       &lt;/script&gt;
-       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
-&lt;/head&gt;
-
-&lt;!-- ## Non-Negative Matrix Factorization --&gt;
-
-&lt;p&gt;Computing the difference between two distributions is a problem commonly encountered in machine learning.
-Monte Carlo approximations of the KL divergence commonly suffer from the problem of sampling from the proposal distribution and computing relevant statistics with respect to the target distribution.
-In this case a problem can arise when the support of the proposal distribution from which the samples are drawn does not match the support of the target distribution.
-Intuitively one can image two Normal distributions with vastly different means and similar covariance matrices.
-It will be very hard to draw a sample from the source distribution which also lies in the support of the target distribution.
-The KL divergence is not symmetric in that respect since swapping the two distributions will give different loss values.
-The non-symmetry is the reason the KL divergence is not considered a distance, but only a divergence.&lt;/p&gt;
-
-&lt;p&gt;Ultimately, we are dependent on the proposal distribution in the KL divergence to cover the support of the target distribution with sufficient probability mass such that we can sample from the relevant portions of the target distribution.
-For the more interested reader, I would recommend reading up on Forward and Backward KL divergences and the behaviour of mode-seeking and mean-seeking.&lt;/p&gt;
-
-&lt;p&gt;The Wasserstein distance provides a remedy for this by posing a different distance measure: the earth mover distance.
-Contrary to the KL divergence, the Wasserstein distance asks how much probability mass we need to move around the source target distribution such that it matches the target distribution.
-This notion is independent of the support of the distribution and one of the reasons why it has become popular in GAN’s.&lt;/p&gt;
-
-&lt;p&gt;The only extra information we need is a cost matrix which determines how expensive it is to move probability mass from one point in the source distribution to another point in the source distribution.
-In the analogy of moving mass around, one can imagine that it is more work to move some mass for five ‘steps’ than it is to just move the same mass one step away.
-While the earth mover distance can be derived for continuous distributions, it’s easiest to visualize with discrete distributions and moving probability mass between the ‘buckets’ of the discrete distributions.&lt;/p&gt;
-
-&lt;p&gt;Let’s define two probability vectors $p$ and $q$ which both define a categorical distribution in $\mathbb{R}_+^{d}$.
-Both these probability vectors form a simplex through two constraints which apply to them (analogously for $q$):
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	p^T \mathbb{1} &amp;= 1 \\
-	p_i &amp; \in \mathbb{R}_+
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;The second thing we need is a cost matrix $C$ for the objective function of the Wasserstein distance which characterizes how expensive it is to move probability mass from one category of a categorical distribution to another.
-We can simply use different Euclidean distance between two vectors $x$ and $y$ for that:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	c_{ij} = |(x_i-y_j)| \quad \text{or} \quad c_{ij} = ||(x_i-y_j)|| _2^2 \ \forall i, j \in \{1, \ldots, d\}
-\end{align}&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;The cost matrix $T$ for categorical distributions should be a symmetric matrix which increases its values as it moves away from the diagonal.
-But of course if you are dealing with a different transport problem, the cost matrix could be different and non-symmetric depending on your transport manifold.&lt;/p&gt;
-
-&lt;p&gt;For a categorical distribution with three possible events (intuitively bins) ${ 0, 1, 2}$ it should be:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	C = \begin{bmatrix}
-		0 &amp; 1 &amp; 2 \\
-		1&amp; 0 &amp; 1\\
-		2 &amp; 1 &amp; 0
-\end{bmatrix}
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;All this cost matrix says is that we have to ‘hop’ twice to move probability mass from bin 0 to bin 2.&lt;/p&gt;
-
-&lt;p&gt;The final component of the Wasserstein distance is the coupling matrix $T$ which is defined through a polyhedral set
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	U(p, q) = \{ T \in \mathbb{R}_+^{d \times d} \quad | \quad T \mathbb{1} = p, T^T \mathbb{1} = q \}
-\end{align}&lt;/script&gt;
-A polyhedral set refers to a set of solutions which are constrained by a finite number of half-spaces.
-Half-spaces can be created through inequality constraints which form a convex set in our case.&lt;/p&gt;
-
-&lt;p&gt;Remember that $p$ and $q$ are both distribution vectors.
-The purpose of the coupling matrix $T$ is to quantify a way to move probability mass about the source distribution such that it becomes equal to the target distribution.
-The next logical step should be to guarantee that a valid coupling matrix $T$ moves the exact amount of probability mass such that we obtain both the distribution vectors $p$ and $q$ if we sum up the rows and columns of the matrix.&lt;/p&gt;
-
-&lt;p&gt;For a small example let $p = [ 1, 0, 0]^T$ and $q = [ 0, 0, 1]^T$.
-The only valid coupling matrix $T$ would be
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	T &amp;= p q^T\\
-	&amp;= 	\begin{bmatrix}
-			0 &amp; 0 &amp; 1 \\
-			0 &amp; 0 &amp; 0 \\
-			0 &amp; 0 &amp; 0
-		\end{bmatrix}
-		\Rightarrow
-		\begin{bmatrix}
-			1 \\
-			0 \\
-			0 \\
-		\end{bmatrix} = T \mathbb{1} = p \\
-		&amp; \qquad \quad \Downarrow \\
-		&amp; \quad \ \begin{bmatrix}
-		0 &amp; 0 &amp; 1
-		\end{bmatrix} \\
-		&amp; \quad = T^T \mathbb{1} = q
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;A closer look at the coupling matrix shows the expected behaviour that we move all the probability mass from bin 1 in $p$ to bin 3 in $q$.&lt;/p&gt;
-
-&lt;p&gt;The Wasserstein distance between two distributions is defined as the minimum of the inner Frobenius product $\langle \cdot, \cdot \rangle_F$ of the coupling matrix $T$ and the cost matrix $C$:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	\mathcal{W}(p,q) := \min_{T\in U(p,q)} \left\langle T; C \right\rangle_F.
-\end{align}&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;In the equation above, the membership of $T \in U(r,c)$ contains the constraints that $T$ has to be a valid coupling matrix.&lt;/p&gt;
-
-&lt;p&gt;The hard part is now to find the coupling matrix $T$ which accurately represents the probability mass that we have to move around in $p$ to arrive at the distribution vector $q$.
-There is a very large number of possible coupling matrices $T$ which all result in a valid transport of the probability mass, yet we are interested in the coupling matrix $T$ which transports the least amount of probability mass!&lt;/p&gt;
-
-&lt;p&gt;Since we are computing the Frobenius norm with respect to the cost matrix $C$ we want the Wasserstein distance to be as small as possible, meaning that we want to move as little probability mass as possible on the off-diagonal entries in $T$.
-We don’t want an artificially high cost because of valid, though unreasonable, transport plans if two distributions are the same except for a tiny fraction of probability mass.&lt;/p&gt;
-
-&lt;p&gt;We could solve the problem above with linear programming since it’s simply finding the minimum of a linear program given a series of inequality constrains on the coupling matrix.
-Linear programming becomes infeasible and difficult for large solution spaces and furthermore is not differentiable which makes this solution unattractive for the use in gradient-based optimization schemes.&lt;/p&gt;
-
-&lt;p&gt;The solution of our original linear program would result in a sparse solution on one of the vertices given by the constraints.
-One can imagine this as searching for the absolute perfect solution in the remotest corner of the simplex.
-But we could ask ourselves in the age of approximate function fitting and empirical risk minimization, whether we really require such a perfect solution.
-Could we arrive at an easier to optimize objective function if we were to accept a slightly less accurate solution?&lt;/p&gt;
-
-&lt;p&gt;Enter Sinkhorn distances as optimal transport with entropic constraints!&lt;/p&gt;
-
-&lt;p&gt;The answer is yes with the help of entropic regularization.
-We therefore augment the original convex set:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	U_\lambda (p,q) &amp;= \{ T \in U(p,q) \quad | \quad \text{KL}[T || pq^T] \leq \lambda \} \\
-	&amp;= \{ T \in U(p,q) \quad | \quad H[T] \geq H[p] + H[q] - \mu\} \subset U(p,q)
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;From information theory we know that the mutual information of two random variables $X$ and $Y$, should they follow a joint distribution, is defined as
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	I[ p(x), p(y)] &amp;= \text{KL}[p(x,y)||p(x), p(y)] \\
-	&amp;= \int \int p(x,y) \log \frac{p(x,y)}{p(x)p(y)} dx dy \\
-	&amp;= \int p(x,y) \log p(x,y) dx dy - \int p(x,y) \log p(x) dx dy - \int p(x,y) \log p(y) dx dy \\
-	&amp;= -H[p(x,y)] - \int p(x) \log p(x) dx - \int p(y) \log p(y) dy \\
-	&amp;= -H[p(x,y)] + H[p(x)] + H[p(y)]
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;Given the fact that we construct the coupling matrix $T$ from both $p$ and $q$, and it therefore represents a joint probability distribution between $p$ and $q$, we can derive the additional constraints in the augmented convex set.&lt;/p&gt;
-
-&lt;p&gt;Analogously, we can define the same equations in our specific case for our joint probability $T$ and marginal probability vectors $p$ and $q$:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\text{KL}[T||pq^T] &amp;\leq \lambda \\
-	-H[T] + H[p] + H[q] &amp;\leq \lambda \\
-	H[T] &amp;\geq H[p] + H[q] - \lambda
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;This is similar to how trust regions in optimization and reinforcement learning work.
-From an information theoretic point of view, the coupling matrix $T$, which we are optimizing, should not move too far from the joint probability distribution $pq^T$.
-We thus construct a trust region in terms of the KL divergence and parameter $\lambda$ in which we can freely optimize but not move too far away from our initial value.
-The aim of the original optimization is to find a transport scheme which minimizes the entropy of the coupling matrix $T$ due to the sparse solution on the vertices of the probability simplex.&lt;/p&gt;
-
-&lt;p&gt;The additional constraint forces the entropy of the coupling matrix $T$ not to fall below a certain threshold.
-The values of $H[p]$, $H[q]$ and $\lambda$ are all fixed and thus $H[T]$ should not fall below the combinations of these values.
-Therefore the optimization is discouraged from finding sparse solutions, as for example with the L1-norm, and encouraged to find a smooth transport plan $T$.&lt;/p&gt;
-
-&lt;p&gt;If $\lambda \rightarrow \infty$, the constraint disappears and the entropy of the coupling matrix will result in the same solution as the linear program since $H[T] \in \mathbb{R}_+$.&lt;/p&gt;
-
-&lt;p&gt;An alternative objective function would therefore be the following:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	T^\lambda = \text{argmin}_{T \in U(p,q)} \left\langle T , C \right\rangle - \lambda H[T] \quad \text{with} \quad \lambda \geq 0
-\end{align}&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;Adding the original marginal constraint $T \mathbb{1} = p$ and $T^T \mathbb{1} = q$ and forming the Lagrangian gives us a convenient objective function:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\mathcal{L}(T, \alpha, \beta) &amp;= \left\langle T, C \right\rangle_F + \lambda H[T] + \alpha^T (T^T \mathbb{1} - q) + \beta^T (T \mathbb{1} - p) \\
-	&amp;= \sum_{ij} t_{ij} c_{ij} + \lambda \sum_{ij} t_{ij} \log t_{ij} + \sum_i \alpha_i ( \sum_j t_{ij} - p_j) + \sum_i \beta_i ( \sum_j t_{ij} - q_i)
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;The derivative $\partial \mathcal{L} / \partial t_{ij}$ yields
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\frac{\partial \mathcal{L}}{\partial t_{ij}} &amp;= c_{ij} + \lambda (\log t_{ij} + 1) + \alpha_i + \beta_i \stackrel{!}{=} 0 \\
-	\log t_{ij} &amp;= - \frac{1}{\lambda} c_{ij} - 1 - \frac{1}{\lambda} \alpha_i - \frac{1}{\lambda} \beta_i \\
-	t_{ij} &amp;= \exp \left[ - \frac{1}{\lambda} \alpha_i \right] \exp \left[-\frac{1}{\lambda} c_{ij}-1 \right] \exp \left[ - \frac{1}{\lambda} \beta_i \right]
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;Now Sinkhorn’s theorem enters the plot.
-Sinkhorn’s theorem states that if a matrix $A$ has strictly positive elements, then there exist two diagonal matrices $D_1$ and $D_2$ with strictly positive diagonal elements such that $B = D_1 A D_2$ is doubly stochastic.
-Applying this to our problem, we have $T$ which by definition only has positive elements, and the diagonal matrices $\exp[ \text{diag}[ - 1/\lambda \cdot \alpha]]$ and $\exp [ \text{diag}[ - 1/\lambda \cdot \beta]]$.
-The diagonal matrices arise from the constraint on the rows and columns of the coupling matrix $T$.
-All of these matrices are the element-wise negative exponential which makes their entries by construction strictly positive.
-For the product of these three matrices, the result will be a double stochastic matrix $B$, which is defined by the properties $B\mathbb{1} = \mathbb{1}$ and $B^T\mathbb{1} = \mathbb{1}$.
-&lt;!-- % So to sum up:
-% \begin{align}
-% 	B = D_1 A D_2 \ \Leftrightarrow \ T = \exp[ \text{diag}[ - 1/\lambda \cdot \alpha]] \exp[-\frac{1}{\lambda} C -1] \exp [ \text{diag}[ - 1/\lambda \cdot \beta]]
-% \end{align} --&gt;&lt;/p&gt;
-
-&lt;p&gt;We can rewrite the objective function in such a way that it reflects the Sinkhorn’s theorem:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	T = \text{diag}(u) K \text{diag}(v)
-\end{align}&lt;/script&gt;
-with
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	K &amp;= \exp[- \frac{1}{\lambda}C -\mathbb{1}\mathbb{1}^T ] \\
-	\text{diag}(u) &amp;= D_1 = \text{diag}(\exp[ - \frac{1}{\lambda} \alpha]) \\
-	\text{diag}(v) &amp;= D_2 = \text{diag}(\exp[ - \frac{1}{\lambda} \beta]).
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;By plugging $T = \text{diag}(u) K \text{diag}(v)$ into our constraints $p = T \mathbb{1}$ and $ q = T^T \mathbb{1}$, we obtain the following element-wise updates:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	p &amp;= \text{diag}(u) K \text{diag}(v) \mathbb{1} \\
-	q &amp;= \text{diag}(u) K^T \text{diag}(v) \mathbb{1} \\
-	p_i &amp;= u_i (Kv)_i \\
-	q_j &amp;= v_j (K^Tu)_j
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;By realigning the equations to $u$ and $v$, we obtain the alternating update rules:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	v_j &amp; \leftarrow p_j / (K^T u)_j \\
-	u_j &amp; \leftarrow q_j / (K v)_j
-\end{align} %]]&gt;&lt;/script&gt;
-which can be rewritten into the element-wise operations
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	v &amp; \leftarrow p \oslash (K^T u) \\
-	u &amp; \leftarrow q \oslash (K v)
-\end{align} %]]&gt;&lt;/script&gt;
-where $\oslash$ is the element-wise division of two vectors.&lt;/p&gt;
-
-&lt;p&gt;Unfortunately, it turns out that these iterations are numerically not especially stable.
-The repeated divisions and multiplications can lead to numerical under- or overflows.
-Just imagine multiplying $0.1^{100}$ and you’ll quickly see that numerical issues can arise due to a limited bit number.&lt;/p&gt;
-
-&lt;p&gt;In order to stabilize the computations, the logarithm is used.
-For numerical computations, the logarithm has the nice practical property that it turns multiplications and divisions into additions and subtractions.
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\log v &amp; \leftarrow \log p - \log[K^T u] \\
-	\log u &amp; \leftarrow \log q - \log[K v]
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;The logarithm of the vector matrix multiplication $\log[K^Tu]$ and $\log[Kv]$ need some extra handling.
-For simplicities sake, we will continue the derivation for $\log[Kv]$ but it holds for $\log[K^Tv]$ as well:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\log[Kv]_i &amp;= \log\left[ \sum_j K_{ij} v_j \right] \\
-	&amp;= \log\left[ \sum_j \exp\left[-\frac{1}{\lambda}C_{ij} - 1 \right] v_j \right] \\
-	&amp;= \log\left[ \sum_j \exp\left[-\frac{1}{\lambda}C_{ij} - 1 + \log v_j \right] \right].
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;The computation log-sum-exp is implemented in many numerical software packages and utilizes an additional trick to stabilize the computation.
-When we exponentiate very large or very small numbers (e.g. $\pm 10^10$) it can quickly happen that we encounter under- or overflows since such numbers go to either zero or infinity and we encounter the problem of represents very small or very large numbers with limited number of bits.
-Yet, this was precisely what we wanted to circumvent by applying the log to our update rules.
-Fortunately, we can simply subtract the maximum value inside the log-sum-exp operation and add it back on the outside.
-A small algebraic proof follows here which $x_{max} = \max { x_0, x_1, x_2, \ldots x_N}$:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	&amp; \log \left[ \sum_i \exp[x_i] \right] \underbrace{+ x_{max} - x_{max}}_{=0} \\
-	&amp; \log \left[ \sum_i \exp[x_i] \right] + x_{max} + \log \exp[ -x_{max}] \\
-	= &amp; \log \left[ \sum_i \exp[x_i] \exp[ -x_{max}] \right] + x_{max} \\
-	= &amp; \log \left[ \sum_i \exp[x_i -x_{max}] \right] + x_{max}.
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;Intuitively, the log-sum-exp trick rescales the terms which are exponentiated into the well-behaved area around zero.
-This rescaling is then undone by simply adding the maximum value back.
-This updated computations of the log-sum-exp is done in most linear algebra packages under the hood.&lt;/p&gt;
-
-&lt;p&gt;Let’s get back to our original problem of computing the log of the matrix-vector product.
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	\log[Kv]_i = \log\left[ \sum_j \exp\left[-\frac{1}{\lambda}C_{ij} -1 + \log v_j \right] \right].
-\end{align}&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;We can compute the logarithmized matrix vector product by simply adding $\log v$ to each row of the rescaled cost matrix $C$ and the log-sum-exp trick is applied automatically.
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\log v &amp; \leftarrow \log p - \log \left[ \sum_{rows} \left[ - \frac{1}{\lambda}C + \log u \right] \right] \\
-	\log u &amp; \leftarrow \log q - \log \left[ \sum_{rows} \left[ - \frac{1}{\lambda}C + \log v \right] \right]
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;The Sinkhorn iterations give us a way to compute the optimal transport plan.
-But we still have to compute the gradients for these iterations if we want to use them in gradient based optimization schemes.
-Remember that we used the Sinkhorn iterations in the first place to find a transport plan for which the gradient of the cost function with respect to the transport plane is zero, i.e. $\smash{\partial \mathcal{L}/ \partial t_{ij} \stackrel{!}{=}0}$.
-The vectors $u$ and $v$ were used as short-hand replacements for the exponentiated $\alpha$ and $\beta$ dual variables.
-The entire point of using duality in optimization is that we can solve an alternative optimization problem, the dual with the dual variables (in our case $\alpha$ and $\beta$), and the solution will be equivalent to our original optimization problem, the primal (given certain properties and constraints, into the detail of which I won’t go here).
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\partial \mathcal{L}/ \partial t_{ij} &amp; \stackrel{!}{=}0 \\
-	\Downarrow \\
-	u = \exp[-\frac{1}{\lambda}\alpha] \ &amp; , \ v = \exp[-\frac{1}{\lambda}\beta] \\
-	&amp; \Downarrow \\
-	\alpha = -\lambda \log u \  &amp; , \ \beta = -\lambda \log v
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;Once we found $\alpha$ and $\beta$ we can plug them back into the original objective function $\mathcal{L}$ and we can compute the gradients with respect to the distributions at hand:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\nabla_q\mathcal{L} &amp;= \nabla_q \left[ \left\langle T, C \right\rangle_F + \lambda H[T] + \alpha^T(T^T\mathbb{1} - q) + \beta^T (T\mathbb{1} - p) \right] \\
-	&amp;= \alpha \\
-	&amp;= - \lambda \log u
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;Now that we have the gradient $\nabla_q \mathcal{L}$ for each ‘bin’ in the proposal probability vector $q$ we can update this vector with stochastic gradient descent and fit it to the probability vector $p$.&lt;/p&gt;
-
-&lt;p&gt;How does all of this look in code?
-Well … here you go&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;import numpy as np
-import torch
-import ot
-import math
-import matplotlib.pyplot as plt
-
-Tensor = torch.FloatTensor
-p = Tensor([0.1, 0.2, 0.3, 0.4]) # the target distribution we want to approximate
-
-# Bunch of different initial distributions used for testing
-# q = torch.nn.Parameter(Tensor([0.1, 0.25, 0.25, 0.4]))
-q = torch.nn.Parameter(Tensor([0.4 , 0.2, 0.3, 0.1]))
-# q = torch.nn.Parameter(Tensor([0.7, 0.1, 0.1, 0.1]))
-# q = torch.nn.Parameter(Tensor([0.7, 0.2, 0.05, 0.05]))
-# q = torch.nn.Parameter(Tensor([0.1, 0.2, 0.3, 0.4
-
-lambda_reg = 10 # larger values reduce entropy term -&amp;gt; 1/lambda_reg
-
-# Use python optimal transport library to check whether cost functions is computed correctly as reference
-print('Python Optimal Transport')
-dist = np.arange(q.shape[0])
-C = np.abs(np.expand_dims(dist, axis=1) - np.expand_dims(dist, 0))
-P = ot.sinkhorn(p.data.numpy(), q.data.numpy(), C, reg=1./lambda_reg, method='sinkhorn')
-print('dist:', np.sum(P * C), np.sum(P))
-print()
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Now we’ve set up the the two distributions and are ready to optimize.&lt;/p&gt;
-
-&lt;p&gt;The Sinkhorn iteration function takes the two distributions performs the Sinkhorn iterations and returns the gradient for the proposal distribution which is computed from alpha:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;def sinkhorn_iteration(p, q, lambda_reg, log=True): # the main sinkhorn iteration function
-	'''
-
-	:param a: target / parameterized distribution
-	:param b: source distribution
-	:return: Wasserstein distance between source / parameterized distribution and target distribution
-
-	Solves the transport problem
-	argmin &amp;lt;P, C&amp;gt; + 1/lambda_reg H[P}
-	'''
-
-	assert p.shape == torch.Size([4])
-	assert q.shape == torch.Size([4])
-
-	dist = torch.arange(p.shape[0]).float()
-	C = torch.abs(dist.unsqueeze(1) - dist.unsqueeze(0))
-	K = torch.exp(-lambda_reg * C-1)
-
-	alpha = torch.ones_like(p)/4
-	beta = torch.ones_like(q)/4
-
-	log_alpha = torch.ones_like(p)*(-math.log(4))
-	log_beta = torch.ones_like(p)*(-math.log(4))
-
-	if not log:
-		for iter in range(200):
-
-			last_u = alpha
-			alpha = p / (K @ beta)
-			beta = q / (K @ alpha)
-
-			if torch.mean(torch.abs(alpha - last_u)) &amp;lt; 0.05:
-				break
-
-	elif log:
-		for iter in range(200):
-			last_log_alpha = log_alpha
-
-			log_alpha     = torch.log(p) - torch.logsumexp(-lambda_reg*C -1 + log_beta,     dim=1)
-			log_beta      = torch.log(q) - torch.logsumexp(-lambda_reg*C -1 + log_alpha,    dim=1)
-
-			if torch.mean(torch.abs(log_alpha - last_log_alpha)) &amp;lt; 0.005:
-				break
-		alpha = log_alpha.exp()
-		beta = log_beta.exp()
-
-	P = torch.diag(alpha) @ K @ torch.diag(beta)
-
-	d = torch.sum(P * C)
-	grad = torch.log(alpha)/lambda_reg #- torch.mean(torch.log(alpha))/lambda_reg
-
-	return d, P, grad
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Finally we’ll use the optimizer provided by PyTorch to do a couple of hundred steps to let the proposal distribution converge to the true distribution.
-While we’re at it, we’ll also plot a couple of sanity checks such as the distributions still summing up to one&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;optim = torch.optim.SGD([q], lr=0.001)
-
-epochs = 2000
-for epoch in range(epochs):
-
-	optim.zero_grad()
-
-	dist, P, grad = sinkhorn_iteration(p, q, lambda_reg)
-
-	q.grad = - grad
-
-	optim.step()
-
-	if epoch % (epochs//10) == 0: print('Epoch: ', epoch, dist.detach(), torch.sum(P).detach(), q.detach())
-	if epoch &amp;lt;10: print('Epoch: ', epoch, dist.detach(), torch.sum(P).detach(), q.detach())
-
-print(q.detach(), 'sum(source_dist)=', torch.sum(q).detach().item())
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Interestingly, I was only able to make it work with the plain SGD optimizer.
-ADAM for some reason went NaN on my after a couple of iterations.
-I suspect it has to do something with the second-order estimations and maybe the gradient I provide somewhere let’s these second-order moments explode.&lt;/p&gt;
-
-&lt;p&gt;Up to this point we had a look at discrete distributions and how to compute an optimal transport plan.
-It turns out, that the optimal transport plan for continuous distributions (at least for the Normal distribution) is quite compact and doesn’t require an auxiliary optimization problem via the Sinkhorn iterations.&lt;/p&gt;</content><summary type="html">Computing Wasserstein Distances</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/Sinkhorn/Sinkhorn.png" /></entry></feed>
+This training routine would even be amenable to mini batch training, we would introduce more variance though.&lt;/p&gt;</content><summary type="html">Tackling the computational cost of GP's</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/InducingPoints/Cover.png" /></entry></feed>
