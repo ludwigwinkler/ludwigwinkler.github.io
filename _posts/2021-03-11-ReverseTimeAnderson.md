@@ -22,13 +22,13 @@ image:
 
 
 What follows is a derivation of the main result of 'Reverse-Time Diffusion Equation Models' by Brian D.O. Anderson (1982).
-Earlier on this blog we learned that for a stochastic differential equation of the form
+Earlier on this blog we learned that a stochastic differential equation of the form
 $$
 \begin{align}
 	dX_t = \mu(X_t, t) dt + \sigma(X_t, t) dW_t
 \end{align}
 $$
-with the derivative of Wiener process $W_t$ and which admits two types of equations, called the forward Kolmogorov or Fokker-Planck equation and the backward Kolmogorov equation.
+with the derivative of Wiener process $W_t$ admits two types of equations, called the forward Kolmogorov or Fokker-Planck equation and the backward Kolmogorov equation.
 For notational brevity we will use the term $\mu(x_t)$ for the drift and $\sigma(x_t)$ as the diffusion parameter and omit the explicit time dependency.
 
 The Kolmogorov forward equation is identical to the Fokker Planck equation and states
