@@ -158,11 +158,10 @@ These arrows are computed through the differential equation and tell us what the
 <p>On a side note: Notice how the arrows don’t change in their direction and magnitude for a specific value $x(t)$ while we progress in time. This signals that $dx(t)$ doesn’t actually use $t$ to compute the change in temperature.</p>
 
 <p>The way we solve differential equations is to start at some initial point $x(0)$ and add up all the temperature changes $dx(t)$ that the hot coffee mug is exposed to over time.
-Mathematically, this amounts to little more than:</p>
-
-<script type="math/tex; mode=display">\begin{align}
+Mathematically, this amounts to little more than:
+<script type="math/tex">\begin{align}
 x(T) = x(0) + \underbrace{\int_{t=0}^T dx(t)}_{\text{sum up all the changes}}
-\end{align}</script>
+\end{align}</script></p>
 
 <p>the solution of which is shown as the grey line in the right plot.</p>
 
@@ -201,15 +200,13 @@ Therefore it does not jiggle and bounce at discrete time steps but will always m
 
 <p><img src="/blog/SDE/BrownianMotion.png" alt="" class='align="center"' height="50%" width="50%"></p>
 
-<p>We can thus proclaim the following, somewhat un-mathematical property of this rambunctious little particle:</p>
-
-<script type="math/tex; mode=display">\begin{aling}
-  \underbrace{dx_t}_{\text{change in space}} \equiv \overbrace{\epsilon}^{\text{random move}} \underbrace{"dt"}_{\text{some change in time}}
-\begin{align}</script>
+<p>We can thus proclaim the following, somewhat un-mathematical property of this rambunctious little particle:
+<script type="math/tex">\begin{align}
+  \underbrace{dx_t}_{\text{change in space}} = \overbrace{\epsilon}^{\text{random move}} \underbrace{"dt"}_{\text{some change in time}}
+\end{align}</script></p>
 
 <p>There are a couple of things to observe here:</p>
 
-<!-- * First is the modified notation of $dx_t$ which is simply a more compact notation for $dx(t)$ and is completely equivalent. -->
 <ul>
   <li>First we introduced a random variable $\epsilon$ which follows some probability distribution.</li>
   <li>Secondly, through the infinitesimal differentials on both sides we equated the random move in space with the duration of the movement just like in a differential equation.</li>
@@ -342,20 +339,18 @@ We can basically zoom infinitely far into the movements on the time axis and we 
   </li>
 </ul>
 
-<p>In order to be all set up for the final chapter of this post, we will define an infinitesimal version of the Gaussian increment property of the Wiener process:</p>
-
-<script type="math/tex; mode=display">\begin{align}
+<p>In order to be all set up for the final chapter of this post, we will define an infinitesimal version of the Gaussian increment property of the Wiener process:
+<script type="math/tex">\begin{align}
 W_{t+u} - W_t \sim \mathcal{N}(0, u) \quad \Leftrightarrow \quad dW_t \sim \mathcal{N}(0,dt)
-\end{align}</script>
+\end{align}</script></p>
 
 <h4 id="stochastic-differential-equations--differential-equations--wiener-processes">Stochastic Differential Equations (= Differential Equations + Wiener Processes)</h4>
 
 <p>Once we understood differential equations and Wiener processes, we’ll realize that (basic) stochastic differential equations are just the combination of the two.
-We can thus define a stochastic differential equation as</p>
-
-<script type="math/tex; mode=display">\begin{align}
+We can thus define a stochastic differential equation as
+<script type="math/tex">\begin{align}
   \underbrace{dX_t}_{\text{total change}} = \underbrace{\mu_t dt}_{\text{deterministic}} + \underbrace{\sigma_t dW_t}_{\text{stochastic}}
-\end{align}</script>
+\end{align}</script></p>
 
 <p>which defines the infinitesimal change in the random variable $X_t$ at time $t$ as the combination of a deterministic change $\mu_t dt$ and a scaled Wiener process $\sigma_t dW_t \sim \mathcal{N}(0,\sigma_t^2 dt)$.</p>
 
