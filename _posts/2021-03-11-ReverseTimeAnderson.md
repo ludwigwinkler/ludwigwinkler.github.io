@@ -67,7 +67,7 @@ $$
 	&= \underbrace{-\partial_t p(x_s|x_t)}_{\text{KBE}} p(x_t) - p(x_s | x_t) \underbrace{\partial_t p(x_t)}_{\text{KFE}}
 \end{align} 
 $$
-into which we can plug in the Kolmogorov forward and backward equations, 
+into which we can plug in the Kolmogorov forward (KFE) and Kolmogorov backward (KBE) equations, 
 $$
 \begin{align}
 	& -\partial_t p(x_s|x_t) p(x_t) - p(x_s | x_t) \partial_t p(x_t) \\
@@ -81,12 +81,7 @@ $$
 \begin{align}
 	\partial_{x_t} p(x_s|x_t) &= \partial_{x_t} \left[ \frac{p(x_s, x_t)}{p(x_t)} \right] \\
 	& = \frac{\partial_{x_t} p(x_s, x_t) p(x_t) - p(x_s, x_t) \partial_{x_t} p(x_t)}{p^2(x_t)} \\
-	& = \frac{\partial_{x_t} p(x_s, x_t)}{p(x_t)} - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p^2(x_t)} \\
-	\partial_{x_t}^2 p(x_s|x_t) = & \partial_{x_t}^2 \left[ \frac{p(x_s, x_t)}{p(x_t)} \right] \\
-	= & \frac{\partial_{x_t}^2 p(x_s, x_t)}{p(x_t)} 
-	- \frac{2 \ \partial_{x_t}p(x_s, x_t) \partial_{x_t}p( x_t)}{p^2( x_t)} \\
-	& - \frac{p(x_s, x_t) \partial_{x_t}^2 p(x_t)}{p^2(x_t)}
-	+ \frac{2 \ p(x_s, x_t) \left(\partial_{x_t} p(x_t)\right)^2}{p^3(x_t)}
+	& = \frac{\partial_{x_t} p(x_s, x_t)}{p(x_t)} - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p^2(x_t)}
 \end{align}
 $$
 
