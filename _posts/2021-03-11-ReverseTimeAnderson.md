@@ -132,7 +132,7 @@ The goal is to fuse the two terms into one which resembles the diffusion term in
 Just to reiterate it one more time, if we can massage the partial differential equation into the functional form of the Kolmogorov forward equation, we have a one-to-one correspondence to a stochastic differential equation that can be solved backward in time.
 
 Following the gracious help from Brian Anderson himself in an email from down under, we can simplify the terms with $\sigma^2(x_t)$ by expanding the last term.
-The important step, that Brian pointed out to me, is to factorize the joint distribution $p(x_s, x_t) = p(x_s| x_t) p(x_t)$ and invoke the product rule.
+The important step, that Brian pointed out to me, is to factorize the joint distribution $p(x_s, x_t) = p(x_s| x_t) p(x_t)$ and invoke the product rule to match the terms,
 $$
 \begin{align}
 	& \frac{1}{2} \partial_{x_t}^2 \left[ p(x_s, x_t) \sigma^2(x_t) \right] \\
