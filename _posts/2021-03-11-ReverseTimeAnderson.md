@@ -64,7 +64,7 @@ First multiplying both sides of Bayes theorem with minus one and taking the deri
 $$
 \begin{align}
 	- \partial_t p(x_s, x_t) &= - \partial_t \left[ p(x_s| x_t) p(x_t) \right] \\
-	&= \underbrace{-\partial_t p(x_s|x_t)}_{\text{KBE}} p(x_t) - p(x_s | x_t) \underbrace{\partial_t p(x_t)}_{-\text{KFE}}
+	&= \underbrace{-\partial_t p(x_s|x_t)}_{\text{KBE}} p(x_t) - p(x_s | x_t) \underbrace{\partial_t p(x_t)}_{\text{KFE}}
 \end{align} 
 $$
 into which we can plug in the Kolmogorov forward and backward equations, 
