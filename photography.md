@@ -11,7 +11,7 @@ sitemap:
 Among my most admired photographers are [Fan Ho](https://fanho-forgetmenot.com/portrait-of-hong-kong-1) and [Alan Schaller](http://alanschaller.com).
 The photos here are my experiments with light and shadow and playing around with the buttons and dials on my Alpha A7 III ...
 
-## Berlin
+## Berlin Through Time
 {% include image-gallery.html folder="photo_gallery/berlin" %}
 
 ## Italy '21
