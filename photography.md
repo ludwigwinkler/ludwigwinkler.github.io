@@ -8,17 +8,23 @@ sitemap:
     changefreq: weekly
 ---
 
+Among my most admired photographers are [Fan Ho](https://fanho-forgetmenot.com) and [Alan Schaller](http://alanschaller.com).
+The photos here are my experiments with light and shadow and playing around with the buttons and dials on my Alpha A7 III ...
+
 ## Berlin
 {% include image-gallery.html folder="photo_gallery/berlin" %}
 
-## Portugal
-{% include image-gallery.html folder="photo_gallery/portugal" %}
+## Italy '21
+{% include image-gallery.html folder="photo_gallery/italy21" %}
 
-## New Zealand
-{% include image-gallery.html folder="photo_gallery/nz" %}
+## Portugal '20
+{% include image-gallery.html folder="photo_gallery/portugal20" %}
 
-## Greece
-{% include image-gallery.html folder="photo_gallery/greece" %}
+## New Zealand '20
+{% include image-gallery.html folder="photo_gallery/nz20" %}
 
-## South America
-{% include image-gallery.html folder="photo_gallery/southamerica" %}
+## Greece '19
+{% include image-gallery.html folder="photo_gallery/greece19" %}
+
+## South America '19
+{% include image-gallery.html folder="photo_gallery/southamerica19" %}
