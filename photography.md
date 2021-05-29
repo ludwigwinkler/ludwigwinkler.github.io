@@ -13,7 +13,7 @@ The photos here are my experiments with light and shadow and playing around with
 
 Best enjoyed in hi-res on your laptop or any other big screen ...
 
-## Berlin Through Time
+## Berlin Over The Years
 {% include image-gallery.html folder="photo_gallery/berlin" %}
 
 ## Italy '21
