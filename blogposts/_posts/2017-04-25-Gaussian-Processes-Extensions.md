@@ -1,6 +1,7 @@
 ---
 layout: post
 title:  "Gaussian Processes - Extensions"
+category: blog
 date:   2018-04-23
 excerpt: "Extensions to Gaussian Processes"
 image: "/images/GP_4Obs_Deriv.png"

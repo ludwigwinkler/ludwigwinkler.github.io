@@ -1,6 +1,7 @@
 ---
 layout: post
 title:  "Gaussian Processes - Basics"
+category: blog
 date:   2018-04-23
 excerpt: "A Tutorial for Gaussian Processes"
 image: "/images/GP_2Obs.png"
