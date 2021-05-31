@@ -1,0 +1,102 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+  Jekyll integration by somiibo.com
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+
+<head>
+	{% include head.html %}
+</head>
+
+<body class="is-loading">
+
+	<!-- Wrapper -->
+	<div id="wrapper" class="fade-in">
+
+		<!-- Header -->
+		<header id="header">
+			<a href="{{ "/" | absolute_url }}" class="logo">{{site.title}}</a>
+		</header>
+
+
+		<!-- Nav -->
+		<nav id="nav">
+
+			{% include nav.html %}
+
+			<ul class="icons">
+				<li><a href="https://twitter.com/ludiXIVwinkler" class="icon fa-twitter" rel="nofollow"><span
+							class="label">Twitter</span></a></li>
+				<li><a href="https://github.com/ludwigwinkler" class="icon fa-github" rel="nofollow"><span
+							class="label">GitHub</span></a></li>
+			</ul>
+		</nav>
+
+		<!-- Main -->
+		<div id="main">
+
+			<article class="post featured">
+				<!-- <header class="major"> -->
+					<!-- <h2><a href="#"></a><//h2> -->
+				<!-- </header> -->
+				<p>
+					Among my most admired photographers are 
+					<a href="https://fanho-forgetmenot.com/portrait-of-hong-kong-1"> Fan Ho</a>
+					and
+					<a href="http://alanschaller.com"> Alan Schaller</a>.
+				</p>
+				<p>
+					The photos here are my experiments with light and shadow and playing around with the buttons and dials on my Alpha A7 III.
+				</p>
+				<p>
+					Best enjoyed in hi-res on your laptop or any other big screen …
+				</p>
+			</p>
+			<p>
+
+			</article>
+			<!-- Post -->
+			<section class="posts">
+				{% for post in site.categories.photography %}
+				{% assign mod3 = forloop.index | modulo: 10 %}
+				<article>
+					<header>
+						<span class="date">{{ post.date | date: "%Y" }}</span>
+						<h2><a href="{{ post.url | absolute_url }}">{{ post.title }}</a></h2>
+					</header>
+					<a href="{{ post.url | absolute_url }}" class="image fit"><img src="{{ post.image | absolute_url }}"
+							alt="" /></a>
+					<p>{{ post.excerpt }}</p>
+					<ul class="actions">
+						<li><a href="{{ post.url | absolute_url }}" class="button">More Photos</a></li>
+					</ul>
+				</article>
+				<!-- {% if mod3 == 0 %}
+							<article>
+								<header>
+									<h2><a href="#">Sponsored</a></h2>
+								</header>
+
+							</article> -->
+				<!-- {% endif %} -->
+				{% endfor %}
+
+			</section>
+
+		</div>
+
+		<!-- Footer -->
+		<!-- {% include foot.html %} -->
+
+	</div>
+
+	<!-- Scripts -->
+	<!-- {% include scripts-main.html %} -->
+	<!-- {% include tracking.html %} -->
+
+</body>
+
+</html>

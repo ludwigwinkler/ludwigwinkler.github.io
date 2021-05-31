@@ -20,6 +20,24 @@
     </url>
   
     <url>
+      <loc>http://localhost:4000/blog/Italy21/</loc>
+      
+        <lastmod>2021-01-01T00:00:00+01:00</lastmod>
+      
+      <changefreq>weekly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  
+    <url>
+      <loc>http://localhost:4000/blog/Berlin/</loc>
+      
+        <lastmod>2021-01-01T00:00:00+01:00</lastmod>
+      
+      <changefreq>weekly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  
+    <url>
       <loc>http://localhost:4000/blog/Poisson/</loc>
       
         <lastmod>2020-11-10T00:00:00+01:00</lastmod>
@@ -83,9 +101,36 @@
     </url>
   
     <url>
+      <loc>http://localhost:4000/blog/Portugal20/</loc>
+      
+        <lastmod>2020-01-01T00:00:00+01:00</lastmod>
+      
+      <changefreq>weekly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  
+    <url>
+      <loc>http://localhost:4000/blog/NZ20/</loc>
+      
+        <lastmod>2020-01-01T00:00:00+01:00</lastmod>
+      
+      <changefreq>weekly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  
+    <url>
       <loc>http://localhost:4000/blog/InducingPoints/</loc>
       
         <lastmod>2019-09-30T00:00:00+02:00</lastmod>
+      
+      <changefreq>weekly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  
+    <url>
+      <loc>http://localhost:4000/blog/Greece19/</loc>
+      
+        <lastmod>2019-08-01T00:00:00+02:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -140,6 +185,15 @@
       <loc>http://localhost:4000/blog/NMF/</loc>
       
         <lastmod>2019-01-24T00:00:00+01:00</lastmod>
+      
+      <changefreq>weekly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  
+    <url>
+      <loc>http://localhost:4000/blog/SouthAmerica19/</loc>
+      
+        <lastmod>2019-01-01T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -232,11 +286,11 @@
   
     <url>
       <loc>http://localhost:4000/photography/</loc>
-       <lastmod>2017-11-02T00:00:00+01:00</lastmod>
+       <lastmod>2020-11-02T00:00:00+01:00</lastmod>
       
        <changefreq>weekly</changefreq>
       
-       <priority>0.7</priority>
+       <priority>1.0</priority>
       
      </url>
   
@@ -302,6 +356,16 @@
   
     <url>
       <loc>http://localhost:4000/blog/page4/</loc>
+       <lastmod>2017-11-10T00:20:35+00:00</lastmod>
+      
+       <changefreq>weekly</changefreq>
+      
+       <priority>0.5</priority>
+      
+     </url>
+  
+    <url>
+      <loc>http://localhost:4000/blog/page5/</loc>
        <lastmod>2017-11-10T00:20:35+00:00</lastmod>
       
        <changefreq>weekly</changefreq>
