@@ -1,6 +1,7 @@
 ---
 layout: photogallery
 title:  "South America"
+description: Chile, Bolivia & Peru
 category: photography
 date:   2019-01-01
 excerpt: "Chile, Bolivia and Peru"
