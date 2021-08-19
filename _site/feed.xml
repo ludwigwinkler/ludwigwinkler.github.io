@@ -1,319 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-06-02T12:20:40+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Reverse Time Stochastic Differential Equations</title><link href="http://localhost:4000/blog/ReverseTimeAnderson/" rel="alternate" type="text/html" title="Reverse Time Stochastic Differential Equations" /><published>2021-04-09T00:00:00+02:00</published><updated>2021-04-09T00:00:00+02:00</updated><id>http://localhost:4000/blog/ReverseTimeAnderson</id><content type="html" xml:base="http://localhost:4000/blog/ReverseTimeAnderson/">&lt;head&gt;
-&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
-       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           },
-		   TeX: {extensions:[&quot;autoload-all.js&quot;]}
-         });
-       &lt;/script&gt;
-       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
-&lt;/head&gt;
-
-&lt;p&gt;What follows is a derivation of the main result of ‘Reverse-Time Diffusion Equation Models’ by Brian D.O. Anderson (1982).
-Earlier on this blog we learned that a stochastic differential equation of the form
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	dX_t = \mu(X_t, t) dt + \sigma(X_t, t) dW_t
-\end{align}&lt;/script&gt;
-with the derivative of Wiener process $W_t$ admits two types of equations, called the forward Kolmogorov or Fokker-Planck equation and the backward Kolmogorov equation.
-For notational brevity we will use the term $\mu(x_t)$ for the drift and $\sigma(x_t)$ as the diffusion parameter and omit the explicit time dependency.&lt;/p&gt;
-
-&lt;p&gt;The Kolmogorov forward equation is identical to the Fokker Planck equation and states
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	\partial_t p(x_t) = -\partial_{x_t} \left[ \mu(x_t) p(x_t) \right] + \frac{1}{2} \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right].
-\end{align}&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;It describes the evolution of a probability distribution $p(x_t)$ forward in time.
-We can quite frankly think of it as, for example, a Normal distribution being slowly transformed into an arbitrary complex distribution according to the drift and diffusion parameters $\mu(x_t)$ and $\sigma(x_t)$.&lt;/p&gt;
-
-&lt;p&gt;The Kolmogorov backward equation for $t \leq s$ is defined as
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	- \partial_t p(x_s | x_t) = \mu(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t)
-\end{align}&lt;/script&gt;
-and it basically answers the question how the probability of $x_s$ at a later point in time changes as we change $x_t$ at an earlier point in time.
-The Kolmogorov backward equation is somewhat confounding with respect to time as we’re taking the partial derivative with respect to the earlier time step $t$ on which we are also coniditoning.
-But we can think of it as asking ‘How does the probability of $x_s$ at the later point in time $s$ change, as we slowly evolve the probability distribution backwards through time and condition on $x_t$’.&lt;/p&gt;
-
-&lt;p&gt;Taking inspiration from our crude example earlier, the backward equation offers a partial differential equation which we can solve backward in time, which would correspond to evolving the arbitrarily complex distribution backwards to our original Normal distribution. 
-Unfortunately there is no corresponding stochastic differential equation with a drift and diffusion term that describes the evolution of a random variable backwards through time in terms of a stochastic differential equation.&lt;/p&gt;
-
-&lt;p&gt;This is where the remarkable result from Anderson (1982) comes into play.&lt;/p&gt;
-
-&lt;p&gt;The granddaddy of all probabilistic equations, Bayes theorem, tells us that a joint distribution can be factorized by conditioning: $p(x_s , x_t) = p(x_s|x_t) p(x_t)$ with the time ordering $t \leq s$.
-Why do we invoke the joint probability $p(x_s, x_t)$ we might ask?
-What we’re trying to achieve is to derive a stochastic differential equation that tells us from what values of $x_t$ we can arrive at $x_s$.
-We can ask ourselves what the partial differential equation would be that describes the evolution of the joint distribution over time.
-First multiplying both sides of Bayes theorem with minus one and taking the derivative with respect to time $t$, we obtain via the product rule
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	- \partial_t p(x_s, x_t) &amp;= - \partial_t \left[ p(x_s| x_t) p(x_t) \right] \\
-	&amp;= \underbrace{-\partial_t p(x_s|x_t)}_{\text{KBE}} p(x_t) - p(x_s | x_t) \underbrace{\partial_t p(x_t)}_{\text{KFE}}
-\end{align} %]]&gt;&lt;/script&gt;
-into which we can plug in the Kolmogorov forward (KFE) and Kolmogorov backward (KBE) equations, 
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	&amp; -\partial_t p(x_s|x_t) p(x_t) - p(x_s | x_t) \partial_t p(x_t) \\
-	&amp;= \left( \mu(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \right) p(x_t) \\
-	&amp; + p(x_s| x_t) \left( \partial_{x_t} \left[ \mu(x_t) p(x_t) \right] - \frac{1}{2} \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \right)
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;The derivative occuring in the backward Kolmogorov equation are
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\partial_{x_t} p(x_s|x_t) &amp;= \partial_{x_t} \left[ \frac{p(x_s, x_t)}{p(x_t)} \right] \\
-	&amp; = \frac{\partial_{x_t} p(x_s, x_t) p(x_t) - p(x_s, x_t) \partial_{x_t} p(x_t)}{p^2(x_t)} \\
-	&amp; = \frac{\partial_{x_t} p(x_s, x_t)}{p(x_t)} - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p^2(x_t)}
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;The next step is to evaluate the derivative of the products in the forward Kolmogorov equation.
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\partial_{x_t} \left[ \mu(x_t) p(x_t) \right] &amp; = \partial_{x_t} \mu(x_t) \ p(x_t) + \mu(x_t) \ \partial_{x_t} p(x_t) \\
-	\partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] &amp; = \partial_{x_t}^2 \sigma^2(x_t) \ p(x_t) + 2 \ \partial_{x_t} \sigma^2(x_t) \ \partial_{x_t} p(x_t) + \sigma^2(x_t) \ \partial_{x_t}^2 p(x_t)
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;Plugging in the derivatives of the probability distributions we obtain
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	- \partial_t p(x_s, x_t)
-	= &amp; - \partial_t \left[ p(x_s| x_t) p(x_t) \right] \\
-	= &amp; -\partial_t p(x_s|x_t) p(x_t) - p(x_s | x_t) \partial_t p(x_t) \\
-	= &amp; \left( \mu(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \right) p(x_t) \\
-	&amp; + p(x_s| x_t) \left( \partial_{x_t} \left[ \mu(x_t) p(x_t) \right] - \frac{1}{2} \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \right) \\
-	= &amp; \mu(x_t) \ \partial_{x_t} p(x_s|x_t) \ p(x_t) 
-	+ \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) \\
-	&amp; + p(x_s| x_t) \partial_{x_t} \mu(x_t) \ p(x_t) + p(x_s| x_t) \mu(x_t) \ \partial_{x_t} p(x_t) \\
-	&amp; - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
-	= &amp; \mu(x_t) \ \left(\frac{\partial_{x_t} p(x_s, x_t)}{\cancel{p(x_t)}} - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p^{\cancel{2}}(x_t)} \right) \ \cancel{p(x_t)} \\
-	&amp; + p(x_s| x_t) \partial_{x_t} \mu(x_t) \ p(x_t) + p(x_s| x_t) \mu(x_t) \ \partial_{x_t} p(x_t) \\
-	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
-	= &amp; \mu(x_t) \ \left(\partial_{x_t} p(x_s, x_t) - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p(x_t)} \right) \\
-	&amp; + p(x_s| x_t) \partial_{x_t} \mu(x_t) \ p(x_t) + p(x_s| x_t) \mu(x_t) \ \partial_{x_t} p(x_t) \\
-	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
-	= &amp; \mu(x_t) \ \left(\partial_{x_t} p(x_s, x_t) - \cancel{p(x_s| x_t) \partial_{x_t} p(x_t)} \right) \\
-	&amp; + p(x_s, x_t) \partial_{x_t} \mu(x_t) + \cancel{p(x_s| x_t) \mu(x_t) \ \partial_{x_t} p(x_t)} \\
-	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
-	= &amp; \underbrace{\mu(x_t) \ \partial_{x_t} p(x_s, x_t) + p(x_s, x_t) \partial_{x_t} \mu(x_t)}_{\text{product rule}} \\
-	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
-	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
-	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right]
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;We can now see that the drift term already fulfills the requirements of the forward Kolmogorov equation.
-What we’re left with and which we have to take care of are the two terms with the diffusion terms $\sigma^2(x_t)$.
-The goal is to fuse the two terms into one which resembles the diffusion term in the forward Kolmogorov equation.
-Just to reiterate it one more time, if we can massage the partial differential equation into the functional form of the Kolmogorov forward equation, we have a one-to-one correspondence to a stochastic differential equation that can be solved backward in time.&lt;/p&gt;
-
-&lt;p&gt;Following the gracious help from Brian Anderson himself in an email from down under, we can simplify the terms with $\sigma^2(x_t)$ by expanding the last term.
-The important step, that Brian pointed out to me, is to factorize the joint distribution $p(x_s, x_t) = p(x_s| x_t) p(x_t)$ and invoke the product rule to match the terms,
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	&amp; \frac{1}{2} \partial_{x_t}^2 \left[ p(x_s, x_t) \sigma^2(x_t) \right] \\
-	= &amp; \frac{1}{2} \partial_{x_t}^2 \left[ p(x_s | x_t) p(x_t) \sigma^2(x_t) \right] \\
-	= &amp; \frac{1}{2} \partial_{x_t}^2 p(x_s | x_t) p(x_t) \sigma^2(x_t) + \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right] \partial_{x_t} p(x_s| x_t)
-	 + \frac{1}{2} \partial_{x_t}^2 \left[ p(x_t) \sigma^2(x_t) \right] p(x_s| x_t)
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;We can see from the expansion of the derivative above that we can combine the terms in our derivation if we expand the “center term”.
-Furthermore we can employ the identity $-\frac{1}{2} X = -X + \frac{1}{2} X$ to obtain
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	-\partial_t p(x_s, x_t)
-	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
-	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
-	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
-	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ p(x_t) \ \partial_{x_t}^2 p(x_s | x_t) - \underbrace{ \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] }_{-\frac{1}{2} X = -X + \frac{1}{2} X} \\
-	&amp; \pm \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right] \\
-	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
-	&amp; \textcolor{red}{+ \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t)} \\
-	&amp; \underbrace{ - p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] + \textcolor{red}{\frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right]} }_{-\frac{1}{2} X = -X + \frac{1}{2} X} \\
-	&amp; \textcolor{red}{\pm \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right]} \\
-	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] + \textcolor{red}{\frac{1}{2} \partial_{x_t}^2 \left[ p( x_s | x_t) p(x_t) \sigma^2(x_t) \right]} \\
-	&amp; \underbrace{- p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] - \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right]}_{
-		- \partial_{x_t} \left[ p(x_s| x_t) \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right] \text{ (product rule) }
-		} \\
-	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right] \\
-	&amp; - \partial_{x_t} \left[ p(x_s| x_t) \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right] \\
-	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) - p(x_s| x_t) \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right] \\
-	&amp; + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right] \\
-	= &amp; \partial_{x_t} \left[ p(x_s, x_t) \left( \mu(x_t) - \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) \right] \\
-	&amp; + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right]
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;which finally gives us a stochastic differential equation that we can solve backward in time:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-dX_t = \left(\mu(x_t) - \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) dt + \sigma(x_t) d\tilde{W}_t
-\end{align}&lt;/script&gt;
-where $\tilde{W}_t$ is a Wiener process that flows backward in time.&lt;/p&gt;</content><summary type="html">'If I Could Turn Back Time' by Cher (1989)</summary></entry><entry><title type="html">Fokker, Planck &amp;amp; Kolmogorov</title><link href="http://localhost:4000/blog/Kramers/" rel="alternate" type="text/html" title="Fokker, Planck &amp; Kolmogorov" /><published>2021-02-04T00:00:00+01:00</published><updated>2021-02-04T00:00:00+01:00</updated><id>http://localhost:4000/blog/Kramers</id><content type="html" xml:base="http://localhost:4000/blog/Kramers/">&lt;head&gt;
-&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
-       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       &lt;/script&gt;
-       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
-&lt;/head&gt;
-
-&lt;p&gt;At the core of the partial differential equations that will describe the change of a distribution lies the Chapman-Kolmogorov equation
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	p(x_{t + \tau}) = &amp; \int p(x_{t + \tau} | x'_{t}) \ p(x'_t) \ dx'_t \\
-	&amp; = \int p(x_{t + \tau} , x'_{t}) \ dx'_t
-\end{align} %]]&gt;&lt;/script&gt;
-which is simply a way to write joint probabilities over time as conditionals.&lt;/p&gt;
-
-&lt;p&gt;We will assume a stochastic differential equation the first two orders of which can be estimated with
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	M^{(n)} (x'_t) = \int (x_{t+\tau} - x'_t)^n  p(x_{t + \tau} | x'_t) dx_{t+\tau}
-\end{align}&lt;/script&gt;
-such that the dynamics are described by the Ito drift-diffusion process
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	dX'_t = &amp; M^{(1)}(X'_t) dt + M^{(2)}(X'_t) dW_t \\
-	= &amp; \mu(X'_t, t) dt + \sigma(X'_t, t) dW_t \\
-\end{align} %]]&gt;&lt;/script&gt;
-with the Wiener process &lt;script type=&quot;math/tex&quot;&gt;W_t&lt;/script&gt;.&lt;/p&gt;
-
-&lt;h3 id=&quot;forward-equation&quot;&gt;Forward Equation&lt;/h3&gt;
-
-&lt;p&gt;The Chapman-Kolmogorov equation fro the forward Kramers-Moyal expansion can be rewritten with the help of an auxilliary variable as
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	p(x_{t + \tau}) = &amp; \int p(x_{t + \tau} | x'_{t}) \ p(x'_t) \ dx'_t \\
-	= &amp; \int_{X'} \int_{Y} \delta(y_{t+\tau} - x_{t+\tau}) p(y_{t + \tau} | x'_{t}) \ dy_{t+\tau} p(x'_t) dx'_t
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;We can then first expand the delta function $\delta ( y_{t+\tau} - x_{t+\tau} )$ with $\pm x_t$ and subsequently expand the Taylor series to obtain
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\delta(y_{t+\tau} - x_{t+\tau}) = &amp; \delta(y_{t+\tau} - x'_t + x'_t - x_{t+\tau}) = \delta(y_{t+\tau} - x'_t) \delta(x'_t - x_{t+\tau}) \\
-	= &amp; \sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ \partial_{x'_t}^{n} \ \delta(x'_t - x_{t+\tau})
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;We can plug the expanded Taylor series back in to get
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-p(x_{t + \tau}) 
-= &amp; \int_{X'} \int_{Y} \delta(y_{t+\tau} - x_{t+\tau}) p(y_{t + \tau} | x'_{t}) \ dy_{t+\tau} \ p(x'_t) dx'_t \\
-= &amp; \int_{X'} \int_{Y} \sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ \underbrace{ \partial_{x'_t}^{n} \ \delta(x'_t - x_{t+\tau})}_{!} p(y_{t + \tau} | x'_{t}) \ dy_{t+\tau} \ p(x'_t) \underbrace{dx'_t}_{!} \\
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;But now we’re in a sort of a pickle, since we’re integrating over &lt;script type=&quot;math/tex&quot;&gt;x'_t&lt;/script&gt; but the Dirac function &lt;script type=&quot;math/tex&quot;&gt;\delta(x'_t - x_{t+\tau})&lt;/script&gt; will serve as a sort of selector for the integral discarding anything for which the value for &lt;script type=&quot;math/tex&quot;&gt;x'_t&lt;/script&gt; does not correspond to the future value &lt;script type=&quot;math/tex&quot;&gt;x_{t+\tau}&lt;/script&gt;.&lt;/p&gt;
-
-&lt;p&gt;Since for any subtraction &lt;script type=&quot;math/tex&quot;&gt;x'_{t} - x_{t+\tau}&lt;/script&gt; and function &lt;script type=&quot;math/tex&quot;&gt;f(x'_{t} - x_{t+\tau})&lt;/script&gt; we can employ the relation &lt;script type=&quot;math/tex&quot;&gt;\partial_{x'_t} f(x'_{t} - x_{t+\tau}) = - \partial_{x_{t}} f(x'_{t} - x_{t+\tau})&lt;/script&gt; via the change of variables, we switch the derivative to 
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ \partial_{x'_{t}}^{n} \ \delta(x'_t - x_{t+\tau}) = &amp; \sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ (- \partial_{x_{t}})^{n} \ \delta(x'_t - x_{t+\tau})
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;The question that remains to be answered is what motivates us to do the derivative switch in the first place.
-In terms of algebra and calculus, the switch is mathematically valid, yet the holistic reason for it is still a mystery.
-It turns out that due to the Chapman-Kolmogorov equation, we will integrate out the variable &lt;script type=&quot;math/tex&quot;&gt;x'_t&lt;/script&gt;, so a derivative with respect to a latent variable is not of much use.
-More holistically, we want to obtain the change in the probability from &lt;script type=&quot;math/tex&quot;&gt;p(x_t)&lt;/script&gt; to &lt;script type=&quot;math/tex&quot;&gt;p(x_{t+\tau})&lt;/script&gt; for which the values of &lt;script type=&quot;math/tex&quot;&gt;x'_t&lt;/script&gt; are not of much use.&lt;/p&gt;
-
-&lt;!-- The Taylor expansion of the Dirac impulse above is used for the entire distribution of $p(y_{t+\tau} | x_t)$ since $y$ originates, so to say, from the distribution $p(y_{t + \tau}|x'_t)$ such that we obtain
-$$
-\begin{align}
-	p(x_{t + \tau} | x'_t) = &amp; \int \sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_{t})^n \ (- \partial_{x_{t+\tau}})^{n} \ \delta(x'_t - x_{t+\tau}) p(y_{t+\tau} | x'_t) dy \\
-\end{align}
-$$ --&gt;
-
-&lt;p&gt;For the special case of $n=0$ where the factorial, powers and derivatives evaluate to 1 and we can marginalize out over $y$, the sum simplifies to 
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	&amp;\int \sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ (- \partial_{x_{t}})^{n} \ \delta(x'_t - x_{t+\tau}) p(y_{t+\tau} | x'_t) dy_{t+\tau} \\
-	= &amp; \Big( 1 + \sum_{n=1}^\infty \frac{1}{n!} (- \partial_{x_{t}})^{n} \underbrace{\int ( y_{t+\tau} - x'_{t})^n \ p(y_{t+\tau} | x'_t) \ dy_{t+\tau}}_{M^{(n)}(x'_t)} \Big) \ \delta(x'_t - x_{t+\tau}) \\
-	= &amp; \Big( 1 + \sum_{n=1}^\infty \frac{1}{n!} (- \partial_{x_{t}})^{n} M^{(n)}(x'_t) \Big) \ \delta(x'_t - x_{t+\tau})
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;Plugging the expanded transition probability back into the Chapman-Kolmogorov equation and noting that the Dirac impulse &lt;script type=&quot;math/tex&quot;&gt;\delta(x'_t-x_{t+\tau})&lt;/script&gt; eliminates the integral with respect to &lt;script type=&quot;math/tex&quot;&gt;x'_t&lt;/script&gt; by eliminating every value of &lt;script type=&quot;math/tex&quot;&gt;x'&lt;/script&gt; different from &lt;script type=&quot;math/tex&quot;&gt;x&lt;/script&gt; irrespective of time, we get
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	p(x_{t + \tau}) = &amp; \int p(x_{t + \tau} | x'_{t}) \ p(x'_t) \ dx'_t \\
-	= &amp; \int \int \delta(y_{t+\tau} - x_{t+\tau}) p(y_{t + \tau} | x'_{t}) dy_{t+\tau} \ p(x'_t) \ dx'_{t} \\
-	= &amp; \int \int \sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ \partial_{x'_t}^{n} \ \delta(x'_t - x_{t+\tau}) p(y_{t + \tau} | x'_{t}) \ dy_{t+\tau} \ p(x'_t) dx'_t \\
-	= &amp; \int_{X'} \Big( 1 + \sum_{n=1}^\infty \frac{1}{n!} (- \partial_{x_{t}})^{n} M^{(n)}(x'_t) \Big) \ \delta(x'_t - x_{t+\tau}) \ p(x'_t) \ dx'_t \\
-	= &amp; p(x_t) + \underbrace{\sum_{n=1}^\infty \frac{1}{n!} (- \partial_{x_{t}})^{n} \left[ M^{(n)}(x_t) \ p(x_t) \right]}_{\lim_{\tau \rightarrow 0} : \partial_t p(x_t) \tau}
-\end{align} %]]&gt;&lt;/script&gt;
-where we note that the evaluation of $n=0$ applies in the same way to any value or function that we multiply into the simplified Taylor expansion.
-Pulling &lt;script type=&quot;math/tex&quot;&gt;p(x'_t)&lt;/script&gt; to the left side and finding that the change between &lt;script type=&quot;math/tex&quot;&gt;p(x_{t+\tau})&lt;/script&gt; and &lt;script type=&quot;math/tex&quot;&gt;p(x'_t)&lt;/script&gt; should be proportional to &lt;script type=&quot;math/tex&quot;&gt;\partial_t p(x_t) \tau&lt;/script&gt; for a small step size &lt;script type=&quot;math/tex&quot;&gt;\tau&lt;/script&gt; analogously to th Euler discretization, we obtain
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	p(x_{t+\tau}) - p(x_t) = &amp; \partial_t p(x_t) \tau \\
-	\frac{p(x_{t+\tau}) - p(x_t)}{\tau} = &amp; \partial_t p(x_t).
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;Finally we can note that we can could cut off the Taylor expansion after the second order and realize that Taylor expansion is equivalent to the time derivative in the limit of time, i.e. &lt;script type=&quot;math/tex&quot;&gt;\lim_{\tau \rightarrow 0}&lt;/script&gt; and we can proclaim that
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\partial_t p(x_t) = &amp; - \partial_x \left[ M^{(1)}(x_t) p(x_t) \right] + \frac{1}{2} \partial_x^2 \left[M^{(2)}(x_t) p(x_t) \right] \\
-	= &amp; - \partial_{x_t} \left[ \mu(x_t) p(x_t) \right] + \frac{1}{2} \partial_{x_t}^2 \left[ \sigma^2(x_t) p(x_t) \right] \\
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;backward-equation&quot;&gt;Backward Equation&lt;/h3&gt;
-
-&lt;p&gt;The Kolmogorov backward equation (KBE) can be derived in the same way while paying attention to the derivatives.&lt;/p&gt;
-
-&lt;p&gt;Again we start with the Chapman-Kolmogorov equation:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	p(x_T | x'_t) = \int p(x_T | x''_{t+\tau}) p(x''_{t+\tau} | x'_t) dx''_{t+\tau}
-\end{align}&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;We expand the transition probability &lt;script type=&quot;math/tex&quot;&gt;p(x'_t | x''_{t+\tau})&lt;/script&gt; again with a Dirac function 
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	p(x''_{t+\tau} | x'_t) = \int \delta(y_{t+\tau} - x''_{t+\tau}) p(y_{t+\tau} | x_{t}) dy_{t+\tau}
-\end{align}&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;Then we expand the Dirac function and expand it with the Taylor series to obtain
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\delta(y_{t+\tau} - x''_{t+\tau}) = &amp; \delta(y_{t+\tau} - x''_{t+\tau} + x'_t - x'_t) \\
-	= &amp; \delta (y_{t+\tau} - x'_t)  \delta(x'_t - x_{t + \tau}) \\
-	= &amp; \sum_{n=0}^\infty \frac{1}{n!} (y_{t + \tau} - x'_t)^n \ \partial_{x'_{t}}^n \ \delta(x'_t - x''_{t+\tau})
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;Plugging the expanded Dirac function back into the transition probability we obtain
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	p(x''_{t+\tau} | x'_t) = &amp; \int \delta(y_{t+\tau} - x''_{t+\tau}) p(y_{t+\tau} | x_{t}) dy_{t+\tau} \\
-	= &amp; \int \sum_{n=0}^\infty \frac{1}{n!} (y_{t + \tau} - x'_t)^n \ \partial_{x'_{t}}^n \ \delta(x'_t - x''_{t+\tau}) p(y_{t+\tau} | x_{t}) dy_{t+\tau}
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;When we compare the derivation of the forward Kramers-Moyals expansion with the backwards Kramers-Moyals expansion we should immediately detect that the only difference is the partial derivative.
-The subtle but important difference lies in direction to which we differentiate.
-For the forward expansion we are interested how the PDF changes with respect to the future values &lt;script type=&quot;math/tex&quot;&gt;x''_{t+\tau}&lt;/script&gt; whereas for the backward expansion we want to ultimately know how the PDF changes backward in time, ergo &lt;script type=&quot;math/tex&quot;&gt;\partial_{x'_t}&lt;/script&gt; and not &lt;script type=&quot;math/tex&quot;&gt;\partial_{x''_{t+\tau}}&lt;/script&gt; since obviously &lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-t &lt; t + \tau %]]&gt;&lt;/script&gt;.&lt;/p&gt;
-
-&lt;p&gt;This is consequential for whether we include the moments &lt;script type=&quot;math/tex&quot;&gt;M^{(n)}(x'_t)&lt;/script&gt; in the differentiation or not.
-Remember that the moments are defined with a fixed value at time &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt; and that they are defined as as a forward differentiation &lt;script type=&quot;math/tex&quot;&gt;y_{t+\tau} - x'_t&lt;/script&gt;.
-If we now differentiate with respect to time &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt;, the moments will not be differentiated as the value &lt;script type=&quot;math/tex&quot;&gt;x'_t&lt;/script&gt; is assumed fixed in the moments.&lt;/p&gt;
-
-&lt;p&gt;Thus substituting the expanded transition probability back into the Chapman-Kolmogorov equation we obtain,
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	p(x_T | x'_t) = &amp; \int p(x_T | x''_{t+\tau}) \ \int \sum_{n=0}^\infty \frac{1}{n!} (y_{t + \tau} - x'_t)^n \ \partial_{x'_{t}}^n \ \delta(x'_t - x''_{t+\tau}) p(y_{t+\tau} | x_{t}) dy_{t+\tau} dx''_{t+\tau} \\
-	= &amp; \int p(x_T | x''_{t+\tau}) \ \sum_{n=0}^\infty \frac{1}{n!} \underbrace{\int (y_{t + \tau} - x'_t)^n p(y_{t+\tau} | x'_t) dy_{t+\tau}}_{M^{(n)}(x'_t)} \ \partial_{x'_t}^n \ \delta(x'_t - x''_{t+\tau}) dx''_{t+\tau} \\
-	= &amp; p(x_T | x'_{t+\tau}) + M^{(1)}(x'_t) \partial_{x'_t} p(x_T | x'_{t+\tau}) + \frac{1}{2} M^{(2)}(x'_t) \partial_{x'_t}^2 p(x_T | x'_{t+\tau})
-	% = &amp; p(x_T | x'_{t+\tau}) + \mu(x'_t) \partial_{x'_{t}} p(x_T | x'_t) + \frac{1}{2} \sigma^2(x'_t) \partial^2_{x'_{t}} p(x_T | x'_{t+\tau}).
-\end{align} %]]&gt;&lt;/script&gt;
-Dividing both sides by $\tau$ and evaluating in the limit of $\lim_{\tau \rightarrow 0}$, we get 
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	- \partial_t p(x_T| x'_t) = &amp; \mu(x'_t) \partial_{x'_t} p(x_T | x'_t) + \frac{1}{2} \sigma^2(x'_t) \partial^2_{x'_{t}} p(x_T | x'_{t}).
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;The equation above is a partial differential equation which characterizes how the probability of $x_T$ changes as we go backwards in time.
-It essentially answers the question of how much the probability $p(x_T)$ changes after conditioning the process on $x’_t$ and at earlier point in time $t$.&lt;/p&gt;</content><summary type="html">Distributions as partial differential equations over time</summary></entry><entry><title type="html">Italy</title><link href="http://localhost:4000/blog/Italy21/" rel="alternate" type="text/html" title="Italy" /><published>2021-01-01T00:00:00+01:00</published><updated>2021-01-01T00:00:00+01:00</updated><id>http://localhost:4000/blog/Italy21</id><content type="html" xml:base="http://localhost:4000/blog/Italy21/">&lt;!-- ## Berlin Over The Years --&gt;
-&lt;style&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-07-27T11:20:07+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Spain</title><link href="http://localhost:4000/blog/Spain21/" rel="alternate" type="text/html" title="Spain" /><published>2021-07-01T00:00:00+02:00</published><updated>2021-07-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Spain21</id><content type="html" xml:base="http://localhost:4000/blog/Spain21/">&lt;style&gt;
     .image-gallery {overflow: auto; margin-left: -1%!important;}
-    .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 49%;}
+    .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
     .image-gallery li a {text-align: top; text-decoration: none!important; color: #777;}
     .image-gallery li a span {display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; padding: 3px 0;}
     .image-gallery li a img {width: 100%; height: 100%; display: flex; vertical-align: top;
@@ -321,6 +8,544 @@ It essentially answers the question of how much the probability $p(x_T)$ changes
 &lt;/style&gt;
 
 &lt;ul class=&quot;image-gallery&quot;&gt;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2100.jpg&quot; title=&quot;DSC2100&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/spain21/DSC2100.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC2100&quot; title=&quot;DSC2100&quot; /&gt;&lt;span&gt;DSC2100&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2100.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/spain21/DSC2100.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2101.jpg&quot; title=&quot;DSC2101&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/spain21/DSC2101.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC2101&quot; title=&quot;DSC2101&quot; /&gt;&lt;span&gt;DSC2101&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2101.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/spain21/DSC2101.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2102.jpg&quot; title=&quot;DSC2102&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/spain21/DSC2102.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC2102&quot; title=&quot;DSC2102&quot; /&gt;&lt;span&gt;DSC2102&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2102.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/spain21/DSC2102.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2103.jpg&quot; title=&quot;DSC2103&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/spain21/DSC2103.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC2103&quot; title=&quot;DSC2103&quot; /&gt;&lt;span&gt;DSC2103&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2103.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/spain21/DSC2103.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2237.jpg&quot; title=&quot;DSC2237&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/spain21/DSC2237.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC2237&quot; title=&quot;DSC2237&quot; /&gt;&lt;span&gt;DSC2237&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2237.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/spain21/DSC2237.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2260.jpg&quot; title=&quot;DSC2260&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/spain21/DSC2260.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC2260&quot; title=&quot;DSC2260&quot; /&gt;&lt;span&gt;DSC2260&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2260.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/spain21/DSC2260.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2356.jpg&quot; title=&quot;DSC2356&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/spain21/DSC2356.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC2356&quot; title=&quot;DSC2356&quot; /&gt;&lt;span&gt;DSC2356&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2356.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/spain21/DSC2356.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2439.jpg&quot; title=&quot;DSC2439&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/spain21/DSC2439.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC2439&quot; title=&quot;DSC2439&quot; /&gt;&lt;span&gt;DSC2439&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2439.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/spain21/DSC2439.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2453.jpg&quot; title=&quot;DSC2453&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/spain21/DSC2453.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC2453&quot; title=&quot;DSC2453&quot; /&gt;&lt;span&gt;DSC2453&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2453.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/spain21/DSC2453.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2492.jpg&quot; title=&quot;DSC2492&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/spain21/DSC2492.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC2492&quot; title=&quot;DSC2492&quot; /&gt;&lt;span&gt;DSC2492&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2492.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/spain21/DSC2492.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2748.jpg&quot; title=&quot;DSC2748&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/spain21/DSC2748.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC2748&quot; title=&quot;DSC2748&quot; /&gt;&lt;span&gt;DSC2748&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2748.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/spain21/DSC2748.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+&lt;/ul&gt;</content><category term="photography" /><summary type="html">Granada</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/spain21/DSC2103.jpg" /></entry><entry><title type="html">Greece</title><link href="http://localhost:4000/blog/Greece21/" rel="alternate" type="text/html" title="Greece" /><published>2021-06-01T00:00:00+02:00</published><updated>2021-06-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Greece21</id><content type="html" xml:base="http://localhost:4000/blog/Greece21/">&lt;style&gt;
+    .image-gallery {overflow: auto; margin-left: -1%!important;}
+    .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
+    .image-gallery li a {text-align: top; text-decoration: none!important; color: #777;}
+    .image-gallery li a span {display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; padding: 3px 0;}
+    .image-gallery li a img {width: 100%; height: 100%; display: flex; vertical-align: top;
+    }
+&lt;/style&gt;
+
+&lt;ul class=&quot;image-gallery&quot;&gt;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC1780.jpg&quot; title=&quot;DSC1780&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/greece21/DSC1780.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC1780&quot; title=&quot;DSC1780&quot; /&gt;&lt;span&gt;DSC1780&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC1780.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/greece21/DSC1780.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC1783.jpg&quot; title=&quot;DSC1783&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/greece21/DSC1783.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC1783&quot; title=&quot;DSC1783&quot; /&gt;&lt;span&gt;DSC1783&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC1783.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/greece21/DSC1783.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC1784.jpg&quot; title=&quot;DSC1784&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/greece21/DSC1784.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC1784&quot; title=&quot;DSC1784&quot; /&gt;&lt;span&gt;DSC1784&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC1784.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/greece21/DSC1784.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC1888.jpg&quot; title=&quot;DSC1888&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/greece21/DSC1888.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC1888&quot; title=&quot;DSC1888&quot; /&gt;&lt;span&gt;DSC1888&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC1888.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/greece21/DSC1888.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC1918.jpg&quot; title=&quot;DSC1918&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/greece21/DSC1918.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC1918&quot; title=&quot;DSC1918&quot; /&gt;&lt;span&gt;DSC1918&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC1918.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/greece21/DSC1918.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC1924.jpg&quot; title=&quot;DSC1924&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/greece21/DSC1924.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC1924&quot; title=&quot;DSC1924&quot; /&gt;&lt;span&gt;DSC1924&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC1924.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/greece21/DSC1924.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC2009.jpg&quot; title=&quot;DSC2009&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/greece21/DSC2009.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC2009&quot; title=&quot;DSC2009&quot; /&gt;&lt;span&gt;DSC2009&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC2009.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/greece21/DSC2009.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC2023.jpg&quot; title=&quot;DSC2023&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/greece21/DSC2023.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC2023&quot; title=&quot;DSC2023&quot; /&gt;&lt;span&gt;DSC2023&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC2023.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/greece21/DSC2023.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC2127.jpg&quot; title=&quot;DSC2127&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/greece21/DSC2127.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC2127&quot; title=&quot;DSC2127&quot; /&gt;&lt;span&gt;DSC2127&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC2127.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/greece21/DSC2127.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+&lt;/ul&gt;</content><category term="photography" /><summary type="html">Thessaloniki &amp; Mount Olympus</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/greece21/DSC1783.jpg" /></entry><entry><title type="html">Italy</title><link href="http://localhost:4000/blog/Italy21/" rel="alternate" type="text/html" title="Italy" /><published>2021-05-01T00:00:00+02:00</published><updated>2021-05-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Italy21</id><content type="html" xml:base="http://localhost:4000/blog/Italy21/">&lt;!-- ## Berlin Over The Years --&gt;
+&lt;style&gt;
+    .image-gallery {overflow: auto; margin-left: -1%!important;}
+    .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
+    .image-gallery li a {text-align: top; text-decoration: none!important; color: #777;}
+    .image-gallery li a span {display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; padding: 3px 0;}
+    .image-gallery li a img {width: 100%; height: 100%; display: flex; vertical-align: top;
+    }
+&lt;/style&gt;
+
+&lt;ul class=&quot;image-gallery&quot;&gt;
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -515,20 +740,8 @@ It essentially answers the question of how much the probability $p(x_T)$ changes
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/italy21/DSC1520.jpg&quot; title=&quot;DSC1520&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/italy21/DSC1520.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC1520&quot; title=&quot;DSC1520&quot; /&gt;&lt;span&gt;DSC1520&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/italy21/DSC1520.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/italy21/DSC1520.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
     &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/italy21/DSC1614.jpg&quot; title=&quot;DSC1614&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/italy21/DSC1614.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC1614&quot; title=&quot;DSC1614&quot; /&gt;&lt;span&gt;DSC1614&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/italy21/DSC1614.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/italy21/DSC1614.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/italy21/DSC1627-2.jpg&quot; title=&quot;DSC1627-2&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/italy21/DSC1627-2.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC1627-2&quot; title=&quot;DSC1627-2&quot; /&gt;&lt;span&gt;DSC1627-2&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/italy21/DSC1627-2.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/italy21/DSC1627-2.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
@@ -577,10 +790,170 @@ It essentially answers the question of how much the probability $p(x_T)$ changes
     
     
     
-&lt;/ul&gt;</content><category term="photography" /><summary type="html">Lake Garda, Milan, Bergamo, Brescia</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/italy21/DSC0927.jpg" /></entry><entry><title type="html">Berlin Over The Years</title><link href="http://localhost:4000/blog/Berlin/" rel="alternate" type="text/html" title="Berlin Over The Years" /><published>2021-01-01T00:00:00+01:00</published><updated>2021-01-01T00:00:00+01:00</updated><id>http://localhost:4000/blog/Berlin</id><content type="html" xml:base="http://localhost:4000/blog/Berlin/">&lt;!-- ## Berlin Over The Years --&gt;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+&lt;/ul&gt;</content><category term="photography" /><summary type="html">Lake Garda, Milan, Bergamo, Brescia</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/italy21/DSC0927.jpg" /></entry><entry><title type="html">Reverse Time Stochastic Differential Equations</title><link href="http://localhost:4000/blog/ReverseTimeAnderson/" rel="alternate" type="text/html" title="Reverse Time Stochastic Differential Equations" /><published>2021-04-09T00:00:00+02:00</published><updated>2021-04-09T00:00:00+02:00</updated><id>http://localhost:4000/blog/ReverseTimeAnderson</id><content type="html" xml:base="http://localhost:4000/blog/ReverseTimeAnderson/">&lt;head&gt;
+&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
+       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
+         MathJax.Hub.Config({
+           tex2jax: {
+             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
+             displayMath: [['$$','$$']],
+             processEscapes: true
+           },
+		   TeX: {extensions:[&quot;autoload-all.js&quot;]}
+         });
+       &lt;/script&gt;
+       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+
+&lt;p&gt;What follows is a derivation of the main result of ‘Reverse-Time Diffusion Equation Models’ by Brian D.O. Anderson (1982).
+Earlier on this blog we learned that a stochastic differential equation of the form
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+	dX_t = \mu(X_t, t) dt + \sigma(X_t, t) dW_t
+\end{align}&lt;/script&gt;
+with the derivative of Wiener process $W_t$ admits two types of equations, called the forward Kolmogorov or Fokker-Planck equation and the backward Kolmogorov equation.
+For notational brevity we will use the term $\mu(x_t)$ for the drift and $\sigma(x_t)$ as the diffusion parameter and omit the explicit time dependency.&lt;/p&gt;
+
+&lt;p&gt;The Kolmogorov forward equation is identical to the Fokker Planck equation and states
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+	\partial_t p(x_t) = -\partial_{x_t} \left[ \mu(x_t) p(x_t) \right] + \frac{1}{2} \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right].
+\end{align}&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;It describes the evolution of a probability distribution $p(x_t)$ forward in time.
+We can quite frankly think of it as, for example, a Normal distribution being slowly transformed into an arbitrary complex distribution according to the drift and diffusion parameters $\mu(x_t)$ and $\sigma(x_t)$.&lt;/p&gt;
+
+&lt;p&gt;The Kolmogorov backward equation for $t \leq s$ is defined as
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+	- \partial_t p(x_s | x_t) = \mu(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t)
+\end{align}&lt;/script&gt;
+and it basically answers the question how the probability of $x_s$ at a later point in time changes as we change $x_t$ at an earlier point in time.
+The Kolmogorov backward equation is somewhat confounding with respect to time as we’re taking the partial derivative with respect to the earlier time step $t$ on which we are also coniditoning.
+But we can think of it as asking ‘How does the probability of $x_s$ at the later point in time $s$ change, as we slowly evolve the probability distribution backwards through time and condition on $x_t$’.&lt;/p&gt;
+
+&lt;p&gt;Taking inspiration from our crude example earlier, the backward equation offers a partial differential equation which we can solve backward in time, which would correspond to evolving the arbitrarily complex distribution backwards to our original Normal distribution. 
+Unfortunately there is no corresponding stochastic differential equation with a drift and diffusion term that describes the evolution of a random variable backwards through time in terms of a stochastic differential equation.&lt;/p&gt;
+
+&lt;p&gt;This is where the remarkable result from Anderson (1982) comes into play.&lt;/p&gt;
+
+&lt;p&gt;The granddaddy of all probabilistic equations, Bayes theorem, tells us that a joint distribution can be factorized by conditioning: $p(x_s , x_t) = p(x_s|x_t) p(x_t)$ with the time ordering $t \leq s$.
+Why do we invoke the joint probability $p(x_s, x_t)$ we might ask?
+What we’re trying to achieve is to derive a stochastic differential equation that tells us from what values of $x_t$ we can arrive at $x_s$.
+We can ask ourselves what the partial differential equation would be that describes the evolution of the joint distribution over time.
+First multiplying both sides of Bayes theorem with minus one and taking the derivative with respect to time $t$, we obtain via the product rule
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	- \partial_t p(x_s, x_t) &amp;= - \partial_t \left[ p(x_s| x_t) p(x_t) \right] \\
+	&amp;= \underbrace{-\partial_t p(x_s|x_t)}_{\text{KBE}} p(x_t) - p(x_s | x_t) \underbrace{\partial_t p(x_t)}_{\text{KFE}}
+\end{align} %]]&gt;&lt;/script&gt;
+into which we can plug in the Kolmogorov forward (KFE) and Kolmogorov backward (KBE) equations, 
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	&amp; -\partial_t p(x_s|x_t) p(x_t) - p(x_s | x_t) \partial_t p(x_t) \\
+	&amp;= \left( \mu(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \right) p(x_t) \\
+	&amp; + p(x_s| x_t) \left( \partial_{x_t} \left[ \mu(x_t) p(x_t) \right] - \frac{1}{2} \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \right)
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The derivative occuring in the backward Kolmogorov equation are
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	\partial_{x_t} p(x_s|x_t) &amp;= \partial_{x_t} \left[ \frac{p(x_s, x_t)}{p(x_t)} \right] \\
+	&amp; = \frac{\partial_{x_t} p(x_s, x_t) p(x_t) - p(x_s, x_t) \partial_{x_t} p(x_t)}{p^2(x_t)} \\
+	&amp; = \frac{\partial_{x_t} p(x_s, x_t)}{p(x_t)} - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p^2(x_t)}
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The next step is to evaluate the derivative of the products in the forward Kolmogorov equation.
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	\partial_{x_t} \left[ \mu(x_t) p(x_t) \right] &amp; = \partial_{x_t} \mu(x_t) \ p(x_t) + \mu(x_t) \ \partial_{x_t} p(x_t) \\
+	\partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] &amp; = \partial_{x_t}^2 \sigma^2(x_t) \ p(x_t) + 2 \ \partial_{x_t} \sigma^2(x_t) \ \partial_{x_t} p(x_t) + \sigma^2(x_t) \ \partial_{x_t}^2 p(x_t)
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Plugging in the derivatives of the probability distributions we obtain
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	- \partial_t p(x_s, x_t)
+	= &amp; - \partial_t \left[ p(x_s| x_t) p(x_t) \right] \\
+	= &amp; -\partial_t p(x_s|x_t) p(x_t) - p(x_s | x_t) \partial_t p(x_t) \\
+	= &amp; \left( \mu(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \right) p(x_t) \\
+	&amp; + p(x_s| x_t) \left( \partial_{x_t} \left[ \mu(x_t) p(x_t) \right] - \frac{1}{2} \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \right) \\
+	= &amp; \mu(x_t) \ \partial_{x_t} p(x_s|x_t) \ p(x_t) 
+	+ \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) \\
+	&amp; + p(x_s| x_t) \partial_{x_t} \mu(x_t) \ p(x_t) + p(x_s| x_t) \mu(x_t) \ \partial_{x_t} p(x_t) \\
+	&amp; - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
+	= &amp; \mu(x_t) \ \left(\frac{\partial_{x_t} p(x_s, x_t)}{\cancel{p(x_t)}} - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p^{\cancel{2}}(x_t)} \right) \ \cancel{p(x_t)} \\
+	&amp; + p(x_s| x_t) \partial_{x_t} \mu(x_t) \ p(x_t) + p(x_s| x_t) \mu(x_t) \ \partial_{x_t} p(x_t) \\
+	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
+	= &amp; \mu(x_t) \ \left(\partial_{x_t} p(x_s, x_t) - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p(x_t)} \right) \\
+	&amp; + p(x_s| x_t) \partial_{x_t} \mu(x_t) \ p(x_t) + p(x_s| x_t) \mu(x_t) \ \partial_{x_t} p(x_t) \\
+	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
+	= &amp; \mu(x_t) \ \left(\partial_{x_t} p(x_s, x_t) - \cancel{p(x_s| x_t) \partial_{x_t} p(x_t)} \right) \\
+	&amp; + p(x_s, x_t) \partial_{x_t} \mu(x_t) + \cancel{p(x_s| x_t) \mu(x_t) \ \partial_{x_t} p(x_t)} \\
+	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
+	= &amp; \underbrace{\mu(x_t) \ \partial_{x_t} p(x_s, x_t) + p(x_s, x_t) \partial_{x_t} \mu(x_t)}_{\text{product rule}} \\
+	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
+	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
+	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right]
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;We can now see that the drift term already fulfills the requirements of the forward Kolmogorov equation.
+What we’re left with and which we have to take care of are the two terms with the diffusion terms $\sigma^2(x_t)$.
+The goal is to fuse the two terms into one which resembles the diffusion term in the forward Kolmogorov equation.
+Just to reiterate it one more time, if we can massage the partial differential equation into the functional form of the Kolmogorov forward equation, we have a one-to-one correspondence to a stochastic differential equation that can be solved backward in time.&lt;/p&gt;
+
+&lt;p&gt;Following the gracious help from Brian Anderson himself in an email from down under, we can simplify the terms with $\sigma^2(x_t)$ by expanding the last term.
+The important step, that Brian pointed out to me, is to factorize the joint distribution $p(x_s, x_t) = p(x_s| x_t) p(x_t)$ and invoke the product rule to match the terms,
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	&amp; \frac{1}{2} \partial_{x_t}^2 \left[ p(x_s, x_t) \sigma^2(x_t) \right] \\
+	= &amp; \frac{1}{2} \partial_{x_t}^2 \left[ p(x_s | x_t) p(x_t) \sigma^2(x_t) \right] \\
+	= &amp; \frac{1}{2} \partial_{x_t}^2 p(x_s | x_t) p(x_t) \sigma^2(x_t) + \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right] \partial_{x_t} p(x_s| x_t)
+	 + \frac{1}{2} \partial_{x_t}^2 \left[ p(x_t) \sigma^2(x_t) \right] p(x_s| x_t)
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;We can see from the expansion of the derivative above that we can combine the terms in our derivation if we expand the “center term”.
+Furthermore we can employ the identity $-\frac{1}{2} X = -X + \frac{1}{2} X$ to obtain
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	-\partial_t p(x_s, x_t)
+	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
+	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
+	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
+	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ p(x_t) \ \partial_{x_t}^2 p(x_s | x_t) - \underbrace{ \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] }_{-\frac{1}{2} X = -X + \frac{1}{2} X} \\
+	&amp; \pm \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right] \\
+	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
+	&amp; \textcolor{red}{+ \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t)} \\
+	&amp; \underbrace{ - p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] + \textcolor{red}{\frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right]} }_{-\frac{1}{2} X = -X + \frac{1}{2} X} \\
+	&amp; \textcolor{red}{\pm \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right]} \\
+	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] + \textcolor{red}{\frac{1}{2} \partial_{x_t}^2 \left[ p( x_s | x_t) p(x_t) \sigma^2(x_t) \right]} \\
+	&amp; \underbrace{- p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] - \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right]}_{
+		- \partial_{x_t} \left[ p(x_s| x_t) \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right] \text{ (product rule) }
+		} \\
+	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right] \\
+	&amp; - \partial_{x_t} \left[ p(x_s| x_t) \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right] \\
+	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) - p(x_s| x_t) \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right] \\
+	&amp; + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right] \\
+	= &amp; \partial_{x_t} \left[ p(x_s, x_t) \left( \mu(x_t) - \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) \right] \\
+	&amp; + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right]
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;which finally gives us a stochastic differential equation that we can solve backward in time:
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+dX_t = \left(\mu(x_t) - \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) dt + \sigma(x_t) d\tilde{W}_t
+\end{align}&lt;/script&gt;
+where $\tilde{W}_t$ is a Wiener process that flows backward in time.&lt;/p&gt;</content><summary type="html">'If I Could Turn Back Time' by Cher (1989)</summary></entry><entry><title type="html">Berlin Over The Years</title><link href="http://localhost:4000/blog/Berlin/" rel="alternate" type="text/html" title="Berlin Over The Years" /><published>2021-04-01T00:00:00+02:00</published><updated>2021-04-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Berlin</id><content type="html" xml:base="http://localhost:4000/blog/Berlin/">&lt;!-- ## Berlin Over The Years --&gt;
 &lt;style&gt;
     .image-gallery {overflow: auto; margin-left: -1%!important;}
-    .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 49%;}
+    .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
     .image-gallery li a {text-align: top; text-decoration: none!important; color: #777;}
     .image-gallery li a span {display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; padding: 3px 0;}
     .image-gallery li a img {width: 100%; height: 100%; display: flex; vertical-align: top;
@@ -849,7 +1222,191 @@ It essentially answers the question of how much the probability $p(x_T)$ changes
     
     
     
-&lt;/ul&gt;</content><category term="photography" /><summary type="html">Various Snapshots of Berlin and Life in General</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/berlin/Berlin-11.jpg" /></entry><entry><title type="html">From Bernoulli Distributions to Poisson Point Processes</title><link href="http://localhost:4000/blog/Poisson/" rel="alternate" type="text/html" title="From Bernoulli Distributions to Poisson Point Processes" /><published>2020-11-10T00:00:00+01:00</published><updated>2020-11-10T00:00:00+01:00</updated><id>http://localhost:4000/blog/Poisson</id><content type="html" xml:base="http://localhost:4000/blog/Poisson/">&lt;head&gt;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+&lt;/ul&gt;</content><category term="photography" /><summary type="html">Various Snapshots of Berlin and Life in General</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/berlin/Berlin-11.jpg" /></entry><entry><title type="html">Fokker, Planck &amp;amp; Kolmogorov</title><link href="http://localhost:4000/blog/Kramers/" rel="alternate" type="text/html" title="Fokker, Planck &amp; Kolmogorov" /><published>2021-02-04T00:00:00+01:00</published><updated>2021-02-04T00:00:00+01:00</updated><id>http://localhost:4000/blog/Kramers</id><content type="html" xml:base="http://localhost:4000/blog/Kramers/">&lt;head&gt;
+&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
+       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
+         MathJax.Hub.Config({
+           tex2jax: {
+             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
+             displayMath: [['$$','$$']],
+             processEscapes: true
+           }
+         });
+       &lt;/script&gt;
+       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+
+&lt;p&gt;At the core of the partial differential equations that will describe the change of a distribution both forward and backward in time lies the Chapman-Kolmogorov equation
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	p(x_{t + \tau}) &amp; = \int p(x_{t + \tau} , x'_{t}) \ dx'_t \\
+	&amp; = \int p(x_{t + \tau} | x'_{t}) \ p(x'_t) \ dx'_t
+\end{align} %]]&gt;&lt;/script&gt;
+which simply expands over an auxiliary variable $x’_t$ while simultaneously marginalizing it out and factorizing the joint distribution &lt;script type=&quot;math/tex&quot;&gt;p(x_{t+\tau}, x'_t)&lt;/script&gt; into a conditional distribution.
+The conditional distribution above states that we can start from any &lt;script type=&quot;math/tex&quot;&gt;x'_t&lt;/script&gt; and by moving to &lt;script type=&quot;math/tex&quot;&gt;x_{t+\tau}&lt;/script&gt; with the right transition probability &lt;script type=&quot;math/tex&quot;&gt;p(x_{t + \tau} | x'_{t})&lt;/script&gt; we will obtain the correct marginal distribution &lt;script type=&quot;math/tex&quot;&gt;p(x_{t+\tau})&lt;/script&gt;.&lt;/p&gt;
+
+&lt;p&gt;We will assume a stochastic differential equation the first two orders of which can be estimated with
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+	M^{(n)} (x'_t) = \int (x_{t+\tau} - x'_t)^n  p(x_{t + \tau} | x'_t) dx_{t+\tau}
+\end{align}&lt;/script&gt;
+such that the dynamics are described by the Ito drift-diffusion process
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	dX'_t = &amp; M^{(1)}(X'_t) dt + M^{(2)}(X'_t) dW_t \\
+	= &amp; \mu(X'_t, t) dt + \sigma(X'_t, t) dW_t \\
+\end{align} %]]&gt;&lt;/script&gt;
+with the Wiener process &lt;script type=&quot;math/tex&quot;&gt;W_t&lt;/script&gt;.
+The important part is to note the ‘direction’ of the differential which is evaluated strictly forward in time.
+We take &lt;script type=&quot;math/tex&quot;&gt;x'_t&lt;/script&gt; as a sort of origin point which doesn’t change and weight the differential &lt;script type=&quot;math/tex&quot;&gt;x_{t+\tau} - x'_t&lt;/script&gt; by the appropriate transition probability &lt;script type=&quot;math/tex&quot;&gt;p(x_{t+\tau} | x'_t)&lt;/script&gt; over every possible &lt;script type=&quot;math/tex&quot;&gt;x_{t+\tau}&lt;/script&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;forward-equation&quot;&gt;Forward Equation&lt;/h3&gt;
+
+&lt;p&gt;The Chapman-Kolmogorov equation fro the forward Kramers-Moyal expansion can be rewritten with the help of an auxilliary variable as
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	p(x_{t + \tau}) = &amp; \int p(x_{t + \tau} | x'_{t}) \ p(x'_t) \ dx'_t \\
+	= &amp; \int_{X'} \int_{Y} \delta(y_{t+\tau} - x_{t+\tau}) p(y_{t + \tau} | x'_{t}) \ dy_{t+\tau} p(x'_t) dx'_t
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;We can then first expand the delta function $\delta ( y_{t+\tau} - x_{t+\tau} )$ with $\pm x_t$ and subsequently expand the Taylor series to obtain
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	\delta(y_{t+\tau} - x_{t+\tau}) = &amp; \delta(y_{t+\tau} - x'_t + x'_t - x_{t+\tau}) = \delta(y_{t+\tau} - x'_t) \delta(x'_t - x_{t+\tau}) \\
+	= &amp; \sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ \partial_{x'_t}^{n} \ \delta(x'_t - x_{t+\tau})
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;We can plug the expanded Taylor series back in to get
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+p(x_{t + \tau}) 
+= &amp; \int_{X'} \int_{Y} \delta(y_{t+\tau} - x_{t+\tau}) p(y_{t + \tau} | x'_{t}) \ dy_{t+\tau} \ p(x'_t) dx'_t \\
+= &amp; \int_{X'} \int_{Y} \sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ \underbrace{ \partial_{x'_t}^{n} \ \delta(x'_t - x_{t+\tau})}_{!} p(y_{t + \tau} | x'_{t}) \ dy_{t+\tau} \ p(x'_t) \underbrace{dx'_t}_{!} \\
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;But now we’re in a sort of a pickle, since we’re integrating over &lt;script type=&quot;math/tex&quot;&gt;x'_t&lt;/script&gt; but the Dirac function &lt;script type=&quot;math/tex&quot;&gt;\delta(x'_t - x_{t+\tau})&lt;/script&gt; will serve as a sort of selector for the integral discarding anything for which the value for &lt;script type=&quot;math/tex&quot;&gt;x'_t&lt;/script&gt; does not correspond to the future value &lt;script type=&quot;math/tex&quot;&gt;x_{t+\tau}&lt;/script&gt;.&lt;/p&gt;
+
+&lt;p&gt;Since for any subtraction &lt;script type=&quot;math/tex&quot;&gt;x'_{t} - x_{t+\tau}&lt;/script&gt; and function &lt;script type=&quot;math/tex&quot;&gt;f(x'_{t} - x_{t+\tau})&lt;/script&gt; we can employ the relation &lt;script type=&quot;math/tex&quot;&gt;\partial_{x'_t} f(x'_{t} - x_{t+\tau}) = - \partial_{x_{t}} f(x'_{t} - x_{t+\tau})&lt;/script&gt; via the change of variables, we switch the derivative to 
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	\sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ \partial_{x'_{t}}^{n} \ \delta(x'_t - x_{t+\tau}) = &amp; \sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ (- \partial_{x_{t}})^{n} \ \delta(x'_t - x_{t+\tau})
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The question that remains to be answered is what motivates us to do the derivative switch in the first place.
+In terms of algebra and calculus, the switch is mathematically valid, yet the holistic reason for it is still a mystery.
+It turns out that due to the Chapman-Kolmogorov equation, we will integrate out the variable &lt;script type=&quot;math/tex&quot;&gt;x'_t&lt;/script&gt;, so a derivative with respect to a latent variable is not of much use.
+More holistically, we want to obtain the change in the probability from &lt;script type=&quot;math/tex&quot;&gt;p(x_t)&lt;/script&gt; to &lt;script type=&quot;math/tex&quot;&gt;p(x_{t+\tau})&lt;/script&gt; for which the values of &lt;script type=&quot;math/tex&quot;&gt;x'_t&lt;/script&gt; are not of much use.&lt;/p&gt;
+
+&lt;!-- The Taylor expansion of the Dirac impulse above is used for the entire distribution of $p(y_{t+\tau} | x_t)$ since $y$ originates, so to say, from the distribution $p(y_{t + \tau}|x'_t)$ such that we obtain
+$$
+\begin{align}
+	p(x_{t + \tau} | x'_t) = &amp; \int \sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_{t})^n \ (- \partial_{x_{t+\tau}})^{n} \ \delta(x'_t - x_{t+\tau}) p(y_{t+\tau} | x'_t) dy \\
+\end{align}
+$$ --&gt;
+
+&lt;p&gt;For the special case of $n=0$ where the factorial, powers and derivatives evaluate to 1 and we can marginalize out over $y$, the sum simplifies to 
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	&amp;\int \sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ (- \partial_{x_{t}})^{n} \ \delta(x'_t - x_{t+\tau}) p(y_{t+\tau} | x'_t) dy_{t+\tau} \\
+	= &amp; \Big( 1 + \sum_{n=1}^\infty \frac{1}{n!} (- \partial_{x_{t}})^{n} \underbrace{\int ( y_{t+\tau} - x'_{t})^n \ p(y_{t+\tau} | x'_t) \ dy_{t+\tau}}_{M^{(n)}(x'_t)} \Big) \ \delta(x'_t - x_{t+\tau}) \\
+	= &amp; \Big( 1 + \sum_{n=1}^\infty \frac{1}{n!} (- \partial_{x_{t}})^{n} M^{(n)}(x'_t) \Big) \ \delta(x'_t - x_{t+\tau})
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Plugging the expanded transition probability back into the Chapman-Kolmogorov equation and noting that the Dirac impulse &lt;script type=&quot;math/tex&quot;&gt;\delta(x'_t-x_{t+\tau})&lt;/script&gt; eliminates the integral with respect to &lt;script type=&quot;math/tex&quot;&gt;x'_t&lt;/script&gt; by eliminating every value of &lt;script type=&quot;math/tex&quot;&gt;x'&lt;/script&gt; different from &lt;script type=&quot;math/tex&quot;&gt;x&lt;/script&gt; irrespective of time, we get
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	p(x_{t + \tau}) = &amp; \int p(x_{t + \tau} | x'_{t}) \ p(x'_t) \ dx'_t \\
+	= &amp; \int \int \delta(y_{t+\tau} - x_{t+\tau}) p(y_{t + \tau} | x'_{t}) dy_{t+\tau} \ p(x'_t) \ dx'_{t} \\
+	= &amp; \int \int \sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ \partial_{x'_t}^{n} \ \delta(x'_t - x_{t+\tau}) p(y_{t + \tau} | x'_{t}) \ dy_{t+\tau} \ p(x'_t) dx'_t \\
+	= &amp; \int_{X'} \Big( 1 + \sum_{n=1}^\infty \frac{1}{n!} (- \partial_{x_{t}})^{n} M^{(n)}(x'_t) \Big) \ \delta(x'_t - x_{t+\tau}) \ p(x'_t) \ dx'_t \\
+	= &amp; p(x_t) + \underbrace{\sum_{n=1}^\infty \frac{1}{n!} (- \partial_{x_{t}})^{n} \left[ M^{(n)}(x_t) \ p(x_t) \right]}_{\lim_{\tau \rightarrow 0} : \partial_t p(x_t) \tau}
+\end{align} %]]&gt;&lt;/script&gt;
+where we note that the evaluation of $n=0$ applies in the same way to any value or function that we multiply into the simplified Taylor expansion.
+Pulling &lt;script type=&quot;math/tex&quot;&gt;p(x'_t)&lt;/script&gt; to the left side and finding that the change between &lt;script type=&quot;math/tex&quot;&gt;p(x_{t+\tau})&lt;/script&gt; and &lt;script type=&quot;math/tex&quot;&gt;p(x'_t)&lt;/script&gt; should be proportional to &lt;script type=&quot;math/tex&quot;&gt;\partial_t p(x_t) \tau&lt;/script&gt; for a small step size &lt;script type=&quot;math/tex&quot;&gt;\tau&lt;/script&gt; analogously to th Euler discretization, we obtain
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	p(x_{t+\tau}) - p(x_t) = &amp; \partial_t p(x_t) \tau \\
+	\frac{p(x_{t+\tau}) - p(x_t)}{\tau} = &amp; \partial_t p(x_t).
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Finally we can note that we can could cut off the Taylor expansion after the second order and realize that Taylor expansion is equivalent to the time derivative in the limit of time, i.e. &lt;script type=&quot;math/tex&quot;&gt;\lim_{\tau \rightarrow 0}&lt;/script&gt; and we can proclaim that
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	\partial_t p(x_t) = &amp; - \partial_x \left[ M^{(1)}(x_t) p(x_t) \right] + \frac{1}{2} \partial_x^2 \left[M^{(2)}(x_t) p(x_t) \right] \\
+	= &amp; - \partial_{x_t} \left[ \mu(x_t) p(x_t) \right] + \frac{1}{2} \partial_{x_t}^2 \left[ \sigma^2(x_t) p(x_t) \right] \\
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;backward-equation&quot;&gt;Backward Equation&lt;/h3&gt;
+
+&lt;p&gt;The Kolmogorov backward equation (KBE) can be derived in the same way while paying attention to the derivatives.&lt;/p&gt;
+
+&lt;p&gt;Again we start with the Chapman-Kolmogorov equation:
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+	p(x_T | x'_t) = \int p(x_T | x''_{t+\tau}) p(x''_{t+\tau} | x'_t) dx''_{t+\tau}
+\end{align}&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;We expand the transition probability &lt;script type=&quot;math/tex&quot;&gt;p(x'_t | x''_{t+\tau})&lt;/script&gt; again with a Dirac function 
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+	p(x''_{t+\tau} | x'_t) = \int \delta(y_{t+\tau} - x''_{t+\tau}) p(y_{t+\tau} | x_{t}) dy_{t+\tau}
+\end{align}&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Then we expand the Dirac function and expand it with the Taylor series to obtain
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	\delta(y_{t+\tau} - x''_{t+\tau}) = &amp; \delta(y_{t+\tau} - x''_{t+\tau} + x'_t - x'_t) \\
+	= &amp; \delta (y_{t+\tau} - x'_t)  \delta(x'_t - x_{t + \tau}) \\
+	= &amp; \sum_{n=0}^\infty \frac{1}{n!} (y_{t + \tau} - x'_t)^n \ \partial_{x'_{t}}^n \ \delta(x'_t - x''_{t+\tau})
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Plugging the expanded Dirac function back into the transition probability we obtain
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	p(x''_{t+\tau} | x'_t) = &amp; \int \delta(y_{t+\tau} - x''_{t+\tau}) p(y_{t+\tau} | x_{t}) dy_{t+\tau} \\
+	= &amp; \int \sum_{n=0}^\infty \frac{1}{n!} (y_{t + \tau} - x'_t)^n \ \partial_{x'_{t}}^n \ \delta(x'_t - x''_{t+\tau}) p(y_{t+\tau} | x_{t}) dy_{t+\tau}
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;When we compare the derivation of the forward Kramers-Moyals expansion with the backwards Kramers-Moyals expansion we should immediately detect that the only difference is the partial derivative.
+The subtle but important difference lies in direction to which we differentiate.
+For the forward expansion we are interested how the PDF changes with respect to the future values &lt;script type=&quot;math/tex&quot;&gt;x''_{t+\tau}&lt;/script&gt; whereas for the backward expansion we want to ultimately know how the PDF changes backward in time, ergo &lt;script type=&quot;math/tex&quot;&gt;\partial_{x'_t}&lt;/script&gt; and not &lt;script type=&quot;math/tex&quot;&gt;\partial_{x''_{t+\tau}}&lt;/script&gt; since obviously &lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+t &lt; t + \tau %]]&gt;&lt;/script&gt;.&lt;/p&gt;
+
+&lt;p&gt;This is consequential for whether we include the moments &lt;script type=&quot;math/tex&quot;&gt;M^{(n)}(x'_t)&lt;/script&gt; in the differentiation or not.
+Remember that the moments are defined with a fixed value at time &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt; and that they are defined as as a forward differentiation &lt;script type=&quot;math/tex&quot;&gt;y_{t+\tau} - x'_t&lt;/script&gt;.
+If we now differentiate with respect to time &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt;, the moments will not be differentiated as the value &lt;script type=&quot;math/tex&quot;&gt;x'_t&lt;/script&gt; is assumed fixed in the moments.&lt;/p&gt;
+
+&lt;p&gt;Thus substituting the expanded transition probability back into the Chapman-Kolmogorov equation we obtain,
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	p(x_T | x'_t) = &amp; \int p(x_T | x''_{t+\tau}) \ \int \sum_{n=0}^\infty \frac{1}{n!} (y_{t + \tau} - x'_t)^n \ \partial_{x'_{t}}^n \ \delta(x'_t - x''_{t+\tau}) p(y_{t+\tau} | x_{t}) dy_{t+\tau} dx''_{t+\tau} \\
+	= &amp; \int p(x_T | x''_{t+\tau}) \ \sum_{n=0}^\infty \frac{1}{n!} \underbrace{\int (y_{t + \tau} - x'_t)^n p(y_{t+\tau} | x'_t) dy_{t+\tau}}_{M^{(n)}(x'_t)} \ \partial_{x'_t}^n \ \delta(x'_t - x''_{t+\tau}) dx''_{t+\tau} \\
+	= &amp; p(x_T | x'_{t+\tau}) + M^{(1)}(x'_t) \partial_{x'_t} p(x_T | x'_{t+\tau}) + \frac{1}{2} M^{(2)}(x'_t) \partial_{x'_t}^2 p(x_T | x'_{t+\tau})
+	% = &amp; p(x_T | x'_{t+\tau}) + \mu(x'_t) \partial_{x'_{t}} p(x_T | x'_t) + \frac{1}{2} \sigma^2(x'_t) \partial^2_{x'_{t}} p(x_T | x'_{t+\tau}).
+\end{align} %]]&gt;&lt;/script&gt;
+Dividing both sides by $\tau$ and evaluating in the limit of $\lim_{\tau \rightarrow 0}$, we get 
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	- \partial_t p(x_T| x'_t) = &amp; \mu(x'_t) \partial_{x'_t} p(x_T | x'_t) + \frac{1}{2} \sigma^2(x'_t) \partial^2_{x'_{t}} p(x_T | x'_{t}).
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The equation above is a partial differential equation which characterizes how the probability of $x_T$ changes as we go backwards in time.
+It essentially answers the question of how much the probability $p(x_T)$ changes after conditioning the process on $x’_t$ and at earlier point in time $t$.&lt;/p&gt;</content><summary type="html">Distributions as partial differential equations over time</summary></entry><entry><title type="html">From Bernoulli Distributions to Poisson Point Processes</title><link href="http://localhost:4000/blog/Poisson/" rel="alternate" type="text/html" title="From Bernoulli Distributions to Poisson Point Processes" /><published>2020-11-10T00:00:00+01:00</published><updated>2020-11-10T00:00:00+01:00</updated><id>http://localhost:4000/blog/Poisson</id><content type="html" xml:base="http://localhost:4000/blog/Poisson/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -1292,7 +1849,287 @@ This is precisely whats happening when we draw more samples in the expectation o
 \begin{align}
 \mathbb{E}[x]^2 &amp;\leq \mathbb{E}[x^2] \\
 0 &amp;\leq \mathbb{E}[x^2] - \mathbb{E}[x]^2 = \mathbb{V}[x]
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;</content><summary type="html">How to get to the objective function of VAEs ...</summary></entry><entry><title type="html">The Adjoint Method in Neural Ordinary Differential Equations</title><link href="http://localhost:4000/blog/AdjointMethod/" rel="alternate" type="text/html" title="The Adjoint Method in Neural Ordinary Differential Equations" /><published>2020-05-20T00:00:00+02:00</published><updated>2020-05-20T00:00:00+02:00</updated><id>http://localhost:4000/blog/AdjointMethod</id><content type="html" xml:base="http://localhost:4000/blog/AdjointMethod/">&lt;head&gt;
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;</content><summary type="html">How to get to the objective function of VAEs ...</summary></entry><entry><title type="html">Portugal</title><link href="http://localhost:4000/blog/Portugal20/" rel="alternate" type="text/html" title="Portugal" /><published>2020-07-01T00:00:00+02:00</published><updated>2020-07-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Portugal20</id><content type="html" xml:base="http://localhost:4000/blog/Portugal20/">&lt;!-- ## Berlin Over The Years --&gt;
+&lt;style&gt;
+    .image-gallery {overflow: auto; margin-left: -1%!important;}
+    .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
+    .image-gallery li a {text-align: top; text-decoration: none!important; color: #777;}
+    .image-gallery li a span {display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; padding: 3px 0;}
+    .image-gallery li a img {width: 100%; height: 100%; display: flex; vertical-align: top;
+    }
+&lt;/style&gt;
+
+&lt;ul class=&quot;image-gallery&quot;&gt;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal20/Portugal-10.jpg&quot; title=&quot;Portugal-10&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal20/Portugal-10.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Portugal-10&quot; title=&quot;Portugal-10&quot; /&gt;&lt;span&gt;Portugal-10&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal20/Portugal-10.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal20/Portugal-10.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal20/Portugal-12.jpg&quot; title=&quot;Portugal-12&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal20/Portugal-12.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Portugal-12&quot; title=&quot;Portugal-12&quot; /&gt;&lt;span&gt;Portugal-12&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal20/Portugal-12.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal20/Portugal-12.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal20/Portugal-13.jpg&quot; title=&quot;Portugal-13&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal20/Portugal-13.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Portugal-13&quot; title=&quot;Portugal-13&quot; /&gt;&lt;span&gt;Portugal-13&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal20/Portugal-13.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal20/Portugal-13.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal20/Portugal-14.jpg&quot; title=&quot;Portugal-14&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal20/Portugal-14.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Portugal-14&quot; title=&quot;Portugal-14&quot; /&gt;&lt;span&gt;Portugal-14&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal20/Portugal-14.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal20/Portugal-14.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal20/Portugal-15.jpg&quot; title=&quot;Portugal-15&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal20/Portugal-15.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Portugal-15&quot; title=&quot;Portugal-15&quot; /&gt;&lt;span&gt;Portugal-15&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal20/Portugal-15.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal20/Portugal-15.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal20/Portugal-17.jpg&quot; title=&quot;Portugal-17&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal20/Portugal-17.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Portugal-17&quot; title=&quot;Portugal-17&quot; /&gt;&lt;span&gt;Portugal-17&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal20/Portugal-17.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal20/Portugal-17.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal20/Portugal-18.jpg&quot; title=&quot;Portugal-18&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal20/Portugal-18.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Portugal-18&quot; title=&quot;Portugal-18&quot; /&gt;&lt;span&gt;Portugal-18&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal20/Portugal-18.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal20/Portugal-18.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal20/Portugal-19.jpg&quot; title=&quot;Portugal-19&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal20/Portugal-19.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Portugal-19&quot; title=&quot;Portugal-19&quot; /&gt;&lt;span&gt;Portugal-19&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal20/Portugal-19.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal20/Portugal-19.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal20/Portugal-20.jpg&quot; title=&quot;Portugal-20&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal20/Portugal-20.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Portugal-20&quot; title=&quot;Portugal-20&quot; /&gt;&lt;span&gt;Portugal-20&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal20/Portugal-20.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal20/Portugal-20.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal20/Portugal-5.jpg&quot; title=&quot;Portugal-5&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal20/Portugal-5.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Portugal-5&quot; title=&quot;Portugal-5&quot; /&gt;&lt;span&gt;Portugal-5&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal20/Portugal-5.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal20/Portugal-5.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal20/Portugal-7.jpg&quot; title=&quot;Portugal-7&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal20/Portugal-7.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Portugal-7&quot; title=&quot;Portugal-7&quot; /&gt;&lt;span&gt;Portugal-7&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal20/Portugal-7.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal20/Portugal-7.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal20/Portugal-8.jpg&quot; title=&quot;Portugal-8&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal20/Portugal-8.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Portugal-8&quot; title=&quot;Portugal-8&quot; /&gt;&lt;span&gt;Portugal-8&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal20/Portugal-8.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal20/Portugal-8.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal20/Portugal-9.jpg&quot; title=&quot;Portugal-9&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal20/Portugal-9.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Portugal-9&quot; title=&quot;Portugal-9&quot; /&gt;&lt;span&gt;Portugal-9&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal20/Portugal-9.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal20/Portugal-9.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+&lt;/ul&gt;</content><category term="photography" /><summary type="html">Mostly Lisbon</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/portugal20/Portugal-19.jpg" /></entry><entry><title type="html">The Adjoint Method in Neural Ordinary Differential Equations</title><link href="http://localhost:4000/blog/AdjointMethod/" rel="alternate" type="text/html" title="The Adjoint Method in Neural Ordinary Differential Equations" /><published>2020-05-20T00:00:00+02:00</published><updated>2020-05-20T00:00:00+02:00</updated><id>http://localhost:4000/blog/AdjointMethod</id><content type="html" xml:base="http://localhost:4000/blog/AdjointMethod/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -1392,820 +2229,4 @@ The beauty of the adjoint state training became apparent to me when I used sensi
 \end{align}&lt;/script&gt;
 The integral above states that we scale the gradient of the output $\partial_\theta f(z(t), t, \theta)$ with the sensitivity $s(t)$ to the overall loss.&lt;/p&gt;
 
-&lt;p&gt;Interestingly, the reception by the differential equation community was not as unanimous as one would think as this method has been used for a fairly long time. The key insight was its application to neural networks since we only need the Jacobians of the neural network irrespective of what goes on inside the neural network. One of the coauthors said as much in a &lt;a href=&quot;https://www.youtube.com/watch?v=YZ-_E7A3V2w&quot;&gt;talk a year later&lt;/a&gt;.&lt;/p&gt;</content><summary type="html">Reverse-Mode Sensitivity Training</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/Adjoint/Adjoint1.png" /></entry><entry><title type="html">Solving (Some) SDEs</title><link href="http://localhost:4000/blog/SolvingSDEs/" rel="alternate" type="text/html" title="Solving (Some) SDEs" /><published>2020-04-14T00:00:00+02:00</published><updated>2020-04-14T00:00:00+02:00</updated><id>http://localhost:4000/blog/SolvingSDEs</id><content type="html" xml:base="http://localhost:4000/blog/SolvingSDEs/">&lt;head&gt;
-&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
-       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       &lt;/script&gt;
-       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
-&lt;/head&gt;
-
-&lt;h3 id=&quot;geometric-brownian-motion&quot;&gt;Geometric Brownian Motion&lt;/h3&gt;
-
-&lt;p&gt;Brownian motion can have both positive and negative values as long as its mean is centered around zero and the distribution over time follows the characteristics of the Wiener process.
-Yet certain quantities can only have positive values such as stocks.&lt;/p&gt;
-
-&lt;p&gt;In order to accomodate the specific requires of such quantities we can work with geometric Brownian motion,
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-dS_t &amp;= \mu_t S_t dt + \sigma_t S_t dW_t \\
-\frac{dS_t}{S_t} &amp;= \mu_t dt + \sigma_t dW_t
-\end{align} %]]&gt;&lt;/script&gt;
-which has the nice property that as $S_t$ approaches zero, so does the change.
-This effectively limits $S_t$ to positive values, $S_t \geq 0$.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/SolvingSDEs/GeomBM.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;10%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;The question is as so often with differential equation, whether there exists an analytic solution.
-In order to show this analytic solution we will examine the quantity $dS_t/ S_t$ and apply the stochastic version of the log-derivative trick.
-The quantity $dS_t/S_t$ has a striking familiarity to
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-\frac{\partial \ln S(x)}{\partial x} = \frac{1}{S(x)} \frac{\partial S(x)}{\partial x}
-\end{align}&lt;/script&gt;
-But since we are working with stochastic processes, we can’t apply regular calculus to derive such a stochastic process but use Ito’s lemma instead:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	d \ln S_t &amp;= \underbrace{\frac{\partial \ln S_t}{\partial t}}_{=0} dt + \frac{\partial \ln S_t}{\partial S_t} dS_t + \frac{1}{2} \frac{\partial^2 \ln S_t}{\partial S_t^2} dS_t^2 \\
-	&amp;= \frac{dS_t}{S_t} - \frac{1}{2} \frac{1}{S_t^2} (\mu_t S_t + \sigma_t S_t dW_t)^2 \\
-	&amp;= \frac{dS_t}{S_t} - \frac{1}{2} \frac{1}{S_t^2} (\mu_t S_t dt + \sigma_t S_t dW_t)^2 \\
-	&amp;= \frac{dS_t}{S_t} - \frac{1}{2} \frac{1}{S_t^2} (\mu_t^2 S_t^2 \underbrace{dt^2}_{\rightarrow 0} + 2 \mu_t S_t \underbrace{dt dW_t}_{\rightarrow 0} + \sigma_t^2 S_t^2 \underbrace{dW_t^2}_{=dt}) \\
-	&amp;= \frac{dS_t}{S_t} - \frac{1}{2} \sigma_t^2 dt \\
-	\frac{dS_t}{S_t} &amp;= d \ln S_t + \frac{1}{2} \sigma_t^2 dt
-\end{align} %]]&gt;&lt;/script&gt;
-Since $\ln S_t$ does not have $t$ as an argument, the first term evaluates to zero.
-Plugging our alternative definition of &lt;script type=&quot;math/tex&quot;&gt;\frac{dS_t}{S_t}&lt;/script&gt; into the original SDE and integrating it we obtain:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	d \ln S_t + \frac{1}{2} \sigma^2 dt &amp;= \mu_t dt + \sigma_t dW_t \\
-	\int_0^t d \ln S_s &amp;= \int_0^t \mu_s ds + - \int_0^t \frac{1}{2} \sigma_s^2 ds + \int_0^t \sigma_s dW_s  \\
-	\ln S_t - \ln S_0 &amp;= \mu_t t - \frac{1}{2} \sigma_t^2 t + \sigma_t W_t  \\
-	\ln \frac{S_t}{S_0} &amp;= \mu_t t - \frac{1}{2} \sigma_t^2 t + \sigma_t W_t  \\
-	S_t &amp;= S_0 \ e^{\mu_t t - \frac{1}{2} \sigma_t^2 t + \sigma_t W_t}  \\
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-&lt;h3 id=&quot;ornstein-uhlenbeck-process&quot;&gt;Ornstein-Uhlenbeck Process&lt;/h3&gt;
-
-&lt;p&gt;The Ornstein-Uhlenbeck (OU) process is a SDE that exhibits mean reversion and momentum properties.
-Mathematically it is defined as:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-dX_t = \theta(\mu - X_t)dt + \sigma dW_t
-\end{align}&lt;/script&gt;
-where $\theta$ is the momentum parameter that makes the OU process undulate around the mean.
-The mean parameter $\mu$ sets the value around which the OU process moves in somewhat smooth arcs.
-Visually it looks like this:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/SolvingSDEs/OU.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;10%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;where we can see that even though two of the three sample paths start far away from the mean, they quickly converge to a region around the mean.
-Once in the vicinity of the mean they move about it in arcs through the momentum factor.&lt;/p&gt;
-
-&lt;p&gt;The first time I heard of the OU process was in a &lt;a href=&quot;https://arxiv.org/pdf/1706.01905.pdf&quot;&gt;reinforcement learning paper&lt;/a&gt; where it was used to force an agent to repeat the same action a couple of times through the momentum property.&lt;/p&gt;
-
-&lt;p&gt;First, let’s try to clean up the notation to something more succinct and define a new random variable $Y_t$:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-Y_t = X_t - \mu
-\end{align}&lt;/script&gt;
-We can easily compute the infinitesimal differential $dY_t$ of $Y_t$ via:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-dY_t &amp;= dX_t \\
-&amp;= \theta(\mu - X_t)dt + \sigma dW_t \\
-&amp;= - \theta \underbrace{(X_t - \mu)}_{Y_t}dt + \sigma dW_t \\
-&amp;= - \theta Y_tdt + \sigma dW_t \\
-\end{align} %]]&gt;&lt;/script&gt;
-The next step is to recognize that we are equating the derivative of a random variable with itself.
-We’ll abuse the mathematical notation for brief period to make the point more clear:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-dY_t &amp; \propto \theta Y_t dt \\
-\frac{dY_t}{dt} &amp;\propto \theta Y_t \Leftrightarrow \frac{d e^{ax}}{dx} = ae^x
-\end{align} %]]&gt;&lt;/script&gt;
-The proportional equation above has a striking similarity to the derivative of a scaled exponential $e^{ax}$.
-In our case the derivative is not with respect to $x$ but to $t$.
-To solidify this intuition let’s define another random variable $Z_t$ as a function of $Y_t$:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-Z_t &amp;= f(t, \theta, Y_t) \\
-&amp;= e^{\theta t} Y_t
-\end{align} %]]&gt;&lt;/script&gt;
-The question naturally arises how $Z_T$ behaves in the infinitesimal differential $dZ_t$.
-But since $Z_t$ is a function of a stochastic process we will have to apply Ito’s lemma in order to compute the differential.
-Since $Z_t = f(t, \theta, Y_t)$ is linear in $Y_t$, we will deal with a simplified version of Ito’s lemma because the second derivative of a linear function is zero:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-df(t, \theta, Y_t) &amp;= \partial_t \ f(t, \theta, Y_t) dt + \partial_{Y_t} \ f(t, \theta, Y_t) dY_t + \frac{1}{2} \overbrace{\partial_{Y_t}^2 \ f(t, \theta, Y_t)}^{=0} dY_t^2 \\
-&amp;=\partial_t \ f(t, \theta, Y_t) dt + \partial_{Y_t} \ f(t, \theta, Y_t) dY_t
-\end{align} %]]&gt;&lt;/script&gt;
-Applying the simplified Ito’s lemma to our equation at hand yields: 
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	dZ_t &amp;= \partial_{t} \left[e^{\theta t}Y_t \right] dt + \partial_{Y_t} \left[e^{\theta t}Y_t \right] dY_t \\
-	&amp;= \theta e^{\theta t}Y_t dt + e^{\theta t} dY_t \\
-	&amp;= \theta e^{\theta t}Y_t dt + e^{ \theta t}\left(-\theta Y_t dt + \sigma dW_t \right) \\
-	&amp;= e^{\theta t} \sigma dW_t
-\end{align} %]]&gt;&lt;/script&gt;
-This can be easily solved via
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	Z_T &amp;= Z_S + \int_{S}^T dZ_t \\
-	&amp;= Z_S + \sigma \int_{S}^T e^{\theta t} dW_t
-\end{align} %]]&gt;&lt;/script&gt;
-where $S$ is the start of the integration through time.
-Now that we found a solution to the random variable $Z_t$ it is time to go back through the substitutions to find the solution to $X_t$.
-In order to achieve that we first reverse the exponential component in the relationship between $Y_t$ and $Z_t$.
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	Y_t &amp;= e^{-\theta t}Z_t \\
-	Y_T &amp;= e^{-\theta T} Z_T \\
-	&amp;= e^{-\theta T}(Z_S + \sigma \int_{S}^T e^{\theta t} dW_t) \\
-	&amp;=e^{-\theta T}(e^{kS} Y_S + \sigma \int_{S}^T e^{\theta t} dW_t) \\
-	&amp;=e^{-\theta(T-S)} Y_S + \sigma e^{-\theta T} \int_{S}^T e^{\theta t} dW_t \\
-	&amp;=e^{-\theta(T-S)} Y_S + \sigma \int_{S}^T e^{\theta(t-T)} dW_t \\
-\end{align} %]]&gt;&lt;/script&gt;
-Finally plugging $Y_t =X_t -\mu$ back in yields:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	Y_T &amp;=e^{-\theta(T-S)} Y_S + \sigma \int_{S}^T e^{\theta(t-T)} dW_t \\
-	X_T - \mu &amp;=e^{-\theta(T-S)} (X_S - \mu) + \sigma \int_{S}^T e^{\theta(t-T)} dW_t \\
-	X_T &amp;= \mu + e^{-\theta(T-S)} (X_S - \mu) + \sigma \int_{S}^T e^{\theta(t-T)} dW_t \\
-\end{align} %]]&gt;&lt;/script&gt;
-Starting from $S=0$ we obtain
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	X_T = \mu + e^{-\theta T}(X_0 - \mu) + \sigma \int_{S=0}^T e^{-\theta (T-t)} dW_t
-\end{align}&lt;/script&gt;
-In fact the Ornstein-Uhlenbeck process is one of the few stochastic processes that has a stationary distribution under the assumption of a Normal initial value.
-In order to show that we can compute the mean and variance of the process and then evaluate it in infinity with the limit of $\lim t\rightarrow 0$:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\mathbb{E} \left[ X_t \right] &amp;= \mathbb{E} \left[ \mu + e^{-\theta t}(X_0 - \mu) + \sigma \int_{s=0}^t e^{-\theta (t-s)} dW_s\right] \\
-	&amp;= \mu + e^{-\theta t}(X_0 - \mu) + \underbrace{\mathbb{E} \left[ \sigma \int_{s=0}^t e^{-\theta (t-s)} dW_s\right]}_{\text{Wiener process} \rightarrow \mathbb{E}[W_t]=0} \\
-	&amp;= \mu + e^{-\theta t}(X_0 - \mu)
-\end{align} %]]&gt;&lt;/script&gt;
-and
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-\mathbb{V} \left[ X_t \right] &amp;= \mathbb{E} \left[ \left( X_t - \mathbb{E}[X_t] \right)^2 \right] \\
-&amp;= \mathbb{E} \Bigg[ \Big( \underbrace{\mu + e^{-\theta t}(X_0 - \mu)}_{=\mathbb{E}[X_t]} + \sigma \int_{s=0}^t e^{-\theta (t-s)} dW_s - \mathbb{E}[X_t] \Big)^2 \Bigg] \\
-&amp;= \mathbb{E} \left[ \left(\sigma \int_{s=0}^t e^{-\theta (t-s)} dW_s \right)^2 \right] \quad \leftarrow \text{Ito Isometry} \\
-&amp;= \sigma^2 \int_{s=0}^t e^{-2\theta (t-s)} ds  \\
-&amp;= \sigma^2 \left[ \frac{1}{2\theta} e^{-2\theta (t-s)} \right]_{s=0}^t \\
-&amp;= \frac{\sigma^2}{2\theta} (e^{-2\theta*0} - e^{-2\theta t}) \\
-&amp;= \frac{\sigma^2}{2\theta} (1 - e^{-2\theta t})
-\end{align} %]]&gt;&lt;/script&gt;
-Applying the limit $\lim t \rightarrow \infty$ allows us to recover the stationary distribution:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\lim_{t\rightarrow 0} \mathbb{E} \left[X_t\right] &amp;= \lim_{t\rightarrow 0} \mu + \underbrace{e^{-\theta t}}_{=0}(X_0 - \mu) \\
-	&amp;= \mu \\
-	\lim_{t\rightarrow 0} \mathbb{V}\left[ X_t \right] &amp;= \lim_{t\rightarrow 0} \frac{\sigma^2}{2\theta} (1 - \underbrace{e^{-2\theta t}}_{=0}) \\
-	&amp;= \frac{\sigma^2}{2\theta}
-\end{align} %]]&gt;&lt;/script&gt;
-While the mean $\mu$ is somewhat expected, the variance can be interpreted intuitively: If the momentum is large, the process is very slow to change and thus the stationary distribution does not move far away from $\mu$.
-If the momentum is only small, the Wiener process can exert a stronger influence and the stationary distribution has a wider variance.&lt;/p&gt;
-
-&lt;p&gt;More importantly, since the Wiener process is the only random influence on the process and is Gaussian, the entire process is a Gaussian process.
-Thus the stationary distribution is a Gaussian distribution as well.&lt;/p&gt;</content><summary type="html">Geometric Brownian Motion &amp; Ornstein-Uhlenbeck Process</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/SolvingSDEs/GeomBM.png" /></entry><entry><title type="html">Ito’s (Di)Lemma</title><link href="http://localhost:4000/blog/ItosLemma/" rel="alternate" type="text/html" title="Ito's (Di)Lemma" /><published>2020-04-10T00:00:00+02:00</published><updated>2020-04-10T00:00:00+02:00</updated><id>http://localhost:4000/blog/ItosLemma</id><content type="html" xml:base="http://localhost:4000/blog/ItosLemma/">&lt;head&gt;
-&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
-       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       &lt;/script&gt;
-       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
-&lt;/head&gt;
-
-&lt;h3 id=&quot;differentiability&quot;&gt;Differentiability&lt;/h3&gt;
-
-&lt;p&gt;Probably one of the most fundamental uses of calculus is the derivation of functions.
-A function $f$ is differentiable if the following value $f’(x)$ exists:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
- f'(x) = \lim_{h\rightarrow 0} \frac{f(x+h) - f(x)}{h}
-\end{align}&lt;/script&gt;
-If we let $h$ go towards zero, a function is called differentiable, if the fraction converges towards some constant value.&lt;/p&gt;
-
-&lt;p&gt;Let’s look at an example of how this might work.
-We’ll need an additional mathematical trick called &lt;a href=&quot;https://en.wikipedia.org/wiki/L%27Hôpital%27s_rule&quot;&gt;L’Hopitals rule&lt;/a&gt; which says that for evaluating the limit of a fraction we can simply derive both nominator and denominator with respect to the same variable and still obtain the valid result.
-Applying L’Hopitals rule often simplifies the computation of the derivative since we’re always working with the limit of a fraction.&lt;/p&gt;
-
-&lt;p&gt;Let’s try to compute the derivative of the squared function $f(x) = x^2$:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-  f'(x) &amp;= \lim_{h\rightarrow 0} \frac{f(x+h) - f(x)}{h} \\
-  &amp;= \lim_{h\rightarrow 0} \frac{(x+h)^2 - x^2}{h} \\
-  &amp;= \lim_{h\rightarrow 0} \frac{x^2 + 2hx + h^2 - x^2}{h} \\
-  &amp;= \lim_{h\rightarrow 0} \frac{\frac{\partial }{\partial h} \ 2hx + h^2}{\frac{\partial }{\partial h}h} \quad \quad \quad &amp;&amp;\Leftarrow \text{Applying L'Hopitals rule} \\
-  &amp;= \lim_{h\rightarrow 0} \frac{2x + 2h}{1} &amp;&amp; \Leftarrow \text{Evaluating $h$ to zero} \\ 
-  &amp;= 2x
-\end{align} %]]&gt;&lt;/script&gt;
-Sure enough it’s the correct result which we anticipated.
-In effect, we’re zooming infinitely far into the function and ask ourselves how the function changes in this tiny window $h$.
-Visually, this looks something like this for the exponential function $f(x) = e^x$:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/ItosLemma/Diff01.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;What this functions tells us is that we can approximate an arbitrarily complex, differentiable function with a linear function for a extremely small window $\lim h \rightarrow 0 $.
-But in order for the function to be differentiable, the limit has to actually converge to a linear function as we decrease the window size $h$.&lt;/p&gt;
-
-&lt;p&gt;Unfortunately, for stochastic processes this is not as straight forward and we will require some more elaborate tools to show some notion of differentiability.&lt;/p&gt;
-
-&lt;h3 id=&quot;stochastic-processes&quot;&gt;Stochastic Processes&lt;/h3&gt;
-
-&lt;p&gt;In order to keep things simple in the following steps, we will work with the Brownian Motion. &lt;br /&gt;
-Brownian motion $W_t$ is defined through the following properties:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;$W_0 = 0$&lt;/li&gt;
-  &lt;li&gt;Independent increments: covariance $\mathbb{C}[W_{t+u} - W_s, W_s] =0$ for $u \geq 0$ and $s \leq t$&lt;/li&gt;
-  &lt;li&gt;Gaussian increments: $W_{t+u} - W_t \sim \mathcal{N}(0, u)$&lt;/li&gt;
-  &lt;li&gt;Continuous paths in time $t$.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Now it turns out that there exists a stochastic differential equation which fulfills all of the properties above.
-This SDE in question is
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-  dx_t = dW_t = \epsilon \sqrt{dt} \quad \quad \quad ;\epsilon \sim \mathcal{N}(0,1)
-\end{align}&lt;/script&gt;
-Intuitively, we equate the infinitesimal change in $x_t$ with Brownian Motion which in turn is defined as the standard normally distributed random variable $\epsilon$ scaled by $\sqrt{dt}$.
-The problem of classical differentiability of stochastic processes lies precisely in this SDE as we defined the change with respect to $dt$.
-By defining the infinitesimal change $dt$ we are acknowledging that we could always use a shorter $dt$ and zoom even further into the time axis.
-After all, the infinitesimal change of the Brownian Motion $dW_t$ is defined as a limit in time not unlike the limit we used to show the differentiability of the quadratic function:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-dW_t = \lim_{\Delta t \rightarrow 0} W_{t + \Delta t} - W_t \quad \sim \mathcal{N}(0, \Delta t)
-\end{align}&lt;/script&gt;
-While $\Delta t$ goes rapidly towards zero, it will actually never be exactly zero.
-Thus, if we were to zoom into the time axis we would realize that the Brownian Motion keeps moving randomly for whatever time resolution we choose.
-In turns out that Brownian Motion actually has &lt;a href=&quot;https://en.wikipedia.org/wiki/Fractal&quot;&gt;fractal properties&lt;/a&gt; which are probably the trippiest mathematical animations you can experience without doing actual acid.&lt;/p&gt;
-
-&lt;p&gt;No matter how far we zoom into the Brownian Motion, we will always encounter a Brownian Motion on a finer time scale since $dx_t$ moves randomly on any time scale we choose.
-Probably the best animation for that is directly from the &lt;a href=&quot;https://en.wikipedia.org/wiki/Wiener_process&quot;&gt;Wikipedia page&lt;/a&gt; of Brownian Motion:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/ItosLemma/WienerProcess.gif&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;100%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;You might wonder: Well, why is that a problem with respect to classical differentiability?
-For that we can simply evaluate the differential 
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-  \lim_{\Delta t\rightarrow 0} \frac{W_{t+\Delta t} - W_t}{\Delta t}
-\end{align}&lt;/script&gt;
-but alas, $W_t$ is by definition a Normally distributed random variable.
-So let’s have a look at the mean and variance of the differential operator:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\lim_{\Delta t\rightarrow 0} \mathbb{E}\left[ \frac{W_{t+\Delta t} - W_t}{\Delta t} \right] 
-	&amp;= \lim_{\Delta t} \frac{1}{\Delta t} \mathbb{E} [ \underbrace{W_{t+\Delta t} - W_t}_{\sim \mathcal{N}(0,\Delta t)} ] \\
-	&amp;= \lim_{\Delta t} \frac{1}{\Delta t} 0 \\
-	&amp;= 0
-\end{align} %]]&gt;&lt;/script&gt;
-and
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\lim_{\Delta t\rightarrow 0} \mathbb{V} \left[\frac{W_{t+\Delta t} - W_t}{\Delta t} \right]
-	&amp;= \lim_{\Delta t\rightarrow 0} \frac{1}{\Delta t^2} \mathbb{V} [ \underbrace{W_{t+\Delta t} - W_t}_{\sim \mathcal{N}(0,\Delta t)} ] \\
-	&amp;= \lim_{\Delta t\rightarrow 0} \frac{1}{\Delta t^2} \Delta t \\
-	&amp;= \lim_{\Delta t\rightarrow 0} \frac{1}{\Delta t} \\
-	&amp;= \infty
-\end{align} %]]&gt;&lt;/script&gt;
-Both the mean and the variance are possibly the worst values you can expect in terms of functional analysis.
-The mean is zero, indicating we have no derivative what so ever while the variance goes to infinity which is equally unusable.
-Ultimately, we can’t derive a Wiener process in the classical sense.&lt;/p&gt;
-
-&lt;p&gt;It turns out that &lt;a href=&quot;https://en.wikipedia.org/wiki/Kiyosi_Itô&quot;&gt;Kiyosi Ito&lt;/a&gt; had a series of great insights that we can use.
-But before we can dive into his ideas, we first have to learn about Taylor expansions …&lt;/p&gt;
-
-&lt;h3 id=&quot;taylor-expansion&quot;&gt;Taylor Expansion&lt;/h3&gt;
-
-&lt;p&gt;The Taylor expansions or Taylor series is one of the most ubiquitous mathematical tools in applied math.
-Once at the DeepBayes summer school in Moscow, a fellow attendee and physicist said that if you have no clue what to do next with your equations, do a Taylor expansion and see if it gets you ahead.&lt;/p&gt;
-
-&lt;p&gt;The core idea of a Taylor expansion is to approximate a function locally around a root point with a series of terms which rely on the derivatives of the function.
-So for example a function might be a polynomial of order 10 but locally, we only need a quadratic function to approximate it quite well.&lt;/p&gt;
-
-&lt;p&gt;Mathematically, a Taylor expansion of a infinitely differentiable function $f(x)$ around a root point $x_0$ is defined as
-&lt;script type=&quot;math/tex&quot;&gt;f(x)|_{x_0} = \sum_{n=0}^\infty \frac{f^{(n)}(x_0)}{n!}(x-x_0)^n&lt;/script&gt;
-In order to keep things simple we will only work with a Taylor expansion of the second order, meaning that we will stop the sum after the term with the second order derivative.
-Practically, many problems are posed as linear or quadratic problems so the need seldomly arises to compute higher order Taylor expansions (at least in machine learning where computing higher order gradients at scale can be expensive).&lt;/p&gt;
-
-&lt;p&gt;So we’ll be working with the following sum:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-  f(x)|_{x_0} &amp;\approx f(x_0) + \frac{f'(x_0)}{1!}(x-x_0) + \frac{f''(x_0)}{2!}(x-x_0)^2 \\
-  &amp;= f(x_0) + f'(x_0) \underbrace{(x-x_0)}_{\Delta x} + \frac{1}{2!}f''(x_0) \underbrace{(x-x_0)^2}_{\Delta x^2} \\
-  &amp;= f(x_0) + \underbrace{f'(x_0) \ \Delta x}_{\text{linear in $\Delta x$}} + \underbrace{\frac{1}{2}f''(x_0) \ \Delta x^2}_{\text{quadratic in $\Delta x$}} \\
-\end{align} %]]&gt;&lt;/script&gt;
-where $\Delta x = (x - x_0)$ signifies the distance of x to the root point $x_0$.
-By using the second order Taylor expansion we approximate the higher order polynomial $f(x)$ with just its first and second order derivative packed into a polynomial in $\Delta x$.
-The locality of the Taylor expansion around the $x_0$ is essential for the approximation since we use the first order order derivative $f’(x_0)$ and second order derivative &lt;script type=&quot;math/tex&quot;&gt;f''(x_0)&lt;/script&gt; explicitly evaluated at $x_0$.&lt;/p&gt;
-
-&lt;p&gt;We can visually the individual points of the Taylor expansion around the root point:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/ItosLemma/Taylor01.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;100%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;We can observe a couple of things in these plots:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;The root point $x_0$ stays the same for all plots since this is the point around which we try to locally approximate the function $f(x)$ with a lower order polynomial&lt;/li&gt;
-  &lt;li&gt;The first order derivative $f’(x_0) \Delta x$ is a linear function that goes through $x_0$. I omitted the constant term $f(x_0)$ for visual clarity what the individual components contribute to the overall approximation. Strictly speaking it would need to be $f(x_0) + f’(x_0) \Delta x$.&lt;/li&gt;
-  &lt;li&gt;The second order derivative &lt;script type=&quot;math/tex&quot;&gt;f''(x_0)\Delta x^2&lt;/script&gt; is a constant value which doesn’t change.
-The root $x_0$ lies on a stretch with almost no curvature ergo &lt;script type=&quot;math/tex&quot;&gt;f''(x_0)&lt;/script&gt; is almost constant and doesn’t contribute much to the final approximation.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Now let’s move the root point $x_0$ and plot the different terms again to see the second order derivative &lt;script type=&quot;math/tex&quot;&gt;f''(x_0)&lt;/script&gt; in action:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/ItosLemma/Taylor02.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;100%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/ItosLemma/Taylor03.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;100%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;With this root point $x_0$ we can see the second order derivatives actually contribute to the final approximation:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Now the root point lies in an area in which there is high curvature.&lt;/li&gt;
-  &lt;li&gt;The second order term of the Taylor approximation plays a more significant role and we can see that it tries to approximate the function around $x_0$ with a quadratic function.&lt;/li&gt;
-  &lt;li&gt;Furthermore the sum of the two terms approximate the original function around the root point more precisely than either could have done on its own.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Now the question can be raised on how this could be applied to stochastic processes …&lt;/p&gt;
-
-&lt;h3 id=&quot;itos-lemma&quot;&gt;Ito’s Lemma&lt;/h3&gt;
-
-&lt;p&gt;Let’s assume we a classic SDE with a drift term $\mu(t, X_t)$ and a diffusion term $\sigma(t, X_t)$ which together form:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-dX_t = \mu(t, X_t) dt + \sigma(t, X_t) dW_t
-\end{align}&lt;/script&gt;
-and $dW_t$ is the infinitesimal differential of a Wiener process $W_t$.
-Such a process is commonly called an Ito drift-diffusion process.&lt;/p&gt;
-
-&lt;p&gt;Now let’s say that we have some function $f(t, X_t)$ that takes whatever value $X_t$ is at the moment $t$ and returns some other value $Y_t$ such that we have
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-Y_t = f(t, X_t)
-\end{align}&lt;/script&gt;
-We could use relatively easy functions such as as the exponential function $e^{X_t}$ or the quadratic function $X_t^2$ for starters.
-In the financial markets, these functions $f$ quickly get very complex as stock prices are routinely modeled as stochastic differential equations with $f$ capturing complex relationships like a portfolio performance or default probability.&lt;/p&gt;
-
-&lt;p&gt;Since we are working with infinitesimal differentials we would like to know how $Y_t$ changes for very small time differentials $dt$.
-So we actually want to be able to define the following equation:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-dY_t = df(t, X_t)
-\end{align}&lt;/script&gt;
-&lt;strong&gt;In order to answer that question, Ito’s lemma applies a Taylor expansion to $f(t, X_t)$ with special numerical conditions for the infinitesimal values.&lt;/strong&gt;
-There are a few constraints on $f$, though.
-It has to be twice differentiable with respect to $X_t$ and at least once differentiable with respect to $t$.
-If these equations are met we can start deriving!&lt;/p&gt;
-
-&lt;p&gt;The first step is to define the Taylor expansion for $f(t, X_t)$ in it’s general form around the root point $(t_0, X_0)$:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-f(t, X_t) &amp;\approx f(t_0, X_0) + \frac{\partial f(t_0, X_0)}{\partial t} \underbrace{(t - t_0)}_{\Delta t} + \frac{\partial f(t_0, X_0)}{\partial X_t} \underbrace{ (X_t - X_0) }_{\Delta X_t} + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\underbrace{(X_t - X_0)^2}_{\Delta X_t^2} \\
-&amp;= f(t_0, X_0) + \frac{\partial f(t_0, X_0)}{\partial t} \Delta t + \frac{\partial f(t_0, X_0)}{\partial X_t}\Delta X_t + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\Delta X_t^2
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;The next step is to examine the Taylor expansion in the limit $\lim [t \rightarrow t_0, X_t \rightarrow X_0]$.
-This is of interest as we are again interested in the infinitesimal behavior of $f(t, X_t)$, namely $df(t, X_t)$:
-By pulling the root evaluation $f(t_0, X_0)$ over to the left side we lay the groundwork for the differential.
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-\lim_{t\rightarrow t_0, X_t \rightarrow X_0} f(t, X_t) - f(t_0, X_0) &amp;= \lim_{t\rightarrow t_0, X_t \rightarrow X_0} \frac{\partial f(t_0, X_0)}{\partial t} \Delta t + \frac{\partial f(t_0, X_0)}{\partial X_t}\Delta X_t + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\Delta X_t^2
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;In fact the limit above is precisely the differentiability operator from the very beginning.
-Remember that we define the differentiability as the difference of two evaluations for an ever more decreasing difference in their arguments.
-This is precisely what we are defining in the limit above by moving $t$ ever closer to $t_0$ and simultaneously $X_t$ towards $X_0$.
-Furthermore the limit also allows us to rewrite the difference $\Delta t$ and $\Delta X_t$ in their infinitesimal differential form $dt$ and $dX_t$.&lt;/p&gt;
-
-&lt;p&gt;So we obtain the following:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-\lim_{t\rightarrow t_0, X_t \rightarrow X_0} f(t, X_t) - f(t_0, X_0)  &amp;= \lim_{t\rightarrow t_0, X_t \rightarrow X_0} \frac{\partial f(t_0, X_0)}{\partial t} \Delta t + \frac{\partial f(t_0, X_0)}{\partial X_t}\Delta X_t + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t}\Delta X_t^2 \\
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;where the left sides simplifies to the differential of the function $f$:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-  df(t, X_t) &amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt + \frac{\partial f(t_0, X_0)}{\partial X_t} dX_t + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} dX_t^2
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;The next step is substituting $dX_t = \mu(t, X_t)dt + \sigma(t, X_t)dW_t$ into the equation:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-  df(t, X_t) &amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt + \frac{\partial f(t_0, X_0)}{\partial X_t} dX_t+ \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} dX_t^2 \\
-  &amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt + \frac{\partial f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t) + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t)^2 \\
-  &amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt + \frac{\partial f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t) \\
-  &amp; \quad + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)^2 dt^2 + 2 \mu(t, X_t) \sigma(t, X_t)^2 dt dW_t + \sigma(t, X_t)^2 dW_t^2) \\
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;Now comes a pivotal part in the derivation in which examine how $dt$ and $dW_t$ behave when multiplied or squared.
-The differential Wiener process can be rewritten as $dW_t = \epsilon \sqrt{dt}$.
-Thus we have the following time-dependent terms appearing in the equation above: $dt^2$, $dt dW_t = \epsilon dt^{1.5}$ and $dW_t^2 = \epsilon^2  dt = dt$ under the mean-square interpretation which states $\mathbb{E}[\epsilon^2] = \mathbb{V}[\epsilon] = 1$ for $\epsilon \sim \mathcal{N}(0,1)$.&lt;/p&gt;
-
-&lt;p&gt;The important aspect of simplifying Ito’s lemma is to think about how $dt^2$, $dt^{1.5}$ and $dt$ behave for infinitesimal changes.
-Any $dt^k$ with $k&amp;gt;1$ and $dt &amp;lt; 1$ will decrease by an order of magnitude faster to zero than $dt$ itself for the infinitely small values that we’re dealing with.
-So if we evaluate for a infinitesimal small $dt$, the terms $dt^2$ and $dt^{1.5}$ will be smaller by larger order of magnitudes.
-This allows us to simply drop them from our equation.&lt;/p&gt;
-
-&lt;p&gt;So we now have:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-  df(t, X_t)
-  &amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt + \frac{\partial f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t) \\
-  &amp; \quad + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)^2 \overbrace{dt^2}^{\rightarrow 0} + 2 \mu(t, X_t) \sigma(t, X_t)^2 \overbrace{dt dW_t}^{\rightarrow 0} + \sigma(t, X_t)^2 \overbrace{dW_t^2}^{=dt}) \\
-  &amp;= \frac{\partial f(t_0, X_0)}{\partial t} dt + \frac{\partial f(t_0, X_0)}{\partial X_t} (\mu(t, X_t)dt + \sigma(t, X_t)dW_t) + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} \sigma(t, X_t)^2 dt \\
-  &amp;= \underbrace{\left(\frac{\partial f(t_0, X_0)}{\partial t} + \frac{\partial f(t_0, X_0)}{\partial X_t} \mu(t, X_t) + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} \sigma(t, X_t)^2 \right)dt}_{\text{deterministic}} + \underbrace{\frac{\partial f(t_0, X_0)}{\partial X_t} \sigma(t, X_t)dW_t}_{\text{stochastic}} \\
-  &amp;= \mu_f\left(t, \mu(t, X_t), \frac{\partial f(t_0, X_0)}{\partial t}, \frac{\partial f(t_0, X_0)}{\partial X_t}, \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} \sigma(t, X_t)^2 \right)dt + \sigma_f\left(t, \sigma(t, X_t), \frac{\partial f(t_0, X_0)}{\partial X_t} \right) dW_t
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;So ultimately, it turns out that the derivative of the function $f(t, X)$ with an Ito drift-diffusion process as input is an Ito drift-diffusion process itself.
-Albeit with a few first and second order derivatives sprinkled in between.&lt;/p&gt;
-
-&lt;p&gt;Thus we can model the function $f(t, X_t)$ just like any other drift-diffusion process and can evaluate the distribution of such a process at a later point in time.&lt;/p&gt;</content><summary type="html">Or how to differentiate a function of a stochastic process.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/ItosLemma/WienerProcess.gif" /></entry><entry><title type="html">Stochastic Differential Equations</title><link href="http://localhost:4000/blog/SDE/" rel="alternate" type="text/html" title="Stochastic Differential Equations" /><published>2020-03-30T00:00:00+02:00</published><updated>2020-03-30T00:00:00+02:00</updated><id>http://localhost:4000/blog/SDE</id><content type="html" xml:base="http://localhost:4000/blog/SDE/">&lt;head&gt;
-&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
-       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       &lt;/script&gt;
-       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
-&lt;/head&gt;
-
-&lt;h4 id=&quot;non-differential-equations&quot;&gt;Non-Differential Equations&lt;/h4&gt;
-
-&lt;p&gt;Most of us are quite familiar with linear and non-linear equations from our 101 math classes and lectures.
-These equations define an equality between the two terms left and right of the equal sign:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-y = f(x)
-\end{align}&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;These functions assert an equality between $y$ and $x$ through the function $f(\cdot)$ and describe a “static” relationship between a value $x$ and its corresponding value $y$.
-Examples of these functions are numerous and we can list a couple of them here:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Linear equations: $y = A x + b$&lt;/li&gt;
-  &lt;li&gt;Exponential equations: $y = e^x$&lt;/li&gt;
-  &lt;li&gt;Polynomials: $y = \sum_{k=0}^n a_k x^k$&lt;/li&gt;
-  &lt;li&gt;Trigonometric equations: $y = \sin(x)$&lt;/li&gt;
-  &lt;li&gt;and the list goes on and on …&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;All the equations above share the characteristic that they equate two separate values $y$ and $f(x)$.&lt;/p&gt;
-&lt;h4 id=&quot;differential-equations&quot;&gt;Differential Equations&lt;/h4&gt;
-
-&lt;p&gt;As you can guess from the title there is another important class of equations: differential equations.
-These equations relate one or more functions to their derivatives.
-Mathematically this looks like the following:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-  \underbrace{\frac{d y}{dx}}_{\text{derivative}} = f(x)
-\end{align}&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;As we can see from above the one thing that changed to our earlier, non-differential equation is the derivative.
-Instead of telling us what the value $y$ is given the function $f(x)$ as in the case of non-differential equations, the differential equation above tells us the change of $y$ with respect to $x$.
-In plain English, it tells us how much $y$ changes if we change $x$ by simply evaluating the function $f(x)$.&lt;/p&gt;
-
-&lt;p&gt;Naturally, the question arises where we ask ourselves what the heck do these equations tell us.
-In non-differential equations, the relationship between input to a function and output is quite straight forward.&lt;/p&gt;
-
-&lt;p&gt;I struggled for quite some time to arrive at an intuitive interpretation of what differential equations actually represent.
-Fortunately, one field where differential equations pop up en masse is physics (which apart from quantum physics tends to be quite intuitive for humans).
-So we’ll make a detour through physics to keep the intuition alive while diving into differential equations.&lt;/p&gt;
-
-&lt;p&gt;Differential equations are often employed in physics when a physical system is &lt;strong&gt;most accurately described through its instantaneous change in time&lt;/strong&gt;.
-It should be noted that the differential could be defined with respect to any argument of the function $f(\cdot)$, but in physics the time differential $d / dt$ is often the differential of interest as we want to predict things into the future.
-In the simplest case, a physical object $x(t)$ moves through time and space according to some function:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-  \underbrace{\frac{d}{dt} \ x(t)}_{\text{change over time}}  = \underbrace{f(t, x(t))}_{\text{value of change}} \quad \cong \quad f(x(t))
-\end{align}&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;The equation above simply states that the change over time, $d  x(t) / dt$ is equivalent to the function $f(t, x(t))$.
-Mathematically, we require the time $t$ to appear in the function $f(t, x(t))$ since otherwise the time derivative wouldn’t exist.
-For a more intuitive notation we can drop it and equate the change $d/dt x(t)$ with the function $f( \cdot )$ with the ‘essentially the same’ symbol $\cong$.&lt;/p&gt;
-
-&lt;p&gt;We can write the differential equation in a shorter way by using the &lt;a href=&quot;https://en.wikipedia.org/wiki/Differential_(infinitesimal)&quot;&gt;infinitesimal differential&lt;/a&gt; by pulling $dt$ over to the other side:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-  dx(t) = f(t, x(t)) dt
-\end{align}&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;which simply states that a “super small” change $dx(t)$ in $x(t)$ corresponds to function $f(t, x(t))$ “scaled” by the “super small” time difference $dt$.&lt;/p&gt;
-
-&lt;p&gt;Below is an image juxtaposing what we refer to as non-differential equations and a differential equations with respect to time:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/SDE/EqVsDiffEq.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;100%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Instead of working with a “absolute” equation as shown on the left side, the differential equation on the right gives us the change $dx(t)$ for any point $x(t)$ at any point in time $t$ (which is mathematically a vector field).
-&lt;strong&gt;Each arrow in the right plot is an evaluation of the differential equation $dx(t)$ at a specific point $x(t)$ at a specific point in time $t$.&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;A more intuitive example of the right hand plot above is the temperature of a hot coffee mug.
-The hotter the coffee mug, the larger the temperature gradient between coffee mug and the surrounding.
-So the larger the gradient the more temperature (thermal energy) is passed off into the environment of the hot coffee mug, ergo the temperature decrease is faster for coffee mugs with high temperatures.
-(To be frank, this is not the most physically correct way of how energy behaves, but this is just for an intuitive visualization.)&lt;/p&gt;
-
-&lt;p&gt;The grey lines in in the right plot model the changing temperatures over time of three coffee mugs with different temperatures.
-We model the thermal energy dissipation through a (ordinary) differential equation and would like to know what the temperature of the three coffee mugs will be at a later point in time.
-Computing the later temperature amounts to “little more” than following the arrows.
-These arrows are computed through the differential equation and tell us what the temperature change $dx(t)$ is for a mug with a specific temperature $x(t)$ at time $t$.&lt;/p&gt;
-
-&lt;p&gt;On a side note: Notice how the arrows don’t change in their direction and magnitude for a specific value $x(t)$ while we progress in time. This signals that $dx(t)$ doesn’t actually use $t$ to compute the change in temperature.&lt;/p&gt;
-
-&lt;p&gt;The way we solve differential equations is to start at some initial point $x(0)$ and add up all the temperature changes $dx(t)$ that the hot coffee mug is exposed to over time.
-Mathematically, this amounts to little more than:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-x(T) = x(0) + \underbrace{\int_{t=0}^T dx(t)}_{\text{sum up all the changes}}
-\end{align}&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;the solution of which is shown as the grey line in the right plot.&lt;/p&gt;
-
-&lt;p&gt;Another analogy would be kicking a soccer ball over a soccer field.
-The ball starts somewhere $x(0)$ and you kick it repeatedly in some direction (adding $dx(t)$ repeatedly).
-Each kick changes the location of the soccer ball and results in the ball lying in a new position $x(t)$.
-After we kicked the soccer ball about the soccer field enough, we’ll finally leave it at $x(T)$.&lt;/p&gt;
-
-&lt;p&gt;Unfortunately, computers can’t really work with infinitesimal small number like $dx(t)$ or $dt$ since numbers in computers are stored with a finite amount of bits.
-As so often, the (approximate) solution is to discretize the changes to very small, yet still representable values of $\Delta x(t)$ and $\Delta t$:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-x(T) &amp;= x(0) + \underbrace{\int_{t=0}^T dx(t)}_{\text{sum up all the changes}} \\
-&amp; \underbrace{\approx}_{\text{discretize}} x(0) + \sum_{t=0}^T \Delta x(t)
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;where $t$ is some finite partition of time into discrete values.&lt;/p&gt;
-
-&lt;p&gt;It turns out that the integral above (and its respective discrete approximation) is all we need to solve (ordinary) differential equations.
-More importantly it’s all we need to get a basic understanding of stochastic differential equations.
-But before we can proceed to stochastic differential equations, we have to talk above stochasticity over time.&lt;/p&gt;
-
-&lt;p&gt;Enter Wiener processes …&lt;/p&gt;
-
-&lt;h4 id=&quot;wiener-process&quot;&gt;Wiener Process&lt;/h4&gt;
-
-&lt;p&gt;In order to understand Wiener processes we need to think about the position of a particle in an Euclidean space that moves purely randomly.
-The question is how we could model such a particle.&lt;/p&gt;
-
-&lt;p&gt;The first idea would be to determine that at any point in time the particle has the tendency to move randomly in space.
-Therefore it does not jiggle and bounce at discrete time steps but will always move an infinitesimally small distance $dx(t)$ in a random direction $\epsilon$ for any infinitesimally short period of time $dt$.
-&lt;!-- We can also conclude, that the longer the particle moves, the farther the particle can actually move from its starting point. --&gt;
-&lt;!-- This introduces a relationship between how long and how far the little jiggly particle can move. --&gt;&lt;/p&gt;
-
-&lt;p&gt;Visually we want the random moving particle looking something like this in two dimensions:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/SDE/BrownianMotion.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;We can thus proclaim the following, somewhat un-mathematical property of this rambunctious little particle:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-  \underbrace{dx_t}_{\text{change in space}} = \overbrace{\epsilon}^{\text{random move}} \underbrace{&quot;dt&quot;}_{\text{some change in time}}
-\end{align}&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;There are a couple of things to observe here:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;First we introduced a random variable $\epsilon$ which follows some probability distribution.&lt;/li&gt;
-  &lt;li&gt;Secondly, through the infinitesimal differentials on both sides we equated the random move in space with the duration of the movement just like in a differential equation.&lt;/li&gt;
-  &lt;li&gt;Thirdly, the infinitesimal movements of $x_t$ through time are completely independent since $\epsilon$ is sampled uncorrelated through time.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;It turns out that if we choose the random movements $\epsilon$ and the change in time $”dt”$ smartly, we can derive convenient theoretical properties about the movement of the little random particle $x_t$.&lt;/p&gt;
-
-&lt;p&gt;Since $\epsilon$ is a random variable at any point in time, the position of $x_t$ will never be predictable with absolute certainty.
-Instead we have to treat the position of the particle $x_t$ itself as a random variable, the behavior of which is governed by the differential equation above.&lt;/p&gt;
-
-&lt;p&gt;First up is the choice of $\epsilon$.
-The usage of the Normal distribution $\mathcal{N}(\mu, \sigma)$ is prevalent in a lot of modelling approaches due to the convergence of sequences of random variables and it furthermore has nice theoretical properties.
-For that reason we will model the probability of the random movement $\epsilon$ with a standard normal distribution, namely $\epsilon \sim \mathcal{N}(0,1)$.&lt;/p&gt;
-
-&lt;p&gt;Secondly we will chose the “amount of time $dt$” to actually be $\sqrt{dt}$, the reason of which will be clear in an instant.&lt;/p&gt;
-
-&lt;p&gt;Thirdly, we want to particle to start at zero, so $x_0 = 0$.&lt;/p&gt;
-
-&lt;p&gt;Given these modelling assumptions, we are interested where the particle could turn up at a later point in time, so we want to know what $x_T$ is:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-  x_T &amp;= x_0 + \int_{t=0}^T dx_t \\
-  &amp;= \underbrace{x_0}_{\text{$=0$}} + \int_{t=0}^T \epsilon \sqrt{dt} \\
-  &amp;= \int_{t=0}^T \epsilon \sqrt{dt}
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;But since $\epsilon$ is a random variable we actually have to treat the position of the particle at $x_T$ as a random variable.
-The most that we can do is thus to treat $x_T$ as a probability distribution for which we can compute the first two moments, the mean and the variance:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-  \mathbb{E}\left[ x_T \right] &amp;= \mathbb{E}\left[\int_{t=0}^T dx_t \right] \\
-  &amp;= \int_{t=0}^T \underbrace{\mathbb{E}\left[ \epsilon \right]}_{\mathcal{N}(0,1)} \sqrt{dt} \\
-  &amp;= 0
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;and
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-  \mathbb{V}\left[ x_T \right] &amp;= \mathbb{V}\left[\int_{t=0}^T dx_t \right] \\
-  &amp;= \int_{t=0}^T \underbrace{\mathbb{V}\left[ \epsilon \sqrt{dt} \right]}_{\mathbb{V}[a X] = a^2 \mathbb{V}[X]}  \\
-  &amp;= \int_{t=0}^T dt \underbrace{\mathbb{V}\left[ \epsilon \right]}_{\epsilon \sim \mathcal{N}(0,1)}  \\
-  &amp;= \int_{t=0}^T dt  \\
-  &amp;= T
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;We can validate the properties of the Wiener process experimentally through what a good friend of mine calls “computational evidence”:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/SDE/BrownianMotionExperiment.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;with the following code&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;MC&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.0&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;sigma&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.1&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;drift&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;diffusion&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sigma&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sigma&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# start at zero&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zeros&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MC&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# simulate Brownian Motion in parallel&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;drift&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;diffusion&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sigma&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;fig&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;figure&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fig&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add_subplot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;111&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# plot all the trajectories&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'red'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;alpha&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# compute the analytical means and variances of the Brownian Motion&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;analytic_var&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sigma&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;analytic_std&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;analytic_var&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.5&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;analytic_mean&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# compute the empirical mean and variance from the sampled Brownian Motion&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;empiric_var&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;var&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;axis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;empiric_std&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;empiric_var&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.5&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;empiric_mean&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mean&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;axis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;empiric_mean&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;empiric_std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ls&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'--'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'red'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;empiric_mean&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;empiric_std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ls&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'--'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'red'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mean&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;axis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ls&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'-.'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'red'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fill_between&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;analytic_mean&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;analytic_std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;analytic_mean&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;analytic_std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'gray'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;alpha&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;analytic_mean&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'gray'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ls&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'-.'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;grid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_xlim&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_ylim&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_xticklabels&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([],[])&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_yticklabels&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([],[])&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;show&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;We can observe both the sampled mean and the variance (in red) of our 100 Wiener processes match the expected mean and variance (in gray) up to the noise that we introduce through sampling.
-Basically all the paths stay around zero where they start and they spread out according to our analytical computed variance of $\mathbb{V}[x_t] = t$ over time.&lt;/p&gt;
-
-&lt;p&gt;Since we chose $\epsilon$ and $”dt”$ smartly, we arrive at quite succinct definitions for the mean and variance of this random variable $x_T$.
-In fact, this specific kind of stochastic process has a specific name.
-By choosing the random movement $\epsilon \sim \mathcal{N}(0,1)$, the starting value $x_0=0$ and the time differential $\sqrt{dt}$ we have defined our little, rambunctious particle to follow a &lt;strong&gt;Wiener process&lt;/strong&gt; which is a specific kind of stochastic process.
-The defining properties of a Wiener process $W_t$ ( $W_t$ being the common notation of a Wiener process) that describes the infinitesimal movement of a particle through $dx_t = \epsilon \sqrt{dt}$ are the following:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;p&gt;$W_0 = 0$ &lt;br /&gt;
-This means that the Wiener process always starts at zero.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Independent increments: $\mathbb{C}[W_{t+u} - W_s, W_s] =0$ for $u \geq 0$ and $s \leq t$ &lt;br /&gt;
-Increments (the movement of the Wiener process) are independent from the past movements. $\mathbb{C}[\cdot , \cdot ]$ is the covariance between two random variables.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Gaussian increments: $W_{t+u} - W_t \sim \mathcal{N}(0, u)$ &lt;br /&gt;
-The difference between any two realizations is Gaussian distributed accordingly to the time difference between these two realizations.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;Continuous paths in time $t$.&lt;br /&gt;
-We can basically zoom infinitely far into the movements on the time axis and we will never find a discontinuous jump. Yet, due to it being a stochastic process it turns out that the Wiener process is not differentiable.&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;In order to be all set up for the final chapter of this post, we will define an infinitesimal version of the Gaussian increment property of the Wiener process:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-W_{t+u} - W_t \sim \mathcal{N}(0, u) \quad \Leftrightarrow \quad dW_t \sim \mathcal{N}(0,dt)
-\end{align}&lt;/script&gt;&lt;/p&gt;
-
-&lt;h4 id=&quot;stochastic-differential-equations--differential-equations--wiener-processes&quot;&gt;Stochastic Differential Equations (= Differential Equations + Wiener Processes)&lt;/h4&gt;
-
-&lt;p&gt;Once we understood differential equations and Wiener processes, we’ll realize that (basic) stochastic differential equations are just the combination of the two.
-We can thus define a stochastic differential equation as
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-  \underbrace{dX_t}_{\text{total change}} = \underbrace{\mu_t dt}_{\text{deterministic}} + \underbrace{\sigma_t dW_t}_{\text{stochastic}}
-\end{align}&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;which defines the infinitesimal change in the random variable $X_t$ at time $t$ as the combination of a deterministic change $\mu_t dt$ and a scaled Wiener process $\sigma_t dW_t \sim \mathcal{N}(0,\sigma_t^2 dt)$.&lt;/p&gt;
-
-&lt;p&gt;With a constant drift, this looks something like this:&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/SDE/SDEDriftDiff.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;through&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;MC&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.1&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;sigma&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.1&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;drift&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;diffusion&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sigma&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sigma&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;random&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;randn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# start at zero&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zeros&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MC&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# simulate Brownian Motion in parallel&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;drift&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;diffusion&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sigma&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;fig&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;figure&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fig&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;add_subplot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;111&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# plot all the trajectories&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'red'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;alpha&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# compute the analytical means and variances of the Brownian Motion&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;analytic_var&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sigma&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;analytic_std&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;analytic_var&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.5&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;analytic_mean&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mu&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# compute the empirical mean and variance from the sampled Brownian Motion&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;empiric_var&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;var&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;axis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;empiric_std&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;empiric_var&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.5&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;empiric_mean&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mean&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;axis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;empiric_mean&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;empiric_std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ls&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'--'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'red'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;empiric_mean&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;empiric_std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ls&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'--'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'red'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mean&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;axis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ls&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'-.'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'red'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fill_between&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;y1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;analytic_mean&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;analytic_std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;analytic_mean&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;analytic_std&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'gray'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;alpha&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;0.1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;analytic_mean&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'gray'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ls&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'-.'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;grid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_xlim&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_ylim&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_xticklabels&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([],[])&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;ax&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;set_yticklabels&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([],[])&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;plt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;show&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;For such drift-diffusion processes, or more specifically Ito drift-diffusion processes, we can compute the analytical mean and variance of how $X_t$ will be distributed in the future.
-To keep things simple, we will work with a constant mean $\mu = \mu_t$ and diffusion $\sigma = \sigma_t$.
-Solving the SDE amounts to:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-  X_T &amp;= \int_{t=0}^T dX_t \\ 
-  &amp;= \int_{t=0}^T \mu dt + \sigma dW_t \\
-  &amp;= \mu \int_{t=0}^T dt + \sigma \int_{t=0}^T dW_t \\
-  &amp;= \mu T + \sigma \int_{t=0}^T dW_t \\
-  &amp;= \mu T + \sigma W_T \\
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;Similarly to earlier, the Brownian motion $W_T \sim \mathcal{N}(0,T)$ is a random variable, which entices us to compute the mean and variance of the term above:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-  \mathbb{E}[X_T] &amp;= \mathbb{E}[\mu T + \sigma W_T] \\
-  &amp;= \mu T + \sigma \mathbb{E}[W_T] \\
-  &amp;= \mu T
-\end{align} %]]&gt;&lt;/script&gt;
-and
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-  \mathbb{V}[X_T] &amp;= \mathbb{V}[\mu T + \sigma W_T] \\
-  &amp;= \underbrace{\mathbb{V}[\mu T]}_{=0} + \mathbb{V}[\sigma W_T] \\
-  &amp;= \sigma^2 \mathbb{V}[ W_T] \\
-  &amp;= \sigma^2 T \\
-  \mathbb{Std}[X_T] &amp;= \sigma \sqrt{T}
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;which we were able to validate with our “computational evidence” in the plot above.
-The mean increases constantly as time progresses and the standard deviation above and below the mean increases asymptotically due to the $\sqrt{T}$.&lt;/p&gt;
-
-&lt;p&gt;This is a fairly simple SDE since we assume that $\mu_t$ and $\sigma_t$ are constant in time and do not depend on the value of $X_t$.
-Things get significantly more interesting when both $\mu_t$ and $\sigma_t$ change over time depending on the value of $X_t$ such that we are working with
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-  dX_t = \mu(t, X_t) dt + \sigma(t, X_t) dW_t
-\end{align}&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;The drift $\mu(t, X_t)$ and $\sigma(t, X_t)$ can now be potentially highly non-linear and complex functions which could even take in other stochastic processes as additional input.
-But Ito’s lemma, Ornstein-Uhlenbeck processes and Geometric Brownian Motion are topics for another time …&lt;/p&gt;</content><summary type="html">A Wiener twist to differential equations</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/SDE/EqVsDiffEq.png" /></entry></feed>
+&lt;p&gt;Interestingly, the reception by the differential equation community was not as unanimous as one would think as this method has been used for a fairly long time. The key insight was its application to neural networks since we only need the Jacobians of the neural network irrespective of what goes on inside the neural network. One of the coauthors said as much in a &lt;a href=&quot;https://www.youtube.com/watch?v=YZ-_E7A3V2w&quot;&gt;talk a year later&lt;/a&gt;.&lt;/p&gt;</content><summary type="html">Reverse-Mode Sensitivity Training</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/Adjoint/Adjoint1.png" /></entry></feed>

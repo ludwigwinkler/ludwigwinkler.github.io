@@ -2,6 +2,33 @@
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
     <url>
+      <loc>http://localhost:4000/blog/Spain21/</loc>
+      
+        <lastmod>2021-07-01T00:00:00+02:00</lastmod>
+      
+      <changefreq>weekly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  
+    <url>
+      <loc>http://localhost:4000/blog/Greece21/</loc>
+      
+        <lastmod>2021-06-01T00:00:00+02:00</lastmod>
+      
+      <changefreq>weekly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  
+    <url>
+      <loc>http://localhost:4000/blog/Italy21/</loc>
+      
+        <lastmod>2021-05-01T00:00:00+02:00</lastmod>
+      
+      <changefreq>weekly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  
+    <url>
       <loc>http://localhost:4000/blog/ReverseTimeAnderson/</loc>
       
         <lastmod>2021-04-09T00:00:00+02:00</lastmod>
@@ -11,27 +38,18 @@
     </url>
   
     <url>
+      <loc>http://localhost:4000/blog/Berlin/</loc>
+      
+        <lastmod>2021-04-01T00:00:00+02:00</lastmod>
+      
+      <changefreq>weekly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  
+    <url>
       <loc>http://localhost:4000/blog/Kramers/</loc>
       
         <lastmod>2021-02-04T00:00:00+01:00</lastmod>
-      
-      <changefreq>weekly</changefreq>
-      <priority>0.7</priority>
-    </url>
-  
-    <url>
-      <loc>http://localhost:4000/blog/Italy21/</loc>
-      
-        <lastmod>2021-01-01T00:00:00+01:00</lastmod>
-      
-      <changefreq>weekly</changefreq>
-      <priority>0.7</priority>
-    </url>
-  
-    <url>
-      <loc>http://localhost:4000/blog/Berlin/</loc>
-      
-        <lastmod>2021-01-01T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -50,6 +68,15 @@
       <loc>http://localhost:4000/blog/VAE/</loc>
       
         <lastmod>2020-08-10T00:00:00+02:00</lastmod>
+      
+      <changefreq>weekly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  
+    <url>
+      <loc>http://localhost:4000/blog/Portugal20/</loc>
+      
+        <lastmod>2020-07-01T00:00:00+02:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -101,18 +128,9 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/blog/Portugal20/</loc>
-      
-        <lastmod>2020-01-01T00:00:00+01:00</lastmod>
-      
-      <changefreq>weekly</changefreq>
-      <priority>0.7</priority>
-    </url>
-  
-    <url>
       <loc>http://localhost:4000/blog/NZ20/</loc>
       
-        <lastmod>2020-01-01T00:00:00+01:00</lastmod>
+        <lastmod>2020-02-01T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>

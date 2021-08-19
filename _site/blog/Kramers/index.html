@@ -78,13 +78,14 @@
        <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 
 
-<p>At the core of the partial differential equations that will describe the change of a distribution lies the Chapman-Kolmogorov equation
+<p>At the core of the partial differential equations that will describe the change of a distribution both forward and backward in time lies the Chapman-Kolmogorov equation
 <script type="math/tex">% <![CDATA[
 \begin{align}
-	p(x_{t + \tau}) = & \int p(x_{t + \tau} | x'_{t}) \ p(x'_t) \ dx'_t \\
-	& = \int p(x_{t + \tau} , x'_{t}) \ dx'_t
+	p(x_{t + \tau}) & = \int p(x_{t + \tau} , x'_{t}) \ dx'_t \\
+	& = \int p(x_{t + \tau} | x'_{t}) \ p(x'_t) \ dx'_t
 \end{align} %]]></script>
-which is simply a way to write joint probabilities over time as conditionals.</p>
+which simply expands over an auxiliary variable $x’_t$ while simultaneously marginalizing it out and factorizing the joint distribution <script type="math/tex">p(x_{t+\tau}, x'_t)</script> into a conditional distribution.
+The conditional distribution above states that we can start from any <script type="math/tex">x'_t</script> and by moving to <script type="math/tex">x_{t+\tau}</script> with the right transition probability <script type="math/tex">p(x_{t + \tau} | x'_{t})</script> we will obtain the correct marginal distribution <script type="math/tex">p(x_{t+\tau})</script>.</p>
 
 <p>We will assume a stochastic differential equation the first two orders of which can be estimated with
 <script type="math/tex">\begin{align}
@@ -96,7 +97,9 @@ such that the dynamics are described by the Ito drift-diffusion process
 	dX'_t = & M^{(1)}(X'_t) dt + M^{(2)}(X'_t) dW_t \\
 	= & \mu(X'_t, t) dt + \sigma(X'_t, t) dW_t \\
 \end{align} %]]></script>
-with the Wiener process <script type="math/tex">W_t</script>.</p>
+with the Wiener process <script type="math/tex">W_t</script>.
+The important part is to note the ‘direction’ of the differential which is evaluated strictly forward in time.
+We take <script type="math/tex">x'_t</script> as a sort of origin point which doesn’t change and weight the differential <script type="math/tex">x_{t+\tau} - x'_t</script> by the appropriate transition probability <script type="math/tex">p(x_{t+\tau} | x'_t)</script> over every possible <script type="math/tex">x_{t+\tau}</script>.</p>
 
 <h3 id="forward-equation">Forward Equation</h3>
 
