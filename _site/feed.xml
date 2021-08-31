@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-08-22T18:23:23+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Spain</title><link href="http://localhost:4000/blog/Spain21/" rel="alternate" type="text/html" title="Spain" /><published>2021-07-01T00:00:00+02:00</published><updated>2021-07-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Spain21</id><content type="html" xml:base="http://localhost:4000/blog/Spain21/">&lt;style&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-08-31T23:21:40+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Spain</title><link href="http://localhost:4000/blog/Spain21/" rel="alternate" type="text/html" title="Spain" /><published>2021-07-01T00:00:00+02:00</published><updated>2021-07-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Spain21</id><content type="html" xml:base="http://localhost:4000/blog/Spain21/">&lt;style&gt;
     .image-gallery {overflow: auto; margin-left: -1%!important;}
     .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
     .image-gallery li a {text-align: top; text-decoration: none!important; color: #777;}
@@ -8,20 +8,6 @@
 &lt;/style&gt;
 
 &lt;ul class=&quot;image-gallery&quot;&gt;
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     
@@ -403,20 +389,6 @@
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC1780.jpg&quot; title=&quot;DSC1780&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/greece21/DSC1780.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC1780&quot; title=&quot;DSC1780&quot; /&gt;&lt;span&gt;DSC1780&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC1780.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/greece21/DSC1780.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
@@ -537,20 +509,6 @@
 &lt;/style&gt;
 
 &lt;ul class=&quot;image-gallery&quot;&gt;
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     
@@ -1079,92 +1037,8 @@ where $\tilde{W}_t$ is a Wiener process that flows backward in time.&lt;/p&gt;</
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-1.jpg&quot; title=&quot;Berlin-1&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-1.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-1&quot; title=&quot;Berlin-1&quot; /&gt;&lt;span&gt;Berlin-1&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-1.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-1.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-11.jpg&quot; title=&quot;Berlin-11&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-11.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-11&quot; title=&quot;Berlin-11&quot; /&gt;&lt;span&gt;Berlin-11&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-11.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-11.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-12.jpg&quot; title=&quot;Berlin-12&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-12.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-12&quot; title=&quot;Berlin-12&quot; /&gt;&lt;span&gt;Berlin-12&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-12.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-12.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-14.jpg&quot; title=&quot;Berlin-14&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-14.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-14&quot; title=&quot;Berlin-14&quot; /&gt;&lt;span&gt;Berlin-14&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-14.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-14.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-15.jpg&quot; title=&quot;Berlin-15&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-15.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-15&quot; title=&quot;Berlin-15&quot; /&gt;&lt;span&gt;Berlin-15&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-15.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-15.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-2.jpg&quot; title=&quot;Berlin-2&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-2.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-2&quot; title=&quot;Berlin-2&quot; /&gt;&lt;span&gt;Berlin-2&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-2.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-2.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-3.jpg&quot; title=&quot;Berlin-3&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-3.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-3&quot; title=&quot;Berlin-3&quot; /&gt;&lt;span&gt;Berlin-3&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-3.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-3.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-5.jpg&quot; title=&quot;Berlin-5&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-5.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-5&quot; title=&quot;Berlin-5&quot; /&gt;&lt;span&gt;Berlin-5&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-5.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-5.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-6.jpg&quot; title=&quot;Berlin-6&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-6.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-6&quot; title=&quot;Berlin-6&quot; /&gt;&lt;span&gt;Berlin-6&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-6.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-6.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-7.jpg&quot; title=&quot;Berlin-7&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-7.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-7&quot; title=&quot;Berlin-7&quot; /&gt;&lt;span&gt;Berlin-7&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-7.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-7.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-8.jpg&quot; title=&quot;Berlin-8&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-8.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-8&quot; title=&quot;Berlin-8&quot; /&gt;&lt;span&gt;Berlin-8&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-8.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-8.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-9.jpg&quot; title=&quot;Berlin-9&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-9.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-9&quot; title=&quot;Berlin-9&quot; /&gt;&lt;span&gt;Berlin-9&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-9.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-9.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin_AEA.png&quot; title=&quot;Berlin_AEA&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin_AEA.png&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin_AEA&quot; title=&quot;Berlin_AEA&quot; /&gt;&lt;span&gt;Berlin_AEA&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin_AEA.png&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin_AEA.png&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/DSC0037.jpg&quot; title=&quot;DSC0037&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/DSC0037.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC0037&quot; title=&quot;DSC0037&quot; /&gt;&lt;span&gt;DSC0037&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/DSC0037.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/DSC0037.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/DSC0791.jpg&quot; title=&quot;DSC0791&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/DSC0791.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC0791&quot; title=&quot;DSC0791&quot; /&gt;&lt;span&gt;DSC0791&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/DSC0791.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/DSC0791.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-180.jpg&quot; title=&quot;Berlin-180&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-180.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-180&quot; title=&quot;Berlin-180&quot; /&gt;&lt;span&gt;Berlin-180&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-180.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-180.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
@@ -1860,20 +1734,6 @@ This is precisely whats happening when we draw more samples in the expectation o
 &lt;/style&gt;
 
 &lt;ul class=&quot;image-gallery&quot;&gt;
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     
