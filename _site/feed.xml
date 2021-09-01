@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-08-31T23:21:40+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Spain</title><link href="http://localhost:4000/blog/Spain21/" rel="alternate" type="text/html" title="Spain" /><published>2021-07-01T00:00:00+02:00</published><updated>2021-07-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Spain21</id><content type="html" xml:base="http://localhost:4000/blog/Spain21/">&lt;style&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-09-01T12:15:28+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Spain</title><link href="http://localhost:4000/blog/Spain21/" rel="alternate" type="text/html" title="Spain" /><published>2021-07-01T00:00:00+02:00</published><updated>2021-07-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Spain21</id><content type="html" xml:base="http://localhost:4000/blog/Spain21/">&lt;style&gt;
     .image-gallery {overflow: auto; margin-left: -1%!important;}
     .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
     .image-gallery li a {text-align: top; text-decoration: none!important; color: #777;}
@@ -8,6 +8,23 @@
 &lt;/style&gt;
 
 &lt;ul class=&quot;image-gallery&quot;&gt;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -389,6 +406,23 @@
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC1780.jpg&quot; title=&quot;DSC1780&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/greece21/DSC1780.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC1780&quot; title=&quot;DSC1780&quot; /&gt;&lt;span&gt;DSC1780&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC1780.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/greece21/DSC1780.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
@@ -644,6 +678,23 @@
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/italy21/DSC0927.jpg&quot; title=&quot;DSC0927&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/italy21/DSC0927.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC0927&quot; title=&quot;DSC0927&quot; /&gt;&lt;span&gt;DSC0927&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/italy21/DSC0927.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/italy21/DSC0927.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
@@ -759,7 +810,7 @@
     
     
     
-&lt;/ul&gt;</content><category term="photography" /><summary type="html">Lake Garda, Milan, Bergamo, Brescia</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/italy21/DSC0927.jpg" /></entry><entry><title type="html">Reverse Time Stochastic Differential Equations</title><link href="http://localhost:4000/blog/ReverseTimeAnderson/" rel="alternate" type="text/html" title="Reverse Time Stochastic Differential Equations" /><published>2021-04-09T00:00:00+02:00</published><updated>2021-04-09T00:00:00+02:00</updated><id>http://localhost:4000/blog/ReverseTimeAnderson</id><content type="html" xml:base="http://localhost:4000/blog/ReverseTimeAnderson/">&lt;head&gt;
+&lt;/ul&gt;</content><category term="photography" /><summary type="html">Lake Garda, Milan, Bergamo, Brescia</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/italy21/DSC0940.jpg" /></entry><entry><title type="html">Reverse Time Stochastic Differential Equations</title><link href="http://localhost:4000/blog/ReverseTimeAnderson/" rel="alternate" type="text/html" title="Reverse Time Stochastic Differential Equations" /><published>2021-04-09T00:00:00+02:00</published><updated>2021-04-09T00:00:00+02:00</updated><id>http://localhost:4000/blog/ReverseTimeAnderson</id><content type="html" xml:base="http://localhost:4000/blog/ReverseTimeAnderson/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -1037,32 +1088,110 @@ where $\tilde{W}_t$ is a Wiener process that flows backward in time.&lt;/p&gt;</
     
     
     
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-11.jpg&quot; title=&quot;Berlin-11&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-11.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-11&quot; title=&quot;Berlin-11&quot; /&gt;&lt;span&gt;Berlin-11&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-11.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-11.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-110.jpg&quot; title=&quot;Berlin-110&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-110.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-110&quot; title=&quot;Berlin-110&quot; /&gt;&lt;span&gt;Berlin-110&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-110.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-110.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-111.png&quot; title=&quot;Berlin-111&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-111.png&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-111&quot; title=&quot;Berlin-111&quot; /&gt;&lt;span&gt;Berlin-111&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-111.png&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-111.png&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-120.jpg&quot; title=&quot;Berlin-120&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-120.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-120&quot; title=&quot;Berlin-120&quot; /&gt;&lt;span&gt;Berlin-120&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-120.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-120.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-13.jpg&quot; title=&quot;Berlin-13&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-13.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-13&quot; title=&quot;Berlin-13&quot; /&gt;&lt;span&gt;Berlin-13&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-13.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-13.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-140.jpg&quot; title=&quot;Berlin-140&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-140.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-140&quot; title=&quot;Berlin-140&quot; /&gt;&lt;span&gt;Berlin-140&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-140.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-140.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-15.jpg&quot; title=&quot;Berlin-15&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-15.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-15&quot; title=&quot;Berlin-15&quot; /&gt;&lt;span&gt;Berlin-15&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-15.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-15.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-150.jpg&quot; title=&quot;Berlin-150&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-150.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-150&quot; title=&quot;Berlin-150&quot; /&gt;&lt;span&gt;Berlin-150&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-150.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-150.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-16.jpg&quot; title=&quot;Berlin-16&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-16.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-16&quot; title=&quot;Berlin-16&quot; /&gt;&lt;span&gt;Berlin-16&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-16.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-16.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-160.jpg&quot; title=&quot;Berlin-160&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-160.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-160&quot; title=&quot;Berlin-160&quot; /&gt;&lt;span&gt;Berlin-160&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-160.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-160.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-170.jpg&quot; title=&quot;Berlin-170&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-170.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-170&quot; title=&quot;Berlin-170&quot; /&gt;&lt;span&gt;Berlin-170&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-170.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-170.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
     &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-180.jpg&quot; title=&quot;Berlin-180&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-180.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-180&quot; title=&quot;Berlin-180&quot; /&gt;&lt;span&gt;Berlin-180&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-180.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-180.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-30.jpg&quot; title=&quot;Berlin-30&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-30.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-30&quot; title=&quot;Berlin-30&quot; /&gt;&lt;span&gt;Berlin-30&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-30.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-30.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-50.jpg&quot; title=&quot;Berlin-50&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-50.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-50&quot; title=&quot;Berlin-50&quot; /&gt;&lt;span&gt;Berlin-50&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-50.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-50.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-60.jpg&quot; title=&quot;Berlin-60&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-60.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-60&quot; title=&quot;Berlin-60&quot; /&gt;&lt;span&gt;Berlin-60&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-60.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-60.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-61.jpg&quot; title=&quot;Berlin-61&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-61.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-61&quot; title=&quot;Berlin-61&quot; /&gt;&lt;span&gt;Berlin-61&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-61.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-61.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-70.jpg&quot; title=&quot;Berlin-70&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-70.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-70&quot; title=&quot;Berlin-70&quot; /&gt;&lt;span&gt;Berlin-70&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-70.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-70.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-90.jpg&quot; title=&quot;Berlin-90&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-90.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-90&quot; title=&quot;Berlin-90&quot; /&gt;&lt;span&gt;Berlin-90&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-90.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-90.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
@@ -1114,7 +1243,31 @@ where $\tilde{W}_t$ is a Wiener process that flows backward in time.&lt;/p&gt;</
     
     
     
-&lt;/ul&gt;</content><category term="photography" /><summary type="html">Various Snapshots of Berlin and Life in General</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/berlin/Berlin-11.jpg" /></entry><entry><title type="html">Fokker, Planck &amp;amp; Kolmogorov</title><link href="http://localhost:4000/blog/Kramers/" rel="alternate" type="text/html" title="Fokker, Planck &amp; Kolmogorov" /><published>2021-02-04T00:00:00+01:00</published><updated>2021-02-04T00:00:00+01:00</updated><id>http://localhost:4000/blog/Kramers</id><content type="html" xml:base="http://localhost:4000/blog/Kramers/">&lt;head&gt;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+&lt;/ul&gt;</content><category term="photography" /><summary type="html">Various Snapshots of Berlin and Life in General</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/berlin/Berlin-15.jpg" /></entry><entry><title type="html">Fokker, Planck &amp;amp; Kolmogorov</title><link href="http://localhost:4000/blog/Kramers/" rel="alternate" type="text/html" title="Fokker, Planck &amp; Kolmogorov" /><published>2021-02-04T00:00:00+01:00</published><updated>2021-02-04T00:00:00+01:00</updated><id>http://localhost:4000/blog/Kramers</id><content type="html" xml:base="http://localhost:4000/blog/Kramers/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -1734,6 +1887,23 @@ This is precisely whats happening when we draw more samples in the expectation o
 &lt;/style&gt;
 
 &lt;ul class=&quot;image-gallery&quot;&gt;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
