@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-09-01T12:15:28+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Spain</title><link href="http://localhost:4000/blog/Spain21/" rel="alternate" type="text/html" title="Spain" /><published>2021-07-01T00:00:00+02:00</published><updated>2021-07-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Spain21</id><content type="html" xml:base="http://localhost:4000/blog/Spain21/">&lt;style&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-09-14T13:57:43+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Berlin Over The Years</title><link href="http://localhost:4000/blog/Berlin2021/" rel="alternate" type="text/html" title="Berlin Over The Years" /><published>2021-08-31T00:00:00+02:00</published><updated>2021-08-31T00:00:00+02:00</updated><id>http://localhost:4000/blog/Berlin2021</id><content type="html" xml:base="http://localhost:4000/blog/Berlin2021/">&lt;!-- ## Berlin Over The Years --&gt;
+&lt;style&gt;
     .image-gallery {overflow: auto; margin-left: -1%!important;}
     .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
     .image-gallery li a {text-align: top; text-decoration: none!important; color: #777;}
@@ -8,6 +9,266 @@
 &lt;/style&gt;
 
 &lt;ul class=&quot;image-gallery&quot;&gt;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2021/Berlin-11.jpg&quot; title=&quot;Berlin-11&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin2021/Berlin-11.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-11&quot; title=&quot;Berlin-11&quot; /&gt;&lt;span&gt;Berlin-11&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2021/Berlin-11.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin2021/Berlin-11.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2021/Berlin-13.jpg&quot; title=&quot;Berlin-13&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin2021/Berlin-13.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-13&quot; title=&quot;Berlin-13&quot; /&gt;&lt;span&gt;Berlin-13&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2021/Berlin-13.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin2021/Berlin-13.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2021/Berlin-15.jpg&quot; title=&quot;Berlin-15&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin2021/Berlin-15.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-15&quot; title=&quot;Berlin-15&quot; /&gt;&lt;span&gt;Berlin-15&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2021/Berlin-15.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin2021/Berlin-15.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2021/Berlin-170.jpg&quot; title=&quot;Berlin-170&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin2021/Berlin-170.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-170&quot; title=&quot;Berlin-170&quot; /&gt;&lt;span&gt;Berlin-170&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2021/Berlin-170.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin2021/Berlin-170.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2021/Berlin-180.jpg&quot; title=&quot;Berlin-180&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin2021/Berlin-180.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-180&quot; title=&quot;Berlin-180&quot; /&gt;&lt;span&gt;Berlin-180&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2021/Berlin-180.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin2021/Berlin-180.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2021/Berlin-61.jpg&quot; title=&quot;Berlin-61&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin2021/Berlin-61.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-61&quot; title=&quot;Berlin-61&quot; /&gt;&lt;span&gt;Berlin-61&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2021/Berlin-61.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin2021/Berlin-61.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2021/DSC4686.jpg&quot; title=&quot;DSC4686&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin2021/DSC4686.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC4686&quot; title=&quot;DSC4686&quot; /&gt;&lt;span&gt;DSC4686&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2021/DSC4686.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin2021/DSC4686.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2021/DSC4952.jpg&quot; title=&quot;DSC4952&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin2021/DSC4952.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC4952&quot; title=&quot;DSC4952&quot; /&gt;&lt;span&gt;DSC4952&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2021/DSC4952.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin2021/DSC4952.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+&lt;/ul&gt;</content><category term="photography" /><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/berlin2021/Berlin-15.jpg" /></entry><entry><title type="html">Spain</title><link href="http://localhost:4000/blog/Spain21/" rel="alternate" type="text/html" title="Spain" /><published>2021-07-01T00:00:00+02:00</published><updated>2021-07-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Spain21</id><content type="html" xml:base="http://localhost:4000/blog/Spain21/">&lt;style&gt;
+    .image-gallery {overflow: auto; margin-left: -1%!important;}
+    .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
+    .image-gallery li a {text-align: top; text-decoration: none!important; color: #777;}
+    .image-gallery li a span {display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; padding: 3px 0;}
+    .image-gallery li a img {width: 100%; height: 100%; display: flex; vertical-align: top;
+    }
+&lt;/style&gt;
+
+&lt;ul class=&quot;image-gallery&quot;&gt;
+    
+    
     
     
     
@@ -231,12 +492,6 @@
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2237.jpg&quot; title=&quot;DSC2237&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/spain21/DSC2237.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC2237&quot; title=&quot;DSC2237&quot; /&gt;&lt;span&gt;DSC2237&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2237.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/spain21/DSC2237.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
     &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2260.jpg&quot; title=&quot;DSC2260&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/spain21/DSC2260.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC2260&quot; title=&quot;DSC2260&quot; /&gt;&lt;span&gt;DSC2260&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2260.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/spain21/DSC2260.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
@@ -280,6 +535,8 @@
 &lt;/style&gt;
 
 &lt;ul class=&quot;image-gallery&quot;&gt;
+    
+    
     
     
     
@@ -531,7 +788,6 @@
     
     
     
-    
 &lt;/ul&gt;</content><category term="photography" /><summary type="html">Thessaloniki &amp; Mount Olympus</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/greece21/DSC1783.jpg" /></entry><entry><title type="html">Italy</title><link href="http://localhost:4000/blog/Italy21/" rel="alternate" type="text/html" title="Italy" /><published>2021-05-01T00:00:00+02:00</published><updated>2021-05-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Italy21</id><content type="html" xml:base="http://localhost:4000/blog/Italy21/">&lt;!-- ## Berlin Over The Years --&gt;
 &lt;style&gt;
     .image-gallery {overflow: auto; margin-left: -1%!important;}
@@ -543,6 +799,8 @@
 &lt;/style&gt;
 
 &lt;ul class=&quot;image-gallery&quot;&gt;
+    
+    
     
     
     
@@ -809,7 +1067,6 @@
     
     
     
-    
 &lt;/ul&gt;</content><category term="photography" /><summary type="html">Lake Garda, Milan, Bergamo, Brescia</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/italy21/DSC0940.jpg" /></entry><entry><title type="html">Reverse Time Stochastic Differential Equations</title><link href="http://localhost:4000/blog/ReverseTimeAnderson/" rel="alternate" type="text/html" title="Reverse Time Stochastic Differential Equations" /><published>2021-04-09T00:00:00+02:00</published><updated>2021-04-09T00:00:00+02:00</updated><id>http://localhost:4000/blog/ReverseTimeAnderson</id><content type="html" xml:base="http://localhost:4000/blog/ReverseTimeAnderson/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
@@ -959,315 +1216,7 @@ Furthermore we can employ the identity $-\frac{1}{2} X = -X + \frac{1}{2} X$ to 
 &lt;script type=&quot;math/tex&quot;&gt;\begin{align}
 dX_t = \left(\mu(x_t) - \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) dt + \sigma(x_t) d\tilde{W}_t
 \end{align}&lt;/script&gt;
-where $\tilde{W}_t$ is a Wiener process that flows backward in time.&lt;/p&gt;</content><summary type="html">'If I Could Turn Back Time' by Cher (1989)</summary></entry><entry><title type="html">Berlin Over The Years</title><link href="http://localhost:4000/blog/Berlin/" rel="alternate" type="text/html" title="Berlin Over The Years" /><published>2021-04-01T00:00:00+02:00</published><updated>2021-04-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Berlin</id><content type="html" xml:base="http://localhost:4000/blog/Berlin/">&lt;!-- ## Berlin Over The Years --&gt;
-&lt;style&gt;
-    .image-gallery {overflow: auto; margin-left: -1%!important;}
-    .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
-    .image-gallery li a {text-align: top; text-decoration: none!important; color: #777;}
-    .image-gallery li a span {display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; padding: 3px 0;}
-    .image-gallery li a img {width: 100%; height: 100%; display: flex; vertical-align: top;
-    }
-&lt;/style&gt;
-
-&lt;ul class=&quot;image-gallery&quot;&gt;
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-11.jpg&quot; title=&quot;Berlin-11&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-11.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-11&quot; title=&quot;Berlin-11&quot; /&gt;&lt;span&gt;Berlin-11&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-11.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-11.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-110.jpg&quot; title=&quot;Berlin-110&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-110.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-110&quot; title=&quot;Berlin-110&quot; /&gt;&lt;span&gt;Berlin-110&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-110.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-110.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-111.png&quot; title=&quot;Berlin-111&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-111.png&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-111&quot; title=&quot;Berlin-111&quot; /&gt;&lt;span&gt;Berlin-111&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-111.png&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-111.png&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-120.jpg&quot; title=&quot;Berlin-120&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-120.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-120&quot; title=&quot;Berlin-120&quot; /&gt;&lt;span&gt;Berlin-120&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-120.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-120.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-13.jpg&quot; title=&quot;Berlin-13&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-13.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-13&quot; title=&quot;Berlin-13&quot; /&gt;&lt;span&gt;Berlin-13&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-13.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-13.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-140.jpg&quot; title=&quot;Berlin-140&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-140.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-140&quot; title=&quot;Berlin-140&quot; /&gt;&lt;span&gt;Berlin-140&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-140.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-140.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-15.jpg&quot; title=&quot;Berlin-15&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-15.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-15&quot; title=&quot;Berlin-15&quot; /&gt;&lt;span&gt;Berlin-15&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-15.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-15.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-150.jpg&quot; title=&quot;Berlin-150&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-150.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-150&quot; title=&quot;Berlin-150&quot; /&gt;&lt;span&gt;Berlin-150&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-150.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-150.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-16.jpg&quot; title=&quot;Berlin-16&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-16.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-16&quot; title=&quot;Berlin-16&quot; /&gt;&lt;span&gt;Berlin-16&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-16.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-16.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-160.jpg&quot; title=&quot;Berlin-160&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-160.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-160&quot; title=&quot;Berlin-160&quot; /&gt;&lt;span&gt;Berlin-160&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-160.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-160.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-170.jpg&quot; title=&quot;Berlin-170&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-170.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-170&quot; title=&quot;Berlin-170&quot; /&gt;&lt;span&gt;Berlin-170&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-170.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-170.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-180.jpg&quot; title=&quot;Berlin-180&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-180.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-180&quot; title=&quot;Berlin-180&quot; /&gt;&lt;span&gt;Berlin-180&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-180.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-180.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-30.jpg&quot; title=&quot;Berlin-30&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-30.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-30&quot; title=&quot;Berlin-30&quot; /&gt;&lt;span&gt;Berlin-30&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-30.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-30.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-50.jpg&quot; title=&quot;Berlin-50&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-50.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-50&quot; title=&quot;Berlin-50&quot; /&gt;&lt;span&gt;Berlin-50&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-50.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-50.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-60.jpg&quot; title=&quot;Berlin-60&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-60.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-60&quot; title=&quot;Berlin-60&quot; /&gt;&lt;span&gt;Berlin-60&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-60.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-60.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-61.jpg&quot; title=&quot;Berlin-61&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-61.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-61&quot; title=&quot;Berlin-61&quot; /&gt;&lt;span&gt;Berlin-61&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-61.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-61.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-70.jpg&quot; title=&quot;Berlin-70&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-70.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-70&quot; title=&quot;Berlin-70&quot; /&gt;&lt;span&gt;Berlin-70&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-70.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-70.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-90.jpg&quot; title=&quot;Berlin-90&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin/Berlin-90.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-90&quot; title=&quot;Berlin-90&quot; /&gt;&lt;span&gt;Berlin-90&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin/Berlin-90.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin/Berlin-90.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-&lt;/ul&gt;</content><category term="photography" /><summary type="html">Various Snapshots of Berlin and Life in General</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/berlin/Berlin-15.jpg" /></entry><entry><title type="html">Fokker, Planck &amp;amp; Kolmogorov</title><link href="http://localhost:4000/blog/Kramers/" rel="alternate" type="text/html" title="Fokker, Planck &amp; Kolmogorov" /><published>2021-02-04T00:00:00+01:00</published><updated>2021-02-04T00:00:00+01:00</updated><id>http://localhost:4000/blog/Kramers</id><content type="html" xml:base="http://localhost:4000/blog/Kramers/">&lt;head&gt;
+where $\tilde{W}_t$ is a Wiener process that flows backward in time.&lt;/p&gt;</content><summary type="html">'If I Could Turn Back Time' by Cher (1989)</summary></entry><entry><title type="html">Fokker, Planck &amp;amp; Kolmogorov</title><link href="http://localhost:4000/blog/Kramers/" rel="alternate" type="text/html" title="Fokker, Planck &amp; Kolmogorov" /><published>2021-02-04T00:00:00+01:00</published><updated>2021-02-04T00:00:00+01:00</updated><id>http://localhost:4000/blog/Kramers</id><content type="html" xml:base="http://localhost:4000/blog/Kramers/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -1433,7 +1382,256 @@ Dividing both sides by $\tau$ and evaluating in the limit of $\lim_{\tau \righta
 \end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;The equation above is a partial differential equation which characterizes how the probability of $x_T$ changes as we go backwards in time.
-It essentially answers the question of how much the probability $p(x_T)$ changes after conditioning the process on $x’_t$ and at earlier point in time $t$.&lt;/p&gt;</content><summary type="html">Distributions as partial differential equations over time</summary></entry><entry><title type="html">From Bernoulli Distributions to Poisson Point Processes</title><link href="http://localhost:4000/blog/Poisson/" rel="alternate" type="text/html" title="From Bernoulli Distributions to Poisson Point Processes" /><published>2020-11-10T00:00:00+01:00</published><updated>2020-11-10T00:00:00+01:00</updated><id>http://localhost:4000/blog/Poisson</id><content type="html" xml:base="http://localhost:4000/blog/Poisson/">&lt;head&gt;
+It essentially answers the question of how much the probability $p(x_T)$ changes after conditioning the process on $x’_t$ and at earlier point in time $t$.&lt;/p&gt;</content><summary type="html">Distributions as partial differential equations over time</summary></entry><entry><title type="html">Berlin Over The Years</title><link href="http://localhost:4000/blog/Berlin2020/" rel="alternate" type="text/html" title="Berlin Over The Years" /><published>2020-12-31T00:00:00+01:00</published><updated>2020-12-31T00:00:00+01:00</updated><id>http://localhost:4000/blog/Berlin2020</id><content type="html" xml:base="http://localhost:4000/blog/Berlin2020/">&lt;!-- ## Berlin Over The Years --&gt;
+&lt;style&gt;
+    .image-gallery {overflow: auto; margin-left: -1%!important;}
+    .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
+    .image-gallery li a {text-align: top; text-decoration: none!important; color: #777;}
+    .image-gallery li a span {display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; padding: 3px 0;}
+    .image-gallery li a img {width: 100%; height: 100%; display: flex; vertical-align: top;
+    }
+&lt;/style&gt;
+
+&lt;ul class=&quot;image-gallery&quot;&gt;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2020/Berlin-111.png&quot; title=&quot;Berlin-111&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin2020/Berlin-111.png&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-111&quot; title=&quot;Berlin-111&quot; /&gt;&lt;span&gt;Berlin-111&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2020/Berlin-111.png&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin2020/Berlin-111.png&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2020/Berlin-120.jpg&quot; title=&quot;Berlin-120&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin2020/Berlin-120.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-120&quot; title=&quot;Berlin-120&quot; /&gt;&lt;span&gt;Berlin-120&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2020/Berlin-120.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin2020/Berlin-120.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2020/Berlin-160.jpg&quot; title=&quot;Berlin-160&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin2020/Berlin-160.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-160&quot; title=&quot;Berlin-160&quot; /&gt;&lt;span&gt;Berlin-160&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2020/Berlin-160.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin2020/Berlin-160.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2020/Berlin-30.jpg&quot; title=&quot;Berlin-30&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin2020/Berlin-30.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-30&quot; title=&quot;Berlin-30&quot; /&gt;&lt;span&gt;Berlin-30&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2020/Berlin-30.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin2020/Berlin-30.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2020/Berlin-70.jpg&quot; title=&quot;Berlin-70&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin2020/Berlin-70.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-70&quot; title=&quot;Berlin-70&quot; /&gt;&lt;span&gt;Berlin-70&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2020/Berlin-70.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin2020/Berlin-70.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2020/Berlin-90.jpg&quot; title=&quot;Berlin-90&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin2020/Berlin-90.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-90&quot; title=&quot;Berlin-90&quot; /&gt;&lt;span&gt;Berlin-90&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2020/Berlin-90.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin2020/Berlin-90.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+&lt;/ul&gt;</content><category term="photography" /><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/berlin2020/Berlin-70.jpg" /></entry><entry><title type="html">From Bernoulli Distributions to Poisson Point Processes</title><link href="http://localhost:4000/blog/Poisson/" rel="alternate" type="text/html" title="From Bernoulli Distributions to Poisson Point Processes" /><published>2020-11-10T00:00:00+01:00</published><updated>2020-11-10T00:00:00+01:00</updated><id>http://localhost:4000/blog/Poisson</id><content type="html" xml:base="http://localhost:4000/blog/Poisson/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -2063,6 +2261,8 @@ This is precisely whats happening when we draw more samples in the expectation o
     
     
     
+    
+    
     &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal20/Portugal-10.jpg&quot; title=&quot;Portugal-10&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal20/Portugal-10.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Portugal-10&quot; title=&quot;Portugal-10&quot; /&gt;&lt;span&gt;Portugal-10&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal20/Portugal-10.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal20/Portugal-10.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
@@ -2158,105 +2358,4 @@ This is precisely whats happening when we draw more samples in the expectation o
     
     
     
-    
-&lt;/ul&gt;</content><category term="photography" /><summary type="html">Mostly Lisbon</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/portugal20/Portugal-19.jpg" /></entry><entry><title type="html">The Adjoint Method in Neural Ordinary Differential Equations</title><link href="http://localhost:4000/blog/AdjointMethod/" rel="alternate" type="text/html" title="The Adjoint Method in Neural Ordinary Differential Equations" /><published>2020-05-20T00:00:00+02:00</published><updated>2020-05-20T00:00:00+02:00</updated><id>http://localhost:4000/blog/AdjointMethod</id><content type="html" xml:base="http://localhost:4000/blog/AdjointMethod/">&lt;head&gt;
-&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
-       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       &lt;/script&gt;
-       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
-&lt;/head&gt;
-
-&lt;h3 id=&quot;the-adjoint-method-in-neural-ordinary-differential-equations&quot;&gt;The Adjoint Method in Neural Ordinary Differential Equations&lt;/h3&gt;
-
-&lt;p&gt;Back at NeurIPS 2018 the best paper award was given to the authors of &lt;a href=&quot;https://arxiv.org/pdf/1806.07366.pdf&quot;&gt;Neural Ordinary Differential Equations&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;The motivation of the paper was the mainly given through the interpretation of the ResNet architectures being interpreted as the Euler discretization of ordinary differential equations (ODE).
-The paper took this insight to its logical extreme and asked the question whether we really have to remain content with just the Euler discretization of an ODE or whether we can go deeper … or more continuous in our case.&lt;/p&gt;
-
-&lt;p&gt;By definition an ODE is defined in its differential form as
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-dz_t = f(z_t, t, \theta)
-\end{align}&lt;/script&gt;
-which basically means that the function $f$ computes the rate of change of $z_t$ at timestep $t$ with its parameters $\theta$.
-Often these equations $f$ are constructed analytically or are known from physics but a more interesting question cane be posed by asking whether this function $f$ can actually be learned … with a neural network for example.&lt;/p&gt;
-
-&lt;p&gt;Ultimately, if we want to use gradient based optimization to train a neural network we need to compute a scalar loss function and compute the gradients of the parameters $\theta$ through reverse-mode autodifferentiation.&lt;/p&gt;
-
-&lt;p&gt;An important part of solving/simulating differential equations is that although they are defined in the continuous space, we have to discretize eventually in order to make the problem amenable to a solution with computers.&lt;/p&gt;
-
-&lt;p&gt;For that reason we will work with four samples ${z_0, z_1, z_2, z_3 }$ from a differential equation as shown in the image below. Our prediction with a neural network will be denoted as ${\hat{z}_1, \hat{z}_2, \hat{z}_3 }$.&lt;/p&gt;
-
-&lt;p&gt;Working with neural networks, we want to obtain gradients which which we can perform gradient descent at the end of the day. In order to do that we will need a scalar cost function on which we can perform reverse-mode autodifferentiation which is very efficient for models with potentially a lot of parameters. If the model were to be very small we could also do forward-mode autodifferentiation but that’s another topic.&lt;/p&gt;
-
-&lt;p&gt;Let’s define such a scalar cost function $\mathcal{L}(\text{ODESolver}(z_0, t_0, t_3, f))$ that takes in $z_0$ and solves the ODE for four timesteps by integrating forward $f(z_t, t, \theta)$ in time until it reaches $t=3$ and compares the prediction with the true values ${z_0, z_1, z_2, z_3 }$.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/Adjoint/Adjoint1.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;80%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Now comes the interesting part: How do we actually compute the gradients with respect to the parameters, namely $\frac{\partial \mathcal{L}}{\partial \theta}$?&lt;/p&gt;
-
-&lt;p&gt;The thing is that the parameters $\theta$ occur at multiple timesteps in the prediction.
-The key insight is now that we actually have to ask ourselves two questions: “How much did each timestep contribute to the loss?” and “At each timestep how much did each parameter contribute to the loss?”.&lt;/p&gt;
-
-&lt;p&gt;Enter adjoint sensitivity analysis …&lt;/p&gt;
-
-&lt;p&gt;The first question can be answered by examining the sensitivity of the scalar loss with respect to the different timesteps $\frac{\partial \mathcal{L}}{\partial z_t}$.&lt;/p&gt;
-
-&lt;p&gt;The sensitivity $\frac{\partial L}{\partial z_3}$ of the loss with respect to the last timestep can be readily evaluated.
-More interesting is how we could propagate the sensitivity backwards in time to all evaluated timesteps.
-The solution to this problem is the use of the Jacobian of the output $z_t$ with respect to the input $z_{t-1}$:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-J(f)= \frac{\partial f(z, t, \theta)}{\partial z} =
-\left[
-\begin{array}{cccc}
-\frac{\partial f(z, t, \theta)_1}{\partial z_1} &amp; \dots &amp; \frac{\partial f(z, t, \theta)_D}{\partial z_1} \\
-\vdots &amp; \ddots &amp; \vdots \\
-\frac{\partial f(z, t, \theta)_1}{\partial z_D} &amp; \dots &amp; \frac{\partial f(z, t, \theta)_D}{\partial z_D} \\
-\end{array}
-\right]
-\end{align} %]]&gt;&lt;/script&gt;
-The Jacobian of the function $f$ with respect to the input tells us how sensitive the output is to the input.
-Since the solution of the ODE is theoretically an infinite series of evaluations of the neural network $f$ we can similarly backpropagate the initial sensitivity $\frac{\partial \mathcal{L}}{\partial z_t}$ by repeatedly multiplying it with the Jacobian with respect to the input but backward in time, which is an ODE again but this time it’s backwards.
-Said differently, we simply reweight the initial sensitivity repeatedly with the Jacobian backwards through time.&lt;/p&gt;
-
-&lt;p&gt;The sensitivity backward pass for our discretized ODE problem would then look something akin to this:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-\frac{\partial \mathcal{L}}{\partial z_1} =
- \frac{\partial \mathcal{L}}{\partial z_3}
- \frac{\partial f(z_2, t, \theta)}{\partial z_2}
- \frac{\partial f(z_1 t, \theta)}{\partial z_1}
-\end{align}&lt;/script&gt;
-This procedure is actually very similar to how the normal backpropagation pass is done.
-In a neural network we use the chain rule to first compute the gradients for the last layer, and then repeatedly reweight the gradients as they are passed through the network.
-Take a three layer network as an example with $y = f_3(f_2(f_1(x, \theta_1), \theta_2), \theta_3)$.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/Adjoint/Adjoint2.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;80%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Computing the gradients for $\theta_1$ from the loss amounts to little more than:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-\frac{\partial \mathcal{L}}{\partial \theta_1} =
- \frac{\partial \mathcal{L}}{\partial y_3}
- \frac{\partial y_3}{\partial y_2}
- \frac{\partial y_2}{\partial y_1}
- \frac{\partial y_1}{\partial \theta_1}
-\end{align}&lt;/script&gt;
-This is what the authors in the paper refer to as “… which can be thought of as an instantaneous analog of the chain rule.”.
-In essence, the adjoint sensitivity pass allows us to propagate the importance of each timestep to the overall loss backwards through time.&lt;/p&gt;
-
-&lt;p&gt;Once we propagated the sensitivity backwards through time, we can answer the second question by computing the gradient of the output with respect to the parameter in question.&lt;/p&gt;
-
-&lt;p&gt;While the authors of the paper use the term &lt;em&gt;adjoint state $a(t)$&lt;/em&gt; I find the term &lt;em&gt;sensitivity $s(t)$&lt;/em&gt; more intuitive and appealing.
-The beauty of the adjoint state training became apparent to me when I used sensitivity $s(t)$ in equation (5):
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-\frac{\partial L}{\partial \theta} = \int_{t_1}^{t_0} s(t)^T \frac{\partial f(z(t), t, \theta)}{\partial \theta} dt
-\end{align}&lt;/script&gt;
-The integral above states that we scale the gradient of the output $\partial_\theta f(z(t), t, \theta)$ with the sensitivity $s(t)$ to the overall loss.&lt;/p&gt;
-
-&lt;p&gt;Interestingly, the reception by the differential equation community was not as unanimous as one would think as this method has been used for a fairly long time. The key insight was its application to neural networks since we only need the Jacobians of the neural network irrespective of what goes on inside the neural network. One of the coauthors said as much in a &lt;a href=&quot;https://www.youtube.com/watch?v=YZ-_E7A3V2w&quot;&gt;talk a year later&lt;/a&gt;.&lt;/p&gt;</content><summary type="html">Reverse-Mode Sensitivity Training</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/Adjoint/Adjoint1.png" /></entry></feed>
+&lt;/ul&gt;</content><category term="photography" /><summary type="html">Mostly Lisbon</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/portugal20/Portugal-19.jpg" /></entry></feed>
