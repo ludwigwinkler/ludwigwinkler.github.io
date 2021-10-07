@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-10-07T22:18:37+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">RSA Encryption: The Math</title><link href="http://localhost:4000/blog/RSA/" rel="alternate" type="text/html" title="RSA Encryption: The Math" /><published>2021-10-04T00:00:00+02:00</published><updated>2021-10-04T00:00:00+02:00</updated><id>http://localhost:4000/blog/RSA</id><content type="html" xml:base="http://localhost:4000/blog/RSA/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-10-07T22:21:13+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">RSA Encryption: The Math</title><link href="http://localhost:4000/blog/RSA/" rel="alternate" type="text/html" title="RSA Encryption: The Math" /><published>2021-10-04T00:00:00+02:00</published><updated>2021-10-04T00:00:00+02:00</updated><id>http://localhost:4000/blog/RSA</id><content type="html" xml:base="http://localhost:4000/blog/RSA/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -42,16 +42,15 @@ Let us establish some basics first which will be important down the road.&lt;/p&
 
 &lt;p&gt;The modulo operator $x \ mod \ n$ takes any number $x$ and returns the remainder after the division with $n$.
 Let’s say you want to know $x \ mod \ n$, then we can represent $x$ as $x= k n + r$ for an integer $k$ and the remainder $r$.
-The modulo operator is in fact not very complicated and it should be clear after a few examples:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+The modulo operator is in fact not very complicated and it should be clear after a few examples:
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
   x \mod \ n &amp;= r \quad \text{since}  \quad &amp;&amp;  x = k * n + r    &amp;&amp; \quad \text{with} \quad k \in \mathbb{N}, r \in \mathbb{N} \\ \\
   9 \mod \ 2 &amp;= 1 \quad \text{since}  \quad &amp;&amp;  9 = 4 * 2 + 1    &amp;&amp; \quad \text{with} \quad k=4, r=1 \\
   13 \mod \ 2 &amp;= 1 \quad \text{since} \quad &amp;&amp; 13 = 6 * 2 + 1    &amp;&amp; \quad \text{with} \quad k=6, r=1 \\ \\
   5 \mod \ 3 &amp;= 2 \quad \text{since}  \quad &amp;&amp; 5  = 1 * 3 + 2    &amp;&amp; \quad \text{with} \quad k=1, r=2 \\
   8 \mod \ 3 &amp;= 2 \quad \text{since}  \quad &amp;&amp; 8  = 2 * 3 + 2    &amp;&amp; \quad \text{with} \quad k=2, r=2 \\
-\end{align} %]]&gt;&lt;/script&gt;
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;I chose the examples with care to highlight a natural property of the modulo operator which makes it so appealing to cryptography.
 Namely, that we apply the modulo operator on different numbers and will obtain the same remainder.
@@ -72,27 +71,24 @@ The latter example is still divisible by 1 as well, but we’re talking about th
 
 &lt;h3 id=&quot;eulers-totient&quot;&gt;Eulers Totient&lt;/h3&gt;
 
-&lt;p&gt;For $n \in \mathbb{N}$, Euler’s totient is given as the number of integer numbers $m$ that are in the set&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+&lt;p&gt;For $n \in \mathbb{N}$, Euler’s totient is given as the number of integer numbers $m$ that are in the set
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
 \phi(n) = \{m \in \mathbb{N} \ | \ 1 \leq m \leq n, \text{gcd}(m, n) = 1 \}
-\end{align}&lt;/script&gt;
+\end{align}&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;which essentially means that we want the number of integers that are smaller than $n$ and are coprime to $n$.
 As an example let’s look at &lt;script type=&quot;math/tex&quot;&gt;\phi(9) = | \{1, 2, 4, 5, 7, 8 \} |  = 6&lt;/script&gt;.
 The numbers 3, 6 and 9 are not members of $\phi(9)$ because their greatest common divisor is 3, so the restriction $\text{gcd}(\{ 3,6,9 \}, 9) =1$ does not hold.&lt;/p&gt;
 
-&lt;p&gt;More importantly for our application, Euler’s totient is a multiplicative function for two numbers which are relatively prime, or coprime, to each other.&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+&lt;p&gt;More importantly for our application, Euler’s totient is a multiplicative function for two numbers which are relatively prime, or coprime, to each other.
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
   \phi(n) = \phi(pq) = \phi(p) \phi(q) \quad ; \text{gcd}(p, q)=1
-\end{align}&lt;/script&gt;
+\end{align}&lt;/script&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;eulers-theorem-the-bedrock-of-rsa&quot;&gt;Eulers Theorem: The Bedrock of RSA&lt;/h3&gt;
 
-&lt;p&gt;The impressive Leonhard Euler ( I mean come on, the guy lived 250 years ago and so much of our modern technological applications are based on his math) found out that if $n$ and $a$ are coprime, the following identity holds:&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\left[ a^{\phi(n)} = 1 \right] \mod \ n.&lt;/script&gt;
+&lt;p&gt;The impressive Leonhard Euler ( I mean come on, the guy lived 250 years ago and so much of our modern technological applications are based on his math) found out that if $n$ and $a$ are coprime, the following identity holds:
+&lt;script type=&quot;math/tex&quot;&gt;\left[ a^{\phi(n)} = 1 \right] \mod \ n.&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;The notation $[ \ldots ] \mod n$ means that we apply the modulo equally to both sides. The notation $\ldots = \ldots (\mod n)$ is more common but I like my paranthesis to clearly delineate what operator we apply to what.&lt;/p&gt;
 
@@ -104,39 +100,35 @@ The numbers 3, 6 and 9 are not members of $\phi(9)$ because their greatest commo
 \end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;Right here we smuggled in the integer number $k$ in the exponentiation.
-In order to prove the validity of this step, we can construct the following ‘proof’ (Hey, I ain’t no mathematician, but at least the math checks out),&lt;/p&gt;
-
-&lt;p&gt;&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+In order to prove the validity of this step, we can construct the following ‘proof’ (Hey, I ain’t no mathematician, but at least the math checks out),
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
   \Big[ a^{k\phi(n)}      = 1 \Big] \mod \ n \\
   \Big[ {\big( a^{\phi(n)} \big) }^k      = 1 \Big] \mod \ n \\
   \Big[ \prod_i^k {\big( a^{\phi(n)} \big) }      = 1 \Big] \mod \ n \\
 \end{align}&lt;/script&gt;
-for which we can now employ the transitivity rule which states that&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+for which we can now employ the transitivity rule which states that
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
   &amp; \Big[ ab \Big] \mod n \\
   =&amp; \Big[ [a] \ \text{mod} \ n \cdot [b] \ \text{mod} \ n \Big] \mod n \\
-\end{align} %]]&gt;&lt;/script&gt;
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
-&lt;p&gt;which gives us&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+&lt;p&gt;which gives us
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
   \Big[ \prod_i^k {\big( a^{\phi(n)} \big) }      = 1 \Big] \mod \ n \\
   \Bigg[ \prod_i^k \Big( \Big[ \underbrace{a^{\phi(n)} \Big] \ \text{mod} \ n}_{=1} \Big)      = 1 \Bigg] \mod \ n \\
   \Bigg[ \prod_i^k \Big( 1 \Big)      = 1 \Bigg] \mod \ n \\
   \Bigg[  1   = 1 \Bigg] \mod \ n.
-\end{align}&lt;/script&gt;
+\end{align}&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;which proves that we can add an integer multiplier in the exponent.
-Carrying on we have&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+Carrying on we have
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
   &amp; \Big[ a^{\phi(n)}       = 1 \Big] \mod \ n \\
   &amp; \Big[ a^{k\phi(n)}      = 1 \Big] \mod \ n \quad \Big| \cdot a \\
   &amp; \Big[ a^{k \phi(n)+ 1}  = a \Big] \mod \ n \\
-\end{align} %]]&gt;&lt;/script&gt;
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;The equation above tells us that for some integer number $k$ about which we don’t really care and the number $n$ we can exponentiate the number $a$ with $k \phi(n)+1$ and under the $\text{mod} \ n$ regime we will obtain the same number $a$.
 The cool thing that Euler’s Theorem allows us to do is that we can obviously factorize, respectively construct, the exponent $k \phi(n)+1$ in any way we want.&lt;/p&gt;
@@ -146,23 +138,20 @@ The cool thing that Euler’s Theorem allows us to do is that we can obviously f
 &lt;h3 id=&quot;rsa-encryption&quot;&gt;RSA Encryption&lt;/h3&gt;
 
 &lt;p&gt;The Rivest-Shamir-Adleman cryptosystem leans heavily, and almost exclusively, on Euler’s theorem to enable an asymmetric cryptographic system.
-It starts out by taking a message, which are just numbers for computers, and exponentiating it with the secret key $e$ and applying the modulo operator $\text{mod} \ n $ to it to generate an encrypted cypher text $c$,&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+It starts out by taking a message, which are just numbers for computers, and exponentiating it with the secret key $e$ and applying the modulo operator $\text{mod} \ n $ to it to generate an encrypted cypher text $c$,
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
 \text{Encryption}: \quad c = [ x^e ] \mod n.
-\end{align}&lt;/script&gt;
+\end{align}&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;We can conclude that we only need the encryption key $e$ (which is a number) and the modulo basis $n$ (which is also just a number) to be public to enable anybody to encrypt a message for us.
-The almost identical operation, albeit with the secret key $d$, is performed to decrypt the cypher message $c$,&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+The almost identical operation, albeit with the secret key $d$, is performed to decrypt the cypher message $c$,
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
 \text{Decryption}: \quad x = [ c^d ] \mod n
-\end{align}&lt;/script&gt;
+\end{align}&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;The big question is obviously whether there is a strict one-to-one correspondence between the encryption and the decryption.
-To show this, we can again employ Euler’s theorem to guarantee the need one-to-one correspondence, such that&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+To show this, we can again employ Euler’s theorem to guarantee the need one-to-one correspondence, such that
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
 [ c^d &amp;= x ] \mod n \\
 \Big[ \big( [ x^e ] \mod n \big)^d &amp;= x \Big] \mod n \\
@@ -170,14 +159,13 @@ To show this, we can again employ Euler’s theorem to guarantee the need one-to
 \Big[ \prod^d_i x^e &amp;= x \Big] \mod n \quad \text{(Transitivity Rule)} \\
 \Big[ \big( x^e \big)^d &amp;= x \Big] \mod n \\
 \Big[ x^{ed} &amp;= x \Big] \mod n \\
-\end{align} %]]&gt;&lt;/script&gt;
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
-&lt;p&gt;Thus if we are able to find a corresponding exponent in our encryption/decryption scheme that fulfills Euler’s theorem, we have a wonderful asymmetric cryptographic system which checkmarks all the requirements we wanted.&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+&lt;p&gt;Thus if we are able to find a corresponding exponent in our encryption/decryption scheme that fulfills Euler’s theorem, we have a wonderful asymmetric cryptographic system which checkmarks all the requirements we wanted.
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
 \Big[ x^{ed} &amp;= x \Big] \mod \ n \quad \Leftrightarrow \quad \Big[ a^{k \phi(n)+ 1}  = a \Big] \mod \ n 
-\end{align} %]]&gt;&lt;/script&gt;
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;The beauty of the modulo operator is that it’s really hard to guess the correct $d$ since there are an infinite number of possible $d$’s due to the arbitrary $k$ for which the modulo operator returns a possible correct $x$.&lt;/p&gt;
 
@@ -189,26 +177,24 @@ Instead we want a very, very large number $n$ for which it is almost impossible 
 Furthermore we can leverage the fact, and this is extremely important for the RSA cryptographic system, that Euler’s totient of a prime number $p$ is just $\phi(p)= p-1$ since a prime number is integer divisible only by itself and one.
 This means that Euler’s totient for prime numbers is just the respective prime number reduced by one, which means that every number before the prime number is coprime to it as the greatest common divisor of a prime number is 1.&lt;/p&gt;
 
-&lt;p&gt;Thus if we construct $n=pq$ from two very large, but distinct, prime numbers $p, q \in \mathbb{P}$, we can factorize the practically incalculable totient of $n$ into a fairly easily computable product,&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+&lt;p&gt;Thus if we construct $n=pq$ from two very large, but distinct, prime numbers $p, q \in \mathbb{P}$, we can factorize the practically incalculable totient of $n$ into a fairly easily computable product,
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
 \phi(n) = \phi(p)\phi(q) = (p-1)(q-1).
-\end{align}&lt;/script&gt;
+\end{align}&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;That means that the main effort of the RSA cryptographic system lies with the generation of two very large prime numbers which have to remain secret as they are used during the generation of the private key.
 Just to reiterate, computing Euler’s totient $\phi(n)$ for a very large $n$ is practically impossible at the moment (but let’s maybe wait for quantum computers), while the private knowledge of the two prime numbers $p$ and $q$ which constitute $n$ multiplicatively allows us to generate a correct private key quite easily.
 In fact after having generated $p$ and $q$ we can simply pick a super large $k$ and determine $d$ quite easily as $d=(k(p-1)(q-1)+1)/e$.&lt;/p&gt;
 
-&lt;p&gt;In order to get the mathematical equivalency that the encryption and subsequent decryption under the modulo $n$ operation is valid, all we have to do is find a $d$ for which holds&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+&lt;p&gt;In order to get the mathematical equivalency that the encryption and subsequent decryption under the modulo $n$ operation is valid, all we have to do is find a $d$ for which holds
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
 e d &amp;= k \phi(n)+1 \\
 e d &amp;= k \phi(pq)+1 \\
 e d &amp;= k \phi(p) \phi(q) + 1 \\
 e d &amp;= k (p-1)(q-1) + 1 \\
 \Big[ ed &amp;= 1 \Big] \mod (p-1)(q-1) \\
-\end{align} %]]&gt;&lt;/script&gt;
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;which tells us that we are indeed generating the private key $d$ with the private ingredients of $\phi(p)$ and $\phi(q)$
 of our two secret prime numbers $p$ and $q$.&lt;/p&gt;
@@ -229,14 +215,13 @@ Illustratively, hash functions permute input, cycle over it a couple of times an
 &lt;p&gt;A sender would send the message through a hash function $h = hash(x)$ and subsequently exponentiate it with the private key $d$.
 The receiver can then exponetiate the ‘decrypted’ hash again with the public key $e$ and take the modulo of it and compare it to his or her own hash of the sent message.&lt;/p&gt;
 
-&lt;p&gt;Mathematically, we can employ Euler’s theorem again, having defined the product of the private and public key as $ed = k \phi(n)+1$, to obtain&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+&lt;p&gt;Mathematically, we can employ Euler’s theorem again, having defined the product of the private and public key as $ed = k \phi(n)+1$, to obtain
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
   \Big[ {\big(h^d \big)}^e &amp;= h \Big] \mod n \\
   \Big[  h^{de} &amp;= h \Big] \mod n \quad ed = k\phi(n)+1 \\
   \Big[  h^{k\phi(n)+1} &amp;= h \Big] \mod n \quad \text{True via Euler's theorem} \\
-\end{align} %]]&gt;&lt;/script&gt;</content><summary type="html">The math that ensures that it's none of your business</summary></entry><entry><title type="html">Berlin Over The Years</title><link href="http://localhost:4000/blog/Berlin2021/" rel="alternate" type="text/html" title="Berlin Over The Years" /><published>2021-08-31T00:00:00+02:00</published><updated>2021-08-31T00:00:00+02:00</updated><id>http://localhost:4000/blog/Berlin2021</id><content type="html" xml:base="http://localhost:4000/blog/Berlin2021/">&lt;!-- ## Berlin Over The Years --&gt;
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;</content><summary type="html">The math that ensures that it's none of your business</summary></entry><entry><title type="html">Berlin Over The Years</title><link href="http://localhost:4000/blog/Berlin2021/" rel="alternate" type="text/html" title="Berlin Over The Years" /><published>2021-08-31T00:00:00+02:00</published><updated>2021-08-31T00:00:00+02:00</updated><id>http://localhost:4000/blog/Berlin2021</id><content type="html" xml:base="http://localhost:4000/blog/Berlin2021/">&lt;!-- ## Berlin Over The Years --&gt;
 &lt;style&gt;
     .image-gallery {overflow: auto; margin-left: -1%!important;}
     .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
