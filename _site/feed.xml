@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-10-07T21:01:47+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">RSA Encryption: The Math</title><link href="http://localhost:4000/blog/RSA/" rel="alternate" type="text/html" title="RSA Encryption: The Math" /><published>2021-10-04T00:00:00+02:00</published><updated>2021-10-04T00:00:00+02:00</updated><id>http://localhost:4000/blog/RSA</id><content type="html" xml:base="http://localhost:4000/blog/RSA/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-10-07T22:18:35+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">RSA Encryption: The Math</title><link href="http://localhost:4000/blog/RSA/" rel="alternate" type="text/html" title="RSA Encryption: The Math" /><published>2021-10-04T00:00:00+02:00</published><updated>2021-10-04T00:00:00+02:00</updated><id>http://localhost:4000/blog/RSA</id><content type="html" xml:base="http://localhost:4000/blog/RSA/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -182,6 +182,24 @@ To show this, we can again employ Euler’s theorem to guarantee the need one-to
 
 &lt;p&gt;The beauty of the modulo operator is that it’s really hard to guess the correct $d$ since there are an infinite number of possible $d$’s due to the arbitrary $k$ for which the modulo operator returns a possible correct $x$.&lt;/p&gt;
 
+&lt;p&gt;The only remaining question is now how to choose the modulo basis $n$ of which we want to compute Euler’s totient &lt;strong&gt;efficiently&lt;/strong&gt;. 
+Naturally, we want $n$ to be very large such that an interceptor can’t simply try out all the $k$’s and Euler’s totient $\phi(n)$’s by brute force, since the RSA key generation scheme for $e$ and $d$ is public.
+Instead we want a very, very large number $n$ for which it is almost impossible to determine the totient $\phi(n)$ by brute force, but which we construct in such a way that we know the totient in single evaluation during the key generation.&lt;/p&gt;
+
+&lt;p&gt;For this we will use the previousuly stated property of the totient that if two numbers are coprime to each other, we can simply factorize the totient into the multiplicative components.
+Furthermore we can leverage the fact, and this is extremely important for the RSA cryptographic system, that Euler’s totient of a prime number $p$ is just $\phi(p)= p-1$ since a prime number is integer divisible only by itself and one.
+This means that Euler’s totient for prime numbers is just the respective prime number reduced by one, which means that every number before the prime number is coprime to it as the greatest common divisor of a prime number is 1.&lt;/p&gt;
+
+&lt;p&gt;Thus if we construct $n=pq$ from two very large, but distinct, prime numbers $p, q \in \mathbb{P}$, we can factorize the practically incalculable totient of $n$ into a fairly easily computable product,&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+\phi(n) = \phi(p)\phi(q) = (p-1)(q-1).
+\end{align}&lt;/script&gt;
+
+&lt;p&gt;That means that the main effort of the RSA cryptographic system lies with the generation of two very large prime numbers which have to remain secret as they are used during the generation of the private key.
+Just to reiterate, computing Euler’s totient $\phi(n)$ for a very large $n$ is practically impossible at the moment (but let’s maybe wait for quantum computers), while the private knowledge of the two prime numbers $p$ and $q$ which constitute $n$ multiplicatively allows us to generate a correct private key quite easily.
+In fact after having generated $p$ and $q$ we can simply pick a super large $k$ and determine $d$ quite easily as $d=(k(p-1)(q-1)+1)/e$.&lt;/p&gt;
+
 &lt;p&gt;In order to get the mathematical equivalency that the encryption and subsequent decryption under the modulo $n$ operation is valid, all we have to do is find a $d$ for which holds&lt;/p&gt;
 
 &lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
@@ -189,17 +207,37 @@ To show this, we can again employ Euler’s theorem to guarantee the need one-to
 e d &amp;= k \phi(n)+1 \\
 e d &amp;= k \phi(pq)+1 \\
 e d &amp;= k \phi(p) \phi(q) + 1 \\
-\Big[ ed &amp;= 1 \Big] \mod \phi(p) \phi(q) \\
+e d &amp;= k (p-1)(q-1) + 1 \\
+\Big[ ed &amp;= 1 \Big] \mod (p-1)(q-1) \\
 \end{align} %]]&gt;&lt;/script&gt;
 
 &lt;p&gt;which tells us that we are indeed generating the private key $d$ with the private ingredients of $\phi(p)$ and $\phi(q)$
 of our two secret prime numbers $p$ and $q$.&lt;/p&gt;
 
-&lt;p&gt;The last thing to check is that $a$ and $n$ are indeed coprime which is happens with overwhelming probability.&lt;/p&gt;
+&lt;p&gt;The last thing to check is that $a$ and $n$ are indeed coprime (not necessarily prime themselves) which happens with overwhelming probability as $n$ becomes increasingly large.&lt;/p&gt;
 
 &lt;h3 id=&quot;signatures-in-rsa&quot;&gt;Signatures in RSA&lt;/h3&gt;
 
-&lt;p&gt;…&lt;/p&gt;</content><summary type="html">The math that ensures that it's none of your business</summary></entry><entry><title type="html">Berlin Over The Years</title><link href="http://localhost:4000/blog/Berlin2021/" rel="alternate" type="text/html" title="Berlin Over The Years" /><published>2021-08-31T00:00:00+02:00</published><updated>2021-08-31T00:00:00+02:00</updated><id>http://localhost:4000/blog/Berlin2021</id><content type="html" xml:base="http://localhost:4000/blog/Berlin2021/">&lt;!-- ## Berlin Over The Years --&gt;
+&lt;p&gt;An intriguing property of the public private key encryption is its ability to sign messages as a sender through the use of a cryptographic hash function.&lt;/p&gt;
+
+&lt;p&gt;A cryptographic hash maps data of an arbitrary size to a bit array of fixed size.
+It is by all practical means a seemingly random function, although it is in fact deterministic but people have spent a lot of time perfecting the ostensible randomness.
+Importantly, hash functions should be quick to compute, infeasible to reverse and to find two messages with the same hash and finally changing the input message slightly should return a completely different hash.
+Illustratively, hash functions permute input, cycle over it a couple of times and do all other crazy things to map the variable input length array into a fixed one.&lt;/p&gt;
+
+&lt;p&gt;But let’s get back to RSA …&lt;/p&gt;
+
+&lt;p&gt;A sender would send the message through a hash function $h = hash(x)$ and subsequently exponentiate it with the private key $d$.
+The receiver can then exponetiate the ‘decrypted’ hash again with the public key $e$ and take the modulo of it and compare it to his or her own hash of the sent message.&lt;/p&gt;
+
+&lt;p&gt;Mathematically, we can employ Euler’s theorem again, having defined the product of the private and public key as $ed = k \phi(n)+1$, to obtain&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+  \Big[ {\big(h^d \big)}^e &amp;= h \Big] \mod n \\
+  \Big[  h^{de} &amp;= h \Big] \mod n \quad ed = k\phi(n)+1 \\
+  \Big[  h^{k\phi(n)+1} &amp;= h \Big] \mod n \quad \text{True via Euler's theorem} \\
+\end{align} %]]&gt;&lt;/script&gt;</content><summary type="html">The math that ensures that it's none of your business</summary></entry><entry><title type="html">Berlin Over The Years</title><link href="http://localhost:4000/blog/Berlin2021/" rel="alternate" type="text/html" title="Berlin Over The Years" /><published>2021-08-31T00:00:00+02:00</published><updated>2021-08-31T00:00:00+02:00</updated><id>http://localhost:4000/blog/Berlin2021</id><content type="html" xml:base="http://localhost:4000/blog/Berlin2021/">&lt;!-- ## Berlin Over The Years --&gt;
 &lt;style&gt;
     .image-gallery {overflow: auto; margin-left: -1%!important;}
     .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
