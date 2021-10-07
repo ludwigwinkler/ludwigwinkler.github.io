@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-10-07T22:18:35+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">RSA Encryption: The Math</title><link href="http://localhost:4000/blog/RSA/" rel="alternate" type="text/html" title="RSA Encryption: The Math" /><published>2021-10-04T00:00:00+02:00</published><updated>2021-10-04T00:00:00+02:00</updated><id>http://localhost:4000/blog/RSA</id><content type="html" xml:base="http://localhost:4000/blog/RSA/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-10-07T22:18:37+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">RSA Encryption: The Math</title><link href="http://localhost:4000/blog/RSA/" rel="alternate" type="text/html" title="RSA Encryption: The Math" /><published>2021-10-04T00:00:00+02:00</published><updated>2021-10-04T00:00:00+02:00</updated><id>http://localhost:4000/blog/RSA</id><content type="html" xml:base="http://localhost:4000/blog/RSA/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -19,8 +19,7 @@
 
 &lt;p&gt;What is in fact the best way to &lt;strong&gt;establish&lt;/strong&gt; secure communications?&lt;/p&gt;
 
-&lt;p&gt;More importantly, a big question is how we actually establish secure communication.
-In most secret agent movies, there exists a cypher which allows the hero, or the villain, to decode a hidden or encrypted text into its original meaning.
+&lt;p&gt;In most secret agent movies, there exists a cypher which allows the hero, or the villain, to decode a hidden or encrypted text into its original meaning.
 Either it’s selecting specific letters from the newspaper or it’s running a tremendously exciting looking algorithm over some text files on a computer.
 But in both cases the hero, or the villain, is already in possession of the knowledge how to decrypt the encrypted text.&lt;/p&gt;
 
