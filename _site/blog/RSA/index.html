@@ -118,13 +118,13 @@ Let’s say you want to know $x \ mod \ n$, then we can represent $x$ as $x= k n
 The modulo operator is in fact not very complicated and it should be clear after a few examples:</p>
 
 <script type="math/tex; mode=display">% <![CDATA[
-\begin{align}
+\begin{aligned}
   x \mod \ n &= r \quad \text{since}  \quad &&  x = k * n + r    && \quad \text{with} \quad k \in \mathbb{N}, r \in \mathbb{N} \\ \\
   9 \mod \ 2 &= 1 \quad \text{since}  \quad &&  9 = 4 * 2 + 1    && \quad \text{with} \quad k=4, r=1 \\
   13 \mod \ 2 &= 1 \quad \text{since} \quad && 13 = 6 * 2 + 1    && \quad \text{with} \quad k=6, r=1 \\ \\
   5 \mod \ 3 &= 2 \quad \text{since}  \quad && 5  = 1 * 3 + 2    && \quad \text{with} \quad k=1, r=2 \\
   8 \mod \ 3 &= 2 \quad \text{since}  \quad && 8  = 2 * 3 + 2    && \quad \text{with} \quad k=2, r=2 \\
-\end{align} %]]></script>
+\end{aligned} %]]></script>
 
 <p>I chose the examples with care to highlight a natural property of the modulo operator which makes it so appealing to cryptography.
 Namely, that we apply the modulo operator on different numbers and will obtain the same remainder.
