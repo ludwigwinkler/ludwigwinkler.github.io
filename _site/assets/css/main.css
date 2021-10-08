@@ -12,6 +12,10 @@
     overflow-x: scroll;
     overflow-y: hidden;
 }
+
+.mjx-chtml {
+	  overflow-x: scroll; /* Horizontally scroll long equations. */
+	}
 /* Style the button that is used to open and close the collapsible content */
 .collapsible {
 	/* background-color: inherit; */
