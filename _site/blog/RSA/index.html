@@ -77,7 +77,7 @@
          MathJax.Hub.Config({
            tex2jax: {
              inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$'], ['\[', '\]']],
+             displayMath: [['$$','$$']],
              processEscapes: true,
            },
 		   TeX: {extensions:["autoload-all.js"]}
@@ -300,14 +300,13 @@ Illustratively, hash functions permute input, cycle over it a couple of times an
 <p>A sender would send the message through a hash function $h = hash(x)$ and subsequently exponentiate it with the private key $d$.
 The receiver can then exponetiate the ‘decrypted’ hash again with the public key $e$ and take the modulo of it and compare it to his or her own hash of the sent message.</p>
 
-<p>Mathematically, we can employ Euler’s theorem again, having defined the product of the private and public key as $ed = k \phi(n)+1$, to obtain</p>
-
-<script type="math/tex; mode=display">% <![CDATA[
+<p>Mathematically, we can employ Euler’s theorem again, having defined the product of the private and public key as $ed = k \phi(n)+1$, to obtain
+<script type="math/tex">% <![CDATA[
 \begin{align}
   \Big[ {\big(h^d \big)}^e &= h \Big] \mod n \\
   \Big[  h^{de} &= h \Big] \mod n \quad ed = k\phi(n)+1 \\
   \Big[  h^{k\phi(n)+1} &= h \Big] \mod n \quad \text{True via Euler's theorem} \\
-\end{align} %]]></script>
+\end{align} %]]></script></p>
 
 <p>Cha-Ching Baby …</p>
 
