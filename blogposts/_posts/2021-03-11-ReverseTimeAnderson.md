@@ -6,6 +6,13 @@ excerpt: " 'If I Could Turn Back Time' by Cher (1989)"
 image:
 ---
 <head>
+<style>
+.MathJax_Display, .MJXc-display, .MathJax_SVG_Display {
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+</style>
+
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
        <script type="text/x-mathjax-config">
          MathJax.Hub.Config({
@@ -42,6 +49,7 @@ It describes the evolution of a probability distribution $p(x_t)$ forward in tim
 We can quite frankly think of it as, for example, a Normal distribution being slowly transformed into an arbitrary complex distribution according to the drift and diffusion parameters $\mu(x_t)$ and $\sigma(x_t)$.
 
 The Kolmogorov backward equation for $t \leq s$ is defined as
+
 $$
 \begin{align}
 	- \partial_t p(x_s | x_t) = \mu(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t)
@@ -61,6 +69,7 @@ Why do we invoke the joint probability $p(x_s, x_t)$ we might ask?
 What we're trying to achieve is to derive a stochastic differential equation that tells us from what values of $x_t$ we can arrive at $x_s$.
 We can ask ourselves what the partial differential equation would be that describes the evolution of the joint distribution over time.
 First multiplying both sides of Bayes theorem with minus one and taking the derivative with respect to time $t$, we obtain via the product rule
+
 $$
 \begin{align}
 	- \partial_t p(x_s, x_t) &= - \partial_t \left[ p(x_s| x_t) p(x_t) \right] \\
@@ -68,6 +77,7 @@ $$
 \end{align} 
 $$
 into which we can plug in the Kolmogorov forward (KFE) and Kolmogorov backward (KBE) equations, 
+
 $$
 \begin{align}
 	& -\partial_t p(x_s|x_t) p(x_t) - p(x_s | x_t) \partial_t p(x_t) \\
@@ -77,6 +87,7 @@ $$
 $$
 
 The derivative occuring in the backward Kolmogorov equation are
+
 $$
 \begin{align}
 	\partial_{x_t} p(x_s|x_t) &= \partial_{x_t} \left[ \frac{p(x_s, x_t)}{p(x_t)} \right] \\
@@ -86,6 +97,7 @@ $$
 $$
 
 The next step is to evaluate the derivative of the products in the forward Kolmogorov equation.
+
 $$
 \begin{align}
 	\partial_{x_t} \left[ \mu(x_t) p(x_t) \right] & = \partial_{x_t} \mu(x_t) \ p(x_t) + \mu(x_t) \ \partial_{x_t} p(x_t) \\
@@ -94,6 +106,7 @@ $$
 $$
 
 Plugging in the derivatives of the probability distributions we obtain
+
 $$
 \begin{align}
 	- \partial_t p(x_s, x_t)
@@ -128,6 +141,7 @@ Just to reiterate it one more time, if we can massage the partial differential e
 
 Following the gracious help from Brian Anderson himself in an email from down under, we can simplify the terms with $\sigma^2(x_t)$ by expanding the last term.
 The important step, that Brian pointed out to me, is to factorize the joint distribution $p(x_s, x_t) = p(x_s| x_t) p(x_t)$ and invoke the product rule to match the terms,
+
 $$
 \begin{align}
 	& \frac{1}{2} \partial_{x_t}^2 \left[ p(x_s, x_t) \sigma^2(x_t) \right] \\
@@ -139,6 +153,7 @@ $$
 
 We can see from the expansion of the derivative above that we can combine the terms in our derivation if we expand the "center term".
 Furthermore we can employ the identity $-\frac{1}{2} X = -X + \frac{1}{2} X$ to obtain
+
 $$
 \begin{align}
 	-\partial_t p(x_s, x_t)
@@ -165,6 +180,7 @@ $$
 $$
 
 which finally gives us a stochastic differential equation that we can solve backward in time:
+
 $$
 \begin{align}
 dX_t = \left(\mu(x_t) - \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) dt + \sigma(x_t) d\tilde{W}_t

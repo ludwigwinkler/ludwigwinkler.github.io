@@ -145,19 +145,21 @@ The latter example is still divisible by 1 as well, but we’re talking about th
 
 <h3 id="eulers-totient">Eulers Totient</h3>
 
-<p>For $n \in \mathbb{N}$, Euler’s totient is given as the number of integer numbers $m$ that are in the set
-<script type="math/tex">\begin{align}
+<p>For $n \in \mathbb{N}$, Euler’s totient is given as the number of integer numbers $m$ that are in the set</p>
+
+<script type="math/tex; mode=display">\begin{align}
 \phi(n) = \{m \in \mathbb{N} \ | \ 1 \leq m \leq n, \text{gcd}(m, n) = 1 \}
-\end{align}</script></p>
+\end{align}</script>
 
 <p>which essentially means that we want the number of integers that are smaller than $n$ and are coprime to $n$.
 As an example let’s look at <script type="math/tex">\phi(9) = | \{1, 2, 4, 5, 7, 8 \} |  = 6</script>.
 The numbers 3, 6 and 9 are not members of $\phi(9)$ because their greatest common divisor is 3, so the restriction $\text{gcd}(\{ 3,6,9 \}, 9) =1$ does not hold.</p>
 
-<p>More importantly for our application, Euler’s totient is a multiplicative function for two numbers which are relatively prime, or coprime, to each other.
-<script type="math/tex">\begin{align}
+<p>More importantly for our application, Euler’s totient is a multiplicative function for two numbers which are relatively prime, or coprime, to each other.</p>
+
+<script type="math/tex; mode=display">\begin{align}
   \phi(n) = \phi(pq) = \phi(p) \phi(q) \quad ; \text{gcd}(p, q)=1
-\end{align}</script></p>
+\end{align}</script>
 
 <p>Also, taking Euler’s totient of a prime number $p \in \mathbb{P}$ returns $\phi(p) = p-1$ since a prime number is only divisible by 1 or itself and thus every number before $p$ falls into the category of Euler’s totient. This will be important later for the RSA algorithm …</p>
 
@@ -176,8 +178,9 @@ The numbers 3, 6 and 9 are not members of $\phi(9)$ because their greatest commo
 \end{align} %]]></script></p>
 
 <p>Right here we smuggled in the integer number $k$ in the exponentiation.
-In order to prove the validity of this step, we can construct the following ‘proof’ (Hey, I ain’t no mathematician, but at least the math checks out),
-<script type="math/tex">\begin{align}
+In order to prove the validity of this step, we can construct the following ‘proof’ (Hey, I ain’t no mathematician, but at least the math checks out),</p>
+
+<p><script type="math/tex">\begin{align}
   \Big[ a^{k\phi(n)}      = 1 \Big] \mod \ n \\
   \Big[ {\big( a^{\phi(n)} \big) }^k      = 1 \Big] \mod \ n \\
   \Big[ \prod_i^k {\big( a^{\phi(n)} \big) }      = 1 \Big] \mod \ n \\
@@ -189,22 +192,24 @@ for which we can now employ the transitivity rule which states that
   =& \Big[ [a] \ \text{mod} \ n \cdot [b] \ \text{mod} \ n \Big] \mod n \\
 \end{align} %]]></script></p>
 
-<p>which gives us
-<script type="math/tex">\begin{align}
+<p>which gives us</p>
+
+<script type="math/tex; mode=display">\begin{align}
   \Big[ \prod_i^k {\big( a^{\phi(n)} \big) }      = 1 \Big] \mod \ n \\
   \Bigg[ \prod_i^k \Big( \Big[ \underbrace{a^{\phi(n)} \Big] \ \text{mod} \ n}_{=1} \Big)      = 1 \Bigg] \mod \ n \\
   \Bigg[ \prod_i^k \Big( 1 \Big)      = 1 \Bigg] \mod \ n \\
   \Bigg[  1   = 1 \Bigg] \mod \ n.
-\end{align}</script></p>
+\end{align}</script>
 
 <p>which proves that we can add an integer multiplier in the exponent.
-Carrying on we have
-<script type="math/tex">% <![CDATA[
+Carrying on we have</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
 \begin{align}
   & \Big[ a^{\phi(n)}       = 1 \Big] \mod \ n \\
   & \Big[ a^{k\phi(n)}      = 1 \Big] \mod \ n \quad \Big| \cdot a \\
   & \Big[ a^{k \phi(n)+ 1}  = a \Big] \mod \ n \\
-\end{align} %]]></script></p>
+\end{align} %]]></script>
 
 <p>The equation above tells us that for some integer number $k$ about which we don’t really care and the number $n$ we can exponentiate the number $a$ with $k \phi(n)+1$ and under the $\text{mod} \ n$ regime we will obtain the same number $a$.
 The cool thing that Euler’s Theorem allows us to do is that we can obviously factorize, respectively construct, the exponent $k \phi(n)+1$ in any way we want.</p>
@@ -227,8 +232,9 @@ The almost identical operation, albeit with the secret key $d$, is performed to 
 
 <p>The big question is obviously whether there is a strict one-to-one correspondence between the encryption and the decryption.
 Because a cryptographic system which maps multiple messages into the same decrypted message is absolutely worthless.
-To show this, we can again employ Euler’s theorem to guarantee the needed one-to-one correspondence, such that
-<script type="math/tex">% <![CDATA[
+To show this, we can again employ Euler’s theorem to guarantee the needed one-to-one correspondence, such that</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
 \begin{align}
 [ c^d &= x ] \mod n \\
 \Big[ \big( [ x^e ] \mod n \big)^d &= x \Big] \mod n \\
@@ -236,13 +242,14 @@ To show this, we can again employ Euler’s theorem to guarantee the needed one-
 \Big[ \prod^d_i x^e &= x \Big] \mod n \quad \text{(Transitivity Rule)} \\
 \Big[ \big( x^e \big)^d &= x \Big] \mod n \\
 \Big[ x^{ed} &= x \Big] \mod n \\
-\end{align} %]]></script></p>
+\end{align} %]]></script>
 
-<p>Thus if we are able to find a corresponding exponent in our encryption/decryption scheme that fulfills Euler’s theorem, we have a wonderful asymmetric cryptographic system which checkmarks all the requirements we wanted:
-<script type="math/tex">% <![CDATA[
+<p>Thus if we are able to find a corresponding exponent in our encryption/decryption scheme that fulfills Euler’s theorem, we have a wonderful asymmetric cryptographic system which checkmarks all the requirements we wanted:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
 \begin{align}
 \Big[ x^{ed} &= x \Big] \mod \ n \quad \Leftrightarrow \quad \Big[ a^{k \phi(n)+ 1}  = a \Big] \mod \ n 
-\end{align} %]]></script></p>
+\end{align} %]]></script>
 
 <p>The beauty of the modulo operator is that it’s really hard to guess the correct $d$ since there are an infinite number of possible $d$’s due to the arbitrary $k$ for which the modulo operator returns a possible correct $x$.</p>
 
@@ -263,15 +270,16 @@ This means that Euler’s totient for prime numbers is just the respective prime
 Just to reiterate, computing Euler’s totient $\phi(n)$ for a very large $n$ is practically impossible at the moment (but let’s maybe wait for quantum computers), while the private knowledge of the two prime numbers $p$ and $q$ which constitute $n$ multiplicatively allows us to generate a correct private key quite easily.
 In fact after having generated $p$ and $q$ we can simply pick a super large $k$ and determine $d$ quite easily as $d=(k(p-1)(q-1)+1)/e$.</p>
 
-<p>In order to get the mathematical equivalency that the encryption and subsequent decryption under the modulo $n$ operation is valid, all we have to do is find a $d$ for which holds
-<script type="math/tex">% <![CDATA[
+<p>In order to get the mathematical equivalency that the encryption and subsequent decryption under the modulo $n$ operation is valid, all we have to do is find a $d$ for which holds</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
 \begin{align}
 e d &= k \phi(n)+1 \\
 e d &= k \phi(pq)+1 \\
 e d &= k \phi(p) \phi(q) + 1 \\
 e d &= k (p-1)(q-1) + 1 \\
 \Big[ ed &= 1 \Big] \mod (p-1)(q-1) \\
-\end{align} %]]></script></p>
+\end{align} %]]></script>
 
 <p>which tells us that we are indeed generating the private key $d$ with the private ingredients of $\phi(p)$ and $\phi(q)$
 of our two secret prime numbers $p$ and $q$.</p>
@@ -292,13 +300,14 @@ Illustratively, hash functions permute input, cycle over it a couple of times an
 <p>A sender would send the message through a hash function $h = hash(x)$ and subsequently exponentiate it with the private key $d$.
 The receiver can then exponetiate the ‘decrypted’ hash again with the public key $e$ and take the modulo of it and compare it to his or her own hash of the sent message.</p>
 
-<p>Mathematically, we can employ Euler’s theorem again, having defined the product of the private and public key as $ed = k \phi(n)+1$, to obtain
-<script type="math/tex">% <![CDATA[
+<p>Mathematically, we can employ Euler’s theorem again, having defined the product of the private and public key as $ed = k \phi(n)+1$, to obtain</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
 \begin{align}
   \Big[ {\big(h^d \big)}^e &= h \Big] \mod n \\
   \Big[  h^{de} &= h \Big] \mod n \quad ed = k\phi(n)+1 \\
   \Big[  h^{k\phi(n)+1} &= h \Big] \mod n \quad \text{True via Euler's theorem} \\
-\end{align} %]]></script></p>
+\end{align} %]]></script>
 
 <p>Cha-Ching Baby …</p>
 

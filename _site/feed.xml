@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-10-08T11:06:36+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">RSA Cryptography:  The Math</title><link href="http://localhost:4000/blog/RSA/" rel="alternate" type="text/html" title="RSA Cryptography: &lt;br&gt; The Math" /><published>2021-10-04T00:00:00+02:00</published><updated>2021-10-04T00:00:00+02:00</updated><id>http://localhost:4000/blog/RSA</id><content type="html" xml:base="http://localhost:4000/blog/RSA/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-10-08T11:11:49+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">RSA Cryptography:  The Math</title><link href="http://localhost:4000/blog/RSA/" rel="alternate" type="text/html" title="RSA Cryptography: &lt;br&gt; The Math" /><published>2021-10-04T00:00:00+02:00</published><updated>2021-10-04T00:00:00+02:00</updated><id>http://localhost:4000/blog/RSA</id><content type="html" xml:base="http://localhost:4000/blog/RSA/">&lt;head&gt;
 &lt;style&gt;
 .MathJax_Display, .MJXc-display, .MathJax_SVG_Display {
     overflow-x: auto;
@@ -79,19 +79,21 @@ The latter example is still divisible by 1 as well, but we’re talking about th
 
 &lt;h3 id=&quot;eulers-totient&quot;&gt;Eulers Totient&lt;/h3&gt;
 
-&lt;p&gt;For $n \in \mathbb{N}$, Euler’s totient is given as the number of integer numbers $m$ that are in the set
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+&lt;p&gt;For $n \in \mathbb{N}$, Euler’s totient is given as the number of integer numbers $m$ that are in the set&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
 \phi(n) = \{m \in \mathbb{N} \ | \ 1 \leq m \leq n, \text{gcd}(m, n) = 1 \}
-\end{align}&lt;/script&gt;&lt;/p&gt;
+\end{align}&lt;/script&gt;
 
 &lt;p&gt;which essentially means that we want the number of integers that are smaller than $n$ and are coprime to $n$.
 As an example let’s look at &lt;script type=&quot;math/tex&quot;&gt;\phi(9) = | \{1, 2, 4, 5, 7, 8 \} |  = 6&lt;/script&gt;.
 The numbers 3, 6 and 9 are not members of $\phi(9)$ because their greatest common divisor is 3, so the restriction $\text{gcd}(\{ 3,6,9 \}, 9) =1$ does not hold.&lt;/p&gt;
 
-&lt;p&gt;More importantly for our application, Euler’s totient is a multiplicative function for two numbers which are relatively prime, or coprime, to each other.
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+&lt;p&gt;More importantly for our application, Euler’s totient is a multiplicative function for two numbers which are relatively prime, or coprime, to each other.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
   \phi(n) = \phi(pq) = \phi(p) \phi(q) \quad ; \text{gcd}(p, q)=1
-\end{align}&lt;/script&gt;&lt;/p&gt;
+\end{align}&lt;/script&gt;
 
 &lt;p&gt;Also, taking Euler’s totient of a prime number $p \in \mathbb{P}$ returns $\phi(p) = p-1$ since a prime number is only divisible by 1 or itself and thus every number before $p$ falls into the category of Euler’s totient. This will be important later for the RSA algorithm …&lt;/p&gt;
 
@@ -110,8 +112,9 @@ The numbers 3, 6 and 9 are not members of $\phi(9)$ because their greatest commo
 \end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;Right here we smuggled in the integer number $k$ in the exponentiation.
-In order to prove the validity of this step, we can construct the following ‘proof’ (Hey, I ain’t no mathematician, but at least the math checks out),
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+In order to prove the validity of this step, we can construct the following ‘proof’ (Hey, I ain’t no mathematician, but at least the math checks out),&lt;/p&gt;
+
+&lt;p&gt;&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
   \Big[ a^{k\phi(n)}      = 1 \Big] \mod \ n \\
   \Big[ {\big( a^{\phi(n)} \big) }^k      = 1 \Big] \mod \ n \\
   \Big[ \prod_i^k {\big( a^{\phi(n)} \big) }      = 1 \Big] \mod \ n \\
@@ -123,22 +126,24 @@ for which we can now employ the transitivity rule which states that
   =&amp; \Big[ [a] \ \text{mod} \ n \cdot [b] \ \text{mod} \ n \Big] \mod n \\
 \end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
-&lt;p&gt;which gives us
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+&lt;p&gt;which gives us&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
   \Big[ \prod_i^k {\big( a^{\phi(n)} \big) }      = 1 \Big] \mod \ n \\
   \Bigg[ \prod_i^k \Big( \Big[ \underbrace{a^{\phi(n)} \Big] \ \text{mod} \ n}_{=1} \Big)      = 1 \Bigg] \mod \ n \\
   \Bigg[ \prod_i^k \Big( 1 \Big)      = 1 \Bigg] \mod \ n \\
   \Bigg[  1   = 1 \Bigg] \mod \ n.
-\end{align}&lt;/script&gt;&lt;/p&gt;
+\end{align}&lt;/script&gt;
 
 &lt;p&gt;which proves that we can add an integer multiplier in the exponent.
-Carrying on we have
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+Carrying on we have&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
 \begin{align}
   &amp; \Big[ a^{\phi(n)}       = 1 \Big] \mod \ n \\
   &amp; \Big[ a^{k\phi(n)}      = 1 \Big] \mod \ n \quad \Big| \cdot a \\
   &amp; \Big[ a^{k \phi(n)+ 1}  = a \Big] \mod \ n \\
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+\end{align} %]]&gt;&lt;/script&gt;
 
 &lt;p&gt;The equation above tells us that for some integer number $k$ about which we don’t really care and the number $n$ we can exponentiate the number $a$ with $k \phi(n)+1$ and under the $\text{mod} \ n$ regime we will obtain the same number $a$.
 The cool thing that Euler’s Theorem allows us to do is that we can obviously factorize, respectively construct, the exponent $k \phi(n)+1$ in any way we want.&lt;/p&gt;
@@ -161,8 +166,9 @@ The almost identical operation, albeit with the secret key $d$, is performed to 
 
 &lt;p&gt;The big question is obviously whether there is a strict one-to-one correspondence between the encryption and the decryption.
 Because a cryptographic system which maps multiple messages into the same decrypted message is absolutely worthless.
-To show this, we can again employ Euler’s theorem to guarantee the needed one-to-one correspondence, such that
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+To show this, we can again employ Euler’s theorem to guarantee the needed one-to-one correspondence, such that&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
 \begin{align}
 [ c^d &amp;= x ] \mod n \\
 \Big[ \big( [ x^e ] \mod n \big)^d &amp;= x \Big] \mod n \\
@@ -170,13 +176,14 @@ To show this, we can again employ Euler’s theorem to guarantee the needed one-
 \Big[ \prod^d_i x^e &amp;= x \Big] \mod n \quad \text{(Transitivity Rule)} \\
 \Big[ \big( x^e \big)^d &amp;= x \Big] \mod n \\
 \Big[ x^{ed} &amp;= x \Big] \mod n \\
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+\end{align} %]]&gt;&lt;/script&gt;
 
-&lt;p&gt;Thus if we are able to find a corresponding exponent in our encryption/decryption scheme that fulfills Euler’s theorem, we have a wonderful asymmetric cryptographic system which checkmarks all the requirements we wanted:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+&lt;p&gt;Thus if we are able to find a corresponding exponent in our encryption/decryption scheme that fulfills Euler’s theorem, we have a wonderful asymmetric cryptographic system which checkmarks all the requirements we wanted:&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
 \begin{align}
 \Big[ x^{ed} &amp;= x \Big] \mod \ n \quad \Leftrightarrow \quad \Big[ a^{k \phi(n)+ 1}  = a \Big] \mod \ n 
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+\end{align} %]]&gt;&lt;/script&gt;
 
 &lt;p&gt;The beauty of the modulo operator is that it’s really hard to guess the correct $d$ since there are an infinite number of possible $d$’s due to the arbitrary $k$ for which the modulo operator returns a possible correct $x$.&lt;/p&gt;
 
@@ -197,15 +204,16 @@ This means that Euler’s totient for prime numbers is just the respective prime
 Just to reiterate, computing Euler’s totient $\phi(n)$ for a very large $n$ is practically impossible at the moment (but let’s maybe wait for quantum computers), while the private knowledge of the two prime numbers $p$ and $q$ which constitute $n$ multiplicatively allows us to generate a correct private key quite easily.
 In fact after having generated $p$ and $q$ we can simply pick a super large $k$ and determine $d$ quite easily as $d=(k(p-1)(q-1)+1)/e$.&lt;/p&gt;
 
-&lt;p&gt;In order to get the mathematical equivalency that the encryption and subsequent decryption under the modulo $n$ operation is valid, all we have to do is find a $d$ for which holds
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+&lt;p&gt;In order to get the mathematical equivalency that the encryption and subsequent decryption under the modulo $n$ operation is valid, all we have to do is find a $d$ for which holds&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
 \begin{align}
 e d &amp;= k \phi(n)+1 \\
 e d &amp;= k \phi(pq)+1 \\
 e d &amp;= k \phi(p) \phi(q) + 1 \\
 e d &amp;= k (p-1)(q-1) + 1 \\
 \Big[ ed &amp;= 1 \Big] \mod (p-1)(q-1) \\
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+\end{align} %]]&gt;&lt;/script&gt;
 
 &lt;p&gt;which tells us that we are indeed generating the private key $d$ with the private ingredients of $\phi(p)$ and $\phi(q)$
 of our two secret prime numbers $p$ and $q$.&lt;/p&gt;
@@ -226,13 +234,14 @@ Illustratively, hash functions permute input, cycle over it a couple of times an
 &lt;p&gt;A sender would send the message through a hash function $h = hash(x)$ and subsequently exponentiate it with the private key $d$.
 The receiver can then exponetiate the ‘decrypted’ hash again with the public key $e$ and take the modulo of it and compare it to his or her own hash of the sent message.&lt;/p&gt;
 
-&lt;p&gt;Mathematically, we can employ Euler’s theorem again, having defined the product of the private and public key as $ed = k \phi(n)+1$, to obtain
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+&lt;p&gt;Mathematically, we can employ Euler’s theorem again, having defined the product of the private and public key as $ed = k \phi(n)+1$, to obtain&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
 \begin{align}
   \Big[ {\big(h^d \big)}^e &amp;= h \Big] \mod n \\
   \Big[  h^{de} &amp;= h \Big] \mod n \quad ed = k\phi(n)+1 \\
   \Big[  h^{k\phi(n)+1} &amp;= h \Big] \mod n \quad \text{True via Euler's theorem} \\
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+\end{align} %]]&gt;&lt;/script&gt;
 
 &lt;p&gt;Cha-Ching Baby …&lt;/p&gt;</content><summary type="html">The math that ensures that it's none of your business</summary></entry><entry><title type="html">Berlin Over The Years</title><link href="http://localhost:4000/blog/Berlin2021/" rel="alternate" type="text/html" title="Berlin Over The Years" /><published>2021-08-31T00:00:00+02:00</published><updated>2021-08-31T00:00:00+02:00</updated><id>http://localhost:4000/blog/Berlin2021</id><content type="html" xml:base="http://localhost:4000/blog/Berlin2021/">&lt;!-- ## Berlin Over The Years --&gt;
 &lt;style&gt;
@@ -1304,6 +1313,13 @@ The receiver can then exponetiate the ‘decrypted’ hash again with the public
     
     
 &lt;/ul&gt;</content><category term="photography" /><summary type="html">Lake Garda, Milan, Bergamo, Brescia</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/italy21/DSC0940.jpg" /></entry><entry><title type="html">Reverse Time Stochastic Differential Equations</title><link href="http://localhost:4000/blog/ReverseTimeAnderson/" rel="alternate" type="text/html" title="Reverse Time Stochastic Differential Equations" /><published>2021-04-09T00:00:00+02:00</published><updated>2021-04-09T00:00:00+02:00</updated><id>http://localhost:4000/blog/ReverseTimeAnderson</id><content type="html" xml:base="http://localhost:4000/blog/ReverseTimeAnderson/">&lt;head&gt;
+&lt;style&gt;
+.MathJax_Display, .MJXc-display, .MathJax_SVG_Display {
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+&lt;/style&gt;
+
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -1334,8 +1350,9 @@ For notational brevity we will use the term $\mu(x_t)$ for the drift and $\sigma
 &lt;p&gt;It describes the evolution of a probability distribution $p(x_t)$ forward in time.
 We can quite frankly think of it as, for example, a Normal distribution being slowly transformed into an arbitrary complex distribution according to the drift and diffusion parameters $\mu(x_t)$ and $\sigma(x_t)$.&lt;/p&gt;
 
-&lt;p&gt;The Kolmogorov backward equation for $t \leq s$ is defined as
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+&lt;p&gt;The Kolmogorov backward equation for $t \leq s$ is defined as&lt;/p&gt;
+
+&lt;p&gt;&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
 	- \partial_t p(x_s | x_t) = \mu(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t)
 \end{align}&lt;/script&gt;
 and it basically answers the question how the probability of $x_s$ at a later point in time changes as we change $x_t$ at an earlier point in time.
@@ -1351,37 +1368,42 @@ Unfortunately there is no corresponding stochastic differential equation with a 
 Why do we invoke the joint probability $p(x_s, x_t)$ we might ask?
 What we’re trying to achieve is to derive a stochastic differential equation that tells us from what values of $x_t$ we can arrive at $x_s$.
 We can ask ourselves what the partial differential equation would be that describes the evolution of the joint distribution over time.
-First multiplying both sides of Bayes theorem with minus one and taking the derivative with respect to time $t$, we obtain via the product rule
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+First multiplying both sides of Bayes theorem with minus one and taking the derivative with respect to time $t$, we obtain via the product rule&lt;/p&gt;
+
+&lt;p&gt;&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
 	- \partial_t p(x_s, x_t) &amp;= - \partial_t \left[ p(x_s| x_t) p(x_t) \right] \\
 	&amp;= \underbrace{-\partial_t p(x_s|x_t)}_{\text{KBE}} p(x_t) - p(x_s | x_t) \underbrace{\partial_t p(x_t)}_{\text{KFE}}
 \end{align} %]]&gt;&lt;/script&gt;
-into which we can plug in the Kolmogorov forward (KFE) and Kolmogorov backward (KBE) equations, 
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+into which we can plug in the Kolmogorov forward (KFE) and Kolmogorov backward (KBE) equations,&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
 \begin{align}
 	&amp; -\partial_t p(x_s|x_t) p(x_t) - p(x_s | x_t) \partial_t p(x_t) \\
 	&amp;= \left( \mu(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \right) p(x_t) \\
 	&amp; + p(x_s| x_t) \left( \partial_{x_t} \left[ \mu(x_t) p(x_t) \right] - \frac{1}{2} \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \right)
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+\end{align} %]]&gt;&lt;/script&gt;
 
-&lt;p&gt;The derivative occuring in the backward Kolmogorov equation are
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+&lt;p&gt;The derivative occuring in the backward Kolmogorov equation are&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
 \begin{align}
 	\partial_{x_t} p(x_s|x_t) &amp;= \partial_{x_t} \left[ \frac{p(x_s, x_t)}{p(x_t)} \right] \\
 	&amp; = \frac{\partial_{x_t} p(x_s, x_t) p(x_t) - p(x_s, x_t) \partial_{x_t} p(x_t)}{p^2(x_t)} \\
 	&amp; = \frac{\partial_{x_t} p(x_s, x_t)}{p(x_t)} - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p^2(x_t)}
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+\end{align} %]]&gt;&lt;/script&gt;
 
-&lt;p&gt;The next step is to evaluate the derivative of the products in the forward Kolmogorov equation.
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+&lt;p&gt;The next step is to evaluate the derivative of the products in the forward Kolmogorov equation.&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
 \begin{align}
 	\partial_{x_t} \left[ \mu(x_t) p(x_t) \right] &amp; = \partial_{x_t} \mu(x_t) \ p(x_t) + \mu(x_t) \ \partial_{x_t} p(x_t) \\
 	\partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] &amp; = \partial_{x_t}^2 \sigma^2(x_t) \ p(x_t) + 2 \ \partial_{x_t} \sigma^2(x_t) \ \partial_{x_t} p(x_t) + \sigma^2(x_t) \ \partial_{x_t}^2 p(x_t)
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+\end{align} %]]&gt;&lt;/script&gt;
 
-&lt;p&gt;Plugging in the derivatives of the probability distributions we obtain
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+&lt;p&gt;Plugging in the derivatives of the probability distributions we obtain&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
 \begin{align}
 	- \partial_t p(x_s, x_t)
 	= &amp; - \partial_t \left[ p(x_s| x_t) p(x_t) \right] \\
@@ -1405,7 +1427,7 @@ into which we can plug in the Kolmogorov forward (KFE) and Kolmogorov backward (
 	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
 	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
 	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right]
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+\end{align} %]]&gt;&lt;/script&gt;
 
 &lt;p&gt;We can now see that the drift term already fulfills the requirements of the forward Kolmogorov equation.
 What we’re left with and which we have to take care of are the two terms with the diffusion terms $\sigma^2(x_t)$.
@@ -1413,18 +1435,20 @@ The goal is to fuse the two terms into one which resembles the diffusion term in
 Just to reiterate it one more time, if we can massage the partial differential equation into the functional form of the Kolmogorov forward equation, we have a one-to-one correspondence to a stochastic differential equation that can be solved backward in time.&lt;/p&gt;
 
 &lt;p&gt;Following the gracious help from Brian Anderson himself in an email from down under, we can simplify the terms with $\sigma^2(x_t)$ by expanding the last term.
-The important step, that Brian pointed out to me, is to factorize the joint distribution $p(x_s, x_t) = p(x_s| x_t) p(x_t)$ and invoke the product rule to match the terms,
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+The important step, that Brian pointed out to me, is to factorize the joint distribution $p(x_s, x_t) = p(x_s| x_t) p(x_t)$ and invoke the product rule to match the terms,&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
 \begin{align}
 	&amp; \frac{1}{2} \partial_{x_t}^2 \left[ p(x_s, x_t) \sigma^2(x_t) \right] \\
 	= &amp; \frac{1}{2} \partial_{x_t}^2 \left[ p(x_s | x_t) p(x_t) \sigma^2(x_t) \right] \\
 	= &amp; \frac{1}{2} \partial_{x_t}^2 p(x_s | x_t) p(x_t) \sigma^2(x_t) + \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right] \partial_{x_t} p(x_s| x_t)
 	 + \frac{1}{2} \partial_{x_t}^2 \left[ p(x_t) \sigma^2(x_t) \right] p(x_s| x_t)
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+\end{align} %]]&gt;&lt;/script&gt;
 
 &lt;p&gt;We can see from the expansion of the derivative above that we can combine the terms in our derivation if we expand the “center term”.
-Furthermore we can employ the identity $-\frac{1}{2} X = -X + \frac{1}{2} X$ to obtain
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+Furthermore we can employ the identity $-\frac{1}{2} X = -X + \frac{1}{2} X$ to obtain&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
 \begin{align}
 	-\partial_t p(x_s, x_t)
 	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
@@ -1446,10 +1470,11 @@ Furthermore we can employ the identity $-\frac{1}{2} X = -X + \frac{1}{2} X$ to 
 	&amp; + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right] \\
 	= &amp; \partial_{x_t} \left[ p(x_s, x_t) \left( \mu(x_t) - \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) \right] \\
 	&amp; + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right]
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+\end{align} %]]&gt;&lt;/script&gt;
 
-&lt;p&gt;which finally gives us a stochastic differential equation that we can solve backward in time:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+&lt;p&gt;which finally gives us a stochastic differential equation that we can solve backward in time:&lt;/p&gt;
+
+&lt;p&gt;&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
 dX_t = \left(\mu(x_t) - \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) dt + \sigma(x_t) d\tilde{W}_t
 \end{align}&lt;/script&gt;
 where $\tilde{W}_t$ is a Wiener process that flows backward in time.&lt;/p&gt;</content><summary type="html">'If I Could Turn Back Time' by Cher (1989)</summary></entry><entry><title type="html">Fokker, Planck &amp;amp; Kolmogorov</title><link href="http://localhost:4000/blog/Kramers/" rel="alternate" type="text/html" title="Fokker, Planck &amp; Kolmogorov" /><published>2021-02-04T00:00:00+01:00</published><updated>2021-02-04T00:00:00+01:00</updated><id>http://localhost:4000/blog/Kramers</id><content type="html" xml:base="http://localhost:4000/blog/Kramers/">&lt;head&gt;
