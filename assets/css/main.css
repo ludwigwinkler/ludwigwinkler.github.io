@@ -9,7 +9,7 @@
 
 
 .MathJax_Display, .MJXc-display, .MathJax_SVG_Display {
-    overflow-x: auto;
+    overflow-x: scroll;
     overflow-y: hidden;
 }
 /* Style the button that is used to open and close the collapsible content */
