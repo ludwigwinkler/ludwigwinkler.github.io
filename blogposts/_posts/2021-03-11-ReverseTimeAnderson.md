@@ -39,6 +39,7 @@ with the derivative of Wiener process $W_t$ admits two types of equations, calle
 For notational brevity we will use the term $\mu(x_t)$ for the drift and $\sigma(x_t)$ as the diffusion parameter and omit the explicit time dependency.
 
 The Kolmogorov forward equation is identical to the Fokker Planck equation and states
+
 $$
 \begin{align}
 	\partial_t p(x_t) = -\partial_{x_t} \left[ \mu(x_t) p(x_t) \right] + \frac{1}{2} \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right].
@@ -55,6 +56,7 @@ $$
 	- \partial_t p(x_s | x_t) = \mu(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t)
 \end{align}
 $$
+
 and it basically answers the question how the probability of $x_s$ at a later point in time changes as we change $x_t$ at an earlier point in time.
 The Kolmogorov backward equation is somewhat confounding with respect to time as we're taking the partial derivative with respect to the earlier time step $t$ on which we are also coniditoning.
 But we can think of it as asking 'How does the probability of $x_s$ at the later point in time $s$ change, as we slowly evolve the probability distribution backwards through time and condition on $x_t$'.
@@ -76,6 +78,7 @@ $$
 	&= \underbrace{-\partial_t p(x_s|x_t)}_{\text{KBE}} p(x_t) - p(x_s | x_t) \underbrace{\partial_t p(x_t)}_{\text{KFE}}
 \end{align} 
 $$
+
 into which we can plug in the Kolmogorov forward (KFE) and Kolmogorov backward (KBE) equations, 
 
 $$
