@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-10-08T14:01:29+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">RSA Cryptography:  The Math</title><link href="http://localhost:4000/blog/RSA/" rel="alternate" type="text/html" title="RSA Cryptography: &lt;br&gt; The Math" /><published>2021-10-04T00:00:00+02:00</published><updated>2021-10-04T00:00:00+02:00</updated><id>http://localhost:4000/blog/RSA</id><content type="html" xml:base="http://localhost:4000/blog/RSA/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-10-22T20:23:08+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">RSA Cryptography:  The Math</title><link href="http://localhost:4000/blog/RSA/" rel="alternate" type="text/html" title="RSA Cryptography: &lt;br&gt; The Math" /><published>2021-10-04T00:00:00+02:00</published><updated>2021-10-04T00:00:00+02:00</updated><id>http://localhost:4000/blog/RSA</id><content type="html" xml:base="http://localhost:4000/blog/RSA/">&lt;head&gt;
 &lt;style&gt;
 .MathJax_Display, .MJXc-display, .MathJax_SVG_Display {
     overflow-x: auto;
@@ -1478,9 +1478,29 @@ Furthermore we can employ the identity $-\frac{1}{2} X = -X + \frac{1}{2} X$ to 
 &lt;p&gt;which finally gives us a stochastic differential equation that we can solve backward in time:&lt;/p&gt;
 
 &lt;p&gt;&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-dX_t = \left(\mu(x_t) - \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) dt + \sigma(x_t) d\tilde{W}_t
+d\tilde{X}_t = \left(\mu(x_t) - \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) dt + \sigma(x_t) d\tilde{W}_t
 \end{align}&lt;/script&gt;
-where $\tilde{W}_t$ is a Wiener process that flows backward in time.&lt;/p&gt;</content><summary type="html">'If I Could Turn Back Time' by Cher (1989)</summary></entry><entry><title type="html">Fokker, Planck &amp;amp; Kolmogorov</title><link href="http://localhost:4000/blog/Kramers/" rel="alternate" type="text/html" title="Fokker, Planck &amp; Kolmogorov" /><published>2021-02-04T00:00:00+01:00</published><updated>2021-02-04T00:00:00+01:00</updated><id>http://localhost:4000/blog/Kramers</id><content type="html" xml:base="http://localhost:4000/blog/Kramers/">&lt;head&gt;
+where $\tilde{W}_t$ is a Wiener process that flows backward in time.&lt;/p&gt;
+
+&lt;p&gt;The common application of the reverse time stochastic differential equations is in generative modelling.
+In these applications the noise $\sigma(x_t)$ is made independent of the input such that we can pull it out of the partial derivative $\partial_{x_t}$.
+By additionally using the log-derivative trick we obtain a term which is dependent on the score&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
+\begin{align}
+d\tilde{X}_t &amp;= \left(\mu(x_t) - \sigma_t^2 \frac{1}{p(x_t)} \partial_{x_t} \ p(x_t) \right) dt + \sigma_t d\tilde{W}_t \\
+&amp;= \Big(\mu(x_t) - \sigma_t^2 \underbrace{\partial_{x_t} \log p(x_t)}_{\text{ML Model}} \Big) dt + \sigma_t d\tilde{W}_t \\
+\end{align} %]]&gt;&lt;/script&gt;
+
+&lt;p&gt;Score based generative modelling proceeds by defining a, what I creatively call, ‘noising’ process which takes data and turns it into garbage by iteratively adding noise along an analytically known SDE.
+The data dependent drift $\mu(x_t) = \alpha_t x_0$ with $\alpha_s &amp;gt; \alpha_t, s&amp;lt;t$ and the data independent diffusion $\sigma_t$ with $\sigma_s &amp;lt; \sigma_t, s&amp;lt; t$ are known beforehand.
+In essence, the drift reduces the data $x_0$ slowly to zero while we heap more and noise on the data via the diffusion term.
+More importantly, by defining an analytical SDE we can ‘jump’ to any point in time and evaluate how noisy the data $x_t$ has become without having to solve SDE explicitely.
+By defining a schedule for both $\alpha_t$ and $\sigma_t$ we can evaluate the ‘noisiness’ sort of point-wise in time.&lt;/p&gt;
+
+&lt;p&gt;The remarkable reverse time stochastic differential equation then tells us that all we have to do is to cancel out the drift which turns our data into noise.
+If we now take some noise and iteratively subtract the $\sigma_t^2 \partial_{x_t} \log p(x_t)$ from it we are reducing integration step by integration step (remember it’s a SDE) the noise and recover the true data.
+Voila, you have generative model that turns noise into data.&lt;/p&gt;</content><summary type="html">'If I Could Turn Back Time' by Cher (1989)</summary></entry><entry><title type="html">Fokker, Planck &amp;amp; Kolmogorov</title><link href="http://localhost:4000/blog/Kramers/" rel="alternate" type="text/html" title="Fokker, Planck &amp; Kolmogorov" /><published>2021-02-04T00:00:00+01:00</published><updated>2021-02-04T00:00:00+01:00</updated><id>http://localhost:4000/blog/Kramers</id><content type="html" xml:base="http://localhost:4000/blog/Kramers/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({

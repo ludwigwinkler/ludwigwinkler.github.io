@@ -187,7 +187,28 @@ which finally gives us a stochastic differential equation that we can solve back
 
 $$
 \begin{align}
-dX_t = \left(\mu(x_t) - \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) dt + \sigma(x_t) d\tilde{W}_t
+d\tilde{X}_t = \left(\mu(x_t) - \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) dt + \sigma(x_t) d\tilde{W}_t
 \end{align}
 $$
 where $\tilde{W}_t$ is a Wiener process that flows backward in time.
+
+The common application of the reverse time stochastic differential equations is in generative modelling.
+In these applications the noise $\sigma(x_t)$ is made independent of the input such that we can pull it out of the partial derivative $\partial_{x_t}$.
+By additionally using the log-derivative trick we obtain a term which is dependent on the score
+
+$$
+\begin{align}
+d\tilde{X}_t &= \left(\mu(x_t) - \sigma_t^2 \frac{1}{p(x_t)} \partial_{x_t} \ p(x_t) \right) dt + \sigma_t d\tilde{W}_t \\
+&= \Big(\mu(x_t) - \sigma_t^2 \underbrace{\partial_{x_t} \log p(x_t)}_{\text{ML Model}} \Big) dt + \sigma_t d\tilde{W}_t \\
+\end{align}
+$$
+
+Score based generative modelling proceeds by defining a, what I creatively call, 'noising' process which takes data and turns it into garbage by iteratively adding noise along an analytically known SDE.
+The data dependent drift $\mu(x_t) = \alpha_t x_0$ with $\alpha_s > \alpha_t, s<t$ and the data independent diffusion $\sigma_t$ with $\sigma_s < \sigma_t, s< t$ are known beforehand.
+In essence, the drift reduces the data $x_0$ slowly to zero while we heap more and noise on the data via the diffusion term.
+More importantly, by defining an analytical SDE we can 'jump' to any point in time and evaluate how noisy the data $x_t$ has become without having to solve SDE explicitely.
+By defining a schedule for both $\alpha_t$ and $\sigma_t$ we can evaluate the 'noisiness' sort of point-wise in time.
+
+The remarkable reverse time stochastic differential equation then tells us that all we have to do is to cancel out the drift which turns our data into noise.
+If we now take some noise and iteratively subtract the $\sigma_t^2 \partial_{x_t} \log p(x_t)$ from it we are reducing integration step by integration step (remember it's a SDE) the noise and recover the true data.
+Voila, you have generative model that turns noise into data.
