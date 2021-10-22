@@ -2,9 +2,10 @@
 layout: post
 title:  "Reverse Time Stochastic Differential Equations"
 date:   2021-04-09
-excerpt: " 'If I Could Turn Back Time' by Cher (1989)"
+excerpt: " 'If I Could Turn Back Time' by Cher (1989) and its application to generative modelling"
 image:
 ---
+
 <head>
 <style>
 .MathJax_Display, .MJXc-display, .MathJax_SVG_Display {
