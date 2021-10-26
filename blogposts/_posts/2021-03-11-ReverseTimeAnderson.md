@@ -1,8 +1,8 @@
 ---
 layout: post
-title:  "Reverse Time Stochastic Differential Equations"
+title:  "Reverse Time Stochastic Differential Equations [for generative modelling]"
 date:   2021-04-09
-excerpt: " 'If I Could Turn Back Time' by Cher (1989) and its application to generative modelling"
+excerpt: " 'If I Could Turn Back Time' by Cher (1989)"
 image:
 ---
 
