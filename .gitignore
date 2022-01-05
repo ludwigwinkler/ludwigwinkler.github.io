@@ -6,6 +6,7 @@ __pycache__/
 # Ludi stuff
 */wandb/*
 */vendor/*
+*/cache/*
 # C extensions
 *.so
 
