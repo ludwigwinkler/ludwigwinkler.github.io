@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-10-22T20:32:26+02:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">RSA Cryptography:  The Math</title><link href="http://localhost:4000/blog/RSA/" rel="alternate" type="text/html" title="RSA Cryptography: &lt;br&gt; The Math" /><published>2021-10-04T00:00:00+02:00</published><updated>2021-10-04T00:00:00+02:00</updated><id>http://localhost:4000/blog/RSA</id><content type="html" xml:base="http://localhost:4000/blog/RSA/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-01-05T14:42:58+01:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">RSA Cryptography:  The Math</title><link href="http://localhost:4000/blog/RSA/" rel="alternate" type="text/html" title="RSA Cryptography: &lt;br&gt; The Math" /><published>2021-10-04T00:00:00+02:00</published><updated>2021-10-04T00:00:00+02:00</updated><id>http://localhost:4000/blog/RSA</id><content type="html" xml:base="http://localhost:4000/blog/RSA/">&lt;head&gt;
 &lt;style&gt;
 .MathJax_Display, .MJXc-display, .MathJax_SVG_Display {
     overflow-x: auto;
@@ -1311,7 +1311,7 @@ The receiver can then exponetiate the ‘decrypted’ hash again with the public
     
     
     
-&lt;/ul&gt;</content><category term="photography" /><summary type="html">Lake Garda, Milan, Bergamo, Brescia</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/italy21/DSC0940.jpg" /></entry><entry><title type="html">Reverse Time Stochastic Differential Equations</title><link href="http://localhost:4000/blog/ReverseTimeAnderson/" rel="alternate" type="text/html" title="Reverse Time Stochastic Differential Equations" /><published>2021-04-09T00:00:00+02:00</published><updated>2021-04-09T00:00:00+02:00</updated><id>http://localhost:4000/blog/ReverseTimeAnderson</id><content type="html" xml:base="http://localhost:4000/blog/ReverseTimeAnderson/">&lt;head&gt;
+&lt;/ul&gt;</content><category term="photography" /><summary type="html">Lake Garda, Milan, Bergamo, Brescia</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/italy21/DSC0940.jpg" /></entry><entry><title type="html">Reverse Time Stochastic Differential Equations [for generative modelling]</title><link href="http://localhost:4000/blog/ReverseTimeAnderson/" rel="alternate" type="text/html" title="Reverse Time Stochastic Differential Equations [for generative modelling]" /><published>2021-04-09T00:00:00+02:00</published><updated>2021-04-09T00:00:00+02:00</updated><id>http://localhost:4000/blog/ReverseTimeAnderson</id><content type="html" xml:base="http://localhost:4000/blog/ReverseTimeAnderson/">&lt;head&gt;
 &lt;style&gt;
 .MathJax_Display, .MJXc-display, .MathJax_SVG_Display {
     overflow-x: auto;
@@ -1500,7 +1500,7 @@ By defining a schedule for both $\alpha_t$ and $\sigma_t$ we can evaluate the �
 
 &lt;p&gt;The remarkable reverse time stochastic differential equation then tells us that all we have to do is to cancel out the drift which turns our data into noise.
 If we now take some noise and iteratively subtract the $\sigma_t^2 \partial_{x_t} \log p(x_t)$ from it we are reducing integration step by integration step (remember it’s a SDE) the noise and recover the true data.
-Voila, you have generative model that turns noise into data.&lt;/p&gt;</content><summary type="html">'If I Could Turn Back Time' by Cher (1989) and its application to generative modelling</summary></entry><entry><title type="html">Fokker, Planck &amp;amp; Kolmogorov</title><link href="http://localhost:4000/blog/Kramers/" rel="alternate" type="text/html" title="Fokker, Planck &amp; Kolmogorov" /><published>2021-02-04T00:00:00+01:00</published><updated>2021-02-04T00:00:00+01:00</updated><id>http://localhost:4000/blog/Kramers</id><content type="html" xml:base="http://localhost:4000/blog/Kramers/">&lt;head&gt;
+Voila, you have generative model that turns noise into data.&lt;/p&gt;</content><summary type="html">'If I Could Turn Back Time' by Cher (1989)</summary></entry><entry><title type="html">Fokker, Planck &amp;amp; Kolmogorov</title><link href="http://localhost:4000/blog/Kramers/" rel="alternate" type="text/html" title="Fokker, Planck &amp; Kolmogorov" /><published>2021-02-04T00:00:00+01:00</published><updated>2021-02-04T00:00:00+01:00</updated><id>http://localhost:4000/blog/Kramers</id><content type="html" xml:base="http://localhost:4000/blog/Kramers/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -1546,11 +1546,26 @@ We take &lt;script type=&quot;math/tex&quot;&gt;x'_t&lt;/script&gt; as a sort of
 	= &amp; \int_{X'} \int_{Y} \delta(y_{t+\tau} - x_{t+\tau}) p(y_{t + \tau} | x'_{t}) \ dy_{t+\tau} p(x'_t) dx'_t
 \end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
+&lt;p&gt;The main component of the Kramers-Moyal expansions is the use of the Taylor expansion on a shifted function.
+The classical Taylor expansion $T_{f,a}(x)$ of a function $f(x)$ around a root point $a$ says that we can reconstruct the function $f(x)$ with an infinite sum consisting of its derivatives&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+	T_{f,a}(x) = \sum_{n=0}^\infty \frac{f^{(n)}(a)}{n!} (x - a)^n
+\end{align}&lt;/script&gt;
+
+&lt;p&gt;What happens if we introduce an offset $h$ to the root point $a$ which can take on any value we want?
+It turns out that the arbitrary offset $h$ can directly be used as a distance measure to the root point.
+The Taylor expansion of the shifted function $f(a + h)$ then becomes&lt;/p&gt;
+
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+	T_{f,a}(h) = \sum_{n=0}^\infty \frac{f^{(n)}(a)}{n!} h^n
+\end{align}&lt;/script&gt;
+
 &lt;p&gt;We can then first expand the delta function $\delta ( y_{t+\tau} - x_{t+\tau} )$ with $\pm x_t$ and subsequently expand the Taylor series to obtain
 &lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
-	\delta(y_{t+\tau} - x_{t+\tau}) = &amp; \delta(y_{t+\tau} - x'_t + x'_t - x_{t+\tau}) = \delta(y_{t+\tau} - x'_t) \delta(x'_t - x_{t+\tau}) \\
-	= &amp; \sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ \partial_{x'_t}^{n} \ \delta(x'_t - x_{t+\tau})
+	\delta(y_{t+\tau} - x_{t+\tau}) = &amp; \delta(\overbrace{y_{t+\tau} - x'_t}^{h} + \overbrace{x'_t - x_{t+\tau}}^{a} ) \\
+	= &amp; \sum_{n=0}^\infty \frac{1}{n!} \underbrace{\partial_{x'_t}^{n} \delta(x'_t - x_{t+\tau}) }_{f^{(n)}(a)} \underbrace{( y_{t+\tau} - x'_t)^n}_{h^n}
 \end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;We can plug the expanded Taylor series back in to get

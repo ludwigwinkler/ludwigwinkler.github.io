@@ -110,11 +110,26 @@ We take <script type="math/tex">x'_t</script> as a sort of origin point which do
 	= & \int_{X'} \int_{Y} \delta(y_{t+\tau} - x_{t+\tau}) p(y_{t + \tau} | x'_{t}) \ dy_{t+\tau} p(x'_t) dx'_t
 \end{align} %]]></script></p>
 
+<p>The main component of the Kramers-Moyal expansions is the use of the Taylor expansion on a shifted function.
+The classical Taylor expansion $T_{f,a}(x)$ of a function $f(x)$ around a root point $a$ says that we can reconstruct the function $f(x)$ with an infinite sum consisting of its derivatives</p>
+
+<script type="math/tex; mode=display">\begin{align}
+	T_{f,a}(x) = \sum_{n=0}^\infty \frac{f^{(n)}(a)}{n!} (x - a)^n
+\end{align}</script>
+
+<p>What happens if we introduce an offset $h$ to the root point $a$ which can take on any value we want?
+It turns out that the arbitrary offset $h$ can directly be used as a distance measure to the root point.
+The Taylor expansion of the shifted function $f(a + h)$ then becomes</p>
+
+<script type="math/tex; mode=display">\begin{align}
+	T_{f,a}(h) = \sum_{n=0}^\infty \frac{f^{(n)}(a)}{n!} h^n
+\end{align}</script>
+
 <p>We can then first expand the delta function $\delta ( y_{t+\tau} - x_{t+\tau} )$ with $\pm x_t$ and subsequently expand the Taylor series to obtain
 <script type="math/tex">% <![CDATA[
 \begin{align}
-	\delta(y_{t+\tau} - x_{t+\tau}) = & \delta(y_{t+\tau} - x'_t + x'_t - x_{t+\tau}) = \delta(y_{t+\tau} - x'_t) \delta(x'_t - x_{t+\tau}) \\
-	= & \sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ \partial_{x'_t}^{n} \ \delta(x'_t - x_{t+\tau})
+	\delta(y_{t+\tau} - x_{t+\tau}) = & \delta(\overbrace{y_{t+\tau} - x'_t}^{h} + \overbrace{x'_t - x_{t+\tau}}^{a} ) \\
+	= & \sum_{n=0}^\infty \frac{1}{n!} \underbrace{\partial_{x'_t}^{n} \delta(x'_t - x_{t+\tau}) }_{f^{(n)}(a)} \underbrace{( y_{t+\tau} - x'_t)^n}_{h^n}
 \end{align} %]]></script></p>
 
 <p>We can plug the expanded Taylor series back in to get
