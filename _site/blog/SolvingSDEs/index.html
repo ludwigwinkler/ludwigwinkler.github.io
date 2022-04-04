@@ -4,11 +4,11 @@
 	html5up.net | @ajlkn
   Jekyll integration by somiibo.com
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
---><html>
+-->
+<html>
 	<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 
 <title>Solving (Some) SDEs</title>
 <meta name="description" content="">
@@ -23,8 +23,8 @@
 <meta name="theme-color" content="#ffffff">
 
 <!-- CSS -->
-<link rel="stylesheet" href="http://localhost:4000/assets/css/main.css">
-<noscript><link rel="stylesheet" href="http://localhost:4000/assets/css/noscript.css"></noscript>
+<link rel="stylesheet" href="http://localhost:4000/assets/css/main.css" />
+<noscript><link rel="stylesheet" href="http://localhost:4000/assets/css/noscript.css" /></noscript>
 
 	</head>
 	<body class="is-loading">
@@ -61,10 +61,10 @@
     				<header class="major">
       				<span class="date">14 Apr 2020</span>
       				<h1>Solving (Some) SDEs</h1>
-      				<p>Geometric Brownian Motion &amp; Ornstein-Uhlenbeck Process</p>
+      				<p>Geometric Brownian Motion & Ornstein-Uhlenbeck Process</p>
       			</header>
       			<div class="image main"><img src="/blog/SolvingSDEs/GeomBM.png" alt=""></div>
-      			<p></p>
+      			<p><head>
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
        <script type="text/x-mathjax-config">
          MathJax.Hub.Config({
@@ -76,7 +76,7 @@
          });
        </script>
        <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-
+</head>
 
 <h3 id="geometric-brownian-motion">Geometric Brownian Motion</h3>
 
@@ -92,7 +92,7 @@ dS_t &= \mu_t S_t dt + \sigma_t S_t dW_t \\
 which has the nice property that as $S_t$ approaches zero, so does the change.
 This effectively limits $S_t$ to positive values, $S_t \geq 0$.</p>
 
-<p><img src="/blog/SolvingSDEs/GeomBM.png" alt="" class='align="center"' height="10%" width="50%"></p>
+<p><img src="/blog/SolvingSDEs/GeomBM.png" alt="" class="align=&quot;center&quot;" height="10%" width="50%" /></p>
 
 <p>The question is as so often with differential equation, whether there exists an analytic solution.
 In order to show this analytic solution we will examine the quantity $dS_t/ S_t$ and apply the stochastic version of the log-derivative trick.
@@ -131,7 +131,7 @@ where $\theta$ is the momentum parameter that makes the OU process undulate arou
 The mean parameter $\mu$ sets the value around which the OU process moves in somewhat smooth arcs.
 Visually it looks like this:</p>
 
-<p><img src="/blog/SolvingSDEs/OU.png" alt="" class='align="center"' height="10%" width="50%"></p>
+<p><img src="/blog/SolvingSDEs/OU.png" alt="" class="align=&quot;center&quot;" height="10%" width="50%" /></p>
 
 <p>where we can see that even though two of the three sample paths start far away from the mean, they quickly converge to a region around the mean.
 Once in the vicinity of the mean they move about it in arcs through the momentum factor.</p>
@@ -242,7 +242,7 @@ If the momentum is only small, the Wiener process can exert a stronger influence
 
 <p>More importantly, since the Wiener process is the only random influence on the process and is Gaussian, the entire process is a Gaussian process.
 Thus the stationary distribution is a Gaussian distribution as well.</p>
-
+</p>
       		</section>
 
           <!-- <div class="comments-wrapper">
@@ -320,23 +320,20 @@ Thus the stationary distribution is a Gaussian distribution as well.</p>
         <!-- <li><a href="https://facebook.com/default" class="icon fa-facebook" rel="nofollow"><span class="label">Facebook</span></a></li> -->
         <!-- <li><a href="https://instagram.com/default" class="icon fa-instagram" rel="nofollow"><span class="label">Instagram</span></a></li> -->
         <li><a href="https://github.com/ludwigwinkler" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
-      
-    
-  
-
+      </ul>
+    </section>
+  </section>
+</footer>
 <!-- Copyright -->
 <div id="copyright">
   <ul>
-       <li>© HTML5 UP</li>
-       <li>Design by <a href="https://html5up.net" rel="nofollow">HTML5 UP</a>
-</li>
-       <li>Jekyll Integration by <a href="https://soundgrail.com">SoundGrail</a>
-</li>
-       <li>Theme made by <a href="https://github.com/iwiedenm/jekyll-theme-massively-src"> iwiedenm</a>
-</li>
+       <li>&copy; HTML5 UP</li>
+       <li>Design by <a href="https://html5up.net" rel="nofollow">HTML5 UP</a></li>
+       <li>Jekyll Integration by <a href="https://soundgrail.com">SoundGrail</a></li>
+       <li>Theme made by <a href="https://github.com/iwiedenm/jekyll-theme-massively-src"> iwiedenm</a></li>
  </ul>
 </div>
- --&gt;
+ -->
 
 			</div>
 
@@ -348,7 +345,7 @@ Thus the stationary distribution is a Gaussian distribution as well.</p>
 <script src="http://localhost:4000/assets/js/skel.min.js"></script>
 <script src="http://localhost:4000/assets/js/util.js"></script>
 <script src="http://localhost:4000/assets/js/main.js"></script>
- --&gt;
+ -->
 			<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=default"></script>
 <script>
   window.dataLayer = window.dataLayer || [];

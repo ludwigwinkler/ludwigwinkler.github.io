@@ -4,11 +4,11 @@
 	html5up.net | @ajlkn
   Jekyll integration by somiibo.com
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
---><html>
+-->
+<html>
 	<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 
 <title>Non-Negative Matrix Factorization</title>
 <meta name="description" content="">
@@ -23,8 +23,8 @@
 <meta name="theme-color" content="#ffffff">
 
 <!-- CSS -->
-<link rel="stylesheet" href="http://localhost:4000/assets/css/main.css">
-<noscript><link rel="stylesheet" href="http://localhost:4000/assets/css/noscript.css"></noscript>
+<link rel="stylesheet" href="http://localhost:4000/assets/css/main.css" />
+<noscript><link rel="stylesheet" href="http://localhost:4000/assets/css/noscript.css" /></noscript>
 
 	</head>
 	<body class="is-loading">
@@ -64,7 +64,7 @@
       				<p>What Shall We Recommend?</p>
       			</header>
       			<div class="image main"><img src="/images/NMF_01.png" alt=""></div>
-      			<p></p>
+      			<p><head>
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
        <script type="text/x-mathjax-config">
          MathJax.Hub.Config({
@@ -76,7 +76,7 @@
          });
        </script>
        <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-
+</head>
 
 <h2 id="non-negative-matrix-factorization">Non-Negative Matrix Factorization</h2>
 
@@ -102,7 +102,7 @@ I always made a big detour around the topic since it sounded complicated and but
 <p>The idea is very similar to auto-encoders which use a reduced dimensionality in their middle to find a meaningful, but more compact representation of the original data.
 Another example would be the well-known PCA which uses the data’s principal components (directions in the data space which exhibit the highest variance) to project the data itself into a subspace which is lower dimensional and more meaningful.</p>
 
-<p><img src="NMF_01.png" alt="" height="75%" width="100%"></p>
+<p><img src="NMF_01.png" alt="" height="75%" width="100%" /></p>
 
 <p>In the example above we factorize the matrix $R \in \mathbb{R}^{3 \times 4}$ into two matrices $P \in \mathbb{R}^{3 \times 3}, Q \in \mathbb{R}^{3 \times 4}$ which share the common latent dimensionality $K=3$.
 The latent factors correspond to the latent information which we can discover between the movies and what movies the users liked.
@@ -125,7 +125,7 @@ Since ‘User 2’ favours ‘Romance’ above all else, the probable review of 
 
 <p>The infilling, or imputation, is made possible by computing the two factorized matrices $P$ and $Q$ from all observed data points in the data matrix $R$ and subsequently generalizing to the unseen data points.</p>
 
-<p><img src="NMF_02.png" alt="" align="center" height="50%" width="50%"></p>
+<p><img src="NMF_02.png" alt="" align="center" height="50%" width="50%" /></p>
 
 <p>We’ve seen above that we can determine clear preferences of the users.
 Instead of encoding the preferences of the users implicitly in $P$ we can encode them explicitly with biases.
@@ -327,7 +327,7 @@ def forward_fullmatrix(self):
 All we have to do is to use the already existing codebook $Q$ and the biases $u, i, b$ and let the factorization for $p^* \in \mathbb{R}^{1 \times k}$ converge such that</p>
 
 <script type="math/tex; mode=display">u^*_i \approx \sum_{k=0}^K p^*_k Q_{ki} + u_i + i_i + b</script>
-
+</p>
       		</section>
 
           <!-- <div class="comments-wrapper">
@@ -405,23 +405,20 @@ All we have to do is to use the already existing codebook $Q$ and the biases $u,
         <!-- <li><a href="https://facebook.com/default" class="icon fa-facebook" rel="nofollow"><span class="label">Facebook</span></a></li> -->
         <!-- <li><a href="https://instagram.com/default" class="icon fa-instagram" rel="nofollow"><span class="label">Instagram</span></a></li> -->
         <li><a href="https://github.com/ludwigwinkler" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
-      
-    
-  
-
+      </ul>
+    </section>
+  </section>
+</footer>
 <!-- Copyright -->
 <div id="copyright">
   <ul>
-       <li>© HTML5 UP</li>
-       <li>Design by <a href="https://html5up.net" rel="nofollow">HTML5 UP</a>
-</li>
-       <li>Jekyll Integration by <a href="https://soundgrail.com">SoundGrail</a>
-</li>
-       <li>Theme made by <a href="https://github.com/iwiedenm/jekyll-theme-massively-src"> iwiedenm</a>
-</li>
+       <li>&copy; HTML5 UP</li>
+       <li>Design by <a href="https://html5up.net" rel="nofollow">HTML5 UP</a></li>
+       <li>Jekyll Integration by <a href="https://soundgrail.com">SoundGrail</a></li>
+       <li>Theme made by <a href="https://github.com/iwiedenm/jekyll-theme-massively-src"> iwiedenm</a></li>
  </ul>
 </div>
- --&gt;
+ -->
 
 			</div>
 
@@ -433,7 +430,7 @@ All we have to do is to use the already existing codebook $Q$ and the biases $u,
 <script src="http://localhost:4000/assets/js/skel.min.js"></script>
 <script src="http://localhost:4000/assets/js/util.js"></script>
 <script src="http://localhost:4000/assets/js/main.js"></script>
- --&gt;
+ -->
 			<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=default"></script>
 <script>
   window.dataLayer = window.dataLayer || [];

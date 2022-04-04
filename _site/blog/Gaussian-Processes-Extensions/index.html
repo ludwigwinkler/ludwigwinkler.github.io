@@ -4,11 +4,11 @@
 	html5up.net | @ajlkn
   Jekyll integration by somiibo.com
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
---><html>
+-->
+<html>
 	<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 
 <title>Gaussian Processes - Extensions</title>
 <meta name="description" content="">
@@ -23,8 +23,8 @@
 <meta name="theme-color" content="#ffffff">
 
 <!-- CSS -->
-<link rel="stylesheet" href="http://localhost:4000/assets/css/main.css">
-<noscript><link rel="stylesheet" href="http://localhost:4000/assets/css/noscript.css"></noscript>
+<link rel="stylesheet" href="http://localhost:4000/assets/css/main.css" />
+<noscript><link rel="stylesheet" href="http://localhost:4000/assets/css/noscript.css" /></noscript>
 
 	</head>
 	<body class="is-loading">
@@ -64,7 +64,7 @@
       				<p>Extensions to Gaussian Processes</p>
       			</header>
       			<div class="image main"><img src="/images/GP_4Obs_Deriv.png" alt=""></div>
-      			<p></p>
+      			<p><head>
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
        <script type="text/x-mathjax-config">
          MathJax.Hub.Config({
@@ -76,7 +76,7 @@
          });
        </script>
        <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-
+</head>
 
 <h2 id="noise">Noise</h2>
 
@@ -100,19 +100,19 @@ This is due to the assumption of independent, identical distributed noise, which
 
 <p>Gaussian process without noisy observations:</p>
 
-<p><img src="Noise_nonoise.png" alt="" height="75%" width="75%"></p>
+<p><img src="Noise_nonoise.png" alt="" height="75%" width="75%" /></p>
 
 <p>Gaussian process with noise only on the mean of the posterior distribution:</p>
 
-<p><img src="Noise_meannoise.png" alt="" height="75%" width="75%"></p>
+<p><img src="Noise_meannoise.png" alt="" height="75%" width="75%" /></p>
 
 <p>Gaussian process with noise only on the variance of the posterior distribution:</p>
 
-<p><img src="Noise_varnoise.png" alt="" height="75%" width="75%"></p>
+<p><img src="Noise_varnoise.png" alt="" height="75%" width="75%" /></p>
 
 <p>Gaussian process with noisy observations affecting both the mean and the variance:</p>
 
-<p><img src="Noise_bothnoise.png" alt="" height="75%" width="75%"></p>
+<p><img src="Noise_bothnoise.png" alt="" height="75%" width="75%" /></p>
 
 <p>This can be realized with the addition of the noise’s variance to the diagonal entries of the covariance matrix of the observation kernel matrix $K_{XX}$:</p>
 
@@ -313,12 +313,12 @@ Derivative observations pose a useful way to circumvent such rank definciencies 
 
 <p>A Gaussian process:</p>
 
-<p><img src="GP_4Obs.png" alt="" height="75%" width="75%"></p>
+<p><img src="GP_4Obs.png" alt="" height="75%" width="75%" /></p>
 
 <p>The same Gaussian process with derivative observations. The GP is able to fit the true function considerably better:</p>
 
-<p><img src="GP_4Obs_Deriv.png" alt="" height="75%" width="75%"></p>
-
+<p><img src="GP_4Obs_Deriv.png" alt="" height="75%" width="75%" /></p>
+</p>
       		</section>
 
           <!-- <div class="comments-wrapper">
@@ -396,23 +396,20 @@ Derivative observations pose a useful way to circumvent such rank definciencies 
         <!-- <li><a href="https://facebook.com/default" class="icon fa-facebook" rel="nofollow"><span class="label">Facebook</span></a></li> -->
         <!-- <li><a href="https://instagram.com/default" class="icon fa-instagram" rel="nofollow"><span class="label">Instagram</span></a></li> -->
         <li><a href="https://github.com/ludwigwinkler" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
-      
-    
-  
-
+      </ul>
+    </section>
+  </section>
+</footer>
 <!-- Copyright -->
 <div id="copyright">
   <ul>
-       <li>© HTML5 UP</li>
-       <li>Design by <a href="https://html5up.net" rel="nofollow">HTML5 UP</a>
-</li>
-       <li>Jekyll Integration by <a href="https://soundgrail.com">SoundGrail</a>
-</li>
-       <li>Theme made by <a href="https://github.com/iwiedenm/jekyll-theme-massively-src"> iwiedenm</a>
-</li>
+       <li>&copy; HTML5 UP</li>
+       <li>Design by <a href="https://html5up.net" rel="nofollow">HTML5 UP</a></li>
+       <li>Jekyll Integration by <a href="https://soundgrail.com">SoundGrail</a></li>
+       <li>Theme made by <a href="https://github.com/iwiedenm/jekyll-theme-massively-src"> iwiedenm</a></li>
  </ul>
 </div>
- --&gt;
+ -->
 
 			</div>
 
@@ -424,7 +421,7 @@ Derivative observations pose a useful way to circumvent such rank definciencies 
 <script src="http://localhost:4000/assets/js/skel.min.js"></script>
 <script src="http://localhost:4000/assets/js/util.js"></script>
 <script src="http://localhost:4000/assets/js/main.js"></script>
- --&gt;
+ -->
 			<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=default"></script>
 <script>
   window.dataLayer = window.dataLayer || [];

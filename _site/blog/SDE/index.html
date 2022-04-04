@@ -4,11 +4,11 @@
 	html5up.net | @ajlkn
   Jekyll integration by somiibo.com
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
---><html>
+-->
+<html>
 	<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 
 <title>Stochastic Differential Equations</title>
 <meta name="description" content="">
@@ -23,8 +23,8 @@
 <meta name="theme-color" content="#ffffff">
 
 <!-- CSS -->
-<link rel="stylesheet" href="http://localhost:4000/assets/css/main.css">
-<noscript><link rel="stylesheet" href="http://localhost:4000/assets/css/noscript.css"></noscript>
+<link rel="stylesheet" href="http://localhost:4000/assets/css/main.css" />
+<noscript><link rel="stylesheet" href="http://localhost:4000/assets/css/noscript.css" /></noscript>
 
 	</head>
 	<body class="is-loading">
@@ -64,7 +64,7 @@
       				<p>A Wiener twist to differential equations</p>
       			</header>
       			<div class="image main"><img src="/blog/SDE/EqVsDiffEq.png" alt=""></div>
-      			<p></p>
+      			<p><head>
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
        <script type="text/x-mathjax-config">
          MathJax.Hub.Config({
@@ -76,7 +76,7 @@
          });
        </script>
        <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-
+</head>
 
 <h4 id="non-differential-equations">Non-Differential Equations</h4>
 
@@ -138,7 +138,7 @@ For a more intuitive notation we can drop it and equate the change $d/dt x(t)$ w
 
 <p>Below is an image juxtaposing what we refer to as non-differential equations and a differential equations with respect to time:</p>
 
-<p><img src="/blog/SDE/EqVsDiffEq.png" alt="" class='align="center"' height="50%" width="100%"></p>
+<p><img src="/blog/SDE/EqVsDiffEq.png" alt="" class="align=&quot;center&quot;" height="50%" width="100%" /></p>
 
 <p>Instead of working with a “absolute” equation as shown on the left side, the differential equation on the right gives us the change $dx(t)$ for any point $x(t)$ at any point in time $t$ (which is mathematically a vector field).
 <strong>Each arrow in the right plot is an evaluation of the differential equation $dx(t)$ at a specific point $x(t)$ at a specific point in time $t$.</strong></p>
@@ -196,7 +196,7 @@ Therefore it does not jiggle and bounce at discrete time steps but will always m
 
 <p>Visually we want the random moving particle looking something like this in two dimensions:</p>
 
-<p><img src="/blog/SDE/BrownianMotion.png" alt="" class='align="center"' height="50%" width="50%"></p>
+<p><img src="/blog/SDE/BrownianMotion.png" alt="" class="align=&quot;center&quot;" height="50%" width="50%" /></p>
 
 <p>We can thus proclaim the following, somewhat un-mathematical property of this rambunctious little particle:
 <script type="math/tex">\begin{align}
@@ -253,7 +253,7 @@ The most that we can do is thus to treat $x_T$ as a probability distribution for
 
 <p>We can validate the properties of the Wiener process experimentally through what a good friend of mine calls “computational evidence”:</p>
 
-<p><img src="/blog/SDE/BrownianMotionExperiment.png" alt="" class='align="center"' height="50%" width="50%"></p>
+<p><img src="/blog/SDE/BrownianMotionExperiment.png" alt="" class="align=&quot;center&quot;" height="50%" width="50%" /></p>
 
 <p>with the following code</p>
 
@@ -320,19 +320,19 @@ The defining properties of a Wiener process $W_t$ ( $W_t$ being the common notat
 
 <ul>
   <li>
-    <p>$W_0 = 0$ <br>
+    <p>$W_0 = 0$ <br />
 This means that the Wiener process always starts at zero.</p>
   </li>
   <li>
-    <p>Independent increments: $\mathbb{C}[W_{t+u} - W_s, W_s] =0$ for $u \geq 0$ and $s \leq t$ <br>
+    <p>Independent increments: $\mathbb{C}[W_{t+u} - W_s, W_s] =0$ for $u \geq 0$ and $s \leq t$ <br />
 Increments (the movement of the Wiener process) are independent from the past movements. $\mathbb{C}[\cdot , \cdot ]$ is the covariance between two random variables.</p>
   </li>
   <li>
-    <p>Gaussian increments: $W_{t+u} - W_t \sim \mathcal{N}(0, u)$ <br>
+    <p>Gaussian increments: $W_{t+u} - W_t \sim \mathcal{N}(0, u)$ <br />
 The difference between any two realizations is Gaussian distributed accordingly to the time difference between these two realizations.</p>
   </li>
   <li>
-    <p>Continuous paths in time $t$.<br>
+    <p>Continuous paths in time $t$.<br />
 We can basically zoom infinitely far into the movements on the time axis and we will never find a discontinuous jump. Yet, due to it being a stochastic process it turns out that the Wiener process is not differentiable.</p>
   </li>
 </ul>
@@ -354,7 +354,7 @@ We can thus define a stochastic differential equation as
 
 <p>With a constant drift, this looks something like this:</p>
 
-<p><img src="/blog/SDE/SDEDriftDiff.png" alt="" class='align="center"' height="50%" width="50%"></p>
+<p><img src="/blog/SDE/SDEDriftDiff.png" alt="" class="align=&quot;center&quot;" height="50%" width="50%" /></p>
 
 <p>through</p>
 
@@ -450,7 +450,7 @@ Things get significantly more interesting when both $\mu_t$ and $\sigma_t$ chang
 
 <p>The drift $\mu(t, X_t)$ and $\sigma(t, X_t)$ can now be potentially highly non-linear and complex functions which could even take in other stochastic processes as additional input.
 But Ito’s lemma, Ornstein-Uhlenbeck processes and Geometric Brownian Motion are topics for another time …</p>
-
+</p>
       		</section>
 
           <!-- <div class="comments-wrapper">
@@ -528,23 +528,20 @@ But Ito’s lemma, Ornstein-Uhlenbeck processes and Geometric Brownian Motion ar
         <!-- <li><a href="https://facebook.com/default" class="icon fa-facebook" rel="nofollow"><span class="label">Facebook</span></a></li> -->
         <!-- <li><a href="https://instagram.com/default" class="icon fa-instagram" rel="nofollow"><span class="label">Instagram</span></a></li> -->
         <li><a href="https://github.com/ludwigwinkler" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
-      
-    
-  
-
+      </ul>
+    </section>
+  </section>
+</footer>
 <!-- Copyright -->
 <div id="copyright">
   <ul>
-       <li>© HTML5 UP</li>
-       <li>Design by <a href="https://html5up.net" rel="nofollow">HTML5 UP</a>
-</li>
-       <li>Jekyll Integration by <a href="https://soundgrail.com">SoundGrail</a>
-</li>
-       <li>Theme made by <a href="https://github.com/iwiedenm/jekyll-theme-massively-src"> iwiedenm</a>
-</li>
+       <li>&copy; HTML5 UP</li>
+       <li>Design by <a href="https://html5up.net" rel="nofollow">HTML5 UP</a></li>
+       <li>Jekyll Integration by <a href="https://soundgrail.com">SoundGrail</a></li>
+       <li>Theme made by <a href="https://github.com/iwiedenm/jekyll-theme-massively-src"> iwiedenm</a></li>
  </ul>
 </div>
- --&gt;
+ -->
 
 			</div>
 
@@ -556,7 +553,7 @@ But Ito’s lemma, Ornstein-Uhlenbeck processes and Geometric Brownian Motion ar
 <script src="http://localhost:4000/assets/js/skel.min.js"></script>
 <script src="http://localhost:4000/assets/js/util.js"></script>
 <script src="http://localhost:4000/assets/js/main.js"></script>
- --&gt;
+ -->
 			<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=default"></script>
 <script>
   window.dataLayer = window.dataLayer || [];

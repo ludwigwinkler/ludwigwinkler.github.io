@@ -4,11 +4,11 @@
 	html5up.net | @ajlkn
   Jekyll integration by somiibo.com
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
---><html>
+-->
+<html>
 	<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 
 <title>Ito's (Di)Lemma</title>
 <meta name="description" content="">
@@ -23,8 +23,8 @@
 <meta name="theme-color" content="#ffffff">
 
 <!-- CSS -->
-<link rel="stylesheet" href="http://localhost:4000/assets/css/main.css">
-<noscript><link rel="stylesheet" href="http://localhost:4000/assets/css/noscript.css"></noscript>
+<link rel="stylesheet" href="http://localhost:4000/assets/css/main.css" />
+<noscript><link rel="stylesheet" href="http://localhost:4000/assets/css/noscript.css" /></noscript>
 
 	</head>
 	<body class="is-loading">
@@ -64,7 +64,7 @@
       				<p>Or how to differentiate a function of a stochastic process.</p>
       			</header>
       			<div class="image main"><img src="/blog/ItosLemma/WienerProcess.gif" alt=""></div>
-      			<p></p>
+      			<p><head>
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
        <script type="text/x-mathjax-config">
          MathJax.Hub.Config({
@@ -76,7 +76,7 @@
          });
        </script>
        <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-
+</head>
 
 <h3 id="differentiability">Differentiability</h3>
 
@@ -88,7 +88,7 @@ A function $f$ is differentiable if the following value $f’(x)$ exists:
 If we let $h$ go towards zero, a function is called differentiable, if the fraction converges towards some constant value.</p>
 
 <p>Let’s look at an example of how this might work.
-We’ll need an additional mathematical trick called <a href="https://en.wikipedia.org/wiki/L%27H%C3%B4pital%27s_rule">L’Hopitals rule</a> which says that for evaluating the limit of a fraction we can simply derive both nominator and denominator with respect to the same variable and still obtain the valid result.
+We’ll need an additional mathematical trick called <a href="https://en.wikipedia.org/wiki/L%27Hôpital%27s_rule">L’Hopitals rule</a> which says that for evaluating the limit of a fraction we can simply derive both nominator and denominator with respect to the same variable and still obtain the valid result.
 Applying L’Hopitals rule often simplifies the computation of the derivative since we’re always working with the limit of a fraction.</p>
 
 <p>Let’s try to compute the derivative of the squared function $f(x) = x^2$:
@@ -105,7 +105,7 @@ Sure enough it’s the correct result which we anticipated.
 In effect, we’re zooming infinitely far into the function and ask ourselves how the function changes in this tiny window $h$.
 Visually, this looks something like this for the exponential function $f(x) = e^x$:</p>
 
-<p><img src="/blog/ItosLemma/Diff01.png" alt="" class='align="center"' height="50%" width="50%"></p>
+<p><img src="/blog/ItosLemma/Diff01.png" alt="" class="align=&quot;center&quot;" height="50%" width="50%" /></p>
 
 <p>What this functions tells us is that we can approximate an arbitrarily complex, differentiable function with a linear function for a extremely small window $\lim h \rightarrow 0 $.
 But in order for the function to be differentiable, the limit has to actually converge to a linear function as we decrease the window size $h$.</p>
@@ -114,7 +114,7 @@ But in order for the function to be differentiable, the limit has to actually co
 
 <h3 id="stochastic-processes">Stochastic Processes</h3>
 
-<p>In order to keep things simple in the following steps, we will work with the Brownian Motion. <br>
+<p>In order to keep things simple in the following steps, we will work with the Brownian Motion. <br />
 Brownian motion $W_t$ is defined through the following properties:</p>
 
 <ul>
@@ -143,7 +143,7 @@ In turns out that Brownian Motion actually has <a href="https://en.wikipedia.org
 <p>No matter how far we zoom into the Brownian Motion, we will always encounter a Brownian Motion on a finer time scale since $dx_t$ moves randomly on any time scale we choose.
 Probably the best animation for that is directly from the <a href="https://en.wikipedia.org/wiki/Wiener_process">Wikipedia page</a> of Brownian Motion:</p>
 
-<p><img src="/blog/ItosLemma/WienerProcess.gif" alt="" class='align="center"' height="50%" width="100%"></p>
+<p><img src="/blog/ItosLemma/WienerProcess.gif" alt="" class="align=&quot;center&quot;" height="50%" width="100%" /></p>
 
 <p>You might wonder: Well, why is that a problem with respect to classical differentiability?
 For that we can simply evaluate the differential 
@@ -172,7 +172,7 @@ Both the mean and the variance are possibly the worst values you can expect in t
 The mean is zero, indicating we have no derivative what so ever while the variance goes to infinity which is equally unusable.
 Ultimately, we can’t derive a Wiener process in the classical sense.</p>
 
-<p>It turns out that <a href="https://en.wikipedia.org/wiki/Kiyosi_It%C3%B4">Kiyosi Ito</a> had a series of great insights that we can use.
+<p>It turns out that <a href="https://en.wikipedia.org/wiki/Kiyosi_Itô">Kiyosi Ito</a> had a series of great insights that we can use.
 But before we can dive into his ideas, we first have to learn about Taylor expansions …</p>
 
 <h3 id="taylor-expansion">Taylor Expansion</h3>
@@ -201,7 +201,7 @@ The locality of the Taylor expansion around the $x_0$ is essential for the appro
 
 <p>We can visually the individual points of the Taylor expansion around the root point:</p>
 
-<p><img src="/blog/ItosLemma/Taylor01.png" alt="" class='align="center"' height="50%" width="100%"></p>
+<p><img src="/blog/ItosLemma/Taylor01.png" alt="" class="align=&quot;center&quot;" height="50%" width="100%" /></p>
 
 <p>We can observe a couple of things in these plots:</p>
 
@@ -214,9 +214,9 @@ The root $x_0$ lies on a stretch with almost no curvature ergo <script type="mat
 
 <p>Now let’s move the root point $x_0$ and plot the different terms again to see the second order derivative <script type="math/tex">f''(x_0)</script> in action:</p>
 
-<p><img src="/blog/ItosLemma/Taylor02.png" alt="" class='align="center"' height="50%" width="100%"></p>
+<p><img src="/blog/ItosLemma/Taylor02.png" alt="" class="align=&quot;center&quot;" height="50%" width="100%" /></p>
 
-<p><img src="/blog/ItosLemma/Taylor03.png" alt="" class='align="center"' height="50%" width="100%"></p>
+<p><img src="/blog/ItosLemma/Taylor03.png" alt="" class="align=&quot;center&quot;" height="50%" width="100%" /></p>
 
 <p>With this root point $x_0$ we can see the second order derivatives actually contribute to the final approximation:</p>
 
@@ -319,7 +319,7 @@ This allows us to simply drop them from our equation.</p>
 Albeit with a few first and second order derivatives sprinkled in between.</p>
 
 <p>Thus we can model the function $f(t, X_t)$ just like any other drift-diffusion process and can evaluate the distribution of such a process at a later point in time.</p>
-
+</p>
       		</section>
 
           <!-- <div class="comments-wrapper">
@@ -397,23 +397,20 @@ Albeit with a few first and second order derivatives sprinkled in between.</p>
         <!-- <li><a href="https://facebook.com/default" class="icon fa-facebook" rel="nofollow"><span class="label">Facebook</span></a></li> -->
         <!-- <li><a href="https://instagram.com/default" class="icon fa-instagram" rel="nofollow"><span class="label">Instagram</span></a></li> -->
         <li><a href="https://github.com/ludwigwinkler" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
-      
-    
-  
-
+      </ul>
+    </section>
+  </section>
+</footer>
 <!-- Copyright -->
 <div id="copyright">
   <ul>
-       <li>© HTML5 UP</li>
-       <li>Design by <a href="https://html5up.net" rel="nofollow">HTML5 UP</a>
-</li>
-       <li>Jekyll Integration by <a href="https://soundgrail.com">SoundGrail</a>
-</li>
-       <li>Theme made by <a href="https://github.com/iwiedenm/jekyll-theme-massively-src"> iwiedenm</a>
-</li>
+       <li>&copy; HTML5 UP</li>
+       <li>Design by <a href="https://html5up.net" rel="nofollow">HTML5 UP</a></li>
+       <li>Jekyll Integration by <a href="https://soundgrail.com">SoundGrail</a></li>
+       <li>Theme made by <a href="https://github.com/iwiedenm/jekyll-theme-massively-src"> iwiedenm</a></li>
  </ul>
 </div>
- --&gt;
+ -->
 
 			</div>
 
@@ -425,7 +422,7 @@ Albeit with a few first and second order derivatives sprinkled in between.</p>
 <script src="http://localhost:4000/assets/js/skel.min.js"></script>
 <script src="http://localhost:4000/assets/js/util.js"></script>
 <script src="http://localhost:4000/assets/js/main.js"></script>
- --&gt;
+ -->
 			<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=default"></script>
 <script>
   window.dataLayer = window.dataLayer || [];

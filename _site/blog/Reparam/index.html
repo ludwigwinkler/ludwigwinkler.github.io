@@ -4,11 +4,11 @@
 	html5up.net | @ajlkn
   Jekyll integration by somiibo.com
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
---><html>
+-->
+<html>
 	<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 
 <title>The Reparameterization Trick</title>
 <meta name="description" content="">
@@ -23,8 +23,8 @@
 <meta name="theme-color" content="#ffffff">
 
 <!-- CSS -->
-<link rel="stylesheet" href="http://localhost:4000/assets/css/main.css">
-<noscript><link rel="stylesheet" href="http://localhost:4000/assets/css/noscript.css"></noscript>
+<link rel="stylesheet" href="http://localhost:4000/assets/css/main.css" />
+<noscript><link rel="stylesheet" href="http://localhost:4000/assets/css/noscript.css" /></noscript>
 
 	</head>
 	<body class="is-loading">
@@ -64,7 +64,7 @@
       				<p>Outsourcing Stochasticity and Making Normal Distributions Differentiable</p>
       			</header>
       			<div class="image main"><img src="/blog/ReparamTrick/ReparamTrick.png" alt=""></div>
-      			<p></p>
+      			<p><head>
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
        <script type="text/x-mathjax-config">
          MathJax.Hub.Config({
@@ -76,19 +76,19 @@
          });
        </script>
        <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-
+</head>
 
 <!-- ## Non-Negative Matrix Factorization -->
 
 <p>Let’s assume we have normal standard distribution $\mathcal{E} \sim \mathcal{N}(0,1)$.
 We can draw lots of samples from it which will be distributed just like the parameterized distribution.</p>
 
-<p><img src="/blog/img/N01_0.png" alt="" class='align="center"' height="50%" width="50%"></p>
+<p><img src="/blog/img/N01_0.png" alt="" class="align=&quot;center&quot;" height="50%" width="50%" /></p>
 
 <p>Unsuprisingly, the distribution of the samples follows the parameterized Normal distribution $\mathcal{N}(\mu=0, \sigma=1)$.
 If we were to sample millions of samples from the distribution and use a ever finer resolution of the histogram we would arrive at a perfect $\mathcal{N}(\mu=0, \sigma=1)$ distribution.</p>
 
-<p><img src="/blog/img/N01_1.png" alt="" class='align="center"' height="50%" width="50%"></p>
+<p><img src="/blog/img/N01_1.png" alt="" class="align=&quot;center&quot;" height="50%" width="50%" /></p>
 
 <p>Let’s pick three samples $\epsilon_1, \epsilon_2, \epsilon_3$ from that standard normal distribution</p>
 
@@ -106,11 +106,11 @@ Well since it is a linear transformation it should be a straight forward multipl
 <p>Let’s visualize this multiplication with a fixed number for thousands of samples $\epsilon$ from the standard normal distribution.
 In the next image I normalized the samples such that we’re working with a distribution:</p>
 
-<p><img src="/blog/img/N03_0.png" alt="" class='align="center"' height="50%" width="50%"></p>
+<p><img src="/blog/img/N03_0.png" alt="" class="align=&quot;center&quot;" height="50%" width="50%" /></p>
 
 <p>As it turns out, multiplying the samples of a $\mathcal{N}(0,1)$ distribution with a constant number $\sigma$ results in a Normal distribution with the standard deviation $\sigma$!</p>
 
-<p><img src="/blog/img/N03_1.png" alt="" class='align="center"' height="50%" width="50%"></p>
+<p><img src="/blog/img/N03_1.png" alt="" class="align=&quot;center&quot;" height="50%" width="50%" /></p>
 
 <p>The second step of the reparameterization step is to ask ourselves what would happen if we added a constant number $\mu =10$ to the samples drawn from $\mathcal{N}(0,1)$ which are already multiplied with $\sigma$.</p>
 
@@ -120,11 +120,11 @@ In the next image I normalized the samples such that we’re working with a dist
 
 <p>Let’s visualize this linear transformation on all the samples we drew from $\mathcal{N}(0,1)$ and multiplied with $\sigma=3$.</p>
 
-<p><img src="/blog/img/N103_0.png" alt="" class='align="center"' height="50%" width="50%"></p>
+<p><img src="/blog/img/N103_0.png" alt="" class="align=&quot;center&quot;" height="50%" width="50%" /></p>
 
 <p>As it turns out, if we plot the Normal distribution $\mathcal{N}(10,3)$ on top of our scaled and shifted standard normal samples, we obtain the same distribution!</p>
 
-<p><img src="/blog/img/N103_1.png" alt="" class='align="center"' height="50%" width="50%"></p>
+<p><img src="/blog/img/N103_1.png" alt="" class="align=&quot;center&quot;" height="50%" width="50%" /></p>
 
 <p>After some eye-candy we can tackle the above-mentioned transformation analytically.
 We transform any Standard-Normally distributed random variable $\mathcal{E} \sim \mathcal{N}(0,1)$ by scaling it first with $\sigma$ and shifting it afterwards with $\mu$ into a Normally distributed random variable $w \sim \mathcal{N}(\mu, \sigma)$ through the linear transformation</p>
@@ -195,7 +195,7 @@ The gradient for the variational parameter $\mu$ can be computed via:</p>
 Below is a graphical representation of how the the gradient is first backpropagated to the linear product $w \cdot x$ and then subsequently to the variational parameters $\mu, \rho$.
 Since we transform $\rho$ such that it will it be in $\mathbb{R}^+$ with $t_2( \cdot )$ we also have to backpropagate through the transformation to obtain the gradient for $\rho$.</p>
 
-<p><img src="/blog/ReparamTrick/ReparamTrick.png" alt="" align="center" height="50%" width="50%"></p>
+<p><img src="/blog/ReparamTrick/ReparamTrick.png" alt="" align="center" height="50%" width="50%" /></p>
 
 <p>The final point is a little code snippet which can be analyzed without much plotting</p>
 
@@ -328,8 +328,8 @@ So we’re basically at the same spot deep learning was at 10 years ago with the
 The Glorot-Activation and ReLU activation functions solved it and maybe somebody will develop a new fancy reparameterization for the variational parameter $\rho$. =)
 That’s why it will never really converge to absolute 0, but that’s a trade-off we’re willing to make if we’re able to scale variational inference to large data sets.</p>
 
-<p><img src="/blog/ReparamTrick/Softplus.png" alt="" align="center" height="50%" width="50%"></p>
-
+<p><img src="/blog/ReparamTrick/Softplus.png" alt="" align="center" height="50%" width="50%" /></p>
+</p>
       		</section>
 
           <!-- <div class="comments-wrapper">
@@ -407,23 +407,20 @@ That’s why it will never really converge to absolute 0, but that’s a trade-o
         <!-- <li><a href="https://facebook.com/default" class="icon fa-facebook" rel="nofollow"><span class="label">Facebook</span></a></li> -->
         <!-- <li><a href="https://instagram.com/default" class="icon fa-instagram" rel="nofollow"><span class="label">Instagram</span></a></li> -->
         <li><a href="https://github.com/ludwigwinkler" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
-      
-    
-  
-
+      </ul>
+    </section>
+  </section>
+</footer>
 <!-- Copyright -->
 <div id="copyright">
   <ul>
-       <li>© HTML5 UP</li>
-       <li>Design by <a href="https://html5up.net" rel="nofollow">HTML5 UP</a>
-</li>
-       <li>Jekyll Integration by <a href="https://soundgrail.com">SoundGrail</a>
-</li>
-       <li>Theme made by <a href="https://github.com/iwiedenm/jekyll-theme-massively-src"> iwiedenm</a>
-</li>
+       <li>&copy; HTML5 UP</li>
+       <li>Design by <a href="https://html5up.net" rel="nofollow">HTML5 UP</a></li>
+       <li>Jekyll Integration by <a href="https://soundgrail.com">SoundGrail</a></li>
+       <li>Theme made by <a href="https://github.com/iwiedenm/jekyll-theme-massively-src"> iwiedenm</a></li>
  </ul>
 </div>
- --&gt;
+ -->
 
 			</div>
 
@@ -435,7 +432,7 @@ That’s why it will never really converge to absolute 0, but that’s a trade-o
 <script src="http://localhost:4000/assets/js/skel.min.js"></script>
 <script src="http://localhost:4000/assets/js/util.js"></script>
 <script src="http://localhost:4000/assets/js/main.js"></script>
- --&gt;
+ -->
 			<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=default"></script>
 <script>
   window.dataLayer = window.dataLayer || [];

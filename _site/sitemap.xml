@@ -11,6 +11,15 @@
     </url>
   
     <url>
+      <loc>http://localhost:4000/blog/Lebanon2022/</loc>
+      
+        <lastmod>2021-08-31T00:00:00+02:00</lastmod>
+      
+      <changefreq>weekly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  
+    <url>
       <loc>http://localhost:4000/blog/Berlin2021/</loc>
       
         <lastmod>2021-08-31T00:00:00+02:00</lastmod>
@@ -360,7 +369,7 @@
      </url>
   
     <url>
-      <loc>http://localhost:4000/feed.xml</loc>
+      <loc>http://localhost:4000/robots.txt</loc>
        <lastmod>2017-11-10T00:20:35+00:00</lastmod>
       
        <changefreq>weekly</changefreq>
@@ -370,7 +379,7 @@
      </url>
   
     <url>
-      <loc>http://localhost:4000/feed.xslt.xml</loc>
+      <loc>http://localhost:4000/feed.xml</loc>
        <lastmod>2017-11-10T00:20:35+00:00</lastmod>
       
        <changefreq>weekly</changefreq>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xml" href="http://localhost:4000/feed.xslt.xml"?><feed xmlns="http://www.w3.org/2005/Atom"><generator uri="http://jekyllrb.com" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-01-06T10:27:17+01:00</updated><id>http://localhost:4000/</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">RSA Cryptography:  The Math</title><link href="http://localhost:4000/blog/RSA/" rel="alternate" type="text/html" title="RSA Cryptography: &lt;br&gt; The Math" /><published>2021-10-04T00:00:00+02:00</published><updated>2021-10-04T00:00:00+02:00</updated><id>http://localhost:4000/blog/RSA</id><content type="html" xml:base="http://localhost:4000/blog/RSA/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-04-04T10:40:11+02:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">RSA Cryptography: The Math</title><link href="http://localhost:4000/blog/RSA/" rel="alternate" type="text/html" title="RSA Cryptography: &lt;br&gt; The Math" /><published>2021-10-04T00:00:00+02:00</published><updated>2021-10-04T00:00:00+02:00</updated><id>http://localhost:4000/blog/RSA</id><content type="html" xml:base="http://localhost:4000/blog/RSA/">&lt;head&gt;
 &lt;style&gt;
 .MathJax_Display, .MJXc-display, .MathJax_SVG_Display {
     overflow-x: auto;
@@ -242,7 +242,7 @@ The receiver can then exponetiate the ‘decrypted’ hash again with the public
   \Big[  h^{k\phi(n)+1} &amp;= h \Big] \mod n \quad \text{True via Euler's theorem} \\
 \end{align} %]]&gt;&lt;/script&gt;
 
-&lt;p&gt;Cha-Ching Baby …&lt;/p&gt;</content><summary type="html">The math that ensures that it's none of your business</summary></entry><entry><title type="html">Berlin Over The Years</title><link href="http://localhost:4000/blog/Berlin2021/" rel="alternate" type="text/html" title="Berlin Over The Years" /><published>2021-08-31T00:00:00+02:00</published><updated>2021-08-31T00:00:00+02:00</updated><id>http://localhost:4000/blog/Berlin2021</id><content type="html" xml:base="http://localhost:4000/blog/Berlin2021/">&lt;!-- ## Berlin Over The Years --&gt;
+&lt;p&gt;Cha-Ching Baby …&lt;/p&gt;</content><author><name></name></author><summary type="html">The math that ensures that it's none of your business</summary></entry><entry><title type="html">Berlin Over The Years</title><link href="http://localhost:4000/blog/Berlin2021/" rel="alternate" type="text/html" title="Berlin Over The Years" /><published>2021-08-31T00:00:00+02:00</published><updated>2021-08-31T00:00:00+02:00</updated><id>http://localhost:4000/blog/Berlin2021</id><content type="html" xml:base="http://localhost:4000/blog/Berlin2021/">&lt;!-- ## Berlin Over The Years --&gt;
 &lt;style&gt;
     .image-gallery {overflow: auto; margin-left: -1%!important;}
     .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
@@ -501,7 +501,22 @@ The receiver can then exponetiate the ‘decrypted’ hash again with the public
     
     
     
-&lt;/ul&gt;</content><category term="photography" /><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/berlin2021/Berlin-15.jpg" /></entry><entry><title type="html">Spain</title><link href="http://localhost:4000/blog/Spain21/" rel="alternate" type="text/html" title="Spain" /><published>2021-07-01T00:00:00+02:00</published><updated>2021-07-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Spain21</id><content type="html" xml:base="http://localhost:4000/blog/Spain21/">&lt;style&gt;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+&lt;/ul&gt;</content><author><name></name></author><category term="photography" /><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/berlin2021/Berlin-15.jpg" /></entry><entry><title type="html">Lebanon</title><link href="http://localhost:4000/blog/Lebanon2022/" rel="alternate" type="text/html" title="Lebanon" /><published>2021-08-31T00:00:00+02:00</published><updated>2021-08-31T00:00:00+02:00</updated><id>http://localhost:4000/blog/Lebanon2022</id><content type="html" xml:base="http://localhost:4000/blog/Lebanon2022/">&lt;!-- ## Berlin Over The Years --&gt;
+&lt;style&gt;
     .image-gallery {overflow: auto; margin-left: -1%!important;}
     .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
     .image-gallery li a {text-align: top; text-decoration: none!important; color: #777;}
@@ -511,6 +526,322 @@ The receiver can then exponetiate the ‘decrypted’ hash again with the public
 &lt;/style&gt;
 
 &lt;ul class=&quot;image-gallery&quot;&gt;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/lebanon22/20220328-_DSC6230.jpg&quot; title=&quot;20220328-_DSC6230&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/lebanon22/20220328-_DSC6230.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20220328-_DSC6230&quot; title=&quot;20220328-_DSC6230&quot; /&gt;&lt;span&gt;20220328-_DSC6230&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/lebanon22/20220328-_DSC6230.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/lebanon22/20220328-_DSC6230.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/lebanon22/20220328-_DSC6231.jpg&quot; title=&quot;20220328-_DSC6231&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/lebanon22/20220328-_DSC6231.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20220328-_DSC6231&quot; title=&quot;20220328-_DSC6231&quot; /&gt;&lt;span&gt;20220328-_DSC6231&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/lebanon22/20220328-_DSC6231.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/lebanon22/20220328-_DSC6231.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/lebanon22/20220328-_DSC6241.jpg&quot; title=&quot;20220328-_DSC6241&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/lebanon22/20220328-_DSC6241.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20220328-_DSC6241&quot; title=&quot;20220328-_DSC6241&quot; /&gt;&lt;span&gt;20220328-_DSC6241&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/lebanon22/20220328-_DSC6241.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/lebanon22/20220328-_DSC6241.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/lebanon22/20220328-_DSC6306.jpg&quot; title=&quot;20220328-_DSC6306&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/lebanon22/20220328-_DSC6306.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20220328-_DSC6306&quot; title=&quot;20220328-_DSC6306&quot; /&gt;&lt;span&gt;20220328-_DSC6306&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/lebanon22/20220328-_DSC6306.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/lebanon22/20220328-_DSC6306.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/lebanon22/20220329-_DSC6342-Enhanced.jpg&quot; title=&quot;20220329-_DSC6342-Enhanced&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/lebanon22/20220329-_DSC6342-Enhanced.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20220329-_DSC6342-Enhanced&quot; title=&quot;20220329-_DSC6342-Enhanced&quot; /&gt;&lt;span&gt;20220329-_DSC6342-Enhanced&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/lebanon22/20220329-_DSC6342-Enhanced.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/lebanon22/20220329-_DSC6342-Enhanced.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/lebanon22/20220331-_DSC6539.jpg&quot; title=&quot;20220331-_DSC6539&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/lebanon22/20220331-_DSC6539.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20220331-_DSC6539&quot; title=&quot;20220331-_DSC6539&quot; /&gt;&lt;span&gt;20220331-_DSC6539&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/lebanon22/20220331-_DSC6539.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/lebanon22/20220331-_DSC6539.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/lebanon22/20220331-_DSC6554-2.jpg&quot; title=&quot;20220331-_DSC6554-2&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/lebanon22/20220331-_DSC6554-2.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20220331-_DSC6554-2&quot; title=&quot;20220331-_DSC6554-2&quot; /&gt;&lt;span&gt;20220331-_DSC6554-2&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/lebanon22/20220331-_DSC6554-2.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/lebanon22/20220331-_DSC6554-2.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/lebanon22/20220331-_DSC6564.jpg&quot; title=&quot;20220331-_DSC6564&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/lebanon22/20220331-_DSC6564.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20220331-_DSC6564&quot; title=&quot;20220331-_DSC6564&quot; /&gt;&lt;span&gt;20220331-_DSC6564&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/lebanon22/20220331-_DSC6564.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/lebanon22/20220331-_DSC6564.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/lebanon22/20220331-_DSC6659.jpg&quot; title=&quot;20220331-_DSC6659&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/lebanon22/20220331-_DSC6659.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20220331-_DSC6659&quot; title=&quot;20220331-_DSC6659&quot; /&gt;&lt;span&gt;20220331-_DSC6659&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/lebanon22/20220331-_DSC6659.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/lebanon22/20220331-_DSC6659.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/lebanon22/20220331-_DSC6782-Pano.jpg&quot; title=&quot;20220331-_DSC6782-Pano&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/lebanon22/20220331-_DSC6782-Pano.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20220331-_DSC6782-Pano&quot; title=&quot;20220331-_DSC6782-Pano&quot; /&gt;&lt;span&gt;20220331-_DSC6782-Pano&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/lebanon22/20220331-_DSC6782-Pano.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/lebanon22/20220331-_DSC6782-Pano.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/lebanon22/20220401-_DSC6884.jpg&quot; title=&quot;20220401-_DSC6884&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/lebanon22/20220401-_DSC6884.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20220401-_DSC6884&quot; title=&quot;20220401-_DSC6884&quot; /&gt;&lt;span&gt;20220401-_DSC6884&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/lebanon22/20220401-_DSC6884.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/lebanon22/20220401-_DSC6884.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/lebanon22/20220401-_DSC7030.jpg&quot; title=&quot;20220401-_DSC7030&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/lebanon22/20220401-_DSC7030.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20220401-_DSC7030&quot; title=&quot;20220401-_DSC7030&quot; /&gt;&lt;span&gt;20220401-_DSC7030&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/lebanon22/20220401-_DSC7030.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/lebanon22/20220401-_DSC7030.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/lebanon22/20220401-_DSC7031.jpg&quot; title=&quot;20220401-_DSC7031&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/lebanon22/20220401-_DSC7031.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20220401-_DSC7031&quot; title=&quot;20220401-_DSC7031&quot; /&gt;&lt;span&gt;20220401-_DSC7031&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/lebanon22/20220401-_DSC7031.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/lebanon22/20220401-_DSC7031.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/lebanon22/20220401-_DSC7129-3.jpg&quot; title=&quot;20220401-_DSC7129-3&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/lebanon22/20220401-_DSC7129-3.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20220401-_DSC7129-3&quot; title=&quot;20220401-_DSC7129-3&quot; /&gt;&lt;span&gt;20220401-_DSC7129-3&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/lebanon22/20220401-_DSC7129-3.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/lebanon22/20220401-_DSC7129-3.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+&lt;/ul&gt;</content><author><name></name></author><category term="photography" /><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/lebanon22/20220331-_DSC6539.jpg" /></entry><entry><title type="html">Spain</title><link href="http://localhost:4000/blog/Spain21/" rel="alternate" type="text/html" title="Spain" /><published>2021-07-01T00:00:00+02:00</published><updated>2021-07-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Spain21</id><content type="html" xml:base="http://localhost:4000/blog/Spain21/">&lt;style&gt;
+    .image-gallery {overflow: auto; margin-left: -1%!important;}
+    .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
+    .image-gallery li a {text-align: top; text-decoration: none!important; color: #777;}
+    .image-gallery li a span {display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; padding: 3px 0;}
+    .image-gallery li a img {width: 100%; height: 100%; display: flex; vertical-align: top;
+    }
+&lt;/style&gt;
+
+&lt;ul class=&quot;image-gallery&quot;&gt;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -769,7 +1100,7 @@ The receiver can then exponetiate the ‘decrypted’ hash again with the public
     &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2748.jpg&quot; title=&quot;DSC2748&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/spain21/DSC2748.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC2748&quot; title=&quot;DSC2748&quot; /&gt;&lt;span&gt;DSC2748&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2748.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/spain21/DSC2748.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
-&lt;/ul&gt;</content><category term="photography" /><summary type="html">Granada</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/spain21/DSC2103.jpg" /></entry><entry><title type="html">Greece</title><link href="http://localhost:4000/blog/Greece21/" rel="alternate" type="text/html" title="Greece" /><published>2021-06-01T00:00:00+02:00</published><updated>2021-06-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Greece21</id><content type="html" xml:base="http://localhost:4000/blog/Greece21/">&lt;style&gt;
+&lt;/ul&gt;</content><author><name></name></author><category term="photography" /><summary type="html">Granada</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/spain21/DSC2103.jpg" /></entry><entry><title type="html">Greece</title><link href="http://localhost:4000/blog/Greece21/" rel="alternate" type="text/html" title="Greece" /><published>2021-06-01T00:00:00+02:00</published><updated>2021-06-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Greece21</id><content type="html" xml:base="http://localhost:4000/blog/Greece21/">&lt;style&gt;
     .image-gallery {overflow: auto; margin-left: -1%!important;}
     .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
     .image-gallery li a {text-align: top; text-decoration: none!important; color: #777;}
@@ -1032,7 +1363,21 @@ The receiver can then exponetiate the ‘decrypted’ hash again with the public
     
     
     
-&lt;/ul&gt;</content><category term="photography" /><summary type="html">Thessaloniki &amp; Mount Olympus</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/greece21/DSC1783.jpg" /></entry><entry><title type="html">Italy</title><link href="http://localhost:4000/blog/Italy21/" rel="alternate" type="text/html" title="Italy" /><published>2021-05-01T00:00:00+02:00</published><updated>2021-05-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Italy21</id><content type="html" xml:base="http://localhost:4000/blog/Italy21/">&lt;!-- ## Berlin Over The Years --&gt;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+&lt;/ul&gt;</content><author><name></name></author><category term="photography" /><summary type="html">Thessaloniki &amp; Mount Olympus</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/greece21/DSC1783.jpg" /></entry><entry><title type="html">Italy</title><link href="http://localhost:4000/blog/Italy21/" rel="alternate" type="text/html" title="Italy" /><published>2021-05-01T00:00:00+02:00</published><updated>2021-05-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Italy21</id><content type="html" xml:base="http://localhost:4000/blog/Italy21/">&lt;!-- ## Berlin Over The Years --&gt;
 &lt;style&gt;
     .image-gallery {overflow: auto; margin-left: -1%!important;}
     .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
@@ -1311,7 +1656,21 @@ The receiver can then exponetiate the ‘decrypted’ hash again with the public
     
     
     
-&lt;/ul&gt;</content><category term="photography" /><summary type="html">Lake Garda, Milan, Bergamo, Brescia</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/italy21/DSC0940.jpg" /></entry><entry><title type="html">Reverse Time Stochastic Differential Equations [for generative modelling]</title><link href="http://localhost:4000/blog/ReverseTimeAnderson/" rel="alternate" type="text/html" title="Reverse Time Stochastic Differential Equations [for generative modelling]" /><published>2021-04-09T00:00:00+02:00</published><updated>2021-04-09T00:00:00+02:00</updated><id>http://localhost:4000/blog/ReverseTimeAnderson</id><content type="html" xml:base="http://localhost:4000/blog/ReverseTimeAnderson/">&lt;head&gt;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+&lt;/ul&gt;</content><author><name></name></author><category term="photography" /><summary type="html">Lake Garda, Milan, Bergamo, Brescia</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/italy21/DSC0940.jpg" /></entry><entry><title type="html">Reverse Time Stochastic Differential Equations [for generative modelling]</title><link href="http://localhost:4000/blog/ReverseTimeAnderson/" rel="alternate" type="text/html" title="Reverse Time Stochastic Differential Equations [for generative modelling]" /><published>2021-04-09T00:00:00+02:00</published><updated>2021-04-09T00:00:00+02:00</updated><id>http://localhost:4000/blog/ReverseTimeAnderson</id><content type="html" xml:base="http://localhost:4000/blog/ReverseTimeAnderson/">&lt;head&gt;
 &lt;style&gt;
 .MathJax_Display, .MJXc-display, .MathJax_SVG_Display {
     overflow-x: auto;
@@ -1500,7 +1859,7 @@ By defining a schedule for both $\alpha_t$ and $\sigma_t$ we can evaluate the �
 
 &lt;p&gt;The remarkable reverse time stochastic differential equation then tells us that all we have to do is to cancel out the drift which turns our data into noise.
 If we now take some noise and iteratively subtract the $\sigma_t^2 \partial_{x_t} \log p(x_t)$ from it we are reducing integration step by integration step (remember it’s a SDE) the noise and recover the true data.
-Voila, you have generative model that turns noise into data.&lt;/p&gt;</content><summary type="html">'If I Could Turn Back Time' by Cher (1989)</summary></entry><entry><title type="html">Fokker, Planck &amp;amp; Kolmogorov</title><link href="http://localhost:4000/blog/Kramers/" rel="alternate" type="text/html" title="Fokker, Planck &amp; Kolmogorov" /><published>2021-02-04T00:00:00+01:00</published><updated>2021-02-04T00:00:00+01:00</updated><id>http://localhost:4000/blog/Kramers</id><content type="html" xml:base="http://localhost:4000/blog/Kramers/">&lt;head&gt;
+Voila, you have generative model that turns noise into data.&lt;/p&gt;</content><author><name></name></author><summary type="html">'If I Could Turn Back Time' by Cher (1989)</summary></entry><entry><title type="html">Fokker, Planck &amp;amp; Kolmogorov</title><link href="http://localhost:4000/blog/Kramers/" rel="alternate" type="text/html" title="Fokker, Planck &amp; Kolmogorov" /><published>2021-02-04T00:00:00+01:00</published><updated>2021-02-04T00:00:00+01:00</updated><id>http://localhost:4000/blog/Kramers</id><content type="html" xml:base="http://localhost:4000/blog/Kramers/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -1666,7 +2025,7 @@ Dividing both sides by $\tau$ and evaluating in the limit of $\lim_{\tau \righta
 \end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;The equation above is a partial differential equation which characterizes how the probability of $x_T$ changes as we go backwards in time.
-It essentially answers the question of how much the probability $p(x_T)$ changes after conditioning the process on $x’_t$ and at earlier point in time $t$.&lt;/p&gt;</content><summary type="html">Distributions as partial differential equations over time</summary></entry><entry><title type="html">Berlin Over The Years</title><link href="http://localhost:4000/blog/Berlin2020/" rel="alternate" type="text/html" title="Berlin Over The Years" /><published>2020-12-31T00:00:00+01:00</published><updated>2020-12-31T00:00:00+01:00</updated><id>http://localhost:4000/blog/Berlin2020</id><content type="html" xml:base="http://localhost:4000/blog/Berlin2020/">&lt;!-- ## Berlin Over The Years --&gt;
+It essentially answers the question of how much the probability $p(x_T)$ changes after conditioning the process on $x’_t$ and at earlier point in time $t$.&lt;/p&gt;</content><author><name></name></author><summary type="html">Distributions as partial differential equations over time</summary></entry><entry><title type="html">Berlin Over The Years</title><link href="http://localhost:4000/blog/Berlin2020/" rel="alternate" type="text/html" title="Berlin Over The Years" /><published>2020-12-31T00:00:00+01:00</published><updated>2020-12-31T00:00:00+01:00</updated><id>http://localhost:4000/blog/Berlin2020</id><content type="html" xml:base="http://localhost:4000/blog/Berlin2020/">&lt;!-- ## Berlin Over The Years --&gt;
 &lt;style&gt;
     .image-gallery {overflow: auto; margin-left: -1%!important;}
     .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
@@ -1915,7 +2274,21 @@ It essentially answers the question of how much the probability $p(x_T)$ changes
     
     
     
-&lt;/ul&gt;</content><category term="photography" /><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/berlin2020/Berlin-70.jpg" /></entry><entry><title type="html">From Bernoulli Distributions to Poisson Point Processes</title><link href="http://localhost:4000/blog/Poisson/" rel="alternate" type="text/html" title="From Bernoulli Distributions to Poisson Point Processes" /><published>2020-11-10T00:00:00+01:00</published><updated>2020-11-10T00:00:00+01:00</updated><id>http://localhost:4000/blog/Poisson</id><content type="html" xml:base="http://localhost:4000/blog/Poisson/">&lt;head&gt;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+&lt;/ul&gt;</content><author><name></name></author><category term="photography" /><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/berlin2020/Berlin-70.jpg" /></entry><entry><title type="html">From Bernoulli Distributions to Poisson Point Processes</title><link href="http://localhost:4000/blog/Poisson/" rel="alternate" type="text/html" title="From Bernoulli Distributions to Poisson Point Processes" /><published>2020-11-10T00:00:00+01:00</published><updated>2020-11-10T00:00:00+01:00</updated><id>http://localhost:4000/blog/Poisson</id><content type="html" xml:base="http://localhost:4000/blog/Poisson/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -2147,215 +2520,4 @@ To see this we inspect the Poisson process for an extremely small time frame $\l
 &amp;= \lambda \Delta t
 \end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
-&lt;p&gt;which are precisely the probabilities for a Bernoulli distribution.&lt;/p&gt;</content><summary type="html">From binary to fishy if you're francophil</summary></entry><entry><title type="html">(Importance Weighted) Variational Autoencoders Derived</title><link href="http://localhost:4000/blog/VAE/" rel="alternate" type="text/html" title="(Importance Weighted) Variational Autoencoders Derived" /><published>2020-08-10T00:00:00+02:00</published><updated>2020-08-10T00:00:00+02:00</updated><id>http://localhost:4000/blog/VAE</id><content type="html" xml:base="http://localhost:4000/blog/VAE/">&lt;head&gt;
-&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
-       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       &lt;/script&gt;
-       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
-&lt;/head&gt;
-
-&lt;h3 id=&quot;variational-autoencoders&quot;&gt;Variational Autoencoders&lt;/h3&gt;
-
-&lt;p&gt;Let $x$ denote a random variable which is generated by a random process.
-This random process first samples a random latent variable $z$ and subsequently generates $x|z \sim p(x|z)$ by conditioning the random process $p(x|z)$ on the random variable $z$.
-Thus we are dealing with a generative model which can generate valid samples $x$ from some random $z$.
-We are interested in the latent distribution of $p(z |x)$ given the data $x$ and wish to learn it.
-Intuitively, we want to know for a given $x$ what the latent variables $z$ were that generated them.
-This is akin to observing some observation $x$ and being able to say: I know the $z$ ‘s that generated that!.&lt;/p&gt;
-
-&lt;p&gt;By Bayes rule we now that for a distribution $ p ( x | z ) $ there also exists the distribution $ p ( z | x ) $, the distribution we are interested in.
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-p(z|x) = \frac{p(z,x)}{p(x)} = \frac{p(x|z)p(z)}{p(x)}
-\end{align}&lt;/script&gt;
-The crux of the problem is that we can only observe the data distribution $p(x)$ through a data set $\mathcal{D}= \{ x_i \}_{i=0}^N$.
-So we neither know what form the data generating process $p(x|z)$ has nor what the true latent distribution $p(z)$ is.
-Additionally, the data probability $p(x)$ is even more obscure.
-How would you even answer the question of how probable your data set is?&lt;/p&gt;
-
-&lt;p&gt;What we do know is the following: We want to find a variational distribution, let’s name it $q_\phi(z |x)$ with the optimizable parameters $\phi$, which we want to be as close as possible to the true distribution $p(z |x)$.
-The motivation behind this formulation is that the true latent conditional distribution $p(z|x)$ could be very complicated, but we will choose a simpler variational distribution $q_\phi(z |x)$ that we can conveniently work with.
-It might not be able to represent all the modes and fat tails that could potentially occur in $p(z |x)$ but better than nothing, right?&lt;/p&gt;
-
-&lt;p&gt;Information theory gives us the right tools to measure the difference between $q_\phi(z|x)$ and $p(z|x)$ through the Kullback-Leibler divergence:
-&lt;script type=&quot;math/tex&quot;&gt;\mathbb{KL} \left[ q_\phi(z|x) \ || \ p(z|x) \right]&lt;/script&gt;
-The state of affairs sofar is that we have an easy to work with distribution $q_\phi(z|x)$ with the trainable parameters $\phi$ and that we wish to minimize the divergence to the true latent distribution $p(z|x)$.
-We can also rewrite $p(z|x)$ according to Bayes rule to maybe make the computations a bit more tractable.
-We can now write out the Kullback-Leibler divergence and inspect the terms that arise from some algebraic manipulation:&lt;/p&gt;
-
-&lt;p&gt;&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\mathbb{KL} \left[ q_\phi(z \| x) \ || \ p(z \| x) \right] &amp;= \mathbb{E}_{q_\phi(z \|x)} \left[ \log \frac{q_\phi(z \| x)}{p(z \| x)} \right] \\
-	&amp;= \mathbb{E}_{q_\phi(z|x)} \left[ \log q_\phi(z|x) - \log p(z|x)\right] \\
-	&amp;= \mathbb{E}_{q_\phi(z|x)} \left[ \log q_\phi(z|x) - \log \frac{p(z,x)}{p(x)}\right] \\
-	&amp;= \mathbb{E}_{q_\phi(z|x)} \left[ \log q_\phi(z|x) - \log p(z,x) + \log p(x)\right]
-\end{align} %]]&gt;&lt;/script&gt;
-From earlier we know, that the data marginal probability $p(x)$ is almost surely intractable so we might want to avoid working with it directly.
-But by applying Bayes’ rule we suddenly see that we are working with the joint probability $p(z,x)$.
-Given the fact that $0 \leq \mathbb{KL}$ we can deduce
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	0 &amp;\leq \mathbb{KL} \left[ q_\phi(z|x) \ || \ p(z|x) \right] \\
-	0 &amp;\leq \mathbb{E}_{q_\phi(z|x)} \left[ \log q_\phi(z|x) - \log p(z,x) + \log p(x) \right] \\
-	0 &amp;\geq \mathbb{E}_{q_\phi(z|x)} \left[ -\log q_\phi(z|x) + \log p(z,x) - \log p(x) \right] \\
-	\log p(x) &amp;\geq \mathbb{E}_{q_\phi(z|x)} \left[ - \log q_\phi(z|x) + \log p(z,x)\right] \\
-	\log p(x) &amp;\geq \mathbb{E}_{q_\phi(z|x)} \left[ - \log q_\phi(z|x) + \log p(x|z) p(z)\right] \\
-	\log p(x) &amp;\geq \mathbb{E}_{q_\phi(z|x)} \left[ - \log q_\phi(z|x) + \log p(x|z) + \log p(z)\right] \\
-	\log p(x) &amp;\geq \mathbb{E}_{q_\phi(z|x)} \left[ \log \frac{p(z)}{q_\phi(z|x)} + \log p(x|z) \right] \\
-	\log p(x) &amp;\geq -\mathbb{E}_{q_\phi(z|x)} \left[ \log \frac{q_\phi(z|x)}{p(z)} \right] + \mathbb{E}_{q_\phi(z|x)} \left[ \log p(x | z) \right] \\
-	\log p(x) &amp;\geq -\mathbb{KL} \left[ q_\phi(z|x) || p(z) \right] + \mathbb{E}_{q_\phi(z|x)} \left[ \log p(x|z) \right]
-\end{align} %]]&gt;&lt;/script&gt;
-What does the inequality above tell us?
-It says that if we want to maximize the probability of the data we must minimize the KL divergence in the first term and maximize the probability of the generative model $p(x|z)$.
-So for any given $z$, we want the generative model $p(x|z)$.
-If we optimize the two terms on the right, we will obtain an inference model $q_\phi(z|x)$ which inverts the generative model $p(x|z)$.&lt;/p&gt;
-
-&lt;p&gt;The problem, though, is that we have no clue what either $p(z)$ nor the true generative model $p(x|z)$ actually is.
-Here comes the fun part: Let’s just assume stuff and parameterize both $p(z)$ and $p(x|z)$ such that we can easily and conveniently work with them.
-Since $p(z)$ is a latent distribution we will enforce a strong simplicity by assuming that it follows a standard normal distribution $\mathcal{N}(0, I)$.
-We could assume any other family of distributions but the standard normal distribution has lots of nice perks and properties.
-This might seem bold but if the generative model $p(x|z)$ is flexible enough it can generate any $x$ from this comparatively simpel $z$.
-Now let’s turn our attention to $p(x|z)$: We will change the unknown $p(x|z)$ to a parameterized and differentiable $p_\theta(x|z)$ such that we can maximize the probability of the data $x$ for a given $z$.&lt;/p&gt;
-
-&lt;p&gt;Now we have the following objective function:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	\log p(x) \geq -\mathbb{KL} \left[ q_\phi(z|x) || p(z) \right] + \mathbb{E}_{q_\phi(z|x)} \left[ \log p_\theta(x|z) \right]
-\end{align}&lt;/script&gt;
-which, upon closer inspection, has a lot of similarities to an autoencoder, except that it’s probabilistic!
-We use the distribution $q_\phi(z|x)$ to infer some latent code from a given sample.
-Through the KL divergence we enforce that the latent representation should be close to the simplified assumption of $p(z) = \mathcal{N}(0,I)$.
-The same latent code $z$ should be reconstructed to the true sample $x$ by the generative model $p_\theta(x|z)$.
-So we can actually interpret $q_\phi(z|x)$ as a probabilistic encoder and $p_\theta(x|z)$ as a decoder.&lt;/p&gt;
-
-&lt;p&gt;It is important to note that the prior and data loglikelihood are not balanced with respect to the data set size as it is done in Bayesian neural network and the parameter prior.
-The KL divergence between the latent code $q_\phi(z|x)$ and the prior $p_\theta(z)$ is computed for each data point independently and is equally balanced.&lt;/p&gt;
-
-&lt;h3 id=&quot;jensens-inequality&quot;&gt;Jensen’s Inequality&lt;/h3&gt;
-
-&lt;p&gt;The core idea of variational autoencoders and, to a larger extent, variational inference is that we optimize the $ \mathbb{E} [ \log p(x|z) ]- \mathbb{KL} [ q(\theta) || (p(\theta) ] $ in the hopes that we are able to push the bound as close as possible to the true value $\log p(x)$.
-The ELBO can thus be understood as a surrogate criterion.&lt;/p&gt;
-
-&lt;p&gt;The derivation of the ELBO originates from the minimization of the Kullback-Leibler divergence.
-It turns out that we can also derive an alternative criterion in order to maximize $\log p(x)$, the term we ultimately want to see maximized.
-In order to derive this alternative bound we will first have to understand Jensen’s inequality.&lt;/p&gt;
-
-&lt;p&gt;Let’s assume that we have the quadratic function $f(x) = x^2, x,y \in \mathbb{R}$.
-The quadratic function is convex which is essential for Jensen’s inequality.
-For any convex function $f(x)$, Jensen’s inequality for $t \in (0,1)$ states:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	f(tx_1 + (1-t) x_2 ) \ \leq \ t \ f(x_1) + (1-t) \ f(x_2)
-\end{align}&lt;/script&gt;
-which is the definition of a convex function and quintessentially asks the question of whether we interpolate the function values $f(x)$ or interpolate the arguments $x_1$ and $x_2$.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/VAE/JensensInequalityConvex.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;20%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Interpolating the function values $f(x)$ results in a straight line from $f(x_1)$ to $f(x_2)$.
-Interpolating the arguments results in tracing the original function $f(x)$.
-Since the quadratic function in its vanilla form is convex, we can conclude that interpolating the arguments will always be below the interpolation of the function values.&lt;/p&gt;
-
-&lt;p&gt;Jensen’s inequality becomes useful for deriving bounds when applied to probability theory.
-We can expand the interpolation beyond the two values $x_1$ and $x_2$ by weighting the values uniformly:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	f\left( \frac{1}{2} x_1 + \frac{1}{2} x_2 \right) \ \leq \ \frac{1}{2} \ f\left( x_1 \right) + \frac{1}{2} \ f \left( x_2 \right)
-\end{align}&lt;/script&gt;
-We can then extend the interpolation to $x_n \in \{x_1, \ldots, x_N \}$ via
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	f\left( \frac{1}{N} x_1 + \ldots + \frac{1}{N} x_N \right) \ 
-	&amp; \leq \ 
-	\frac{1}{N} \ f\left( x_1 \right) + \ldots + \frac{1}{N} \ f \left( x_N \right) \\
-	f\left( \frac{1}{N} \sum_n^N x_n \right) \ 
-	&amp; \leq \ 
-	\frac{1}{N} \sum_n^N \ f\left( x_n \right) \\
-\end{align} %]]&gt;&lt;/script&gt;
-which gives us the probabilistic version of Jensen’s inequality for a convex function $f(x)$:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	f \left( \mathbb{E}[x_n] \right) \ 
-	&amp; \leq \ 
-	\mathbb{E} \left[ f(x_n) \right] \\
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;For a concave function, we simply have to flip the inequality sign, as the function value interpolation $\mathbb{E}[f(x)]$ will always be equal or below the argument interpolation $f(\mathbb{E})[x]$:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	f \left( \mathbb{E}[x_n] \right) \ 
-	&amp; \geq \ 
-	\mathbb{E} \left[ f(x_n) \right] \\
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/VAE/JensensInequalityConcave.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;20%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;importance-weighted-variational-autoencoders&quot;&gt;Importance Weighted Variational Autoencoders&lt;/h3&gt;
-
-&lt;p&gt;To derive the loss for the Importance Weighted Variational Autoencoder we will use two tricks: the fact that the logarithm is a concave function and utilizing importance sampling.
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-\log p(x) 
-&amp;= \log \left[ \int p(x| z) p(z) dz \right] \\
-&amp;= \log \left[ \int q(z|x) \frac{p(x|z) p(z)}{q(z|x)} dz \right] \qquad \Leftarrow \text{expanding with $\frac{q(z|x)}{q(z|x)}$} \\
-&amp;= \log \left[ \mathbb{E}_{q(z|x)} \left[ \frac{p(x|z) p(z)}{q(z|x)} \right] \right] \\
-&amp;\geq \mathbb{E}_{q(z|x)} \left[ \log \left[ \frac{p(x|z) p(z)}{q(z|x)} \right] \right]
-\qquad \Leftarrow \text{pulling in $\log$ with Jensen's inequality = ELBO}
-\end{align} %]]&gt;&lt;/script&gt;
-and we arrive at the original ELBO derived from the Kullback-Leibler divergence from the original VAE formulation.&lt;/p&gt;
-
-&lt;p&gt;The important step is applying Jensen’s inequality where we introduce the bound for the first time.
-If we leave the expectation in the log we are still working with marginal data log-likelihood instead of the bound.
-Only after applying Jensen’s inequality do we loosen the equality to an inequality which is the ELBO.&lt;/p&gt;
-
-&lt;p&gt;The remedy to fending off the loose ELBO is given by evaluating the term before applying Jensen’s inequality by pulling in the logarithm.
-This gives us an importance sampling algorithm which repeatedly samples $z \sim q(z|x)$ and subsequently evaluating $p(x|z)$.
-This tightens the bound and we have better criterion.&lt;/p&gt;
-
-&lt;h3 id=&quot;squeezing-jensen&quot;&gt;Squeezing Jensen&lt;/h3&gt;
-
-&lt;p&gt;We stated earlier, that if we apply Jensen’s inequality and sample $z$ once, we have the original training procedure of the VAE.
-But the latent representation is a distribution so why should we only sample once?
-Probably because we’re lazy and stochastic optimization theory guarantees an unbiased gradient, so if we train long enough we will arrive at the optimum.
-But there is no real argument against sampling multiple times from the latent distribution and averaging the reconstruction $p(x|z)$ to integrate out the randomness that is injected into the optimization through the latent distribution $q(z|x)$.&lt;/p&gt;
-
-&lt;p&gt;The more samples we draw, the tighter our bound becomes.
-Why is this the case we might ask?
-We take our toy example with the quadratic function again to visualize what’s happening when we draw more samples from the latent distribution
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	f\left( \mathbb{E}[x] \right) &amp;\leq f \left( \frac{1}{N} \sum_n x_n \right) \\
-	f\left( \mu \right) &amp;\leq f \left( \frac{1}{N} \sum_n^N x_n \right)
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/VAE/TighteningJensens.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;20%&quot; width=&quot;50%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;If we evaluate a finite number of samples $x_n$, the mean estimator will have a higher variance.
-There might be occurences where we draw the perfect sample right or very, very close to $\mu$, but on average the mean estimator will have the estimator variance
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\mathbb{V} \left[ \frac{1}{N} \sum_n^N x_n \right]
-	&amp;= \frac{1}{N^2} \sum_n^N \mathbb{V}[x] \\
-	&amp;= \frac{1}{N} \mathbb{V}[x] \\
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;with means that 
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	f\left( \mu \right) \leq f \left( \frac{1}{N+1} \sum_n^{N+1} x_n \right) \leq f \left( \frac{1}{N} \sum_n^N x_n \right)
-\end{align}&lt;/script&gt;
-for a convex function $f(\cdot)$.
-Conversely for a concave function, we would have to flip the inequality sign.&lt;/p&gt;
-
-&lt;p&gt;By simply drawing more samples $N$ we reduce the variance and thus tighten the bound of the estimator.
-Visually, sampling more samples $x_n$ in the figure above asymptotically lets the estimated mean converge on the true mean.
-The closer the estimated mean is, the tighter the bound.
-This is precisely whats happening when we draw more samples in the expectation of the importance weighted VAE.&lt;/p&gt;
-
-&lt;p&gt;Finally, for we can use the probabilistic version of Jensen’s inequality to derive the positive constraint of the variance of a random variable $x$:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-\mathbb{E}[x]^2 &amp;\leq \mathbb{E}[x^2] \\
-0 &amp;\leq \mathbb{E}[x^2] - \mathbb{E}[x]^2 = \mathbb{V}[x]
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;</content><summary type="html">How to get to the objective function of VAEs ...</summary></entry></feed>
+&lt;p&gt;which are precisely the probabilities for a Bernoulli distribution.&lt;/p&gt;</content><author><name></name></author><summary type="html">From binary to fishy if you're francophil</summary></entry></feed>

@@ -4,11 +4,11 @@
 	html5up.net | @ajlkn
   Jekyll integration by somiibo.com
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
---><html>
+-->
+<html>
 	<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 
 <title>(Importance Weighted) Variational Autoencoders Derived</title>
 <meta name="description" content="">
@@ -23,8 +23,8 @@
 <meta name="theme-color" content="#ffffff">
 
 <!-- CSS -->
-<link rel="stylesheet" href="http://localhost:4000/assets/css/main.css">
-<noscript><link rel="stylesheet" href="http://localhost:4000/assets/css/noscript.css"></noscript>
+<link rel="stylesheet" href="http://localhost:4000/assets/css/main.css" />
+<noscript><link rel="stylesheet" href="http://localhost:4000/assets/css/noscript.css" /></noscript>
 
 	</head>
 	<body class="is-loading">
@@ -64,7 +64,7 @@
       				<p>How to get to the objective function of VAEs ... </p>
       			</header>
       			<div class="image main"><img src="" alt=""></div>
-      			<p></p>
+      			<p><head>
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
        <script type="text/x-mathjax-config">
          MathJax.Hub.Config({
@@ -76,7 +76,7 @@
          });
        </script>
        <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-
+</head>
 
 <h3 id="variational-autoencoders">Variational Autoencoders</h3>
 
@@ -170,7 +170,7 @@ For any convex function $f(x)$, Jensen’s inequality for $t \in (0,1)$ states:
 \end{align}</script>
 which is the definition of a convex function and quintessentially asks the question of whether we interpolate the function values $f(x)$ or interpolate the arguments $x_1$ and $x_2$.</p>
 
-<p><img src="/blog/VAE/JensensInequalityConvex.png" alt="" class='align="center"' height="20%" width="50%"></p>
+<p><img src="/blog/VAE/JensensInequalityConvex.png" alt="" class="align=&quot;center&quot;" height="20%" width="50%" /></p>
 
 <p>Interpolating the function values $f(x)$ results in a straight line from $f(x_1)$ to $f(x_2)$.
 Interpolating the arguments results in tracing the original function $f(x)$.
@@ -207,7 +207,7 @@ which gives us the probabilistic version of Jensen’s inequality for a convex f
 	\mathbb{E} \left[ f(x_n) \right] \\
 \end{align} %]]></script></p>
 
-<p><img src="/blog/VAE/JensensInequalityConcave.png" alt="" class='align="center"' height="20%" width="50%"></p>
+<p><img src="/blog/VAE/JensensInequalityConcave.png" alt="" class="align=&quot;center&quot;" height="20%" width="50%" /></p>
 
 <h3 id="importance-weighted-variational-autoencoders">Importance Weighted Variational Autoencoders</h3>
 
@@ -247,7 +247,7 @@ We take our toy example with the quadratic function again to visualize what’s 
 	f\left( \mu \right) &\leq f \left( \frac{1}{N} \sum_n^N x_n \right)
 \end{align} %]]></script></p>
 
-<p><img src="/blog/VAE/TighteningJensens.png" alt="" class='align="center"' height="20%" width="50%"></p>
+<p><img src="/blog/VAE/TighteningJensens.png" alt="" class="align=&quot;center&quot;" height="20%" width="50%" /></p>
 
 <p>If we evaluate a finite number of samples $x_n$, the mean estimator will have a higher variance.
 There might be occurences where we draw the perfect sample right or very, very close to $\mu$, but on average the mean estimator will have the estimator variance
@@ -276,7 +276,7 @@ This is precisely whats happening when we draw more samples in the expectation o
 \mathbb{E}[x]^2 &\leq \mathbb{E}[x^2] \\
 0 &\leq \mathbb{E}[x^2] - \mathbb{E}[x]^2 = \mathbb{V}[x]
 \end{align} %]]></script></p>
-
+</p>
       		</section>
 
           <!-- <div class="comments-wrapper">
@@ -354,23 +354,20 @@ This is precisely whats happening when we draw more samples in the expectation o
         <!-- <li><a href="https://facebook.com/default" class="icon fa-facebook" rel="nofollow"><span class="label">Facebook</span></a></li> -->
         <!-- <li><a href="https://instagram.com/default" class="icon fa-instagram" rel="nofollow"><span class="label">Instagram</span></a></li> -->
         <li><a href="https://github.com/ludwigwinkler" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
-      
-    
-  
-
+      </ul>
+    </section>
+  </section>
+</footer>
 <!-- Copyright -->
 <div id="copyright">
   <ul>
-       <li>© HTML5 UP</li>
-       <li>Design by <a href="https://html5up.net" rel="nofollow">HTML5 UP</a>
-</li>
-       <li>Jekyll Integration by <a href="https://soundgrail.com">SoundGrail</a>
-</li>
-       <li>Theme made by <a href="https://github.com/iwiedenm/jekyll-theme-massively-src"> iwiedenm</a>
-</li>
+       <li>&copy; HTML5 UP</li>
+       <li>Design by <a href="https://html5up.net" rel="nofollow">HTML5 UP</a></li>
+       <li>Jekyll Integration by <a href="https://soundgrail.com">SoundGrail</a></li>
+       <li>Theme made by <a href="https://github.com/iwiedenm/jekyll-theme-massively-src"> iwiedenm</a></li>
  </ul>
 </div>
- --&gt;
+ -->
 
 			</div>
 
@@ -382,7 +379,7 @@ This is precisely whats happening when we draw more samples in the expectation o
 <script src="http://localhost:4000/assets/js/skel.min.js"></script>
 <script src="http://localhost:4000/assets/js/util.js"></script>
 <script src="http://localhost:4000/assets/js/main.js"></script>
- --&gt;
+ -->
 			<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=default"></script>
 <script>
   window.dataLayer = window.dataLayer || [];

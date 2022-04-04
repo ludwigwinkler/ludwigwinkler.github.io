@@ -4,11 +4,11 @@
 	html5up.net | @ajlkn
   Jekyll integration by somiibo.com
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
---><html>
+-->
+<html>
 	<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 
 <title>Hamiltonian Mechanics in Monte Carlo Samplers</title>
 <meta name="description" content="">
@@ -23,8 +23,8 @@
 <meta name="theme-color" content="#ffffff">
 
 <!-- CSS -->
-<link rel="stylesheet" href="http://localhost:4000/assets/css/main.css">
-<noscript><link rel="stylesheet" href="http://localhost:4000/assets/css/noscript.css"></noscript>
+<link rel="stylesheet" href="http://localhost:4000/assets/css/main.css" />
+<noscript><link rel="stylesheet" href="http://localhost:4000/assets/css/noscript.css" /></noscript>
 
 	</head>
 	<body class="is-loading">
@@ -64,7 +64,7 @@
       				<p>Sampling with the help of physics</p>
       			</header>
       			<div class="image main"><img src="/blog/HMC/HMC_2D01.png" alt=""></div>
-      			<p></p>
+      			<p><head>
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
        <script type="text/x-mathjax-config">
          MathJax.Hub.Config({
@@ -76,7 +76,7 @@
          });
        </script>
        <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-
+</head>
 
 <p>Here’s a common problem: You want to estimate some function $f$.
 The function $f$ takes some input $x$ and outputs some value $y$ thus giving you $y=f(x)$.
@@ -223,7 +223,7 @@ Again, this is just a toy example to visualize the problems when sampling from h
 The main take way point is that one has to pay close attention to what the sampler is doing and how sampling algorithms are designed to make efficient use of computational resources.
 I’ll get into the geometric details of high dimensional spaces later.</p>
 
-<p><img src="/blog/HMC/HMC_01.png" alt="" class='align="center"' height="50%" width="50%"></p>
+<p><img src="/blog/HMC/HMC_01.png" alt="" class="align=&quot;center&quot;" height="50%" width="50%" /></p>
 
 <p>Can we do any better? … In fact we can with the help of physicists from the Manhattan Project and a chain.</p>
 
@@ -246,7 +246,7 @@ You can verify that by simply looking at a plot of a normal distribution.</p>
 <p>In order to stay in the high value area around $\mu$ but also not get stuck in it, a proposal distribution $q(x’|x)$ is evaluated, the ratio $f(x’_t|\mu, \sigma)/f(x_t|\mu, \sigma)$ is used which is then compared to an auxiliary sample: $U \sim \mathcal{U}(0,1)$.
 This is done in the following way:</p>
 
-<p><img src="/blog/HMC/HMC_MHAlgo.png" alt="" class='align="center"' height="50%" width="50%"></p>
+<p><img src="/blog/HMC/HMC_MHAlgo.png" alt="" class="align=&quot;center&quot;" height="50%" width="50%" /></p>
 
 <p>The acceptance ratio $\alpha$ is computed in a smart way, namely that $f(x’_t|\mu, \sigma)/f(x_t|\mu, \sigma) \in (0,\infty)$.
 If $f(x’_t|\mu, \sigma)$ is larger than $f(x_t|\mu, \sigma)$, then $f(x’_t|\mu, \sigma)/f(x_t|\mu, \sigma) \geq 1$ and the proposal sample will always be accepted.
@@ -400,12 +400,12 @@ Thus in statistical lingo, we have an unbiased estimator of the true $Z$ which w
 <p>The uniform sampled used $26 \%$ of its samples in useful areas whereas the Metropolis-Hastings sampler uses almost $70 \%$!
 We can visualize the two samplers next to each other to visualize the increased efficiency of the Metropolis-Hastings Sampler.</p>
 
-<p><img src="/blog/HMC/Uniform_SamplingDist.png" alt="" class='align="center"' height="50%" width="50%">
-<img src="/blog/HMC/MH_SamplingDist.png" alt="" class='align="center"' height="50%" width="50%"></p>
+<p><img src="/blog/HMC/Uniform_SamplingDist.png" alt="" class="align=&quot;center&quot;" height="50%" width="50%" />
+<img src="/blog/HMC/MH_SamplingDist.png" alt="" class="align=&quot;center&quot;" height="50%" width="50%" /></p>
 
 <p>We can even visualize a Metropolis-Hastings sampler in two dimensions with the accepted and rejected samples:</p>
 
-<p><img src="/blog/HMC/MH_2D.png" alt="" class='align="center"' height="50%" width="50%"></p>
+<p><img src="/blog/HMC/MH_2D.png" alt="" class="align=&quot;center&quot;" height="50%" width="50%" /></p>
 
 <p>It’s observable how moves closer to the center of the probability distribution are always accepted whereas moves away are sometimes accepted.
 In the cases where the proposed sample is in significantly lower value areas, the move will be rejected.</p>
@@ -413,7 +413,7 @@ In the cases where the proposed sample is in significantly lower value areas, th
 <p>We can even improve our sampler even further by treating the surface of the distribution as a physical model.
 In order to illustrate we should first take the $-\log$ of the unnormalized function $f(x|\mu, \sigma)$:</p>
 
-<p><img src="/blog/HMC/HMC_02.png" alt="" class='align="center"' height="50%" width="50%"></p>
+<p><img src="/blog/HMC/HMC_02.png" alt="" class="align=&quot;center&quot;" height="50%" width="50%" /></p>
 
 <p>By working with $-\log f(x | \mu, \sigma)$ we get rid of the pesky exponential term, effectively working with a linear function in case of the Normal distribution.
 Additionally, we have transformed the function $f(x|\mu, \sigma)$ into a nice representation where the bottom of the curve $-\log f(x|\mu, \sigma)$ represents the areas in $f(x|\mu, \sigma)/Z$ with the highest probabilities.</p>
@@ -477,7 +477,7 @@ For that to happen we first derive both $dp(t)/dt$ and $dx(t)/dt$ for the potent
 
 <p>These two update rules have very intuitive explanations once we have look at the shape of $-\log f(x(t) | \mu, \sigma)$:</p>
 
-<p><img src="/blog/HMC/HMC_03.png" alt="" class='align="center"' height="50%" width="50%"></p>
+<p><img src="/blog/HMC/HMC_03.png" alt="" class="align=&quot;center&quot;" height="50%" width="50%" /></p>
 
 <p>The particle starts at $x(t_0)$ with a high potential energy and some initial momentum $p(t_0)$.
 The gradient of $-\log f(x(t_0)|\mu, \sigma)$ is very steep and thus a lot of extra momentum is added to the particles kinetic energy.
@@ -575,17 +575,17 @@ After all its momentum has been converted into potential energy, it makes a u-tu
 	plt.show()
 </code></pre></div></div>
 
-<p><img src="/blog/HMC/HMC_2D01.png" alt="" class='align="center"' height="50%" width="50%"></p>
+<p><img src="/blog/HMC/HMC_2D01.png" alt="" class="align=&quot;center&quot;" height="50%" width="50%" /></p>
 
 <p>The total energy of the particle is conserved between the potential and the momentum.
 We show this by initializing the particle with a very high potential energy and a high momentum and watch it slide over the surface of the distribution in wide arcs.</p>
 
-<p><img src="/blog/HMC/HMC_HighEnergy.png" alt="" class='align="center"' height="50%" width="50%"></p>
+<p><img src="/blog/HMC/HMC_HighEnergy.png" alt="" class="align=&quot;center&quot;" height="50%" width="50%" /></p>
 
 <p>Alternatively we could initialize the particle with little potential energy and little momentum.
 Since the total energy of the particle is low, it will remain in the low energy (=high probability) basin and sample amply from there.</p>
 
-<p><img src="/blog/HMC/HMC_LowEnergy.png" alt="" class='align="center"' height="50%" width="50%"></p>
+<p><img src="/blog/HMC/HMC_LowEnergy.png" alt="" class="align=&quot;center&quot;" height="50%" width="50%" /></p>
 
 <p>The total energy initialization of the particle at the start of each trajectory can be drawn from a distribution.
 The distribution can easily be incorporated into the detailed balance equation and marginalized out such that the sampler is unbiased.</p>
@@ -611,7 +611,7 @@ Depending on the dimensionality $N$ we get a distance $\sqrt{\sum_{n=0}^N 1^2}$:
 	\vdots	&
 \end{align*} %]]></script>
 
-<p><img src="/blog/HMC/HMC_Distance.png" alt="" class='align="center"' height="50%" width="50%"></p>
+<p><img src="/blog/HMC/HMC_Distance.png" alt="" class="align=&quot;center&quot;" height="50%" width="50%" /></p>
 
 <p>The more dimensions we add, the larger the space between two points with equal distance in every dimension.
 Secondly this creates the problem of requiring an increasing number of samples for higher and higher dimensional spaces.
@@ -619,21 +619,21 @@ Let’s say we want to estimate a function by sampling in the Euclidean space sp
 We want to estimate the function and want a resolution of 0.1, i.e. we need 10 samples per dimension.
 In $\mathbb{R}^1$ we only require 10 samples to estimate the pdf wit equally spaced sampling points.</p>
 
-<p><img src="/blog/HMC/HMC_04.png" alt="" class='align="center"' height="50%" width="50%"></p>
+<p><img src="/blog/HMC/HMC_04.png" alt="" class="align=&quot;center&quot;" height="50%" width="50%" /></p>
 
 <p>But in $\mathbb{R}^2$ we suddenly require 100 samples to estimate the function with the desired resolution.</p>
 
-<p><img src="/blog/HMC/HMC_05.png" alt="" class='align="center"' height="50%" width="50%"></p>
+<p><img src="/blog/HMC/HMC_05.png" alt="" class="align=&quot;center&quot;" height="50%" width="50%" /></p>
 
 <p>In $\mathbb{R}^3$ we finally need 1000 samples to estimate the function to our liking.</p>
 
-<p><img src="/blog/HMC/HMC_06.png" alt="" class='align="center"' height="50%" width="50%"></p>
+<p><img src="/blog/HMC/HMC_06.png" alt="" class="align=&quot;center&quot;" height="50%" width="50%" /></p>
 
 <p>The required number of samples grows exponentially with the number of dimension, i.e. $10^N$ in $\mathbb{R}^N$ for our specific setup of 10 samples per dimension.
 By just adding two dimensions we need $100 \times$ more samples than in one dimension.
 That might not sound like a lot, but it quickly accumulates when working in high-dimensional spaces.
 This effectively restricts sampling algorithms to applications where we require very precise posteriors as in finance or medicine or where the run-time isn’t a problem.</p>
-
+</p>
       		</section>
 
           <!-- <div class="comments-wrapper">
@@ -711,23 +711,20 @@ This effectively restricts sampling algorithms to applications where we require 
         <!-- <li><a href="https://facebook.com/default" class="icon fa-facebook" rel="nofollow"><span class="label">Facebook</span></a></li> -->
         <!-- <li><a href="https://instagram.com/default" class="icon fa-instagram" rel="nofollow"><span class="label">Instagram</span></a></li> -->
         <li><a href="https://github.com/ludwigwinkler" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
-      
-    
-  
-
+      </ul>
+    </section>
+  </section>
+</footer>
 <!-- Copyright -->
 <div id="copyright">
   <ul>
-       <li>© HTML5 UP</li>
-       <li>Design by <a href="https://html5up.net" rel="nofollow">HTML5 UP</a>
-</li>
-       <li>Jekyll Integration by <a href="https://soundgrail.com">SoundGrail</a>
-</li>
-       <li>Theme made by <a href="https://github.com/iwiedenm/jekyll-theme-massively-src"> iwiedenm</a>
-</li>
+       <li>&copy; HTML5 UP</li>
+       <li>Design by <a href="https://html5up.net" rel="nofollow">HTML5 UP</a></li>
+       <li>Jekyll Integration by <a href="https://soundgrail.com">SoundGrail</a></li>
+       <li>Theme made by <a href="https://github.com/iwiedenm/jekyll-theme-massively-src"> iwiedenm</a></li>
  </ul>
 </div>
- --&gt;
+ -->
 
 			</div>
 
@@ -739,7 +736,7 @@ This effectively restricts sampling algorithms to applications where we require 
 <script src="http://localhost:4000/assets/js/skel.min.js"></script>
 <script src="http://localhost:4000/assets/js/util.js"></script>
 <script src="http://localhost:4000/assets/js/main.js"></script>
- --&gt;
+ -->
 			<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=default"></script>
 <script>
   window.dataLayer = window.dataLayer || [];

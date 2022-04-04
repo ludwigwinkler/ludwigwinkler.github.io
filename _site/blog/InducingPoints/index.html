@@ -4,11 +4,11 @@
 	html5up.net | @ajlkn
   Jekyll integration by somiibo.com
 	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
---><html>
+-->
+<html>
 	<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 
 <title>(Basic) Inducing Points in Gaussian Processes</title>
 <meta name="description" content="">
@@ -23,8 +23,8 @@
 <meta name="theme-color" content="#ffffff">
 
 <!-- CSS -->
-<link rel="stylesheet" href="http://localhost:4000/assets/css/main.css">
-<noscript><link rel="stylesheet" href="http://localhost:4000/assets/css/noscript.css"></noscript>
+<link rel="stylesheet" href="http://localhost:4000/assets/css/main.css" />
+<noscript><link rel="stylesheet" href="http://localhost:4000/assets/css/noscript.css" /></noscript>
 
 	</head>
 	<body class="is-loading">
@@ -64,7 +64,7 @@
       				<p>Tackling the computational cost of GP's</p>
       			</header>
       			<div class="image main"><img src="/blog/InducingPoints/Cover.png" alt=""></div>
-      			<p></p>
+      			<p><head>
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
        <script type="text/x-mathjax-config">
          MathJax.Hub.Config({
@@ -76,7 +76,7 @@
          });
        </script>
        <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-
+</head>
 
 <p>Gaussian processes (GP) are extremely flexible probabilistic models with a sound theoretical footing.
 In essence, you treat your available data as a giant Normal distribution and infer the covariances between the data points via a kernel.
@@ -181,7 +181,7 @@ params = params.parse_args()
 generate_weightuncertainty_data()
 </code></pre></div></div>
 
-<p><img src="/blog/InducingPoints/Data.png" alt="" class='align="center"' height="50%" width="50%"></p>
+<p><img src="/blog/InducingPoints/Data.png" alt="" class="align=&quot;center&quot;" height="50%" width="50%" /></p>
 
 <p>Judging from the regression data, we can see that the function which is represented by the noisy data points can be approximated quite reasonably with 6 data points.
 And this is what inducing points are all about: finding a set of representative points $\{ \widetilde{X}, \widetilde{y} \} $ which capture the original data structure $\{ X, y \}$ sufficiently well while reducing the memory and computational cost of the GP.
@@ -350,11 +350,11 @@ gp.plot(_title="Post Training")
 
 <p>I combined the entire training loop into a nice little gif which shows how the inducing points and the kernel parameters are adjusted to the data:</p>
 
-<p><img src="/blog/InducingPoints/IP_GP.gif" alt="" class='align="center"' height="50%" width="50%"></p>
+<p><img src="/blog/InducingPoints/IP_GP.gif" alt="" class="align=&quot;center&quot;" height="50%" width="50%" /></p>
 
 <p>One can see nicely how the inducing points are moved to precisely the points in space which we predicted earlier in the image at the top.
 This training routine would even be amenable to mini batch training, we would introduce more variance though.</p>
-
+</p>
       		</section>
 
           <!-- <div class="comments-wrapper">
@@ -432,23 +432,20 @@ This training routine would even be amenable to mini batch training, we would in
         <!-- <li><a href="https://facebook.com/default" class="icon fa-facebook" rel="nofollow"><span class="label">Facebook</span></a></li> -->
         <!-- <li><a href="https://instagram.com/default" class="icon fa-instagram" rel="nofollow"><span class="label">Instagram</span></a></li> -->
         <li><a href="https://github.com/ludwigwinkler" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
-      
-    
-  
-
+      </ul>
+    </section>
+  </section>
+</footer>
 <!-- Copyright -->
 <div id="copyright">
   <ul>
-       <li>© HTML5 UP</li>
-       <li>Design by <a href="https://html5up.net" rel="nofollow">HTML5 UP</a>
-</li>
-       <li>Jekyll Integration by <a href="https://soundgrail.com">SoundGrail</a>
-</li>
-       <li>Theme made by <a href="https://github.com/iwiedenm/jekyll-theme-massively-src"> iwiedenm</a>
-</li>
+       <li>&copy; HTML5 UP</li>
+       <li>Design by <a href="https://html5up.net" rel="nofollow">HTML5 UP</a></li>
+       <li>Jekyll Integration by <a href="https://soundgrail.com">SoundGrail</a></li>
+       <li>Theme made by <a href="https://github.com/iwiedenm/jekyll-theme-massively-src"> iwiedenm</a></li>
  </ul>
 </div>
- --&gt;
+ -->
 
 			</div>
 
@@ -460,7 +457,7 @@ This training routine would even be amenable to mini batch training, we would in
 <script src="http://localhost:4000/assets/js/skel.min.js"></script>
 <script src="http://localhost:4000/assets/js/util.js"></script>
 <script src="http://localhost:4000/assets/js/main.js"></script>
- --&gt;
+ -->
 			<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=default"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
