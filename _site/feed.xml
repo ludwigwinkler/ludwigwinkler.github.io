@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-04-06T23:30:24+02:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Lebanon</title><link href="http://localhost:4000/blog/Lebanon2022/" rel="alternate" type="text/html" title="Lebanon" /><published>2022-04-01T00:00:00+02:00</published><updated>2022-04-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Lebanon2022</id><content type="html" xml:base="http://localhost:4000/blog/Lebanon2022/">&lt;!-- ## Berlin Over The Years --&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-04-19T16:42:37+02:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Lebanon</title><link href="http://localhost:4000/blog/Lebanon2022/" rel="alternate" type="text/html" title="Lebanon" /><published>2022-04-01T00:00:00+02:00</published><updated>2022-04-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Lebanon2022</id><content type="html" xml:base="http://localhost:4000/blog/Lebanon2022/">&lt;!-- ## Berlin Over The Years --&gt;
 &lt;style&gt;
     .image-gallery {overflow: auto; margin-left: -1%!important;}
     .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
@@ -9,6 +9,8 @@
 &lt;/style&gt;
 
 &lt;ul class=&quot;image-gallery&quot;&gt;
+    
+    
     
     
     
@@ -686,8 +688,8 @@ The receiver can then exponetiate the ‘decrypted’ hash again with the public
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2021/Berlin-11.jpg&quot; title=&quot;Berlin-11&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin2021/Berlin-11.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-11&quot; title=&quot;Berlin-11&quot; /&gt;&lt;span&gt;Berlin-11&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2021/Berlin-11.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin2021/Berlin-11.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2021/Berlin-1.jpg&quot; title=&quot;Berlin-1&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin2021/Berlin-1.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-1&quot; title=&quot;Berlin-1&quot; /&gt;&lt;span&gt;Berlin-1&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2021/Berlin-1.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin2021/Berlin-1.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
@@ -712,6 +714,18 @@ The receiver can then exponetiate the ‘decrypted’ hash again with the public
     
     &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2021/Berlin-180.jpg&quot; title=&quot;Berlin-180&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin2021/Berlin-180.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-180&quot; title=&quot;Berlin-180&quot; /&gt;&lt;span&gt;Berlin-180&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2021/Berlin-180.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin2021/Berlin-180.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2021/Berlin-190.jpg&quot; title=&quot;Berlin-190&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin2021/Berlin-190.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-190&quot; title=&quot;Berlin-190&quot; /&gt;&lt;span&gt;Berlin-190&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2021/Berlin-190.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin2021/Berlin-190.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2021/Berlin-201.jpg&quot; title=&quot;Berlin-201&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin2021/Berlin-201.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-201&quot; title=&quot;Berlin-201&quot; /&gt;&lt;span&gt;Berlin-201&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2021/Berlin-201.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin2021/Berlin-201.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
@@ -828,6 +842,8 @@ The receiver can then exponetiate the ‘decrypted’ hash again with the public
 &lt;/style&gt;
 
 &lt;ul class=&quot;image-gallery&quot;&gt;
+    
+    
     
     
     
@@ -1255,6 +1271,8 @@ The receiver can then exponetiate the ‘decrypted’ hash again with the public
     
     
     
+    
+    
     &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC1780.jpg&quot; title=&quot;DSC1780&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/greece21/DSC1780.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC1780&quot; title=&quot;DSC1780&quot; /&gt;&lt;span&gt;DSC1780&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC1780.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/greece21/DSC1780.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
@@ -1388,6 +1406,8 @@ The receiver can then exponetiate the ‘decrypted’ hash again with the public
 &lt;/style&gt;
 
 &lt;ul class=&quot;image-gallery&quot;&gt;
+    
+    
     
     
     
@@ -2192,6 +2212,8 @@ It essentially answers the question of how much the probability $p(x_T)$ changes
     
     &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2020/Berlin-90.jpg&quot; title=&quot;Berlin-90&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin2020/Berlin-90.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-90&quot; title=&quot;Berlin-90&quot; /&gt;&lt;span&gt;Berlin-90&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2020/Berlin-90.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin2020/Berlin-90.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
     
     
     
