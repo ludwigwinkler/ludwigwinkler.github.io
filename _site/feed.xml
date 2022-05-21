@@ -1,4 +1,32 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-05-03T17:54:45+02:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Lebanon</title><link href="http://localhost:4000/blog/Lebanon2022/" rel="alternate" type="text/html" title="Lebanon" /><published>2022-04-01T00:00:00+02:00</published><updated>2022-04-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Lebanon2022</id><content type="html" xml:base="http://localhost:4000/blog/Lebanon2022/">&lt;!-- ## Berlin Over The Years --&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-05-21T14:21:55+02:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Lieber, lieber Gabriel!!!</title><link href="http://localhost:4000/blog/Gabriel/" rel="alternate" type="text/html" title="Lieber, lieber Gabriel!!!" /><published>2022-05-21T00:00:00+02:00</published><updated>2022-05-21T00:00:00+02:00</updated><id>http://localhost:4000/blog/Gabriel</id><content type="html" xml:base="http://localhost:4000/blog/Gabriel/">&lt;p&gt;Lieber Gabriel,&lt;/p&gt;
+
+&lt;p&gt;wir wünschen dir &lt;strong&gt;Alles, Alles Gute, Alle Gesundheit und vorallem Allen Spaß zum Geburtstag&lt;/strong&gt;!&lt;/p&gt;
+
+&lt;p&gt;Da die Japaner mit eine der ältesten Gesellschaften der Welt sind, stellt sich natürlich die Frage wie sie so alt geworden sind trotz erzwungener Populations-Verjüngungen mittels ‘Banzai Charges’ und Kamikaze-Attacken.&lt;/p&gt;
+
+&lt;p&gt;Die Antwort ist: Fisch, eingerollt in Reis und Algen.&lt;/p&gt;
+
+&lt;p&gt;Und da du gerne Dinge ja auch gerne etwas exakter machst und gerne auch Sachen richtig verstehen willst, wollen wir dir einen &lt;strong&gt;Sushi-Workshop&lt;/strong&gt; schenken.&lt;/p&gt;
+
+&lt;p&gt;Da kannst du ganz genau lernen, wie man Reis kocht, den Fisch schneidet und allerlei anderer technischer und handwerklicher Tricks.&lt;/p&gt;
+
+&lt;p&gt;In diesem Sinne: Gutes Lernen und Guten Appetit!&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Ludwig, Stefaan, Gregor, Santi, Heiner, Jason und Sami&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/images/Unknown2.jpg&quot; alt=&quot;alt text&quot; /&gt;&lt;/p&gt;</content><author><name></name></author><category term="otherblog" /><summary type="html">You're getting older, but Japanese people are super old and fit ... maybe due to Sushi?</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/images/MakiSushi.jpg" /></entry><entry><title type="html">Money Laundering</title><link href="http://localhost:4000/blog/moneylaundering/" rel="alternate" type="text/html" title="Money Laundering" /><published>2022-05-02T00:00:00+02:00</published><updated>2022-05-02T00:00:00+02:00</updated><id>http://localhost:4000/blog/moneylaundering</id><content type="html" xml:base="http://localhost:4000/blog/moneylaundering/">&lt;h3 id=&quot;definition&quot;&gt;Definition&lt;/h3&gt;
+
+&lt;h3 id=&quot;methods&quot;&gt;Methods&lt;/h3&gt;
+
+&lt;h3 id=&quot;numbers&quot;&gt;Numbers&lt;/h3&gt;</content><author><name></name></author><category term="otherblog" /><summary type="html">Dirty things squeaky clean ...</summary></entry><entry><title type="html">Kleptocracy</title><link href="http://localhost:4000/blog/kleptocracy/" rel="alternate" type="text/html" title="Kleptocracy" /><published>2022-05-01T00:00:00+02:00</published><updated>2022-05-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/kleptocracy</id><content type="html" xml:base="http://localhost:4000/blog/kleptocracy/">&lt;h3 id=&quot;definition&quot;&gt;Definition&lt;/h3&gt;
+
+&lt;h3 id=&quot;methods&quot;&gt;Methods&lt;/h3&gt;
+
+&lt;h3 id=&quot;net-outlfow-out-of-africa&quot;&gt;Net outlfow out of Africa&lt;/h3&gt;
+
+&lt;h3 id=&quot;east-german-and-soviet-black-cash&quot;&gt;East-German and Soviet Black Cash&lt;/h3&gt;
+
+&lt;h3 id=&quot;numbers&quot;&gt;Numbers&lt;/h3&gt;</content><author><name></name></author><category term="otherblog" /><summary type="html">Don't Ask Me Where My Wealth Is From</summary></entry><entry><title type="html">Lebanon</title><link href="http://localhost:4000/blog/Lebanon2022/" rel="alternate" type="text/html" title="Lebanon" /><published>2022-04-01T00:00:00+02:00</published><updated>2022-04-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Lebanon2022</id><content type="html" xml:base="http://localhost:4000/blog/Lebanon2022/">&lt;!-- ## Berlin Over The Years --&gt;
 &lt;style&gt;
     .image-gallery {overflow: auto; margin-left: -1%!important;}
     .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
@@ -9,6 +37,8 @@
 &lt;/style&gt;
 
 &lt;ul class=&quot;image-gallery&quot;&gt;
+    
+    
     
     
     
@@ -303,7 +333,17 @@
     
     
     
-&lt;/ul&gt;</content><author><name></name></author><category term="photography" /><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/lebanon22/20220327-_DSC6539.jpg" /></entry><entry><title type="html">RSA Cryptography: The Math</title><link href="http://localhost:4000/blog/RSA/" rel="alternate" type="text/html" title="RSA Cryptography: &lt;br&gt; The Math" /><published>2021-10-04T00:00:00+02:00</published><updated>2021-10-04T00:00:00+02:00</updated><id>http://localhost:4000/blog/RSA</id><content type="html" xml:base="http://localhost:4000/blog/RSA/">&lt;head&gt;
+&lt;/ul&gt;</content><author><name></name></author><category term="photography" /><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/lebanon22/20220327-_DSC6539.jpg" /></entry><entry><title type="html">Off-Shore Finance</title><link href="http://localhost:4000/blog/offshorefinance/" rel="alternate" type="text/html" title="Off-Shore Finance" /><published>2022-01-05T00:00:00+01:00</published><updated>2022-01-05T00:00:00+01:00</updated><id>http://localhost:4000/blog/offshorefinance</id><content type="html" xml:base="http://localhost:4000/blog/offshorefinance/">&lt;h3 id=&quot;origins&quot;&gt;Origins&lt;/h3&gt;
+
+&lt;h3 id=&quot;secrecy-is-more-powerful-than-low-taxes&quot;&gt;Secrecy is more powerful than low taxes&lt;/h3&gt;
+
+&lt;h3 id=&quot;tax-havens-beyond-the-clishé-caribbean-islands&quot;&gt;Tax Havens Beyond the clishé Caribbean Islands&lt;/h3&gt;
+
+&lt;h4 id=&quot;usa&quot;&gt;USA&lt;/h4&gt;
+
+&lt;p&gt;Delaware, Nevada, Wyoming&lt;/p&gt;
+
+&lt;h3 id=&quot;whats-in-it-for-the-tax-havens&quot;&gt;What’s in it for the tax havens?&lt;/h3&gt;</content><author><name></name></author><category term="otherblog" /><summary type="html">Drinking a Pina Colada and getting wet[&amp;rich] in the rain</summary></entry><entry><title type="html">RSA Cryptography: The Math</title><link href="http://localhost:4000/blog/RSA/" rel="alternate" type="text/html" title="RSA Cryptography: &lt;br&gt; The Math" /><published>2021-10-04T00:00:00+02:00</published><updated>2021-10-04T00:00:00+02:00</updated><id>http://localhost:4000/blog/RSA</id><content type="html" xml:base="http://localhost:4000/blog/RSA/">&lt;head&gt;
 &lt;style&gt;
 .MathJax_Display, .MJXc-display, .MathJax_SVG_Display {
     overflow-x: auto;
@@ -558,6 +598,8 @@ The receiver can then exponetiate the ‘decrypted’ hash again with the public
 &lt;/style&gt;
 
 &lt;ul class=&quot;image-gallery&quot;&gt;
+    
+    
     
     
     
@@ -1059,6 +1101,8 @@ The receiver can then exponetiate the ‘decrypted’ hash again with the public
     
     
     
+    
+    
     &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2100.jpg&quot; title=&quot;DSC2100&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/spain21/DSC2100.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC2100&quot; title=&quot;DSC2100&quot; /&gt;&lt;span&gt;DSC2100&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2100.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/spain21/DSC2100.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
@@ -1126,6 +1170,8 @@ The receiver can then exponetiate the ‘decrypted’ hash again with the public
 &lt;/style&gt;
 
 &lt;ul class=&quot;image-gallery&quot;&gt;
+    
+    
     
     
     
@@ -1562,6 +1608,8 @@ The receiver can then exponetiate the ‘decrypted’ hash again with the public
     
     
     
+    
+    
     &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/italy21/DSC0927.jpg&quot; title=&quot;DSC0927&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/italy21/DSC0927.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC0927&quot; title=&quot;DSC0927&quot; /&gt;&lt;span&gt;DSC0927&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/italy21/DSC0927.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/italy21/DSC0927.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
@@ -1690,856 +1738,4 @@ The receiver can then exponetiate the ‘decrypted’ hash again with the public
     
     
     
-&lt;/ul&gt;</content><author><name></name></author><category term="photography" /><summary type="html">Lake Garda, Milan, Bergamo, Brescia</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/italy21/DSC0940.jpg" /></entry><entry><title type="html">Reverse Time Stochastic Differential Equations [for generative modelling]</title><link href="http://localhost:4000/blog/ReverseTimeAnderson/" rel="alternate" type="text/html" title="Reverse Time Stochastic Differential Equations [for generative modelling]" /><published>2021-04-09T00:00:00+02:00</published><updated>2021-04-09T00:00:00+02:00</updated><id>http://localhost:4000/blog/ReverseTimeAnderson</id><content type="html" xml:base="http://localhost:4000/blog/ReverseTimeAnderson/">&lt;head&gt;
-&lt;style&gt;
-.MathJax_Display, .MJXc-display, .MathJax_SVG_Display {
-    overflow-x: auto;
-    overflow-y: hidden;
-}
-&lt;/style&gt;
-
-&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
-       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
-             processEscapes: true
-           },
-		   TeX: {extensions:[&quot;autoload-all.js&quot;]}
-         });
-       &lt;/script&gt;
-       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
-&lt;/head&gt;
-
-&lt;p&gt;What follows is a derivation of the main result of ‘Reverse-Time Diffusion Equation Models’ by Brian D.O. Anderson (1982).
-Earlier on this blog we learned that a stochastic differential equation of the form&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
-	dX_t = \mu(X_t, t) dt + \sigma(X_t, t) dW_t
-\end{align}&lt;/script&gt;
-
-&lt;p&gt;with the derivative of Wiener process $W_t$ admits two types of equations, called the forward Kolmogorov or Fokker-Planck equation and the backward Kolmogorov equation.
-For notational brevity we will use the term $\mu(x_t)$ for the drift and $\sigma(x_t)$ as the diffusion parameter and omit the explicit time dependency.&lt;/p&gt;
-
-&lt;p&gt;The Kolmogorov forward equation is identical to the Fokker Planck equation and states&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
-	\partial_t p(x_t) = -\partial_{x_t} \left[ \mu(x_t) p(x_t) \right] + \frac{1}{2} \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right].
-\end{align}&lt;/script&gt;
-
-&lt;p&gt;It describes the evolution of a probability distribution $p(x_t)$ forward in time.
-We can quite frankly think of it as, for example, a Normal distribution being slowly transformed into an arbitrary complex distribution according to the drift and diffusion parameters $\mu(x_t)$ and $\sigma(x_t)$.&lt;/p&gt;
-
-&lt;p&gt;The Kolmogorov backward equation for $t \leq s$ is defined as&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
-	- \partial_t p(x_s | x_t) = \mu(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t)
-\end{align}&lt;/script&gt;
-
-&lt;p&gt;and it basically answers the question how the probability of $x_s$ at a later point in time changes as we change $x_t$ at an earlier point in time.
-The Kolmogorov backward equation is somewhat confounding with respect to time as we’re taking the partial derivative with respect to the earlier time step $t$ on which we are also coniditoning.
-But we can think of it as asking ‘How does the probability of $x_s$ at the later point in time $s$ change, as we slowly evolve the probability distribution backwards through time and condition on $x_t$’.&lt;/p&gt;
-
-&lt;p&gt;Taking inspiration from our crude example earlier, the backward equation offers a partial differential equation which we can solve backward in time, which would correspond to evolving the arbitrarily complex distribution backwards to our original Normal distribution. 
-Unfortunately there is no corresponding stochastic differential equation with a drift and diffusion term that describes the evolution of a random variable backwards through time in terms of a stochastic differential equation.&lt;/p&gt;
-
-&lt;p&gt;This is where the remarkable result from Anderson (1982) comes into play.&lt;/p&gt;
-
-&lt;p&gt;The granddaddy of all probabilistic equations, Bayes theorem, tells us that a joint distribution can be factorized by conditioning: $p(x_s , x_t) = p(x_s|x_t) p(x_t)$ with the time ordering $t \leq s$.
-Why do we invoke the joint probability $p(x_s, x_t)$ we might ask?
-What we’re trying to achieve is to derive a stochastic differential equation that tells us from what values of $x_t$ we can arrive at $x_s$.
-We can ask ourselves what the partial differential equation would be that describes the evolution of the joint distribution over time.
-First multiplying both sides of Bayes theorem with minus one and taking the derivative with respect to time $t$, we obtain via the product rule&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	- \partial_t p(x_s, x_t) &amp;= - \partial_t \left[ p(x_s| x_t) p(x_t) \right] \\
-	&amp;= \underbrace{-\partial_t p(x_s|x_t)}_{\text{KBE}} p(x_t) - p(x_s | x_t) \underbrace{\partial_t p(x_t)}_{\text{KFE}}
-\end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;into which we can plug in the Kolmogorov forward (KFE) and Kolmogorov backward (KBE) equations,&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	&amp; -\partial_t p(x_s|x_t) p(x_t) - p(x_s | x_t) \partial_t p(x_t) \\
-	&amp;= \left( \mu(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \right) p(x_t) \\
-	&amp; + p(x_s| x_t) \left( \partial_{x_t} \left[ \mu(x_t) p(x_t) \right] - \frac{1}{2} \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \right)
-\end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;The derivative occuring in the backward Kolmogorov equation are&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\partial_{x_t} p(x_s|x_t) &amp;= \partial_{x_t} \left[ \frac{p(x_s, x_t)}{p(x_t)} \right] \\
-	&amp; = \frac{\partial_{x_t} p(x_s, x_t) p(x_t) - p(x_s, x_t) \partial_{x_t} p(x_t)}{p^2(x_t)} \\
-	&amp; = \frac{\partial_{x_t} p(x_s, x_t)}{p(x_t)} - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p^2(x_t)}
-\end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;The next step is to evaluate the derivative of the products in the forward Kolmogorov equation.&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\partial_{x_t} \left[ \mu(x_t) p(x_t) \right] &amp; = \partial_{x_t} \mu(x_t) \ p(x_t) + \mu(x_t) \ \partial_{x_t} p(x_t) \\
-	\partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] &amp; = \partial_{x_t}^2 \sigma^2(x_t) \ p(x_t) + 2 \ \partial_{x_t} \sigma^2(x_t) \ \partial_{x_t} p(x_t) + \sigma^2(x_t) \ \partial_{x_t}^2 p(x_t)
-\end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;Plugging in the derivatives of the probability distributions we obtain&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	- \partial_t p(x_s, x_t)
-	= &amp; - \partial_t \left[ p(x_s| x_t) p(x_t) \right] \\
-	= &amp; -\partial_t p(x_s|x_t) p(x_t) - p(x_s | x_t) \partial_t p(x_t) \\
-	= &amp; \left( \mu(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \right) p(x_t) \\
-	&amp; + p(x_s| x_t) \left( \partial_{x_t} \left[ \mu(x_t) p(x_t) \right] - \frac{1}{2} \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \right) \\
-	= &amp; \mu(x_t) \ \partial_{x_t} p(x_s|x_t) \ p(x_t) 
-	+ \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) \\
-	&amp; + p(x_s| x_t) \partial_{x_t} \mu(x_t) \ p(x_t) + p(x_s| x_t) \mu(x_t) \ \partial_{x_t} p(x_t) \\
-	&amp; - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
-	= &amp; \mu(x_t) \ \left(\frac{\partial_{x_t} p(x_s, x_t)}{\cancel{p(x_t)}} - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p^{\cancel{2}}(x_t)} \right) \ \cancel{p(x_t)} \\
-	&amp; + p(x_s| x_t) \partial_{x_t} \mu(x_t) \ p(x_t) + p(x_s| x_t) \mu(x_t) \ \partial_{x_t} p(x_t) \\
-	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
-	= &amp; \mu(x_t) \ \left(\partial_{x_t} p(x_s, x_t) - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p(x_t)} \right) \\
-	&amp; + p(x_s| x_t) \partial_{x_t} \mu(x_t) \ p(x_t) + p(x_s| x_t) \mu(x_t) \ \partial_{x_t} p(x_t) \\
-	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
-	= &amp; \mu(x_t) \ \left(\partial_{x_t} p(x_s, x_t) - \cancel{p(x_s| x_t) \partial_{x_t} p(x_t)} \right) \\
-	&amp; + p(x_s, x_t) \partial_{x_t} \mu(x_t) + \cancel{p(x_s| x_t) \mu(x_t) \ \partial_{x_t} p(x_t)} \\
-	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
-	= &amp; \underbrace{\mu(x_t) \ \partial_{x_t} p(x_s, x_t) + p(x_s, x_t) \partial_{x_t} \mu(x_t)}_{\text{product rule}} \\
-	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
-	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
-	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right]
-\end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;We can now see that the drift term already fulfills the requirements of the forward Kolmogorov equation.
-What we’re left with and which we have to take care of are the two terms with the diffusion terms $\sigma^2(x_t)$.
-The goal is to fuse the two terms into one which resembles the diffusion term in the forward Kolmogorov equation.
-Just to reiterate it one more time, if we can massage the partial differential equation into the functional form of the Kolmogorov forward equation, we have a one-to-one correspondence to a stochastic differential equation that can be solved backward in time.&lt;/p&gt;
-
-&lt;p&gt;Following the gracious help from Brian Anderson himself in an email from down under, we can simplify the terms with $\sigma^2(x_t)$ by expanding the last term.
-The important step, that Brian pointed out to me, is to factorize the joint distribution $p(x_s, x_t) = p(x_s| x_t) p(x_t)$ and invoke the product rule to match the terms,&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	&amp; \frac{1}{2} \partial_{x_t}^2 \left[ p(x_s, x_t) \sigma^2(x_t) \right] \\
-	= &amp; \frac{1}{2} \partial_{x_t}^2 \left[ p(x_s | x_t) p(x_t) \sigma^2(x_t) \right] \\
-	= &amp; \frac{1}{2} \partial_{x_t}^2 p(x_s | x_t) p(x_t) \sigma^2(x_t) + \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right] \partial_{x_t} p(x_s| x_t)
-	 + \frac{1}{2} \partial_{x_t}^2 \left[ p(x_t) \sigma^2(x_t) \right] p(x_s| x_t)
-\end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;We can see from the expansion of the derivative above that we can combine the terms in our derivation if we expand the “center term”.
-Furthermore we can employ the identity $-\frac{1}{2} X = -X + \frac{1}{2} X$ to obtain&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	-\partial_t p(x_s, x_t)
-	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
-	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
-	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
-	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ p(x_t) \ \partial_{x_t}^2 p(x_s | x_t) - \underbrace{ \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] }_{-\frac{1}{2} X = -X + \frac{1}{2} X} \\
-	&amp; \pm \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right] \\
-	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
-	&amp; \textcolor{red}{+ \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t)} \\
-	&amp; \underbrace{ - p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] + \textcolor{red}{\frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right]} }_{-\frac{1}{2} X = -X + \frac{1}{2} X} \\
-	&amp; \textcolor{red}{\pm \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right]} \\
-	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] + \textcolor{red}{\frac{1}{2} \partial_{x_t}^2 \left[ p( x_s | x_t) p(x_t) \sigma^2(x_t) \right]} \\
-	&amp; \underbrace{- p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] - \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right]}_{
-		- \partial_{x_t} \left[ p(x_s| x_t) \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right] \text{ (product rule) }
-		} \\
-	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right] \\
-	&amp; - \partial_{x_t} \left[ p(x_s| x_t) \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right] \\
-	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) - p(x_s| x_t) \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right] \\
-	&amp; + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right] \\
-	= &amp; \partial_{x_t} \left[ p(x_s, x_t) \left( \mu(x_t) - \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) \right] \\
-	&amp; + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right]
-\end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;which finally gives us a stochastic differential equation that we can solve backward in time:&lt;/p&gt;
-
-&lt;p&gt;&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-d\tilde{X}_t = \left(\mu(x_t) - \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) dt + \sigma(x_t) d\tilde{W}_t
-\end{align}&lt;/script&gt;
-where $\tilde{W}_t$ is a Wiener process that flows backward in time.&lt;/p&gt;
-
-&lt;p&gt;The common application of the reverse time stochastic differential equations is in generative modelling.
-In these applications the noise $\sigma(x_t)$ is made independent of the input such that we can pull it out of the partial derivative $\partial_{x_t}$.
-By additionally using the log-derivative trick we obtain a term which is dependent on the score&lt;/p&gt;
-
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;% &lt;![CDATA[
-\begin{align}
-d\tilde{X}_t &amp;= \left(\mu(x_t) - \sigma_t^2 \frac{1}{p(x_t)} \partial_{x_t} \ p(x_t) \right) dt + \sigma_t d\tilde{W}_t \\
-&amp;= \Big(\mu(x_t) - \sigma_t^2 \underbrace{\partial_{x_t} \log p(x_t)}_{\text{ML Model}} \Big) dt + \sigma_t d\tilde{W}_t \\
-\end{align} %]]&gt;&lt;/script&gt;
-
-&lt;p&gt;Score based generative modelling proceeds by defining a, what I creatively call, ‘noising’ process which takes data and turns it into garbage by iteratively adding noise along an analytically known SDE.
-The data dependent drift $\mu(x_t) = \alpha_t x_0$ with $\alpha_s &amp;gt; \alpha_t, s&amp;lt;t$ and the data independent diffusion $\sigma_t$ with $\sigma_s &amp;lt; \sigma_t, s&amp;lt; t$ are known beforehand.
-In essence, the drift reduces the data $x_0$ slowly to zero while we heap more and noise on the data via the diffusion term.
-More importantly, by defining an analytical SDE we can ‘jump’ to any point in time and evaluate how noisy the data $x_t$ has become without having to solve SDE explicitely.
-By defining a schedule for both $\alpha_t$ and $\sigma_t$ we can evaluate the ‘noisiness’ sort of point-wise in time.&lt;/p&gt;
-
-&lt;p&gt;The remarkable reverse time stochastic differential equation then tells us that all we have to do is to cancel out the drift which turns our data into noise.
-If we now take some noise and iteratively subtract the $\sigma_t^2 \partial_{x_t} \log p(x_t)$ from it we are reducing integration step by integration step (remember it’s a SDE) the noise and recover the true data.
-Voila, you have generative model that turns noise into data.&lt;/p&gt;</content><author><name></name></author><summary type="html">'If I Could Turn Back Time' by Cher (1989)</summary></entry><entry><title type="html">Fokker, Planck &amp;amp; Kolmogorov</title><link href="http://localhost:4000/blog/Kramers/" rel="alternate" type="text/html" title="Fokker, Planck &amp; Kolmogorov" /><published>2021-02-04T00:00:00+01:00</published><updated>2021-02-04T00:00:00+01:00</updated><id>http://localhost:4000/blog/Kramers</id><content type="html" xml:base="http://localhost:4000/blog/Kramers/">&lt;head&gt;
-&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
-       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       &lt;/script&gt;
-       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
-&lt;/head&gt;
-
-&lt;p&gt;At the core of the partial differential equations that will describe the change of a distribution both forward and backward in time lies the Chapman-Kolmogorov equation
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	p(x_{t + \tau}) &amp; = \int p(x_{t + \tau} , x'_{t}) \ dx'_t \\
-	&amp; = \int p(x_{t + \tau} | x'_{t}) \ p(x'_t) \ dx'_t
-\end{align} %]]&gt;&lt;/script&gt;
-which simply expands over an auxiliary variable $x’_t$ while simultaneously marginalizing it out and factorizing the joint distribution &lt;script type=&quot;math/tex&quot;&gt;p(x_{t+\tau}, x'_t)&lt;/script&gt; into a conditional distribution.
-The conditional distribution above states that we can start from any &lt;script type=&quot;math/tex&quot;&gt;x'_t&lt;/script&gt; and by moving to &lt;script type=&quot;math/tex&quot;&gt;x_{t+\tau}&lt;/script&gt; with the right transition probability &lt;script type=&quot;math/tex&quot;&gt;p(x_{t + \tau} | x'_{t})&lt;/script&gt; we will obtain the correct marginal distribution &lt;script type=&quot;math/tex&quot;&gt;p(x_{t+\tau})&lt;/script&gt;.&lt;/p&gt;
-
-&lt;p&gt;We will assume a stochastic differential equation the first two orders of which can be estimated with
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	M^{(n)} (x'_t) = \int (x_{t+\tau} - x'_t)^n  p(x_{t + \tau} | x'_t) dx_{t+\tau}
-\end{align}&lt;/script&gt;
-such that the dynamics are described by the Ito drift-diffusion process
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	dX'_t = &amp; M^{(1)}(X'_t) dt + M^{(2)}(X'_t) dW_t \\
-	= &amp; \mu(X'_t, t) dt + \sigma(X'_t, t) dW_t \\
-\end{align} %]]&gt;&lt;/script&gt;
-with the Wiener process &lt;script type=&quot;math/tex&quot;&gt;W_t&lt;/script&gt;.
-The important part is to note the ‘direction’ of the differential which is evaluated strictly forward in time.
-We take &lt;script type=&quot;math/tex&quot;&gt;x'_t&lt;/script&gt; as a sort of origin point which doesn’t change and weight the differential &lt;script type=&quot;math/tex&quot;&gt;x_{t+\tau} - x'_t&lt;/script&gt; by the appropriate transition probability &lt;script type=&quot;math/tex&quot;&gt;p(x_{t+\tau} | x'_t)&lt;/script&gt; over every possible &lt;script type=&quot;math/tex&quot;&gt;x_{t+\tau}&lt;/script&gt;.&lt;/p&gt;
-
-&lt;h3 id=&quot;forward-equation&quot;&gt;Forward Equation&lt;/h3&gt;
-
-&lt;p&gt;The Chapman-Kolmogorov equation fro the forward Kramers-Moyal expansion can be rewritten with the help of an auxilliary variable as
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	p(x_{t + \tau}) = &amp; \int p(x_{t + \tau} | x'_{t}) \ p(x'_t) \ dx'_t \\
-	= &amp; \int_{X'} \int_{Y} \delta(y_{t+\tau} - x_{t+\tau}) p(y_{t + \tau} | x'_{t}) \ dy_{t+\tau} p(x'_t) dx'_t
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;The main component of the Kramers-Moyal expansions is the use of the Taylor expansion on a shifted function.
-The classical Taylor expansion $T_{f,a}(x)$ of a function $f(x)$ around a root point $a$ says that we can reconstruct the function $f(x)$ with an infinite sum consisting of its derivatives
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	T_{f,a}(x) = \sum_{n=0}^\infty \frac{f^{(n)}(a)}{n!} (x - a)^n
-\end{align}&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;What happens if we introduce an offset $h$ to the root point $a$ which can take on any value we want?
-It turns out that the arbitrary offset $h$ can directly be used as a distance measure to the root point.
-The Taylor expansion of the shifted function $f(a + h)$ then becomes
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	T_{f,a}(h) = \sum_{n=0}^\infty \frac{f^{(n)}(a)}{n!} h^n
-\end{align}&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;We can then first expand the delta function $\delta ( y_{t+\tau} - x_{t+\tau} )$ with $\pm x_t$ and subsequently expand the Taylor series to obtain
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\delta(y_{t+\tau} - x_{t+\tau}) = &amp; \delta(\overbrace{y_{t+\tau} - x'_t}^{h} + \overbrace{x'_t - x_{t+\tau}}^{a} ) \\
-	= &amp; \sum_{n=0}^\infty \frac{1}{n!} \underbrace{\partial_{x'_t}^{n} \delta(x'_t - x_{t+\tau}) }_{f^{(n)}(a)} \underbrace{( y_{t+\tau} - x'_t)^n}_{h^n}
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;We can plug the expanded Taylor series back in to get
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-p(x_{t + \tau}) 
-= &amp; \int_{X'} \int_{Y} \overbrace{\delta(y_{t+\tau} - x_{t+\tau})}^{\text{Taylor Expansion}} p(y_{t + \tau} | x'_{t}) \ dy_{t+\tau} \ p(x'_t) dx'_t \\
-= &amp; \int_{X'} \int_{Y} \sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ \underbrace{ \partial_{x'_t}^{n} \ \delta(x'_t - x_{t+\tau})}_{!} p(y_{t + \tau} | x'_{t}) \ dy_{t+\tau} \ p(x'_t) \underbrace{dx'_t}_{!} \\
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;Since for any subtraction &lt;script type=&quot;math/tex&quot;&gt;x'_{t} - x_{t+\tau}&lt;/script&gt; and function &lt;script type=&quot;math/tex&quot;&gt;f(x'_{t} - x_{t+\tau})&lt;/script&gt; we can employ the relation &lt;script type=&quot;math/tex&quot;&gt;\partial_{x'_t} \ f(x'_{t} - x_{t+\tau}) = - \partial_{x_{t+\tau}} \ f(x'_{t} - x_{t+\tau})&lt;/script&gt; via the change of variables, we switch the derivative to 
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ \partial_{x'_{t}}^{n} \ \delta(x'_t - x_{t+\tau}) = &amp; \sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ (- \partial_{x_{t+\tau}})^{n} \ \delta(x'_t - x_{t+\tau})
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;In essence, we’re computing the &lt;em&gt;forward&lt;/em&gt; difference over all possible $x_{t+\tau}$ for a known, and thus fixed, $x_t$.
-For the special case of $n=0$ where the factorial, powers and derivatives evaluate to 1 and we can marginalize out over $y$, the sum simplifies to 
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	&amp;\int_Y \sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ (- \partial_{x_{t+\tau}})^{n} \ \delta(x'_t - x_{t+\tau}) p(y_{t+\tau} | x'_t) dy_{t+\tau} \\
-	= &amp; \Big( 1 + \sum_{n=1}^\infty \frac{1}{n!} (- \partial_{x_{t+\tau}})^{n} \underbrace{\int_Y ( y_{t+\tau} - x'_{t})^n \ p(y_{t+\tau} | x'_t) \ dy_{t+\tau}}_{M^{(n)}(x'_t)} \Big) \ \delta(x'_t - x_{t+\tau}) \\
-	= &amp; \Big( 1 + \sum_{n=1}^\infty \frac{1}{n!} (- \partial_{x_{t+\tau}})^{n} M^{(n)}(x'_t) \Big) \ \delta(x'_t - x_{t+\tau})
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;Plugging the expanded transition probability back into the Chapman-Kolmogorov equation and noting that the Dirac impulse &lt;script type=&quot;math/tex&quot;&gt;\delta(x'_t-x_{t+\tau})&lt;/script&gt; eliminates the integral with respect to &lt;script type=&quot;math/tex&quot;&gt;x'_t&lt;/script&gt; by eliminating every value of &lt;script type=&quot;math/tex&quot;&gt;x'&lt;/script&gt; different from &lt;script type=&quot;math/tex&quot;&gt;x&lt;/script&gt; irrespective of time, we get
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	p(x_{t + \tau}) = &amp; \int p(x_{t + \tau} | x'_{t}) \ p(x'_t) \ dx'_t \\
-	= &amp; \int \int \delta(y_{t+\tau} - x_{t+\tau}) p(y_{t + \tau} | x'_{t}) dy_{t+\tau} \ p(x'_t) \ dx'_{t} \\
-	= &amp; \int \int \sum_{n=0}^\infty \frac{1}{n!} ( y_{t+\tau} - x'_t)^n \ \partial_{x'_t}^{n} \ \delta(x'_t - x_{t+\tau}) p(y_{t + \tau} | x'_{t}) \ dy_{t+\tau} \ p(x'_t) dx'_t \\
-	= &amp; \int_{X'} \Big( 1 + \sum_{n=1}^\infty \frac{1}{n!} (- \partial_{x_{t+\tau}})^{n} M^{(n)}(x'_t) \Big) \ \delta(x'_t - x_{t+\tau}) \ p(x'_t) \ dx'_t \\
-	= &amp; p(x_t) + \underbrace{\sum_{n=1}^\infty \frac{1}{n!} (- \partial_{x_{t+\tau}})^{n} \left[ M^{(n)}(x_t) \ p(x_t) \right]}_{\lim_{\tau \rightarrow 0} : \partial_t p(x_t) \tau}
-\end{align} %]]&gt;&lt;/script&gt;
-where we note that the evaluation of $n=0$ applies in the same way to any value or function that we multiply into the simplified Taylor expansion.
-Pulling &lt;script type=&quot;math/tex&quot;&gt;p(x'_t)&lt;/script&gt; to the left side and finding that the change between &lt;script type=&quot;math/tex&quot;&gt;p(x_{t+\tau})&lt;/script&gt; and &lt;script type=&quot;math/tex&quot;&gt;p(x'_t)&lt;/script&gt; should be proportional to &lt;script type=&quot;math/tex&quot;&gt;\partial_t p(x_t) \tau&lt;/script&gt; for a small step size &lt;script type=&quot;math/tex&quot;&gt;\tau&lt;/script&gt; analogously to th Euler discretization, we obtain
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	p(x_{t+\tau}) - p(x_t) = &amp; \partial_t p(x_t) \tau \\
-	\frac{p(x_{t+\tau}) - p(x_t)}{\tau} = &amp; \partial_t p(x_t).
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;Finally we can note that we can could cut off the Taylor expansion after the second order and realize that Taylor expansion is equivalent to the time derivative in the limit of time, i.e. &lt;script type=&quot;math/tex&quot;&gt;\lim_{\tau \rightarrow 0}&lt;/script&gt; and we can proclaim that
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\partial_t p(x_t) = &amp; - \partial_x \left[ M^{(1)}(x_t) p(x_t) \right] + \frac{1}{2} \partial_x^2 \left[M^{(2)}(x_t) p(x_t) \right] \\
-	= &amp; - \partial_{x_t} \left[ \mu(x_t) p(x_t) \right] + \frac{1}{2} \partial_{x_t}^2 \left[ \sigma^2(x_t) p(x_t) \right] \\
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;backward-equation&quot;&gt;Backward Equation&lt;/h3&gt;
-
-&lt;p&gt;The Kolmogorov backward equation (KBE) can be derived in the same way while paying attention to the derivatives.&lt;/p&gt;
-
-&lt;p&gt;Again we start with the Chapman-Kolmogorov equation:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	p(x_T | x'_t) = \int p(x_T | x''_{t+\tau}) p(x''_{t+\tau} | x'_t) dx''_{t+\tau}
-\end{align}&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;We expand the transition probability &lt;script type=&quot;math/tex&quot;&gt;p(x''_t | x'_{t+\tau})&lt;/script&gt; again with a Dirac function 
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	p(x''_{t+\tau} | x'_t) = \int \delta(y_{t+\tau} - x''_{t+\tau}) p(y_{t+\tau} | x'_{t}) dy_{t+\tau}
-\end{align}&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;Then we expand the Dirac function with the Taylor series just as in the Forward Kolmogorov equation to obtain
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\delta(y_{t+\tau} - x''_{t+\tau})
-	= &amp; \delta( y_{t+\tau} - x'_t + x'_t - x''_{t+\tau}) \\
-	= &amp; \sum_{n=0}^\infty \frac{1}{n!} (y_{t + \tau} - x'_t)^n \ \partial_{x'_{t}}^n \ \delta(x'_t - x''_{t+\tau})
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;Plugging the expanded Dirac function back into the transition probability we obtain
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	p(x''_{t+\tau} | x'_t) = &amp; \int \delta(y_{t+\tau} - x''_{t+\tau}) p(y_{t+\tau} | x_{t}) dy_{t+\tau} \\
-	= &amp; \int \sum_{n=0}^\infty \frac{1}{n!} (y_{t + \tau} - x'_t)^n \ \partial_{x'_{t}}^n \ \delta(x'_t - x''_{t+\tau}) p(y_{t+\tau} | x_{t}) dy_{t+\tau}
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;When we compare the derivation of the forward Kramers-Moyals expansion with the backwards Kramers-Moyals expansion we should immediately detect that the only difference is the partial derivative.
-The subtle but important difference lies in direction to which we differentiate.
-For the forward expansion we are interested how the PDF changes with respect to the future values &lt;script type=&quot;math/tex&quot;&gt;x''_{t+\tau}&lt;/script&gt; whereas for the backward expansion we want to ultimately know how the PDF changes backward in time, ergo &lt;script type=&quot;math/tex&quot;&gt;\partial_{x'_t}&lt;/script&gt; and not &lt;script type=&quot;math/tex&quot;&gt;\partial_{x''_{t+\tau}}&lt;/script&gt; since obviously &lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-t &lt; t + \tau %]]&gt;&lt;/script&gt;.&lt;/p&gt;
-
-&lt;p&gt;This is consequential for whether we include the moments &lt;script type=&quot;math/tex&quot;&gt;M^{(n)}(x'_t)&lt;/script&gt; in the differentiation or not.
-Remember that the moments are defined with a fixed value at time &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt; and that they are defined as as a forward differentiation &lt;script type=&quot;math/tex&quot;&gt;y_{t+\tau} - x'_t&lt;/script&gt;.
-If we now differentiate with respect to time &lt;script type=&quot;math/tex&quot;&gt;t&lt;/script&gt;, the moments will not be differentiated as the value &lt;script type=&quot;math/tex&quot;&gt;x'_t&lt;/script&gt; is assumed fixed in the moments.&lt;/p&gt;
-
-&lt;p&gt;Thus substituting the expanded transition probability back into the Chapman-Kolmogorov equation we obtain,
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	p(x_T | x'_t) = &amp; \int p(x_T | x''_{t+\tau}) \ \int \sum_{n=0}^\infty \frac{1}{n!} (y_{t + \tau} - x'_t)^n \ \partial_{x'_{t}}^n \ \delta(x'_t - x''_{t+\tau}) p(y_{t+\tau} | x_{t}) dy_{t+\tau} dx''_{t+\tau} \\
-	= &amp; \int p(x_T | x''_{t+\tau}) \ \sum_{n=0}^\infty \frac{1}{n!} \underbrace{\int (y_{t + \tau} - x'_t)^n p(y_{t+\tau} | x'_t) dy_{t+\tau}}_{M^{(n)}(x'_t)} \ \partial_{x'_t}^n \ \delta(x'_t - x''_{t+\tau}) dx''_{t+\tau} \\
-	= &amp; p(x_T | x'_{t+\tau}) + M^{(1)}(x'_t) \partial_{x'_t} p(x_T | x'_{t+\tau}) + \frac{1}{2} M^{(2)}(x'_t) \partial_{x'_t}^2 p(x_T | x'_{t+\tau})
-	% = &amp; p(x_T | x'_{t+\tau}) + \mu(x'_t) \partial_{x'_{t}} p(x_T | x'_t) + \frac{1}{2} \sigma^2(x'_t) \partial^2_{x'_{t}} p(x_T | x'_{t+\tau}).
-\end{align} %]]&gt;&lt;/script&gt;
-Dividing both sides by $\tau$ and evaluating in the limit of $\lim_{\tau \rightarrow 0}$, we get 
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	- \partial_t p(x_T| x'_t) = &amp; \mu(x'_t) \partial_{x'_t} p(x_T | x'_t) + \frac{1}{2} \sigma^2(x'_t) \partial^2_{x'_{t}} p(x_T | x'_{t}).
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;The equation above is a partial differential equation which characterizes how the probability of $x_T$ changes as we go backwards in time.
-It essentially answers the question of how much the probability $p(x_T)$ changes after conditioning the process on $x’_t$ and at earlier point in time $t$.&lt;/p&gt;</content><author><name></name></author><summary type="html">Distributions as partial differential equations over time</summary></entry><entry><title type="html">Berlin Over The Years</title><link href="http://localhost:4000/blog/Berlin2020/" rel="alternate" type="text/html" title="Berlin Over The Years" /><published>2020-12-31T00:00:00+01:00</published><updated>2020-12-31T00:00:00+01:00</updated><id>http://localhost:4000/blog/Berlin2020</id><content type="html" xml:base="http://localhost:4000/blog/Berlin2020/">&lt;!-- ## Berlin Over The Years --&gt;
-&lt;style&gt;
-    .image-gallery {overflow: auto; margin-left: -1%!important;}
-    .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
-    .image-gallery li a {text-align: top; text-decoration: none!important; color: #777;}
-    .image-gallery li a span {display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; padding: 3px 0;}
-    .image-gallery li a img {width: 100%; height: 100%; display: flex; vertical-align: top;
-    }
-&lt;/style&gt;
-
-&lt;ul class=&quot;image-gallery&quot;&gt;
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2020/Berlin-111.png&quot; title=&quot;Berlin-111&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin2020/Berlin-111.png&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-111&quot; title=&quot;Berlin-111&quot; /&gt;&lt;span&gt;Berlin-111&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2020/Berlin-111.png&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin2020/Berlin-111.png&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2020/Berlin-120.jpg&quot; title=&quot;Berlin-120&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin2020/Berlin-120.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-120&quot; title=&quot;Berlin-120&quot; /&gt;&lt;span&gt;Berlin-120&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2020/Berlin-120.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin2020/Berlin-120.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2020/Berlin-160.jpg&quot; title=&quot;Berlin-160&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin2020/Berlin-160.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-160&quot; title=&quot;Berlin-160&quot; /&gt;&lt;span&gt;Berlin-160&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2020/Berlin-160.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin2020/Berlin-160.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2020/Berlin-30.jpg&quot; title=&quot;Berlin-30&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin2020/Berlin-30.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-30&quot; title=&quot;Berlin-30&quot; /&gt;&lt;span&gt;Berlin-30&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2020/Berlin-30.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin2020/Berlin-30.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2020/Berlin-70.jpg&quot; title=&quot;Berlin-70&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin2020/Berlin-70.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-70&quot; title=&quot;Berlin-70&quot; /&gt;&lt;span&gt;Berlin-70&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2020/Berlin-70.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin2020/Berlin-70.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2020/Berlin-90.jpg&quot; title=&quot;Berlin-90&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/berlin2020/Berlin-90.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;Berlin-90&quot; title=&quot;Berlin-90&quot; /&gt;&lt;span&gt;Berlin-90&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/berlin2020/Berlin-90.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/berlin2020/Berlin-90.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-&lt;/ul&gt;</content><author><name></name></author><category term="photography" /><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/berlin2020/Berlin-70.jpg" /></entry><entry><title type="html">From Bernoulli Distributions to Poisson Point Processes</title><link href="http://localhost:4000/blog/Poisson/" rel="alternate" type="text/html" title="From Bernoulli Distributions to Poisson Point Processes" /><published>2020-11-10T00:00:00+01:00</published><updated>2020-11-10T00:00:00+01:00</updated><id>http://localhost:4000/blog/Poisson</id><content type="html" xml:base="http://localhost:4000/blog/Poisson/">&lt;head&gt;
-&lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
-       &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       &lt;/script&gt;
-       &lt;script src=&quot;https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
-&lt;/head&gt;
-
-&lt;!-- Recently I got interested in jump processes as the natural extension to Wiener processes. --&gt;
-&lt;!-- While Wiener process model continuous processes, jump processes are defined by instantaneous, discrete jumps.  --&gt;
-
-&lt;p&gt;Recently I got interested in Poisson point processes which model the probabilities of phenomena or objects in some type of space.
-These types of spaces can be anything from a real line to a Cartesian plane.&lt;/p&gt;
-
-&lt;p&gt;The most direct application of point processes is queueing theory with which we can model how many packages will arrive at a certain node in a network over time.
-Mathematically it looks like this:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	\mathbb{P}\left[ N(t) = k \right] = \frac{( \ \lambda t \ )^k}{k!} e^{-\lambda t}
-\end{align}&lt;/script&gt;
-where $t$ is the time, $N(t)$ is a counting process and $\lambda$ is the intensity of the Poisson point process.
-The first time I saw this probability, I frankly didn’t know what I was supposed to make of this probability so I started reading.
-And the following paragraphs are the trip I took to understand the probability above.&lt;/p&gt;
-
-&lt;h3 id=&quot;counting-process&quot;&gt;Counting Process&lt;/h3&gt;
-
-&lt;p&gt;Let us first start with the notion of discrete jumps in stochastic processes.&lt;/p&gt;
-
-&lt;p&gt;A counting process is a stochastic process &lt;script type=&quot;math/tex&quot;&gt;\{ N(t), t \in \mathbb{R}_+ \}&lt;/script&gt; with values that are non-negative, integer and non-decreasing.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;/blog/Poisson/CountingProcess.png&quot; alt=&quot;&quot; class=&quot;align=&amp;quot;center&amp;quot;&quot; height=&quot;50%&quot; width=&quot;80%&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;The gist of the figure above is that a counting process increases monotonically over time $t \in \mathbb{R}_+$ with integer steps of 1.
-Mathematically, a counting process $N(t)$ is defined in the following way
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	N(t) &amp;= \sum_{k \geq 1} \mathbb{1}_{(T_k, \infty)} (t) \\
-	\mathbb{1}_{(T_k, \infty)} (t) 
-	&amp; = 
-	\begin{cases}
-	1, &amp; \text{if } \ t \geq T_k \\
-	0, &amp; \text{if } \ 0 \leq t \leq T_k \\
-	\end{cases}
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;In order to determine $N(t)$ for some specific value of $t$, all you have to do is to compare $t$ to each $T_k$ that you have recorded, and if $t\geq T_k$, add it to $N(t)$.
-The stochastic part comes from the fact that the jump times $T_k$ are stochastic and follow some distribution.&lt;/p&gt;
-
-&lt;h3 id=&quot;bernoulli-distribution&quot;&gt;Bernoulli Distribution&lt;/h3&gt;
-
-&lt;p&gt;A binary random variable &lt;script type=&quot;math/tex&quot;&gt;X \in \{0,1\}&lt;/script&gt; follows a Bernoulli distribution if it takes on the value $1$ with probability $p$ and the value $0$ with probability $q=1-p$.
-More succinctly, we can write
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\mathbb{P}\left[X=0 \right] &amp;= 1-p = q \\
-	\mathbb{P}\left[X=1 \right] &amp;= p \\
-	\mathbb{P}\left[X=k \right] &amp;= p^k (1-p)^{1-k} \quad \text{with} \quad k \in \{0,1\}
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;For a single binary experiment, the Bernoulli distribution models the probability that each outcome has.
-But what if we would like to conduct multiple experiments?
-Enter the Binomial distribution.&lt;/p&gt;
-
-&lt;h3 id=&quot;binomial-distribution&quot;&gt;Binomial Distribution&lt;/h3&gt;
-
-&lt;p&gt;Let’s say you want to conduct $n$ experiments with a binary outcome (yes/no, true/false, 1/0 etc) given some probability of success $p$ and some probability of defeat $q=1-p$.
-Obviously, you can run the $n$ separate experiments and count the number of total successes from your $n$ experiments.
-The expected number of successes for $n$ trials with a success probability $p$ amounts to $np$.
-For example, if $n=100$ and $p=0.6$, on average we will obtain $k=60$ successful trials.&lt;/p&gt;
-
-&lt;p&gt;But a more interesting question looms in the background.
-It is certainly nice to know that if we run those $n=100$ trials a million times, we will eventually converge to $k=60$ succesfull runs per $n=100$ trials with a success probability of $p=0.6$.
-But we shouldn’t forget that each time we run the $n=100$ experiments, we will obtain a different result for &lt;script type=&quot;math/tex&quot;&gt;k \in \{0, n\}&lt;/script&gt;.
-So it could certainly happen that one run has exactly $k=60$ while the other run has $k=43$.&lt;/p&gt;
-
-&lt;p&gt;In the grander scope of things, we would like to know what the probabilities are for each success rate $k$.
-More specifically, we are interested in the probability of $\mathbb{P}\left[k=60 \right]$ trials versus $\mathbb{P}\left[k=43 \right]$, for example.&lt;/p&gt;
-
-&lt;p&gt;This appears to be similar to the Bernoulli distribution except that we do $n$ trials instead of just one trial,
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\mathbb{P}\left[k,n, p \right] &amp;\propto p^k (1-p)^{n-k} \quad \text{with} \quad k \in \{0,n\}.
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;The proportional sign was chosen on purpose to denote that this does not denote a valid distribution.
-We made no assumption with regards to the ordering of the successful trials.
-All we are interested in is the total number of successful trials and not the order.
-Naturally, one could simply assume an ordering in which all successful trials occur subsequently and the final $n-k$ trials are the unsuccessful trials.
-But since the trials are inherently stochastic, it could also occur that the first $n-k$ trials are unsuccessful and only the last $k$ trials are successful or any possible other ordering with $k$ successful trials and $n-k$ unsuccessful trials.
-Since we are not interested in the ordering, we have to basically sum up all the possibilities of ordering.&lt;/p&gt;
-
-&lt;p&gt;We can derive the number of possible orderings by thinking of how the successful trials $k$ are drawn from the number of trials $n$.
-First of all we know that for $k$ successful draws, any combination of exactly $k$ successful draws is permissible.
-So we could have &lt;script type=&quot;math/tex&quot;&gt;(47, 1, 13, \ldots, 16 )&lt;/script&gt; or &lt;script type=&quot;math/tex&quot;&gt;(1, 2, 3, \ldots, 98 )&lt;/script&gt; as long as number of draws in those tuples is exactly $k$.
-The first time we draw, we have 100 options, but the second time we draw we only have 99 options left and the the third time we draw we only have 98 left and so on.
-In order to express this mathematically, we can conclude the following with regards to “k out of n” orderings:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\text{&quot;60 out of 100&quot;} &amp;= 100 \cdot 99 \cdot 98 \cdot \ldots \cdot 42 \cdot 41\\
-	&amp;= \frac{100 \cdot 99 \cdot 98 \cdot \ldots \cdot 2 \cdot 1 }{40 \cdot 49 \cdot \ldots \cdot 2 \cdot 1} \\
-	&amp;= \frac{100!}{(100-60)!}
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;So in general we can conclude that if we want to draw $k$ ordered, successful trials out of $n$ total trials we have
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\text{&quot;k out of n&quot;} &amp;= \frac{n!}{(n-k)!}.
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;But there is a catch.
-So far we have only considered cases of unique orderings, such as &lt;script type=&quot;math/tex&quot;&gt;(47, 1, 13, 16)&lt;/script&gt; and &lt;script type=&quot;math/tex&quot;&gt;(1, 47, 13, 16 )&lt;/script&gt; which have the same elements just in a different order.
-But we are only interested whether the trials are successful, not how the successful trials are ordered.
-The notion of interest is whether the draws occur in the set such as &lt;script type=&quot;math/tex&quot;&gt;\{(47, 1, 13, 16), (1, 47, 13, 16 ) \} \subset \{1, 13, 16, 47 \}&lt;/script&gt; (which I ordered for convenience’s sake) and not their order.
-Fortunately, there is a quick fix to this: Simply divide by the number of possible permutations of the set $k!$:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	\binom{n}{k} = \underbrace{\frac{1}{k!}}_{\text{unordered correction}} \underbrace{\frac{n!}{(n-k)!}}_{\text{# of unique orderings}}
-\end{align}&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;The binomial coefficient is the normalization constant which corrects the original probability $p^k (1-p)^{n-k}$ by the number of possible permutations.&lt;/p&gt;
-
-&lt;p&gt;Thus we obtain the binomial distribution which states
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\mathbb{P}\left[k,n, p \right] &amp;= \binom{n}{k} p^k (1-p)^{n-k} \\
-	&amp;= \frac{n!}{k! (n-k)!} p^k (1-p)^{n-k}
-\end{align} %]]&gt;&lt;/script&gt;
-which tells us what the probability of a certain number of successful trials $k$ is, if we run $n$ trials with a success rate of $p$.&lt;/p&gt;
-
-&lt;h3 id=&quot;poisson-distribution&quot;&gt;Poisson Distribution&lt;/h3&gt;
-
-&lt;p&gt;The binomial distribution defines the probability of $k$ successful trials for a fixed set of trials $n$ for a success probability $p$.
-For example, we can observe a logistics network and can ask every second whether a package has arrived or not.
-Remember that the binomial distribution is only defined for binary outcomes.
-We can then model how many packages arrive per minute or even hour by multiplying the number of seconds per minute or hour by the probability $p$ of a package arriving.&lt;/p&gt;
-
-&lt;p&gt;That time partition is still discrete, though, and the real world is continuous.
-We can let $\lim n \rightarrow \infty$ to model an infinitely fine partition of time.
-But now we’re confronted with the inconvenient &lt;script type=&quot;math/tex&quot;&gt;\lim_{n \rightarrow \infty} np = \infty&lt;/script&gt; which we can’t really work with.
-instead we can redefine the probability &lt;script type=&quot;math/tex&quot;&gt;p = \frac{\lambda}{n}&lt;/script&gt; with an intensity $\lambda$ which will be invariant to time, so to speak, because &lt;script type=&quot;math/tex&quot;&gt;\lim_{n \rightarrow \infty} np = \lim_{n \rightarrow \infty} n \frac{\lambda}{n} = \lambda&lt;/script&gt;.&lt;/p&gt;
-
-&lt;p&gt;We can then substitute $p = \frac{\lambda}{n}$ into the binomial distribution and see where that takes us:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-\lim_{n \rightarrow \infty} \mathbb{P} \left[ n, k, p \right]
-&amp;= \lim_{n \rightarrow \infty} \frac{n!}{k!(n-k)!} p^k (1-p)^{n-k} \\
-&amp;= \lim_{n \rightarrow \infty} \frac{n!}{k!(n-k)!} \left( \frac{\lambda}{n} \right)^k \left( 1-\frac{\lambda}{n} \right)^{n-k} \\
-&amp;= \lim_{n \rightarrow \infty} \frac{n!}{k!(n-k)!} \left( \frac{\lambda}{n} \right)^k \left(1-\frac{\lambda}{n} \right)^{n-k} \\
-&amp;= \frac{\lambda^k}{k!} \lim_{n \rightarrow \infty} \frac{n!}{k!(n-k)!} \frac{1}{n^k} \left(1-\frac{\lambda}{n} \right)^{n-k} \\
-&amp;= \frac{\lambda^k}{k!} \lim_{n \rightarrow \infty} \frac{n!}{(n-k)!} \frac{1}{n^k} \left(1-\frac{\lambda}{n} \right)^n \left(1-\frac{\lambda}{n} \right)^{-k} \\
-&amp;= \frac{\lambda^k}{k!} \lim_{n \rightarrow \infty} \frac{n \cdot (n-1) \cdot (n-1) \cdot \ldots \cdot (n-k)}{n^k} \left(1-\frac{\lambda}{n} \right)^n \left(1-\frac{\lambda}{n} \right)^{-k} \\
-&amp;= \frac{\lambda^k}{k!} \lim_{n \rightarrow \infty} \underbrace{\frac{n}{n} \cdot \frac{(n-1)}{n} \cdot \frac{(n-1)}{n} \cdot \ldots \cdot \frac{(n-k)}{n}}_{1 \text{ for } \lim_{n \rightarrow \infty}}  \underbrace{\left(1+\frac{1}{\frac{n}{-\lambda}} \right)^{-\lambda \frac{n}{-\lambda}}}_{=e^{-\lambda}} \underbrace{\left(1+\frac{\lambda}{n} \right)^{-k}}_{1 \text{ for } \lim_{n \rightarrow \infty}} \\
-&amp;= \frac{\lambda^k}{k!} e^{-\lambda} \\
-&amp;= \text{Poisson} [ \lambda]
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;The Poisson distribution is a discrete distribution with support $k \in \mathbb{N}_+$ that quantifies the probability of $k$ events happening in an interval of time or space with $\lambda$ denoting the intensity of events (like how often they occur).&lt;/p&gt;
-
-&lt;h3 id=&quot;poisson-point-process&quot;&gt;Poisson Point Process&lt;/h3&gt;
-
-&lt;p&gt;The Poisson distribution above allows us to compute the probability of $k$ events for a given fixed interval of time or space.
-We can generalize the Poisson distribution to a Poisson point process over varying intervals by integrating over the (possibly changing) intensities that the space exhibits.
-For a Poisson point process defined over a time interval $(t_0, t_1]$, we could compute the number of expected events by integrating the intensity of $\lambda(t)$ which is a function of time $t$:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-\mathbb{P}[N(t_0, t_1]=k, \lambda(s)] = \frac{\left( \int_{t_0}^{t_1} \lambda(s) ds \right)^k}{k!} e^{-\int_{t_0}^{t_1} \lambda(s) ds}
-\end{align}&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;We can recover the original Poisson distribution through a homogeneous Poisson point process which has a constant $\lambda$ and for which the, in our case time, integral evaluates to $\int_{t_0}^{t_1} ds = 1$.
-In fact, a meaningful intensity $\lambda$ for a Poisson distribution can only be determined for a-priori defined, fixed interval of time or space.
-The Poisson point process is then the natural extension to varying intervals of time or space by defining a varying intensity $\lambda(s)$.
-A homogeneous Poisson point process for a fixed interval $\int_{t_0}^{t_1} = 1$ can be obtained through
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-\mathbb{P}[N(t_0, t_1]=k, \lambda] &amp;= \frac{\left( \int_{t_0}^{t_1} \lambda ds \right)^k}{k!} e^{-\int_{t_0}^{t_1} \lambda ds} \\
-&amp;= \frac{\left( \lambda \int_{t_0}^{t_1} ds \right)^k}{k!} e^{-\lambda \int_{t_0}^{t_1} ds} \\
-&amp;= \frac{\left( \lambda \right)^k}{k!} e^{-\lambda}
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;The definition above unfortunately only tells us the number of events occuring over the entire interval $(t_0, t_1]$.
-What if we wanted to now the probability of an event happening at a singular moment $t$?
-We should remember that a Poisson point process can be interpreted as a counting process $N(t)$ since it starts at zero, is monotonically increasing and the probability of an event happening is randomly distributed with $\int_{t_0}^{t_1} \lambda(s) ds$ which simplifies to just $\lambda t$ for a constant intensity and $t_0 = 0$, $t_1 = t$.
-Our derivation showed us that if we expand the Bernoulli distribution to a Binomial distribution with an infinite number of trials we arrive at the Poisson distribution which lies at the heart of a Poisson point process.
-Nevertheless the counting process always increases by a single integer step.
-Thus we can ask the question what the probability is of an event at an arbitrary point in the interval.&lt;/p&gt;
-
-&lt;p&gt;We can therefore inquire about the probability of an event not happening, ergo $N(t_0, t_1]=0$:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-\mathbb{P}[N(t_0, t_1]=0, \lambda(s)] &amp;= \frac{\left( \int_{t_0}^{t_1} \lambda(s) ds \right)^0}{0!} e^{-\int_{t_0}^{t_1} \lambda(s) ds} \\
-&amp;= e^{-\int_{t_0}^{t_1} \lambda(s) ds}
-\end{align} %]]&gt;&lt;/script&gt;
-which is the probability that no event will occur until $t_1$.
-As the intensity is a strictly positive quantity, the integral $\int_{t_0}^{t_1} \lambda(s) ds$ increases monotonically over time until an event occurs.
-Naturally since the integral is monotonically increasing, the probability of no event is monotonically decreasing through the negated exponential.
-This is quite intuitive as it states that the probability of no event happening decreases monotonically as time progresses.
-On the flip side, this means that the probability of an event occuring is monotonically increasing as time progresses:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-\mathbb{P}[N(t_0, t_1]=1, \lambda(s)] &amp;= 1 - e^{-\int_{t_0}^{t_1} \lambda(s) ds}.
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;The reason why we analyze only a single event $k=1$ lies with the fact that the events are i.i.d. distributed which in case for the Poisson distribution means that the integral is reset after each event.
-This is the reason why we only integrate to $t_1$.
-Since $\mathbb{P}[N(t_0, t_1]=1, \lambda(s)]$ is a cumulative probability distribution as it approaches 1 in infinity, we call simply derive it with respect to $t_1$ to obtain the probability density function:
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-\mathbb{P}[N(t_1)=1, \lambda(s)] &amp;= \frac{d}{dt_1} \left[ 1 - e^{-\int_{t_0}^{t_1} \lambda(s) ds} \right] \\
-&amp;= \lambda(t_1) e^{-\int_{t_0}^{t_1} \lambda(s) ds}.
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;Another fun fact of the Poisson process is that its derivative is in fact a Bernoulli distribution.
-To see this we inspect the Poisson process for an extremely small time frame $\lim_{\Delta t \rightarrow 0} [t, t+ \Delta t]$:
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-\lim_{\Delta t \rightarrow 0} \mathbb{P}[N(t, t + \Delta t]=k, \lambda(s)] = \lim_{\Delta t \rightarrow 0} \frac{\left( \int_{t}^{t + \Delta t} \lambda(s) ds \right)^k}{k!} e^{-\int_{t}^{t + \Delta t} \lambda(s) ds}
-\end{align}&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;which for &lt;script type=&quot;math/tex&quot;&gt;k=\{0, 1\}&lt;/script&gt; and a first order exponential series expansion &lt;script type=&quot;math/tex&quot;&gt;e^x = \sum_{k=0}^\infty \frac{x^k}{k!}&lt;/script&gt; yields
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-\lim_{\Delta t \rightarrow 0} \mathbb{P}[N(t, t + \Delta t]=0, \lambda(s)] &amp;= \lim_{\Delta t \rightarrow 0} \frac{\left( \int_{t}^{t + \Delta t} \lambda(s) ds \right)^0}{0!} e^{-\int_{t}^{t + \Delta t} \lambda(s) ds} \\
-&amp; \approx e^{- \lambda(t)\Delta t} \\
-&amp; \approx 1 - \lambda(t) \Delta t \\
-\lim_{\Delta t \rightarrow 0} \mathbb{P}[N(t, t + \Delta t]=1, \lambda(s)] &amp; = \lim_{\Delta t \rightarrow 0} \frac{\left( \int_{t}^{t + \Delta t} \lambda(s) ds \right)^k}{k!} e^{-\int_{t}^{t + \Delta t} \lambda(s) ds} \\
-&amp; \approx \lambda(t) \Delta t e^{- \lambda(t)\Delta t} \\
-&amp; \approx \lambda \Delta t - \underbrace{\lambda(t)^2 \Delta t^2}_{=0, \Delta t \rightarrow 0} \\
-&amp;= \lambda \Delta t
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;which are precisely the probabilities for a Bernoulli distribution.&lt;/p&gt;</content><author><name></name></author><summary type="html">From binary to fishy if you're francophil</summary></entry></feed>
+&lt;/ul&gt;</content><author><name></name></author><category term="photography" /><summary type="html">Lake Garda, Milan, Bergamo, Brescia</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/italy21/DSC0940.jpg" /></entry></feed>
