@@ -127,21 +127,29 @@ So in 1997 the EuroMarket centered on London represented 90% of all internationa
 
 ### City of London Part 2
 
-This freedom of money coupled with the massive deregulation of the British financial markets in 1984 by Margaret Thatcher moved London finally back out of the shadow of New York City.
+This free and 'hot' money coupled with the massive deregulation of the British financial markets in 1984 by Margaret Thatcher moved London finally back out of the shadow of New York City.
+While NYC dominated the international markets in terms of securitization, London regained the pole position for international lending as the regulation was purposefully light-touch.
+More interestingly, the City of London Corporation become solely focused on advancing the interests of the financial elite vis-a-vis its democratic function as an administration.
 
-City of London: corporations have voting rights: 9.000 inhabitants vs 23.000 corporations TI265, as many votes as employees but employees have nothing to say, voting in british elections
+The City took the Citizen United idea of a legal person a step further and elevated corporations to voting members.
+Due to its small size, the native population of the City of London is only 9.000 but it has 23.000 corporations registered in its business-friendly jurisdiction.
+Each corporation has as many votes as it has employees but whereas democracy allows its voters to vote independently, the corporations bundle all votes of their employees.
+Thus the population of the City of London may have democratic rights, but they are severely outvoted by the corporate interests.
+Even more disturbing is that these corporations are allowed to vote in British elections.
+This elevation of corporate and market interests above real people is a bonafide example of neoliberalism taken to its logical extreme.
 
-city cash fund TI268, undisclosed amount of money
+Secondly the City has three major cash funds which are used to pay for the smooth running of the day-to-day business of the City.
+Most peculiar is the City Cash fund (TI268) about which is very little known except that it is the owner of many luxury buildings in London.
+The City of London Corporation declines on disclosing how much money is in the City Cash Fund which implicitly signals that it would be huge.
+Counterfactually, if the City Cash Fund would only contain 3-5 Mio Pounds, then it would be inconspicuous to disclose the paltry fund size.
+Secondly as the fund works discreetly in the background it could be very well used as a political slush fund of sorts as there is no democratic oversight over its use.
 
-3% of lending went to British manufacturing, financial sector servicing itself but inflating assets
+With the EuroMarket and the Big Bang of 1984, the City of London has morphed into the hub of a hub-and-spoke system of offshore finance.
+Small jurisdictions that are still parts of the British commonwealth have eagerly transformed themselves into offshore finance centers.
+While the classic names are well known such as the Cayman islands and the Bahamas; Singapore, HongKong, the British Virgin Islands and also the Cook Islands have been busy as Feeding pipelines of unregulated money into the City of London.
 
-### The Second British Empire
+It is estimated that 1/3 of all offshore wealth is in the spokes of this system whereas the entire system encompasses full 50% of all unaccounted money such as EuroDollars.
+The Cayman Islands for example has over 80.000 companies, is the 5th largest financial center and has 3/4 of all hedge funds world wide ... and it has one cinema.
 
-Hub-and-spoke around City of London
-1/3 in spokes to 1/2 spokes+hub of bank assets
-
-Cayman Islands: 80.000 companies, 5th largest financial center, 3/4 of worlds hedge funds and one cinema
-
-Crown Dependencies are not part of European Union: chief negotatior adamantly insisted on taxation autonomy 
-
-### Libel Law
+The British were full on aware of the importance of their offshore system as the Crown Dependencies were adamantly defended from any intrusive regulation during the negations to join the European Union.
+Dependencies such as the Isle of Guernsey, Isle of Jersey and other were vehemently defended from any possible regulation by the European Union.

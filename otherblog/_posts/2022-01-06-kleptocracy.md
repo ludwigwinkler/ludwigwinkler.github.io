@@ -11,11 +11,13 @@ image:
 
 ### Methods
 
-Enables p26
+Enablers p26
 
 ### Africa
 
 ### Lebanon
+
+Ponzi scheme impossible trinity
 
 ### East-German Communist Party Wealth
 

@@ -32,7 +32,7 @@ Patriot Act Exemption
 - Private equity
 - Luxury goods vendor
 
-### Reputation Laundering
+### Reputation Laundering & Libel Law
 
 Dimitry Firtash
 
