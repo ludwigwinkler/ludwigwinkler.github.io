@@ -1,0 +1,185 @@
+---
+layout: post
+title:  Off-Shore Finance Centers
+category: otherblog
+date:   2022-01-05
+excerpt: Drinking a Pina Colada and getting wet[&rich] in the rain
+image:
+---
+
+The Tax Justice Network published a ground breaking ranking which evaluated countries on how much financial secrecy they provided to somebody who wanted to move their money and wealth undisturbed across the world and free from democratic and/or governmental oversight.
+
+Unsurpringly, the usual suspects were present in the Tax Justice Network Financial Secrecy Ranking but the number one spot might surprise you:
+
+1) UK
+
+2) Cayman
+
+3) Switzerland
+
+4) Luxembourg
+
+5) US
+
+Well, how did that come to be?
+
+But let's go through the list step by step
+
+### UK
+
+There is an entire blog post dedicated to the rise of the British offshore system.
+Arguably, the British were the midwifes of the offshore financial system through the City of London.
+The offshore and EuroMarket system would have probably developed any way as the interests of the financial sector for less regulation and oversight are are found in every country.
+It just so happened that the UK was the birthplace due to its strongly developed financial services industry from times of the mighty British empire and its especially lax regulation.
+
+The British offshore system is organized in a hub-and-spoke system where the City of London sits in the middle.
+It represents the spider in a world wide spiders web that serve as conduit of clandestine money.
+A full 1/3 of all offshore wealth is deposited in the former colonies and Crown dependencies of the UK.
+Add the City of London to it and the a full 1/2 of all offshore wealth is domiciled in the former British empire.
+
+Interestingly, while the British themselves on their rainy island were busy creating the EuroMarket, the Caribbean offshore industry was developed in close cooperation with American lawyers and accountants.
+This was mainly due to the close proximity of the US to the pleasant weather which made a quick deposit of secret money in your favorite Caribbean bank account pleasant and convenient.
+In fact the first shell company legislation was written on the British Virgin Islands by an American lawyer, the BVI's DUDE HAVE TO LOOK UP.
+
+### Switzerland
+
+The 'Schweizerische Eidgenossenschaft' has constructed its entire political identity around the notion of neutrality, grass-roots democracy and non-interference.
+It thus serves as international neutral ground on which many global organizations have their headquarters and provides services typical of an entrepot or international conduit.
+
+The Swiss federation has put increased emphasis on local governments of the 26 cantons to administer their communities according to their liking.
+This follows the Swiss idea of direct democracy in which many issues are decided upon through referendums.
+This direct democracy was the reason why the Swiss federation agreed only in 1971 to grant women the voting right.
+But it would take another 20 years to 1991 for the last canton Appenzell Innerrhoden to fully implement female suffrage following a law suit by women from this canton.
+This was a direct outgrowth of the independent, localized legislation that is a hallmark of Swiss political identity.
+
+Switzerland's neutrality was guaranteed at the Congress of Vienna, where the aristocracy of Europe redistributed the continent among themselves after the civil revolution originating from the French revolution in 1792.
+The formalization of Swiss neutrality induced an influx of capital where the Italians banked in Lugano, the French in Geneva and the Germans in Zurich.
+
+The huge financial burden of World War I led to a ten fold increase, as all belligerent countries raised taxes during and after the war.
+From 1920 to 1929, the annual growth was 14% which coinceded with the 1920-21 and 1925-27 French tax increases.
+Following the world financial crisis in 1929, the annual growth fell to only 1%.
+
+After the World Financial Crisis 1929, the lower and middle class populace of Switzerland was rightfully so angry at the banks for as they were made responsible for the repercussions felt by the population.
+While banking secrecy had already existed in Switzerland, it had merely been encoded in the civil law, meaning that the state wouldn't prosecute it.
+With the increased scrutiny by the Swiss public towards their dealings, the banking and business circles wanted to make sure that the Swiss state wouldn't get any supervisional rights.
+What was even worse to them, was that the supervision could include some sort of privy into the bank-client relationship.
+THus they enforced the banking secrecy legislation in the criminal law.
+The drafting of the law started in 1933 whereas the idea of stricter regulation started as early as 1931.
+
+All that occured as a direct consequence of the financial crisis 1929 and the subsequent public outrage resulting in the passage of the law in 1934.
+This stands in direct opposition to the idea that Swiss bank secrecy was enshrined to protect the wealth of Jews from the Nazis which is honestly a lie by the Swiss public opinion.
+The were just as anti-semitic as everybody else in Europe and even made Swiss jews pay for the costs of taking on Jews flewing from the Nazis and seeking refuge in Switzerland.
+From 1933 to 1945, only 1.5% of all new accounts were in fact Jewish.
+
+While Switzerland became an international point of attraction for flight capital due to its favourable financial conditions, the cantons inside Switzerland competed for the flight capital just the way Switzerland competed on an international stage.
+Remember that each canton in Switzerland has a fair amount of leeway on what kind of laws it wants to pass.
+Thus the cantons started a race to the bottom, undercutting each other in the hopes of attracting more of the money flowing into Switzerland.
+
+Thus the canton of Zug hosts 27.000 corporations: 4 for every one of its inhabitants.
+The extreme imbalance of hidden wealth to people results in another intersting statistic: although the Swiss population comprises only 0.1% of the world population, a full 1/3 of American stock market is held by Swiss banks for its costumers.
+
+When money flows into a country, it is idealistically converted to the local currency when it crosses the border.
+This generates a demand for the local currency.
+In Switzerland's case this in fact changed the sign of the interest rate banks charge you for taking your money.
+Normally, banks are happy to store your money as it gives them capital to lend it out at a higher rate.
+But in Switzerlands case the central bank of Switzerland started to charge -0.75% for all banks lending money from them, starting from 2015.
+By 2022 they reduced it to -0.25% as the interest in the Swiss franc as a stable safe haven waned.
+But it will probably increase again as spectre of inflation haunts all of the major currencies.
+A nice side effect implemented by the Swiss banks is that the negative interest rates are only applied to savings account such that customers are encouraged to move their wealth to the wealth management division.
+But obviously that's only viable for rich people, so the poor loose out again.
+
+### Luxembourg
+
+The Grand Duchy has paralyzed the EU's fight against offshore finance like a very active sleeper agent in the center of Europe between Germany and France.
+It was a founding member of the European Union at the Treaty of Rome in 1957.
+But since then, it has changed dramatically.
+
+It is important to note that Luxembourg does not owe its success in offshore finance to its so-called stability or highly skilled workforce.
+What is has to offer as its modern history is a story of a regulatory capture and the cautionary tale of an entrenched elite.
+The royal family has maintained on the throne since 1783 which is impressive given the tumultuous centuries thereafter.
+More importantly the Christian Social Peoples Party has provided the prime minister since WWII except for five years in the 1970's and after the election of 2013.
+This is similar to the Isle of Jersey in which the ruling elite has created a micro-cosmos in which everybody knows everybody and anybody not toeing the plutocratic line is ostracized immediately.
+
+It does owe its success in international finance to its utter selling out of its sovereignty to the highest bidder.
+In the 1970s, this little state of 500.000 people started selling a truely new product to multinational companies: the explicit offer to let them choose their own taxation, regulatory constraints and legal obligations.
+Does a big international bank want to set up a new multi-billion fund?
+Let them decide their own tax rate, effectively 0% on profits. Nice.
+Does the same bank want to sell securities to raise cash and satisfy the capital requirements of another country's regulators?
+Let the bank create their own 'hybrid securities' which act as securities to regulators and as debt to the tax department, thus making their profits deductible from the corporate income tax. Convenient.
+
+The installation and servicing of the holding structures, shell companies and multinational registration requires a significant workforce.
+In Luxembourg, 150.000 people commute every day from France, Belgium and Germany into the Grand Duchy with a population of a mere 500.000.
+This greatly distorts macro economic statistics, as the gross domestic product is only 2/3 of the gross national product, after subtracting the wages paid to the commuting workforce from the neighboring countries and the dividends and interest to the rest of the world.
+
+Anybody arguing that hypertropic financial sectors lift all economic boats in a country should look at Luxembourg.
+GDP per worker has grown only 1.4% per year, which was essentially wiped out by inflation every year.
+Salaries in the offshore finance industry and business consulting have exploded, implicitly at the cost of other countries tax revenue, while manufacturing, transportation and construction workers have not seen any real wage increase in twenty years.
+Luxembourg has essentially pushed its lower class into the neighboring countries which now commute to work from France, Germany and Belgium as well.
+The poverty in Luxembourg has doubled since 1980 as all the tax cuts to the cheapest bidder have impacted basically everybody not working in offshore finance.
+The tax cutes and externalization of its work force has left the educational system in shambles as Luxembourg performs among the worst in the OECD club and scholastic inequality is among the highest.
+Housing prices have tripled in a country with little to show for except a castle and Luxembourg city is now as expensive as London which mops the floor with Luxembourg City in terms of basic attractions of an interesting city.
+
+Why hasn't the EU done anything about a brazen offshore centre in its middle which has sold its sovereignty to the cheapest bidder while enjoying and living off the advantage of the European Union?
+A birth defect of the EU is that every member obtains a veto right which allows Luxembourg to torpedo any advance in combating offshore finance in the EU itself.
+With the secret meetings of the European Council, a plutocratic prime minister of a country with a bare 500.000 inhabitants and with little to show for in terms of a genuine economy can dictate terms on the 500 million people of the EU.
+
+### USA
+
+Surprisingly, the United States have become the most accommodating country to money which likes to move around the world in the shadows.
+Three main reasons stand out in the US top rank in the Financial Secrecy Index: the federalist political structure, its pro-business, deregulated environment after neoliberalism became a bon-mot in the 1980's and the therefrom originating power of Wall Street over Washington DC.
+
+In 1981, it was becoming evident that the advance of the unregulated EuroMarket couldn't be stopped.
+US banks had already overrun London with local branches and had quickly become the major players in the London EuroMarket.
+So instead of trying to fight it, US regulators started to imitate it with International Banking Facilities (IBF).
+Similar to offshore banking in London, IBFs exist in the physical offices of US banks, but everything is separated from the US operations books.
+Thus the banks have to set of books on the same desk: one for the US operations and one for the unregulated offshore market.
+IBFs can offer deposit and loan services only to non-US residents and institutions.
+More importantly, the offshore books are free of the reserve requirements of the US Federal Reserve and thus generate more profit.
+The IBF's were proposed in 1978 in a direct attempt to stem the flow of money from the US into the offshore market.
+The Japanese quickly followed with the Japanese Offshore Markets (JOM) and thus the three big financial centers of the world all embraced the unregulated offshore market.
+
+The states of Delaware, Wyoming, South Dakota and Nevada have worked hard to be as welcoming as possible to money, the origin of which nobody should know of.
+It all started with Delaware, which is small, yet unremarkable state in search of a new source of revenue.
+The chemical giant DuPont basically ruled over Delaware from its headquarters in the capital of Wilmington.
+Thus a very large company resided in the a very small state which gave the big corporation significant sway through its sheer size.
+
+When the economy become sluggish in the 1980's, a deregulation of interest rates was proposed to attract banking business.
+In fact, the backers of a new deregulation bill on interest rate caps sought to emulate Luxembourg and become its version in the United States.
+Very quickly, the big banks noticed the removed restriction on interest rates and rushed into the state.
+South Dakota did something similar and removed its usury laws with a statute which was basically written by CitiBank.
+
+The state of Delaware quickly realized how much business it could attract given its inconspicuous size, if allowed companies more leeway and deregulated basically all restrictions away.
+They quickly hopped onto the shell company wagon as they observed the rise of the Caribbean offshore financial centers.
+With talks ramping up in the 1980's between the UK and China on the repatriation of Hong Kong, Delaware trade delegations heavily courted the Hong Kong.
+This is a somewhat amusing story since the number 8 is considered lucky in Chinese culture and Delaware beat the drum for incorporating Chinese holding companies on August 8, 1988.
+But the British Virgin Islands did the same thing by keeping offices open on its Emancipation Day.
+
+Whereas the infamous Ugland hous in the Cayman Islands holds 12.000 corporations, one office in Delaware alone holds 217.000 companies.
+In fact, Delaware is so popular, that 1209 North Orange Street is in the legal sense the home of Ford, GM, Coca-Cola, KFC, Intel, Google, HP and Texas Instruments all managed by Corporation Trust, a subsidiary of the Dutch Firm Wolters-Kluwer.
+
+Since the 80's, Delaware has risen to the preeminent location of anonymous shell companies in the US.
+Wyoming, South Dakota and Nevada have quickly followed suit by facilitating the creation of companies and requiring little to no information on the incorporation of companies.
+In fact Nevada does not even share tax or incorporation information the the federal state allowing the formation of, for all intents and purposes, secret companies right in the middle of the United States.
+South Dakota has specialized in trusts and literally does not share information on trusts formed within its state boundaries.
+So essentially, one could create a trust, accumulate enormous sums of money in that trust and nobody would actually know about it.
+Imagine a, for example, five billion USD heavy trust under the control of an unknown person and whose existence is not known to the public.
+The problem is in fact that nobody knows how much money resides in South Dakota trusts, as they are per law shrouded in secrecy.
+Nevada and Wyoming require no identification documents on who the principal owner of a shell corporation is.
+For the company director, you can simply pay anybody 20 USD to put their name on the filings and you got your company.
+When you search for company formation agents in Nevada and the like you usually get prices starting at 249 depending on the type of corporate entity you want to have.
+For 249 USD you get a company, add another 150 USD for a Nevada nominee officer and your name disappears from the registration thus giving you a perfect anonymous shell company.
+For 949 USD you get the premium package and get an anonymous shell company equipped with a bank account.
+Thus you can start your shady dealings right away.
+
+You can then take that anonymous company and open a bank account at your local bank and start transferring money into the United States.
+With that money you can buy luxury real estate or super expensive cars to park you money or sell it again later to get money from a valid transaction instead of for example selling cocaine.
+Thus these companies are used to launder dirty money right in the United States.
+If the authorities come knocking on your door, they have no way to know who really controls the shell company that you used to launder the money.
+It could be Kim Jong-Un's dictatorship, the LosZetas cartel from Mexico or the Iranian Revolutionary Guard.
+You literally can't know.
+
+Now obviously it's a bit suspicious if a company gets incorporated and immediately starts dealing with eight to nine figure transactions.
+This is why incorporation agents in Delaware, Nevada and Wyoming offer aged or shelved companies which give of a more serious vibe through having existed at least on paper for multiple years.
+These are usefull for fraud, as people tend to believe that companies that are multiple years old must have a somewhat reliable business model.
+Yet again these are pure shell companies but you can have one for only 299 USD.
+Who said money laundering has to be expensive.
