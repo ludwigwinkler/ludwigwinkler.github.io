@@ -146,7 +146,7 @@ Secondly as the fund works discreetly in the background it could be very well us
 
 With the EuroMarket and the Big Bang of 1984, the City of London has morphed into the hub of a hub-and-spoke system of offshore finance.
 Small jurisdictions that are still parts of the British commonwealth have eagerly transformed themselves into offshore finance centers.
-While the classic names are well known such as the Cayman islands and the Bahamas; Singapore, HongKong, the British Virgin Islands and also the Cook Islands have been busy as Feeding pipelines of unregulated money into the City of London.
+While the classic names are well known such as the Cayman islands and the Bahamas; Singapore, HongKong, the British Virgin Islands and also the Cook Islands have been busy as feeding pipelines of unregulated money into the City of London.
 
 It is estimated that 1/3 of all offshore wealth is in the spokes of this system whereas the entire system encompasses full 50% of all unaccounted money such as EuroDollars.
 The Cayman Islands for example has over 80.000 companies, is the 5th largest financial center and has 3/4 of all hedge funds world wide ... and it has one cinema.
