@@ -2,24 +2,6 @@
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
     <url>
-      <loc>http://localhost:4000/blog/moneylaundering/</loc>
-      
-        <lastmod>2022-05-02T00:00:00+02:00</lastmod>
-      
-      <changefreq>weekly</changefreq>
-      <priority>0.7</priority>
-    </url>
-  
-    <url>
-      <loc>http://localhost:4000/blog/kleptocracy/</loc>
-      
-        <lastmod>2022-05-01T00:00:00+02:00</lastmod>
-      
-      <changefreq>weekly</changefreq>
-      <priority>0.7</priority>
-    </url>
-  
-    <url>
       <loc>http://localhost:4000/blog/britishoffshoreempire/</loc>
       
         <lastmod>2022-04-23T00:00:00+02:00</lastmod>
@@ -32,24 +14,6 @@
       <loc>http://localhost:4000/blog/Lebanon2022/</loc>
       
         <lastmod>2022-04-01T00:00:00+02:00</lastmod>
-      
-      <changefreq>weekly</changefreq>
-      <priority>0.7</priority>
-    </url>
-  
-    <url>
-      <loc>http://localhost:4000/blog/offshorefinancecenters/</loc>
-      
-        <lastmod>2022-01-05T00:00:00+01:00</lastmod>
-      
-      <changefreq>weekly</changefreq>
-      <priority>0.7</priority>
-    </url>
-  
-    <url>
-      <loc>http://localhost:4000/blog/offshorefinance/</loc>
-      
-        <lastmod>2022-01-05T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -485,16 +449,6 @@
   
     <url>
       <loc>http://localhost:4000/blog/page6/</loc>
-       <lastmod>2017-11-10T00:20:35+00:00</lastmod>
-      
-       <changefreq>weekly</changefreq>
-      
-       <priority>0.5</priority>
-      
-     </url>
-  
-    <url>
-      <loc>http://localhost:4000/blog/page7/</loc>
        <lastmod>2017-11-10T00:20:35+00:00</lastmod>
       
        <changefreq>weekly</changefreq>
