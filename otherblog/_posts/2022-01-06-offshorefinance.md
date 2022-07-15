@@ -286,7 +286,9 @@ $$
 This forms a geometric series and if we were to continue to infinity, we'd get
 
 $$
+\begin{align}
 M_\infty = \sum_k^\infty M_0 \cdot (1-r)^k = \frac{M_0}{r}
+\end{align}
 $$
 
 With $r=10% we increase the money supply tenfold but more importantly we create a chain of dependencies in terms of credit.
