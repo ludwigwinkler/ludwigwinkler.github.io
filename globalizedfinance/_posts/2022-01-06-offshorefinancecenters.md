@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  Off-Shore Finance Centers
-category: otherblog
+category: globalizedfinance
 date:   2022-01-05
 excerpt: Drinking a Pina Colada and getting wet[&rich] in the rain
 image:
