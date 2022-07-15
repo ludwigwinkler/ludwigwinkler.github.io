@@ -7,7 +7,7 @@ excerpt: Drinking a Pina Colada and getting wet[&rich] in the rain
 image:
 ---
 
-In 2008, the Tax Justice Network published a ground breaking [https://fsi.taxjustice.net](ranking) which evaluated countries on how much financial secrecy they provided to somebody who wanted to move their money and wealth undisturbed across the world and free from democratic and/or governmental oversight.
+In 2008, the Tax Justice Network published a ground breaking [ranking](https://fsi.taxjustice.net) which evaluated countries on how much financial secrecy they provided to somebody who wanted to move their money and wealth undisturbed across the world and free from democratic and/or governmental oversight.
 The biggest surprise back then was the country on top of the list, while the succeeding ranks were populated by the usual suspects.
 
 Since 2008, the list has changed a bit as for example Singapore has moved up significantly.
