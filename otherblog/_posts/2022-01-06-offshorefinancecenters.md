@@ -7,23 +7,23 @@ excerpt: Drinking a Pina Colada and getting wet[&rich] in the rain
 image:
 ---
 
-The Tax Justice Network published a ground breaking ranking which evaluated countries on how much financial secrecy they provided to somebody who wanted to move their money and wealth undisturbed across the world and free from democratic and/or governmental oversight.
+The Tax Justice Network published a ground breaking [https://fsi.taxjustice.net](ranking) which evaluated countries on how much financial secrecy they provided to somebody who wanted to move their money and wealth undisturbed across the world and free from democratic and/or governmental oversight.
 
 Unsurpringly, the usual suspects were present in the Tax Justice Network Financial Secrecy Ranking but the number one spot might surprise you:
 
-1) UK
+5) UK
 
-2) Cayman
+4) Cayman
 
 3) Switzerland
 
-4) Luxembourg
+2) Luxembourg
 
-5) US
+1) US
 
-Well, how did that come to be?
+Well, how did US come out on top?
 
-But let's go through the list step by step
+But let's go through the list step by step ...
 
 ### UK
 
