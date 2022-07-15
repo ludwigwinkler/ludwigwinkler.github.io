@@ -1,5 +1,5 @@
 ---
-layout: otherblog
+layout: globalizedfinance
 title: LW - Other Topics
 sitemap:
     priority: 1.0

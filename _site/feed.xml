@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-07-15T19:17:24+02:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">The British [Offshore] Empire</title><link href="http://localhost:4000/blog/britishoffshoreempire/" rel="alternate" type="text/html" title="The British [Offshore] Empire" /><published>2022-04-23T00:00:00+02:00</published><updated>2022-04-23T00:00:00+02:00</updated><id>http://localhost:4000/blog/britishoffshoreempire</id><content type="html" xml:base="http://localhost:4000/blog/britishoffshoreempire/">&lt;p&gt;This summary delves deeper into the function and origin of the British offshore financial system which has played a pivotal role at creating the offshore financial industry which rests mostly on secrecy and illicit money streams.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-07-15T19:24:15+02:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">The British [Offshore] Empire</title><link href="http://localhost:4000/blog/britishoffshoreempire/" rel="alternate" type="text/html" title="The British [Offshore] Empire" /><published>2022-04-23T00:00:00+02:00</published><updated>2022-04-23T00:00:00+02:00</updated><id>http://localhost:4000/blog/britishoffshoreempire</id><content type="html" xml:base="http://localhost:4000/blog/britishoffshoreempire/">&lt;p&gt;This summary delves deeper into the function and origin of the British offshore financial system which has played a pivotal role at creating the offshore financial industry which rests mostly on secrecy and illicit money streams.&lt;/p&gt;
 
 &lt;h3 id=&quot;the-city-of-london-part-1&quot;&gt;The City of London Part 1&lt;/h3&gt;
 
@@ -915,7 +915,9 @@ M_4 &amp;= \ldots
 
 &lt;p&gt;This forms a geometric series and if we were to continue to infinity, we’d get&lt;/p&gt;
 
-&lt;script type=&quot;math/tex; mode=display&quot;&gt;M_\infty = \sum_k^\infty M_0 \cdot (1-r)^k = \frac{M_0}{r}&lt;/script&gt;
+&lt;script type=&quot;math/tex; mode=display&quot;&gt;\begin{align}
+M_\infty = \sum_k^\infty M_0 \cdot (1-r)^k = \frac{M_0}{r}
+\end{align}&lt;/script&gt;
 
 &lt;p&gt;With $r=10% we increase the money supply tenfold but more importantly we create a chain of dependencies in terms of credit.
 By reducing the capital requirements we make every financial institution more susceptible to defaults, the chain along which the money bounces through the system longer and ultimately the entire system more fragile.&lt;/p&gt;
