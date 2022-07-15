@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: globalizedfinancepost
 title:  The British [Offshore] Empire
 category: globalizedfinance
 date:   2022-04-23

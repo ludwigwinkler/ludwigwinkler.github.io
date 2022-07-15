@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: globalizedfinancepost
 title:  Off-Shore Finance Centers
 category: globalizedfinance
 date:   2022-01-05

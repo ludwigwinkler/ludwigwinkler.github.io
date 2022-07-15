@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: globalizedfinancepost
 title:  Off-Shore Finance
 category: globalizedfinance
 date:   2022-01-05
@@ -340,7 +340,7 @@ Would you build a huge production plant in a country with a demand of just 500.0
 In case of the Bahamas, the only thing they have beyond offshore financial services is sugar which is hardly a future proof or otherwise lucrative source of income for the country.
 The small size also increases the probability that the country is ruled by an oligarchic or plutocratic elite which can utilize the proposed deregulation and offshoring as they make the rules.
 
-Additionally, offshore finance requires little capital as you only need a good internet or phone connection and a mail box which can be claimed as a headquarter by 2.000 to 12.000 offshore companies.
+Additionally, offshore finance requires little capital as you only need a good internet or phone connection and a mailbox which can be claimed as a headquarter by 2.000 to 12.000 offshore companies.
 Give or take.
 
 <!-- ### How to Combat Offshore Finance
