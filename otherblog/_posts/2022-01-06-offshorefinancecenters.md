@@ -7,19 +7,24 @@ excerpt: Drinking a Pina Colada and getting wet[&rich] in the rain
 image:
 ---
 
-The Tax Justice Network published a ground breaking [https://fsi.taxjustice.net](ranking) which evaluated countries on how much financial secrecy they provided to somebody who wanted to move their money and wealth undisturbed across the world and free from democratic and/or governmental oversight.
+In 2008, the Tax Justice Network published a ground breaking [https://fsi.taxjustice.net](ranking) which evaluated countries on how much financial secrecy they provided to somebody who wanted to move their money and wealth undisturbed across the world and free from democratic and/or governmental oversight.
+The biggest surprise back then was the country on top of the list, while the succeeding ranks were populated by the usual suspects.
+
+Since 2008, the list has changed a bit as for example Singapore has moved up significantly.
+The reason for that is that it fulfills the little hinterland requirement, a strong rule of law and a good integration into the global economy.
+Especially Swiss banks are preparing for a stricter financial secrecy regulation in Europe and the US, and have picked Singapore with even stricter bank secrecy laws as their contingency jurisdiction.
 
 Unsurpringly, the usual suspects were present in the Tax Justice Network Financial Secrecy Ranking but the number one spot might surprise you:
 
-5) UK
+1) UK
 
-4) Cayman
+2) Cayman
 
 3) Switzerland
 
-2) Luxembourg
+4) Luxembourg
 
-1) US
+5) US
 
 Well, how did US come out on top?
 
