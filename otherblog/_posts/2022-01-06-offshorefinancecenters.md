@@ -140,6 +140,9 @@ In fact, the backers of a new deregulation bill on interest rate caps sought to 
 Very quickly, the big banks noticed the removed restriction on interest rates and rushed into the state.
 South Dakota did something similar and removed its usury laws with a statute which was basically written by CitiBank.
 
+International banking facility creation: servicing foreigners free of fed oversight
+Japanese offshore markets
+
 The state of Delaware quickly realized how much business it could attract given its inconspicuous size, if allowed companies more leeway and deregulated basically all restrictions away.
 
 They quickly hopped onto the shell company wagon as they observed the rise of the Caribbean offshore financial centers.
@@ -176,3 +179,6 @@ Yet again these are pure shell companies but you can have one for only 299 USD.
 Who said money laundering has to be expensive.
 
 ML95 nevada company formation
+249 USD for company
+extra 150 for Nevada nominee officer, keeps your name off the record
+for 949 USD anonymous company with bank account

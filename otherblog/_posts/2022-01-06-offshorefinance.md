@@ -208,7 +208,7 @@ exploding lending problem
 
 escape of prudential banking
 
-- 2/3 of trade in multinational corporations
+- 2/3 of trade in multinational corporations, transfer pricing
 - HW p.102
 - HW p109: multis import low and export high : 25% trade surplus
 - Google sold search engine IP in 2003 to its Ireland subsidiary before going public
@@ -241,8 +241,6 @@ M_4 &= \ldots
 \end{align}
 $$
 
-This forms a geometric series where the amount of money each of the three parties gets is denoted as $M_1, M_2$ and $M_3$ and the original 100 USD is denoted as $M_0$.
-
 This forms a geometric series and if we were to continue to infinity, we'd get
 
 $$
@@ -260,7 +258,7 @@ It is thus no wonder that the offshore markets were a great amplifier, conduit a
 Enron used special purpose vehicles in the Bahamas to offload debt.
 Long-Term Capital Management did their leveraging in the Bahams as well.
 AIG Financial Products worked out of London and ...
-Northern Rock Granite Associates ...
+Northern Rock Granite Associates SPV ...
 
 ### Advantages for Tax Havens
 
@@ -279,7 +277,7 @@ apportion taxes proportional to payroll, sales
 
 ## Globalized Finance
 
-from 1950 to 1975 unusual long prosperity (Glorieux Trenteuse in France) despite high tax rate 4 to 4.6% TI p77
+from 1950 to 1975 unusual long prosperity 4 to 4.6% (Glorieux Trenteuse in France) despite high tax rate TI77
 
 2006 lower hourly wage of worker after inflation than 1970
 
