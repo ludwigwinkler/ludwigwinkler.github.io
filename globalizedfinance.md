@@ -1,6 +1,6 @@
 ---
 layout: globalizedfinance
-title: LW - Other Topics
+title: LW - Globalized Finance
 sitemap:
     priority: 1.0
     lastmod: 2020-11-02
