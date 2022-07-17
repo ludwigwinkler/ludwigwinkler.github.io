@@ -16,15 +16,15 @@ Especially Swiss banks are preparing for a stricter financial secrecy regulation
 
 Unsurpringly, the usual suspects were present in the Tax Justice Network Financial Secrecy Ranking but the number one spot might surprise you:
 
-1) UK
+5) UK
 
-2) Cayman
+4) Cayman
 
 3) Switzerland
 
-4) Luxembourg
+2) Luxembourg
 
-5) US
+1) US
 
 Well, how did US come out on top?
 
