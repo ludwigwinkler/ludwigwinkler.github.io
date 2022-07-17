@@ -44,7 +44,9 @@ Add the City of London to it and the a full 1/2 of all offshore wealth is domici
 
 Interestingly, while the British themselves on their rainy island were busy creating the EuroMarket, the Caribbean offshore industry was developed in close cooperation with American lawyers and accountants.
 This was mainly due to the close proximity of the US to the pleasant weather which made a quick deposit of secret money in your favorite Caribbean bank account pleasant and convenient.
-In fact the first shell company legislation was written on the British Virgin Islands by an American lawyer, the BVI's DUDE HAVE TO LOOK UP.
+In fact the first shell company legislation was written on the British Virgin Islands in 1976 by an American lawyer called Paul Butler in cooperation with Neville Westwood and Michael Riegels.
+The crux of the story is regulatory capture as corporate lawyers on Wall Street essentially drafted the International Business Companies Act to the maximum liking of the American customers.
+Thus the BVI commercialized their sovereignty to Wall Street.
 
 ### Switzerland
 
