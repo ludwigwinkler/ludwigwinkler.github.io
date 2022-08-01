@@ -4,16 +4,25 @@
     <url>
       <loc>http://localhost:4000/blog/britishoffshoreempire/</loc>
       
-        <lastmod>2022-04-23T00:00:00+02:00</lastmod>
+        <lastmod>2022-04-23T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
     </url>
   
     <url>
-      <loc>http://localhost:4000/blog/Lebanon2022/</loc>
+      <loc>http://localhost:4000/blog/Portugal2022/</loc>
       
-        <lastmod>2022-04-01T00:00:00+02:00</lastmod>
+        <lastmod>2022-04-01T00:00:00+01:00</lastmod>
+      
+      <changefreq>weekly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  
+    <url>
+      <loc>http://localhost:4000/blog/Lebanon2022-copy/</loc>
+      
+        <lastmod>2022-04-01T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -22,7 +31,7 @@
     <url>
       <loc>http://localhost:4000/blog/offshorefinancecenters/</loc>
       
-        <lastmod>2022-01-05T00:00:00+01:00</lastmod>
+        <lastmod>2022-01-05T00:00:00+00:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -31,7 +40,7 @@
     <url>
       <loc>http://localhost:4000/blog/offshorefinance/</loc>
       
-        <lastmod>2022-01-05T00:00:00+01:00</lastmod>
+        <lastmod>2022-01-05T00:00:00+00:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -40,7 +49,7 @@
     <url>
       <loc>http://localhost:4000/blog/RSA/</loc>
       
-        <lastmod>2021-10-04T00:00:00+02:00</lastmod>
+        <lastmod>2021-10-04T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -49,7 +58,7 @@
     <url>
       <loc>http://localhost:4000/blog/Berlin2021/</loc>
       
-        <lastmod>2021-08-31T00:00:00+02:00</lastmod>
+        <lastmod>2021-08-31T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -58,7 +67,7 @@
     <url>
       <loc>http://localhost:4000/blog/Spain21/</loc>
       
-        <lastmod>2021-07-01T00:00:00+02:00</lastmod>
+        <lastmod>2021-07-01T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -67,7 +76,7 @@
     <url>
       <loc>http://localhost:4000/blog/Greece21/</loc>
       
-        <lastmod>2021-06-01T00:00:00+02:00</lastmod>
+        <lastmod>2021-06-01T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -76,7 +85,7 @@
     <url>
       <loc>http://localhost:4000/blog/Italy21/</loc>
       
-        <lastmod>2021-05-01T00:00:00+02:00</lastmod>
+        <lastmod>2021-05-01T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -85,7 +94,7 @@
     <url>
       <loc>http://localhost:4000/blog/ReverseTimeAnderson/</loc>
       
-        <lastmod>2021-04-09T00:00:00+02:00</lastmod>
+        <lastmod>2021-04-09T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -94,7 +103,7 @@
     <url>
       <loc>http://localhost:4000/blog/Kramers/</loc>
       
-        <lastmod>2021-02-04T00:00:00+01:00</lastmod>
+        <lastmod>2021-02-04T00:00:00+00:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -103,7 +112,7 @@
     <url>
       <loc>http://localhost:4000/blog/Berlin2020/</loc>
       
-        <lastmod>2020-12-31T00:00:00+01:00</lastmod>
+        <lastmod>2020-12-31T00:00:00+00:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -112,7 +121,7 @@
     <url>
       <loc>http://localhost:4000/blog/Poisson/</loc>
       
-        <lastmod>2020-11-10T00:00:00+01:00</lastmod>
+        <lastmod>2020-11-10T00:00:00+00:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -121,7 +130,7 @@
     <url>
       <loc>http://localhost:4000/blog/VAE/</loc>
       
-        <lastmod>2020-08-10T00:00:00+02:00</lastmod>
+        <lastmod>2020-08-10T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -130,7 +139,7 @@
     <url>
       <loc>http://localhost:4000/blog/Portugal20/</loc>
       
-        <lastmod>2020-07-01T00:00:00+02:00</lastmod>
+        <lastmod>2020-07-01T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -139,7 +148,7 @@
     <url>
       <loc>http://localhost:4000/blog/AdjointMethod/</loc>
       
-        <lastmod>2020-05-20T00:00:00+02:00</lastmod>
+        <lastmod>2020-05-20T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -148,7 +157,7 @@
     <url>
       <loc>http://localhost:4000/blog/SolvingSDEs/</loc>
       
-        <lastmod>2020-04-14T00:00:00+02:00</lastmod>
+        <lastmod>2020-04-14T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -157,7 +166,7 @@
     <url>
       <loc>http://localhost:4000/blog/ItosLemma/</loc>
       
-        <lastmod>2020-04-10T00:00:00+02:00</lastmod>
+        <lastmod>2020-04-10T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -166,7 +175,7 @@
     <url>
       <loc>http://localhost:4000/blog/SDE/</loc>
       
-        <lastmod>2020-03-30T00:00:00+02:00</lastmod>
+        <lastmod>2020-03-30T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -175,7 +184,7 @@
     <url>
       <loc>http://localhost:4000/blog/BayesianInference/</loc>
       
-        <lastmod>2020-02-13T00:00:00+01:00</lastmod>
+        <lastmod>2020-02-13T00:00:00+00:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -184,7 +193,7 @@
     <url>
       <loc>http://localhost:4000/blog/NZ20/</loc>
       
-        <lastmod>2020-02-01T00:00:00+01:00</lastmod>
+        <lastmod>2020-02-01T00:00:00+00:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -193,7 +202,7 @@
     <url>
       <loc>http://localhost:4000/blog/Berlin2019/</loc>
       
-        <lastmod>2019-12-31T00:00:00+01:00</lastmod>
+        <lastmod>2019-12-31T00:00:00+00:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -202,7 +211,7 @@
     <url>
       <loc>http://localhost:4000/blog/InducingPoints/</loc>
       
-        <lastmod>2019-09-30T00:00:00+02:00</lastmod>
+        <lastmod>2019-09-30T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -211,7 +220,7 @@
     <url>
       <loc>http://localhost:4000/blog/Greece19/</loc>
       
-        <lastmod>2019-08-01T00:00:00+02:00</lastmod>
+        <lastmod>2019-08-01T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -220,7 +229,7 @@
     <url>
       <loc>http://localhost:4000/blog/Sinkhorn/</loc>
       
-        <lastmod>2019-07-15T00:00:00+02:00</lastmod>
+        <lastmod>2019-07-15T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -229,7 +238,7 @@
     <url>
       <loc>http://localhost:4000/blog/GPyTorch/</loc>
       
-        <lastmod>2019-05-15T00:00:00+02:00</lastmod>
+        <lastmod>2019-05-15T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -238,7 +247,7 @@
     <url>
       <loc>http://localhost:4000/blog/HMC/</loc>
       
-        <lastmod>2019-03-14T00:00:00+01:00</lastmod>
+        <lastmod>2019-03-14T00:00:00+00:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -247,7 +256,7 @@
     <url>
       <loc>http://localhost:4000/blog/BayesNMF/</loc>
       
-        <lastmod>2019-02-18T00:00:00+01:00</lastmod>
+        <lastmod>2019-02-18T00:00:00+00:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -256,7 +265,7 @@
     <url>
       <loc>http://localhost:4000/blog/Reparam/</loc>
       
-        <lastmod>2019-02-02T00:00:00+01:00</lastmod>
+        <lastmod>2019-02-02T00:00:00+00:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -265,7 +274,7 @@
     <url>
       <loc>http://localhost:4000/blog/NMF/</loc>
       
-        <lastmod>2019-01-24T00:00:00+01:00</lastmod>
+        <lastmod>2019-01-24T00:00:00+00:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -274,7 +283,7 @@
     <url>
       <loc>http://localhost:4000/blog/SouthAmerica19/</loc>
       
-        <lastmod>2019-01-01T00:00:00+01:00</lastmod>
+        <lastmod>2019-01-01T00:00:00+00:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -283,7 +292,7 @@
     <url>
       <loc>http://localhost:4000/blog/BerlinEasterPoem/</loc>
       
-        <lastmod>2018-04-27T00:00:00+02:00</lastmod>
+        <lastmod>2018-04-27T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -292,7 +301,7 @@
     <url>
       <loc>http://localhost:4000/blog/BayesianOptimization/</loc>
       
-        <lastmod>2018-04-24T00:00:00+02:00</lastmod>
+        <lastmod>2018-04-24T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -301,7 +310,7 @@
     <url>
       <loc>http://localhost:4000/blog/Gaussian-Processes-Extensions/</loc>
       
-        <lastmod>2018-04-23T00:00:00+02:00</lastmod>
+        <lastmod>2018-04-23T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -310,7 +319,7 @@
     <url>
       <loc>http://localhost:4000/blog/Gaussian-Processes/</loc>
       
-        <lastmod>2018-04-23T00:00:00+02:00</lastmod>
+        <lastmod>2018-04-23T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -319,7 +328,7 @@
     <url>
       <loc>http://localhost:4000/blog/AdvRL/</loc>
       
-        <lastmod>2017-11-06T00:00:00+01:00</lastmod>
+        <lastmod>2017-11-06T00:00:00+00:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -328,7 +337,7 @@
     <url>
       <loc>http://localhost:4000/blog/IntroRL/</loc>
       
-        <lastmod>2017-05-03T00:00:00+02:00</lastmod>
+        <lastmod>2017-05-03T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -337,7 +346,7 @@
   
     <url>
       <loc>http://localhost:4000/about/</loc>
-       <lastmod>2017-11-02T00:00:00+01:00</lastmod>
+       <lastmod>2017-11-02T00:00:00+00:00</lastmod>
       
        <changefreq>weekly</changefreq>
       
@@ -347,7 +356,7 @@
   
     <url>
       <loc>http://localhost:4000/blog/</loc>
-       <lastmod>2017-11-02T00:00:00+01:00</lastmod>
+       <lastmod>2017-11-02T00:00:00+00:00</lastmod>
       
        <changefreq>weekly</changefreq>
       
@@ -357,7 +366,7 @@
   
     <url>
       <loc>http://localhost:4000/globalizedfinance/</loc>
-       <lastmod>2020-11-02T00:00:00+01:00</lastmod>
+       <lastmod>2020-11-02T00:00:00+00:00</lastmod>
       
        <changefreq>weekly</changefreq>
       
@@ -377,7 +386,7 @@
   
     <url>
       <loc>http://localhost:4000/photography/</loc>
-       <lastmod>2020-11-02T00:00:00+01:00</lastmod>
+       <lastmod>2020-11-02T00:00:00+00:00</lastmod>
       
        <changefreq>weekly</changefreq>
       
