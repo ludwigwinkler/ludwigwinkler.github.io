@@ -3,7 +3,7 @@ layout: globalizedfinancepost
 title:  Off-Shore Finance Centers
 category: globalizedfinance
 date:   2022-01-05
-excerpt: Drinking a Pina Colada and getting wet[&rich] in the rain
+excerpt:
 image:
 ---
 
@@ -16,15 +16,15 @@ Especially Swiss banks are preparing for a stricter financial secrecy regulation
 
 Unsurpringly, the usual suspects were present in the Tax Justice Network Financial Secrecy Ranking but the number one spot might surprise you:
 
-5) UK
+1) UK
 
-4) Cayman
+2) Cayman
 
 3) Switzerland
 
-2) Luxembourg
+4) Luxembourg
 
-1) US
+5) US
 
 Well, how did US come out on top?
 
