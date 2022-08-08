@@ -3,8 +3,7 @@ layout: globalizedfinancepost
 title:  Off-Shore Finance
 category: globalizedfinance
 date:   2022-01-05
-excerpt: Drinking a Pina Colada and getting wet[&rich] in the rain
-image:
+excerpt: It's all about regulatory arbitrage
 ---
 
 <head>

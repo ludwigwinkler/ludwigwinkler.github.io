@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-08-01T14:01:27+01:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">The British [Offshore] Empire</title><link href="http://localhost:4000/blog/britishoffshoreempire/" rel="alternate" type="text/html" title="The British [Offshore] Empire" /><published>2022-04-23T00:00:00+01:00</published><updated>2022-04-23T00:00:00+01:00</updated><id>http://localhost:4000/blog/britishoffshoreempire</id><content type="html" xml:base="http://localhost:4000/blog/britishoffshoreempire/">&lt;p&gt;This summary delves deeper into the function and origin of the British offshore financial system which has played a pivotal role at creating the offshore financial industry which rests mostly on secrecy and illicit money streams.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-08-08T09:43:44+02:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">The British [Offshore] Empire</title><link href="http://localhost:4000/blog/britishoffshoreempire/" rel="alternate" type="text/html" title="The British [Offshore] Empire" /><published>2022-04-23T00:00:00+02:00</published><updated>2022-04-23T00:00:00+02:00</updated><id>http://localhost:4000/blog/britishoffshoreempire</id><content type="html" xml:base="http://localhost:4000/blog/britishoffshoreempire/">&lt;p&gt;This summary delves deeper into the function and origin of the British offshore financial system which has played a pivotal role at creating the offshore financial industry which rests mostly on secrecy and illicit money streams.&lt;/p&gt;
 
 &lt;h3 id=&quot;the-city-of-london-part-1&quot;&gt;The City of London Part 1&lt;/h3&gt;
 
@@ -143,7 +143,7 @@ While the classic names are well known such as the Cayman islands and the Bahama
 The Cayman Islands for example has over 80.000 companies, is the 5th largest financial center and has 3/4 of all hedge funds world wide … and it has one cinema.&lt;/p&gt;
 
 &lt;p&gt;The British were full on aware of the importance of their offshore system as the Crown Dependencies were adamantly defended from any intrusive regulation during the negations to join the European Union.
-Dependencies such as the Isle of Guernsey, Isle of Jersey and other were vehemently defended from any possible regulation by the European Union.&lt;/p&gt;</content><author><name></name></author><category term="globalizedfinance" /><summary type="html">A Different Kind of Empire</summary></entry><entry><title type="html">Lebanon</title><link href="http://localhost:4000/blog/Lebanon2022-copy/" rel="alternate" type="text/html" title="Lebanon" /><published>2022-04-01T00:00:00+01:00</published><updated>2022-04-01T00:00:00+01:00</updated><id>http://localhost:4000/blog/Lebanon2022%20copy</id><content type="html" xml:base="http://localhost:4000/blog/Lebanon2022-copy/">&lt;!-- ## Berlin Over The Years --&gt;
+Dependencies such as the Isle of Guernsey, Isle of Jersey and other were vehemently defended from any possible regulation by the European Union.&lt;/p&gt;</content><author><name></name></author><category term="globalizedfinance" /><summary type="html">A Different Kind of Empire</summary></entry><entry><title type="html">Lebanon</title><link href="http://localhost:4000/blog/Lebanon2022/" rel="alternate" type="text/html" title="Lebanon" /><published>2022-04-01T00:00:00+02:00</published><updated>2022-04-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Lebanon2022</id><content type="html" xml:base="http://localhost:4000/blog/Lebanon2022/">&lt;!-- ## Berlin Over The Years --&gt;
 &lt;style&gt;
     .image-gallery {overflow: auto; margin-left: -1%!important;}
     .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
@@ -459,7 +459,7 @@ Dependencies such as the Isle of Guernsey, Isle of Jersey and other were vehemen
     
     
     
-&lt;/ul&gt;</content><author><name></name></author><category term="photography" /><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/lebanon22/20220327-_DSC6539.jpg" /></entry><entry><title type="html">Portugal</title><link href="http://localhost:4000/blog/Portugal2022/" rel="alternate" type="text/html" title="Portugal" /><published>2022-04-01T00:00:00+01:00</published><updated>2022-04-01T00:00:00+01:00</updated><id>http://localhost:4000/blog/Portugal2022</id><content type="html" xml:base="http://localhost:4000/blog/Portugal2022/">&lt;!-- ## Berlin Over The Years --&gt;
+&lt;/ul&gt;</content><author><name></name></author><category term="photography" /><summary type="html">Beirut and the Levant</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/lebanon22/20220327-_DSC6539.jpg" /></entry><entry><title type="html">Portugal</title><link href="http://localhost:4000/blog/Portugal2022/" rel="alternate" type="text/html" title="Portugal" /><published>2022-04-01T00:00:00+02:00</published><updated>2022-04-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Portugal2022</id><content type="html" xml:base="http://localhost:4000/blog/Portugal2022/">&lt;!-- ## Berlin Over The Years --&gt;
 &lt;style&gt;
     .image-gallery {overflow: auto; margin-left: -1%!important;}
     .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
@@ -679,61 +679,56 @@ Dependencies such as the Isle of Guernsey, Isle of Jersey and other were vehemen
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/20220725-_DSC9280.jpg&quot; title=&quot;20220725-_DSC9280&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal22/20220725-_DSC9280.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20220725-_DSC9280&quot; title=&quot;20220725-_DSC9280&quot; /&gt;&lt;span&gt;20220725-_DSC9280&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/20220725-_DSC9280.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal22/20220725-_DSC9280.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/1.jpg&quot; title=&quot;1&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal22/1.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;1&quot; title=&quot;1&quot; /&gt;&lt;span&gt;1&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/1.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal22/1.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/20220725-_DSC9339.jpg&quot; title=&quot;20220725-_DSC9339&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal22/20220725-_DSC9339.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20220725-_DSC9339&quot; title=&quot;20220725-_DSC9339&quot; /&gt;&lt;span&gt;20220725-_DSC9339&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/20220725-_DSC9339.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal22/20220725-_DSC9339.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/2.jpg&quot; title=&quot;2&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal22/2.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;2&quot; title=&quot;2&quot; /&gt;&lt;span&gt;2&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/2.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal22/2.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/20220726-_DSC9426.jpg&quot; title=&quot;20220726-_DSC9426&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal22/20220726-_DSC9426.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20220726-_DSC9426&quot; title=&quot;20220726-_DSC9426&quot; /&gt;&lt;span&gt;20220726-_DSC9426&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/20220726-_DSC9426.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal22/20220726-_DSC9426.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/3.jpg&quot; title=&quot;3&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal22/3.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;3&quot; title=&quot;3&quot; /&gt;&lt;span&gt;3&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/3.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal22/3.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/20220726-_DSC9490.jpg&quot; title=&quot;20220726-_DSC9490&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal22/20220726-_DSC9490.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20220726-_DSC9490&quot; title=&quot;20220726-_DSC9490&quot; /&gt;&lt;span&gt;20220726-_DSC9490&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/20220726-_DSC9490.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal22/20220726-_DSC9490.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/4.jpg&quot; title=&quot;4&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal22/4.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;4&quot; title=&quot;4&quot; /&gt;&lt;span&gt;4&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/4.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal22/4.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/20220727-_DSC9581-Pano-2.jpg&quot; title=&quot;20220727-_DSC9581-Pano-2&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal22/20220727-_DSC9581-Pano-2.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20220727-_DSC9581-Pano-2&quot; title=&quot;20220727-_DSC9581-Pano-2&quot; /&gt;&lt;span&gt;20220727-_DSC9581-Pano-2&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/20220727-_DSC9581-Pano-2.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal22/20220727-_DSC9581-Pano-2.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/5.jpg&quot; title=&quot;5&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal22/5.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;5&quot; title=&quot;5&quot; /&gt;&lt;span&gt;5&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/5.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal22/5.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/20220727-_DSC9584.jpg&quot; title=&quot;20220727-_DSC9584&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal22/20220727-_DSC9584.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20220727-_DSC9584&quot; title=&quot;20220727-_DSC9584&quot; /&gt;&lt;span&gt;20220727-_DSC9584&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/20220727-_DSC9584.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal22/20220727-_DSC9584.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/6.jpg&quot; title=&quot;6&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal22/6.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;6&quot; title=&quot;6&quot; /&gt;&lt;span&gt;6&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/6.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal22/6.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/20220729-_DSC9654.jpg&quot; title=&quot;20220729-_DSC9654&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal22/20220729-_DSC9654.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20220729-_DSC9654&quot; title=&quot;20220729-_DSC9654&quot; /&gt;&lt;span&gt;20220729-_DSC9654&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/20220729-_DSC9654.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal22/20220729-_DSC9654.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/7.jpg&quot; title=&quot;7&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal22/7.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;7&quot; title=&quot;7&quot; /&gt;&lt;span&gt;7&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/7.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal22/7.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/20220731-_DSC9688.jpg&quot; title=&quot;20220731-_DSC9688&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal22/20220731-_DSC9688.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20220731-_DSC9688&quot; title=&quot;20220731-_DSC9688&quot; /&gt;&lt;span&gt;20220731-_DSC9688&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/20220731-_DSC9688.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal22/20220731-_DSC9688.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/8.jpg&quot; title=&quot;8&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal22/8.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;8&quot; title=&quot;8&quot; /&gt;&lt;span&gt;8&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/8.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal22/8.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/20220731-_DSC9723.jpg&quot; title=&quot;20220731-_DSC9723&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal22/20220731-_DSC9723.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20220731-_DSC9723&quot; title=&quot;20220731-_DSC9723&quot; /&gt;&lt;span&gt;20220731-_DSC9723&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/20220731-_DSC9723.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal22/20220731-_DSC9723.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/9.jpg&quot; title=&quot;9&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/portugal22/9.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;9&quot; title=&quot;9&quot; /&gt;&lt;span&gt;9&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/portugal22/9.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/portugal22/9.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
@@ -750,7 +745,12 @@ Dependencies such as the Isle of Guernsey, Isle of Jersey and other were vehemen
     
     
     
-&lt;/ul&gt;</content><author><name></name></author><category term="photography" /><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/portugal22/20220727-_DSC9584.jpg" /></entry><entry><title type="html">Off-Shore Finance Centers</title><link href="http://localhost:4000/blog/offshorefinancecenters/" rel="alternate" type="text/html" title="Off-Shore Finance Centers" /><published>2022-01-05T00:00:00+00:00</published><updated>2022-01-05T00:00:00+00:00</updated><id>http://localhost:4000/blog/offshorefinancecenters</id><content type="html" xml:base="http://localhost:4000/blog/offshorefinancecenters/">&lt;p&gt;In 2008, the Tax Justice Network published a ground breaking &lt;a href=&quot;https://fsi.taxjustice.net&quot;&gt;ranking&lt;/a&gt; which evaluated countries on how much financial secrecy they provided to somebody who wanted to move their money and wealth undisturbed across the world and free from democratic and/or governmental oversight.
+    
+    
+    
+    
+    
+&lt;/ul&gt;</content><author><name></name></author><category term="photography" /><summary type="html">Porto and the North Coast</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/portugal22/4.jpg" /></entry><entry><title type="html">Off-Shore Finance Centers</title><link href="http://localhost:4000/blog/offshorefinancecenters/" rel="alternate" type="text/html" title="Off-Shore Finance Centers" /><published>2022-01-05T00:00:00+01:00</published><updated>2022-01-05T00:00:00+01:00</updated><id>http://localhost:4000/blog/offshorefinancecenters</id><content type="html" xml:base="http://localhost:4000/blog/offshorefinancecenters/">&lt;p&gt;In 2008, the Tax Justice Network published a ground breaking &lt;a href=&quot;https://fsi.taxjustice.net&quot;&gt;ranking&lt;/a&gt; which evaluated countries on how much financial secrecy they provided to somebody who wanted to move their money and wealth undisturbed across the world and free from democratic and/or governmental oversight.
 The biggest surprise back then was the country on top of the list, while the succeeding ranks were populated by the usual suspects.&lt;/p&gt;
 
 &lt;p&gt;Since 2008, the list has changed a bit as for example Singapore has moved up significantly.
@@ -932,7 +932,7 @@ You literally can’t know.&lt;/p&gt;
 This is why incorporation agents in Delaware, Nevada and Wyoming offer aged or shelved companies which give of a more serious vibe through having existed at least on paper for multiple years.
 These are usefull for fraud, as people tend to believe that companies that are multiple years old must have a somewhat reliable business model.
 Yet again these are pure shell companies but you can have one for only 299 USD.
-Who said money laundering has to be expensive.&lt;/p&gt;</content><author><name></name></author><category term="globalizedfinance" /><summary type="html">In 2008, the Tax Justice Network published a ground breaking ranking which evaluated countries on how much financial secrecy they provided to somebody who wanted to move their money and wealth undisturbed across the world and free from democratic and/or governmental oversight. The biggest surprise back then was the country on top of the list, while the succeeding ranks were populated by the usual suspects.</summary></entry><entry><title type="html">Off-Shore Finance</title><link href="http://localhost:4000/blog/offshorefinance/" rel="alternate" type="text/html" title="Off-Shore Finance" /><published>2022-01-05T00:00:00+00:00</published><updated>2022-01-05T00:00:00+00:00</updated><id>http://localhost:4000/blog/offshorefinance</id><content type="html" xml:base="http://localhost:4000/blog/offshorefinance/">&lt;head&gt;
+Who said money laundering has to be expensive.&lt;/p&gt;</content><author><name></name></author><category term="globalizedfinance" /><summary type="html">Secrecy Jurisdictions World Wide Inc.</summary></entry><entry><title type="html">Off-Shore Finance</title><link href="http://localhost:4000/blog/offshorefinance/" rel="alternate" type="text/html" title="Off-Shore Finance" /><published>2022-01-05T00:00:00+01:00</published><updated>2022-01-05T00:00:00+01:00</updated><id>http://localhost:4000/blog/offshorefinance</id><content type="html" xml:base="http://localhost:4000/blog/offshorefinance/">&lt;head&gt;
 &lt;script type=&quot;text/x-mathjax-config&quot;&gt; MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt;
        &lt;script type=&quot;text/x-mathjax-config&quot;&gt;
          MathJax.Hub.Config({
@@ -1287,7 +1287,7 @@ from 1950 to 1975 unusual long prosperity 4 to 4.6% (Glorieux Trenteuse in Franc
 
 1973 to 2000: 17 banking crises and 57 currency crises vs 16 before
 
-US deregulation 1974 [?] --&gt;</content><author><name></name></author><category term="globalizedfinance" /><summary type="html">Drinking a Pina Colada and getting wet[&amp;rich] in the rain</summary></entry><entry><title type="html">RSA Cryptography: The Math</title><link href="http://localhost:4000/blog/RSA/" rel="alternate" type="text/html" title="RSA Cryptography: &lt;br&gt; The Math" /><published>2021-10-04T00:00:00+01:00</published><updated>2021-10-04T00:00:00+01:00</updated><id>http://localhost:4000/blog/RSA</id><content type="html" xml:base="http://localhost:4000/blog/RSA/">&lt;head&gt;
+US deregulation 1974 [?] --&gt;</content><author><name></name></author><category term="globalizedfinance" /><summary type="html">It's all about regulatory arbitrage</summary></entry><entry><title type="html">RSA Cryptography: The Math</title><link href="http://localhost:4000/blog/RSA/" rel="alternate" type="text/html" title="RSA Cryptography: &lt;br&gt; The Math" /><published>2021-10-04T00:00:00+02:00</published><updated>2021-10-04T00:00:00+02:00</updated><id>http://localhost:4000/blog/RSA</id><content type="html" xml:base="http://localhost:4000/blog/RSA/">&lt;head&gt;
 &lt;style&gt;
 .MathJax_Display, .MJXc-display, .MathJax_SVG_Display {
     overflow-x: auto;
@@ -1531,7 +1531,7 @@ The receiver can then exponetiate the ‘decrypted’ hash again with the public
   \Big[  h^{k\phi(n)+1} &amp;= h \Big] \mod n \quad \text{True via Euler's theorem} \\
 \end{align} %]]&gt;&lt;/script&gt;
 
-&lt;p&gt;Cha-Ching Baby …&lt;/p&gt;</content><author><name></name></author><summary type="html">The math that ensures that it's none of your business</summary></entry><entry><title type="html">Berlin Over The Years</title><link href="http://localhost:4000/blog/Berlin2021/" rel="alternate" type="text/html" title="Berlin Over The Years" /><published>2021-08-31T00:00:00+01:00</published><updated>2021-08-31T00:00:00+01:00</updated><id>http://localhost:4000/blog/Berlin2021</id><content type="html" xml:base="http://localhost:4000/blog/Berlin2021/">&lt;!-- ## Berlin Over The Years --&gt;
+&lt;p&gt;Cha-Ching Baby …&lt;/p&gt;</content><author><name></name></author><summary type="html">The math that ensures that it's none of your business</summary></entry><entry><title type="html">Berlin Over The Years</title><link href="http://localhost:4000/blog/Berlin2021/" rel="alternate" type="text/html" title="Berlin Over The Years" /><published>2021-08-31T00:00:00+02:00</published><updated>2021-08-31T00:00:00+02:00</updated><id>http://localhost:4000/blog/Berlin2021</id><content type="html" xml:base="http://localhost:4000/blog/Berlin2021/">&lt;!-- ## Berlin Over The Years --&gt;
 &lt;style&gt;
     .image-gallery {overflow: auto; margin-left: -1%!important;}
     .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
@@ -1827,7 +1827,7 @@ The receiver can then exponetiate the ‘decrypted’ hash again with the public
     
     
     
-&lt;/ul&gt;</content><author><name></name></author><category term="photography" /><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/berlin2021/Berlin-15.jpg" /></entry><entry><title type="html">Spain</title><link href="http://localhost:4000/blog/Spain21/" rel="alternate" type="text/html" title="Spain" /><published>2021-07-01T00:00:00+01:00</published><updated>2021-07-01T00:00:00+01:00</updated><id>http://localhost:4000/blog/Spain21</id><content type="html" xml:base="http://localhost:4000/blog/Spain21/">&lt;style&gt;
+&lt;/ul&gt;</content><author><name></name></author><category term="photography" /><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/berlin2021/Berlin-15.jpg" /></entry><entry><title type="html">Spain</title><link href="http://localhost:4000/blog/Spain21/" rel="alternate" type="text/html" title="Spain" /><published>2021-07-01T00:00:00+02:00</published><updated>2021-07-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Spain21</id><content type="html" xml:base="http://localhost:4000/blog/Spain21/">&lt;style&gt;
     .image-gallery {overflow: auto; margin-left: -1%!important;}
     .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
     .image-gallery li a {text-align: top; text-decoration: none!important; color: #777;}
@@ -2122,7 +2122,7 @@ The receiver can then exponetiate the ‘decrypted’ hash again with the public
     &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2748.jpg&quot; title=&quot;DSC2748&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/spain21/DSC2748.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC2748&quot; title=&quot;DSC2748&quot; /&gt;&lt;span&gt;DSC2748&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2748.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/spain21/DSC2748.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
-&lt;/ul&gt;</content><author><name></name></author><category term="photography" /><summary type="html">Granada</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/spain21/DSC2103.jpg" /></entry><entry><title type="html">Greece</title><link href="http://localhost:4000/blog/Greece21/" rel="alternate" type="text/html" title="Greece" /><published>2021-06-01T00:00:00+01:00</published><updated>2021-06-01T00:00:00+01:00</updated><id>http://localhost:4000/blog/Greece21</id><content type="html" xml:base="http://localhost:4000/blog/Greece21/">&lt;style&gt;
+&lt;/ul&gt;</content><author><name></name></author><category term="photography" /><summary type="html">Granada</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/spain21/DSC2103.jpg" /></entry><entry><title type="html">Greece</title><link href="http://localhost:4000/blog/Greece21/" rel="alternate" type="text/html" title="Greece" /><published>2021-06-01T00:00:00+02:00</published><updated>2021-06-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Greece21</id><content type="html" xml:base="http://localhost:4000/blog/Greece21/">&lt;style&gt;
     .image-gallery {overflow: auto; margin-left: -1%!important;}
     .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
     .image-gallery li a {text-align: top; text-decoration: none!important; color: #777;}
@@ -2412,7 +2412,7 @@ The receiver can then exponetiate the ‘decrypted’ hash again with the public
     
     
     
-&lt;/ul&gt;</content><author><name></name></author><category term="photography" /><summary type="html">Thessaloniki &amp; Mount Olympus</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/greece21/DSC1783.jpg" /></entry><entry><title type="html">Italy</title><link href="http://localhost:4000/blog/Italy21/" rel="alternate" type="text/html" title="Italy" /><published>2021-05-01T00:00:00+01:00</published><updated>2021-05-01T00:00:00+01:00</updated><id>http://localhost:4000/blog/Italy21</id><content type="html" xml:base="http://localhost:4000/blog/Italy21/">&lt;!-- ## Berlin Over The Years --&gt;
+&lt;/ul&gt;</content><author><name></name></author><category term="photography" /><summary type="html">Thessaloniki &amp; Mount Olympus</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/greece21/DSC1783.jpg" /></entry><entry><title type="html">Italy</title><link href="http://localhost:4000/blog/Italy21/" rel="alternate" type="text/html" title="Italy" /><published>2021-05-01T00:00:00+02:00</published><updated>2021-05-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Italy21</id><content type="html" xml:base="http://localhost:4000/blog/Italy21/">&lt;!-- ## Berlin Over The Years --&gt;
 &lt;style&gt;
     .image-gallery {overflow: auto; margin-left: -1%!important;}
     .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}

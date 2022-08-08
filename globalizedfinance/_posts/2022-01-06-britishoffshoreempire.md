@@ -4,7 +4,6 @@ title:  The British [Offshore] Empire
 category: globalizedfinance
 date:   2022-04-23
 excerpt: A Different Kind of Empire
-image:
 ---
 
 This summary delves deeper into the function and origin of the British offshore financial system which has played a pivotal role at creating the offshore financial industry which rests mostly on secrecy and illicit money streams.

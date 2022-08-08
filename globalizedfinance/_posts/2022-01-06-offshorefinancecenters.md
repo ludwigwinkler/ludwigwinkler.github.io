@@ -3,8 +3,7 @@ layout: globalizedfinancepost
 title:  Off-Shore Finance Centers
 category: globalizedfinance
 date:   2022-01-05
-excerpt:
-image:
+excerpt: Secrecy Jurisdictions World Wide Inc.
 ---
 
 In 2008, the Tax Justice Network published a ground breaking [ranking](https://fsi.taxjustice.net) which evaluated countries on how much financial secrecy they provided to somebody who wanted to move their money and wealth undisturbed across the world and free from democratic and/or governmental oversight.
