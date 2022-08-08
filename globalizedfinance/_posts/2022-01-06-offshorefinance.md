@@ -75,18 +75,18 @@ If you had a secret bank account you would most likely want your money to do som
 It turns out that 1/3 of the American stock market is held by Swiss bank accounts.
 
 Let's assume a British person has hid wealth in Switzerland and tasked his Swiss bank to buy stocks in the US.
-American statisticians see is that American stock is held by foreigners, which is marked as a liability.
+What American statisticians see is that American stock is held by foreigners, which is marked as a liability.
 In Switzerland nothing is recorded, as the bank is merely holding the stocks not owning them.
 In the UK, no assets are recorded as the British persons wants his stock ownership to be kept secret.
 
 Now normally the assets and liabilities should cancel each other out, as something being owned by a foreigner in one country should pop up as the property of that foreigner in his home country.
-But there is a massive hole valued at 7.6 trillion USD which represents 8% of the global wealth which is unaccounted for.
+But there is a massive hole valued at 7.6 trillion USD, which represents 8% of the global wealth, which is unaccounted for.
 
 Another example is Luxembourg as the second largest incorporater of mutual funds.
 The regulators in Luxembourg say that 3.5 trillion USD are owned via shares in Luxembourg.
 But when you scour the statistics worldwide, one can only find 1.5 trillion USD officially registered in Luxembourg which means that 2 trillion USD are unaccounted for, held by people who do not want to claim their ownership of mutual fund shares.
 
-### Secrecy Jursidictions
+### Secrecy Jurisdictions
 
 When people think about offshore finance and tax havens, they usually think of rich people not wanting to pay taxes.
 This is most certainly true but above all these offshore financial centers are secrecy jurisdictions, in which nobody knows what's actually happening.
@@ -98,43 +98,43 @@ The way the rich, powerful, crooked or greedy (or any combination thereof) like 
 - Trusts
 
 Trusts are a patriarchic quirk of British law dating back to the dark ages.
-Back then, when a men went on the crusades, he obvious wasn't home to defend his estate and property.
+Back then, when a men went on the crusades, he obviously wasn't home to defend his estate and property.
 And because women weren't allowed to hold land, he signed his property over to a friend who remained back in England.
 The crusader would be the trust settlor, the friend staying in England the trustee and the wife and kids of the crusader were the beneficiaries.
-Thus the ownership was signed over to the trustee with the clear purpose that the trustee manage the property and assets in a way to benefit the beneficiaries.
+Thus the ownership was signed over to the trustee with the clear purpose that the trustee manages the property and assets in a way to benefit the beneficiaries.
 
 Nowadays, trusts have lost their patriarchic purpose but now serve the nefarious purpose of hiding and defending secret wealth.
 The main purpose of a trust in our time is to protect wealth from taxation, regulators and creditors.
 They are created through the legal fiction of separating ownership from control.
 
 For that reason they are for example very popular with rich Muslims.
-Islams declares having a mortgage and an insurance policy haram, as planning out for the future goes against Allah's divine plan and him taking care of you as a pious Muslim.
+Islam declares having a mortgage and an insurance policy as haram, as planning out for the future goes against Allah's divine plan and him taking care of you as a pious Muslim.
 
 Besides cultural sensibilities, the sparsity of law and regulation make trusts very popular for wealth management.
-They are not taxed as entities, but are taxed were the trustee is registered.
+They are not taxed as entities, but are taxed where the trustee is registered.
 In a peculiar twist, offshore financial centers offer 0% tax rate on trusts and consequentially on trustees.
 
-Since the trustee is the legally liable person of the assets parked in the trust, creditors and regulators who might be after the trust settlors assets can't touch the assets as the settlor has ceded ownership to the trustee.
-And if you want to really cautious, you can insert the OFC speciality of 'flee clauses' into a trust agreement.
+Since the trustee is the legally liable person of the assets parked in the trust, creditors and regulators who might be after the trust settlor's assets can't touch the assets as the settlor has ceded ownership to the trustee.
+And if you want to be really cautious, you can insert the OFC speciality of 'flee clauses' into a trust agreement.
 Should anybody come knocking on a trustee's door or should more favourable terms be viable elsewhere, the trust can change legal registration in the blink of an eye.
 
-English law foresaw the a restriction on perpetuity, as they did not want assets accumulating in trusts.
+English law foresaw the restriction on perpetuity, as they did not want assets accumulating in trusts.
 Over time, these accumulating assets could possibly give the trust structure outsized economic might and increase social inequality.
 Thus they were limited to 99 years to prevent economic dynasties.
 Guess what the offshore centers did: they abolished these rules.
 But Wyoming and South Dakota did the same thing, so it's not only the Brits.
 
-The legal advantage of trusts is that the law defines trust as 'a fidicuary relationship with respect to property'.
+The legal advantage of trusts is that the law defines trusts as 'a fidicuary relationship with respect to property'.
 Importantly, such a relationship can be defined in any way possible, allowing for multitudes of special arrangement.
 But even more importantly, the beneficiaries and the trust itself is nowhere recorded.
 So you can theoretically move 5 billion USD into an offshore trust, name your kids the beneficiaries and the tax men wouldn't even know.
 This obscurity and outright secrecy makes trusts so appealing.
 
 But at the same time there is the thorny issue of the trustee which you have to pick carefully.
-When offshore centers tried to vie for Asian ultra hight net worth (UHNW) individuals, they quickly realized that Asian mostly patriarchs were loath relinquishing control over their companies to a trustee.
+When offshore centers tried to vie for Asian ultra hight net worth (UHNW) individuals, they quickly realized that most Asian patriarchs were loath to relinquish control over their companies to a trustee.
 
 Thus the British Virgin Islands VISTA structures were developed.
-The Virgin Islands Special Trust Act removed any duties, obligations and liabilities from the trustee.
+The Virgin Islands Special Trust Act (VISTA) removed any duties, obligations and liabilities from the trustee.
 See, normally the trustee is liable for the successful managing of the assets put into the trust.
 This includes running an entire company, if the settlor so chose to park an entire company in the trust.
 With VISTA, the trustee only role is to be a placeholder for the owner of the company, while it is run by the settlor.
@@ -147,10 +147,10 @@ STAR trusts expanded the purpose of a trust to literally anything, increasing th
 - Foundations
 
 Foundations are popular for a similar reasons as VISTA and STAR trusts as they give the creator a lot of leeway.
-They are predominantly used by rich people from BRICS countries, where wealth generation has been immense, but the formation of general trust not so much.
-Similar to Asian rich people from low trust countries, they also loath the idea of relinquishing control to strangers.
-But with foundations, the founder has signatory authority on the foundations bank accounts, giving him full control.
-For example, Panama has developed itself into the center for Latin American wealth management, as Latin Americans have experience much political unrest and have high force inheritance laws.
+They are predominantly used by rich people from BRICS (the emerging markets Brazil, Russia, India, China and South Africa) countries, where wealth generation has been immense, but the formation of general trust not so much.
+Similar to Asian rich people from low trust countries, they also loathe the idea of relinquishing control to strangers.
+But with foundations, the founder has signatory authority on the foundation's bank accounts, giving him full control.
+For example, Panama has developed itself into the center for Latin American wealth management, as Latin Americans have experienced much political unrest and have high force inheritance laws.
 Thus they want to protect their wealth without ceding control.
 
 According to the Merriam-Webster dictionary, a foundation is 'funds given for the permanent support of an institution' or 'an organization or institution established by endowment with provision for future maintenance'.
@@ -159,50 +159,49 @@ While most people attribute philanthropic ideals to a foundation, by law it is j
 So in reality the purpose of a foundation can be anything the founder wants it to be.
 
 A big advantage of foundations in terms of maintaining control is that the founder can be both beneficiary of the foundation and be the director of the council of the foundation.
-Coupled with the signatory authority, the founder can have maximum control over what happens with and inside of a foundation.
-Also assets can be moved in and out of a foundation, making it a flexible asset protection structure.
+Coupled with the signatory authority, the founder can have maximum control over what happens with and inside a foundation.
+Also, assets can be moved in and out of a foundation, making it a flexible asset protection structure.
 Additionally, a foundation can open bank accounts and go into contracts.
 Compared to trusts which are a British common law structure and aren't recognized by civil law, foundations are universally accepted.
 
-The downside compared to trusts is that they have to registered as a legal person, making them more visible than trusts.
+The downside compared to trusts is that they have to be registered as a legal person, making them more visible than trusts.
 But Panama and the Seychelles already offer foundations with nominee founders such that the names of the real founders are in the dark again.
 Due to the public registration, administrative costs of foundations are higher, as bylaws and articles have to be formulated and they are usually audited.
-Also, transferring wealth into foundations can be taxed in most onshore countries and as a legal person a foundation cna be sued and go bankrupt.
+Also, transferring wealth into foundations can be taxed in most onshore countries and as a legal person a foundation can be sued and go bankrupt.
 
 - Shell Companies
 
-Compared to trusts, which are only recognized in common law countries, and foundations which have to hold up to public/governmental scrutiny, companies are universally recognized legal entities.
+Compared to trusts, which are only recognized in common law countries, and foundations which have to hold up to public/governmental scrutiny, companies are universally recognized as legal entities.
 Similarly to foundations they can exist in perpetuity.
 
-As the US have vigorously defended their spot on the top of the Financial Secrecy Index, they can be had for as little as 250 USD in states like Nevada, Wyoming and Delaware.
+As the US have vigorously defended their spot on the top of the Financial Secrecy Index, shell companies can be bought for as little as 250 USD in states like Nevada, Wyoming and Delaware.
 In the more advanced secrecy jurisdictions they come with the extra flavour of nominee directors, which keep the beneficial owner's name off the records.
 For the registration, these secrecy jurisdictions don't require identification, but the company does require directors.
-So the nominee directors serve as as directors for a the shell company while doing absolutely nothing in terms of real managing of the company.
+So the nominee directors serve as directors for the shell company while doing absolutely nothing in terms of real managing of the company.
 There is a story of a 23 year old fast food cook who was the nominee director of a New Zealand company.
 The 20 USD he was paid were quite nice until international prosecutors knocked on his door, asking him why he was the director of an arms smuggling company.
-It turned out that the company he had been a nominee director of had been involved in arms trafficking.
 
 Another advantage is that companies can open bank accounts and that credit cards can be given out on those accounts.
-Barclays, a British bank, had to admit, that close to 19% of its credit cards were linked to bank accounts in tax havens registered to shell companies.
+Barclays, a British bank, had to admit that close to 19% of its credit cards were linked to bank accounts in tax havens registered to shell companies.
 Thus, presumably, the beneficial owners moved their wealth into tax havens, set up a shell company with a bank account, and then used a credit card on the shell company's bank account to go shopping.
 
 Some jurisdictions even offer bearer shares which is a stupendous money laundering tool.
 The transactions of bearer shares are recorded nowhere and the person who is the bearer of the share is the owner of it.
-But legally, the owner of those bearer shares can under oath say that as long as he's not physically holding the share in his hand, that he's not the owner of the company.
+But legally, the owner of those bearer shares can say under oath that as long as he's not physically holding the share in his hand, that he's not the owner of the company.
 So imagine a company laundering money and the police comes asking the supposed owner of the company, who's exerting control over the company via bearer shares, whether he owns the company or not.
 Then the owner, who's doing money laundering, can say 'No' and thats legally valid.
 Offshore is a weird world.
 
-Often, shell companies are hid behind the lawyer-client privilege as a lawyer is used as the front man.
+Shell companies are hid behind the lawyer-client privilege as a lawyer is used as the front man.
 This adds another lawyer of obfuscation since the name of the true owner of a shell company can't be divulged by force.
-Thus if the police comes knocking, the lawyer is protected from having to name the true owner of the company as it would violate the lawyer-client confidentiality.
+Thus, if the police comes knocking, the lawyer is protected from having to name the true owner of the company as it would violate the lawyer-client confidentiality.
 
-Often, wealth and companies are place in a trust-company structure.
+Often, wealth and companies are placed in a trust-company structure.
 The company allows maximum flexibility and access to the parked wealth by offering credit cards and being able to move assets in and out of the company.
 The shares of the company are then put into a trust with a nominee.
-Thus the owner of the wealth and onshore corporation can do whatever he or she wants.
-But in case the tax authority wants to inquire who all this wealth belongs to, the trust arrangement separates legally separates the settlor from is assets.
-Similarly, creditors can't access the company assets as they belong to the trust and no the settlor.
+Thus the owner of the wealth and the onshore corporation can do whatever he or she wants.
+But in case the tax authority wants to inquire who all this wealth belongs to, the trust arrangement legally separates the settlor from is assets.
+Similarly, creditors can't access the company assets as they belong to the trust and not the settlor.
 
 - Limited Liability Partnerships
 
@@ -210,12 +209,12 @@ Your business interests can also be incorporated into a Limited Liability Partne
 First of all, partnerships are subject to far less scrutiny than real companies, as only the partners have money in them.
 Thus only the partners money is involved and not the publics.
 Stock companies are more transparent as the public can invest in them so they are held to more stringent standards.
-Thus partnerships are in general more opaque has nobody but the partners have their money in them.
+Thus partnerships are in general more opaque as nobody but the partners have their money in them.
 But traditionally, partners were also on the hook should something go awry.
 Also, partnerships are taxed on a per partner basis, such that any profits or losses the partnerships accrues is passed directly onto the partners.
 Thus profits and losses are directly taxed with the individual partners, making the tax transparent.
 
-Limited Liability Partnerships (LLP) were created on behest of the big four accounting firms on the Isle of Jersey as they wanted to have the cake and eat it.
+Limited Liability Partnerships (LLP) were created on behest of the big four accounting firms on the Isle of Jersey as they wanted to have the cake and eat it too.
 So they wanted the opaqueness and maximal profit of a partnership with the protection of a separate legal entity which would be on the hook instead of the partners.
 In a normal partnership, if the business decisions go sour, the partners are on the hook as their share of the partnership makes them legally responsible.
 For example, if an accounting firm screws up while auditing and the audited company goes belly up, the partners of the accounting firm would be directly responsible for possible law suits by damaged share holders of stock companies.
@@ -245,13 +244,13 @@ The mother company, Apple, thus pockets the difference in the tax rates.
 
 Transfer pricing has led to some astonishing price mechanisms.
 Examples are water plastic seals from the Czech Republic to the parent company for 972.98 USD per unit, gloves from China for 4,121.81 USd a kilo and locks from France for 3,067.17 per Kilo.
-These import prices made the parent companies in the US overpay such that parent company reduced its profits on which it could be taxed.
+These import prices made the parent companies in the US overpay such they reduced their profits on which they could be taxed.
 Exports from the US were stupendously low as missiles exported to Israel were priced at 52.03 USD a piece, diamonds were exported to India at 13.45 USD carat, cameras were suddenly worth 7.44 USD when exported to Colombia and car seats were exported for a mere 1.66 USD to Belgium.
 So when the US parent company sold something, these were priced very low as it crossed the border to a subsidiary in another country.
 The parent company in the US made little profit which incurred little absolute taxes.
 
 Google for example sold the IP of its search engine algorithm to an Irish subsidiary to which it pays licensing fees.
-The fees are costs for the US operations, thus diminishing the corporate tax rate, and profits for the low tax Irish subsidiary.
+The fees are costs for the US operations, thus diminishing the corporate tax rate, and increasing profits for the low tax Irish subsidiary.
 Similar schemes have led Ireland have trade surplus of 25% of its GDP which grossly distorts macro economic numbers.
 
 Another aspect is the complete disregard for prudent finance and financial safeguards in offshore financial centers.
@@ -269,10 +268,9 @@ Most of the money is tied up in long term loans and only because only a few cust
 If all customers would withdraw their money all at once, due to a loss of faith in the bank safekeeping their wealth, we would have a bank run and the bank wouldn't be able to pay out all its depositors and panic would ensue.
 
 Lets assume that we have 100 USD, and the capital requirement $r$ is 10%.
-This means we have to keep 10% in cash at our bank and loan out 90% to another financial player.
+This means we have to keep 10% in cash at our bank and are allowed to loan out 90% to another financial player.
 The second party now has 90 USD and can in turn make loans to a third party with the remaining 81 USD once the 9 USD cash is kept.
 The third party now gets 81 USD and can give out 72.9 USD in a new loan after subtracting the 10% capital requirement.
-
 $$
 \begin{align}
 M_1 &= M_0 *(1-r) &&= 90 \\
@@ -281,7 +279,6 @@ M_3 &= M_2 * (1-r) = 100 * (1-r)^3 &&= 72.9 \\
 M_4 &= \ldots
 \end{align}
 $$
-
 This forms a geometric series and if we were to continue to infinity, we'd get
 
 $$
@@ -290,25 +287,25 @@ M_\infty = \sum_k^\infty M_0 \cdot (1-r)^k = \frac{M_0}{r}
 \end{align}
 $$
 
-With $r=10% we increase the money supply tenfold but more importantly we create a chain of dependencies in terms of credit.
+With $r=10%$ we increase the money supply tenfold but more importantly we create a chain of dependencies in terms of credit.
 By reducing the capital requirements we make every financial institution more susceptible to defaults, the chain along which the money bounces through the system longer and ultimately the entire system more fragile.
 
 Offshore finance centres are appealing to the financial system as transactions are done in almost complete darkness due to the lack of oversight.
 Additionally, extremely restrained regulation basically results in little financial prudence i.e. very low capital requirements.
 
 This results in a ballooning amount of EuroDollars created in this offshore market and an almost impenetrable interdependence between financial institutions.
-It is thus no wonder that the offshore markets were a great amplifier, conduit and source of the financial crises.
+It is thus no wonder that the offshore markets were a great amplifier, conduit and cause of the financial crises.
 
-Another problem in offshore financial markets is the proliferation of special purpose vehicles that are created by their parent companies.
+Another problem in offshore financial markets is the proliferation of special purpose vehicles (SPV) that are created by their parent companies.
 The sole purpose of these subsidiary legal entities is to separate the risk of ventures in the SPV from the parent company.
 The assets do not appear on the balance sheet of the parent company and SPV's have their own assets, liabilities and financial statements, yet the business decisions are made by the parent company.
 Upon creation, the rules and purpose of these vehicles are clearly defined and it receives funding from investors to buy the agreed-upon assets in its creation document.
 The lendors to the SPV can buy bonds or shares of the SPV and the worth of the SPV is defined by the assets it bought from the raised funds.
-Mostly SPVs are used for securitization, such that interest payments far into the future can be monetized into lump sum that the originator of the security can book now.
+Mostly, SPVs are used for securitization, such that interest payments far into the future can be monetized into a lump sum that the originator of the security can book now.
 
 Enron used special purpose vehicles (SPV) in the Bahamas to offload debt.
 They sold their debt to specifically designed SPV's, such that their debt was offloaded into the Caribbean ocean.
-Since their financial statements were separate from Enron itself, the parent company in Houston could claim to be superb financial health.
+Since their financial statements were separate from Enron itself, the parent company in Houston could claim to be in superb financial health.
 
 Similarly, Northern Rock used the Granite SPV to offload mortgages into the offshore world and clean its balance sheet.
 The Granite SPV eventually grew to 50 billion USD but was hidden from regulators as the position did not occur on the balance sheet.
@@ -326,13 +323,13 @@ Instead they use indirect taxation through the paying of fees and the support of
 In bona-fide tax havens which specialize in company, trust and foundation registration, yearly fees are required which make up for the lost revenue.
 
 It is important to note that tax havens often sell out their sovereignty at the expense of their own citizens.
-Many of them levy taxes on their citizens, while non-residents and their financial products are exempt from almost all to all taxes.
+Many of them levy taxes on their citizens, while non-residents and their financial products are exempt from almost all taxes.
 Instead, they make money by taxing the lawyers, accountants and other financial services professionals.
 
 Yet, this is exactly a problem as tax havens rely disproportionally on a single industry which makes them increasingly susceptible to sudden changes in regulatory framework of other countries.
-The poverty rate of Luxembourg has increased twofold as any redistributional policies are prevented on purpose.
-The spoils of the offshore financial services industry thus accrues in the hands of a small and often non-resident work force while the main population suffers from the cuts in basic services and increasing house prices and costs of living.
-The crown dependency of Jersey is another example where the local population is suffering disproportionately.
+The poverty rate of Luxembourg has increased twofold as any redistributional policy is prevented on purpose.
+The spoils of the offshore financial services industry thus accrue in the hands of a small and often non-resident work force while the main population suffers from the cuts in basic services and increasing house prices and costs of living.
+The Crown Dependency of Jersey is another example where the local population is suffering disproportionately.
 
 The small size of most tax havens gives the local governments little to work with.
 Would you build a huge production plant in a country with a demand of just 500.000 people?
