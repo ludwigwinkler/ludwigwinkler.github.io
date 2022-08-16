@@ -2,7 +2,7 @@
 layout: globalizedfinancepost
 title:  Off-Shore Finance
 category: globalizedfinance
-date:   2022-01-05
+date:   2022-05-06
 excerpt: It's all about regulatory arbitrage
 ---
 
