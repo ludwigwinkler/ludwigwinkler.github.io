@@ -1,4 +1,316 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-09-09T13:19:34+02:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Berlin Over The Years</title><link href="http://localhost:4000/blog/Berlin2022/" rel="alternate" type="text/html" title="Berlin Over The Years" /><published>2022-08-08T00:00:00+02:00</published><updated>2022-08-08T00:00:00+02:00</updated><id>http://localhost:4000/blog/Berlin2022</id><content type="html" xml:base="http://localhost:4000/blog/Berlin2022/">&lt;!-- ## Berlin Over The Years --&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-09-28T20:43:30+02:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Paris to Istanbul</title><link href="http://localhost:4000/blog/ParisIstanbul2022/" rel="alternate" type="text/html" title="Paris to Istanbul" /><published>2022-09-08T00:00:00+02:00</published><updated>2022-09-08T00:00:00+02:00</updated><id>http://localhost:4000/blog/ParisIstanbul2022</id><content type="html" xml:base="http://localhost:4000/blog/ParisIstanbul2022/">&lt;!-- ## Berlin Over The Years --&gt;
+&lt;style&gt;
+    .image-gallery {overflow: auto; margin-left: -1%!important;}
+    .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
+    .image-gallery li a {text-align: top; text-decoration: none!important; color: #777;}
+    .image-gallery li a span {display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; padding: 3px 0;}
+    .image-gallery li a img {width: 100%; height: 100%; display: flex; vertical-align: top;
+    }
+&lt;/style&gt;
+
+&lt;ul class=&quot;image-gallery&quot;&gt;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul001.jpg&quot; title=&quot;parisistanbul001&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/parisistanbul22/parisistanbul001.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;parisistanbul001&quot; title=&quot;parisistanbul001&quot; /&gt;&lt;span&gt;parisistanbul001&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul001.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/parisistanbul22/parisistanbul001.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul002.jpg&quot; title=&quot;parisistanbul002&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/parisistanbul22/parisistanbul002.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;parisistanbul002&quot; title=&quot;parisistanbul002&quot; /&gt;&lt;span&gt;parisistanbul002&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul002.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/parisistanbul22/parisistanbul002.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul003.jpg&quot; title=&quot;parisistanbul003&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/parisistanbul22/parisistanbul003.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;parisistanbul003&quot; title=&quot;parisistanbul003&quot; /&gt;&lt;span&gt;parisistanbul003&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul003.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/parisistanbul22/parisistanbul003.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul201.jpg&quot; title=&quot;parisistanbul201&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/parisistanbul22/parisistanbul201.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;parisistanbul201&quot; title=&quot;parisistanbul201&quot; /&gt;&lt;span&gt;parisistanbul201&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul201.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/parisistanbul22/parisistanbul201.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul202.jpg&quot; title=&quot;parisistanbul202&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/parisistanbul22/parisistanbul202.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;parisistanbul202&quot; title=&quot;parisistanbul202&quot; /&gt;&lt;span&gt;parisistanbul202&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul202.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/parisistanbul22/parisistanbul202.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul203.jpg&quot; title=&quot;parisistanbul203&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/parisistanbul22/parisistanbul203.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;parisistanbul203&quot; title=&quot;parisistanbul203&quot; /&gt;&lt;span&gt;parisistanbul203&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul203.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/parisistanbul22/parisistanbul203.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul209.jpg&quot; title=&quot;parisistanbul209&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/parisistanbul22/parisistanbul209.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;parisistanbul209&quot; title=&quot;parisistanbul209&quot; /&gt;&lt;span&gt;parisistanbul209&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul209.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/parisistanbul22/parisistanbul209.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul210.jpg&quot; title=&quot;parisistanbul210&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/parisistanbul22/parisistanbul210.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;parisistanbul210&quot; title=&quot;parisistanbul210&quot; /&gt;&lt;span&gt;parisistanbul210&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul210.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/parisistanbul22/parisistanbul210.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul219.jpg&quot; title=&quot;parisistanbul219&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/parisistanbul22/parisistanbul219.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;parisistanbul219&quot; title=&quot;parisistanbul219&quot; /&gt;&lt;span&gt;parisistanbul219&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul219.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/parisistanbul22/parisistanbul219.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul220.jpg&quot; title=&quot;parisistanbul220&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/parisistanbul22/parisistanbul220.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;parisistanbul220&quot; title=&quot;parisistanbul220&quot; /&gt;&lt;span&gt;parisistanbul220&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
+    &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul220.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/parisistanbul22/parisistanbul220.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+&lt;/ul&gt;</content><author><name></name></author><category term="photography" /><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/parisistanbul22/parisistanbul001.jpg" /></entry><entry><title type="html">Berlin Over The Years</title><link href="http://localhost:4000/blog/Berlin2022/" rel="alternate" type="text/html" title="Berlin Over The Years" /><published>2022-08-08T00:00:00+02:00</published><updated>2022-08-08T00:00:00+02:00</updated><id>http://localhost:4000/blog/Berlin2022</id><content type="html" xml:base="http://localhost:4000/blog/Berlin2022/">&lt;!-- ## Berlin Over The Years --&gt;
 &lt;style&gt;
     .image-gallery {overflow: auto; margin-left: -1%!important;}
     .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
@@ -280,6 +592,16 @@
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 &lt;/ul&gt;</content><author><name></name></author><category term="photography" /><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/berlin2022/berlin2201.jpg" /></entry><entry><title type="html">Portugal</title><link href="http://localhost:4000/blog/Portugal2022/" rel="alternate" type="text/html" title="Portugal" /><published>2022-08-01T00:00:00+02:00</published><updated>2022-08-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Portugal2022</id><content type="html" xml:base="http://localhost:4000/blog/Portugal2022/">&lt;!-- ## Berlin Over The Years --&gt;
 &lt;style&gt;
     .image-gallery {overflow: auto; margin-left: -1%!important;}
@@ -291,6 +613,16 @@
 &lt;/style&gt;
 
 &lt;ul class=&quot;image-gallery&quot;&gt;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -1578,6 +1910,16 @@ Dependencies such as the Isle of Guernsey, Isle of Jersey and other were vehemen
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 &lt;/ul&gt;</content><author><name></name></author><category term="photography" /><summary type="html">Beirut and the Levant</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/lebanon22/20220327-_DSC6539.jpg" /></entry><entry><title type="html">RSA Cryptography: The Math</title><link href="http://localhost:4000/blog/RSA/" rel="alternate" type="text/html" title="RSA Cryptography: &lt;br&gt; The Math" /><published>2021-10-04T00:00:00+02:00</published><updated>2021-10-04T00:00:00+02:00</updated><id>http://localhost:4000/blog/RSA</id><content type="html" xml:base="http://localhost:4000/blog/RSA/">&lt;head&gt;
 &lt;style&gt;
 .MathJax_Display, .MJXc-display, .MathJax_SVG_Display {
@@ -2124,6 +2466,16 @@ The receiver can then exponetiate the ‘decrypted’ hash again with the public
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 &lt;/ul&gt;</content><author><name></name></author><category term="photography" /><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/berlin2021/Berlin-15.jpg" /></entry><entry><title type="html">Spain</title><link href="http://localhost:4000/blog/Spain21/" rel="alternate" type="text/html" title="Spain" /><published>2021-07-01T00:00:00+02:00</published><updated>2021-07-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Spain21</id><content type="html" xml:base="http://localhost:4000/blog/Spain21/">&lt;style&gt;
     .image-gallery {overflow: auto; margin-left: -1%!important;}
     .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
@@ -2134,6 +2486,16 @@ The receiver can then exponetiate the ‘decrypted’ hash again with the public
 &lt;/style&gt;
 
 &lt;ul class=&quot;image-gallery&quot;&gt;
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -2425,300 +2787,4 @@ The receiver can then exponetiate the ‘decrypted’ hash again with the public
     &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2748.jpg&quot; title=&quot;DSC2748&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/spain21/DSC2748.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC2748&quot; title=&quot;DSC2748&quot; /&gt;&lt;span&gt;DSC2748&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/spain21/DSC2748.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/spain21/DSC2748.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
-&lt;/ul&gt;</content><author><name></name></author><category term="photography" /><summary type="html">Granada</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/spain21/DSC2103.jpg" /></entry><entry><title type="html">Greece</title><link href="http://localhost:4000/blog/Greece21/" rel="alternate" type="text/html" title="Greece" /><published>2021-06-01T00:00:00+02:00</published><updated>2021-06-01T00:00:00+02:00</updated><id>http://localhost:4000/blog/Greece21</id><content type="html" xml:base="http://localhost:4000/blog/Greece21/">&lt;style&gt;
-    .image-gallery {overflow: auto; margin-left: -1%!important;}
-    .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
-    .image-gallery li a {text-align: top; text-decoration: none!important; color: #777;}
-    .image-gallery li a span {display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; padding: 3px 0;}
-    .image-gallery li a img {width: 100%; height: 100%; display: flex; vertical-align: top;
-    }
-&lt;/style&gt;
-
-&lt;ul class=&quot;image-gallery&quot;&gt;
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC1780.jpg&quot; title=&quot;DSC1780&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/greece21/DSC1780.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC1780&quot; title=&quot;DSC1780&quot; /&gt;&lt;span&gt;DSC1780&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC1780.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/greece21/DSC1780.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC1783.jpg&quot; title=&quot;DSC1783&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/greece21/DSC1783.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC1783&quot; title=&quot;DSC1783&quot; /&gt;&lt;span&gt;DSC1783&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC1783.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/greece21/DSC1783.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC1784.jpg&quot; title=&quot;DSC1784&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/greece21/DSC1784.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC1784&quot; title=&quot;DSC1784&quot; /&gt;&lt;span&gt;DSC1784&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC1784.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/greece21/DSC1784.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC1888.jpg&quot; title=&quot;DSC1888&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/greece21/DSC1888.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC1888&quot; title=&quot;DSC1888&quot; /&gt;&lt;span&gt;DSC1888&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC1888.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/greece21/DSC1888.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC1918.jpg&quot; title=&quot;DSC1918&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/greece21/DSC1918.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC1918&quot; title=&quot;DSC1918&quot; /&gt;&lt;span&gt;DSC1918&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC1918.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/greece21/DSC1918.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC1924.jpg&quot; title=&quot;DSC1924&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/greece21/DSC1924.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC1924&quot; title=&quot;DSC1924&quot; /&gt;&lt;span&gt;DSC1924&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC1924.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/greece21/DSC1924.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC2009.jpg&quot; title=&quot;DSC2009&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/greece21/DSC2009.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC2009&quot; title=&quot;DSC2009&quot; /&gt;&lt;span&gt;DSC2009&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC2009.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/greece21/DSC2009.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC2023.jpg&quot; title=&quot;DSC2023&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/greece21/DSC2023.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC2023&quot; title=&quot;DSC2023&quot; /&gt;&lt;span&gt;DSC2023&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC2023.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/greece21/DSC2023.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC2127.jpg&quot; title=&quot;DSC2127&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/greece21/DSC2127.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;DSC2127&quot; title=&quot;DSC2127&quot; /&gt;&lt;span&gt;DSC2127&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/greece21/DSC2127.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/greece21/DSC2127.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-&lt;/ul&gt;</content><author><name></name></author><category term="photography" /><summary type="html">Thessaloniki &amp; Mount Olympus</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/greece21/DSC1783.jpg" /></entry></feed>
+&lt;/ul&gt;</content><author><name></name></author><category term="photography" /><summary type="html">Granada</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/spain21/DSC2103.jpg" /></entry></feed>
