@@ -134,6 +134,9 @@ The IMF estimates that the Lebanese commercial banks participating in the scheme
 
 Why rob a bank, if you can rob an entire country with it?
 
+For more detailed reading, look at [this](https://www.fdd.org/analysis/2020/08/04/crisis-in-lebanon/) sophisticated article on the whole issue.
+
+
 <!-- ### Case Study: Russia
 
 Seabaco
