@@ -128,6 +128,14 @@ But the central bank gave out significant higher interest with the round-trippin
 Since Lebanese pound and USD were equivalent with the unsustainable peg, this amounted to 11% USD denominated profits.
 Not bad, ey?
 
+Ultimately, the people of Lebanon got two raw ends of a deal with the corrupt sectarian political order.
+The government had to spend a lot of precious foreign currency on pegging the currency instead of devaluing it which was done with tax payer money.
+Secondly, after protests erupted in 2019 the banks closed for an unprecedented two weeks and upon reopening restricted the depositors access to their dollars.
+While the black market exchange had already devaluated to a 1/10th of the value, the banks maintained the official peg thus giving their customers significantly less Lebanese pounds for each dollar.
+This led to the coinage (pun intended) of the term 'lollar' with the abbreviation 'lol' as the Lebanese people could look at their Dollar statements but had no means of accessing them.
+Most Lebanese have given up on the notion that they will one day recover their valuable dollar deposits as they have probably been pilfered to buy the treasury's Eurobonds on which the government defaulted.
+Thus the Dollars are most likely gone forever.
+
 Given the nepotism and patronage in the entire sectarian economy this raises the strong case the commercial banks in Lebanon were obviously affiliated with the corrupt power brokers and used the central bank as printing press with USD denominated profits through the peg.
 This entire financial engineering scheme amounted to little else than short-term fixes, ensuring that enough foreign currencies where in the country while paying out enormous interest rates to the commercial banks offering USD from the diaspora.
 The IMF estimates that the Lebanese commercial banks participating in the scheme made off with 5 billion USD in profits at the expense of the tax payers with the central bank loosing up to 13 billion USD.
@@ -136,10 +144,105 @@ Why rob a bank, if you can rob an entire country with it?
 
 For more detailed reading, look at [this](https://www.fdd.org/analysis/2020/08/04/crisis-in-lebanon/) sophisticated article on the whole issue.
 
+### Kleptocracy in Russia
 
-<!-- ### Case Study: Russia
+The Russian kleptocratic system is more straight forward and relies more on direct theft than currency manipulation.
+But here, too, we have to first go back in time a bit to 1980's in the Soviet Union.
 
-Seabaco
-FIMECO
+#### A Bit of Historical Context
 
-sotchi road -->
+Supposedly everybody is familiar with 'Star Was', the saga of one messed up family that keeps an entire galaxy busy with its family issues.
+It's so popular that Mickey Mouse eventually decided to to buy up the IP to milk it harder than an Irish cow (which has a better life than the Disneyland employees).
+Ronald Reagan, being an actor originally who read the likes of Hayek and Friedman on between shoots while on set, pushed ahead with a 'Star Wars' missile defense program which would protect the US from Russian ballistic missiles.
+It was the final chapter of a tremendous arms race which had pitted the US and the Soviet Union against each other in the search for ever more advanced weapons.
+While eventually being massively overhyped, it did let the Russians realize that they could not win the arms race with their inefficient planned economy.
+After a bit more than half a century of planning their economies during which the Soviet Union had been able to pull of tremendous feats of engineering by concentrating labour, resources and a disregard for human necessities, the realization set in among the higher ups in the Soviet economy that they could not sustain the arms race on their own terms.
+
+Even during the darkest economic days of the Soviet Union, there had been a multitude of black market operations who provided the population with a few basic goods.
+These operations were mainly run by mostly ethnic outsiders such as Chechens, Jews and Kazakhs.
+Due to latent, political and sometimes rampant anti-semitism, Jews often had to struggle to survive in country in which the word 'progrom' had been gained its infamous meaning.
+Then criminal enterprises in a country which deemed criminality a capitalist disease and thus couldn't exist in the communist union became a very attractive alternative occupation.
+Even nowadays it remains interesting high the percentage of Jewish gangsters is in the criminal scene of Russia given its overall percentage such as Semion Mogilevich (long time on the FBI's most wanted list), Marat Balagula or Evsei Agron.
+
+The KGB as the most powerful security organization was tasked with controlling the black market but quickly realized that they could run their own protection rackets and make money out of the economic misery of their compatriots.
+To some extent, the existence of the black market was even timidly encouraged as it eased some of the economic hard ship by increasing the supply, even at inflated prices.
+This led to a political-security-criminal nexus in which KGB officers were quick to learn their first lessons in private enterprise.
+
+Then in the 1980's a motley crew of KGB officers and Russian economists began to think about a new hybrid system which could have developed similarly to the Chinese emergence out of communism into hybrid, controlled capitalism.
+During the Glasnost & Perestroika period, Gorbatshov became loosening the iron grip on the Soviet Unions political and economic system and urged other Warsaw Pact countries to follow suit.
+In 1991, the New Union Treaty was signed due to incessant and increasing unrest of the other Soviet republics which handed more control and independence from Moscow to the individual republics.
+Hardliners in the Soviet Unions Communist Party wanted to have none of that and staged a coup on August 19-22 1991.
+While the KGB detained Gorbachev at his holiday estate on the Black Sea, they did not arrest Boris Yeltsin who was able to confront the putschists and effectively ended it.
+In the wake of the coup the Communist Party of the Soviet Union was effectively dissolved by Yeltsin.
+
+#### The Looting Begins
+
+The East German Stasi had a dedicated department called 'Kommerzielle Koordinierung' for stealing western military and dual use technology as well as procure foreign currency reserves through smuggling.
+Initially it was organized under infamous Markus Wolf's espionage department before coming a force of itself, a sign of how important it became to East Germany and in extension to the Soviet Union.
+The KGB had developed a similar department for economic and financial logistics in foreign countries.
+A multitude of shell companies and banks had been founded and were controlled by the First Main Directorate if the KGB in charge of foreign intelligence.
+These shell companies were used to buy resources and material on the international markets as well as transfer money out of the country to causes which were deemed important to the Soviet Union or the KGB.
+
+More often than not though, the profits from the difference between Soviet and market prices were stashed away in the untold bank accounts and companies, control over which was held by the KGB.
+The funneling of black cash was done through 'friendly firms' which were shell companies or corrupted real companies through which untraceable money went on its way to its final use.
+These were front companies serving just as financial conduits to which other companies wishing to do business in or with the Soviet Union had to pay money for bogus or inflated prices.
+These 'friendly firms' could then disburse their enormous profits to fund for example the communist parties in Spain, the UK and France.
+Sometimes they were busy with smuggling technology to the Soviet Union or East Germany.
+
+Then there were 'friendly banks' in which the profits of barter deals was stashed.
+Often, these 'friendly firms' would buy natural resources, which the Soviet Union had a lot of, at extremely undervalued Soviet Prices and sold them on the world market for the spot price.
+Later during Putin's reign as trade chief under Anatoly Sobchack in St. Petersburg, a license was given out to export 13 tons of rare earth metals for 1/2000 th of the current world market price.
+The profit margin is directly there in the divisor and the part of the profits of such export deals were then stashed in accounts in 'friendly banks' such as Switzerland's Banco del Gottardo or secrecy jurisdictions like Panama, Hong Kong or the British Channel Islands.
+The sums could then be used as slush funds for communist party to destabilize the West or do whatever else they wanted to achieve, but more importantly, they were overseen by the KGB.
+
+As Gorbachev's reform sent the Soviet Union towards unruly chaos, his deputy signed off the intention in August of 1990 to create an 'invisible economy' managed by 'trusted custodians' with a network of shell companies to spirit away the wealth of the Communist Party.
+When the Communist Party was dissolved on live TV byt Boris Yeltsin on August 25 1991, this automatically raised the question what would happen to all the money, foreign currencies, property and investements nominally under their control.
+Less than three day after Yeltsin had averted the coup in Moscow with a fiery speech on a tank, Nikolay Kruchina, the Parties property department chief, fell out of his window.
+A month later, his predecessor Georgy Pavlov fell out of his window as well at the age of 81.
+Eleven days Dmitry Lissovolik, the American Section chief of Communist Party's International Department, which oversaw funding of international operations and was thus at the heart of the web of shell companies, fell to his death as well.
+All three men had deep insights into the property of the Communist Party which was officially valued at 9 billion USD but unofficially valued at many times over that.
+Thus when the new government came looking for the money that the Communist Party had amassed over the last 80 years, they found nothing.
+
+The final theft from the Russian people was done during the privatization of the hugely profitable sectors of the formerly Russian state economy creating the first generation of Russian oligarchs.
+The transition of 80 years of planned economy mired in inefficiency, political suppression and corruption towards a free market went as smoothly as one would think.
+The government under Boris Yeltsin soon fell on fiscally hard times and was in dire need for cash to keep the country running.
+
+Cooperatives, the Soviet version of private enterprises, were allowed in 1987.
+The first round of lopsided privatization occurred with the creation of cooperatives inside large state-owned enterprises which started selling off the huge stockpiles of strategic reservers.
+The directors started privatizing the state-owned enterprises from the inside out by controlling the cash flow in the large, still state-owned, enterprises.
+Back then, having a positive cash flow allowed you to achieve extraordinary gains in a massively inefficient organize economy.
+The government agreed to privatize parts of the Russian economy via a voucher system during a time of rampant hyper inflation when the general population had little nerve for long-term investing.
+Additionally, the vast majority of the population were unaccustomed to the idea of investing and owning shares after 80 years of communism.
+Since people were more interested in surviving, the company directors, the Russian mafia and other insiders with access to the cash flow were able to buy up large amounts of the share vouchers.
+
+A small addition to the cooperative legislation allowed the creation of banks which is where the real massive privatization of the Russian economy started.
+Among the first banks to obtain a foreign currency trading permission was the Menatep bank of Mikhail Khodorkovsky.
+Among other schemes, they used the official state exchange rate of 1 USD to 65 kopecks to change roubles into US dollars and buy private computers in the West.
+They then sold the computers in Russia with the value being close to 40 roubles for each dollar of import computers.
+You can probably see how you can print exponential money by using currency exchange arbitrage and cycling the roubles back through the official state sanctioned exchange rate into dollars.
+
+The original sin of the Russian market economy was the loans-for-shares program, also termed the second wave of privatization.
+For reasons unknown or inconvenient at the moment, Boris Yeltsin's government refrained from creating its own treasury and instead simply deposited the governments funds into the oligarchs privately owned banks.
+Without doing any work, they could suddenly invest money worth an entire countries budget into high yielding investements.
+
+But the government was still cash-strapped and needed money fast.
+The banks agreed to give the government private loans and as collateral took considerable minority stakes in large state-owned enterprises predominantly in the natural resources sector.
+When the government coulnd't repay the loans, they were allowed to auction off their stakes and pocket the proceeds.
+
+Yeltsin held the oligarchs politically hostage by receiving the loans before the election but ensuring the auction to sell them off would only occur after the election.
+Thus the oligarchs had a massive interest in ensuring Yeltsin reelection.
+To little suprise, the government couldn't in fact repay the loans and the oligarchs through their political clout were able to rig the auctions.
+
+Thus Potanin got Norilsk Nickel, the worlds largest nickel and platinum producer, with 1.2 billion USD of profits in 1995 for a mere 175 million USD in the same year.
+Khodorkovsky took control of 78 percent of Yukos valued at 5 billion USD for 310 million USD.
+Berezovsky took over Sibneft worth around 3 billion USD for just 100 million USD.
+After the auctions, Boris Berezovsky remarked that seven bankers now controlled 50 percent of the Russian economy.
+
+The KGB and the company directors tried to fight the take over but were only able to win two out of the numerous auctions.
+During one auction, the company directors closed down the closest airport and armed guards blocked the streets to prevent anybody but the company directors to bid in the auction.
+It was truly the 'Wild, Wild East'.
+Yet, while many of the first generation of oligarchs had been nurtured by the KGB itself, the securocrats quickly found themselves outwitted and outmaneuvered by the freshly minted billionaires.
+For an organization steeped in the sense of control over an entire country, this was a moment which was neither forgiven nor forgotten.
+
+The grudges and resentment created during that privatization in which the KGB lost economic control of the country created the vengeance with which the Putin government went after the first generation of oligarchs.
+It led to the rise of the 'siloviki', ex-security and military personel, which installed Vladimir Putin in power and viciously took over the country by expropriating the oligarchs or pummeling them into political submission.
