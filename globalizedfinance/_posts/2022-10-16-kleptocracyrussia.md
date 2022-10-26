@@ -183,3 +183,11 @@ On average, billionaires in the wide world own 1-2% of a countries wealth.
 In Russia, this number is turned upside down as 110 billionairs own 35% of Russias wealth.
 Furthermore, the amount of capital flight is so extreme, that 50% of all Russian wealth is reported to reside outside of Russia.
 Now this also points the finger indirectly squarely at the West, especially the US and the UK, in which huge sums of Russian money is invested in luxury real estate and miscellaneous luxury items.
+
+The judicial system is so steady in the grip of the kleptocracy that hundred of thousands of entrepreneurs are currently incarcerated in Russian prisons.
+They have been framed by competitors or just plain black mail racketeers who bribed the criminal system with police and judges.
+While the average salary has grown to 1650 USD per year, the median salary remains stagnant at 871 USD, even below Indias median salary of 1040 USD.
+This gap is explained with the extreme inequality relating to billionaires and millionaires who work hand in glove with the kleptocracy.
+
+A worrying trend is that 35% of workers under 30 have a government job which is paid for by extractive industries such as timber, oil, gas and minerals.
+This is the result of a fusion of a resource curse combined with a kleptocracy in which nobody is interested in building impartial institutions which serve the public and not a well connected kleptomaniac. 
