@@ -38,6 +38,7 @@ $$
 $$
 
 with the derivative of Wiener process $W_t$ admits two types of equations, called the forward Kolmogorov or Fokker-Planck equation and the backward Kolmogorov equation.
+The details of the derivation of the forward and backward Kolmogorov equations via the Kramers-Moyal expansion can be found in the previous blog post.
 For notational brevity we will use the term $\mu(x_t)$ for the drift and $\sigma(x_t)$ as the diffusion parameter and omit the explicit time dependency.
 
 The Kolmogorov forward equation is identical to the Fokker Planck equation and states
@@ -51,7 +52,7 @@ $$
 It describes the evolution of a probability distribution $p(x_t)$ forward in time.
 We can quite frankly think of it as, for example, a Normal distribution being slowly transformed into an arbitrary complex distribution according to the drift and diffusion parameters $\mu(x_t)$ and $\sigma(x_t)$.
 
-The Kolmogorov backward equation for $t \leq s$ is defined as
+The Kolmogorov backward equation for $ s \geq t$ is defined as
 
 $$
 \begin{align}
@@ -179,12 +180,12 @@ $$
 	& - \partial_{x_t} \left[ p(x_s| x_t) \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right] \\
 	= & \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) - p(x_s| x_t) \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right] \\
 	& + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right] \\
-	= & \partial_{x_t} \left[ p(x_s, x_t) \left( \mu(x_t) - \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) \right] \\
+	= & \partial_{x_t} \Big[ p(x_s, x_t) \underbrace{\left( \mu(x_t) - \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right)}_{\text{drift like in Fokker-Planck}} \Big] \\
 	& + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right]
 \end{align}
 $$
 
-which finally gives us a stochastic differential equation that we can solve backward in time:
+which finally gives us a stochastic differential equation analogous to the Fokker-Planck/forward Kolmogorov equation that we can solve backward in time:
 
 $$
 \begin{align}
@@ -192,6 +193,13 @@ d\tilde{X}_t = \left(\mu(x_t) - \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(
 \end{align}
 $$
 where $\tilde{W}_t$ is a Wiener process that flows backward in time.
+I did some abuse of notation here as suddenly the $t$ of the forward time was magically turned around.
+As we are actually going backward in time, we would actually have to subtract the differential $d\tilde{X}_t$ to obtain with the diffusion term staying the same:
+$$
+\begin{align}
+d\tilde{X}_t = \left(- \mu(x_t) + \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) dt + \sigma(x_t) d\tilde{W}_t
+\end{align}
+$$
 
 The common application of the reverse time stochastic differential equations is in generative modelling.
 In these applications the noise $\sigma(x_t)$ is made independent of the input such that we can pull it out of the partial derivative $\partial_{x_t}$.
@@ -199,8 +207,8 @@ By additionally using the log-derivative trick we obtain a term which is depende
 
 $$
 \begin{align}
-d\tilde{X}_t &= \left(\mu(x_t) - \sigma_t^2 \frac{1}{p(x_t)} \partial_{x_t} \ p(x_t) \right) dt + \sigma_t d\tilde{W}_t \\
-&= \Big(\mu(x_t) - \sigma_t^2 \underbrace{\partial_{x_t} \log p(x_t)}_{\text{ML Model}} \Big) dt + \sigma_t d\tilde{W}_t \\
+d\tilde{X}_t &= \left( - \mu(x_t) + \sigma_t^2 \frac{1}{p(x_t)} \partial_{x_t} \ p(x_t) \right) dt + \sigma_t d\tilde{W}_t \\
+&= \Big( - \mu(x_t) + \sigma_t^2 \underbrace{\partial_{x_t} \log p(x_t)}_{\text{ML Model}} \Big) dt + \sigma_t d\tilde{W}_t \\
 \end{align}
 $$
 
