@@ -110,9 +110,7 @@ $$
 	\partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] & = \partial_{x_t}^2 \sigma^2(x_t) \ p(x_t) + 2 \ \partial_{x_t} \sigma^2(x_t) \ \partial_{x_t} p(x_t) + \sigma^2(x_t) \ \partial_{x_t}^2 p(x_t)
 \end{align}
 $$
-
-Plugging in the derivatives of the probability distributions we obtain
-
+Substituting the derivatives of the probability distributions accordingly we obtain
 $$
 \begin{align}
 	- \partial_t p(x_s, x_t)
@@ -136,40 +134,43 @@ $$
 	= & \underbrace{\mu(x_t) \ \partial_{x_t} p(x_s, x_t) + p(x_s, x_t) \partial_{x_t} \mu(x_t)}_{\text{product rule}} \\
 	& + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
 	= & \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
-	& + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right]
+	& + \underbrace{\frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t)}_{(1)} - \underbrace{\frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right]}_{(2)}
 \end{align} 
 $$
 
-We can now see that the drift term already fulfills the requirements of the forward Kolmogorov equation.
-What we're left with and which we have to take care of are the two terms with the diffusion terms $\sigma^2(x_t)$.
-The goal is to fuse the two terms into one which resembles the diffusion term in the forward Kolmogorov equation.
-Just to reiterate it one more time, if we can massage the partial differential equation into the functional form of the Kolmogorov forward equation, we have a one-to-one correspondence to a stochastic differential equation that can be solved backward in time.
+% We can now see that the drift term already fulfills the requirements of the forward Kolmogorov equation.
+% What we're left with and which we have to take care of are the two terms with the diffusion terms $\sigma^2(x_t)$.
+% The goal is to fuse the two terms into one which resembles the diffusion term in the forward Kolmogorov equation.
+% Just to reiterate it one more time, if we can massage the partial differential equation into the functional form of the Kolmogorov forward equation, we have a one-to-one correspondence to a stochastic differential equation that can be solved backward in time.
 
-Following the gracious help from Brian Anderson himself in an email from down under, we can simplify the terms with $\sigma^2(x_t)$ by expanding the last term.
-The important step, that Brian pointed out to me, is to factorize the joint distribution $p(x_s, x_t) = p(x_s| x_t) p(x_t)$ and invoke the product rule to match the terms,
+% Following the gracious help from Brian Anderson himself in an email from down under, we can simplify the terms with $\sigma^2(x_t)$ by expanding the last term.
+% The important step, that Brian pointed out to me, is to factorize the joint distribution $p(x_s, x_t) = p(x_s| x_t) p(x_t)$ and invoke the product rule to match the terms,
+
+In order to transform the partial differential equation above into a form from which we can deduce an equivalent stochastic differential equation, we match the terms of the second order derivatives with the following identity,
 
 $$
 \begin{align}
 	& \frac{1}{2} \partial_{x_t}^2 \left[ p(x_s, x_t) \sigma^2(x_t) \right] \\
 	= & \frac{1}{2} \partial_{x_t}^2 \left[ p(x_s | x_t) p(x_t) \sigma^2(x_t) \right] \\
 	= & \frac{1}{2} \partial_{x_t}^2 p(x_s | x_t) p(x_t) \sigma^2(x_t) + \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right] \partial_{x_t} p(x_s| x_t)
-	 + \frac{1}{2} \partial_{x_t}^2 \left[ p(x_t) \sigma^2(x_t) \right] p(x_s| x_t)
+	 + \frac{1}{2} \partial_{x_t}^2 \left[ p(x_t) \sigma^2(x_t) \right] p(x_s| x_t) \\
+	= & \underbrace{\frac{1}{2} \sigma^2(x_t) \partial_{x_t}^2 p(x_s | x_t) p(x_t)}_{(1)} + \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right] \partial_{x_t} p(x_s| x_t)
+	 + \underbrace{\frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ p(x_t) \sigma^2(x_t) \right]}_{(2)}
 \end{align}
 $$
 
+by observing that the terms (1) and (2) occur in both equations.
 We can see from the expansion of the derivative above that we can combine the terms in our derivation if we expand the "center term".
 Furthermore we can employ the identity $-\frac{1}{2} X = -X + \frac{1}{2} X$ to obtain
-
 $$
 \begin{align}
 	-\partial_t p(x_s, x_t)
 	= & \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
 	& + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
 	= & \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
-	& + \frac{1}{2} \ \sigma^2(x_t) \ p(x_t) \ \partial_{x_t}^2 p(x_s | x_t) - \underbrace{ \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] }_{-\frac{1}{2} X = -X + \frac{1}{2} X} \\
-	& \pm \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right] \\
-	= & \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
-	& \textcolor{red}{+ \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t)} \\
+	& + \frac{1}{2} \ \sigma^2(x_t) \ p(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \underbrace{ - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] }_{-\frac{1}{2} X = -X + \frac{1}{2} X} \\
+	& \underbrace{\pm \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right]}_{\text{complete the square}} \\
+	= & \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \textcolor{red}{+ \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t)} \\
 	& \underbrace{ - p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] + \textcolor{red}{\frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right]} }_{-\frac{1}{2} X = -X + \frac{1}{2} X} \\
 	& \textcolor{red}{\pm \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right]} \\
 	= & \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] + \textcolor{red}{\frac{1}{2} \partial_{x_t}^2 \left[ p( x_s | x_t) p(x_t) \sigma^2(x_t) \right]} \\
@@ -177,47 +178,54 @@ $$
 		- \partial_{x_t} \left[ p(x_s| x_t) \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right] \text{ (product rule) }
 		} \\
 	= & \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right] \\
-	& - \partial_{x_t} \left[ p(x_s| x_t) \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right] \\
+	& - \partial_{x_t} \left[ p(x_s| x_t) \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right].
+\end{align}
+$$
+What remains to be done is to combine the joint probability and the conditional probability in the first order derivative terms to combine them,
+$$
+\begin{align}
+    -\partial_t p(x_s, x_t)
 	= & \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) - p(x_s| x_t) \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right] \\
 	& + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right] \\
-	= & \partial_{x_t} \Big[ p(x_s, x_t) \underbrace{\left( \mu(x_t) - \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right)}_{\text{drift like in Fokker-Planck}} \Big] \\
+	= & \partial_{x_t} \Big[ p(x_s, x_t) \left( \mu(x_t) - \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) \Big] \\
+	& + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right] \\
+	= & - \partial_{x_t} \Big[ p(x_s, x_t) \left( -\mu(x_t) + \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) \Big] \\
 	& + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right]
+\end{align}
+$$
+the result of which is in the form of a Kolmogorov forward equation, although using the joint probability distribution $p(x_s, x_t)$.
+For the time ordering of $t \leq s$, we can observe that the term $-\partial_t p(x_s, x_t)$ describes the change of the probability distribution as we move backward in time.
+In accordance with Leibniz' rule we can marginalize over $x_s$ without interferring with the partial derivative $\partial_t$, to obtain
+$$
+\begin{align}
+    -\partial_t p(x_t) 
+    = & -\partial_{x_t} \left[ p(x_t) \left( -\mu(x_t) + \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) \right] \\
+	& + \frac{1}{2} \partial_{x_t}^2 \left[ p(x_t) \sigma^2(x_t) \right] \\
+\end{align}
+$$
+
+and introduce the time reversal $\tau \doteq 1 - t$ which, with respect to the integration with respect to the flow of time, yields
+$$
+\begin{align}
+    - \partial_t p(x_t)
+    = & \partial_\tau p(x_{1-\tau}) \\
+    = & -\partial_{x_{1-\tau}} \left[ p(x_{1-\tau}) \left( -\mu(x_{1-\tau}) + \frac{1}{p(x_{1-\tau})} \partial_{x_{1-\tau}} \left[ \sigma^2(x_{1-\tau}) \ p(x_{1-\tau}) \right] \right) \right] \\
+	& + \frac{1}{2} \partial_{x_{1-\tau}}^2 \left[ p(x_{1-\tau}) \sigma^2(x_{1-\tau}) \right]
 \end{align}
 $$
 
 which finally gives us a stochastic differential equation analogous to the Fokker-Planck/forward Kolmogorov equation that we can solve backward in time:
-
-$$
 \begin{align}
-d\tilde{X}_t = \left(\mu(x_t) - \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) dt + \sigma(x_t) d\tilde{W}_t
+dX_\tau = \left(-\mu(x_{1-\tau}) + \frac{1}{p(x_{1-\tau})} \partial_{x_{1-\tau}} \left[ \sigma^2(x_{1-\tau}) \ p(x_{1-\tau}) \right] \right) d\tau + \sigma(x_{1-\tau}) dW_\tau
 \end{align}
-$$
 where $\tilde{W}_t$ is a Wiener process that flows backward in time.
-I did some abuse of notation here as suddenly the $t$ of the forward time was magically turned around.
-As we are actually going backward in time, we would actually have to subtract the differential $d\tilde{X}_t$ to obtain with the diffusion term staying the same:
-$$
-\begin{align}
-d\tilde{X}_t = \left(- \mu(x_t) + \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) dt + \sigma(x_t) d\tilde{W}_t
-\end{align}
-$$
 
-The common application of the reverse time stochastic differential equations is in generative modelling.
-In these applications the noise $\sigma(x_t)$ is made independent of the input such that we can pull it out of the partial derivative $\partial_{x_t}$.
-By additionally using the log-derivative trick we obtain a term which is dependent on the score
+By keeping the $\sigma^2(x_t)$ constant and independent of $x_t$ and applying the log-derivative trick, the drift simplifies to
 
 $$
 \begin{align}
-d\tilde{X}_t &= \left( - \mu(x_t) + \sigma_t^2 \frac{1}{p(x_t)} \partial_{x_t} \ p(x_t) \right) dt + \sigma_t d\tilde{W}_t \\
-&= \Big( - \mu(x_t) + \sigma_t^2 \underbrace{\partial_{x_t} \log p(x_t)}_{\text{ML Model}} \Big) dt + \sigma_t d\tilde{W}_t \\
+    dX_\tau & = \Big(-\mu(x_{1-\tau}) + \frac{1}{p(x_{1-\tau})} \partial_{x_{1-\tau}} \big[ \overbrace{\sigma^2(x_{1-\tau})}^{=\sigma^2} \ p(x_{1-\tau}) \big] \Big) d\tau + \sigma(x_{1-\tau}) dW_\tau \\
+    & =\left(-\mu(x_{1-\tau}) + \frac{\sigma^2}{p(x_{1-\tau})} \partial_{x_{1-\tau}} \ p(x_{1-\tau}) \right) d\tau + \sigma(x_{1-\tau}) dW_\tau \\
+    &= \Big(-\mu(x_{1-\tau}) + \sigma^2 \partial_{x_{1-\tau}} \ \log p(x_{1-\tau}) \Big) dt + \sigma(x_{1-\tau}) d\tilde{W}_\tau
 \end{align}
 $$
-
-Score based generative modelling proceeds by defining a, what I creatively call, 'noising' process which takes data and turns it into garbage by iteratively adding noise along an analytically known SDE.
-The data dependent drift $\mu(x_t) = \alpha_t x_0$ with $\alpha_s > \alpha_t, s<t$ and the data independent diffusion $\sigma_t$ with $\sigma_s < \sigma_t, s< t$ are known beforehand.
-In essence, the drift reduces the data $x_0$ slowly to zero while we heap more and noise on the data via the diffusion term.
-More importantly, by defining an analytical SDE we can 'jump' to any point in time and evaluate how noisy the data $x_t$ has become without having to solve SDE explicitely.
-By defining a schedule for both $\alpha_t$ and $\sigma_t$ we can evaluate the 'noisiness' sort of point-wise in time.
-
-The remarkable reverse time stochastic differential equation then tells us that all we have to do is to cancel out the drift which turns our data into noise.
-If we now take some noise and iteratively subtract the $\sigma_t^2 \partial_{x_t} \log p(x_t)$ from it we are reducing integration step by integration step (remember it's a SDE) the noise and recover the true data.
-Voila, you have generative model that turns noise into data.
