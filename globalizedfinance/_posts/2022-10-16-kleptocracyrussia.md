@@ -1,6 +1,6 @@
 ---
 layout: globalizedfinancepost
-title:  Kleptocracy alongside Vodka
+title:  Kleptocracy with Vodka & Borscht
 category: globalizedfinance
 date:   2022-10-16
 excerpt: What was ours is now mine, ex-comrade
