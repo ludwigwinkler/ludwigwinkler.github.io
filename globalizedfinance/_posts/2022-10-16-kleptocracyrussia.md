@@ -3,7 +3,7 @@ layout: globalizedfinancepost
 title:  Kleptocracy alongside Vodka
 category: globalizedfinance
 date:   2022-10-16
-excerpt: What's ours is mine, ex-comrade
+excerpt: What was ours is now mine, ex-comrade
 ---
 
 ### Kleptocracy in Russia

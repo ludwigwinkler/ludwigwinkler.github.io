@@ -69,8 +69,8 @@ Unfortunately there is no corresponding stochastic differential equation with a 
 
 This is where the remarkable result from Anderson (1982) comes into play.
 
-The granddaddy of all probabilistic equations, Bayes theorem, tells us that a joint distribution can be factorized by conditioning: $p(x_s , x_t) = p(x_s|x_t) p(x_t)$ with the time ordering $t \leq s$.
-Why do we invoke the joint probability $p(x_s, x_t)$ we might ask?
+The granddaddy of all probabilistic equations, Bayes theorem, tells us that a joint distribution can be factorized by conditioning: $$p(x_s , x_t) = p(x_s|x_t) p(x_t)$$ with the time ordering $t \leq s$.
+Why do we invoke the joint probability $$p(x_s, x_t)$$ we might ask?
 What we're trying to achieve is to derive a stochastic differential equation that tells us from what values of $x_t$ we can arrive at $x_s$.
 We can ask ourselves what the partial differential equation would be that describes the evolution of the joint distribution over time.
 First multiplying both sides of Bayes theorem with minus one and taking the derivative with respect to time $t$, we obtain via the product rule
@@ -138,14 +138,6 @@ $$
 \end{align} 
 $$
 
-% We can now see that the drift term already fulfills the requirements of the forward Kolmogorov equation.
-% What we're left with and which we have to take care of are the two terms with the diffusion terms $\sigma^2(x_t)$.
-% The goal is to fuse the two terms into one which resembles the diffusion term in the forward Kolmogorov equation.
-% Just to reiterate it one more time, if we can massage the partial differential equation into the functional form of the Kolmogorov forward equation, we have a one-to-one correspondence to a stochastic differential equation that can be solved backward in time.
-
-% Following the gracious help from Brian Anderson himself in an email from down under, we can simplify the terms with $\sigma^2(x_t)$ by expanding the last term.
-% The important step, that Brian pointed out to me, is to factorize the joint distribution $p(x_s, x_t) = p(x_s| x_t) p(x_t)$ and invoke the product rule to match the terms,
-
 In order to transform the partial differential equation above into a form from which we can deduce an equivalent stochastic differential equation, we match the terms of the second order derivatives with the following identity,
 
 $$
@@ -161,7 +153,7 @@ $$
 
 by observing that the terms (1) and (2) occur in both equations.
 We can see from the expansion of the derivative above that we can combine the terms in our derivation if we expand the "center term".
-Furthermore we can employ the identity $-\frac{1}{2} X = -X + \frac{1}{2} X$ to obtain
+Furthermore we can employ the identity $$-\frac{1}{2} X = -X + \frac{1}{2} X$$ to obtain
 $$
 \begin{align}
 	-\partial_t p(x_s, x_t)
@@ -181,6 +173,7 @@ $$
 	& - \partial_{x_t} \left[ p(x_s| x_t) \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right].
 \end{align}
 $$
+
 What remains to be done is to combine the joint probability and the conditional probability in the first order derivative terms to combine them,
 $$
 \begin{align}
@@ -194,7 +187,7 @@ $$
 \end{align}
 $$
 the result of which is in the form of a Kolmogorov forward equation, although using the joint probability distribution $p(x_s, x_t)$.
-For the time ordering of $t \leq s$, we can observe that the term $-\partial_t p(x_s, x_t)$ describes the change of the probability distribution as we move backward in time.
+For the time ordering of $t \leq s$, we can observe that the term $$-\partial_t p(x_s, x_t)$$ describes the change of the probability distribution as we move backward in time.
 In accordance with Leibniz' rule we can marginalize over $x_s$ without interferring with the partial derivative $\partial_t$, to obtain
 $$
 \begin{align}
@@ -215,10 +208,12 @@ $$
 $$
 
 which finally gives us a stochastic differential equation analogous to the Fokker-Planck/forward Kolmogorov equation that we can solve backward in time:
+$$
 \begin{align}
 dX_\tau = \left(-\mu(x_{1-\tau}) + \frac{1}{p(x_{1-\tau})} \partial_{x_{1-\tau}} \left[ \sigma^2(x_{1-\tau}) \ p(x_{1-\tau}) \right] \right) d\tau + \sigma(x_{1-\tau}) dW_\tau
 \end{align}
-where $\tilde{W}_t$ is a Wiener process that flows backward in time.
+$$
+where $$\tilde{W}_t$$ is a Wiener process that flows backward in time.
 
 By keeping the $\sigma^2(x_t)$ constant and independent of $x_t$ and applying the log-derivative trick, the drift simplifies to
 
