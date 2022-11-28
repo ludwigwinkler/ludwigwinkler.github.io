@@ -46,10 +46,24 @@ The real estate company first laundered its capital through multiple layers of o
 It's basically all about appearances.
 
 I'll outline some of the more common money laundering schemes.
+It's important to note that dubious origin of criminally obtained money can in theory always be traced back.
+But the money launderers put in place so many layering steps that when law enforcement turns around the 20th corner and still has an apparently legit money stream, they'll eventually give up.
 
-You can have fake trials in which both parties are in on the jig and one party pays reimbursement to create a fake story.
+You can have fake trials in which both parties are in on the jig and one party pays reimbursement with the illegal cash to create a fake story.
+Then you simply take the cash and pay the other side but since you control both the plaintiff and the defendant you simply create a receipt.
+If the police comes knocking, you can present the receipt of the indemnities. 
 
 Exaggerated or even fake invoices which can include non-existent services.
+Consulting on intellectual property is a favourite scheme, as the intellectual property is hard to value.
+Since the worth of intellectual property is more symbolic or even intangible you can pay whatever you want for consultation on that.
+An interesting scheme was concocted by organized crime with respect to intellectual property.
+Organized crime supported musicians and for example ordered their drug dealers to accept purchases of the musicians work in exchange for illicit goods.
+Instead of paying for drugs, they paid for intellectual property of the artist and thus the organized crime group had a steady inflow of money from music sales, which in itself is a legit business.
+This was expanded to bot farms in the era of music streaming.
+Bot farm are controlled out of the dark part of the internet anyway and were paid with bitcoins for example.
+The bot farms in turn listened repeatedly to a musicians music who was under contract with an organized crime group.
+Thus Spotify paid the artist for the increased number of streams and the OC group got their cut.
+
 
 Alternatively Mr. Criminal can buy real estate way below the market value with the difference to the full price being paid in illegal cash. 
 Afterwards, the property is quickly sold for the appropriate price on the open market.
