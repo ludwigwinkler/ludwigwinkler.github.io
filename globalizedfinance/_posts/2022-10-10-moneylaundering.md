@@ -2,7 +2,7 @@
 layout: globalizedfinancepost
 title:  Money Laundering
 category: globalizedfinance
-date:   2022-11-19
+date:   2022-11-26
 excerpt: Greenbacks, Soap and Hopefully No Questions
 ---
 ### Why should you put your bills in the laundry machine?
