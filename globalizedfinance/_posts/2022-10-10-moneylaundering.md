@@ -8,12 +8,12 @@ excerpt: Greenbacks, Soap and Hopefully No Questions
 ### Why should you put your bills in the laundry machine?
 
 Obviously, the spread of Covid-19 has made us all very sensitive to germs and viruses.
-Cash changes hand a lot of times and thus is the perfect medium to transmit diseases.
+Cash changes hands a lot of times and thus is the perfect medium to transmit diseases.
 ... yeah, I'm actually talking about the art of financial subterfuge obscuring the illicit origin of illegally obtained money.
 
 Apart from their ideologically motivated peers, criminals are driven by one thing: profit. 
 Greed is the principal goal, but people that require money laundering skills don't sell stolen chewing gum on the school yard.
-Instead, they have millions or even billions originating from illegal sources which need to be moved into accessible bank accounts of the criminals.
+Instead, they have millions or even billions originating from illegal sources which need to be moved into official, legitimate and unsuspecting bank accounts of the criminals.
 Thus the money needs to be able to be handled just like any other legitimate money.
 
 The problem is, as soon as a sovereign (and hopefully clean) police force would ascertain that an investment was done with money originating from illicit sources, they are most of the time allowed to seize the investments.
@@ -29,9 +29,9 @@ Drug cartels, terrorists, mobsters or the mafia, human traffickers, illegal arms
 In principal, money laundering consists of three distinct stages: placement, layering, and integration.
 Personally, I use the terms entry, obfuscation, and integration which are more vivid terms in my opinion.
 
-The first step is to place the money at the entrance points of the modern financial system.
+The first step is to place the money at the entry points of the modern financial system.
 If you got cash, you get 'smurfs' which repeatedly deposit money amounts just below the reporting line.
-Usually, deposits below 10.000 USD don't have to be reported in the US, which led to bank tellers close to the Mexican border on the US side receiving up to 400.000 USD of deposits per week in cartel-linked accounts parceled out in 10k portions and brought by local Americans to reduce suspicion.
+Usually, deposits below 10.000 USD don't have to be reported in the US, which led to bank tellers close to the Mexican border on the US side receiving up to 400.000 USD of deposits per week in cartel-linked accounts parceled out in 10k portions and deposited by local Americans to reduce suspicion.
 
 The second step is to obfuscate the origin of the cash.
 You start moving money through different accounts or start to create round-about invoices with complicit companies.
@@ -49,25 +49,24 @@ I'll outline some of the more common money laundering schemes.
 It's important to note that dubious origin of criminally obtained money can in theory always be traced back.
 But the money launderers put in place so many layering steps that when law enforcement turns around the 20th corner and still has an apparently legit money stream, they'll eventually give up.
 
-You can have fake trials in which both parties are in on the jig and one party pays reimbursement with the illegal cash to create a fake story.
-Then you simply take the cash and pay the other side but since you control both the plaintiff and the defendant you simply create a receipt.
+You can have fake trials in which both parties are in on the jig and ultimately under your control.
+The defendant uses your illicit cash to pay the plaintiff the reimbursements.
+But, lo and behold, both the plaintiff and the defendant are just conduits with the damages paid creating a clean income receipt.
 If the police comes knocking, you can present the receipt of the indemnities. 
 
 Exaggerated or even fake invoices which can include non-existent services.
 Consulting on intellectual property is a favourite scheme, as the intellectual property is hard to value.
-Since the worth of intellectual property is more symbolic or even intangible you can pay whatever you want for consultation on that.
-An interesting scheme was concocted by organized crime with respect to intellectual property.
-Organized crime supported musicians and for example ordered their drug dealers to accept purchases of the musicians work in exchange for illicit goods.
+Since the worth of intellectual property is more symbolic or even intangible you can pay whatever you want for consultation.
+I'll outline an interesting scheme that was concocted to launder money in Germany using the sales of gangster rap music.
+Organized crime supported musicians and ordered their drug dealers, respectively and more formal vendors of miscellaneous illegal wares, to accept purchases of the musicians work in exchange for illicit goods.
 Instead of paying for drugs, they paid for intellectual property of the artist and thus the organized crime group had a steady inflow of money from music sales, which in itself is a legit business.
-This was expanded to bot farms in the era of music streaming.
-Bot farm are controlled out of the dark part of the internet anyway and were paid with bitcoins for example.
-The bot farms in turn listened repeatedly to a musicians music who was under contract with an organized crime group.
+This was expanded to bot farms in the era of music streaming with bot farms which are controlled out of the dark part of the internet anyway.
+The bot farms listened repeatedly to a musicians music who was under contract with an organized crime group.
 Thus Spotify paid the artist for the increased number of streams and the OC group got their cut.
 
-
-Alternatively Mr. Criminal can buy real estate way below the market value with the difference to the full price being paid in illegal cash. 
+Alternatively Mr. Criminal can buy real estate way below the market value with the difference to the full market price price being paid in illegal cash. 
 Afterwards, the property is quickly sold for the appropriate price on the open market.
-The cash is illegal and is given to the original owner and the money launderer creates a bogus profit.
+The illicit cash is given to the original owner and the money launderer creates a bogus profit via the sale at market level.
 
 You can convert illegal cash to casino jetons and a little bit is used for gambling.
 Since gambling is intrinsically stochastic nobody can really trace back when you lost or when you won more money.
@@ -82,16 +81,18 @@ Auctions of hard-to-value objects have also become a popular method and especial
 You basically let two fake personas outbid each other with your own illegal cash.
 The object with little intrinsic value is offered by you and the bidders get your illegal cash.
 The sale creates a fake yet clean receipt.
+Funnily enough, auction houses are exempt from money laundering prevention laws and you can often see people on phones bidding millions for an anonymous bidder watching it all from his or her sofa.
 
 ### Offshore Jurisdictions and Banking
 
-The principal safeguard against money laundering is the stringent enforcement of Know-Your-Customer (KYC) laws.
+The principal safeguard against money laundering is the stringent enforcement of Know-Your-Customer (KYC) and Anti Money Laundering (AML) laws.
 Ideally, the entry points to the financial system should have gatekeepers who check for potentially illegal sources of money.
-Obviously, there is a conflict of interest since a lot of money means a lot of business for banks a similar institutions as was shown by HSBC scandal with the cartel money or the Raul Salinas story.
+Obviously, there is a conflict of interest since a lot of money means a lot of business for banks as was shown by HSBC scandal with the cartel money or the Raul Salinas story.
 
 Fortunately, a whole industry sector has blossomed between the beaches of the Caribbean, the mountains of the Alps, and in general small insignificant countries selling the legislative sovereignty to the highest bidder: the offshore finance industry.
+It's basically a sunny places for shady people.
 
-Offshore finance centers implement effectively no regulation of the financial industry within their borders and often similarly implement convenient financial secrecy laws by allowing trusts, straight-out banking secrecy limiting the information of who actually owns a bank account, nominee directors of shell companies hiding the true owner of a company and the like.
+Offshore finance centers implement effectively no regulation of the financial industry within their borders and similarly implement convenient financial secrecy laws by allowing trusts, straight-out banking secrecy limiting the information of who actually owns a bank account, nominee directors of shell companies hiding the true owner of a company, and the like.
 
 By using the intricacy of modern tax codes, you can create a multitude of opaque companies which move money between them for no apparent reason.
 For law enforcement, proving that the money being moved around is originally from illicit conduct is close to impossible.
@@ -109,26 +110,27 @@ Alternatively, you can also buy options in the derivative market for which you p
 These options have intrinsic value and can be sold, such that the dirty money can be used for the premium payments and the option itself can be sold for a higher value.
 
 Or you could use looped swap contracts across borders.
-Interest rate swaps make one party pay the London Interbank Offered Rate (the LIBOR, itself subject to major manipulations at the cost of millions of people as portrayed in 'The Spider Network' by David Enrich) while the other party pays a fixed rate and thus they 'swap' interest rates.
+For example, interest rate swaps make one party pay the London Interbank Offered Rate (the LIBOR, itself subject to major manipulations at the cost of millions of people as portrayed in 'The Spider Network' by David Enrich) while the other party pays a fixed rate and thus they 'swap' interest rates.
 If you now chain these swaps in a circle, you can easily move money with a valid, seemingly clean contract from Moscow to London and then to Moscow back again.
 Of course, the round-tripping is not obfuscated but each party seemingly gets a clean origin of money.
 
 Once the money has been safely moved into offshore financial centers it can then be used to invest.
-The irony of many international active criminals is that they move their wealth out of their often unstable countries and park it in luxury real estate in London, Paris, and New York.
-There has been a rise in super tall skyscrapers in New York City which is commonly referred to as 'Billionaires Row'.
+The irony of many international active criminals is that they move their wealth out of their often unstable countries and park it in luxury real estate in judicially stable places like London, Paris, and New York.
+There has been a rise in super tall skyscrapers in New York City which is commonly referred to as 'Billionaire's Row'.
 But while these apartments offer amazing views of the City high above the problems of ordinary people, the ownership is more than opaque.
 A majority of the luxury real estate is bought by shell companies and they are often occupied only a couple of days of the year.
-Their main purpose is that since they were legitimately bought, and the front companies in secrecy jurisdictions buying them being nearly impossible to crack open, it is next to impossible to prove that they had been bought with money obtained through illegal means.
+Since they were legitimately bought, and the front companies in secrecy jurisdictions buying them being nearly impossible to crack open, it is next to impossible to prove that they had been bought with money obtained through illegal means.
 
 Especially in the case of the US, there is an interesting historical anecdote to tell.
 Before 9/11, not a lot of people were interested in anti-money-laundering (AML) legislation.
-But once the terrorist attacks occurred, everybody suddenly got super interested in how it was possible that a terrorist organization was able to pay for the flight school in the US of the terrorist that hijacked the planes and steered them into their targets.
+But once the terrorist attacks on 9/11 occurred, everybody suddenly became very interested in how it was possible that a terrorist organization was able to pay for the flight school of the terrorist hijackers.
+Somehow money was funneled half-way around the world out of Aghanistan into the US and used to pay for hotels, rental cars, flight schools and flights in and out of the US.
 It's not exactly that Al-Qaida was selling hot dogs in front of the Metropolitan Museum in Central Park.
-Thus stringent anti-money-laundering laws were passed targeting every possible nook and cranny in which illegal money could be parked.
-Included were luxury real estate and luxury products such that prior to a transaction in these industries Know-Your-Customer (KYC) procedures and other AML laws had to be conducted.
+Thus stringent AML laws were passed targeting every possible nook and cranny in which illegal money could be parked.
+Included were luxury real estate and luxury products such that prior to a transaction in these industries KYC procedures and other AML laws had to be conducted.
 
 But a short while later, precisely these luxury industries were exempt from KYC and AML procedures.
-Lawmakers were lobbied by the industries to exempt them such that they could continue to sell luxury real estate and products to customers they knew little about.
+The industries lobbied lawmakers to exempt them such that they could continue to sell luxury real estate and products to customers they knew little about.
 To be fair, at a certain wealth you might want peace of mind and privacy and not see your latest purchase plastered over the morning edition of a tabloid.
 Nevertheless, it is a peculiar coincidence precisely because luxury items give you the ability to store large amounts of money in a small number of objects.
 Semi-fancy art paintings for 25 Million USD in an auction, a super expensive apartment in the UK or a gold-plated Lamborghini, none of these transactions require a stringent KYC procedure now anymore.
