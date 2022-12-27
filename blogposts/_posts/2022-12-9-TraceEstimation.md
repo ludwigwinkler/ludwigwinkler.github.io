@@ -34,6 +34,12 @@ $$
 $$
 which sums over the diagonal terms of the matrix $A$. Plain and simple.
 
+### Hutchinson's Stochastic Trace Estimation
+
+By definition we are only interested in the diagonal terms of a matrix when computing the trace of it.
+Quite literally, we're only adding up the diagonal terms.
+But in cases where the matrix is computationally expensive to compute we might want to approximate it.
+
 We can approximate the exact trace with a stochastic approximation.
 We therefore sample from $Z \in \mathbb{R}^D$, the mean of which is a zero vector and the covariance matrix is a identity matrix, i.e. $\Sigma[Z] = I$.
 More precisely we determine the covariance matrix as
@@ -52,7 +58,7 @@ $$
 \begin{align}
     \text{Tr}[A]
     &= \text{Tr}[I A] \\
-    &= \text{Tr}[\Efuncc{z \sim p(z)}{z z^T} A] \\
+    &= \text{Tr}[\Efuncc{z \sim p(z)}{z z^T} A] \\`
     &= \Efuncc{z \sim p(z)}{\text{Tr}{z z^T A}} \\
     &= \Efuncc{z \sim p(z)}{\text{Tr}{z^T A z}} \\
     &= \Efuncc{z \sim p(z)}{z^T A z} \\
