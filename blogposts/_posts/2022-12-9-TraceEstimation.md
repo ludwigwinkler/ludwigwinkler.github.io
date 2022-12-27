@@ -24,6 +24,8 @@ $$
  \def\Efuncc#1#2{\mathbb{E}_{#1}\left[ #2 \right]}
 $$
 
+### The Trace of a Matrix
+
 For a square matrix $A \in \mathbb{R}^{d \times d}$ the trace is defined as
 $$
 \begin{align}
@@ -32,8 +34,8 @@ $$
 $$
 which sums over the diagonal terms of the matrix $A$. Plain and simple.
 
-We can approximate the exact trace with a sampled approximation.
-We therefore from a sample random samples $Z \in \mathbb{R}^D$ for which the mean is a zero vector and the covariance matrix is a identity matrix, i.e. $\Sigma[Z] = I$.
+We can approximate the exact trace with a stochastic approximation.
+We therefore sample from $Z \in \mathbb{R}^D$, the mean of which is a zero vector and the covariance matrix is a identity matrix, i.e. $\Sigma[Z] = I$.
 More precisely we determine the covariance matrix as
 $$
 \begin{align}
@@ -46,7 +48,6 @@ $$
 $$
 
 The Rademacher distribution which samples from the set $\{-1, +1\}$ with equal probability offers the lowest estimator variance and is commonly used in the trace estimation trick for this reason.
-
 $$
 \begin{align}
     \text{Tr}[A]
@@ -63,7 +64,7 @@ where the trace operator disappears as $z^T A z \in \mathbb{R}$ is a scalar valu
 For estimating the trace of the Jacobian, we can circumvent the quadratic nature of the Jacobian by reducing the network output with a random vector z to a scalar, which can then be readily derived with a single backward pass.
 $$
 \begin{align}
-    \text{Tr}{J_f(x)} 
+    \text{Tr}[J_f(x)]
     &= \Efuncc{z \sim p(z)}{z^T J_f(x) z} \\
     &= \Efuncc{z \sim p(z)}{z^T \nabla_x [f(x)^T] z} \\
     &= \Efuncc{z \sim p(z)}{z^T \nabla_x [f(x)^T z] } \\
