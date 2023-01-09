@@ -37,10 +37,13 @@ which sums over the diagonal terms of the matrix $A$. Plain and simple.
 ### Hutchinson's Stochastic Trace Estimation
 
 By definition we are only interested in the diagonal terms of a matrix when computing the trace of it.
-Quite literally, we're only adding up the diagonal terms.
 But in cases where the matrix is computationally expensive to compute we might want to approximate it.
 
-We can approximate the exact trace with a stochastic approximation.
+Given a matrix $A$ one might think why the stochastic estimation is necessary when all we need to do is sum up the diagonal terms.
+But Hutchinson's trick can unfold its full potential when leveraging the specific structure of the matrix $A$.
+Just wait until the Jacobian joins the party down below.
+
+We can approximate the exact trace with a stochastic estimate.
 We therefore sample from $Z \in \mathbb{R}^D$, the mean of which is a zero vector and the covariance matrix is a identity matrix, i.e. $\Sigma[Z] = I$.
 More precisely we determine the covariance matrix as
 $$
@@ -58,7 +61,7 @@ $$
 \begin{align}
     \text{Tr}[A]
     &= \text{Tr}[I A] \\
-    &= \text{Tr}[\Efuncc{z \sim p(z)}{z z^T} A] \\`
+    &= \text{Tr}[\Efuncc{z \sim p(z)}{z z^T} A] \\
     &= \Efuncc{z \sim p(z)}{\text{Tr}{z z^T A}} \\
     &= \Efuncc{z \sim p(z)}{\text{Tr}{z^T A z}} \\
     &= \Efuncc{z \sim p(z)}{z^T A z} \\
@@ -76,6 +79,15 @@ $$
     &= \Efuncc{z \sim p(z)}{z^T \nabla_x [f(x)^T z] } \\
 \end{align}
 $$
+
+The important piece of information lies with the contraction $f(x)^T x$ which is an inner product.
+Naively in equation (12), we would compute the full Jacobian matrix $J_f(x)$ and then contract it.
+But since $z$ is a constant quantity for each sample in the expectancy, we can instead interpret $z$ as a constant scaling factor in the derivation of each output to each input which so happens to contract the full matrix.
+You can think of it as a inner product of random vectors in which the Jacobian matrix provides the metric tensor.
+So instead of Jacobian matrix times vector, we suddenly have a derivative of the scalar $J_f(x)^T z$.
+The Jacobian evaluation $J_f(x): \mathbb{R}^\mathcal{X} \rightarrow \mathbb{R}^{\mathcal{X}\times \mathcal{Y}}$ reduces to the stochastic $\nabla_x [ f(x)^T z ]: \mathbb{R} \rightarrow \mathbb{R}^\mathcal{X}$.
+Thus we saved us a lot of computations.
+There is obviously a price to pay, namely that we're working with stochastic evaluations which introduces the curse of dimensionality into our evaluation.
 
 ### Stein is entering the picture
 
