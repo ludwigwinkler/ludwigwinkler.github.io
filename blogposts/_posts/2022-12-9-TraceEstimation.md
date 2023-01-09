@@ -160,6 +160,6 @@ $$
 $$
 in which we compute the right most term to obtain the left most term.
 
-The scaling of the perturbation scale $\sigma_\epsilon$ offers at least in theory intriguing similarities to the forward diffusive process of diffusion models.
+<!-- The scaling of the perturbation scale $\sigma_\epsilon$ offers at least in theory intriguing similarities to the forward diffusive process of diffusion models.
 These models estimate the scores of the data distribution $x'_t \sim p(x, \sigma_t^2)$ in which $x$ is a sample from the true data distribution which is being modelled and the perturbation scale $\sigma_t$ is time dependent which decreases as the generative process is integrated in time.
-Thus to stabilize the score estimation in higher dimensions we aim to to make the perturbation scale in the Stein trace estimator time dependent.
+Thus to stabilize the score estimation in higher dimensions we aim to to make the perturbation scale in the Stein trace estimator time dependent. -->
