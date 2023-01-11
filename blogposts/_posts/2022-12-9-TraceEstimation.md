@@ -3,7 +3,7 @@ layout: post
 title:  "Stein's Lemma for Trace Estimation"
 date:   2022-12-09
 excerpt: "Warning: May contain traces of nuts (and matrices)"
-image:
+image: "../../blog/blogthumbnails/stein.png"
 ---
 <head>
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
