@@ -79,7 +79,6 @@ Any means here simply the minimum that any process changes, namely $\min{X_1, X_
 Each off-diagonal entry $\lambda_j$ denotes the rate of an independent exponentially distributed random variable $\tau_j \sim \text{Exp}[\lambda_j]$.
 Thus we are interested in the probability of how the minimum of all holding times $\tau_j$ is distributed vis-a-vis being larger than some aggregated holding time $t$.
 For that we can employ the complementary cumulative density function (cCDF = 1-CDF so not standard CDF $p(\tau_i < t)$ but $p(\tau_i > t)$ lying outside of $t$) of the exponential distribution and ask whether $p(\tau_i > t)$:
-
 $$
 \begin{align*}
   p(\min \{ \tau_1, \tau_2, \tau_3 \} > t) &= p(\tau_1 > t, \tau_2 > t, \tau_3 > t) \\
@@ -93,7 +92,6 @@ $$
 Thus the minimum holding time is again an exponential distribution with the rate $\sum_i \lambda_i$.
 Once the holding time is 'exhausted' or has passed, we have to determine the second question, namely which process is going to occur next.
 Therefore we want to know the probability
-
 $$
 \begin{align*}
   p(i = \text{argmin}_i \{ \tau_1, \tau_2, \tau_3 \}) &= \int_0^\infty p(\tau_i = t) \ p(\forall_{k \neq i} \tau_k > t) dt \\
@@ -103,7 +101,6 @@ $$
 which states that our $i$ in question is precisely the holding time $t$ and factorizing via conditional independence that every other exponentially distributed holding time $\tau_k$ is larger than $t$ which is again the cCDF.
 Finally we marginalize over $t$ to incorporate the fact the holding time $t$ is itself a random variable which ought to be marginalized out, effectively taking into account every possible value of $t$.
 We obtain
-
 $$
 \begin{align*}
   p(i = \text{argmin}_i \{ \tau_1, \tau_2, \tau_3 \}) 
@@ -125,7 +122,6 @@ We can thus devise a sampling algorithm based on rates $\lambda_i$ which first s
 
 A birth-death process is a stochastic process $\\{X_t\\}_{t \in \mathbb{R}^+}$ with $X_t = X_t^\lambda - X_t^\mu$ with two 'duelling' rates: the birth rate $\lambda$ and the death rate $\mu$.
 Both rates induce a counting process (albeit be it with opposite signs) such that the infinitissimal generators are
-
 $$
 \begin{align}
 \lim_{h \rightarrow 0^+} P(X_{t+h} = X_t + 1 | X_t) &= \lambda h \\
@@ -139,7 +135,6 @@ the derivation of which can be followed up [here](https://ludwigwinkler.github.i
 We can thus construct a straight forward sampling algorithm by sampling the holding time $\tau$ in state $X_{t+\tau} = X_t$ with $\tau \sim \text{Exp}[ \lambda + \mu]$ and once the holding time is over, sampling either the death or the birth process with $\{+1, -1\} \sim \text{Cat}[\lambda, \mu]$.
 
 Sampling from the exponential distribution can be easily done with inverse transform sampling by first sampling $u \sim U[0,1]$ and using 
-
 $$
 \begin{align}
 u &= \text{ExpCDF}(x, \lambda) \\
