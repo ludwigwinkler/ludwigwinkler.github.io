@@ -18,7 +18,6 @@ image: "../../blog/CTMC/vmap4.png"
        </script>
        <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 </head>
-
 $$
  \def\tr#1{\text{Tr}\left[ #1 \right]}
  \def\Efunc#1{\mathbb{E}\left[ #1\right]}
@@ -80,29 +79,29 @@ Each off-diagonal entry $\lambda_j$ denotes the rate of an independent exponenti
 Thus we are interested in the probability of how the minimum of all holding times $\tau_j$ is distributed vis-a-vis being larger than some aggregated holding time $t$.
 For that we can employ the complementary cumulative density function (cCDF = 1-CDF so not standard CDF $p(\tau_i < t)$ but $p(\tau_i > t)$ lying outside of $t$) of the exponential distribution and ask whether $p(\tau_i > t)$:
 $$
-\begin{align*}
+\begin{align}
   p(\min \{ \tau_1, \tau_2, \tau_3 \} > t) &= p(\tau_1 > t, \tau_2 > t, \tau_3 > t) \\
   &= \prod_{i=1}^3 p(\tau_i > x) \\
   &= \prod_{i=1}^3 \overbrace{1 - \underbrace{(1 - \exp[-\lambda_i x])}_{\text{Exp CDF}}}^{\text{Exp cCDF}} \\
   &= \prod_{i=1}^3 \exp[-\lambda_i x] \\
   &=  \exp \left[- \sum_{i=1}^3 \lambda_i x \right]
-\end{align*}
+\end{align}
 $$
 
 Thus the minimum holding time is again an exponential distribution with the rate $\sum_i \lambda_i$.
 Once the holding time is 'exhausted' or has passed, we have to determine the second question, namely which process is going to occur next.
 Therefore we want to know the probability
 $$
-\begin{align*}
+\begin{align}
   p(i = \text{argmin}_i \{ \tau_1, \tau_2, \tau_3 \}) &= \int_0^\infty p(\tau_i = t) \ p(\forall_{k \neq i} \tau_k > t) dt \\
-\end{align*}
+\end{align}
 $$
 
 which states that our $i$ in question is precisely the holding time $t$ and factorizing via conditional independence that every other exponentially distributed holding time $\tau_k$ is larger than $t$ which is again the cCDF.
 Finally we marginalize over $t$ to incorporate the fact the holding time $t$ is itself a random variable which ought to be marginalized out, effectively taking into account every possible value of $t$.
 We obtain
 $$
-\begin{align*}
+\begin{align}
   p(i = \text{argmin}_i \{ \tau_1, \tau_2, \tau_3 \}) 
   &= \int_0^\infty p(\tau_i = t) \ p(\forall_{k \neq i} \tau_k > t) dt \\
   &= \int_0^\infty \underbrace{p(\tau_i = t)}_{\text{Exp}} \ \underbrace{p(\forall_{k \neq i} \tau_k > t)}_{\text{cCDF}} dt \\
@@ -112,7 +111,7 @@ $$
   &= \lambda_i  \left[ - \frac{\exp \left[- \sum_{k} \lambda_k t \right]}{\sum_{k} \lambda_k} \right]_0^\infty \\
   &= \lambda_i  \left(  0 + \frac{1}{\sum_{k} \lambda_k} \right) \\
   &= \frac{\lambda_i}{\sum_{k} \lambda_k} \\
-\end{align*}
+\end{align}
 $$
 
 Thus we can conclude that the process that 'acts first' is $i \sim \text{Cat}[\lambda_1, \lambda_2, \lambda_3]$.
