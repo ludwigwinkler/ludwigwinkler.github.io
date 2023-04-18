@@ -212,11 +212,11 @@ $$
 $$
 which we can rewrite to equivalently by dividing the even and odd numbered entries in the signal $x_n$ to
 $$
-\begin{align}
+\begin{aligned}
   X_k 
   &= \sum_{m=0}^{N/2-1} \underbrace{x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m}{N}} }_{\text{even DFT computations of $x_n$}}
-  + \sum_{m=0}^{N/2-1} \underbrace{ x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m+1}{N}} }_{\text{odd DFT computations of $x_n$}} \\
-\end{align}
+  + \sum_{m=0}^{N/2-1} \underbrace{ x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m+1}{N}} }_{\text{odd DFT computations of $x_n$}}
+\end{aligned}
 $$
 
 This split into even and odd entries is valid, as we might only go from $[0, ..., m, ..., N/2]$ but we compensate for that by scaling the index from $m$ to $2m$.
@@ -253,7 +253,6 @@ $$
 $$
 
 We can show this more rigorously by writing out $X_{k + \frac{N}{2}}$ to get
-
 $$
 \begin{align}
   X_{k + \frac{N}{2}} 
