@@ -301,33 +301,7 @@ $$
 We can now construct the full $K \times N$ matrix where each row of the matrix corresponds to a particular frequency $k$ and where naturally $K=N$.
 For a signal of length $N=8$ this gives us
 $$
-\begin{matrix} & n \\
-k &
-\left[ 
-\begin{array}{cccc|cccc}
-w^0 & w^0 & w^0 & w^0 & w^0 & w^0 & w^0 & w^0\\
-w^0 & w^1 & w^2 & w^3 & w^4 & w^5 & w^6 & w^7 \\
-w^0 & w^2 & w^4 & w^6 & w^8 & w^{10} & w^{12} & w^{14} \\
-w^0 & w^3 & w^6 & w^9 & w^{12} & w^{15} & w^{18} & w^{21} \\
-\hline
-w^0 & w^4 & w^8 & w^{12} & w^{16} & w^{20} & w^{24} & w^{28} \\
-w^0 & w^5 & w^{10} & w^{15} & w^{20} & w^{25} & w^{30} & w^{35} \\
-w^0 & w^6 & w^{12} & w^{18} & w^{24} & w^{30} & w^{36} & w^{42} \\
-w^0 & w^7 & w^{14} & w^{21} & w^{28} & w^{35} & w^{42} & w^{49} \\
-\end{array} \right] \\
-\end{matrix}
-$$
-
-We use this matrix as a projection for our signal $x_n$ to obtain the frequency bins.
-Doing this naively would cost us exactly $8 \times 8 = 64$ operations
-
-But what do know about the roots of unity that we can exploit?
-While it may appear that the roots of unity are just increasing haphazardly, there are many duplicates *as the complex exponentials are circular*.
-This means that for example $w^2=w^{10}$ as with a length of $N=8$, $w^{10}$ does a full circle back to $w^2$ (it requires '8 steps' to do a full circle and has '2 steps' left to end up where $w^2$ is already, so the modulo operator respectively the periodic property of the complex exponential).
-Similarly $w^4=w^{12}$.
-
-Additionally, our astute obeservation of earlier tells that we don't need to compute the second half of the matrix, but can instead reconstruct it from the results in the upper half.
-$$
+\qquad \qquad \qquad \leftarrow  n \rightarrow  \\
 \begin{matrix}
 0 \leq k \leq N/2: \\
 \\
@@ -347,7 +321,37 @@ w^0 & w^7 & w^{14} & w^{21} & w^{28} & w^{35} & w^{42} & w^{49} \\
 \end{array} \right]
 $$
 
-<!-- $$ \qquad \qquad \qquad \downarrow $$ -->
+We use this matrix as a projection for our signal $x_n$ to obtain the frequency bins.
+Doing this naively would cost us exactly $8 \times 8 = 64$ operations
+
+But what do know about the roots of unity that we can exploit?
+While it may appear that the roots of unity are just increasing haphazardly, there are many duplicates *as the complex exponentials are circular*.
+This means that for example $w^2=w^{10}$ as with a length of $N=8$, $w^{10}$ does a full circle back to $w^2$ (it requires '8 steps' to do a full circle and has '2 steps' left to end up where $w^2$ is already, so the modulo operator respectively the periodic property of the complex exponential).
+Similarly $w^4=w^{12}$.
+
+Additionally, our astute obeservation of earlier tells that we don't need to compute the second half of the matrix, but can instead reconstruct it from the results in the upper half.
+$$
+\qquad \qquad \qquad \leftarrow  n \rightarrow  \\
+\begin{matrix}
+0 \leq k \leq N/2: \\
+\\
+\\
+\\
+N/2 \leq k \leq N: \\
+\end{matrix} \left[ \begin{array}{cccccccc}
+w^0 & w^0 & w^0 & w^0 & w^0 & w^0 & w^0 & w^0\\
+w^0 & w^1 & w^2 & w^3 & w^4 & w^5 & w^6 & w^7 \\
+w^0 & w^2 & w^4 & w^6 & w^8 & w^{10} & w^{12} & w^{14} \\
+w^0 & w^3 & w^6 & w^9 & w^{12} & w^{15} & w^{18} & w^{21} \\
+\hline
+w^0 & w^4 & w^8 & w^{12} & w^{16} & w^{20} & w^{24} & w^{28} \\
+w^0 & w^5 & w^{10} & w^{15} & w^{20} & w^{25} & w^{30} & w^{35} \\
+w^0 & w^6 & w^{12} & w^{18} & w^{24} & w^{30} & w^{36} & w^{42} \\
+w^0 & w^7 & w^{14} & w^{21} & w^{28} & w^{35} & w^{42} & w^{49} \\
+\end{array} \right]
+$$
+
+$$ \qquad \qquad \qquad \downarrow $$
 
 <!-- $$
 \begin{matrix}
