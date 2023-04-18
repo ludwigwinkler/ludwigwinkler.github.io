@@ -301,7 +301,6 @@ $$
 We can now construct the full $K \times N$ matrix where each row of the matrix corresponds to a particular frequency $k$ and where naturally $K=N$.
 For a signal of length $N=8$ this gives us
 $$
-\qquad \qquad \qquad \leftarrow  n \rightarrow  \\
 \begin{matrix}
 0 \leq k \leq N/2: \\
 \\
@@ -331,7 +330,6 @@ Similarly $w^4=w^{12}$.
 
 Additionally, our astute obeservation of earlier tells that we don't need to compute the second half of the matrix, but can instead reconstruct it from the results in the upper half.
 $$
-\qquad \qquad \qquad \leftarrow  n \rightarrow  \\
 \begin{matrix}
 0 \leq k \leq N/2: \\
 \\
@@ -350,8 +348,9 @@ w^0 & w^6 & w^{12} & w^{18} & w^{24} & w^{30} & w^{36} & w^{42} \\
 w^0 & w^7 & w^{14} & w^{21} & w^{28} & w^{35} & w^{42} & w^{49} \\
 \end{array} \right]
 $$
-
-$$ \qquad \qquad \qquad \downarrow $$
+$$ 
+\qquad \qquad \qquad \downarrow 
+$$
 
 <!-- $$
 \begin{matrix}
