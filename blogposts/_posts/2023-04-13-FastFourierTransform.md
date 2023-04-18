@@ -459,6 +459,7 @@ x_1 \\ x_3 \\ x_5 \\ x_7 \\
 $$
 
 The magic periodicity reuses the computations in the first half of the DFT to give the second half $X_{k+N/2}$ frequency bins with minimal overhead:
+
 $$
 \left[
   \begin{array}{}
@@ -514,6 +515,7 @@ Upon closer inspection of the first matrix being multiplied with $[ x_0, x_2, x_
 This is were the recursion kicks in in the linear algebra formulation.
 
 For that to happen, we take the even of the evens, $[x_0, x_4]$ and the odds of the even $[x_2, x_6]$ and split them as before:
+
 $$
 \text{DFT}
 \left( \left[s
