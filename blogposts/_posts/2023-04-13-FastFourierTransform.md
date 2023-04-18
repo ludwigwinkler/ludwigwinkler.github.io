@@ -269,7 +269,6 @@ I said earlier that we can't save ourselves from going through our signal at lea
 So while we have to do a full 'spatial' pass of $n$ over the $x_n$'s, we can save ourselves half the time by mirroring in the 'frequency' pass for the index $k$.
 
 We can play this game again to get
-
 $$
 \begin{align}
   \text{DFT}(\text{even}(x_n), k, N/2) 
@@ -336,9 +335,7 @@ $$
 \\
 \\
 N/2 \leq k \leq N: \\
-\end{matrix}
-\left[
-\begin{array}{cccccccc}
+\end{matrix} \left[ \begin{array}{cccccccc}
 w^0 & w^0 & w^0 & w^0 & w^0 & w^0 & w^0 & w^0\\
 w^0 & w^1 & w^2 & w^3 & w^4 & w^5 & w^6 & w^7 \\
 w^0 & w^2 & w^4 & w^6 & w^8 & w^{10} & w^{12} & w^{14} \\
@@ -348,9 +345,7 @@ w^0 & w^4 & w^8 & w^{12} & w^{16} & w^{20} & w^{24} & w^{28} \\
 w^0 & w^5 & w^{10} & w^{15} & w^{20} & w^{25} & w^{30} & w^{35} \\
 w^0 & w^6 & w^{12} & w^{18} & w^{24} & w^{30} & w^{36} & w^{42} \\
 w^0 & w^7 & w^{14} & w^{21} & w^{28} & w^{35} & w^{42} & w^{49} \\
-\end{array} \right]
- \rightarrow
-\left[ 
+\end{array} \right] \rightarrow \left[ 
 \begin{array}{cccc cccc}
 w^0 & w^0 & w^0 & w^0 & w^0 & w^0 & w^0 & w^0\\
 w^0 & w^1 & w^2 & w^3 & w^4 & w^5 & w^6 & w^7 \\
