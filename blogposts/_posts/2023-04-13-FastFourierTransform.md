@@ -256,12 +256,9 @@ We can show this more rigorously by writing out $X_{k + \frac{N}{2}}$ to get
 $$
 \begin{align}
   X_{k + \frac{N}{2}} 
-  &= \sum_{m=0}^{N/2-1}x_{2m} e^{-i 2 \pi \ \cdot \ (k + \frac{N}{2}) \ \cdot \ \frac{m}{N/2}}
-  + e^{-i 2 \pi \frac{(k+ \frac{N}{2})}{N}} \sum_{m=0}^{N/2-1} x_{2m+1} e^{-i 2 \pi \ \cdot \ (k + \frac{N}{2}) \ \cdot \ \frac{m}{N/2}} \\
-  &= \sum_{m=0}^{N/2-1}x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{m}{N/2}} \underbrace{\ e^{-i2\pi \ m}}_{=1 + i 0 = 1}
-  + e^{-i 2 \pi \frac{k}{N}} \underbrace{e^{-i\pi}}_{=-1} \sum_{m=0}^{N/2-1} x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{m}{N/2}} \ \underbrace{e^{-i2\pi \ m}}_{= 1 + i0 = 1} \\
-  &= \sum_{m=0}^{N/2-1}x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{m}{N/2}}
-  - e^{-i 2 \pi \frac{k}{N}} \sum_{m=0}^{N/2-1} x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{m}{N/2}} \\
+  &= \sum_{m=0}^{N/2-1}x_{2m} e^{-i 2 \pi \ \cdot \ (k + \frac{N}{2}) \ \cdot \ \frac{m}{N/2}} + e^{-i 2 \pi \frac{(k+ \frac{N}{2})}{N}} \sum_{m=0}^{N/2-1} x_{2m+1} e^{-i 2 \pi \ \cdot \ (k + \frac{N}{2}) \ \cdot \ \frac{m}{N/2}} \\
+  &= \sum_{m=0}^{N/2-1}x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{m}{N/2}} \underbrace{\ e^{-i2\pi \ m}}_{=1 + i 0 = 1} + e^{-i 2 \pi \frac{k}{N}} \underbrace{e^{-i\pi}}_{=-1} \sum_{m=0}^{N/2-1} x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{m}{N/2}} \ \underbrace{e^{-i2\pi \ m}}_{= 1 + i0 = 1} \\
+  &= \sum_{m=0}^{N/2-1}x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{m}{N/2}} - e^{-i 2 \pi \frac{k}{N}} \sum_{m=0}^{N/2-1} x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{m}{N/2}} \\
   &= \text{DFT}(\text{even}(x_n), k, N/2) - e^{-i 2 \pi \frac{k}{N}} \ \text{DFT}(\text{odd}(x_n), k, N/2) \\
 \end{align}
 $$
