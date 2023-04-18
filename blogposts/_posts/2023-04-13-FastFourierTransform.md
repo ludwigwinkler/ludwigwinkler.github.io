@@ -12,7 +12,7 @@ excerpt: "From Complex Exponentials to Frequencies in  O(N log N)"
     tex2jax: {
       skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
       inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      displayMath: [['$$','$$'], ['\[' , '\]']],
+      displayMath: [['$$','$$'], ['\[' , '\]'], ['\\[', '\\]']],
       processEscapes: true
     }
   });
