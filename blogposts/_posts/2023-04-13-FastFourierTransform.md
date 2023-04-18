@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Fast Fourier Transform"
-date:   2023-01-09
+date:   2023-04-11
 excerpt: "From Complex Exponentials to Frequencies in  O(N log N)"
 # image: "../../blog/CTMC/vmap4.png"
 ---
@@ -48,15 +48,12 @@ $$
 We're fairly familiar with the standard $$e^x$$ which is just the exponential function but once we introduce the complex number $i$ into the fray, things get really, not exactly weird, but circly and trigonometric.
 
 The real exponential can be rewritten as
-
 $$
 \begin{align}
   e^{x} = \sum_{k=0}^\infty \frac{x^k}{k!}
 \end{align}
 $$
-
 and if we add the complex number $i$ as an argument modifier, it starts to modify the entire equation:
-
 $$
 \begin{align}
   e^{x} 
@@ -251,7 +248,8 @@ $$
 \begin{align}
   X_k 
   &= \text{DFT}(\text{even}(x_n), k, N/2) + e^{-i 2 \pi \frac{k}{N}} \ \text{DFT}(\text{odd}(x_n), k, N/2) \\
-  X_{k + \frac{N}{2}} = &= \text{DFT}(\text{even}(x_n), k, N/2) - e^{-i 2 \pi \frac{k}{N}} \ \text{DFT}(\text{odd}(x_n), k, N/2) \\
+  X_{k + \frac{N}{2}}
+  &= \text{DFT}(\text{even}(x_n), k, N/2) - e^{-i 2 \pi \frac{k}{N}} \ \text{DFT}(\text{odd}(x_n), k, N/2) \\
 \end{align}
 $$
 
@@ -266,7 +264,7 @@ $$
   + e^{-i 2 \pi \frac{k}{N}} \underbrace{e^{-i\pi}}_{=-1} \sum_{m=0}^{N/2-1} x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{m}{N/2}} \ \underbrace{e^{-i2\pi \ m}}_{= 1 + i0 = 1} \\
   &= \sum_{m=0}^{N/2-1}x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{m}{N/2}}
   - e^{-i 2 \pi \frac{k}{N}} \sum_{m=0}^{N/2-1} x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{m}{N/2}} \\
-  &= \text{DFT}(\text{even}(x_n), k, N/2) - e^{-i 2 \pi \frac{k}{N}} \ \text{DFT}(\text{odd}(x_n), k, N/2)
+  &= \text{DFT}(\text{even}(x_n), k, N/2) - e^{-i 2 \pi \frac{k}{N}} \ \text{DFT}(\text{odd}(x_n), k, N/2) \\
 \end{align}
 $$
 
