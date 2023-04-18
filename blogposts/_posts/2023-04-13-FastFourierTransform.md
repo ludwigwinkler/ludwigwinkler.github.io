@@ -204,6 +204,7 @@ But we can exploit the cyclic structure in the $n$'th root of unity (aka the com
 ### An Algebraic Approach
 
 Let's consider the DFT for a particular frequency $X_k$:
+
 $$
 \begin{align}
   X_k 
@@ -211,17 +212,19 @@ $$
 \end{align}
 $$
 which we can rewrite to equivalently by dividing the even and odd numbered entries in the signal $x_n$ to
+
 $$
-\begin{aligned}
+\begin{align}
   X_k 
-  &= \sum_{m=0}^{N/2-1} \underbrace{x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m}{N}} }_{\text{even DFT computations of $x_n$}}
+  = \sum_{m=0}^{N/2-1} \underbrace{x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m}{N}} }_{\text{even DFT computations of $x_n$}}
   + \sum_{m=0}^{N/2-1} \underbrace{ x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m+1}{N}} }_{\text{odd DFT computations of $x_n$}}
-\end{aligned}
+\end{align}
 $$
 
 This split into even and odd entries is valid, as we might only go from $[0, ..., m, ..., N/2]$ but we compensate for that by scaling the index from $m$ to $2m$.
 
 Next we split off the $+1$ in the complex exponential in the odd DFT computations and drop the $2$ below the fraction in the complex exponential to get
+
 $$
 \begin{align}
 X_k 
@@ -231,7 +234,7 @@ X_k
 + e^{-i 2 \pi \frac{k}{N}} \sum_{m=0}^{N/2-1} x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m}{N}} \\
 &= \sum_{m=0}^{N/2-1}x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{m}{N/2}}
 + e^{-i 2 \pi \frac{k}{N}} \sum_{m=0}^{N/2-1} x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{m}{N/2}} \\
-&= \text{DFT}(\text{even}(x_n), k, N/2) + e^{-i 2 \pi \frac{k}{N}} \ \text{DFT}(\text{odd}(x_n), k, N/2) \\
+&= \text{DFT}(\text{even}(x_n), k, N/2) + e^{-i 2 \pi \frac{k}{N}} \ \text{DFT}(\text{odd}(x_n), k, N/2)
 \end{align}
 $$
 
@@ -253,6 +256,7 @@ $$
 $$
 
 We can show this more rigorously by writing out $X_{k + \frac{N}{2}}$ to get
+
 $$
 \begin{align}
   X_{k + \frac{N}{2}} 
@@ -274,6 +278,7 @@ I said earlier that we can't save ourselves from going through our signal at lea
 So while we have to do a full 'spatial' pass of $n$ over the $x_n$'s, we can save ourselves half the time by mirroring in the 'frequency' pass for the index $k$.
 
 We can play this game again to get
+
 $$
 \begin{align}
   \text{DFT}(\text{even}(x_n), k, N/2) 
@@ -305,6 +310,7 @@ $$
 
 We can now construct the full $K \times N$ matrix where each row of the matrix corresponds to a particular frequency $k$ and where naturally $K=N$.
 For a signal of length $N=8$ this gives us
+
 $$
 \begin{matrix} & n \\
 k &
