@@ -211,7 +211,6 @@ $$
 \end{align}
 $$
 which we can rewrite to equivalently by dividing the even and odd numbered entries in the signal $x_n$ to
-
 $$
 \begin{align}
   X_k 
@@ -223,7 +222,6 @@ $$
 This split into even and odd entries is valid, as we might only go from $[0, ..., m, ..., N/2]$ but we compensate for that by scaling the index from $m$ to $2m$.
 
 Next we split off the $+1$ in the complex exponential in the odd DFT computations and drop the $2$ below the fraction in the complex exponential to get
-
 $$
 \begin{align}
 X_k 
@@ -246,7 +244,6 @@ Now it just so happens that the cosine is an even function and the sinus is an o
 But since we defined our signal of length $N$ over a single period of $2 \pi$ (for specific integer multiple $k$, but that's not important for the intuition), we now that for a cosine we only have to compute $\{0, \ldots, k, \ldots, N/2\}$  since $\{N/2, \ldots, k, \ldots, N\}$ is handed to us on a platter due to the even property of the cosine function.
 
 The same applies to the sinus function which we can mirror for all always of $\{N/2, \ldots, k, \ldots, N\}$ by adjusting it with the complex exponential.
-
 $$
 \begin{align}
   X_k 
@@ -278,7 +275,6 @@ I said earlier that we can't save ourselves from going through our signal at lea
 So while we have to do a full 'spatial' pass of $n$ over the $x_n$'s, we can save ourselves half the time by mirroring in the 'frequency' pass for the index $k$.
 
 We can play this game again to get
-
 $$
 \begin{align}
   \text{DFT}(\text{even}(x_n), k, N/2) 
@@ -310,7 +306,6 @@ $$
 
 We can now construct the full $K \times N$ matrix where each row of the matrix corresponds to a particular frequency $k$ and where naturally $K=N$.
 For a signal of length $N=8$ this gives us
-
 $$
 \begin{matrix} & n \\
 k &
@@ -338,7 +333,6 @@ This means that for example $w^2=w^{10}$ as with a length of $N=8$, $w^{10}$ doe
 Similarly $w^4=w^{12}$.
 
 Additionally, our astute obeservation of earlier tells that we don't need to compute the second half of the matrix, but can instead reconstruct it from the results in the upper half.
-
 $$
 \small
 \begin{matrix}
@@ -376,7 +370,6 @@ w^0 & w^3 & w^6 & w^9 & w^{12} & w^{15} & w^{18} & w^{21} \\
 $$
 
 The next step is to split the matrices into even and odd entries of $x_n$, 
-
 $$
 \small
 \left[ 
@@ -476,7 +469,6 @@ x_1 \\ x_3 \\ x_5 \\ x_7 \\
 $$
 
 The magic periodicity reuses the computations in the first half of the DFT to give the second half $X_{k+N/2}$ frequency bins with minimal overhead:
-
 $$
 \left[
   \begin{array}{}
@@ -532,7 +524,6 @@ Upon closer inspection of the first matrix being multiplied with $[ x_0, x_2, x_
 This is were the recursion kicks in in the linear algebra formulation.
 
 For that to happen, we take the even of the evens, $[x_0, x_4]$ and the odds of the even $[x_2, x_6]$ and split them as before:
-
 $$
 \text{DFT}
 \left( \left[
@@ -566,7 +557,6 @@ x_0 \\ x_2 \\ x_4 \\ x_6 \\
 $$
 
 Again using the key insight that we can reconstruct the second half of the DFT bins from the first half, we can zero out a lot of computations to essentially break down the original DFT from a $4 \times 4$ to two $2 \times 2$ matrix multiplications:
-
 $$
 \left[
   \begin{array}{}
