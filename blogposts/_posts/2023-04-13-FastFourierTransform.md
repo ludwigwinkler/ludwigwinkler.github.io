@@ -11,7 +11,7 @@ excerpt: "From Complex Exponentials to Frequencies in  O(N log N)"
          MathJax.Hub.Config({
            tex2jax: {
              inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
+             displayMath: [['$$','$$'], ['\[' , '\]']],
              processEscapes: true
            }
          });
