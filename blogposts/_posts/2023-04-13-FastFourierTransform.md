@@ -347,9 +347,9 @@ w^0 & w^7 & w^{14} & w^{21} & w^{28} & w^{35} & w^{42} & w^{49} \\
 \end{array} \right]
 $$
 
-$$ \qquad \qquad \qquad \downarrow $$
+<!-- $$ \qquad \qquad \qquad \downarrow $$ -->
 
-$$
+<!-- $$
 \begin{matrix}
 0 \leq k \leq N/2: \\
 \\
@@ -369,7 +369,7 @@ w^0 & w^3 & w^6 & w^9 & w^{12} & w^{15} & w^{18} & w^{21} \\
 - & - & - & - & - & - & -  & - \\
 - & - & - & - & - & - & -  & - \\
 \end{array} \right]
-$$
+$$ -->
 
 The next step is to split the matrices into even and odd entries of $x_n$, 
 $$
