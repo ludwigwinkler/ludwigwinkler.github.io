@@ -215,8 +215,7 @@ which we can rewrite to equivalently by dividing the even and odd numbered entri
 $$
 \begin{align}
   X_k 
-  &= \sum_{m=0}^{N/2-1} \underbrace{x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m}{N}} }_{\text{even DFT computations of $x_n$}}
-  + \sum_{m=0}^{N/2-1} \underbrace{ x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m+1}{N}} }_{\text{odd DFT computations of $x_n$}} \\
+  &= \sum_{m=0}^{N/2-1} \underbrace{x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m}{N}} }_{\text{even DFT computations of $x_n$}} + \sum_{m=0}^{N/2-1} \underbrace{ x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m+1}{N}} }_{\text{odd DFT computations of $x_n$}} \\
 \end{align}
 $$
 
@@ -227,12 +226,9 @@ Next we split off the $+1$ in the complex exponential in the odd DFT computation
 $$
 \begin{align}
 X_k 
-&= \sum_{m=0}^{N/2-1} \underbrace{x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m}{N}} }_{\text{even DFT computations of $x_n$}}
-+ \sum_{m=0}^{N/2-1} \underbrace{ x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m+1}{N}} }_{\text{odd DFT computations of $x_n$}} \\
-&= \sum_{m=0}^{N/2-1}x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m}{N}}
-+ e^{-i 2 \pi \frac{k}{N}} \sum_{m=0}^{N/2-1} x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m}{N}} \\
-&= \sum_{m=0}^{N/2-1}x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{m}{N/2}}
-+ e^{-i 2 \pi \frac{k}{N}} \sum_{m=0}^{N/2-1} x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{m}{N/2}} \\
+&= \sum_{m=0}^{N/2-1} \underbrace{x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m}{N}} }_{\text{even DFT computations of $x_n$}}  + \sum_{m=0}^{N/2-1} \underbrace{ x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m+1}{N}} }_{\text{odd DFT computations of $x_n$}} \\
+&= \sum_{m=0}^{N/2-1}x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m}{N}} + e^{-i 2 \pi \frac{k}{N}} \sum_{m=0}^{N/2-1} x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m}{N}} \\
+&= \sum_{m=0}^{N/2-1}x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{m}{N/2}} + e^{-i 2 \pi \frac{k}{N}} \sum_{m=0}^{N/2-1} x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{m}{N/2}} \\
 &= \text{DFT}(\text{even}(x_n), k, N/2) + e^{-i 2 \pi \frac{k}{N}} \ \text{DFT}(\text{odd}(x_n), k, N/2) \\
 \end{align}
 $$
