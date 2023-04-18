@@ -348,11 +348,12 @@ w^0 & w^6 & w^{12} & w^{18} & w^{24} & w^{30} & w^{36} & w^{42} \\
 w^0 & w^7 & w^{14} & w^{21} & w^{28} & w^{35} & w^{42} & w^{49} \\
 \end{array} \right]
 $$
+
 $$ 
 \qquad \qquad \qquad \downarrow 
 $$
 
-<!-- $$
+$$
 \begin{matrix}
 0 \leq k \leq N/2: \\
 \\
@@ -361,7 +362,7 @@ $$
 N/2 \leq k \leq N: \\
 \end{matrix} 
 \left[ 
-\begin{array}{cccc cccc}
+\begin{array}{cccccccc}
 w^0 & w^0 & w^0 & w^0 & w^0 & w^0 & w^0 & w^0\\
 w^0 & w^1 & w^2 & w^3 & w^4 & w^5 & w^6 & w^7 \\
 w^0 & w^2 & w^4 & w^6 & w^8 & w^{10} & w^{12} & w^{14} \\
@@ -372,11 +373,10 @@ w^0 & w^3 & w^6 & w^9 & w^{12} & w^{15} & w^{18} & w^{21} \\
 - & - & - & - & - & - & -  & - \\
 - & - & - & - & - & - & -  & - \\
 \end{array} \right]
-$$ -->
+$$
 
 The next step is to split the matrices into even and odd entries of $x_n$, 
 $$
-\small
 \left[ 
 \begin{array}{cccc cccc}
 w^0 & w^0 & w^0 & w^0 & w^0 & w^0 & w^0 & w^0\\
@@ -389,11 +389,13 @@ w^0 & w^3 & w^6 & w^9 & w^{12} & w^{15} & w^{18} & w^{21} \\
 - & - & - & - & - & - & -  & - \\
 - & - & - & - & - & - & -  & - \\
 \end{array} \right]
-\\
-\\
-\downarrow 
-\\
-\\
+$$
+
+$$
+\downarrow
+$$
+
+$$
 \underbrace{
 \left[ 
 \begin{array}{cccc cccc}
@@ -407,9 +409,7 @@ w^0 & - & w^6 & - & w^{12} & - & w^{18} & - \\
 - & - & - & - & - & - & -  & - \\
 - & - & - & - & - & - & -  & - \\
 \end{array} \right]
-}_{\text{even entries of $x_n$}}
-,
-\underbrace{
+}_{\text{even entries of $x_n$}} , \underbrace{ 
 \left[ 
 \begin{array}{cccccccc}
 - & w^0 & - & w^0 & - & w^0 & - & w^0\\
