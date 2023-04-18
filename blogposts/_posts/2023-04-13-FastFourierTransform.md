@@ -7,16 +7,19 @@ excerpt: "From Complex Exponentials to Frequencies in  O(N log N)"
 ---
 <head>
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$'], ['\[' , '\]']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [['$$','$$'], ['\[' , '\]']],
+      processEscapes: true
+    }
+  });
+</script>
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
 </head>
 $$
  \def\tr#1{\text{Tr}\left[ #1 \right]}
@@ -645,6 +648,7 @@ x_2 \\ x_6 \\
 \end{bmatrix}
 $$
 
+{% raw %}
 $$
 \begin{aligned}
   X_0 \otimes X_1 =  
@@ -672,6 +676,7 @@ $$
   \end{pmatrix}
 \end{aligned}
 $$
+{% endraw %}
 
 whats going on
 
