@@ -74,7 +74,6 @@ $$
 the computation of which we can recycle every fourth power with the modulo operator $k \% 4$.
 
 We can now write out the sum for a couple of terms and see whether a convenient structure reveals itself (spoiler alert: it does):
-
 $$
 \begin{align}
   e^{ix} 
