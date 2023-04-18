@@ -646,7 +646,6 @@ x_2 \\ x_6 \\
 $$
 
 $$
-\begin{equation}
 \begin{aligned}
   X_0 \otimes X_1 =  
   \begin{pmatrix}
@@ -672,7 +671,6 @@ $$
     1 & 0 & 0 & 0 
   \end{pmatrix}
 \end{aligned}
-\end{equation}
 $$
 
 whats going on
