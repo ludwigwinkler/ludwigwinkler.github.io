@@ -222,7 +222,6 @@ $$
 This split into even and odd entries is valid, as we might only go from $[0, ..., m, ..., N/2]$ but we compensate for that by scaling the index from $m$ to $2m$.
 
 Next we split off the $+1$ in the complex exponential in the odd DFT computations and drop the $2$ below the fraction in the complex exponential to get
-
 $$
 \begin{align}
 X_k 
@@ -252,7 +251,6 @@ $$
 $$
 
 We can show this more rigorously by writing out $X_{k + \frac{N}{2}}$ to get
-
 $$
 \begin{align}
   X_{k + \frac{N}{2}} 
