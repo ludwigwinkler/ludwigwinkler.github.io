@@ -328,7 +328,6 @@ Similarly $w^4=w^{12}$.
 
 Additionally, our astute obeservation of earlier tells that we don't need to compute the second half of the matrix, but can instead reconstruct it from the results in the upper half.
 $$
-\small
 \begin{matrix}
 0 \leq k \leq N/2: \\
 \\
@@ -345,7 +344,20 @@ w^0 & w^4 & w^8 & w^{12} & w^{16} & w^{20} & w^{24} & w^{28} \\
 w^0 & w^5 & w^{10} & w^{15} & w^{20} & w^{25} & w^{30} & w^{35} \\
 w^0 & w^6 & w^{12} & w^{18} & w^{24} & w^{30} & w^{36} & w^{42} \\
 w^0 & w^7 & w^{14} & w^{21} & w^{28} & w^{35} & w^{42} & w^{49} \\
-\end{array} \right] \rightarrow \left[ 
+\end{array} \right]
+$$
+
+$$ \qquad \qquad \qquad \downarrow $$
+
+$$
+\begin{matrix}
+0 \leq k \leq N/2: \\
+\\
+\\
+\\
+N/2 \leq k \leq N: \\
+\end{matrix} 
+\left[ 
 \begin{array}{cccc cccc}
 w^0 & w^0 & w^0 & w^0 & w^0 & w^0 & w^0 & w^0\\
 w^0 & w^1 & w^2 & w^3 & w^4 & w^5 & w^6 & w^7 \\
