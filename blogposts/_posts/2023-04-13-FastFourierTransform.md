@@ -634,11 +634,7 @@ $$
 
 hahah
 $$
-\begin{align}
-\begin{bmatrix}
-x_2 \\ x_6 \\
-\end{bmatrix}
-\begin{align}
+\begin{bmatrix} x_2 \\ x_6 \\ \end{bmatrix}
 $$
 
 hahah
