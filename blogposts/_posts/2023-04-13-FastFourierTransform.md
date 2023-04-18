@@ -640,11 +640,39 @@ $$
 hahah
 
 $$
-\begin{align}
 \begin{bmatrix}
 x_2 \\ x_6 \\
 \end{bmatrix}
-\begin{align}
+$$
+
+$$
+\begin{equation}
+\begin{aligned}
+  X_0 \otimes X_1 =  
+  \begin{pmatrix}
+    0\begin{pmatrix} 
+      0 & 1 \\\\\\\\
+      1 & 0
+    \end{pmatrix} & 1\begin{pmatrix}
+                      0 & 1 \\\\\\\\
+                      1 & 0
+                     \end{pmatrix} \\\\\\\\
+    1\begin{pmatrix} 
+      0 & 1 \\\\\\\\
+      1 & 0
+     \end{pmatrix} & 0\begin{pmatrix}
+                       0 & 1 \\\\\\\\
+                       1 & 0
+                      \end{pmatrix} 
+  \end{pmatrix} = 
+  \begin{pmatrix}
+    0 & 0 & 0 & 1 \\\\\\\\
+    0 & 0 & 1 & 0 \\\\\\\\
+    0 & 1 & 0 & 0 \\\\\\\\
+    1 & 0 & 0 & 0 
+  \end{pmatrix}
+\end{aligned}
+\end{equation}
 $$
 
 whats going on
@@ -659,5 +687,3 @@ Each evaluation in the recursion allows us to reconstruct frequency bins twice o
 So for signals of length $8$, we need 4 recursive step to arrive at a DFT length of one, from which we can reconstruct the frequency bins efficiently.
 For a signal of length $16$ we need 5 recursions, for $32$ just one more, namely 6 recursions, and for $64$ just seven recursions.
 While the speed up might be small for short signals, audio people with 20.000 samplings steps should seriously rejoice and feel blessed by the $O(N \log N)$ complexity.
-
-test
