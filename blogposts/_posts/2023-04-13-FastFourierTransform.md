@@ -303,12 +303,8 @@ For a signal of length $N=8$ this gives us
 
 $$
 \begin{matrix}
-0 \leq k \leq N/2: \\
-\\
-\\
-\\
-N/2 \leq k \leq N: \\
-\end{matrix} \left[ \begin{array}{cccccccc}
+0 \leq k \leq N/2: \\ \\ \\ \\ N/2 \leq k \leq N: \\
+\end{matrix} \begin{bmatrix}
 w^0 & w^0 & w^0 & w^0 & w^0 & w^0 & w^0 & w^0\\
 w^0 & w^1 & w^2 & w^3 & w^4 & w^5 & w^6 & w^7 \\
 w^0 & w^2 & w^4 & w^6 & w^8 & w^{10} & w^{12} & w^{14} \\
@@ -318,7 +314,7 @@ w^0 & w^4 & w^8 & w^{12} & w^{16} & w^{20} & w^{24} & w^{28} \\
 w^0 & w^5 & w^{10} & w^{15} & w^{20} & w^{25} & w^{30} & w^{35} \\
 w^0 & w^6 & w^{12} & w^{18} & w^{24} & w^{30} & w^{36} & w^{42} \\
 w^0 & w^7 & w^{14} & w^{21} & w^{28} & w^{35} & w^{42} & w^{49} \\
-\end{array} \right]
+\end{bmatrix}
 $$
 
 We use this matrix as a projection for our signal $x_n$ to obtain the frequency bins.
@@ -332,13 +328,8 @@ Similarly $w^4=w^{12}$.
 Additionally, our astute obeservation of earlier tells that we don't need to compute the second half of the matrix, but can instead reconstruct it from the results in the upper half.
 
 $$
-\begin{matrix}
-0 \leq k \leq N/2: \\
-\\
-\\
-\\
-N/2 \leq k \leq N: \\
-\end{matrix} \left[ \begin{array}{cccccccc}
+\begin{matrix} 0 \leq k \leq N/2: \\ \\ \\ \\ N/2 \leq k \leq N: \\ \end{matrix} 
+\begin{bmatrix}
 w^0 & w^0 & w^0 & w^0 & w^0 & w^0 & w^0 & w^0\\
 w^0 & w^1 & w^2 & w^3 & w^4 & w^5 & w^6 & w^7 \\
 w^0 & w^2 & w^4 & w^6 & w^8 & w^{10} & w^{12} & w^{14} \\
@@ -348,7 +339,7 @@ w^0 & w^4 & w^8 & w^{12} & w^{16} & w^{20} & w^{24} & w^{28} \\
 w^0 & w^5 & w^{10} & w^{15} & w^{20} & w^{25} & w^{30} & w^{35} \\
 w^0 & w^6 & w^{12} & w^{18} & w^{24} & w^{30} & w^{36} & w^{42} \\
 w^0 & w^7 & w^{14} & w^{21} & w^{28} & w^{35} & w^{42} & w^{49} \\
-\end{array} \right]
+\end{bmatrix}
 $$
 
 $$ 
@@ -472,20 +463,15 @@ $$
 The magic periodicity reuses the computations in the first half of the DFT to give the second half $X_{k+N/2}$ frequency bins with minimal overhead:
 
 $$
-\left[
-  \begin{array}{}
-X_4 \\ X_5 \\ X_6 \\ X_7 \\
-\end{array}
-\right]
-=
+\left[ \begin{array}{} X_4 \\ X_5 \\ X_6 \\ X_7 \\ \end{array} \right] =
 \underbrace{
 \left[ 
-\begin{array}{}
+\begin{bmatrix}{}
 w^0 & w^0 & w^0 & w^0 \\
 w^0 & w^2 & w^4 & w^6 \\
 w^0 & w^4 & w^8 & w^{12} \\
 w^0 & w^6 & w^{12} & w^{18} \\
-\end{array}
+\end{bmatrix}
 \right]
 \left[ 
 \begin{array}{}
@@ -607,43 +593,42 @@ $$
 and we can reconfigure the already computed $2 \times 2$ matrices to get the second half of the frequency bins
 
 $$
-\left[
-  \begin{array}{}
+\begin{bmatrix}
 X_3 \\ X_4 \\
-\end{array}
-\right]
-=
+\end{bmatrix}
 \underbrace{
-\left[ 
-\begin{array}{}
+\begin{bmatrix}
 w^0 & w^0 \\
 w^0 & w^4 \\
-\end{array}
-\right]
-\left[ 
-\begin{array}{}
+\end{bmatrix}
+\begin{bmatrix}
 x_0 \\ x_4 \\
-\end{array}
-\right]
-}_{\text{already computed}}
-- 
-\left[ 
-\begin{array}{}
+\end{bmatrix}
+}_{\text{already computed}} - 
+\begin{bmatrix}
 w^0 &     \\
     & w^1 \\
-\end{array}
-\right]
-\left[ 
-\begin{array}{}
+\end{bmatrix}
+\begin{bmatrix}
 w^0 & w^0\\
 w^3 & w^7 \\
-\end{array}
-\right]
-\left[ 
-\begin{array}{}
+\end{bmatrix}
+\begin{bmatrix}
 x_2 \\ x_6 \\
-\end{array}
-\right]
+\end{bmatrix}
+$$
+
+$$
+\begin{bmatrix}
+x_2 \\ x_6 \\
+\end{bmatrix}
+$$
+
+hahah
+$$
+\begin{bmatrix}
+x_2 \\ x_6 \\
+\end{bmatrix}
 $$
 
 And we can do it yet again by observing that the $2 \times 2$ matrix can be broken up again once more (but at size 1 the recursion naturally stops).
