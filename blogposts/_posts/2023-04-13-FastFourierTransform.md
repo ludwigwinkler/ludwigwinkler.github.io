@@ -411,7 +411,6 @@ w^0 & - & w^6 & - & w^{12} & - & w^{18} & - \\
 $$
 
 So we obtain two DFT's of shape $4 \times 4$,
-
 $$
 \left[
   \begin{array}{}
@@ -459,7 +458,6 @@ x_1 \\ x_3 \\ x_5 \\ x_7 \\
 $$
 
 The magic periodicity reuses the computations in the first half of the DFT to give the second half $X_{k+N/2}$ frequency bins with minimal overhead:
-
 $$
 \left[
   \begin{array}{}
@@ -593,7 +591,6 @@ w^0 &     &     & \\
 $$
 
 and we can reconfigure the already computed $2 \times 2$ matrices to get the second half of the frequency bins
-
 $$
 \left[
   \begin{array}{}
