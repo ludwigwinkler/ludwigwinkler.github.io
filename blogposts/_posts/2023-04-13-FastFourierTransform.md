@@ -48,12 +48,15 @@ $$
 We're fairly familiar with the standard $$e^x$$ which is just the exponential function but once we introduce the complex number $i$ into the fray, things get really, not exactly weird, but circly and trigonometric.
 
 The real exponential can be rewritten as
+
 $$
 \begin{align}
   e^{x} = \sum_{k=0}^\infty \frac{x^k}{k!}
 \end{align}
 $$
+
 and if we add the complex number $i$ as an argument modifier, it starts to modify the entire equation:
+
 $$
 \begin{align}
   e^{x} 
@@ -204,7 +207,6 @@ But we can exploit the cyclic structure in the $n$'th root of unity (aka the com
 ### An Algebraic Approach
 
 Let's consider the DFT for a particular frequency $X_k$:
-
 $$
 \begin{align}
   X_k 
@@ -212,7 +214,6 @@ $$
 \end{align}
 $$
 which we can rewrite to equivalently by dividing the even and odd numbered entries in the signal $x_n$ to
-
 $$
 \begin{align}
   X_k 
@@ -224,7 +225,6 @@ $$
 This split into even and odd entries is valid, as we might only go from $[0, ..., m, ..., N/2]$ but we compensate for that by scaling the index from $m$ to $2m$.
 
 Next we split off the $+1$ in the complex exponential in the odd DFT computations and drop the $2$ below the fraction in the complex exponential to get
-
 $$
 \begin{align}
 X_k 
@@ -310,7 +310,6 @@ $$
 
 We can now construct the full $K \times N$ matrix where each row of the matrix corresponds to a particular frequency $k$ and where naturally $K=N$.
 For a signal of length $N=8$ this gives us
-
 $$
 \begin{matrix} & n \\
 k &
@@ -531,7 +530,7 @@ This is were the recursion kicks in in the linear algebra formulation.
 For that to happen, we take the even of the evens, $[x_0, x_4]$ and the odds of the even $[x_2, x_6]$ and split them as before:
 $$
 \text{DFT}
-\left( \left[
+\left( \left[s
 \begin{array}{}
 x_0 \\ x_2 \\ x_4 \\ x_6 \\
 \end{array}
