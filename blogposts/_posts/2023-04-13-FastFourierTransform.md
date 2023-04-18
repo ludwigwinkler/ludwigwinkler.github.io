@@ -215,7 +215,7 @@ which we can rewrite to equivalently by dividing the even and odd numbered entri
 $$
 \begin{align}
   X_k 
-  = \sum_{m=0}^{N/2-1} \underbrace{x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m}{N}} }_{\text{even DFT computations of $x_n$}}
+  &= \sum_{m=0}^{N/2-1} \underbrace{x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m}{N}} }_{\text{even DFT computations of $x_n$}}
   + \sum_{m=0}^{N/2-1} \underbrace{ x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m+1}{N}} }_{\text{odd DFT computations of $x_n$}} \\
 \end{align}
 $$
@@ -223,10 +223,11 @@ $$
 This split into even and odd entries is valid, as we might only go from $[0, ..., m, ..., N/2]$ but we compensate for that by scaling the index from $m$ to $2m$.
 
 Next we split off the $+1$ in the complex exponential in the odd DFT computations and drop the $2$ below the fraction in the complex exponential to get
+
 $$
 \begin{align}
 X_k 
-& = \sum_{m=0}^{N/2-1} \underbrace{x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m}{N}} }_{\text{even DFT computations of $x_n$}}
+&= \sum_{m=0}^{N/2-1} \underbrace{x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m}{N}} }_{\text{even DFT computations of $x_n$}}
 + \sum_{m=0}^{N/2-1} \underbrace{ x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m+1}{N}} }_{\text{odd DFT computations of $x_n$}} \\
 &= \sum_{m=0}^{N/2-1}x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m}{N}}
 + e^{-i 2 \pi \frac{k}{N}} \sum_{m=0}^{N/2-1} x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m}{N}} \\
