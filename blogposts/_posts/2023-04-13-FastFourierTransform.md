@@ -631,6 +631,26 @@ x_2 \\ x_6 \\
 \end{bmatrix}
 $$
 
+
+hahah
+$$
+\begin{align}
+\begin{bmatrix}
+x_2 \\ x_6 \\
+\end{bmatrix}
+\begin{align}
+$$
+
+hahah
+
+$$
+\begin{align}
+\begin{bmatrix}
+x_2 \\ x_6 \\
+\end{bmatrix}
+\begin{align}
+$$
+
 And we can do it yet again by observing that the $2 \times 2$ matrix can be broken up again once more (but at size 1 the recursion naturally stops).
 Similarly this recursion applies equally to the original odd entry terms in the upper most recursion layer.
 
