@@ -210,6 +210,7 @@ $$
   &= \sum_{n=0}^{N-1} x_n e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{n}{N}} \\
 \end{align}
 $$
+
 which we can rewrite to equivalently by dividing the even and odd numbered entries in the signal $x_n$ to
 $$
 \begin{align}
