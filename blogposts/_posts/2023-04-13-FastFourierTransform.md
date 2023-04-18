@@ -300,6 +300,7 @@ $$
 
 We can now construct the full $K \times N$ matrix where each row of the matrix corresponds to a particular frequency $k$ and where naturally $K=N$.
 For a signal of length $N=8$ this gives us
+
 $$
 \begin{matrix}
 0 \leq k \leq N/2: \\
@@ -329,6 +330,7 @@ This means that for example $w^2=w^{10}$ as with a length of $N=8$, $w^{10}$ doe
 Similarly $w^4=w^{12}$.
 
 Additionally, our astute obeservation of earlier tells that we don't need to compute the second half of the matrix, but can instead reconstruct it from the results in the upper half.
+
 $$
 \begin{matrix}
 0 \leq k \leq N/2: \\
@@ -360,8 +362,7 @@ $$
 \\
 \\
 N/2 \leq k \leq N: \\
-\end{matrix} 
-\left[ 
+\end{matrix} \left[ 
 \begin{array}{cccccccc}
 w^0 & w^0 & w^0 & w^0 & w^0 & w^0 & w^0 & w^0\\
 w^0 & w^1 & w^2 & w^3 & w^4 & w^5 & w^6 & w^7 \\
@@ -376,9 +377,9 @@ w^0 & w^3 & w^6 & w^9 & w^{12} & w^{15} & w^{18} & w^{21} \\
 $$
 
 The next step is to split the matrices into even and odd entries of $x_n$, 
+
 $$
-\left[ 
-\begin{array}{cccc cccc}
+\left[ \begin{array}{cccc cccc}
 w^0 & w^0 & w^0 & w^0 & w^0 & w^0 & w^0 & w^0\\
 w^0 & w^1 & w^2 & w^3 & w^4 & w^5 & w^6 & w^7 \\
 w^0 & w^2 & w^4 & w^6 & w^8 & w^{10} & w^{12} & w^{14} \\
@@ -426,28 +427,24 @@ w^0 & - & w^6 & - & w^{12} & - & w^{18} & - \\
 $$
 
 So we obtain two DFT's of shape $4 \times 4$,
+
 $$
-\left[
-  \begin{array}{}
+\left[ \begin{array}{}
 X_0 \\ X_1 \\ X_2 \\ X_3 \\
-\end{array}
-\right]
-=
-\left[ 
+\end{array} 
+\right] = \left[ 
 \begin{array}{}
 w^0 & w^0 & w^0 & w^0 \\
 w^0 & w^2 & w^4 & w^6 \\
 w^0 & w^4 & w^8 & w^{12} \\
 w^0 & w^6 & w^{12} & w^{18} \\
-\end{array}
-\right]
-\left[ 
+\end{array} \right] \left[ 
 \begin{array}{}
 x_0 \\ x_2 \\ x_4 \\ x_6 \\
 \end{array}
 \right]
 + 
-% \underbrace{
+\underbrace{
 \left[ 
 \begin{array}{}
 w^0 &     &     & \\
@@ -456,7 +453,7 @@ w^0 &     &     & \\
     &     &     & w^3 \\
 \end{array}
 \right]
-% }_{e^{-2 \pi k \frac{m}{N}}}
+}_{e^{-2 \pi k \frac{m}{N}}}
 \left[ 
 \begin{array}{}
 w^0 & w^0 & w^0 & w^0\\
@@ -473,6 +470,7 @@ x_1 \\ x_3 \\ x_5 \\ x_7 \\
 $$
 
 The magic periodicity reuses the computations in the first half of the DFT to give the second half $X_{k+N/2}$ frequency bins with minimal overhead:
+
 $$
 \left[
   \begin{array}{}
@@ -531,7 +529,7 @@ For that to happen, we take the even of the evens, $[x_0, x_4]$ and the odds of 
 
 $$
 \text{DFT}
-\left( \left[s
+\left( \left[
 \begin{array}{}
 x_0 \\ x_2 \\ x_4 \\ x_6 \\
 \end{array}
@@ -562,6 +560,7 @@ x_0 \\ x_2 \\ x_4 \\ x_6 \\
 $$
 
 Again using the key insight that we can reconstruct the second half of the DFT bins from the first half, we can zero out a lot of computations to essentially break down the original DFT from a $4 \times 4$ to two $2 \times 2$ matrix multiplications:
+
 $$
 \left[
   \begin{array}{}
@@ -606,6 +605,7 @@ w^0 &     &     & \\
 $$
 
 and we can reconfigure the already computed $2 \times 2$ matrices to get the second half of the frequency bins
+
 $$
 \left[
   \begin{array}{}
