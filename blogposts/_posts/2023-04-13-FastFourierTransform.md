@@ -421,7 +421,7 @@ w^0 & - & w^6 & - & w^{12} & - & w^{18} & - \\
 $$
 
 So we obtain two DFT's of shape $4 \times 4$,
-
+{% raw %}
 $$
 \left[ \begin{array}{}
 X_0 \\ X_1 \\ X_2 \\ X_3 \\
@@ -462,9 +462,11 @@ x_1 \\ x_3 \\ x_5 \\ x_7 \\
 \end{array}
 \right]
 $$
+{% endraw %}
 
 The magic periodicity reuses the computations in the first half of the DFT to give the second half $X_{k+N/2}$ frequency bins with minimal overhead:
 
+{% raw %}
 $$
 \left[ \begin{array}{} X_4 \\ X_5 \\ X_6 \\ X_7 \\ \end{array} \right] =
 \underbrace{
@@ -507,6 +509,7 @@ x_1 \\ x_3 \\ x_5 \\ x_7 \\
 \right]
 }_{\text{already been computed}}
 $$
+{% endraw %}
 
 Not using the structure of the matrix respectively the complex periodicity would have left us with a $ 8 \times 8 = 64$ matrix multiplication.
 Using the tricks laid out above costs us two $4 \times 4$ matrix multplications, two $4$ additions and two $4$ multiplications for a grand total of $2 \cdot (4 \times 4) + 2 \cdot 4 + 2 \cdot 4 = 48$ operations
@@ -516,6 +519,7 @@ This is were the recursion kicks in in the linear algebra formulation.
 
 For that to happen, we take the even of the evens, $[x_0, x_4]$ and the odds of the even $[x_2, x_6]$ and split them as before:
 
+{% raw %}
 $$
 \text{DFT}
 \left( \left[
@@ -547,9 +551,10 @@ x_0 \\ x_2 \\ x_4 \\ x_6 \\
 \end{array}
 \right]
 $$
+{% endraw %}
 
 Again using the key insight that we can reconstruct the second half of the DFT bins from the first half, we can zero out a lot of computations to essentially break down the original DFT from a $4 \times 4$ to two $2 \times 2$ matrix multiplications:
-
+{% raw %}
 $$
 \left[
   \begin{array}{}
@@ -592,13 +597,15 @@ w^0 &     &     & \\
 \end{array}
 \right]
 $$
+{% endraw %}
 
 and we can reconfigure the already computed $2 \times 2$ matrices to get the second half of the frequency bins
-
+{% raw %}
 $$
 \begin{bmatrix}
 X_3 \\ X_4 \\
 \end{bmatrix}
+=
 \underbrace{
 \begin{bmatrix}
 w^0 & w^0 \\
@@ -620,65 +627,7 @@ w^3 & w^7 \\
 x_2 \\ x_6 \\
 \end{bmatrix}
 $$
-
-$$
-\begin{bmatrix}
-x_2 \\ x_6 \\
-\end{bmatrix}
-$$
-
-hahah
-$$
-\begin{bmatrix}
-x_2 \\ x_6 \\
-\end{bmatrix}
-$$
-
-
-hahah
-$$
-\begin{bmatrix} x_2 \\ x_6 \\ \end{bmatrix}
-$$
-
-hahah
-
-$$
-\begin{bmatrix}
-x_2 \\ x_6 \\
-\end{bmatrix}
-$$
-
-{% raw %}
-$$
-\begin{aligned}
-  X_0 \otimes X_1 =  
-  \begin{pmatrix}
-    0\begin{pmatrix} 
-      0 & 1 \\\\\\\\
-      1 & 0
-    \end{pmatrix} & 1\begin{pmatrix}
-                      0 & 1 \\\\\\\\
-                      1 & 0
-                     \end{pmatrix} \\\\\\\\
-    1\begin{pmatrix} 
-      0 & 1 \\\\\\\\
-      1 & 0
-     \end{pmatrix} & 0\begin{pmatrix}
-                       0 & 1 \\\\\\\\
-                       1 & 0
-                      \end{pmatrix} 
-  \end{pmatrix} = 
-  \begin{pmatrix}
-    0 & 0 & 0 & 1 \\\\\\\\
-    0 & 0 & 1 & 0 \\\\\\\\
-    0 & 1 & 0 & 0 \\\\\\\\
-    1 & 0 & 0 & 0 
-  \end{pmatrix}
-\end{aligned}
-$$
 {% endraw %}
-
-whats going on
 
 And we can do it yet again by observing that the $2 \times 2$ matrix can be broken up again once more (but at size 1 the recursion naturally stops).
 Similarly this recursion applies equally to the original odd entry terms in the upper most recursion layer.
