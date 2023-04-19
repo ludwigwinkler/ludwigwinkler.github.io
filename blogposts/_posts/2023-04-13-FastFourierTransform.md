@@ -30,6 +30,16 @@ $$
  \newcommand\scalemath[2]{\scalebox{#1}{\mbox{\ensuremath{\displaystyle #2}}}}
 $$
 
+During the Easter holiday at my parents house, I discovered a 800 page digital signal processings book in my dad's book shelf.
+Leafing through the pages and examining the table of contents, I saw a whole section on the Fast Fourier Transform (FFT) which has been called by many scientists one of the most important algorithms of our time.
+
+To quote 'What a Wonderful World' by Louis Armstrong: 
+
+🎼 *'And I think to myself, what a wonderful (world) algorithm ...'*.
+
+But how does this apparently 'super-duper important algorithm' actually work?
+That's when I went down a rabbit whole full of complex exponentials, recursion and nifty tricks for periodic functions.
+
 ### Why we're going to what we're going to do
 
 If you went looking for an explanation of the Fast Fourier Transform (FFT) you already know how frequencies, Fourier transformations and complex numbers relate to each other.
