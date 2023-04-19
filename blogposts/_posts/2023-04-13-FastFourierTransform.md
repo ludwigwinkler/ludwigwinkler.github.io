@@ -3,7 +3,7 @@ layout: post
 title:  "Fast Fourier Transform"
 date:   2023-04-11
 excerpt: "From Complex Exponentials to Frequencies in  O(N log N)"
-# image: "../../blog/CTMC/vmap4.png"
+image: "../../blog/blogthumbnails/FFT.png"
 ---
 <head>
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
@@ -297,7 +297,7 @@ For this efficient algorithn, we require that the length $N$ is a root of 2, suc
 First we will define the $n$'th root of unity as
 $$
 \begin{align}
-w_n = e^{-\frac{i 2 \pi}{N}} \qquad w^{n \cdot k} = e^{-i 2 \pi \ k \ \frac{n}{N}}
+w_N = e^{-\frac{i 2 \pi}{N}} \qquad w_N^{n \cdot k} = e^{-i 2 \pi \ k \ \frac{n}{N}}
 \end{align}
 $$
 
@@ -325,31 +325,27 @@ Doing this naively would cost us exactly $8 \times 8 = 64$ operations
 
 But what do know about the roots of unity that we can exploit?
 While it may appear that the roots of unity are just increasing haphazardly, there are many duplicates *as the complex exponentials are circular*.
-This means that for example $w^2=w^{10}$ as with a length of $N=8$, $w^{10}$ does a full circle back to $w^2$ (it requires '8 steps' to do a full circle and has '2 steps' left to end up where $w^2$ is already, so the modulo operator respectively the periodic property of the complex exponential).
-Similarly $w^4=w^{12}$.
+This means that for example $w_8^2=w_8^{10}$ as with a length of $N=8$, $w_8^{10}$ does a full circle back to $w_8^2$ (it requires '8 steps' to do a full circle and has '2 steps' left to end up where $w^2$ is already, so the modulo operator respectively the periodic property of the complex exponential).
+Similarly $w_8^4=w_8^{12}$.
 
 Additionally, our astute obeservation of earlier tells that we don't need to compute the second half of the matrix, but can instead reconstruct it from the results in the upper half.
 
 $$
 \begin{matrix} 0 \leq k \leq N/2: \\ \\ \\ \\ N/2 \leq k \leq N: \\ \end{matrix} 
 \begin{bmatrix}
-w^0 & w^0 & w^0 & w^0 & w^0 & w^0 & w^0 & w^0\\
-w^0 & w^1 & w^2 & w^3 & w^4 & w^5 & w^6 & w^7 \\
-w^0 & w^2 & w^4 & w^6 & w^8 & w^{10} & w^{12} & w^{14} \\
-w^0 & w^3 & w^6 & w^9 & w^{12} & w^{15} & w^{18} & w^{21} \\
+w_8^0 & w_8^0 & w_8^0 & w_8^0 & w_8^0 & w_8^0 & w_8^0 & w_8^0\\
+w_8^0 & w_8^1 & w_8^2 & w_8^3 & w_8^4 & w_8^5 & w_8^6 & w_8^7 \\
+w_8^0 & w_8^2 & w_8^4 & w_8^6 & w_8^8 & w_8^{10} & w_8^{12} & w_8^{14} \\
+w_8^0 & w_8^3 & w_8^6 & w_8^9 & w_8^{12} & w_8^{15} & w_8^{18} & w_8^{21} \\
 \hline
-w^0 & w^4 & w^8 & w^{12} & w^{16} & w^{20} & w^{24} & w^{28} \\
-w^0 & w^5 & w^{10} & w^{15} & w^{20} & w^{25} & w^{30} & w^{35} \\
-w^0 & w^6 & w^{12} & w^{18} & w^{24} & w^{30} & w^{36} & w^{42} \\
-w^0 & w^7 & w^{14} & w^{21} & w^{28} & w^{35} & w^{42} & w^{49} \\
-\end{bmatrix}
-$$
-
-$$ 
-\qquad \qquad \qquad \downarrow 
-$$
-
-$$
+w_8^0 & w_8^4 & w_8^8 & w_8^{12} & w_8^{16} & w_8^{20} & w_8^{24} & w_8^{28} \\
+w_8^0 & w_8^5 & w_8^{10} & w_8^{15} & w_8^{20} & w_8^{25} & w_8^{30} & w_8^{35} \\
+w_8^0 & w_8^6 & w_8^{12} & w_8^{18} & w_8^{24} & w_8^{30} & w_8^{36} & w_8^{42} \\
+w_8^0 & w_8^7 & w_8^{14} & w_8^{21} & w_8^{28} & w_8^{35} & w_8^{42} & w_8^{49} \\
+\end{bmatrix} \\
+\\
+\qquad \qquad \qquad \Big \downarrow \\
+\\
 \begin{matrix}
 0 \leq k \leq N/2: \\
 \\
@@ -358,10 +354,10 @@ $$
 N/2 \leq k \leq N: \\
 \end{matrix} \left[ 
 \begin{array}{cccccccc}
-w^0 & w^0 & w^0 & w^0 & w^0 & w^0 & w^0 & w^0\\
-w^0 & w^1 & w^2 & w^3 & w^4 & w^5 & w^6 & w^7 \\
-w^0 & w^2 & w^4 & w^6 & w^8 & w^{10} & w^{12} & w^{14} \\
-w^0 & w^3 & w^6 & w^9 & w^{12} & w^{15} & w^{18} & w^{21} \\
+w_8^0 & w_8^0 & w_8^0 & w_8^0 & w_8^0 & w_8^0 & w_8^0 & w_8^0\\
+w_8^0 & w_8^1 & w_8^2 & w_8^3 & w_8^4 & w_8^5 & w_8^6 & w_8^7 \\
+w_8^0 & w_8^2 & w_8^4 & w_8^6 & w_8^8 & w_8^{10} & w_8^{12} & w_8^{14} \\
+w_8^0 & w_8^3 & w_8^6 & w_8^9 & w_8^{12} & w_8^{15} & w_8^{18} & w_8^{21} \\
 \hline
 - & - & - & - & - & - & -  & - \\
 - & - & - & - & - & - & -  & - \\
@@ -374,93 +370,127 @@ The next step is to split the matrices into even and odd entries of $x_n$,
 
 $$
 \left[ \begin{array}{cccc cccc}
-w^0 & w^0 & w^0 & w^0 & w^0 & w^0 & w^0 & w^0\\
-w^0 & w^1 & w^2 & w^3 & w^4 & w^5 & w^6 & w^7 \\
-w^0 & w^2 & w^4 & w^6 & w^8 & w^{10} & w^{12} & w^{14} \\
-w^0 & w^3 & w^6 & w^9 & w^{12} & w^{15} & w^{18} & w^{21} \\
+w_8^0 & w_8^0 & w_8^0 & w_8^0 & w_8^0 & w_8^0 & w_8^0 & w_8^0\\
+w_8^0 & w_8^1 & w_8^2 & w_8^3 & w_8^4 & w_8^5 & w_8^6 & w_8^7 \\
+w_8^0 & w_8^2 & w_8^4 & w_8^6 & w_8^8 & w_8^{10} & w_8^{12} & w_8^{14} \\
+w_8^0 & w_8^3 & w_8^6 & w_8^9 & w_8^{12} & w_8^{15} & w_8^{18} & w_8^{21} \\
 \hline
 - & - & - & - & - & - & -  & - \\
 - & - & - & - & - & - & -  & - \\
 - & - & - & - & - & - & -  & - \\
 - & - & - & - & - & - & -  & - \\
-\end{array} \right]
+\end{array} \right] \\
+\qquad \Big \downarrow \quad \text{Split}\\
+\begin{matrix}
+\underbrace{\begin{bmatrix}
+w_8^0 & - & w_8^0 & - & w_8^0 & - & w_8^0 & - \\
+w_8^0 & - & w_8^2 & - & w_8^4 & - & w_8^6 & - \\
+w_8^0 & - & w_8^4 & - & w_8^8 & - & w_8^{12} & - \\
+w_8^0 & - & w_8^6 & - & w_8^{12} & - & w_8^{18} & - \\
+\hline
+- & - & - & - & - & - & -  & - \\
+- & - & - & - & - & - & -  & - \\
+- & - & - & - & - & - & -  & - \\
+- & - & - & - & - & - & -  & - \\
+\end{bmatrix}
+}_{\text{even entries of $x_n$}} 
+&, 
+\underbrace{ 
+\begin{bmatrix}
+- & w_8^0 & - & w_8^0 & - & w_8^0 & - & w_8^0\\
+- & w_8^1 & - & w_8^3 & - & w_8^5 & - & w_8^7 \\
+- & w_8^2 & - & w_8^6 & - & w_8^{10} & - & w_8^{14} \\
+- & w_8^3 & - & w_8^9 & - & w_8^{15} & - & w_8^{21} \\
+\hline
+- & - & - & - & - & - & -  & - \\
+- & - & - & - & - & - & -  & - \\
+- & - & - & - & - & - & -  & - \\
+- & - & - & - & - & - & -  & - \\
+\end{bmatrix}
+}_{\text{odd entries of $x_n$}} \\
+\big \downarrow & \qquad \qquad \qquad \big \downarrow \text{Extract} \ e^{-i2\pi \frac{k}{N}} \\
+\begin{bmatrix}
+w_8^0& w_8^0 & w_8^0 & w_8^0\\
+w_8^0& w_8^2 & w_8^4 & w_8^6 \\
+w_8^0& w_8^4 & w_8^{8} & w_8^{12} \\
+w_8^0& w_8^6 & w_8^{12} & w_8^{18} \\
+\end{bmatrix}
+& 
+\begin{bmatrix}
+w_8^0 &     &     & \\
+    & w_8^1 &     & \\
+    &     & w_8^2 & \\
+    &     &     & w_8^3 \\
+\end{bmatrix}
+\begin{bmatrix}
+w_8^0 & w_8^0 & w_8^0 & w_8^0\\
+w_8^0 & w_8^2 & w_8^4 & w_8^6 \\
+w_8^0 & w_8^4 & w_8^{8} & w_8^{12} \\
+w_8^0 & w_8^6 & w_8^{12} & w_8^{18} \\
+\end{bmatrix} \\
+\qquad \big \downarrow \text{DIT} & \qquad \big \downarrow \text{DIT} \\
+\begin{bmatrix}
+w_4^0 & w_4^0 & w_4^0 & w_4^0\\
+w_4^0 & w_4^1 & w_4^2 & w_4^3 \\
+w_4^0 & w_4^2 & w_4^{4} & w_4^{6} \\
+w_4^0 & w_4^3 & w_4^6 & w_4^{9} \\
+\end{bmatrix}
+& \begin{bmatrix}
+w_8^0 &     &     & \\
+    & w_8^1 &     & \\
+    &     & w_8^2 & \\
+    &     &     & w_8^3 \\
+\end{bmatrix}
+\begin{bmatrix}
+w_4^0 & w_4^0 & w_4^0 & w_4^0\\
+w_4^0 & w_4^1 & w_4^2 & w_4^3 \\
+w_4^0 & w_4^2 & w_4^{4} & w_4^{6} \\
+w_4^0 & w_4^3 & w_4^6 & w_4^{9} \\
+\end{bmatrix} \\
+\end{matrix}
 $$
 
+where the DIT stands for 'Decimation in Time' where we flip the $2$ in the complex exponential $\frac{2m}{N}$ down to $\frac{m}{N/2}$ which halves both the nominator and denominator, i.e.
 $$
-\downarrow
+\begin{align}
+w_8^6 = e^{-i2\pi \ k \ \frac{2m}{N}} |_{m=1, k=3, N=8} = e^{-i2\pi \ k \ \frac{m}{N/2}} |_{m=1, k=3, N=8} = w_4^3 
+\end{align}
 $$
-
-$$
-\underbrace{
-\left[ 
-\begin{array}{cccc cccc}
-w^0 & - & w^0 & - & w^0 & - & w^0 & - \\
-w^0 & - & w^2 & - & w^4 & - & w^6 & - \\
-w^0 & - & w^4 & - & w^8 & - & w^{12} & - \\
-w^0 & - & w^6 & - & w^{12} & - & w^{18} & - \\
-\hline
-- & - & - & - & - & - & -  & - \\
-- & - & - & - & - & - & -  & - \\
-- & - & - & - & - & - & -  & - \\
-- & - & - & - & - & - & -  & - \\
-\end{array} \right]
-}_{\text{even entries of $x_n$}} , \underbrace{ 
-\left[ 
-\begin{array}{cccccccc}
-- & w^0 & - & w^0 & - & w^0 & - & w^0\\
-- & w^1 & - & w^3 & - & w^5 & - & w^7 \\
-- & w^2 & - & w^6 & - & w^{10} & - & w^{14} \\
-- & w^3 & - & w^9 & - & w^{15} & - & w^{21} \\
-\hline
-- & - & - & - & - & - & -  & - \\
-- & - & - & - & - & - & -  & - \\
-- & - & - & - & - & - & -  & - \\
-- & - & - & - & - & - & -  & - \\
-\end{array} \right]
-}_{\text{odd entries of $x_n$}}
-$$
+Besides being mathematically correct, it makes intuitively sense, as doing $6$ steps with $1/8$'th of a stepsize is the same as doing $3$ steps with $1/4$'th of a step size on a circle.
 
 So we obtain two DFT's of shape $4 \times 4$,
 {% raw %}
 $$
-\left[ \begin{array}{}
+\begin{bmatrix}
 X_0 \\ X_1 \\ X_2 \\ X_3 \\
-\end{array} 
-\right] = \left[ 
-\begin{array}{}
-w^0 & w^0 & w^0 & w^0 \\
-w^0 & w^2 & w^4 & w^6 \\
-w^0 & w^4 & w^8 & w^{12} \\
-w^0 & w^6 & w^{12} & w^{18} \\
-\end{array} \right] \left[ 
-\begin{array}{}
+\end{bmatrix} 
+=
+\begin{bmatrix}
+w_4^0 & w_4^0 & w_4^0 & w_4^0\\
+w_4^0 & w_4^1 & w_4^2 & w_4^3 \\
+w_4^0 & w_4^2 & w_4^{4} & w_4^{6} \\
+w_4^0 & w_4^3 & w_4^6 & w_4^{9} \\
+\end{bmatrix}
+\begin{bmatrix}
 x_0 \\ x_2 \\ x_4 \\ x_6 \\
-\end{array}
-\right]
+\end{bmatrix}
 + 
 \underbrace{
-\left[ 
-\begin{array}{}
-w^0 &     &     & \\
-    & w^1 &     & \\
-    &     & w^2 & \\
-    &     &     & w^3 \\
-\end{array}
-\right]
-}_{e^{-2 \pi k \frac{m}{N}}}
-\left[ 
-\begin{array}{}
-w^0 & w^0 & w^0 & w^0\\
-w^1 & w^3 & w^5 & w^7 \\
-w^2 & w^6 & w^{10} & w^{14} \\
-w^3 & w^9 & w^{15} & w^{21} \\
-\end{array}
-\right]
-\left[ 
-\begin{array}{}
+\begin{bmatrix}
+w_8^0 &     &     & \\
+    & w_8^1 &     & \\
+    &     & w_8^2 & \\
+    &     &     & w_8^3 \\
+\end{bmatrix}}_{e^{-i 2 \pi \frac{k}{N}}}
+\begin{bmatrix}
+w_4^0 & w_4^0 & w_4^0 & w_4^0\\
+w_4^0 & w_4^1 & w_4^2 & w_4^3 \\
+w_4^0 & w_4^2 & w_4^{4} & w_4^{6} \\
+w_4^0 & w_4^3 & w_4^6 & w_4^{9} \\
+\end{bmatrix}
+\begin{bmatrix}
 x_1 \\ x_3 \\ x_5 \\ x_7 \\
-\end{array}
-\right]
+\end{bmatrix}
 $$
 {% endraw %}
 
@@ -470,43 +500,34 @@ The magic periodicity reuses the computations in the first half of the DFT to gi
 $$
 \left[ \begin{array}{} X_4 \\ X_5 \\ X_6 \\ X_7 \\ \end{array} \right] =
 \underbrace{
-\left[ 
-\begin{bmatrix}{}
-w^0 & w^0 & w^0 & w^0 \\
-w^0 & w^2 & w^4 & w^6 \\
-w^0 & w^4 & w^8 & w^{12} \\
-w^0 & w^6 & w^{12} & w^{18} \\
+\begin{bmatrix}
+w_4^0 & w_4^0 & w_4^0 & w_4^0\\
+w_4^0 & w_4^1 & w_4^2 & w_4^3 \\
+w_4^0 & w_4^2 & w_4^{4} & w_4^{6} \\
+w_4^0 & w_4^3 & w_4^6 & w_4^{9} \\
 \end{bmatrix}
-\right]
-\left[ 
-\begin{array}{}
+\begin{bmatrix}
 x_0 \\ x_2 \\ x_4 \\ x_6 \\
-\end{array}
-\right]
+\end{bmatrix}
 }_{\text{already computed above}}
 -
-\left[ 
-\begin{array}{}
-w^0 &     &     & \\
-    & w^1 &     & \\
-    &     & w^2 & \\
-    &     &     & w^3 \\
-\end{array}
-\right]
 \underbrace{
-\left[ 
-\begin{array}{}
-w^0 & w^0 & w^0 & w^0\\
-w^1 & w^3 & w^5 & w^7 \\
-w^2 & w^6 & w^{10} & w^{14} \\
-w^3 & w^9 & w^{15} & w^{21} \\
-\end{array}
-\right]
-\left[ 
-\begin{array}{}
+\begin{bmatrix}
+w_8^4 &     &     & \\
+    & w_8^5 &     & \\
+    &     & w_8^6 & \\
+    &     &     & w_8^7 \\
+\end{bmatrix}}_{e^{-i 2 \pi \frac{k}{N}}}
+\underbrace{
+\begin{bmatrix}
+w_4^0 & w_4^0 & w_4^0 & w_4^0\\
+w_4^0 & w_4^1 & w_4^2 & w_4^3 \\
+w_4^0 & w_4^2 & w_4^{4} & w_4^{6} \\
+w_4^0 & w_4^3 & w_4^6 & w_4^{9} \\
+\end{bmatrix}
+\begin{bmatrix}
 x_1 \\ x_3 \\ x_5 \\ x_7 \\
-\end{array}
-\right]
+\end{bmatrix}
 }_{\text{already been computed}}
 $$
 {% endraw %}
@@ -536,66 +557,51 @@ X_0 \\ X_1 \\ X_2 \\ X_3 \\
 \right]
 = 
 \underbrace{
-\left[ 
-\begin{array}{}
-w^0 & w^0 & w^0 & w^0 \\
-w^0 & w^2 & w^4 & w^6 \\
-w^0 & w^4 & w^8 & w^{12} \\
-w^0 & w^6 & w^{12} & w^{18} \\
-\end{array}
-\right]
+\begin{bmatrix}
+w_4^0 & w_4^0 & w_4^0 & w_4^0\\
+w_4^0 & w_4^1 & w_4^2 & w_4^3 \\
+w_4^0 & w_4^2 & w_4^{4} & w_4^{6} \\
+w_4^0 & w_4^3 & w_4^6 & w_4^{9} \\
+\end{bmatrix}
 }_{\text{yet again a DFT matrix}}
-\left[
-\begin{array}{}
+\begin{bmatrix}
 x_0 \\ x_2 \\ x_4 \\ x_6 \\
-\end{array}
-\right]
+\end{bmatrix}
 $$
 {% endraw %}
 
 Again using the key insight that we can reconstruct the second half of the DFT bins from the first half, we can zero out a lot of computations to essentially break down the original DFT from a $4 \times 4$ to two $2 \times 2$ matrix multiplications:
 {% raw %}
 $$
-\left[
-  \begin{array}{}
+\begin{bmatrix}
 X_0 \\ X_1 \\ - \\ - \\
-\end{array}
-\right]
-\left[ 
-\begin{array}{}
-w^0 & - & w^0 & - \\
-w^0 & - & w^4 & - \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+w_4^0 & - & w_4^0 & - \\
+w_4^0 & - & w_4^2 & - \\
 - & - & - & -  \\
 - & - & - & -  \\
-\end{array}
-\right]
-\left[ 
-\begin{array}{}
+\end{bmatrix}
+\begin{bmatrix}
 x_0 \\ - \\ x_4 \\ - \\
-\end{array}
-\right]
+\end{bmatrix}
 + 
-\left[ 
-\begin{array}{}
-w^0 &     &     & \\
-    & w^1 &     & \\
+\begin{bmatrix}
+w_4^0 &     &     & \\
+    & w_4^1 &     & \\
     &     & - & \\
     &     &     & - \\
-\end{array}
-\right]
-\left[ 
-\begin{array}{}
-- & w^0 & - & w^0\\
-- & w^3 & - & w^7 \\
+\end{bmatrix}
+\begin{bmatrix}
+- & w_4^0 & - & w_4^0\\
+- & w_4^0 & - & w_4^2 \\
 - & - & - & -  \\
 - & - & - & -  \\
-\end{array}
-\right]
-\left[ 
-\begin{array}{}
+\end{bmatrix}
+\begin{bmatrix}
 - \\ x_2 \\ - \\ x_6 \\
-\end{array}
-\right]
+\end{bmatrix}
 $$
 {% endraw %}
 
@@ -608,20 +614,21 @@ X_3 \\ X_4 \\
 =
 \underbrace{
 \begin{bmatrix}
-w^0 & w^0 \\
-w^0 & w^4 \\
+w_2^0 & w_2^0 \\
+w_2^0 & w_2^1 \\
 \end{bmatrix}
 \begin{bmatrix}
 x_0 \\ x_4 \\
 \end{bmatrix}
-}_{\text{already computed}} - 
+}_{\text{already computed}} 
+- 
 \begin{bmatrix}
-w^0 &     \\
-    & w^1 \\
+w_4^2 &     \\
+    & w_4^3 \\
 \end{bmatrix}
 \begin{bmatrix}
-w^0 & w^0\\
-w^3 & w^7 \\
+w_2^0 & w_2^0\\
+w_2^0 & w_2^1 \\
 \end{bmatrix}
 \begin{bmatrix}
 x_2 \\ x_6 \\
