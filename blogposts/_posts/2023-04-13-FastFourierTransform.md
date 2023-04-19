@@ -646,3 +646,16 @@ Each evaluation in the recursion allows us to reconstruct frequency bins twice o
 So for signals of length $8$, we need 4 recursive step to arrive at a DFT length of one, from which we can reconstruct the frequency bins efficiently.
 For a signal of length $16$ we need 5 recursions, for $32$ just one more, namely 6 recursions, and for $64$ just seven recursions.
 While the speed up might be small for short signals, audio people with 20.000 samplings steps should seriously rejoice and feel blessed by the $O(N \log N)$ complexity.
+
+### The inverse DFT
+
+In order to reconstruct a signal from its Fourier coefficients $X_k$, we multiply the frequency amplitude $X_k$ with a complex exponential which is a periodic function with a specific frequency $k$.
+We have the reconstruction
+$$
+x_n = \frac{1}{N} \sum_{k=0}^K X_k e^{i 2\pi k \frac{n}{N}}
+$$
+
+where the only difference to the DFT is the minus sign in the exponential and a scaling factor $1/N$.
+The cool thing is that the minus sign has no influence on the core structure of the transformation, so we can employ the entire algorithm again for the reconstruction from frequency to time domain.
+
+Thus we have a $O(N \log N)$ algorithm both for the transformation in both directions. Sweet ...
