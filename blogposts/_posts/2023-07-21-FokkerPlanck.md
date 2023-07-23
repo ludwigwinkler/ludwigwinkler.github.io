@@ -27,7 +27,6 @@ image: "../../blog/blogthumbnails/fokkerplanckito.png"
   src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
 </script>
 </head>
-
 $$
 \newcommand{\Efunc}[1]{\mathbb{E}\left[ #1\right]}
 \newcommand{\Vfunc}[1]{\mathbb{V}\left[ #1\right]}
