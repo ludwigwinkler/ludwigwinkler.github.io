@@ -287,7 +287,7 @@ M_\infty = \sum_k^\infty M_0 \cdot (1-r)^k = \frac{M_0}{r}
 \end{align}
 $$
 
-With $r=10%$ we increase the money supply tenfold but more importantly we create a chain of dependencies in terms of credit.
+With $r=10\%=0.1$ we increase the money supply tenfold but more importantly we create a chain of dependencies in terms of credit.
 By reducing the capital requirements we make every financial institution more susceptible to defaults, the chain along which the money bounces through the system longer and ultimately the entire system more fragile.
 
 Offshore finance centres are appealing to the financial system as transactions are done in almost complete darkness due to the lack of oversight.
