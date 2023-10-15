@@ -2,9 +2,54 @@
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
     <url>
+      <loc>http://localhost:4000/blog/FokkerPlanck/</loc>
+      
+        <lastmod>2023-07-21T00:00:00+02:00</lastmod>
+      
+      <changefreq>weekly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  
+    <url>
+      <loc>http://localhost:4000/blog/Kramers/</loc>
+      
+        <lastmod>2023-07-21T00:00:00+02:00</lastmod>
+      
+      <changefreq>weekly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  
+    <url>
+      <loc>http://localhost:4000/blog/FastFourierTransform/</loc>
+      
+        <lastmod>2023-04-11T00:00:00+02:00</lastmod>
+      
+      <changefreq>weekly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  
+    <url>
+      <loc>http://localhost:4000/blog/ContTimeMarkovChain/</loc>
+      
+        <lastmod>2023-01-09T00:00:00+01:00</lastmod>
+      
+      <changefreq>weekly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  
+    <url>
+      <loc>http://localhost:4000/blog/TraceEstimation/</loc>
+      
+        <lastmod>2022-12-09T00:00:00+01:00</lastmod>
+      
+      <changefreq>weekly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  
+    <url>
       <loc>http://localhost:4000/blog/moneylaundering/</loc>
       
-        <lastmod>2022-11-19T00:00:00+01:00</lastmod>
+        <lastmod>2022-11-26T00:00:00+01:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
@@ -146,15 +191,6 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/blog/Kramers/</loc>
-      
-        <lastmod>2021-02-04T00:00:00+01:00</lastmod>
-      
-      <changefreq>weekly</changefreq>
-      <priority>0.7</priority>
-    </url>
-  
-    <url>
       <loc>http://localhost:4000/blog/Berlin2020/</loc>
       
         <lastmod>2020-12-31T00:00:00+01:00</lastmod>
@@ -167,33 +203,6 @@
       <loc>http://localhost:4000/blog/Poisson/</loc>
       
         <lastmod>2020-11-10T00:00:00+01:00</lastmod>
-      
-      <changefreq>weekly</changefreq>
-      <priority>0.7</priority>
-    </url>
-  
-    <url>
-      <loc>http://localhost:4000/blog/AdjointOperatorsForKolmogorov/</loc>
-      
-        <lastmod>2020-08-10T00:00:00+02:00</lastmod>
-      
-      <changefreq>weekly</changefreq>
-      <priority>0.7</priority>
-    </url>
-  
-    <url>
-      <loc>http://localhost:4000/blog/SchroedingerBridgeWithReverseTimeProcesses/</loc>
-      
-        <lastmod>2020-08-10T00:00:00+02:00</lastmod>
-      
-      <changefreq>weekly</changefreq>
-      <priority>0.7</priority>
-    </url>
-  
-    <url>
-      <loc>http://localhost:4000/blog/SteinGradient/</loc>
-      
-        <lastmod>2020-08-10T00:00:00+02:00</lastmod>
       
       <changefreq>weekly</changefreq>
       <priority>0.7</priority>
