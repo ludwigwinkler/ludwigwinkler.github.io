@@ -1,11 +1,39 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-10-15T22:42:25+02:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Israel to Jordan</title><link href="http://localhost:4000/blog/IsraelJordan23/" rel="alternate" type="text/html" title="Israel to Jordan" /><published>2023-10-14T00:00:00+02:00</published><updated>2023-10-14T00:00:00+02:00</updated><id>http://localhost:4000/blog/IsraelJordan23</id><content type="html" xml:base="http://localhost:4000/blog/IsraelJordan23/">&lt;!-- ## Berlin Over The Years --&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-10-16T10:53:58+02:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Israel to Jordan</title><link href="http://localhost:4000/blog/IsraelJordan23/" rel="alternate" type="text/html" title="Israel to Jordan" /><published>2023-10-14T00:00:00+02:00</published><updated>2023-10-14T00:00:00+02:00</updated><id>http://localhost:4000/blog/IsraelJordan23</id><content type="html" xml:base="http://localhost:4000/blog/IsraelJordan23/">&lt;!-- ## Berlin Over The Years --&gt;
 &lt;p&gt;For a compilation of (legally unauthorized) 4K drone footage of the beautiful Wadi Rum check out this &lt;a href=&quot;https://www.youtube.com/watch?v=9-UedQjFBew&quot;&gt;Youtube link&lt;/a&gt;.&lt;/p&gt;
+
 &lt;style&gt;
-    .image-gallery {overflow: auto; margin-left: -1%!important;}
-    .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
-    .image-gallery li a {text-align: top; text-decoration: none!important; color: #777;}
-    .image-gallery li a span {display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; padding: 3px 0;}
-    .image-gallery li a img {width: 100%; height: 100%; display: flex; vertical-align: top;
+    .image-gallery {
+        overflow: auto;
+        margin-left: -1% !important;
+    }
+
+    .image-gallery li {
+        float: left;
+        float: top;
+        display: block;
+        margin: 0 0 1% 1%;
+        width: 99%;
+    }
+
+    .image-gallery li a {
+        text-align: top;
+        text-decoration: none !important;
+        color: #777;
+    }
+
+    .image-gallery li a span {
+        display: block;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        padding: 3px 0;
+    }
+
+    .image-gallery li a img {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        vertical-align: top;
     }
 &lt;/style&gt;
 
@@ -191,97 +219,81 @@
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231001-_DSC3720.jpg&quot; title=&quot;20231001-_DSC3720&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/israeljordan23/20231001-_DSC3720.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20231001-_DSC3720&quot; title=&quot;20231001-_DSC3720&quot; /&gt;&lt;span&gt;20231001-_DSC3720&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231001-_DSC3720.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/israeljordan23/20231001-_DSC3720.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231002-_DSC3839.jpg&quot; title=&quot;20231002-_DSC3839&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/israeljordan23/20231002-_DSC3839.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20231002-_DSC3839&quot; title=&quot;20231002-_DSC3839&quot; /&gt;&lt;span&gt;20231002-_DSC3839&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231002-_DSC3839.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/israeljordan23/20231002-_DSC3839.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231003-_DSC3857.jpg&quot; title=&quot;20231003-_DSC3857&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/israeljordan23/20231003-_DSC3857.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20231003-_DSC3857&quot; title=&quot;20231003-_DSC3857&quot; /&gt;&lt;span&gt;20231003-_DSC3857&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231003-_DSC3857.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/israeljordan23/20231003-_DSC3857.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231003-_DSC3925.jpg&quot; title=&quot;20231003-_DSC3925&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/israeljordan23/20231003-_DSC3925.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20231003-_DSC3925&quot; title=&quot;20231003-_DSC3925&quot; /&gt;&lt;span&gt;20231003-_DSC3925&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231003-_DSC3925.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/israeljordan23/20231003-_DSC3925.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231003-_DSC3962.jpg&quot; title=&quot;20231003-_DSC3962&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/israeljordan23/20231003-_DSC3962.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20231003-_DSC3962&quot; title=&quot;20231003-_DSC3962&quot; /&gt;&lt;span&gt;20231003-_DSC3962&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231003-_DSC3962.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/israeljordan23/20231003-_DSC3962.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231005-_DSC4279.jpg&quot; title=&quot;20231005-_DSC4279&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/israeljordan23/20231005-_DSC4279.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20231005-_DSC4279&quot; title=&quot;20231005-_DSC4279&quot; /&gt;&lt;span&gt;20231005-_DSC4279&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231005-_DSC4279.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/israeljordan23/20231005-_DSC4279.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231006-_DSC4356.jpg&quot; title=&quot;20231006-_DSC4356&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/israeljordan23/20231006-_DSC4356.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20231006-_DSC4356&quot; title=&quot;20231006-_DSC4356&quot; /&gt;&lt;span&gt;20231006-_DSC4356&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231006-_DSC4356.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/israeljordan23/20231006-_DSC4356.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231008-_DSC4371.jpg&quot; title=&quot;20231008-_DSC4371&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/israeljordan23/20231008-_DSC4371.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20231008-_DSC4371&quot; title=&quot;20231008-_DSC4371&quot; /&gt;&lt;span&gt;20231008-_DSC4371&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231008-_DSC4371.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/israeljordan23/20231008-_DSC4371.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231008-_DSC4395.jpg&quot; title=&quot;20231008-_DSC4395&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/israeljordan23/20231008-_DSC4395.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20231008-_DSC4395&quot; title=&quot;20231008-_DSC4395&quot; /&gt;&lt;span&gt;20231008-_DSC4395&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231008-_DSC4395.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/israeljordan23/20231008-_DSC4395.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231008-_DSC4508.jpg&quot; title=&quot;20231008-_DSC4508&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/israeljordan23/20231008-_DSC4508.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20231008-_DSC4508&quot; title=&quot;20231008-_DSC4508&quot; /&gt;&lt;span&gt;20231008-_DSC4508&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231008-_DSC4508.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/israeljordan23/20231008-_DSC4508.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231008-_DSC4594.jpg&quot; title=&quot;20231008-_DSC4594&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/israeljordan23/20231008-_DSC4594.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20231008-_DSC4594&quot; title=&quot;20231008-_DSC4594&quot; /&gt;&lt;span&gt;20231008-_DSC4594&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231008-_DSC4594.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/israeljordan23/20231008-_DSC4594.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231008-_DSC4802.jpg&quot; title=&quot;20231008-_DSC4802&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/israeljordan23/20231008-_DSC4802.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20231008-_DSC4802&quot; title=&quot;20231008-_DSC4802&quot; /&gt;&lt;span&gt;20231008-_DSC4802&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231008-_DSC4802.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/israeljordan23/20231008-_DSC4802.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231008-_DSC4948.jpg&quot; title=&quot;20231008-_DSC4948&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/israeljordan23/20231008-_DSC4948.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20231008-_DSC4948&quot; title=&quot;20231008-_DSC4948&quot; /&gt;&lt;span&gt;20231008-_DSC4948&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231008-_DSC4948.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/israeljordan23/20231008-_DSC4948.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231009-_DSC5257.jpg&quot; title=&quot;20231009-_DSC5257&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/israeljordan23/20231009-_DSC5257.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20231009-_DSC5257&quot; title=&quot;20231009-_DSC5257&quot; /&gt;&lt;span&gt;20231009-_DSC5257&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231009-_DSC5257.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/israeljordan23/20231009-_DSC5257.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231009-_DSC5294.jpg&quot; title=&quot;20231009-_DSC5294&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/israeljordan23/20231009-_DSC5294.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20231009-_DSC5294&quot; title=&quot;20231009-_DSC5294&quot; /&gt;&lt;span&gt;20231009-_DSC5294&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231009-_DSC5294.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/israeljordan23/20231009-_DSC5294.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231009-_DSC5325.jpg&quot; title=&quot;20231009-_DSC5325&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/israeljordan23/20231009-_DSC5325.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;20231009-_DSC5325&quot; title=&quot;20231009-_DSC5325&quot; /&gt;&lt;span&gt;20231009-_DSC5325&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/israeljordan23/20231009-_DSC5325.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/israeljordan23/20231009-_DSC5325.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
@@ -374,7 +386,579 @@
     
     
     
-&lt;/ul&gt;</content><author><name></name></author><category term="photography" /><summary type="html">Tel Aviv, Jerusalem and Wadi Rum</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/israeljordan23/20231009-_DSC5294.jpg" /></entry><entry><title type="html">Fokker, Planck &amp;amp; Kolmogorov Revisited</title><link href="http://localhost:4000/blog/Kramers/" rel="alternate" type="text/html" title="Fokker, Planck &amp; Kolmogorov Revisited" /><published>2023-07-21T00:00:00+02:00</published><updated>2023-07-21T00:00:00+02:00</updated><id>http://localhost:4000/blog/Kramers</id><content type="html" xml:base="http://localhost:4000/blog/Kramers/">&lt;head&gt;
+&lt;/ul&gt;
+
+&lt;!--  --&gt;
+
+&lt;!--  --&gt;
+&lt;p&gt;&lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;
+  &lt;!-- 
+ --&gt;&lt;/p&gt;</content><author><name></name></author><category term="photography" /><summary type="html">Tel Aviv, Jerusalem and Wadi Rum</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/israeljordan23/20231009-_DSC5294.jpg" /></entry><entry><title type="html">Fokker, Planck &amp;amp; Kolmogorov Revisited</title><link href="http://localhost:4000/blog/Kramers/" rel="alternate" type="text/html" title="Fokker, Planck &amp; Kolmogorov Revisited" /><published>2023-07-21T00:00:00+02:00</published><updated>2023-07-21T00:00:00+02:00</updated><id>http://localhost:4000/blog/Kramers</id><content type="html" xml:base="http://localhost:4000/blog/Kramers/">&lt;head&gt;
 &lt;!-- &lt;script type=&quot;text/x-mathjax-config&quot;&gt;  --&gt;
   &lt;!-- MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt; --&gt;
 &lt;!-- uncomment two lines above and remove the html css to svg lines --&gt;
@@ -2572,11 +3156,38 @@ The IMF estimates that the Lebanese commercial banks participating in the scheme
 
 &lt;p&gt;For more detailed reading, look at &lt;a href=&quot;https://www.fdd.org/analysis/2020/08/04/crisis-in-lebanon/&quot;&gt;this&lt;/a&gt; sophisticated article on the whole issue.&lt;/p&gt;</content><author><name></name></author><category term="globalizedfinance" /><summary type="html">From the People, not For the People</summary></entry><entry><title type="html">Paris to Istanbul</title><link href="http://localhost:4000/blog/ParisIstanbul2022-copy/" rel="alternate" type="text/html" title="Paris to Istanbul" /><published>2022-09-08T00:00:00+02:00</published><updated>2022-09-08T00:00:00+02:00</updated><id>http://localhost:4000/blog/ParisIstanbul2022%20copy</id><content type="html" xml:base="http://localhost:4000/blog/ParisIstanbul2022-copy/">&lt;!-- ## Berlin Over The Years --&gt;
 &lt;style&gt;
-    .image-gallery {overflow: auto; margin-left: -1%!important;}
-    .image-gallery li {float: left; float: top; display: block; margin: 0 0 1% 1%; width: 99%;}
-    .image-gallery li a {text-align: top; text-decoration: none!important; color: #777;}
-    .image-gallery li a span {display: block; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; padding: 3px 0;}
-    .image-gallery li a img {width: 100%; height: 100%; display: flex; vertical-align: top;
+    .image-gallery {
+        overflow: auto;
+        margin-left: -1% !important;
+    }
+
+    .image-gallery li {
+        float: left;
+        float: top;
+        display: block;
+        margin: 0 0 1% 1%;
+        width: 99%;
+    }
+
+    .image-gallery li a {
+        text-align: top;
+        text-decoration: none !important;
+        color: #777;
+    }
+
+    .image-gallery li a span {
+        display: block;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        padding: 3px 0;
+    }
+
+    .image-gallery li a img {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        vertical-align: top;
     }
 &lt;/style&gt;
 
@@ -2816,61 +3427,51 @@ The IMF estimates that the Lebanese commercial banks participating in the scheme
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul001.jpg&quot; title=&quot;parisistanbul001&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/parisistanbul22/parisistanbul001.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;parisistanbul001&quot; title=&quot;parisistanbul001&quot; /&gt;&lt;span&gt;parisistanbul001&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul001.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/parisistanbul22/parisistanbul001.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul002.jpg&quot; title=&quot;parisistanbul002&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/parisistanbul22/parisistanbul002.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;parisistanbul002&quot; title=&quot;parisistanbul002&quot; /&gt;&lt;span&gt;parisistanbul002&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul002.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/parisistanbul22/parisistanbul002.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul003.jpg&quot; title=&quot;parisistanbul003&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/parisistanbul22/parisistanbul003.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;parisistanbul003&quot; title=&quot;parisistanbul003&quot; /&gt;&lt;span&gt;parisistanbul003&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul003.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/parisistanbul22/parisistanbul003.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul201.jpg&quot; title=&quot;parisistanbul201&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/parisistanbul22/parisistanbul201.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;parisistanbul201&quot; title=&quot;parisistanbul201&quot; /&gt;&lt;span&gt;parisistanbul201&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul201.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/parisistanbul22/parisistanbul201.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul202.jpg&quot; title=&quot;parisistanbul202&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/parisistanbul22/parisistanbul202.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;parisistanbul202&quot; title=&quot;parisistanbul202&quot; /&gt;&lt;span&gt;parisistanbul202&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul202.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/parisistanbul22/parisistanbul202.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul203.jpg&quot; title=&quot;parisistanbul203&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/parisistanbul22/parisistanbul203.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;parisistanbul203&quot; title=&quot;parisistanbul203&quot; /&gt;&lt;span&gt;parisistanbul203&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul203.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/parisistanbul22/parisistanbul203.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul209.jpg&quot; title=&quot;parisistanbul209&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/parisistanbul22/parisistanbul209.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;parisistanbul209&quot; title=&quot;parisistanbul209&quot; /&gt;&lt;span&gt;parisistanbul209&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul209.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/parisistanbul22/parisistanbul209.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul210.jpg&quot; title=&quot;parisistanbul210&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/parisistanbul22/parisistanbul210.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;parisistanbul210&quot; title=&quot;parisistanbul210&quot; /&gt;&lt;span&gt;parisistanbul210&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul210.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/parisistanbul22/parisistanbul210.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul219.jpg&quot; title=&quot;parisistanbul219&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/parisistanbul22/parisistanbul219.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;parisistanbul219&quot; title=&quot;parisistanbul219&quot; /&gt;&lt;span&gt;parisistanbul219&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul219.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/parisistanbul22/parisistanbul219.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     
     
     
-    &lt;!-- &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul220.jpg&quot; title=&quot;parisistanbul220&quot;&gt;&lt;img src=&quot;//images.weserv.nl/?url=localhost:4000/photo_gallery/parisistanbul22/parisistanbul220.jpg&amp;w=300&amp;h=300&amp;output=jpg&amp;q=50&amp;t=square&quot; alt=&quot;parisistanbul220&quot; title=&quot;parisistanbul220&quot; /&gt;&lt;span&gt;parisistanbul220&lt;/span&gt;&lt;/a&gt;&lt;/li&gt; --&gt;
     &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul220.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/parisistanbul22/parisistanbul220.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
     
     

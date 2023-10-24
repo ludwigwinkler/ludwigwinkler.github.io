@@ -15,9 +15,11 @@ Jekyll integration by somiibo.com
 Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
 -->
 <html>
+
 <head>
 	{% include head.html %}
 </head>
+
 <body class="is-loading">
 
 	<!-- Wrapper -->
@@ -36,15 +38,17 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 
 		<!-- Header -->
 		<header id="header">
-			<a href="{{ "/" | absolute_url }}" class="logo">{{site.title}}</a>
+			<a href="{{ " /" | absolute_url }}" class="logo">{{site.title}}</a>
 		</header>
 
 		<!-- Nav -->
 		<nav id="nav">
 			{% include nav.html %}
 			<ul class="icons">
-				<li><a href="https://twitter.com/ludiXIVwinkler" class="icon fa-twitter" rel="nofollow"><span class="label">Twitter</span></a></li>
-				<li><a href="https://github.com/ludwigwinkler" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
+				<li><a href="https://twitter.com/ludiXIVwinkler" class="icon fa-twitter"
+						rel="nofollow"><span class="label">Twitter</span></a></li>
+				<li><a href="https://github.com/ludwigwinkler" class="icon fa-github"
+						rel="nofollow"><span class="label">GitHub</span></a></li>
 			</ul>
 		</nav>
 
@@ -58,65 +62,82 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 				</header>
 				<!-- <a href="#" class="image main"><img src="{{ "/images/pic01.jpg" | absolute_url }}" alt="" /></a> -->
 				<p>
-					I'm a PhD student at the <a href='http://www.ml.tu-berlin.de/menue/machine_learning/'> TU Berlin Machine Learning Group</a> under Klaus-Robert Müller.
-					The focus of my work has been the usage of neural networks in otherwise probabilistic environments such as thermostated molecular dynamics and stochastic differential equations.
+					I'm a PhD student at the <a href='https://web.ml.tu-berlin.de'> TU Berlin
+						Machine Learning Group</a> under Klaus-Robert Müller.
+					The focus of my work has been the use of neural networks in otherwise
+					probabilistic environments such as thermostated molecular dynamics and
+					stochastic differential equations.
+					In particular, I have trained neural networks in stochastic differential
+					equations in order to solve optimal transport problems and infer the
+					corresponding stochastic process.
+					I especially enjoy the mathematical rigor of stochastic processes and
+					probabilistic machine learning in general.
 				</p>
 				<p>
-					Besides my research activity, history in conjunction with economics and politics has been a long standing interest of mine.
-					As I grew older the link between economics and history became more evident to me and my focus shifted to economic and financial history which often does a superb job at explaining the latent forces that shape history.
+					Besides my research activity, history in conjunction with economics and politics
+					has been a long standing interest of mine.
+					As I grew older the link between economics and history became more evident to me
+					and my focus shifted to economic and financial history which often does a superb
+					job at explaining the latent forces that shape history.
 				</p>
 				<p>
-					I have been remarkably lucky to be living in Berlin where I explore the multitude of different subcultures that exist so harmoniously in this city.
-					Berlin represents something of an ideal city for me as its history has enabled subcultures to thrive while offering abundant intellectual goodies ranging from art&music, a lot of techno, to blockchain and machine learning.
+					I have been remarkably lucky to be living in Berlin where I explore the
+					multitude of different subcultures that exist so harmoniously in this city.
+					Berlin represents something of an ideal city for me as its history has enabled
+					subcultures to thrive while offering abundant intellectual goodies ranging from
+					art&music, a lot of techno, to blockchain and machine learning.
 				</p>
 				<p>
+
+			</article>
+
+			<!-- Posts -->
+			<section class="posts">
+				{% for post in site.posts limit:6 %}
+				{% assign mod3 = forloop.index | modulo: 2 %}
+				<article>
+					<header>
+						<span class="date">{{ post.date | date_to_string }}</span>
+						<h2><a href="{{ post.url | absolute_url }}">{{ post.title }}</a></h2>
+					</header>
+					<a href="{{ post.url | absolute_url }}" class="image fit"><img
+							src="{{ post.image | absolute_url }}" alt="" /></a>
+					<p>{{ post.excerpt }}</p>
+					<ul class="actions">
+						<li><a href="{{ post.url | absolute_url }}" class="button">Full
+								Story</a></li>
+					</ul>
+				</article>
+				{% if mod3 == 3 %}
+				<article>
+					<!-- <header> -->
+					<!-- <h2><a href="#">Sponsored</a></h2> -->
+					<!-- </header> -->
 
 				</article>
+				{% endif %}
+				{% endfor %}
 
-				<!-- Posts -->
-				<section class="posts">
-					{% for post in site.posts limit:6 %}
-					{% assign mod3 = forloop.index | modulo: 2 %}
-					<article>
-						<header>
-							<span class="date">{{ post.date | date_to_string }}</span>
-							<h2><a href="{{ post.url | absolute_url }}">{{ post.title }}</a></h2>
-						</header>
-						<a href="{{ post.url | absolute_url }}" class="image fit"><img src="{{ post.image | absolute_url }}" alt="" /></a>
-						<p>{{ post.excerpt }}</p>
-						<ul class="actions">
-							<li><a href="{{ post.url | absolute_url }}" class="button">Full Story</a></li>
-						</ul>
-					</article>
-					{% if mod3 == 3 %}
-					<article>
-						<!-- <header> -->
-						<!-- <h2><a href="#">Sponsored</a></h2> -->
-						<!-- </header> -->
-
-					</article>
-					{% endif %}
-					{% endfor %}
-
-				</section>
-
-				<!-- Footer -->
-				<footer>
-					<ul class="actions">
-						<li><a href="{{ "/blog/" | absolute_url }}" class="button">My Blog</a></li>
-					</ul>
-				</footer>
-
-			</div>
+			</section>
 
 			<!-- Footer -->
-			<!-- {% include foot.html %} -->
+			<footer>
+				<ul class="actions">
+					<li><a href="{{ " /blog/" | absolute_url }}" class="button">My Blog</a></li>
+				</ul>
+			</footer>
 
 		</div>
 
-		<!-- Scripts -->
-		{% include scripts-main.html %}
-		{% include tracking.html %}
+		<!-- Footer -->
+		<!-- {% include foot.html %} -->
 
-	</body>
-	</html>
+	</div>
+
+	<!-- Scripts -->
+	{% include scripts-main.html %}
+	{% include tracking.html %}
+
+</body>
+
+</html>
