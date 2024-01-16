@@ -1,4 +1,218 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-10-16T10:53:58+02:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Israel to Jordan</title><link href="http://localhost:4000/blog/IsraelJordan23/" rel="alternate" type="text/html" title="Israel to Jordan" /><published>2023-10-14T00:00:00+02:00</published><updated>2023-10-14T00:00:00+02:00</updated><id>http://localhost:4000/blog/IsraelJordan23</id><content type="html" xml:base="http://localhost:4000/blog/IsraelJordan23/">&lt;!-- ## Berlin Over The Years --&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2024-01-16T10:01:17+01:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Simple Reverse SDE Derivation</title><link href="http://localhost:4000/blog/SimpleReverseSDE/" rel="alternate" type="text/html" title="Simple Reverse SDE Derivation" /><published>2024-01-13T00:00:00+01:00</published><updated>2024-01-13T00:00:00+01:00</updated><id>http://localhost:4000/blog/SimpleReverseSDE</id><content type="html" xml:base="http://localhost:4000/blog/SimpleReverseSDE/">&lt;head&gt;
+&lt;!-- &lt;script type=&quot;text/x-mathjax-config&quot;&gt;  --&gt;
+  &lt;!-- MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt; --&gt;
+&lt;!-- uncomment two lines above and remove the html css to svg lines --&gt;
+&lt;script type=&quot;text/x-mathjax-config&quot;&gt;
+  MathJax.Hub.Config({
+    TeX: { equationNumbers: { autoNumber: &quot;all&quot; } },
+    tex2jax: {
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
+      displayMath: [['$$','$$'], ['\[' , '\]'], ['\\[', '\\]']],
+      processEscapes: true
+    },
+    &quot;HTML-CSS&quot;: { linebreaks: { automatic: true } },
+    CommonHTML: { linebreaks: { automatic: true } },
+    SVG: { linebreaks: { automatic: true } }
+    });
+&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; async=&quot;&quot; src=&quot;https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML&quot;&gt;
+&lt;/script&gt;
+&lt;/head&gt;
+&lt;p&gt;&lt;script type=&quot;math/tex&quot;&gt;\newcommand{\Efunc}[1]{\mathbb{E}\left[ #1\right]}
+\newcommand{\Vfunc}[1]{\mathbb{V}\left[ #1\right]}
+\newcommand{\KL}[2]{\text{KL}\left[ #1 \ || \ #2 \right]}
+\newcommand{\denom}[1]{\frac{1}{#1}}
+\newcommand{\drift}{\mu(X_t, t)}
+\newcommand{\diff}{\sigma(X_t, t)}&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;We start out with the Fokker-Planck equation (FPE) which relates the change over time for the probability for a specific value of $x$ with a diffusion term $\sigma(t)$ which is only dependent on the time,
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	\partial_t \ p(x,t) = &amp; - \partial_x \left[ \drift \ p(x, t) \right] + \denom{2} \partial_x^2 \left[ \sigma(t)^2 \ p(x, t) \right]  \\
+	=                     &amp; - \partial_x \left[ \drift \ p(x, t) \right] + \denom{2} \sigma(t)^2 \partial_x^2 \left[ \ p(x, t) \right].
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Now we consider a time reversion $\tau(t) = 1 - t$ and are interested in what the change of the probability distribution is under this reversed time index,
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	\partial_{t} \ p(x,\tau(t)) = &amp; - \partial_x \left[ \mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t)) \right]       \\
+	                              &amp; + \denom{2} \partial_x^2 \left[ \sigma(\tau(t))^2 \ p(x, \tau(t)) \right].
+\end{align} %]]&gt;&lt;/script&gt;
+With the time transformation $\tau(t)$, we apply the chain rule on the time transformation on the left hand side to obtain
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+	\frac{\partial p(x,\tau(t))}{\partial t}
+	= \frac{ \partial p(x,\tau(t))}{\partial \tau} \ \frac{\partial \tau(t)}{\partial t}
+	= \frac{ \partial p(x,\tau(t))}{\partial \tau} \
+	\underbrace{ \frac{\partial \tau(t)}{\partial t}}_{-1}
+	= -\frac{ \partial p(x,\tau(t))}{\partial \tau}.
+\end{align}&lt;/script&gt;
+Then, we pull the negative factor from the chain rule to the right hand side and combine the drift and diffusion term into a single derivative via the distributive property of the partial derivative,
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	\frac{ \partial p(x,\tau(t))}{\partial \tau} = &amp; \partial_x \left[ \mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t)) \right]         \nonumber                              \\
+	                                               &amp; - \denom{2} \sigma(\tau(t))^2 \partial_x^2 \left[ \ p(x, \tau(t)) \right]  \label{eq:app_reversetime_derivation1} \\
+	=                                              &amp; - \partial_x \Bigg[ -\mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t))              \nonumber                              \\
+	                                               &amp; \qquad \quad + \denom{2} \sigma(\tau(t))^2 \partial_x \left[ \ p(x, \tau(t)) \right] \Bigg]
+\end{align} %]]&gt;&lt;/script&gt;
+Applying the log derivative identity $\partial_x \log p(x) = \frac{1}{p(x)} \partial_x p(x)$, which rearranged yields $ \partial_x p(x) = p(x) \partial_x \log p(x)$, we obtain
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	\frac{ \partial p(x,\tau(t))}{\partial \tau} = &amp; - \partial_x \Bigg[ -\mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t))                            \nonumber                                                                             \\
+	                                               &amp; \qquad \quad + \denom{2} \sigma(\tau(t))^2 \partial_x \log p(x, \tau(t)) p(x, \tau(t) ) \Bigg]                                                                                 \\
+	=                                              &amp; - \partial_x \Bigg[ \Big( \underbrace{-\mu(X(\tau(t)), \tau(t)) + \denom{2} \sigma(\tau(t))^2 \partial_x \log p(x, \tau(t))}_{\text{reverse drift}} \Big) p(x, \tau(t))\Bigg].
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The equation above states that the inverted drift with an additional scaled score term of the forward distribution will invert the stochastic process.
+Interestingly, there is no diffusion term occuring in this formulation of the reverse FPE.
+We can in fact derive a more flexible reverse drift by returning to a slightly rearranged equation \ref{eq:app_reversetime_derivation1} with an additional scaling factor $\alpha^2$,
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	\frac{ \partial p(x,\tau(t))}{\partial \tau} = &amp; - \partial_x \left[ - \mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t)) \right]         \nonumber                                                                                                            \\
+	                                               &amp; - \denom{2} \sigma(\tau(t))^2 \partial_x^2 \left[ \ p(x, \tau(t)) \right] \underbrace{\pm \ \alpha^2 \ \sigma(\tau(t))^2 \partial_x^2 \left[ \ p(x, \tau(t)) \right]}_{\text{additional diffusion}} \\
+	=                                              &amp; - \partial_x \left[ - \mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t)) \right]         \nonumber                                                                                                            \\
+	                                               &amp; - \sigma(\tau(t))^2 \left( \frac{1}{2} + \alpha^2 \right) \partial_x^2 \left[ \ p(x, \tau(t)) \right]                                                                                           \\
+	                                               &amp; \underbrace{ + \ \frac{\alpha^2}{2} \ \sigma(\tau(t))^2 \partial_x^2 \left[ \ p(x, \tau(t)) \right]}_{\text{additional diffusion}}                                                                  \\
+	=                                              &amp; - \partial_x \Bigg[ \Big( - \mu(X(\tau(t)), \tau(t))                                                                                                                                                \\
+	                                               &amp; \qquad \qquad + \sigma(\tau(t))^2 \left( \frac{1}{2} + \alpha^2 \right) \partial_x \log p(x, \tau(t)) \Big) \ p(x, \tau(t)) \Bigg]         \nonumber                                            \\
+	                                               &amp; + \ \alpha^2 \ \sigma(\tau(t))^2 \partial_x^2 \left[ \ p(x, \tau(t)) \right].
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;from which we can infer the reverse drift consisting of the inverted original drift with the additionally scaled score with $\alpha$ and the additional diffusion,
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	dX(\tau) = &amp; ( - \mu(X(\tau(t)), \tau(t)) + \sigma(\tau(t))^2 \left( \frac{1}{2} + \alpha^2 \right) \partial_x \log p(x, \tau(t)) ) dt \\
+	           &amp; + \alpha \ \sigma(\tau(t)) dW(\tau)
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">Save yourself a lot of Bayes with a linear function</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/blogthumbnails/simple_reverse_sde.png" /></entry><entry><title type="html">Fokker, Planck &amp;amp; Ito</title><link href="http://localhost:4000/blog/FokkerPlanck/" rel="alternate" type="text/html" title="Fokker, Planck &amp; Ito" /><published>2023-10-21T00:00:00+02:00</published><updated>2023-10-21T00:00:00+02:00</updated><id>http://localhost:4000/blog/FokkerPlanck</id><content type="html" xml:base="http://localhost:4000/blog/FokkerPlanck/">&lt;head&gt;
+&lt;!-- &lt;script type=&quot;text/x-mathjax-config&quot;&gt;  --&gt;
+  &lt;!-- MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt; --&gt;
+&lt;!-- uncomment two lines above and remove the html css to svg lines --&gt;
+&lt;script type=&quot;text/x-mathjax-config&quot;&gt;
+  MathJax.Hub.Config({
+    TeX: { equationNumbers: { autoNumber: &quot;all&quot; } },
+    tex2jax: {
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
+      displayMath: [['$$','$$'], ['\[' , '\]'], ['\\[', '\\]']],
+      processEscapes: true
+    },
+    &quot;HTML-CSS&quot;: { linebreaks: { automatic: true } },
+    CommonHTML: { linebreaks: { automatic: true } },
+    SVG: { linebreaks: { automatic: true } }
+    });
+&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; async=&quot;&quot; src=&quot;https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML&quot;&gt;
+&lt;/script&gt;
+&lt;/head&gt;
+&lt;p&gt;&lt;script type=&quot;math/tex&quot;&gt;\newcommand{\Efunc}[1]{\mathbb{E}\left[ #1\right]}
+\newcommand{\Vfunc}[1]{\mathbb{V}\left[ #1\right]}
+\newcommand{\KL}[2]{\text{KL}\left[ #1 \ || \ #2 \right]}
+\newcommand{\denom}[1]{\frac{1}{#1}}
+\newcommand{\drift}{\mu(X_t, t)}
+\newcommand{\diff}{\sigma(X_t, t)}&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;A Dutch, a German and a Japanese walk into a bar …&lt;/p&gt;
+
+&lt;p&gt;Let us consider the random variable &lt;script type=&quot;math/tex&quot;&gt;X_t&lt;/script&gt; that follows an Ito drift-diffusion process of the form
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+	dX_t = \drift dt + \diff dW_t
+\end{align}&lt;/script&gt;
+where &lt;script type=&quot;math/tex&quot;&gt;W_t&lt;/script&gt; is a Wiener process with &lt;script type=&quot;math/tex&quot;&gt;W_t \sim \mathcal{N}(0, t)&lt;/script&gt;.&lt;/p&gt;
+
+&lt;p&gt;We want to study an arbitrary function &lt;script type=&quot;math/tex&quot;&gt;f(X_t)&lt;/script&gt; with a compact support, meaning that &lt;script type=&quot;math/tex&quot;&gt;f(X_t)=0, X_t \in \{ -\infty, \infty \}&lt;/script&gt;.
+Intuitively, this means that for the extreme values of &lt;script type=&quot;math/tex&quot;&gt;\pm \infty&lt;/script&gt; the function &lt;script type=&quot;math/tex&quot;&gt;f(X_t)&lt;/script&gt; evaluates to zero. 
+The function &lt;script type=&quot;math/tex&quot;&gt;f(X_t)&lt;/script&gt; should be twice differentiable in its argument &lt;script type=&quot;math/tex&quot;&gt;X_t&lt;/script&gt; such that we can use the Taylor expansion up to the second order, giving us 
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+	df = \partial_x f(X_t) dX_t + \denom{2} \partial_x^2 f(X_t) dX_t^2.
+\end{align}&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;For the infinitissimal values &lt;script type=&quot;math/tex&quot;&gt;dt&lt;/script&gt;, any term with an exponent higher than one will go towards zero at a faster rate.
+Thus the terms &lt;script type=&quot;math/tex&quot;&gt;dt^2&lt;/script&gt;, &lt;script type=&quot;math/tex&quot;&gt;dt dW_t = dt^{1.5}&lt;/script&gt; will evaluate to zero at the limit.
+We can then plug in the dynamics of &lt;script type=&quot;math/tex&quot;&gt;X_t&lt;/script&gt; to obtain
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	df(X_t) = &amp; \partial_x f(X_t) dX_t + \denom{2} \partial_x^2 f(X_t) dX_t^2 \\
+	= &amp; \partial_x f(X_t) \left( \drift dt + \diff dW_t \right) + \denom{2} \partial_x^2 f(X_t) \left(\drift dt + \diff dW_t \right)^2 \\
+	= &amp; \partial_x f(X_t) \left( \drift dt + \diff dW_t \right) \\
+	&amp; + \denom{2} \partial_x^2 f(X_t) \big( \drift^2 \underbrace{dt^2}_{=0} + \drift \diff \underbrace{ dt \ dW_t}_{=0} + \diff^2 \underbrace{dW_t^2}_{=dt} \big) \\
+	= &amp;\left(\drift \partial_x f(X_t) + \denom{2} \diff^2 \partial_x^2 f(X_t) \right) dt + \diff \partial_x f(X_t) dW_t 
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;We can abbreviate the notation to enable a higher degree of notational brevity and write
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+	df = \left( \mu \partial_x f + \denom{2} \sigma^2 \partial_x^2 f \right) dt + \sigma \partial_x f dW_t
+\end{align}&lt;/script&gt;
+which is identical to the line above but shorter and less cluttered.&lt;/p&gt;
+
+&lt;p&gt;We can easily see that the differential &lt;script type=&quot;math/tex&quot;&gt;df&lt;/script&gt; follows an Ito drift-diffusion process, although with modified drift and diffusion terms in direct comparison to &lt;script type=&quot;math/tex&quot;&gt;dX_t&lt;/script&gt;.
+Naturally we can take the expectation of to isolate the drift of &lt;script type=&quot;math/tex&quot;&gt;df&lt;/script&gt; since &lt;script type=&quot;math/tex&quot;&gt;\Efunc{dW_t}=0&lt;/script&gt; by definition,
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	\Efunc{df} &amp; = \Efunc{ \mu \partial_x f + \denom{2} \sigma^2 \partial_x^2 f } dt \\
+	\frac{d}{dt} \Efunc{f} &amp; = \Efunc{ \mu \partial_x f + \denom{2} \sigma^2 \partial_x^2 f }
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Since the Wiener process &lt;script type=&quot;math/tex&quot;&gt;W_t&lt;/script&gt; introduces stochasticity into the evolution of &lt;script type=&quot;math/tex&quot;&gt;X_t&lt;/script&gt;, we are in fact dealing with a distribution &lt;script type=&quot;math/tex&quot;&gt;p(x, t)&lt;/script&gt;.
+We can then proceed by plugging in the distribution &lt;script type=&quot;math/tex&quot;&gt;p(x, t)&lt;/script&gt; into the expectation and writing it out in its full glory,
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	\frac{d}{dt} \Efunc{f} &amp; = \Efunc{ \mu \partial_x f + \denom{2} \sigma^2 \partial_x^2 f } \\
+	&amp;= \int_{-\infty}^\infty \left( \mu \partial_x f + \denom{2} \sigma^2 \partial_x^2 f \right) p(x, t) dx \\
+	&amp;= \int_{-\infty}^\infty \mu \ \partial_x f \ p(x, t) dx + \denom{2} \int_{-\infty}^\infty \sigma^2 \ \partial_x^2 f \ p(x, t) dx
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The state so far is that we reduced the expected change in &lt;script type=&quot;math/tex&quot;&gt;f&lt;/script&gt; to two integrals which we now have to solve.
+For this we can utilize integration by parts which is the sort of the anti derivative of the product rule.
+Remember that
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+	\partial_x \left[ u(x) v(x) \right] = \partial_x \left[  u(x) \right] v(x) + u(x) \partial_x \left[ v(x) \right]
+\end{align}&lt;/script&gt;
+or in a easier form
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+	\left( u(x) v(x) \right)' = u'(x) v(x) + u(x) v'(x)
+\end{align}&lt;/script&gt;
+The integration by parts rule states that for a range &lt;script type=&quot;math/tex&quot;&gt;x \in [ a, b ]&lt;/script&gt;
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+	\left[ u(x) v(x) \right]_a^b = \int_a^b u'(x) v(x) dx + \int_a^b u(x) v'(x) dx
+\end{align}&lt;/script&gt;
+or alternatively
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+	\int_a^b u(x) v'(x) dx = \left[ u(x) v(x) \right]_a^b - \int_a^b u'(x) v(x) dx + 
+\end{align}&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;We can now proceed to identify the relevant terms &lt;script type=&quot;math/tex&quot;&gt;u(x)&lt;/script&gt; and &lt;script type=&quot;math/tex&quot;&gt;v(x)&lt;/script&gt; in the two integrals,
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	\frac{d}{dt} \Efunc{f} = &amp; \int_{-\infty}^\infty \underbrace{\mu \ p(x, t)}_{u(x)} \ \underbrace{\partial_x f}_{v'(x)}  dx + \denom{2} \int_{-\infty}^\infty \underbrace{ \sigma^2 \ p(x, t)}_{u(x)} \ \underbrace{\partial_x^2 f}_{v
+	(x)} dx \\
+	= &amp; \underbrace{\left[  \mu \ p(x, t)  \  f \right]_{-\infty}^\infty}_{=0} - \int_{-\infty}^\infty  \partial_x \left[ \mu \ p(x, t) \right] \ f \ dx \\
+	&amp; + \denom{2} \underbrace{\left[  \sigma^2 \ p(x, t)  \  \partial_x f \right]_{-\infty}^\infty}_{=0} - \denom{2} \int_{-\infty}^\infty  \partial_x \left[ \sigma^2 \ p(x, t) \right] \ \partial_x f \ dx
+\end{align} %]]&gt;&lt;/script&gt;
+For any reasonable probability distribution, evaluating &lt;script type=&quot;math/tex&quot;&gt;p(x,t)&lt;/script&gt; at &lt;script type=&quot;math/tex&quot;&gt;\pm \infty&lt;/script&gt; evaluates to zero such that the evaluation brackets &lt;script type=&quot;math/tex&quot;&gt;\left[ p(x,t) \ldots \right]_{-\infty}^\infty = 0&lt;/script&gt;.
+We can then apply the integration by parts a second time on the second integral to obtain
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	\frac{d}{dt} \Efunc{f} = &amp; - \int_{-\infty}^\infty  \partial_x \left[ \mu \ p(x, t) \right] \ f \ dx - \denom{2} \int_{-\infty}^\infty  \underbrace{\partial_x \left[ \sigma^2 \ p(x, t) \right]}_{u(x)} \ \underbrace{\partial_x f}_{v'(x)} \ dx \\
+	= &amp; \int_{-\infty}^\infty  \partial_x \left[ \mu \ p(x, t) \right] \ f \ dx \\
+	&amp; - \denom{2} \underbrace{\left[ \partial_x \left[ \sigma^2 \ p(x, t) \right] \ f \right]_{-\infty}^\infty}_{=0} + \denom{2} \int_{-\infty}^\infty  \partial_x^2 \left[ \sigma^2 \ p(x, t) \right] \ f \ dx \\
+	= &amp; \int_{-\infty}^\infty f \left( - \partial_x \left[ \mu \ p(x, t) \right] + \denom{2} \partial_x^2 \left[ \sigma^2 \ p(x, t) \right] \right) dx
+\end{align} %]]&gt;&lt;/script&gt;
+With Leibniz’ rule we can pull in the time derivative on the left hand side to obtain
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+	\frac{d}{dt} \Efunc{f} = &amp; \frac{d}{dt} \int_{-\infty}^\infty f(x) p(x,t) dx \\
+	=&amp; \int_{-\infty}^\infty f(x) \ \partial_t \ p(x,t) dx
+\end{align} %]]&gt;&lt;/script&gt;
+which gives us
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+	\int_{-\infty}^\infty f(x) \ \partial_t \ p(x,t) dx = \int_{-\infty}^\infty f \left( - \partial_x \left[ \mu \ p(x, t) \right] + \denom{2} \partial_x^2 \left[ \sigma^2 \ p(x, t) \right] \right) dx
+\end{align}&lt;/script&gt;
+The last step to obtain the Fokker-Planck equation is to observe that the function &lt;script type=&quot;math/tex&quot;&gt;f&lt;/script&gt; which is integrated over occurs both on the left and the right hand side.
+Since the integrals &lt;script type=&quot;math/tex&quot;&gt;\int f(x) \ldots dx&lt;/script&gt; is identical on both sides we can equate the derivatives directly to obtain
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+	\partial_t \ p(x,t) = - \partial_x \left[ \mu \ p(x, t) \right] + \denom{2} \partial_x^2 \left[ \sigma^2 \ p(x, t) \right]
+\end{align}&lt;/script&gt;
+which is the Fokker-Planck equation!&lt;/p&gt;</content><author><name></name></author><summary type="html">Fokker-Planck Equation Via Ito Calculus</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/blogthumbnails/fokkerplanckito.png" /></entry><entry><title type="html">Israel to Jordan</title><link href="http://localhost:4000/blog/IsraelJordan23/" rel="alternate" type="text/html" title="Israel to Jordan" /><published>2023-10-14T00:00:00+02:00</published><updated>2023-10-14T00:00:00+02:00</updated><id>http://localhost:4000/blog/IsraelJordan23</id><content type="html" xml:base="http://localhost:4000/blog/IsraelJordan23/">&lt;!-- ## Berlin Over The Years --&gt;
 &lt;p&gt;For a compilation of (legally unauthorized) 4K drone footage of the beautiful Wadi Rum check out this &lt;a href=&quot;https://www.youtube.com/watch?v=9-UedQjFBew&quot;&gt;Youtube link&lt;/a&gt;.&lt;/p&gt;
 
 &lt;style&gt;
@@ -38,6 +252,7 @@
 &lt;/style&gt;
 
 &lt;ul class=&quot;image-gallery&quot;&gt;
+    
     
     
     
@@ -958,6 +1173,8 @@
   &lt;!-- 
  --&gt;
   &lt;!-- 
+ --&gt;
+  &lt;!-- 
  --&gt;&lt;/p&gt;</content><author><name></name></author><category term="photography" /><summary type="html">Tel Aviv, Jerusalem and Wadi Rum</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/israeljordan23/20231009-_DSC5294.jpg" /></entry><entry><title type="html">Fokker, Planck &amp;amp; Kolmogorov Revisited</title><link href="http://localhost:4000/blog/Kramers/" rel="alternate" type="text/html" title="Fokker, Planck &amp; Kolmogorov Revisited" /><published>2023-07-21T00:00:00+02:00</published><updated>2023-07-21T00:00:00+02:00</updated><id>http://localhost:4000/blog/Kramers</id><content type="html" xml:base="http://localhost:4000/blog/Kramers/">&lt;head&gt;
 &lt;!-- &lt;script type=&quot;text/x-mathjax-config&quot;&gt;  --&gt;
   &lt;!-- MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt; --&gt;
@@ -1209,136 +1426,7 @@ and by dividing by &lt;script type=&quot;math/tex&quot;&gt;\tau&lt;/script&gt;, 
 	&amp;= M^{(1)}(x'_{t'}) \ \partial_{x'} p(x_t | x'_{t'}) + \frac{1}{2} M^{(2)}(x'_{t'}) \ \partial_{x'}^2 p(x_t | x'_{t'}) \\
 	&amp;= \mu(x'_{t'}) \ \partial_{x'} p(x_t | x'_{t'}) + \frac{1}{2} \sigma^2(x'_{t'}) \ \partial_{x'}^2 p(x_t | x'_{t'}) \\
 \end{align} %]]&gt;&lt;/script&gt;
-which tells us how the probability distribution &lt;script type=&quot;math/tex&quot;&gt;p(x_t | x'_{t'})&lt;/script&gt; changes as we move further backwards in time.&lt;/p&gt;</content><author><name></name></author><summary type="html">Distributions as partial differential equations over time</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/blogthumbnails/kramersmoyal.png" /></entry><entry><title type="html">Fokker, Planck &amp;amp; Ito</title><link href="http://localhost:4000/blog/FokkerPlanck/" rel="alternate" type="text/html" title="Fokker, Planck &amp; Ito" /><published>2023-07-21T00:00:00+02:00</published><updated>2023-07-21T00:00:00+02:00</updated><id>http://localhost:4000/blog/FokkerPlanck</id><content type="html" xml:base="http://localhost:4000/blog/FokkerPlanck/">&lt;head&gt;
-&lt;!-- &lt;script type=&quot;text/x-mathjax-config&quot;&gt;  --&gt;
-  &lt;!-- MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt; --&gt;
-&lt;!-- uncomment two lines above and remove the html css to svg lines --&gt;
-&lt;script type=&quot;text/x-mathjax-config&quot;&gt;
-  MathJax.Hub.Config({
-    TeX: { equationNumbers: { autoNumber: &quot;all&quot; } },
-    tex2jax: {
-      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-      inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
-      displayMath: [['$$','$$'], ['\[' , '\]'], ['\\[', '\\]']],
-      processEscapes: true
-    },
-    &quot;HTML-CSS&quot;: { linebreaks: { automatic: true } },
-    CommonHTML: { linebreaks: { automatic: true } },
-    SVG: { linebreaks: { automatic: true } }
-    });
-&lt;/script&gt;
-&lt;script type=&quot;text/javascript&quot; async=&quot;&quot; src=&quot;https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML&quot;&gt;
-&lt;/script&gt;
-&lt;/head&gt;
-&lt;p&gt;&lt;script type=&quot;math/tex&quot;&gt;\newcommand{\Efunc}[1]{\mathbb{E}\left[ #1\right]}
-\newcommand{\Vfunc}[1]{\mathbb{V}\left[ #1\right]}
-\newcommand{\KL}[2]{\text{KL}\left[ #1 \ || \ #2 \right]}
-\newcommand{\denom}[1]{\frac{1}{#1}}
-\newcommand{\drift}{\mu(X_t, t)}
-\newcommand{\diff}{\sigma(X_t, t)}&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;A Dutch, a German and a Japanese walk into a bar …&lt;/p&gt;
-
-&lt;p&gt;Let us consider the random variable &lt;script type=&quot;math/tex&quot;&gt;X_t&lt;/script&gt; that follows an Ito drift-diffusion process of the form
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	dX_t = \drift dt + \diff dW_t
-\end{align}&lt;/script&gt;
-where &lt;script type=&quot;math/tex&quot;&gt;W_t&lt;/script&gt; is a Wiener process with &lt;script type=&quot;math/tex&quot;&gt;W_t \sim \mathcal{N}(0, t)&lt;/script&gt;.&lt;/p&gt;
-
-&lt;p&gt;We want to study an arbitrary function &lt;script type=&quot;math/tex&quot;&gt;f(X_t)&lt;/script&gt; with a compact support, meaning that &lt;script type=&quot;math/tex&quot;&gt;f(X_t)=0, X_t \in \{ -\infty, \infty \}&lt;/script&gt;.
-Intuitively, this means that for the extreme values of &lt;script type=&quot;math/tex&quot;&gt;\pm \infty&lt;/script&gt; the function &lt;script type=&quot;math/tex&quot;&gt;f(X_t)&lt;/script&gt; evaluates to zero. 
-The function &lt;script type=&quot;math/tex&quot;&gt;f(X_t)&lt;/script&gt; should be twice differentiable in its argument &lt;script type=&quot;math/tex&quot;&gt;X_t&lt;/script&gt; such that we can use the Taylor expansion up to the second order, giving us 
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	df = \partial_x f(X_t) dX_t + \denom{2} \partial_x^2 f(X_t) dX_t^2.
-\end{align}&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;For the infinitissimal values &lt;script type=&quot;math/tex&quot;&gt;dt&lt;/script&gt;, any term with an exponent higher than one will go towards zero at a faster rate.
-Thus the terms &lt;script type=&quot;math/tex&quot;&gt;dt^2&lt;/script&gt;, &lt;script type=&quot;math/tex&quot;&gt;dt dW_t = dt^{1.5}&lt;/script&gt; will evaluate to zero at the limit.
-We can then plug in the dynamics of &lt;script type=&quot;math/tex&quot;&gt;X_t&lt;/script&gt; to obtain
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	df(X_t) = &amp; \partial_x f(X_t) dX_t + \denom{2} \partial_x^2 f(X_t) dX_t^2 \\
-	= &amp; \partial_x f(X_t) \left( \drift dt + \diff dW_t \right) + \denom{2} \partial_x^2 f(X_t) \left(\drift dt + \diff dW_t \right)^2 \\
-	= &amp; \partial_x f(X_t) \left( \drift dt + \diff dW_t \right) \\
-	&amp; + \denom{2} \partial_x^2 f(X_t) \big( \drift^2 \underbrace{dt^2}_{=0} + \drift \diff \underbrace{ dt \ dW_t}_{=0} + \diff^2 \underbrace{dW_t^2}_{=dt} \big) \\
-	= &amp;\left(\drift \partial_x f(X_t) + \denom{2} \diff^2 \partial_x^2 f(X_t) \right) dt + \diff \partial_x f(X_t) dW_t 
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;We can abbreviate the notation to enable a higher degree of notational brevity and write
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	df = \left( \mu \partial_x f + \denom{2} \sigma^2 \partial_x^2 f \right) dt + \sigma \partial_x f dW_t
-\end{align}&lt;/script&gt;
-which is identical to the line above but shorter and less cluttered.&lt;/p&gt;
-
-&lt;p&gt;We can easily see that the differential &lt;script type=&quot;math/tex&quot;&gt;df&lt;/script&gt; follows an Ito drift-diffusion process, although with modified drift and diffusion terms in direct comparison to &lt;script type=&quot;math/tex&quot;&gt;dX_t&lt;/script&gt;.
-Naturally we can take the expectation of to isolate the drift of &lt;script type=&quot;math/tex&quot;&gt;df&lt;/script&gt; since &lt;script type=&quot;math/tex&quot;&gt;\Efunc{dW_t}=0&lt;/script&gt; by definition,
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\Efunc{df} &amp; = \Efunc{ \mu \partial_x f + \denom{2} \sigma^2 \partial_x^2 f } dt \\
-	\frac{d}{dt} \Efunc{f} &amp; = \Efunc{ \mu \partial_x f + \denom{2} \sigma^2 \partial_x^2 f }
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;Since the Wiener process &lt;script type=&quot;math/tex&quot;&gt;W_t&lt;/script&gt; introduces stochasticity into the evolution of &lt;script type=&quot;math/tex&quot;&gt;X_t&lt;/script&gt;, we are in fact dealing with a distribution &lt;script type=&quot;math/tex&quot;&gt;p(x, t)&lt;/script&gt;.
-We can then proceed by plugging in the distribution &lt;script type=&quot;math/tex&quot;&gt;p(x, t)&lt;/script&gt; into the expectation and writing it out in its full glory,
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\frac{d}{dt} \Efunc{f} &amp; = \Efunc{ \mu \partial_x f + \denom{2} \sigma^2 \partial_x^2 f } \\
-	&amp;= \int_{-\infty}^\infty \left( \mu \partial_x f + \denom{2} \sigma^2 \partial_x^2 f \right) p(x, t) dx \\
-	&amp;= \int_{-\infty}^\infty \mu \ \partial_x f \ p(x, t) dx + \denom{2} \int_{-\infty}^\infty \sigma^2 \ \partial_x^2 f \ p(x, t) dx
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;The state so far is that we reduced the expected change in &lt;script type=&quot;math/tex&quot;&gt;f&lt;/script&gt; to two integrals which we now have to solve.
-For this we can utilize integration by parts which is the sort of the anti derivative of the product rule.
-Remember that
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	\partial_x \left[ u(x) v(x) \right] = \partial_x \left[  u(x) \right] v(x) + u(x) \partial_x \left[ v(x) \right]
-\end{align}&lt;/script&gt;
-or in a easier form
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	\left( u(x) v(x) \right)' = u'(x) v(x) + u(x) v'(x)
-\end{align}&lt;/script&gt;
-The integration by parts rule states that for a range &lt;script type=&quot;math/tex&quot;&gt;x \in [ a, b ]&lt;/script&gt;
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	\left[ u(x) v(x) \right]_a^b = \int_a^b u'(x) v(x) dx + \int_a^b u(x) v'(x) dx
-\end{align}&lt;/script&gt;
-or alternatively
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	\int_a^b u(x) v'(x) dx = \left[ u(x) v(x) \right]_a^b - \int_a^b u'(x) v(x) dx + 
-\end{align}&lt;/script&gt;&lt;/p&gt;
-
-&lt;p&gt;We can now proceed to identify the relevant terms &lt;script type=&quot;math/tex&quot;&gt;u(x)&lt;/script&gt; and &lt;script type=&quot;math/tex&quot;&gt;v(x)&lt;/script&gt; in the two integrals,
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\frac{d}{dt} \Efunc{f} = &amp; \int_{-\infty}^\infty \underbrace{\mu \ p(x, t)}_{u(x)} \ \underbrace{\partial_x f}_{v'(x)}  dx + \denom{2} \int_{-\infty}^\infty \underbrace{ \sigma^2 \ p(x, t)}_{u(x)} \ \underbrace{\partial_x^2 f}_{v
-	(x)} dx \\
-	= &amp; \underbrace{\left[  \mu \ p(x, t)  \  f \right]_{-\infty}^\infty}_{=0} - \int_{-\infty}^\infty  \partial_x \left[ \mu \ p(x, t) \right] \ f \ dx \\
-	&amp; + \denom{2} \underbrace{\left[  \sigma^2 \ p(x, t)  \  \partial_x f \right]_{-\infty}^\infty}_{=0} - \denom{2} \int_{-\infty}^\infty  \partial_x \left[ \sigma^2 \ p(x, t) \right] \ \partial_x f \ dx
-\end{align} %]]&gt;&lt;/script&gt;
-For any reasonable probability distribution, evaluating &lt;script type=&quot;math/tex&quot;&gt;p(x,t)&lt;/script&gt; at &lt;script type=&quot;math/tex&quot;&gt;\pm \infty&lt;/script&gt; evaluates to zero such that the evaluation brackets &lt;script type=&quot;math/tex&quot;&gt;\left[ p(x,t) \ldots \right]_{-\infty}^\infty = 0&lt;/script&gt;.
-We can then apply the integration by parts a second time on the second integral to obtain
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\frac{d}{dt} \Efunc{f} = &amp; - \int_{-\infty}^\infty  \partial_x \left[ \mu \ p(x, t) \right] \ f \ dx - \denom{2} \int_{-\infty}^\infty  \underbrace{\partial_x \left[ \sigma^2 \ p(x, t) \right]}_{u(x)} \ \underbrace{\partial_x f}_{v'(x)} \ dx \\
-	= &amp; \int_{-\infty}^\infty  \partial_x \left[ \mu \ p(x, t) \right] \ f \ dx \\
-	&amp; - \denom{2} \underbrace{\left[ \partial_x \left[ \sigma^2 \ p(x, t) \right] \ f \right]_{-\infty}^\infty}_{=0} + \denom{2} \int_{-\infty}^\infty  \partial_x^2 \left[ \sigma^2 \ p(x, t) \right] \ f \ dx \\
-	= &amp; \int_{-\infty}^\infty f \left( - \partial_x \left[ \mu \ p(x, t) \right] + \denom{2} \partial_x^2 \left[ \sigma^2 \ p(x, t) \right] \right) dx
-\end{align} %]]&gt;&lt;/script&gt;
-With Leibniz’ rule we can pull in the time derivative on the left hand side to obtain
-&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
-\begin{align}
-	\frac{d}{dt} \Efunc{f} = &amp; \frac{d}{dt} \int_{-\infty}^\infty f(x) p(x,t) dx \\
-	=&amp; \int_{-\infty}^\infty f(x) \ \partial_t \ p(x,t) dx
-\end{align} %]]&gt;&lt;/script&gt;
-which gives us
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	\int_{-\infty}^\infty f(x) \ \partial_t \ p(x,t) dx = \int_{-\infty}^\infty f \left( - \partial_x \left[ \mu \ p(x, t) \right] + \denom{2} \partial_x^2 \left[ \sigma^2 \ p(x, t) \right] \right) dx
-\end{align}&lt;/script&gt;
-The last step to obtain the Fokker-Planck equation is to observe that the function &lt;script type=&quot;math/tex&quot;&gt;f&lt;/script&gt; which is integrated over occurs both on the left and the right hand side.
-Since the integrals &lt;script type=&quot;math/tex&quot;&gt;\int f(x) \ldots dx&lt;/script&gt; is identical on both sides we can equate the derivatives directly to obtain
-&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
-	\partial_t \ p(x,t) = - \partial_x \left[ \mu \ p(x, t) \right] + \denom{2} \partial_x^2 \left[ \sigma^2 \ p(x, t) \right]
-\end{align}&lt;/script&gt;
-which is the Fokker-Planck equation!&lt;/p&gt;</content><author><name></name></author><summary type="html">Fokker-Planck Equation Via Ito Calculus</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/blogthumbnails/fokkerplanckito.png" /></entry><entry><title type="html">Fast Fourier Transform</title><link href="http://localhost:4000/blog/FastFourierTransform/" rel="alternate" type="text/html" title="Fast Fourier Transform" /><published>2023-04-11T00:00:00+02:00</published><updated>2023-04-11T00:00:00+02:00</updated><id>http://localhost:4000/blog/FastFourierTransform</id><content type="html" xml:base="http://localhost:4000/blog/FastFourierTransform/">&lt;head&gt;
+which tells us how the probability distribution &lt;script type=&quot;math/tex&quot;&gt;p(x_t | x'_{t'})&lt;/script&gt; changes as we move further backwards in time.&lt;/p&gt;</content><author><name></name></author><summary type="html">Distributions as partial differential equations over time</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/blogthumbnails/kramersmoyal.png" /></entry><entry><title type="html">Fast Fourier Transform</title><link href="http://localhost:4000/blog/FastFourierTransform/" rel="alternate" type="text/html" title="Fast Fourier Transform" /><published>2023-04-11T00:00:00+02:00</published><updated>2023-04-11T00:00:00+02:00</updated><id>http://localhost:4000/blog/FastFourierTransform</id><content type="html" xml:base="http://localhost:4000/blog/FastFourierTransform/">&lt;head&gt;
 &lt;!-- &lt;script type=&quot;text/x-mathjax-config&quot;&gt;  --&gt;
   &lt;!-- MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt; --&gt;
 &lt;!-- uncomment two lines above and remove the html css to svg lines --&gt;
@@ -3154,366 +3242,4 @@ The IMF estimates that the Lebanese commercial banks participating in the scheme
 
 &lt;p&gt;Why rob a bank, if you can rob an entire country with it? Preferably its central bank.&lt;/p&gt;
 
-&lt;p&gt;For more detailed reading, look at &lt;a href=&quot;https://www.fdd.org/analysis/2020/08/04/crisis-in-lebanon/&quot;&gt;this&lt;/a&gt; sophisticated article on the whole issue.&lt;/p&gt;</content><author><name></name></author><category term="globalizedfinance" /><summary type="html">From the People, not For the People</summary></entry><entry><title type="html">Paris to Istanbul</title><link href="http://localhost:4000/blog/ParisIstanbul2022-copy/" rel="alternate" type="text/html" title="Paris to Istanbul" /><published>2022-09-08T00:00:00+02:00</published><updated>2022-09-08T00:00:00+02:00</updated><id>http://localhost:4000/blog/ParisIstanbul2022%20copy</id><content type="html" xml:base="http://localhost:4000/blog/ParisIstanbul2022-copy/">&lt;!-- ## Berlin Over The Years --&gt;
-&lt;style&gt;
-    .image-gallery {
-        overflow: auto;
-        margin-left: -1% !important;
-    }
-
-    .image-gallery li {
-        float: left;
-        float: top;
-        display: block;
-        margin: 0 0 1% 1%;
-        width: 99%;
-    }
-
-    .image-gallery li a {
-        text-align: top;
-        text-decoration: none !important;
-        color: #777;
-    }
-
-    .image-gallery li a span {
-        display: block;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-        padding: 3px 0;
-    }
-
-    .image-gallery li a img {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        vertical-align: top;
-    }
-&lt;/style&gt;
-
-&lt;ul class=&quot;image-gallery&quot;&gt;
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul001.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/parisistanbul22/parisistanbul001.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul002.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/parisistanbul22/parisistanbul002.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul003.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/parisistanbul22/parisistanbul003.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul201.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/parisistanbul22/parisistanbul201.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul202.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/parisistanbul22/parisistanbul202.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul203.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/parisistanbul22/parisistanbul203.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul209.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/parisistanbul22/parisistanbul209.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul210.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/parisistanbul22/parisistanbul210.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul219.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/parisistanbul22/parisistanbul219.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    &lt;li&gt;&lt;a href=&quot;/photo_gallery/parisistanbul22/parisistanbul220.jpg&quot;&gt;&lt;img src=&quot;/photo_gallery/parisistanbul22/parisistanbul220.jpg&quot; /&gt;&lt;/a&gt;&lt;/li&gt;
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-&lt;/ul&gt;</content><author><name></name></author><category term="photography" /><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/photo_gallery/parisistanbul22/parisistanbul201.jpg" /></entry></feed>
+&lt;p&gt;For more detailed reading, look at &lt;a href=&quot;https://www.fdd.org/analysis/2020/08/04/crisis-in-lebanon/&quot;&gt;this&lt;/a&gt; sophisticated article on the whole issue.&lt;/p&gt;</content><author><name></name></author><category term="globalizedfinance" /><summary type="html">From the People, not For the People</summary></entry></feed>

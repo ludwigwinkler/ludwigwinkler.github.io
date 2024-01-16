@@ -10,7 +10,7 @@
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 
-<title>Fokker, Planck & Ito</title>
+<title>Simple Reverse SDE Derivation</title>
 <meta name="description" content="">
 
 <link rel="apple-touch-icon" sizes="180x180" href="http://localhost:4000/assets/icon/apple-touch-icon.png">
@@ -67,11 +67,11 @@
 				<div id="main">
           <section class="post">
     				<header class="major">
-      				<span class="date">21 Oct 2023</span>
-      				<h1>Fokker, Planck & Ito</h1>
-      				<p>Fokker-Planck Equation Via Ito Calculus</p>
+      				<span class="date">13 Jan 2024</span>
+      				<h1>Simple Reverse SDE Derivation</h1>
+      				<p>Save yourself a lot of Bayes with a linear function</p>
       			</header>
-      			<div class="image main"><img src="../../blog/blogthumbnails/fokkerplanckito.png" alt=""></div>
+      			<div class="image main"><img src="../../blog/blogthumbnails/simple_reverse_sde.png" alt=""></div>
       			<p><head>
 <!-- <script type="text/x-mathjax-config">  -->
   <!-- MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script> -->
@@ -100,108 +100,64 @@
 \newcommand{\drift}{\mu(X_t, t)}
 \newcommand{\diff}{\sigma(X_t, t)}</script></p>
 
-<p>A Dutch, a German and a Japanese walk into a bar …</p>
-
-<p>Let us consider the random variable <script type="math/tex">X_t</script> that follows an Ito drift-diffusion process of the form
-<script type="math/tex">\begin{align}
-	dX_t = \drift dt + \diff dW_t
-\end{align}</script>
-where <script type="math/tex">W_t</script> is a Wiener process with <script type="math/tex">W_t \sim \mathcal{N}(0, t)</script>.</p>
-
-<p>We want to study an arbitrary function <script type="math/tex">f(X_t)</script> with a compact support, meaning that <script type="math/tex">f(X_t)=0, X_t \in \{ -\infty, \infty \}</script>.
-Intuitively, this means that for the extreme values of <script type="math/tex">\pm \infty</script> the function <script type="math/tex">f(X_t)</script> evaluates to zero. 
-The function <script type="math/tex">f(X_t)</script> should be twice differentiable in its argument <script type="math/tex">X_t</script> such that we can use the Taylor expansion up to the second order, giving us 
-<script type="math/tex">\begin{align}
-	df = \partial_x f(X_t) dX_t + \denom{2} \partial_x^2 f(X_t) dX_t^2.
-\end{align}</script></p>
-
-<p>For the infinitissimal values <script type="math/tex">dt</script>, any term with an exponent higher than one will go towards zero at a faster rate.
-Thus the terms <script type="math/tex">dt^2</script>, <script type="math/tex">dt dW_t = dt^{1.5}</script> will evaluate to zero at the limit.
-We can then plug in the dynamics of <script type="math/tex">X_t</script> to obtain
+<p>We start out with the Fokker-Planck equation (FPE) which relates the change over time for the probability for a specific value of $x$ with a diffusion term $\sigma(t)$ which is only dependent on the time,
 <script type="math/tex">% <![CDATA[
 \begin{align}
-	df(X_t) = & \partial_x f(X_t) dX_t + \denom{2} \partial_x^2 f(X_t) dX_t^2 \\
-	= & \partial_x f(X_t) \left( \drift dt + \diff dW_t \right) + \denom{2} \partial_x^2 f(X_t) \left(\drift dt + \diff dW_t \right)^2 \\
-	= & \partial_x f(X_t) \left( \drift dt + \diff dW_t \right) \\
-	& + \denom{2} \partial_x^2 f(X_t) \big( \drift^2 \underbrace{dt^2}_{=0} + \drift \diff \underbrace{ dt \ dW_t}_{=0} + \diff^2 \underbrace{dW_t^2}_{=dt} \big) \\
-	= &\left(\drift \partial_x f(X_t) + \denom{2} \diff^2 \partial_x^2 f(X_t) \right) dt + \diff \partial_x f(X_t) dW_t 
+	\partial_t \ p(x,t) = & - \partial_x \left[ \drift \ p(x, t) \right] + \denom{2} \partial_x^2 \left[ \sigma(t)^2 \ p(x, t) \right]  \\
+	=                     & - \partial_x \left[ \drift \ p(x, t) \right] + \denom{2} \sigma(t)^2 \partial_x^2 \left[ \ p(x, t) \right].
 \end{align} %]]></script></p>
 
-<p>We can abbreviate the notation to enable a higher degree of notational brevity and write
-<script type="math/tex">\begin{align}
-	df = \left( \mu \partial_x f + \denom{2} \sigma^2 \partial_x^2 f \right) dt + \sigma \partial_x f dW_t
-\end{align}</script>
-which is identical to the line above but shorter and less cluttered.</p>
-
-<p>We can easily see that the differential <script type="math/tex">df</script> follows an Ito drift-diffusion process, although with modified drift and diffusion terms in direct comparison to <script type="math/tex">dX_t</script>.
-Naturally we can take the expectation of to isolate the drift of <script type="math/tex">df</script> since <script type="math/tex">\Efunc{dW_t}=0</script> by definition,
+<p>Now we consider a time reversion $\tau(t) = 1 - t$ and are interested in what the change of the probability distribution is under this reversed time index,
 <script type="math/tex">% <![CDATA[
 \begin{align}
-	\Efunc{df} & = \Efunc{ \mu \partial_x f + \denom{2} \sigma^2 \partial_x^2 f } dt \\
-	\frac{d}{dt} \Efunc{f} & = \Efunc{ \mu \partial_x f + \denom{2} \sigma^2 \partial_x^2 f }
+	\partial_{t} \ p(x,\tau(t)) = & - \partial_x \left[ \mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t)) \right]       \\
+	                              & + \denom{2} \partial_x^2 \left[ \sigma(\tau(t))^2 \ p(x, \tau(t)) \right].
+\end{align} %]]></script>
+With the time transformation $\tau(t)$, we apply the chain rule on the time transformation on the left hand side to obtain
+<script type="math/tex">\begin{align}
+	\frac{\partial p(x,\tau(t))}{\partial t}
+	= \frac{ \partial p(x,\tau(t))}{\partial \tau} \ \frac{\partial \tau(t)}{\partial t}
+	= \frac{ \partial p(x,\tau(t))}{\partial \tau} \
+	\underbrace{ \frac{\partial \tau(t)}{\partial t}}_{-1}
+	= -\frac{ \partial p(x,\tau(t))}{\partial \tau}.
+\end{align}</script>
+Then, we pull the negative factor from the chain rule to the right hand side and combine the drift and diffusion term into a single derivative via the distributive property of the partial derivative,
+<script type="math/tex">% <![CDATA[
+\begin{align}
+	\frac{ \partial p(x,\tau(t))}{\partial \tau} = & \partial_x \left[ \mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t)) \right]         \nonumber                              \\
+	                                               & - \denom{2} \sigma(\tau(t))^2 \partial_x^2 \left[ \ p(x, \tau(t)) \right]  \label{eq:app_reversetime_derivation1} \\
+	=                                              & - \partial_x \Bigg[ -\mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t))              \nonumber                              \\
+	                                               & \qquad \quad + \denom{2} \sigma(\tau(t))^2 \partial_x \left[ \ p(x, \tau(t)) \right] \Bigg]
+\end{align} %]]></script>
+Applying the log derivative identity $\partial_x \log p(x) = \frac{1}{p(x)} \partial_x p(x)$, which rearranged yields $ \partial_x p(x) = p(x) \partial_x \log p(x)$, we obtain
+<script type="math/tex">% <![CDATA[
+\begin{align}
+	\frac{ \partial p(x,\tau(t))}{\partial \tau} = & - \partial_x \Bigg[ -\mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t))                            \nonumber                                                                             \\
+	                                               & \qquad \quad + \denom{2} \sigma(\tau(t))^2 \partial_x \log p(x, \tau(t)) p(x, \tau(t) ) \Bigg]                                                                                 \\
+	=                                              & - \partial_x \Bigg[ \Big( \underbrace{-\mu(X(\tau(t)), \tau(t)) + \denom{2} \sigma(\tau(t))^2 \partial_x \log p(x, \tau(t))}_{\text{reverse drift}} \Big) p(x, \tau(t))\Bigg].
 \end{align} %]]></script></p>
 
-<p>Since the Wiener process <script type="math/tex">W_t</script> introduces stochasticity into the evolution of <script type="math/tex">X_t</script>, we are in fact dealing with a distribution <script type="math/tex">p(x, t)</script>.
-We can then proceed by plugging in the distribution <script type="math/tex">p(x, t)</script> into the expectation and writing it out in its full glory,
+<p>The equation above states that the inverted drift with an additional scaled score term of the forward distribution will invert the stochastic process.
+Interestingly, there is no diffusion term occuring in this formulation of the reverse FPE.
+We can in fact derive a more flexible reverse drift by returning to a slightly rearranged equation \ref{eq:app_reversetime_derivation1} with an additional scaling factor $\alpha^2$,
 <script type="math/tex">% <![CDATA[
 \begin{align}
-	\frac{d}{dt} \Efunc{f} & = \Efunc{ \mu \partial_x f + \denom{2} \sigma^2 \partial_x^2 f } \\
-	&= \int_{-\infty}^\infty \left( \mu \partial_x f + \denom{2} \sigma^2 \partial_x^2 f \right) p(x, t) dx \\
-	&= \int_{-\infty}^\infty \mu \ \partial_x f \ p(x, t) dx + \denom{2} \int_{-\infty}^\infty \sigma^2 \ \partial_x^2 f \ p(x, t) dx
+	\frac{ \partial p(x,\tau(t))}{\partial \tau} = & - \partial_x \left[ - \mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t)) \right]         \nonumber                                                                                                            \\
+	                                               & - \denom{2} \sigma(\tau(t))^2 \partial_x^2 \left[ \ p(x, \tau(t)) \right] \underbrace{\pm \ \alpha^2 \ \sigma(\tau(t))^2 \partial_x^2 \left[ \ p(x, \tau(t)) \right]}_{\text{additional diffusion}} \\
+	=                                              & - \partial_x \left[ - \mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t)) \right]         \nonumber                                                                                                            \\
+	                                               & - \sigma(\tau(t))^2 \left( \frac{1}{2} + \alpha^2 \right) \partial_x^2 \left[ \ p(x, \tau(t)) \right]                                                                                           \\
+	                                               & \underbrace{ + \ \frac{\alpha^2}{2} \ \sigma(\tau(t))^2 \partial_x^2 \left[ \ p(x, \tau(t)) \right]}_{\text{additional diffusion}}                                                                  \\
+	=                                              & - \partial_x \Bigg[ \Big( - \mu(X(\tau(t)), \tau(t))                                                                                                                                                \\
+	                                               & \qquad \qquad + \sigma(\tau(t))^2 \left( \frac{1}{2} + \alpha^2 \right) \partial_x \log p(x, \tau(t)) \Big) \ p(x, \tau(t)) \Bigg]         \nonumber                                            \\
+	                                               & + \ \alpha^2 \ \sigma(\tau(t))^2 \partial_x^2 \left[ \ p(x, \tau(t)) \right].
 \end{align} %]]></script></p>
 
-<p>The state so far is that we reduced the expected change in <script type="math/tex">f</script> to two integrals which we now have to solve.
-For this we can utilize integration by parts which is the sort of the anti derivative of the product rule.
-Remember that
-<script type="math/tex">\begin{align}
-	\partial_x \left[ u(x) v(x) \right] = \partial_x \left[  u(x) \right] v(x) + u(x) \partial_x \left[ v(x) \right]
-\end{align}</script>
-or in a easier form
-<script type="math/tex">\begin{align}
-	\left( u(x) v(x) \right)' = u'(x) v(x) + u(x) v'(x)
-\end{align}</script>
-The integration by parts rule states that for a range <script type="math/tex">x \in [ a, b ]</script>
-<script type="math/tex">\begin{align}
-	\left[ u(x) v(x) \right]_a^b = \int_a^b u'(x) v(x) dx + \int_a^b u(x) v'(x) dx
-\end{align}</script>
-or alternatively
-<script type="math/tex">\begin{align}
-	\int_a^b u(x) v'(x) dx = \left[ u(x) v(x) \right]_a^b - \int_a^b u'(x) v(x) dx + 
-\end{align}</script></p>
-
-<p>We can now proceed to identify the relevant terms <script type="math/tex">u(x)</script> and <script type="math/tex">v(x)</script> in the two integrals,
+<p>from which we can infer the reverse drift consisting of the inverted original drift with the additionally scaled score with $\alpha$ and the additional diffusion,
 <script type="math/tex">% <![CDATA[
 \begin{align}
-	\frac{d}{dt} \Efunc{f} = & \int_{-\infty}^\infty \underbrace{\mu \ p(x, t)}_{u(x)} \ \underbrace{\partial_x f}_{v'(x)}  dx + \denom{2} \int_{-\infty}^\infty \underbrace{ \sigma^2 \ p(x, t)}_{u(x)} \ \underbrace{\partial_x^2 f}_{v
-	(x)} dx \\
-	= & \underbrace{\left[  \mu \ p(x, t)  \  f \right]_{-\infty}^\infty}_{=0} - \int_{-\infty}^\infty  \partial_x \left[ \mu \ p(x, t) \right] \ f \ dx \\
-	& + \denom{2} \underbrace{\left[  \sigma^2 \ p(x, t)  \  \partial_x f \right]_{-\infty}^\infty}_{=0} - \denom{2} \int_{-\infty}^\infty  \partial_x \left[ \sigma^2 \ p(x, t) \right] \ \partial_x f \ dx
-\end{align} %]]></script>
-For any reasonable probability distribution, evaluating <script type="math/tex">p(x,t)</script> at <script type="math/tex">\pm \infty</script> evaluates to zero such that the evaluation brackets <script type="math/tex">\left[ p(x,t) \ldots \right]_{-\infty}^\infty = 0</script>.
-We can then apply the integration by parts a second time on the second integral to obtain
-<script type="math/tex">% <![CDATA[
-\begin{align}
-	\frac{d}{dt} \Efunc{f} = & - \int_{-\infty}^\infty  \partial_x \left[ \mu \ p(x, t) \right] \ f \ dx - \denom{2} \int_{-\infty}^\infty  \underbrace{\partial_x \left[ \sigma^2 \ p(x, t) \right]}_{u(x)} \ \underbrace{\partial_x f}_{v'(x)} \ dx \\
-	= & \int_{-\infty}^\infty  \partial_x \left[ \mu \ p(x, t) \right] \ f \ dx \\
-	& - \denom{2} \underbrace{\left[ \partial_x \left[ \sigma^2 \ p(x, t) \right] \ f \right]_{-\infty}^\infty}_{=0} + \denom{2} \int_{-\infty}^\infty  \partial_x^2 \left[ \sigma^2 \ p(x, t) \right] \ f \ dx \\
-	= & \int_{-\infty}^\infty f \left( - \partial_x \left[ \mu \ p(x, t) \right] + \denom{2} \partial_x^2 \left[ \sigma^2 \ p(x, t) \right] \right) dx
-\end{align} %]]></script>
-With Leibniz’ rule we can pull in the time derivative on the left hand side to obtain
-<script type="math/tex">% <![CDATA[
-\begin{align}
-	\frac{d}{dt} \Efunc{f} = & \frac{d}{dt} \int_{-\infty}^\infty f(x) p(x,t) dx \\
-	=& \int_{-\infty}^\infty f(x) \ \partial_t \ p(x,t) dx
-\end{align} %]]></script>
-which gives us
-<script type="math/tex">\begin{align}
-	\int_{-\infty}^\infty f(x) \ \partial_t \ p(x,t) dx = \int_{-\infty}^\infty f \left( - \partial_x \left[ \mu \ p(x, t) \right] + \denom{2} \partial_x^2 \left[ \sigma^2 \ p(x, t) \right] \right) dx
-\end{align}</script>
-The last step to obtain the Fokker-Planck equation is to observe that the function <script type="math/tex">f</script> which is integrated over occurs both on the left and the right hand side.
-Since the integrals <script type="math/tex">\int f(x) \ldots dx</script> is identical on both sides we can equate the derivatives directly to obtain
-<script type="math/tex">\begin{align}
-	\partial_t \ p(x,t) = - \partial_x \left[ \mu \ p(x, t) \right] + \denom{2} \partial_x^2 \left[ \sigma^2 \ p(x, t) \right]
-\end{align}</script>
-which is the Fokker-Planck equation!</p>
+	dX(\tau) = & ( - \mu(X(\tau(t)), \tau(t)) + \sigma(\tau(t))^2 \left( \frac{1}{2} + \alpha^2 \right) \partial_x \log p(x, \tau(t)) ) dt \\
+	           & + \alpha \ \sigma(\tau(t)) dW(\tau)
+\end{align} %]]></script></p>
 </p>
       		</section>
 
@@ -214,8 +170,8 @@ which is the Fokker-Planck equation!</p>
                */
 
               var disqus_config = function () {
-                  this.page.url = '/blog/FokkerPlanck/';  /*Replace PAGE_URL with your page's canonical URL variable*/
-                  this.page.identifier = '/blog/FokkerPlanck/'; /*Replace PAGE_IDENTIFIER with your page's unique identifier variable*/
+                  this.page.url = '/blog/SimpleReverseSDE/';  /*Replace PAGE_URL with your page's canonical URL variable*/
+                  this.page.identifier = '/blog/SimpleReverseSDE/'; /*Replace PAGE_IDENTIFIER with your page's unique identifier variable*/
               };
 
               (function() {  /* dont endit below this line */
