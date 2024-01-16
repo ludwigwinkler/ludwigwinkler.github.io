@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Fokker, Planck & Ito"
-date:   2023-07-21
+date:   2023-10-21
 excerpt: "Fokker-Planck Equation Via Ito Calculus"
 image: "../../blog/blogthumbnails/fokkerplanckito.png"
 ---
