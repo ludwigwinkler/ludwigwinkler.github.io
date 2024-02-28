@@ -3,7 +3,7 @@ layout: post
 title:  "Black-Scholes Equation for Options Pricing"
 date:   2024-02-28
 excerpt: "Optional Derivatives"
-image: "../../blog/blogthumbnails/simple_reverse_sde.png"
+image: "../../blog/blogthumbnails/blackscholes.png"
 ---
 <head>
 <!-- <script type="text/x-mathjax-config">  -->
