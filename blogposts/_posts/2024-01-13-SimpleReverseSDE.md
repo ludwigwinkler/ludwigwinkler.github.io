@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Simple Reverse SDE Derivation"
+title:  "Simple Reverse-Time SDE Derivation for Diffusion Models"
 date:   2024-01-13
 excerpt: "Save yourself a lot of Bayes with a linear function"
 image: "../../blog/blogthumbnails/simple_reverse_sde.png"
