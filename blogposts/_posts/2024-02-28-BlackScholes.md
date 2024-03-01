@@ -78,8 +78,12 @@ Therefore, if the stock crashes to $\\$1$, we can still demand from the seller o
 For this peace of mind, we pay the seller of the put option the initial $\\$ 10$.
 
 But the option itself has a value as well as they are tradeable and can be sold and bought on specialized markets.
-Let's a third person owns the stock and suddenly the stock crashes to $\\$1$.
-If the third person could get to own own option, he could buy our option for its value $V(S, t)$ and force the seller of the option to buy his basically worthless stock for the full $\\$100$.
+Let a third person own the same stock and suddenly the stock crashes to $\\$1$.
+If the third person could get to own our option, he could buy our option for its value $V(S, t)$ and force the seller of the option to buy his basically worthless stock for the full $\\$100$.
+Thus it works as a sort of insurance to *hedge* a portfolio against sudden movements.
+The nice things about options is that we *can* sell respectively buy the stock for a predetermined price, but we *don't have to*.
+That is how we can hedge our portfolio, and the overarching framework is called dynamic hedging.
+The dynamic part comes from us constantly selling and buying stocks $S$ and their options $V(S, t)$ in our portfolio $\Pi$ based on the behavior of the stock and our options.
 
 We will now introduce the term $\Delta = \partial_S V(S, t)$ to express the sensitivity of the worth of the option with regards to changes in the price of the underlying stock $S$.
 
@@ -99,7 +103,9 @@ Let's exemplify the behavior of $\Pi$ with an example.
 We have bought the stock $S$ for $\\$100$ and hedged it with a put option $V(S, t)$ to be able to sell it in one years time for the same $\\$100$.
 Empirically, for put options for which the price of the underlying stock has dropped significantly from the strike price, we can assume a $\Delta=-1$.
 Now a year has passed and the price of the stock $S$ is at a paltry $\\$1$.
-The value of the option is the difference of the buy price of the underlying stock $S=\\$1$ and the strike price of $\\$100$ such that $V(S, t) = \\$99$.
+The value of the option is the difference of the buy price of the underlying stock $S=\\$1$ and the strike price of $\\$100$ such that $V(S, t) = \\$99$, which is the maximum profit you can make in this constellation of stock price and option value.
+In cases where owning an option provides a significant advantage, for example the stock is very low for a put option with high strike price or the stock price is very high for a call option with low strike price, an option is called 'in the money'.
+
 Since $S= \\$1$ and $\Delta=-1$, we have
 $$
 \begin{align}
