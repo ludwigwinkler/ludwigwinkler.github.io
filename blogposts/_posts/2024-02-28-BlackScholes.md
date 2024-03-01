@@ -115,7 +115,7 @@ $$
 &= \$ 100
 \end{align}
 $$
-and we see that our portfolio as a whole has budged from the initial $\\$100$ dollars (we omitted the option premium and transaction costs and the like to strengthen the intuition).
+and we see that our portfolio as a whole has not budged from the initial $\\$100$ dollars (we omitted the option premium and transaction costs and the like to strengthen the intuition).
 
 Through the sensitivity of $\Delta = \partial_S V(S, t)$ we can construct a portfolio which is risk neutral.
 Come hell or high water in the financial markets, by properly adapting the ratio of stocks and options in your portfolio you can whether the storm and keep your money.
