@@ -1,4 +1,174 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2024-01-16T10:01:17+01:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Simple Reverse SDE Derivation</title><link href="http://localhost:4000/blog/SimpleReverseSDE/" rel="alternate" type="text/html" title="Simple Reverse SDE Derivation" /><published>2024-01-13T00:00:00+01:00</published><updated>2024-01-13T00:00:00+01:00</updated><id>http://localhost:4000/blog/SimpleReverseSDE</id><content type="html" xml:base="http://localhost:4000/blog/SimpleReverseSDE/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2024-03-18T14:45:56+01:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Black-Scholes Equation for Options Pricing</title><link href="http://localhost:4000/blog/BlackScholes/" rel="alternate" type="text/html" title="Black-Scholes Equation for Options Pricing" /><published>2024-02-28T00:00:00+01:00</published><updated>2024-02-28T00:00:00+01:00</updated><id>http://localhost:4000/blog/BlackScholes</id><content type="html" xml:base="http://localhost:4000/blog/BlackScholes/">&lt;head&gt;
+&lt;!-- &lt;script type=&quot;text/x-mathjax-config&quot;&gt;  --&gt;
+  &lt;!-- MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt; --&gt;
+&lt;!-- uncomment two lines above and remove the html css to svg lines --&gt;
+&lt;script type=&quot;text/x-mathjax-config&quot;&gt;
+  MathJax.Hub.Config({
+    TeX: { equationNumbers: { autoNumber: &quot;all&quot; } },
+    tex2jax: {
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+      inlineMath: [ ['$','$'], [&quot;\\(&quot;,&quot;\\)&quot;] ],
+      displayMath: [['$$','$$'], ['\[' , '\]'], ['\\[', '\\]']],
+      processEscapes: true
+    },
+    &quot;HTML-CSS&quot;: { linebreaks: { automatic: true } },
+    CommonHTML: { linebreaks: { automatic: true } },
+    SVG: { linebreaks: { automatic: true } }
+    });
+&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; async=&quot;&quot; src=&quot;https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML&quot;&gt;
+&lt;/script&gt;
+&lt;/head&gt;
+&lt;p&gt;&lt;script type=&quot;math/tex&quot;&gt;\newcommand{\Efunc}[1]{\mathbb{E}\left[ #1\right]}
+\newcommand{\Vfunc}[1]{\mathbb{V}\left[ #1\right]}
+\newcommand{\KL}[2]{\text{KL}\left[ #1 \ || \ #2 \right]}
+\newcommand{\denom}[1]{\frac{1}{#1}}
+\newcommand{\drift}{\mu(X_t, t)}
+\newcommand{\diff}{\sigma(X_t, t)}&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The Black-Scholes equation is heralded as one rather important equations in finance, as it allows putting a precise price on an option &lt;em&gt;within the Black-Scholes framework&lt;/em&gt;.
+It’s from economics, so as usual everything is assumed to be Gaussian distributed, statistically independent and linear. ;-)&lt;/p&gt;
+
+&lt;p&gt;But first, let’s try to frame the problem we’re dealing with properly.
+Namely,&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;What is an Option?&lt;/li&gt;
+  &lt;li&gt;Why are they of relevance?&lt;/li&gt;
+  &lt;li&gt;Can we price them?&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;the-option&quot;&gt;The Option&lt;/h3&gt;
+
+&lt;p&gt;An option in finance is a type of derivative contract that gives the buyer the right, but not the obligation, to buy or sell an underlying asset or instrument at a specified strike price prior to or on a specified date, depending on the form of the option. 
+Options are widely used for various purposes, including hedging, speculation, and acquiring or disposing of assets at favorable prices. They can apply to numerous assets, like stocks, bonds, commodities, and currencies.&lt;/p&gt;
+
+&lt;p&gt;There are two main types of options:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Call Options: Grant the holder the right to buy the underlying asset at the strike price within a specified period. Investors buy call options if they anticipate an increase in the asset’s price.&lt;/li&gt;
+  &lt;li&gt;Put Options: Grant the holder the right to sell the underlying asset at the strike price within a specified period. Investors buy put options if they anticipate a decrease in the asset’s price.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The three important features of an option are:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Premium: The price the option buyer pays to the seller for the rights granted by the option. After all you’re locking in preferential treatment at a later point in time.&lt;/li&gt;
+  &lt;li&gt;Strike Price: The predetermined price at which the option buyer can buy (call) or sell (put) the underlying asset.&lt;/li&gt;
+  &lt;li&gt;Expiration Date: The date by which the option must be exercised or it expires worthless.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;the-relevance-of-options&quot;&gt;The Relevance of Options&lt;/h3&gt;
+
+&lt;p&gt;So let’s assume that a stock $S$ is worth $ \$ 100 $.&lt;/p&gt;
+
+&lt;p&gt;Further assume that for the time being we price a call option at $ \$ 10 $ in one years time.
+Thus if the stock rises above $ \$110 $, let’s say $ \$ 125$, we will make a profit of $ \$ 15 $ as we can buy the stock for $ \$ 100$ and immediately sell it for the $\$ 125$ and after subtracting the price of $\$ 10$ of our option, we have a profit of $\$15$. Nice, free money.
+If the stock $S$ stays below $\$110$, let’s say $\$ 108$ dollars it doesn’t really make sense to buy the stock at all to quickly sell it again, as we would buy high and sell low which is exactly the opposite of making a profit. In that case we lost the $\$ 10$ we paid for the option in the beginning.&lt;/p&gt;
+
+&lt;p&gt;But was the price of $\$ 10$ actually the correct price of the option?
+Let’s establish the value of the option as $V(S, t)$ which depends on the price of the underlying stock (naturally) and the time index $t$ which usually measures the time until expiration of the option.
+Next, we define our portfolio as $\Pi=\$110$ which is everything you have, be it stocks or cold, hard cash.&lt;/p&gt;
+
+&lt;p&gt;We can assume that in a world of ever increasing stock prices (thanks, Fed) we want to buy a stock $S$ and protect it against loosing its value.
+We can achieve this by buying a put option to sell the stock $S$ in one years time for the $\$100$ dollars we bought it for.
+Therefore, if the stock crashes to $\$1$, we can still demand from the seller of the put option to buy the stock for the full $\$100$ dollars and make us whole.
+For this peace of mind, we pay the seller of the put option the initial $\$ 10$.&lt;/p&gt;
+
+&lt;p&gt;But the option itself has a value as well as they are tradeable and can be sold and bought on specialized markets.
+Let a third person own the same stock and suddenly the stock crashes to $\$1$.
+If the third person could get to own our option, he could buy our option for its value $V(S, t)$ and force the seller of the option to buy his basically worthless stock for the full $\$100$.
+Thus it works as a sort of insurance to &lt;em&gt;hedge&lt;/em&gt; a portfolio against sudden movements.
+The nice things about options is that we &lt;em&gt;can&lt;/em&gt; sell respectively buy the stock for a predetermined price, but we &lt;em&gt;don’t have to&lt;/em&gt;.
+That is how we can hedge our portfolio, and the overarching framework is called dynamic hedging.
+The dynamic part comes from us constantly selling and buying stocks $S$ and their options $V(S, t)$ in our portfolio $\Pi$ based on the behavior of the stock and our options.&lt;/p&gt;
+
+&lt;p&gt;We will now introduce the term $\Delta = \partial_S V(S, t)$ to express the sensitivity of the worth of the option with regards to changes in the price of the underlying stock $S$.&lt;/p&gt;
+
+&lt;p&gt;For a put option, this sensitivity is negative, $\Delta &amp;lt; 0$, since if the value of the stock $S$ is very low for an option with a high strike price, the put option itself becomes very valuable as it allows you to sell the worthless stock for the full agreed-upon price of $\$100$.
+So $V(S, t)$ and $S$ are negatively linked with $\Delta &amp;lt; 0$ as any drop in $S$ increases $V(S, t)$.&lt;/p&gt;
+
+&lt;p&gt;This allows us to offset the stock position $S$ in our portoflio $\Pi$ with put options $V(S, t)$ against possible drops in the value of the stocks!
+Namely, we have a hedged portfolio
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+\Pi 	&amp;= V(S, t) - \Delta S \\
+	&amp;= V(S, t) - \partial_S V(S, t) \cdot S
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Let’s exemplify the behavior of $\Pi$ with an example.
+We have bought the stock $S$ for $\$100$ and hedged it with a put option $V(S, t)$ to be able to sell it in one years time for the same $\$100$.
+Empirically, for put options for which the price of the underlying stock has dropped significantly from the strike price, we can assume a $\Delta=-1$.
+Now a year has passed and the price of the stock $S$ is at a paltry $\$1$.
+The value of the option is the difference of the buy price of the underlying stock $S=\$1$ and the strike price of $\$100$ such that $V(S, t) = \$99$, which is the maximum profit you can make in this constellation of stock price and option value.
+In cases where owning an option provides a significant advantage, for example the stock is very low for a put option with high strike price or the stock price is very high for a call option with low strike price, an option is called ‘in the money’.&lt;/p&gt;
+
+&lt;p&gt;Since $S= \$1$ and $\Delta=-1$, we have
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+\Pi 
+&amp;= V(S, t) - \partial_S V(S, t) \cdot S \\
+&amp;= \$99 - (-1) \cdot \$ 1 \\
+&amp;= \$ 100
+\end{align} %]]&gt;&lt;/script&gt;
+and we see that our portfolio as a whole has not budged from the initial $\$100$ dollars (we omitted the option premium and transaction costs and the like to strengthen the intuition).&lt;/p&gt;
+
+&lt;p&gt;Through the sensitivity of $\Delta = \partial_S V(S, t)$ we can construct a portfolio which is risk neutral.
+Come hell or high water in the financial markets, by properly adapting the ratio of stocks and options in your portfolio you can whether the storm and keep your money.
+Of course, this approach relies on an accurate estimation of the relevant sensitivity $\Delta$.
+This approach is named &lt;em&gt;delta hedging&lt;/em&gt; after its main ingredient, $\Delta$.&lt;/p&gt;
+
+&lt;h3 id=&quot;bob-the-financier-can-we-price-vs-t-yes-we-can--with-sdes&quot;&gt;Bob, the financier: Can we price $V(S, t)$? Yes we can! … with SDE’s&lt;/h3&gt;
+
+&lt;p&gt;Naturally, the value of the option and consequently the portfolio $\Pi$ is driven by the behavior of the underlying stock $S$.
+The question thus arises of how exactly the price of the stock influences the price of the option and thus the portfolio itself.
+Therefore we are interested in the change in the portfolio
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+d\Pi = dV(S, t) - \Delta \cdot dS
+\end{align}&lt;/script&gt;
+which is a differential equation which in turn is ‘driven’ by the differential $dV(S, t)$ and $dS$.
+Importantly, the portfolio makes only sense to maintain if equals a return rate on the safest instruments, US treasury bonds.
+If you’re making less with the fancy modelling than the US treasury bonds, this whole idea is not even worth pursuing.
+A useful and truly hedged portfolio needs to return the same amount, as if we were to invest all the cash in $\Pi$ into Uncle Sams bonds.
+Thus we have the following requirement
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+d\Pi = r \Pi dt
+\end{align}&lt;/script&gt;
+which is the compounding interest of the whole portfolio invested with US treasury bonds.&lt;/p&gt;
+
+&lt;p&gt;One assumption of Black-Scholes model is that the stock price follows a geometric Brownian motion
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+dS_t = \mu S dt + \sigma S dW_t
+\end{align}&lt;/script&gt;
+such that large stock prices incur larger movements in both drift and diffusion.&lt;/p&gt;
+
+&lt;p&gt;We are now interested in the dynamics of $dV(S, t)$ which hinges on the behavior of $S$ caputred by the SDE above.&lt;/p&gt;
+
+&lt;p&gt;Ito’s Lemma gives us a straight forward equation for this:
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+dV(S, t) = \left(\partial_t V(S, t) + \mu S \partial_S V(S, t) + \frac{1}{2} \sigma^2 S^2 \partial^2_S V(S, t) \right) dt + \sigma S \partial_S V(S, t) dW_t.
+\end{align}&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Now, we can plug in both the terms of $dV(S, t)$ and $dS$ to obtain
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+d\Pi = &amp; \left(\partial_t V(S, t) + \mu S \partial_S V(S, t) + \frac{1}{2} \sigma^2 S^2 \partial^2_S V(S, t) \right) dt + \sigma S \partial_S V(S, t) dW_t \\
+&amp; - \Delta \cdot \left( \mu S dt + \sigma S dW_t\right) \\
+= &amp; \left(\partial_t V(S, t) + \mu S \partial_S V(S, t) + \frac{1}{2} \sigma^2 S^2 \partial^2_S V(S, t) \right) dt + \sigma S \partial_S V(S, t) dW_t \\
+&amp; - \partial_S V(S, t) \cdot \left( \mu S dt + \sigma S dW_t\right) \\
+= &amp; \left(\partial_t V(S, t) + \color{blue}{\mu S \partial_S V(S, t)} + \frac{1}{2} \sigma^2 S^2 \partial^2_S V(S, t) \right) dt + \color{red}{\sigma \partial_S V(S, t) dW_t} \\
+&amp; - \color{blue}{\partial_S V(S, t) \mu S dt} - \color{red}{\partial_S V(S, t)\sigma S dW_t} \\
+= &amp; \left(\partial_t V(S, t) + \frac{1}{2} \sigma^2 S^2 \partial^2_S V(S, t) \right) dt
+\end{align} %]]&gt;&lt;/script&gt;
+which is particularly interested as there is no diffusion term which indicates absolut deterministic dynamics as far as the portfolio dynamics are concerned.
+Since we equated the portfolio dynamics at a minimum to the risk free returns of government bonds, we equate another time to obtain
+&lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
+\begin{align}
+r ( V(S, t) - \partial_S V(S, t) \cdot S) dt
+= &amp; \left(\partial_t V(S, t) + \frac{1}{2} \sigma^2 S^2 \partial^2_S V(S, t) \right) dt \\
+r V(S, t) - r \partial_S V(S, t) \cdot S
+= &amp; \partial_t V(S, t) + \frac{1}{2} \sigma^2 S^2 \partial^2_S V(S, t)
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Thus, if we find a function $V(S, t)$ which for any value of $S$ and at any time $t$ fulfills the partial differential equation above, we will have a portfolio that generates at a minimum the risk free return and is hedged at all times.
+Consequentially, this also tells us the price of the specific option $V(S, t)$ given a specific stock price $S$.&lt;/p&gt;</content><author><name></name></author><summary type="html">Optional Derivatives</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/blogthumbnails/blackscholes.png" /></entry><entry><title type="html">Simple Reverse-Time SDE Derivation for Diffusion Models</title><link href="http://localhost:4000/blog/SimpleReverseSDE/" rel="alternate" type="text/html" title="Simple Reverse-Time SDE Derivation for Diffusion Models" /><published>2024-01-13T00:00:00+01:00</published><updated>2024-01-13T00:00:00+01:00</updated><id>http://localhost:4000/blog/SimpleReverseSDE</id><content type="html" xml:base="http://localhost:4000/blog/SimpleReverseSDE/">&lt;head&gt;
 &lt;!-- &lt;script type=&quot;text/x-mathjax-config&quot;&gt;  --&gt;
   &lt;!-- MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt; --&gt;
 &lt;!-- uncomment two lines above and remove the html css to svg lines --&gt;
@@ -29,9 +199,19 @@
 &lt;p&gt;We start out with the Fokker-Planck equation (FPE) which relates the change over time for the probability for a specific value of $x$ with a diffusion term $\sigma(t)$ which is only dependent on the time,
 &lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
-	\partial_t \ p(x,t) = &amp; - \partial_x \left[ \drift \ p(x, t) \right] + \denom{2} \partial_x^2 \left[ \sigma(t)^2 \ p(x, t) \right]  \\
+	\partial_t \ p(x,t) = &amp; - \partial_x \left[ \drift \ p(x, t) \right] +  \partial_x^2 \left[ \denom{2} \sigma(t)^2 \ p(x, t) \right]  \\
 	=                     &amp; - \partial_x \left[ \drift \ p(x, t) \right] + \denom{2} \sigma(t)^2 \partial_x^2 \left[ \ p(x, t) \right].
 \end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The FPE describes the evolution of the entire probability distribution of a stochastic process.
+We can simulate a single particle by defining the stochastic differential equation (SDE),
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+dX_t = \mu(X_t, t) dt + \sigma(t) dW_t
+\end{align}&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;The importance of the FPE is its holistic approach of modelling the change of an basically infinite large ensemble of particles governed by the SDE above.
+Thus whereas simulating a single particle is nice and good, solving the FPE gives us the distribution of trajectories in a single go.
+So obtaining the FPE is of the harder, but more rewarding task as it gives us the underlying probability distribution over time and space instead of a bunch of trajectories.&lt;/p&gt;
 
 &lt;p&gt;Now we consider a time reversion $\tau(t) = 1 - t$ and are interested in what the change of the probability distribution is under this reversed time index,
 &lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
@@ -50,10 +230,8 @@ With the time transformation $\tau(t)$, we apply the chain rule on the time tran
 Then, we pull the negative factor from the chain rule to the right hand side and combine the drift and diffusion term into a single derivative via the distributive property of the partial derivative,
 &lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
-	\frac{ \partial p(x,\tau(t))}{\partial \tau} = &amp; \partial_x \left[ \mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t)) \right]         \nonumber                              \\
-	                                               &amp; - \denom{2} \sigma(\tau(t))^2 \partial_x^2 \left[ \ p(x, \tau(t)) \right]  \label{eq:app_reversetime_derivation1} \\
-	=                                              &amp; - \partial_x \Bigg[ -\mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t))              \nonumber                              \\
-	                                               &amp; \qquad \quad + \denom{2} \sigma(\tau(t))^2 \partial_x \left[ \ p(x, \tau(t)) \right] \Bigg]
+	\frac{ \partial p(x,\tau(t))}{\partial \tau} = &amp; \partial_x \left[ \mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t)) \right] - \denom{2} \sigma(\tau(t))^2 \partial_x^2 \left[ \ p(x, \tau(t)) \right]  \label{eq:app_reversetime_derivation1} \\
+	=                                              &amp; - \partial_x \Bigg[ -\mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t)) + \denom{2} \sigma(\tau(t))^2 \partial_x \left[ \ p(x, \tau(t)) \right] \Bigg]
 \end{align} %]]&gt;&lt;/script&gt;
 Applying the log derivative identity $\partial_x \log p(x) = \frac{1}{p(x)} \partial_x p(x)$, which rearranged yields $ \partial_x p(x) = p(x) \partial_x \log p(x)$, we obtain
 &lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
@@ -64,26 +242,35 @@ Applying the log derivative identity $\partial_x \log p(x) = \frac{1}{p(x)} \par
 \end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;The equation above states that the inverted drift with an additional scaled score term of the forward distribution will invert the stochastic process.
-Interestingly, there is no diffusion term occuring in this formulation of the reverse FPE.
-We can in fact derive a more flexible reverse drift by returning to a slightly rearranged equation \ref{eq:app_reversetime_derivation1} with an additional scaling factor $\alpha^2$,
+If we read off the corresponding SDE we get
+&lt;script type=&quot;math/tex&quot;&gt;\begin{align}
+dX(\tau) = \left\{-\mu(X(\tau(t)), \tau(t)) + \denom{2} \sigma(\tau(t))^2 \partial_x \log p(x, \tau(t)) \right\} dt
+\end{align}&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;Interestingly, there is no diffusion term occuring in this formulation of the reverse FPE (loud, surprised gasp! How shocking, dear!).
+We can in fact derive a more flexible reverse drift by returning to a slightly rearranged equation \ref{eq:app_reversetime_derivation1} with an additional, ‘neutral’ (because &lt;script type=&quot;math/tex&quot;&gt;\pm&lt;/script&gt;) scaling factor $\alpha^2$.
+In the equations below, we incorporate the negative and the positive side of the additional diffusion in separate ways:
 &lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
-	\frac{ \partial p(x,\tau(t))}{\partial \tau} = &amp; - \partial_x \left[ - \mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t)) \right]         \nonumber                                                                                                            \\
-	                                               &amp; - \denom{2} \sigma(\tau(t))^2 \partial_x^2 \left[ \ p(x, \tau(t)) \right] \underbrace{\pm \ \alpha^2 \ \sigma(\tau(t))^2 \partial_x^2 \left[ \ p(x, \tau(t)) \right]}_{\text{additional diffusion}} \\
-	=                                              &amp; - \partial_x \left[ - \mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t)) \right]         \nonumber                                                                                                            \\
-	                                               &amp; - \sigma(\tau(t))^2 \left( \frac{1}{2} + \alpha^2 \right) \partial_x^2 \left[ \ p(x, \tau(t)) \right]                                                                                           \\
+	\frac{ \partial p(x,\tau(t))}{\partial \tau} = &amp; - \partial_x \left[ - \mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t)) \right]  - \denom{2} \sigma(\tau(t))^2 \partial_x^2 \left[ \ p(x, \tau(t)) \right]        \nonumber                                                                                                            \\
+	                                               &amp; \underbrace{\pm \ \frac{\alpha^2}{2} \ \sigma(\tau(t))^2 \partial_x^2 \left[ \ p(x, \tau(t)) \right]}_{\text{additional diffusion}} \\
+	=                                              &amp; - \partial_x \left[ - \mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t)) \right]  
+								- \denom{2} \sigma(\tau(t))^2 \left( 1 + \alpha^2 \right) \partial_x^2 \left[ \ p(x, \tau(t)) \right]                                                                                           \\
 	                                               &amp; \underbrace{ + \ \frac{\alpha^2}{2} \ \sigma(\tau(t))^2 \partial_x^2 \left[ \ p(x, \tau(t)) \right]}_{\text{additional diffusion}}                                                                  \\
 	=                                              &amp; - \partial_x \Bigg[ \Big( - \mu(X(\tau(t)), \tau(t))                                                                                                                                                \\
-	                                               &amp; \qquad \qquad + \sigma(\tau(t))^2 \left( \frac{1}{2} + \alpha^2 \right) \partial_x \log p(x, \tau(t)) \Big) \ p(x, \tau(t)) \Bigg]         \nonumber                                            \\
-	                                               &amp; + \ \alpha^2 \ \sigma(\tau(t))^2 \partial_x^2 \left[ \ p(x, \tau(t)) \right].
+	                                               &amp; \qquad \qquad + \denom{2} \sigma(\tau(t))^2 \left( 1 + \alpha^2 \right) \partial_x \log p(x, \tau(t)) \Big) \ p(x, \tau(t)) \Bigg]         \nonumber                                            \\
+	                                               &amp; + \ \partial_x^2 \left[ \frac{\alpha^2}{2} \ \sigma(\tau(t))^2 \ p(x, \tau(t)) \right].
 \end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
 &lt;p&gt;from which we can infer the reverse drift consisting of the inverted original drift with the additionally scaled score with $\alpha$ and the additional diffusion,
 &lt;script type=&quot;math/tex&quot;&gt;% &lt;![CDATA[
 \begin{align}
-	dX(\tau) = &amp; ( - \mu(X(\tau(t)), \tau(t)) + \sigma(\tau(t))^2 \left( \frac{1}{2} + \alpha^2 \right) \partial_x \log p(x, \tau(t)) ) dt \\
+	dX(\tau) = &amp; \left\{ - \mu(X(\tau(t)), \tau(t)) + \denom{2} \sigma(\tau(t))^2 \left( 1 + \alpha^2 \right) \partial_x \log p(x, \tau(t)) \Big) \ p(x, \tau(t)) \right\} dt \\
 	           &amp; + \alpha \ \sigma(\tau(t)) dW(\tau)
-\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;</content><author><name></name></author><summary type="html">Save yourself a lot of Bayes with a linear function</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/blogthumbnails/simple_reverse_sde.png" /></entry><entry><title type="html">Fokker, Planck &amp;amp; Ito</title><link href="http://localhost:4000/blog/FokkerPlanck/" rel="alternate" type="text/html" title="Fokker, Planck &amp; Ito" /><published>2023-10-21T00:00:00+02:00</published><updated>2023-10-21T00:00:00+02:00</updated><id>http://localhost:4000/blog/FokkerPlanck</id><content type="html" xml:base="http://localhost:4000/blog/FokkerPlanck/">&lt;head&gt;
+\end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
+
+&lt;p&gt;In the intuition is quite clear: If we add extra diffusion to our forward process, we will ‘diffuse’ more and the probability mass will be distributed over a larger, more spread out area.
+Therefore, if we want to invert this particular stochastic process, we need to increase the score term dependent on the &lt;script type=&quot;math/tex&quot;&gt;\alpha&lt;/script&gt; which pushes the particles back into the high probability region.&lt;/p&gt;</content><author><name></name></author><summary type="html">Save yourself a lot of Bayes with a linear function</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="http://localhost:4000/blog/blogthumbnails/simple_reverse_sde.png" /></entry><entry><title type="html">Fokker, Planck &amp;amp; Ito</title><link href="http://localhost:4000/blog/FokkerPlanck/" rel="alternate" type="text/html" title="Fokker, Planck &amp; Ito" /><published>2023-10-21T00:00:00+02:00</published><updated>2023-10-21T00:00:00+02:00</updated><id>http://localhost:4000/blog/FokkerPlanck</id><content type="html" xml:base="http://localhost:4000/blog/FokkerPlanck/">&lt;head&gt;
 &lt;!-- &lt;script type=&quot;text/x-mathjax-config&quot;&gt;  --&gt;
   &lt;!-- MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt; --&gt;
 &lt;!-- uncomment two lines above and remove the html css to svg lines --&gt;
@@ -252,6 +439,7 @@ which is the Fokker-Planck equation!&lt;/p&gt;</content><author><name></name></a
 &lt;/style&gt;
 
 &lt;ul class=&quot;image-gallery&quot;&gt;
+    
     
     
     
@@ -607,6 +795,8 @@ which is the Fokker-Planck equation!&lt;/p&gt;</content><author><name></name></a
 
 &lt;!--  --&gt;
 &lt;p&gt;&lt;!-- 
+ --&gt;
+  &lt;!-- 
  --&gt;
   &lt;!-- 
  --&gt;
@@ -3104,142 +3294,4 @@ This is the result of a fusion of a resource curse combined with a kleptocracy i
 
 &lt;div align=&quot;center&quot;&gt;
 &lt;div class=&quot;tableauPlaceholder&quot; id=&quot;viz1688392485502&quot; style=&quot;position: relative&quot;&gt;&lt;noscript&gt;&lt;a href=&quot;#&quot;&gt;&lt;img alt=&quot; &quot; src=&quot;https:&amp;#47;&amp;#47;public.tableau.com&amp;#47;static&amp;#47;images&amp;#47;We&amp;#47;Week44Thecountrieswiththemostbankholidays_1&amp;#47;multi-colourHEX&amp;#47;1_rss.png&quot; style=&quot;border: none&quot; /&gt;&lt;/a&gt;&lt;/noscript&gt;&lt;object class=&quot;tableauViz&quot; style=&quot;display:none;&quot;&gt;&lt;param name=&quot;host_url&quot; value=&quot;https%3A%2F%2Fpublic.tableau.com%2F&quot; /&gt; &lt;param name=&quot;embed_code_version&quot; value=&quot;3&quot; /&gt; &lt;param name=&quot;site_root&quot; value=&quot;&quot; /&gt;&lt;param name=&quot;name&quot; value=&quot;Week44Thecountrieswiththemostbankholidays_1&amp;#47;multi-colourHEX&quot; /&gt;&lt;param name=&quot;tabs&quot; value=&quot;yes&quot; /&gt;&lt;param name=&quot;toolbar&quot; value=&quot;yes&quot; /&gt;&lt;param name=&quot;static_image&quot; value=&quot;https:&amp;#47;&amp;#47;public.tableau.com&amp;#47;static&amp;#47;images&amp;#47;We&amp;#47;Week44Thecountrieswiththemostbankholidays_1&amp;#47;multi-colourHEX&amp;#47;1.png&quot; /&gt; &lt;param name=&quot;animate_transition&quot; value=&quot;yes&quot; /&gt;&lt;param name=&quot;display_static_image&quot; value=&quot;yes&quot; /&gt;&lt;param name=&quot;display_spinner&quot; value=&quot;yes&quot; /&gt;&lt;param name=&quot;display_overlay&quot; value=&quot;yes&quot; /&gt;&lt;param name=&quot;display_count&quot; value=&quot;yes&quot; /&gt;&lt;param name=&quot;language&quot; value=&quot;en-GB&quot; /&gt;&lt;/object&gt;&lt;/div&gt;                &lt;script type=&quot;text/javascript&quot;&gt;                    var divElement = document.getElementById('viz1688392485502');                    var vizElement = divElement.getElementsByTagName('object')[0];                    vizElement.style.width='1000px';vizElement.style.height='1050px';                    var scriptElement = document.createElement('script');                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                &lt;/script&gt;
-&lt;/div&gt;</content><author><name></name></author><category term="globalizedfinance" /><summary type="html">What was ours is now mine, ex-comrade</summary></entry><entry><title type="html">Kleptocracy, Lebanese Style</title><link href="http://localhost:4000/blog/kleptocracylebanon/" rel="alternate" type="text/html" title="Kleptocracy, Lebanese Style" /><published>2022-10-09T00:00:00+02:00</published><updated>2022-10-09T00:00:00+02:00</updated><id>http://localhost:4000/blog/kleptocracylebanon</id><content type="html" xml:base="http://localhost:4000/blog/kleptocracylebanon/">&lt;h3 id=&quot;kleptocracy-in-lebanon&quot;&gt;Kleptocracy in Lebanon&lt;/h3&gt;
-
-&lt;h4 id=&quot;a-bit-of-context-which-is-a-wild-ride-in-itself&quot;&gt;A bit of context which is a wild ride in itself&lt;/h4&gt;
-
-&lt;p&gt;The modern story of the Lebanon starts with a French Monsieur Francois Georges-Picot, a British Gentleman Mark Sykes and the Ottoman Sultan Mehmed V.
-As members of the Triple Entente between France, England and Russia, the British and French had plans for the Middle East which they wanted to wrest from the control of the Ottoman Empire which had allied itself with the German Empire.
-Even before the war was over, the two diplomats Picot and Sykes duked it out and divided the central Middle East into spheres of influence between France and Britain.&lt;/p&gt;
-
-&lt;p&gt;The British would control a strip of land ranging from modern Israel/Palestine through Jordan to central and southern Iraq, whereas France would control modern day Lebanon, Syria and northern Iraq.
-European powers had a specific infatuation with protecting Christians outside of Europe.
-The Russians had gone to war with the Ottoman empire as they wanted to style themselves as the protectors of Christians in the Ottoman Empire and Caucasus.
-Similarly, the French wanted to see themselves as protectors of the significant Christian population living in the area around Mount Lebanon and in the Levant.
-Important for the later story, the region was characterized by multi-ethnic and multi-religious cohabitation, with Maronite Christians, Druze, Shia and Sunni with their subdominations Alawites and Alevis also hanging around in the same region.
-Maronite Christians are an Eastern Catholics while Druze are an eclectic mixture of religions and believes.
-Shia and Sunni are similar to Protestants and Catholics in Christianity which split over an succession issue with the Shia’s favoring Ali, a direct descendant of the prophet Muhammed, while the Sunni favored the unrelated Abu Bakr.&lt;/p&gt;
-
-&lt;p&gt;The British and French had indirectly already come to blows during a Maronite-Druze civil war in the Levant.
-While the French supported the Maronites, the British wanted to protect their interests and supported the Druze.
-If you’re confused why I’m recounting Lebanon’s history on a napkin, the multi-confessional composition of Lebanon will play an important role later on.&lt;/p&gt;
-
-&lt;p&gt;With the collapse of the Ottoman Empire, the French became the rulers of Lebanon under the mandate of the League of Nations.
-The French would stay in Lebanon until shortly after World War 2 and the country prospered.
-It was soon regarded as the Switzerland of the Middle East with a well functioning administration, a multi-lingual population and strong banking secrecy.
-So literally like Switzerland, but a bit sunnier.&lt;/p&gt;
-
-&lt;p&gt;Things went well for quite some time but the ill-configured setup of the Lebanon was already discernible.
-It should be noted that especially the Maronites and the Druze were ethno-religious groups which offered two ways of separating themselves from other people, through kinship and through religion.
-This was unofficially encoded in the National Pact of 1943 which assigned seats and thus political power in the parliament on a 6-to-5 proportionality based on a 1932 census of the population.
-Another implementation to get to grips with the multi-ethno-religious composition of the population was to predetermine the representative posts in the government according to the confession: the president was always a Maronite Christian, the speaker of the parliament a Shia and the prime minister a Sunni.
-While it did not seem like the best way to govern a country, economically the strong banking sector was especially well positioned to benefit from the fresh petro money coming out of the oil rich middle eastern countries and thus the Lebanon prospered tremendously in the 1960.&lt;/p&gt;
-
-&lt;h4 id=&quot;the-civil-war&quot;&gt;The Civil War&lt;/h4&gt;
-
-&lt;p&gt;But right at its door step a convoluted situation had developed in the British part of the Sykes-Picot agreement.
-After the establishment of the Israeli state in 1948 and the Suez War of 1956, which was also instigated by the Brits and the French over the nationalization of the Suez canal, the Israelis invaded the Sinai peninsula to open the strait of Tiran to Israeli naval vessels.
-In the relatively short period of six days, Israel managed to take over the Sinai peninsula again and conquer the Gaza strip, the West Bank and East Jerusalem.
-As a consequence, 300.000 Palestinians and 100.000 Syrians fled and/or were expelled from the newly occupied areas with many Palestinians fleeing to Jordan.
-The suffering of the Palestinian population caused the Palestine Liberation Organization to become militarily active and soon it started accumulating large amounts of money and weapons with its headquarter established in Jordans capital Amman.&lt;/p&gt;
-
-&lt;p&gt;The PLO as the dominant recipient of political, financial and military support and prime proxy insurgency against Israel quickly became a state within the state of Jordan.
-Soon, the idea was promulgated that the PLO should overthrow the Jordan Hashemite monarchy.
-Obviously the Jordanian kingdom would have none of that and the short lived Jordanian civil war broke out, in which the PLO was ultimately defeated by the Jordanian armed forces in September 1970 and allowed to leave for Lebanon.&lt;/p&gt;
-
-&lt;p&gt;The fighting in September of 1970 lead to the formation of a terrorist splinter faction which called itself ‘Black September’ and which sought retribution for the expulsion from Jordan.
-But they soon focused on attacking Israel again and became infamous through the massacre of Israeli athletes at the 1972 olympic games in Munich.
-Unfortunately, when the PLO arrived in Lebanon the Jordanian story was repeated again as the PLO again started to behave like a semi-autonomous state within a state.
-Maybe they did inspire the Hezbollah 20 years later who are behaving just the same … but who knows.&lt;/p&gt;
-
-&lt;p&gt;The Lebanese state of political affairs had already been fragile necessitating the afore-mentioned power sharing agreements.
-The sudden arrival of the PLO as the most powerful military force in Lebanon quickly pitted them against the ethno-religious militias as power had always remained with the different political factions and not with a centralized state.
-Tensions started to flare up especially with the Maronite Christian Phalange militia which ultimately led to the start of the Lebanese civil war from 1975 to 1990.&lt;/p&gt;
-
-&lt;p&gt;While the civil war was raging, a Lebanese business man by the name of Rafic Hariri made his first millions doing construction work in Saudi-Arabia.
-He quickly gained the trust of the Saudi royal family and as a native Lebanese became embroiled in the factional power plays of the Lebanese civil war.
-After 15 years of civil war, the fatigued factions were ready for a peace deal and Rafic Hariri was there to broker it in one of his hotels in Ta’if in Saudi Arabia.
-It was appropriately called the Ta’if agreement.&lt;/p&gt;
-
-&lt;p&gt;Every fight should require a truth and reconciliation process in which the reasons and deeds of the each party are post-hoc worked through.
-It is true that a civil war is not constant fighting and life continues once the demarcation lines, like the Green Line in Beirut separating Muslim east Beirut from Christian west Beirut, are established especially if the fighting goes on for 15 years without a clear winner.
-But it is somewhat suspicious that the Ta’if accord was agreed upon by all the warring factions which had been fighting each other to the teeth.
-And this is where the kleptocracy begins in earnest.&lt;/p&gt;
-
-&lt;p&gt;The Ta’if agreement changed the parliament to a 1-to-1 Muslim-Christian preassigned composition while strengthening the president.
-Nevertheless, the previous agreements such as the predetermined religious affiliation of the speaker, president and prime minister was kept.
-In essence, the militias partitioned the newly founded Lebanese state among themselves and created extreme rent-seeking mechanisms and patronage systems.
-Ministries were distributed to the factional warlords and jobs were allotted along sectarian affiliation.&lt;/p&gt;
-
-&lt;h4 id=&quot;neo-liberal-post-war-order&quot;&gt;Neo-Liberal Post-War Order&lt;/h4&gt;
-
-&lt;p&gt;This is are fairly run-of-the-mill corruption and has been replicated before and after the Ta’if agreement in many other countries.
-But what made the Lebanese kleptocracy truly breath-taking is probably the largest Ponzi scheme and an entire national level in history that makes even Bernie Madoff look like an amateur.
-It all boils down to the adage: Why rob a bank, if you can have one.&lt;/p&gt;
-
-&lt;p&gt;One has to remember that the Lebanese state was basically run by different confessional parties which had crafted the political system in such a way that their grip on power could hardly be challenged.
-This became especially evident during the 2022 elections, when new parties had to be signed off by the ruling system which obviously never allowed new parties to push them out of power.&lt;/p&gt;
-
-&lt;p&gt;Rafic Hariri believed that the guarantor of growth for the Lebanese economy was the pegging of the Lebanese pound to the US dollar.
-In a previous blog post I referred to the impossible trinity of economics: You can only choose two out of the following three: a stable exchange, a floating currency and sovereign economic policy.
-The post civil war administration under Rafic Hariri chose to sacrifice economic sovereignty to keep the Lebanese pound at a stable exchange rate at around 1.500 LL to one dollar.
-But since the national currency was floating, enough interest in the currency had to be generated to be able to keep the exchange rate.
-Said differently, the central bank overseeing a currency pegged to the USD has to have considerable amounts of foreign exchange reserves to be able to exchange said currency at the fixed exchange rate at any time.&lt;/p&gt;
-
-&lt;p&gt;Lebanon had been living far beyond its means for a long time.
-Trade balance had averaged from 2011 to 2019 between -20% and close to -30% while the fiscal balance went from -5% to -11% in the same time period.
-The country was able to stave off the consequences on the exchange rate due to the large diaspora sending back remittances.
-While Lebanon itself has around 6.8m citizens, the diaspora is estimated to be between 8m to 20m people which actively are in contact with their relatives.
-This large diaspora sent back home over 7 billion USD, accounting up to 10% of GDP and providing a large steady influx of foreign currencies into the country.
-But with the fall of oil prices in the 2010’s, the remittances of the Lebanese diaspora from the oil-rich gulf states diminished, leading to the first signs of the liquidity crisis.&lt;/p&gt;
-
-&lt;p&gt;Additionally, the banking sector had a weird skew as 1% of the accounts accounted for 50% of overall banking deposits yielding an extreme concentration.
-Even better, 0.1% of accounts held 20% of all deposits at the banks inside Lebanon.
-This was worrisome in its own right but raised the question who these accounts were.
-If roughly 7.000 accounts controlled 20% of all deposits, this yields considerable control over the banks.
-The banking sector was also concentrated in another manner, namely that the secondary debt market was very limited with 70% of all bank deposits invested in public sector and government securities.
-In essence, the banks and the government were cozy with each other up to a worrying degree.
-One could in fact ask whether the banking sector and the government were run by the same interest groups.
-This does hark back to the proverb earlier about robbing versus owning a bank, as to how corrupt and nepotistic the banking sector in Lebanon actually was.&lt;/p&gt;
-
-&lt;h4 id=&quot;the-swap&quot;&gt;The ‘Swap’&lt;/h4&gt;
-
-&lt;p&gt;The peg of the Lebanese pound became more strenuous to maintain with less and less hard currencies (Euros, Dollars, Yen, Francs etc) flowing into the country.
-Remember that the official peg of ~1.500 LL to 1 USD forced the central bank to have sufficient foreign currencies on hand.
-With the fissures in the foundation becoming apparent, the Banque du Liban went ape-shit neo-liberal at the extreme cost of the population to maintain the currency.
-It started to serve the market instead of the people.&lt;/p&gt;
-
-&lt;p&gt;The Ministry of Finance issued Eurobonds (remember the unregulated British offshore market) in foreign currencies while the Banque du Liban issued equivalently valued treasury bills denominated in Lebanese pound.
-Remember that the foundation and goal was the pegged Lebanese pound and as a consequence both the Eurobonds and the TB’s were equivalent in value at least on paper.
-In order to attract foreign currencies the Eurobonds offered a high interest rate up to 15% to guarantee that somebody would take the bonds off their hands.
-The finance ministry and the central bank then swapped these bonds such that the central bank held the Eurobonds and the finance ministry the LL TB’s.&lt;/p&gt;
-
-&lt;p&gt;Then the central bank turned around and sold the Eurobonds on the open market receiving sought-after hard currencies in return.
-But the government was still on the hook for the Eurobonds while the nominal USD value had been transferred to the central bank which was now happy that it had hard currencies again.
-Who was unhappy you might ask?
-The population the taxes of which were used to pay the high interest rates.
-But who was the beneficiary of the high return on investment of the Lebanese Eurobonds?
-The commercial banks who provided USD from the diasporas remittances and received a significant interest of up to 15%.
-This encouraged the commercial banks with the diasporas USD to offer higher interest rates as well which set of a Ponzi scheme pulling in more USD dollar deposits.&lt;/p&gt;
-
-&lt;p&gt;Additionally, the central bank printed fresh Lebanese pounds depositing them at very low interest rates at the commercial banks, while allowing the commercial banks to deposit high interest deposits at the central bank.
-In total the commercial banks had net liabilities of zero, as the central bank and commercial banks matched each other’s deposits.
-But the central bank gave out significant higher interest with the round-tripping profit going as high as 11%.
-Since Lebanese pound and USD were equivalent with the unsustainable peg, this amounted to 11% USD denominated profits.
-Not bad, ey?&lt;/p&gt;
-
-&lt;p&gt;Ultimately, the people of Lebanon got two raw ends of a deal with the corrupt sectarian political order.
-The government had to spend a lot of precious foreign currency on pegging the currency instead of devaluing it which was done with tax payer money.
-Secondly, after protests erupted in 2019 the banks closed for an unprecedented two weeks and upon reopening restricted the depositors access to their dollars.
-While the black market exchange had already devaluated to a 1/10th of the value, the banks maintained the official peg thus giving their customers significantly less Lebanese pounds for each dollar.
-This led to the coinage (pun intended) of the term ‘lollar’ with the abbreviation ‘lol’ as the Lebanese people could look at their Dollar statements but had no means of accessing them.
-Most Lebanese have given up on the notion that they will one day recover their valuable dollar deposits as they have probably been pilfered to buy the treasury’s Eurobonds on which the government defaulted.
-Thus the Dollars are most likely gone forever.&lt;/p&gt;
-
-&lt;p&gt;Given the nepotism and patronage in the entire sectarian economy this raises the strong case the commercial banks in Lebanon were obviously affiliated with the corrupt power brokers and used the central bank as printing press with USD denominated profits through the peg.
-This entire financial engineering scheme amounted to little else than short-term fixes, ensuring that enough foreign currencies where in the country while paying out enormous interest rates to the commercial banks offering USD from the diaspora.
-The IMF estimates that the Lebanese commercial banks participating in the scheme made off with 5 billion USD in profits at the expense of the tax payers with the central bank loosing up to 13 billion USD.&lt;/p&gt;
-
-&lt;p&gt;Why rob a bank, if you can rob an entire country with it? Preferably its central bank.&lt;/p&gt;
-
-&lt;p&gt;For more detailed reading, look at &lt;a href=&quot;https://www.fdd.org/analysis/2020/08/04/crisis-in-lebanon/&quot;&gt;this&lt;/a&gt; sophisticated article on the whole issue.&lt;/p&gt;</content><author><name></name></author><category term="globalizedfinance" /><summary type="html">From the People, not For the People</summary></entry></feed>
+&lt;/div&gt;</content><author><name></name></author><category term="globalizedfinance" /><summary type="html">What was ours is now mine, ex-comrade</summary></entry></feed>
