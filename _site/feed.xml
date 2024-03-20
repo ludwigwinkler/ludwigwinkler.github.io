@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2024-03-18T14:45:56+01:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Black-Scholes Equation for Options Pricing</title><link href="http://localhost:4000/blog/BlackScholes/" rel="alternate" type="text/html" title="Black-Scholes Equation for Options Pricing" /><published>2024-02-28T00:00:00+01:00</published><updated>2024-02-28T00:00:00+01:00</updated><id>http://localhost:4000/blog/BlackScholes</id><content type="html" xml:base="http://localhost:4000/blog/BlackScholes/">&lt;head&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.6.3">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2024-03-20T11:54:36+01:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Ludwig Winkler</title><subtitle>Jekyll version of the Massively theme by HTML5UP</subtitle><entry><title type="html">Black-Scholes Equation for Options Pricing</title><link href="http://localhost:4000/blog/BlackScholes/" rel="alternate" type="text/html" title="Black-Scholes Equation for Options Pricing" /><published>2024-02-28T00:00:00+01:00</published><updated>2024-02-28T00:00:00+01:00</updated><id>http://localhost:4000/blog/BlackScholes</id><content type="html" xml:base="http://localhost:4000/blog/BlackScholes/">&lt;head&gt;
 &lt;!-- &lt;script type=&quot;text/x-mathjax-config&quot;&gt;  --&gt;
   &lt;!-- MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: &quot;all&quot; } } }); &lt;/script&gt; --&gt;
 &lt;!-- uncomment two lines above and remove the html css to svg lines --&gt;
@@ -34,12 +34,16 @@ Namely,&lt;/p&gt;
 &lt;ul&gt;
   &lt;li&gt;What is an Option?&lt;/li&gt;
   &lt;li&gt;Why are they of relevance?&lt;/li&gt;
-  &lt;li&gt;Can we price them?&lt;/li&gt;
+  &lt;li&gt;Can we put a price tag on them like in Aldi?&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h3 id=&quot;the-option&quot;&gt;The Option&lt;/h3&gt;
 
 &lt;p&gt;An option in finance is a type of derivative contract that gives the buyer the right, but not the obligation, to buy or sell an underlying asset or instrument at a specified strike price prior to or on a specified date, depending on the form of the option. 
+Derivatives in general are financial products which &lt;em&gt;derive&lt;/em&gt; their value from another, usual more basic financial product.
+For example, you could take a kilo of gold and construct a derivative on the price of gold or the volatility of gold or inverse correlation to some interest rate or the correlation to another financial product.
+Since there is no limit to the creativity how exactly your derivative contract &lt;em&gt;derives&lt;/em&gt; its value from the &lt;em&gt;underlying&lt;/em&gt; asset, it’s no wonder that Warren Buffet called them ‘financial weapons of mass destruction’.
+Derivatives on housing prices in 2008 come to mind.
 Options are widely used for various purposes, including hedging, speculation, and acquiring or disposing of assets at favorable prices. They can apply to numerous assets, like stocks, bonds, commodities, and currencies.&lt;/p&gt;
 
 &lt;p&gt;There are two main types of options:&lt;/p&gt;
@@ -93,9 +97,10 @@ Namely, we have a hedged portfolio
 	&amp;= V(S, t) - \partial_S V(S, t) \cdot S
 \end{align} %]]&gt;&lt;/script&gt;&lt;/p&gt;
 
-&lt;p&gt;Let’s exemplify the behavior of $\Pi$ with an example.
-We have bought the stock $S$ for $\$100$ and hedged it with a put option $V(S, t)$ to be able to sell it in one years time for the same $\$100$.
-Empirically, for put options for which the price of the underlying stock has dropped significantly from the strike price, we can assume a $\Delta=-1$.
+&lt;p&gt;Let’s exemplify the behavior of $\Pi$.&lt;/p&gt;
+
+&lt;p&gt;We have bought the stock $S$ for $\$100$ and hedged it with a put option $V(S, t)$ to be able to sell it in one years time for the same $\$100$.
+Empirically, for put options for which the price of the underlying stock has dropped significantly from the strike price (the option is deep in the money), we can assume a $\Delta=-1$.
 Now a year has passed and the price of the stock $S$ is at a paltry $\$1$.
 The value of the option is the difference of the buy price of the underlying stock $S=\$1$ and the strike price of $\$100$ such that $V(S, t) = \$99$, which is the maximum profit you can make in this constellation of stock price and option value.
 In cases where owning an option provides a significant advantage, for example the stock is very low for a put option with high strike price or the stock price is very high for a call option with low strike price, an option is called ‘in the money’.&lt;/p&gt;
@@ -113,9 +118,9 @@ and we see that our portfolio as a whole has not budged from the initial $\$100$
 &lt;p&gt;Through the sensitivity of $\Delta = \partial_S V(S, t)$ we can construct a portfolio which is risk neutral.
 Come hell or high water in the financial markets, by properly adapting the ratio of stocks and options in your portfolio you can whether the storm and keep your money.
 Of course, this approach relies on an accurate estimation of the relevant sensitivity $\Delta$.
-This approach is named &lt;em&gt;delta hedging&lt;/em&gt; after its main ingredient, $\Delta$.&lt;/p&gt;
+This approach is named &lt;em&gt;delta hedging&lt;/em&gt; after its main ingredient, $\Delta = \partial_S V(S, t)$.&lt;/p&gt;
 
-&lt;h3 id=&quot;bob-the-financier-can-we-price-vs-t-yes-we-can--with-sdes&quot;&gt;Bob, the financier: Can we price $V(S, t)$? Yes we can! … with SDE’s&lt;/h3&gt;
+&lt;h3 id=&quot;bob-the-financier-can-we-price-vs-t-yes-we-can--with-stochastic-calculus&quot;&gt;Bob, the financier: Can we price $V(S, t)$? Yes we can! … with stochastic calculus&lt;/h3&gt;
 
 &lt;p&gt;Naturally, the value of the option and consequently the portfolio $\Pi$ is driven by the behavior of the underlying stock $S$.
 The question thus arises of how exactly the price of the stock influences the price of the option and thus the portfolio itself.
@@ -141,7 +146,7 @@ such that large stock prices incur larger movements in both drift and diffusion.
 
 &lt;p&gt;We are now interested in the dynamics of $dV(S, t)$ which hinges on the behavior of $S$ caputred by the SDE above.&lt;/p&gt;
 
-&lt;p&gt;Ito’s Lemma gives us a straight forward equation for this:
+&lt;p&gt;Ito’s Lemma, derived and explained in more detail &lt;a href=&quot;https://ludwigwinkler.github.io/blog/ItosLemma/&quot;&gt;here&lt;/a&gt; and &lt;a href=&quot;https://ludwigwinkler.github.io/blog/FokkerPlanck/&quot;&gt;used for the derivation of the FPE here&lt;/a&gt;, gives us a straight forward equation for this:
 &lt;script type=&quot;math/tex&quot;&gt;\begin{align}
 dV(S, t) = \left(\partial_t V(S, t) + \mu S \partial_S V(S, t) + \frac{1}{2} \sigma^2 S^2 \partial^2_S V(S, t) \right) dt + \sigma S \partial_S V(S, t) dW_t.
 \end{align}&lt;/script&gt;&lt;/p&gt;

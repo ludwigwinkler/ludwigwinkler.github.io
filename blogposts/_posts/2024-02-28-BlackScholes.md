@@ -43,12 +43,15 @@ But first, let's try to frame the problem we're dealing with properly.
 Namely,
 - What is an Option?
 - Why are they of relevance?
-- Can we price them?
+- Can we put a price tag on them like in Aldi?
   
-
 ### The Option
 
 An option in finance is a type of derivative contract that gives the buyer the right, but not the obligation, to buy or sell an underlying asset or instrument at a specified strike price prior to or on a specified date, depending on the form of the option. 
+Derivatives in general are financial products which _derive_ their value from another, usual more basic financial product.
+For example, you could take a kilo of gold and construct a derivative on the price of gold or the volatility of gold or inverse correlation to some interest rate or the correlation to another financial product.
+Since there is no limit to the creativity how exactly your derivative contract _derives_ its value from the _underlying_ asset, it's no wonder that Warren Buffet called them 'financial weapons of mass destruction'.
+Derivatives on housing prices in 2008 come to mind.
 Options are widely used for various purposes, including hedging, speculation, and acquiring or disposing of assets at favorable prices. They can apply to numerous assets, like stocks, bonds, commodities, and currencies.
 
 There are two main types of options:
@@ -99,9 +102,10 @@ $$
 \end{align}
 $$
 
-Let's exemplify the behavior of $\Pi$ with an example.
+Let's exemplify the behavior of $\Pi$.
+
 We have bought the stock $S$ for $\\$100$ and hedged it with a put option $V(S, t)$ to be able to sell it in one years time for the same $\\$100$.
-Empirically, for put options for which the price of the underlying stock has dropped significantly from the strike price, we can assume a $\Delta=-1$.
+Empirically, for put options for which the price of the underlying stock has dropped significantly from the strike price (the option is deep in the money), we can assume a $\Delta=-1$.
 Now a year has passed and the price of the stock $S$ is at a paltry $\\$1$.
 The value of the option is the difference of the buy price of the underlying stock $S=\\$1$ and the strike price of $\\$100$ such that $V(S, t) = \\$99$, which is the maximum profit you can make in this constellation of stock price and option value.
 In cases where owning an option provides a significant advantage, for example the stock is very low for a put option with high strike price or the stock price is very high for a call option with low strike price, an option is called 'in the money'.
@@ -120,9 +124,9 @@ and we see that our portfolio as a whole has not budged from the initial $\\$100
 Through the sensitivity of $\Delta = \partial_S V(S, t)$ we can construct a portfolio which is risk neutral.
 Come hell or high water in the financial markets, by properly adapting the ratio of stocks and options in your portfolio you can whether the storm and keep your money.
 Of course, this approach relies on an accurate estimation of the relevant sensitivity $\Delta$.
-This approach is named *delta hedging* after its main ingredient, $\Delta$.
+This approach is named *delta hedging* after its main ingredient, $\Delta = \partial_S V(S, t)$.
 
-### Bob, the financier: Can we price $V(S, t)$? Yes we can! ... with SDE's
+### Bob, the financier: Can we price $V(S, t)$? Yes we can! ... with stochastic calculus
 
 Naturally, the value of the option and consequently the portfolio $\Pi$ is driven by the behavior of the underlying stock $S$.
 The question thus arises of how exactly the price of the stock influences the price of the option and thus the portfolio itself.
@@ -154,7 +158,7 @@ such that large stock prices incur larger movements in both drift and diffusion.
 
 We are now interested in the dynamics of $dV(S, t)$ which hinges on the behavior of $S$ caputred by the SDE above.
 
-Ito's Lemma gives us a straight forward equation for this:
+Ito's Lemma, derived and explained in more detail [here](https://ludwigwinkler.github.io/blog/ItosLemma/) and [used for the derivation of the FPE here](https://ludwigwinkler.github.io/blog/FokkerPlanck/), gives us a straight forward equation for this:
 $$
 \begin{align}
 dV(S, t) = \left(\partial_t V(S, t) + \mu S \partial_S V(S, t) + \frac{1}{2} \sigma^2 S^2 \partial^2_S V(S, t) \right) dt + \sigma S \partial_S V(S, t) dW_t.
