@@ -109,37 +109,35 @@ While the earth mover distance can be derived for continuous distributions, it�
 
 <p>Let’s define two probability vectors $p$ and $q$ which both define a categorical distribution in $\mathbb{R}_+^{d}$.
 Both these probability vectors form a simplex through two constraints which apply to them (analogously for $q$):
-<script type="math/tex">% <![CDATA[
-\begin{align}
-	p^T \mathbb{1} &= 1 \\
-	p_i & \in \mathbb{R}_+
-\end{align} %]]></script></p>
+\(\begin{align}
+	p^T \mathbb{1} &amp;= 1 \\
+	p_i &amp; \in \mathbb{R}_+
+\end{align}\)</p>
 
 <p>The second thing we need is a cost matrix $C$ for the objective function of the Wasserstein distance which characterizes how expensive it is to move probability mass from one category of a categorical distribution to another.
 We can simply use different Euclidean distance between two vectors $x$ and $y$ for that:
-<script type="math/tex">\begin{align}
+\(\begin{align}
 	c_{ij} = |(x_i-y_j)| \quad \text{or} \quad c_{ij} = ||(x_i-y_j)|| _2^2 \ \forall i, j \in \{1, \ldots, d\}
-\end{align}</script></p>
+\end{align}\)</p>
 
 <p>The cost matrix $T$ for categorical distributions should be a symmetric matrix which increases its values as it moves away from the diagonal.
 But of course if you are dealing with a different transport problem, the cost matrix could be different and non-symmetric depending on your transport manifold.</p>
 
 <p>For a categorical distribution with three possible events (intuitively bins) ${ 0, 1, 2}$ it should be:
-<script type="math/tex">% <![CDATA[
-\begin{align}
+\(\begin{align}
 	C = \begin{bmatrix}
-		0 & 1 & 2 \\
-		1& 0 & 1\\
-		2 & 1 & 0
+		0 &amp; 1 &amp; 2 \\
+		1&amp; 0 &amp; 1\\
+		2 &amp; 1 &amp; 0
 \end{bmatrix}
-\end{align} %]]></script></p>
+\end{align}\)</p>
 
 <p>All this cost matrix says is that we have to ‘hop’ twice to move probability mass from bin 0 to bin 2.</p>
 
 <p>The final component of the Wasserstein distance is the coupling matrix $T$ which is defined through a polyhedral set
-<script type="math/tex">\begin{align}
+\(\begin{align}
 	U(p, q) = \{ T \in \mathbb{R}_+^{d \times d} \quad | \quad T \mathbb{1} = p, T^T \mathbb{1} = q \}
-\end{align}</script>
+\end{align}\)
 A polyhedral set refers to a set of solutions which are constrained by a finite number of half-spaces.
 Half-spaces can be created through inequality constraints which form a convex set in our case.</p>
 
@@ -149,13 +147,12 @@ The next logical step should be to guarantee that a valid coupling matrix $T$ mo
 
 <p>For a small example let $p = [ 1, 0, 0]^T$ and $q = [ 0, 0, 1]^T$.
 The only valid coupling matrix $T$ would be
-<script type="math/tex">% <![CDATA[
-\begin{align}
-	T &= p q^T\\
-	&= 	\begin{bmatrix}
-			0 & 0 & 1 \\
-			0 & 0 & 0 \\
-			0 & 0 & 0
+\(\begin{align}
+	T &amp;= p q^T\\
+	&amp;= 	\begin{bmatrix}
+			0 &amp; 0 &amp; 1 \\
+			0 &amp; 0 &amp; 0 \\
+			0 &amp; 0 &amp; 0
 		\end{bmatrix}
 		\Rightarrow
 		\begin{bmatrix}
@@ -163,19 +160,19 @@ The only valid coupling matrix $T$ would be
 			0 \\
 			0 \\
 		\end{bmatrix} = T \mathbb{1} = p \\
-		& \qquad \quad \Downarrow \\
-		& \quad \ \begin{bmatrix}
-		0 & 0 & 1
+		&amp; \qquad \quad \Downarrow \\
+		&amp; \quad \ \begin{bmatrix}
+		0 &amp; 0 &amp; 1
 		\end{bmatrix} \\
-		& \quad = T^T \mathbb{1} = q
-\end{align} %]]></script></p>
+		&amp; \quad = T^T \mathbb{1} = q
+\end{align}\)</p>
 
 <p>A closer look at the coupling matrix shows the expected behaviour that we move all the probability mass from bin 1 in $p$ to bin 3 in $q$.</p>
 
 <p>The Wasserstein distance between two distributions is defined as the minimum of the inner Frobenius product $\langle \cdot, \cdot \rangle_F$ of the coupling matrix $T$ and the cost matrix $C$:
-<script type="math/tex">\begin{align}
+\(\begin{align}
 	\mathcal{W}(p,q) := \min_{T\in U(p,q)} \left\langle T; C \right\rangle_F.
-\end{align}</script></p>
+\end{align}\)</p>
 
 <p>In the equation above, the membership of $T \in U(r,c)$ contains the constraints that $T$ has to be a valid coupling matrix.</p>
 
@@ -197,31 +194,28 @@ Could we arrive at an easier to optimize objective function if we were to accept
 
 <p>The answer is yes with the help of entropic regularization.
 We therefore augment the original convex set:
-<script type="math/tex">% <![CDATA[
-\begin{align}
-	U_\lambda (p,q) &= \{ T \in U(p,q) \quad | \quad \text{KL}[T || pq^T] \leq \lambda \} \\
-	&= \{ T \in U(p,q) \quad | \quad H[T] \geq H[p] + H[q] - \mu\} \subset U(p,q)
-\end{align} %]]></script></p>
+\(\begin{align}
+	U_\lambda (p,q) &amp;= \{ T \in U(p,q) \quad | \quad \text{KL}[T || pq^T] \leq \lambda \} \\
+	&amp;= \{ T \in U(p,q) \quad | \quad H[T] \geq H[p] + H[q] - \mu\} \subset U(p,q)
+\end{align}\)</p>
 
 <p>From information theory we know that the mutual information of two random variables $X$ and $Y$, should they follow a joint distribution, is defined as
-<script type="math/tex">% <![CDATA[
-\begin{align}
-	I[ p(x), p(y)] &= \text{KL}[p(x,y)||p(x), p(y)] \\
-	&= \int \int p(x,y) \log \frac{p(x,y)}{p(x)p(y)} dx dy \\
-	&= \int p(x,y) \log p(x,y) dx dy - \int p(x,y) \log p(x) dx dy - \int p(x,y) \log p(y) dx dy \\
-	&= -H[p(x,y)] - \int p(x) \log p(x) dx - \int p(y) \log p(y) dy \\
-	&= -H[p(x,y)] + H[p(x)] + H[p(y)]
-\end{align} %]]></script></p>
+\(\begin{align}
+	I[ p(x), p(y)] &amp;= \text{KL}[p(x,y)||p(x), p(y)] \\
+	&amp;= \int \int p(x,y) \log \frac{p(x,y)}{p(x)p(y)} dx dy \\
+	&amp;= \int p(x,y) \log p(x,y) dx dy - \int p(x,y) \log p(x) dx dy - \int p(x,y) \log p(y) dx dy \\
+	&amp;= -H[p(x,y)] - \int p(x) \log p(x) dx - \int p(y) \log p(y) dy \\
+	&amp;= -H[p(x,y)] + H[p(x)] + H[p(y)]
+\end{align}\)</p>
 
 <p>Given the fact that we construct the coupling matrix $T$ from both $p$ and $q$, and it therefore represents a joint probability distribution between $p$ and $q$, we can derive the additional constraints in the augmented convex set.</p>
 
 <p>Analogously, we can define the same equations in our specific case for our joint probability $T$ and marginal probability vectors $p$ and $q$:
-<script type="math/tex">% <![CDATA[
-\begin{align}
-	\text{KL}[T||pq^T] &\leq \lambda \\
-	-H[T] + H[p] + H[q] &\leq \lambda \\
-	H[T] &\geq H[p] + H[q] - \lambda
-\end{align} %]]></script></p>
+\(\begin{align}
+	\text{KL}[T||pq^T] &amp;\leq \lambda \\
+	-H[T] + H[p] + H[q] &amp;\leq \lambda \\
+	H[T] &amp;\geq H[p] + H[q] - \lambda
+\end{align}\)</p>
 
 <p>This is similar to how trust regions in optimization and reinforcement learning work.
 From an information theoretic point of view, the coupling matrix $T$, which we are optimizing, should not move too far from the joint probability distribution $pq^T$.
@@ -235,24 +229,22 @@ Therefore the optimization is discouraged from finding sparse solutions, as for 
 <p>If $\lambda \rightarrow \infty$, the constraint disappears and the entropy of the coupling matrix will result in the same solution as the linear program since $H[T] \in \mathbb{R}_+$.</p>
 
 <p>An alternative objective function would therefore be the following:
-<script type="math/tex">\begin{align}
+\(\begin{align}
 	T^\lambda = \text{argmin}_{T \in U(p,q)} \left\langle T , C \right\rangle - \lambda H[T] \quad \text{with} \quad \lambda \geq 0
-\end{align}</script></p>
+\end{align}\)</p>
 
 <p>Adding the original marginal constraint $T \mathbb{1} = p$ and $T^T \mathbb{1} = q$ and forming the Lagrangian gives us a convenient objective function:
-<script type="math/tex">% <![CDATA[
-\begin{align}
-	\mathcal{L}(T, \alpha, \beta) &= \left\langle T, C \right\rangle_F + \lambda H[T] + \alpha^T (T^T \mathbb{1} - q) + \beta^T (T \mathbb{1} - p) \\
-	&= \sum_{ij} t_{ij} c_{ij} + \lambda \sum_{ij} t_{ij} \log t_{ij} + \sum_i \alpha_i ( \sum_j t_{ij} - p_j) + \sum_i \beta_i ( \sum_j t_{ij} - q_i)
-\end{align} %]]></script></p>
+\(\begin{align}
+	\mathcal{L}(T, \alpha, \beta) &amp;= \left\langle T, C \right\rangle_F + \lambda H[T] + \alpha^T (T^T \mathbb{1} - q) + \beta^T (T \mathbb{1} - p) \\
+	&amp;= \sum_{ij} t_{ij} c_{ij} + \lambda \sum_{ij} t_{ij} \log t_{ij} + \sum_i \alpha_i ( \sum_j t_{ij} - p_j) + \sum_i \beta_i ( \sum_j t_{ij} - q_i)
+\end{align}\)</p>
 
 <p>The derivative $\partial \mathcal{L} / \partial t_{ij}$ yields
-<script type="math/tex">% <![CDATA[
-\begin{align}
-	\frac{\partial \mathcal{L}}{\partial t_{ij}} &= c_{ij} + \lambda (\log t_{ij} + 1) + \alpha_i + \beta_i \stackrel{!}{=} 0 \\
-	\log t_{ij} &= - \frac{1}{\lambda} c_{ij} - 1 - \frac{1}{\lambda} \alpha_i - \frac{1}{\lambda} \beta_i \\
-	t_{ij} &= \exp \left[ - \frac{1}{\lambda} \alpha_i \right] \exp \left[-\frac{1}{\lambda} c_{ij}-1 \right] \exp \left[ - \frac{1}{\lambda} \beta_i \right]
-\end{align} %]]></script></p>
+\(\begin{align}
+	\frac{\partial \mathcal{L}}{\partial t_{ij}} &amp;= c_{ij} + \lambda (\log t_{ij} + 1) + \alpha_i + \beta_i \stackrel{!}{=} 0 \\
+	\log t_{ij} &amp;= - \frac{1}{\lambda} c_{ij} - 1 - \frac{1}{\lambda} \alpha_i - \frac{1}{\lambda} \beta_i \\
+	t_{ij} &amp;= \exp \left[ - \frac{1}{\lambda} \alpha_i \right] \exp \left[-\frac{1}{\lambda} c_{ij}-1 \right] \exp \left[ - \frac{1}{\lambda} \beta_i \right]
+\end{align}\)</p>
 
 <p>Now Sinkhorn’s theorem enters the plot.
 Sinkhorn’s theorem states that if a matrix $A$ has strictly positive elements, then there exist two diagonal matrices $D_1$ and $D_2$ with strictly positive diagonal elements such that $B = D_1 A D_2$ is doubly stochastic.
@@ -266,38 +258,34 @@ For the product of these three matrices, the result will be a double stochastic 
 % \end{align} --></p>
 
 <p>We can rewrite the objective function in such a way that it reflects the Sinkhorn’s theorem:
-<script type="math/tex">\begin{align}
+\(\begin{align}
 	T = \text{diag}(u) K \text{diag}(v)
-\end{align}</script>
+\end{align}\)
 with
-<script type="math/tex">% <![CDATA[
-\begin{align}
-	K &= \exp[- \frac{1}{\lambda}C -\mathbb{1}\mathbb{1}^T ] \\
-	\text{diag}(u) &= D_1 = \text{diag}(\exp[ - \frac{1}{\lambda} \alpha]) \\
-	\text{diag}(v) &= D_2 = \text{diag}(\exp[ - \frac{1}{\lambda} \beta]).
-\end{align} %]]></script></p>
+\(\begin{align}
+	K &amp;= \exp[- \frac{1}{\lambda}C -\mathbb{1}\mathbb{1}^T ] \\
+	\text{diag}(u) &amp;= D_1 = \text{diag}(\exp[ - \frac{1}{\lambda} \alpha]) \\
+	\text{diag}(v) &amp;= D_2 = \text{diag}(\exp[ - \frac{1}{\lambda} \beta]).
+\end{align}\)</p>
 
 <p>By plugging $T = \text{diag}(u) K \text{diag}(v)$ into our constraints $p = T \mathbb{1}$ and $ q = T^T \mathbb{1}$, we obtain the following element-wise updates:
-<script type="math/tex">% <![CDATA[
-\begin{align}
-	p &= \text{diag}(u) K \text{diag}(v) \mathbb{1} \\
-	q &= \text{diag}(u) K^T \text{diag}(v) \mathbb{1} \\
-	p_i &= u_i (Kv)_i \\
-	q_j &= v_j (K^Tu)_j
-\end{align} %]]></script></p>
+\(\begin{align}
+	p &amp;= \text{diag}(u) K \text{diag}(v) \mathbb{1} \\
+	q &amp;= \text{diag}(u) K^T \text{diag}(v) \mathbb{1} \\
+	p_i &amp;= u_i (Kv)_i \\
+	q_j &amp;= v_j (K^Tu)_j
+\end{align}\)</p>
 
 <p>By realigning the equations to $u$ and $v$, we obtain the alternating update rules:
-<script type="math/tex">% <![CDATA[
-\begin{align}
-	v_j & \leftarrow p_j / (K^T u)_j \\
-	u_j & \leftarrow q_j / (K v)_j
-\end{align} %]]></script>
+\(\begin{align}
+	v_j &amp; \leftarrow p_j / (K^T u)_j \\
+	u_j &amp; \leftarrow q_j / (K v)_j
+\end{align}\)
 which can be rewritten into the element-wise operations
-<script type="math/tex">% <![CDATA[
-\begin{align}
-	v & \leftarrow p \oslash (K^T u) \\
-	u & \leftarrow q \oslash (K v)
-\end{align} %]]></script>
+\(\begin{align}
+	v &amp; \leftarrow p \oslash (K^T u) \\
+	u &amp; \leftarrow q \oslash (K v)
+\end{align}\)
 where $\oslash$ is the element-wise division of two vectors.</p>
 
 <p>Unfortunately, it turns out that these iterations are numerically not especially stable.
@@ -306,78 +294,72 @@ Just imagine multiplying $0.1^{100}$ and you’ll quickly see that numerical iss
 
 <p>In order to stabilize the computations, the logarithm is used.
 For numerical computations, the logarithm has the nice practical property that it turns multiplications and divisions into additions and subtractions.
-<script type="math/tex">% <![CDATA[
-\begin{align}
-	\log v & \leftarrow \log p - \log[K^T u] \\
-	\log u & \leftarrow \log q - \log[K v]
-\end{align} %]]></script></p>
+\(\begin{align}
+	\log v &amp; \leftarrow \log p - \log[K^T u] \\
+	\log u &amp; \leftarrow \log q - \log[K v]
+\end{align}\)</p>
 
 <p>The logarithm of the vector matrix multiplication $\log[K^Tu]$ and $\log[Kv]$ need some extra handling.
 For simplicities sake, we will continue the derivation for $\log[Kv]$ but it holds for $\log[K^Tv]$ as well:
-<script type="math/tex">% <![CDATA[
-\begin{align}
-	\log[Kv]_i &= \log\left[ \sum_j K_{ij} v_j \right] \\
-	&= \log\left[ \sum_j \exp\left[-\frac{1}{\lambda}C_{ij} - 1 \right] v_j \right] \\
-	&= \log\left[ \sum_j \exp\left[-\frac{1}{\lambda}C_{ij} - 1 + \log v_j \right] \right].
-\end{align} %]]></script></p>
+\(\begin{align}
+	\log[Kv]_i &amp;= \log\left[ \sum_j K_{ij} v_j \right] \\
+	&amp;= \log\left[ \sum_j \exp\left[-\frac{1}{\lambda}C_{ij} - 1 \right] v_j \right] \\
+	&amp;= \log\left[ \sum_j \exp\left[-\frac{1}{\lambda}C_{ij} - 1 + \log v_j \right] \right].
+\end{align}\)</p>
 
 <p>The computation log-sum-exp is implemented in many numerical software packages and utilizes an additional trick to stabilize the computation.
 When we exponentiate very large or very small numbers (e.g. $\pm 10^10$) it can quickly happen that we encounter under- or overflows since such numbers go to either zero or infinity and we encounter the problem of represents very small or very large numbers with limited number of bits.
 Yet, this was precisely what we wanted to circumvent by applying the log to our update rules.
 Fortunately, we can simply subtract the maximum value inside the log-sum-exp operation and add it back on the outside.
 A small algebraic proof follows here which $x_{max} = \max { x_0, x_1, x_2, \ldots x_N}$:
-<script type="math/tex">% <![CDATA[
-\begin{align}
-	& \log \left[ \sum_i \exp[x_i] \right] \underbrace{+ x_{max} - x_{max}}_{=0} \\
-	& \log \left[ \sum_i \exp[x_i] \right] + x_{max} + \log \exp[ -x_{max}] \\
-	= & \log \left[ \sum_i \exp[x_i] \exp[ -x_{max}] \right] + x_{max} \\
-	= & \log \left[ \sum_i \exp[x_i -x_{max}] \right] + x_{max}.
-\end{align} %]]></script></p>
+\(\begin{align}
+	&amp; \log \left[ \sum_i \exp[x_i] \right] \underbrace{+ x_{max} - x_{max}}_{=0} \\
+	&amp; \log \left[ \sum_i \exp[x_i] \right] + x_{max} + \log \exp[ -x_{max}] \\
+	= &amp; \log \left[ \sum_i \exp[x_i] \exp[ -x_{max}] \right] + x_{max} \\
+	= &amp; \log \left[ \sum_i \exp[x_i -x_{max}] \right] + x_{max}.
+\end{align}\)</p>
 
 <p>Intuitively, the log-sum-exp trick rescales the terms which are exponentiated into the well-behaved area around zero.
 This rescaling is then undone by simply adding the maximum value back.
 This updated computations of the log-sum-exp is done in most linear algebra packages under the hood.</p>
 
 <p>Let’s get back to our original problem of computing the log of the matrix-vector product.
-<script type="math/tex">\begin{align}
+\(\begin{align}
 	\log[Kv]_i = \log\left[ \sum_j \exp\left[-\frac{1}{\lambda}C_{ij} -1 + \log v_j \right] \right].
-\end{align}</script></p>
+\end{align}\)</p>
 
 <p>We can compute the logarithmized matrix vector product by simply adding $\log v$ to each row of the rescaled cost matrix $C$ and the log-sum-exp trick is applied automatically.
-<script type="math/tex">% <![CDATA[
-\begin{align}
-	\log v & \leftarrow \log p - \log \left[ \sum_{rows} \left[ - \frac{1}{\lambda}C + \log u \right] \right] \\
-	\log u & \leftarrow \log q - \log \left[ \sum_{rows} \left[ - \frac{1}{\lambda}C + \log v \right] \right]
-\end{align} %]]></script></p>
+\(\begin{align}
+	\log v &amp; \leftarrow \log p - \log \left[ \sum_{rows} \left[ - \frac{1}{\lambda}C + \log u \right] \right] \\
+	\log u &amp; \leftarrow \log q - \log \left[ \sum_{rows} \left[ - \frac{1}{\lambda}C + \log v \right] \right]
+\end{align}\)</p>
 
 <p>The Sinkhorn iterations give us a way to compute the optimal transport plan.
 But we still have to compute the gradients for these iterations if we want to use them in gradient based optimization schemes.
 Remember that we used the Sinkhorn iterations in the first place to find a transport plan for which the gradient of the cost function with respect to the transport plane is zero, i.e. $\smash{\partial \mathcal{L}/ \partial t_{ij} \stackrel{!}{=}0}$.
 The vectors $u$ and $v$ were used as short-hand replacements for the exponentiated $\alpha$ and $\beta$ dual variables.
 The entire point of using duality in optimization is that we can solve an alternative optimization problem, the dual with the dual variables (in our case $\alpha$ and $\beta$), and the solution will be equivalent to our original optimization problem, the primal (given certain properties and constraints, into the detail of which I won’t go here).
-<script type="math/tex">% <![CDATA[
-\begin{align}
-	\partial \mathcal{L}/ \partial t_{ij} & \stackrel{!}{=}0 \\
+\(\begin{align}
+	\partial \mathcal{L}/ \partial t_{ij} &amp; \stackrel{!}{=}0 \\
 	\Downarrow \\
-	u = \exp[-\frac{1}{\lambda}\alpha] \ & , \ v = \exp[-\frac{1}{\lambda}\beta] \\
-	& \Downarrow \\
-	\alpha = -\lambda \log u \  & , \ \beta = -\lambda \log v
-\end{align} %]]></script></p>
+	u = \exp[-\frac{1}{\lambda}\alpha] \ &amp; , \ v = \exp[-\frac{1}{\lambda}\beta] \\
+	&amp; \Downarrow \\
+	\alpha = -\lambda \log u \  &amp; , \ \beta = -\lambda \log v
+\end{align}\)</p>
 
 <p>Once we found $\alpha$ and $\beta$ we can plug them back into the original objective function $\mathcal{L}$ and we can compute the gradients with respect to the distributions at hand:
-<script type="math/tex">% <![CDATA[
-\begin{align}
-	\nabla_q\mathcal{L} &= \nabla_q \left[ \left\langle T, C \right\rangle_F + \lambda H[T] + \alpha^T(T^T\mathbb{1} - q) + \beta^T (T\mathbb{1} - p) \right] \\
-	&= \alpha \\
-	&= - \lambda \log u
-\end{align} %]]></script></p>
+\(\begin{align}
+	\nabla_q\mathcal{L} &amp;= \nabla_q \left[ \left\langle T, C \right\rangle_F + \lambda H[T] + \alpha^T(T^T\mathbb{1} - q) + \beta^T (T\mathbb{1} - p) \right] \\
+	&amp;= \alpha \\
+	&amp;= - \lambda \log u
+\end{align}\)</p>
 
 <p>Now that we have the gradient $\nabla_q \mathcal{L}$ for each ‘bin’ in the proposal probability vector $q$ we can update this vector with stochastic gradient descent and fit it to the probability vector $p$.</p>
 
 <p>How does all of this look in code?
 Well … here you go</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import numpy as np
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import numpy as np
 import torch
 import ot
 import math
@@ -408,7 +390,7 @@ print()
 
 <p>The Sinkhorn iteration function takes the two distributions performs the Sinkhorn iterations and returns the gradient for the proposal distribution which is computed from alpha:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>def sinkhorn_iteration(p, q, lambda_reg, log=True): # the main sinkhorn iteration function
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>def sinkhorn_iteration(p, q, lambda_reg, log=True): # the main sinkhorn iteration function
 	'''
 
 	:param a: target / parameterized distribution
@@ -465,7 +447,7 @@ print()
 <p>Finally we’ll use the optimizer provided by PyTorch to do a couple of hundred steps to let the proposal distribution converge to the true distribution.
 While we’re at it, we’ll also plot a couple of sanity checks such as the distributions still summing up to one</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>optim = torch.optim.SGD([q], lr=0.001)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>optim = torch.optim.SGD([q], lr=0.001)
 
 epochs = 2000
 for epoch in range(epochs):

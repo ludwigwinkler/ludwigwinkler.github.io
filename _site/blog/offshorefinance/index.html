@@ -345,18 +345,17 @@ If all customers would withdraw their money all at once, due to a loss of faith 
 This means we have to keep 10% in cash at our bank and are allowed to loan out 90% to another financial player.
 The second party now has 90 USD and can in turn make loans to a third party with the remaining 81 USD once the 9 USD cash is kept.
 The third party now gets 81 USD and can give out 72.9 USD in a new loan after subtracting the 10% capital requirement.
-<script type="math/tex">% <![CDATA[
-\begin{align}
-M_1 &= M_0 *(1-r) &&= 90 \\
-M_2 &= M_1 * (1-r) = 100 * (1-r)^2 &&= 81 \\
-M_3 &= M_2 * (1-r) = 100 * (1-r)^3 &&= 72.9 \\
-M_4 &= \ldots
-\end{align} %]]></script>
+\(\begin{align}
+M_1 &amp;= M_0 *(1-r) &amp;&amp;= 90 \\
+M_2 &amp;= M_1 * (1-r) = 100 * (1-r)^2 &amp;&amp;= 81 \\
+M_3 &amp;= M_2 * (1-r) = 100 * (1-r)^3 &amp;&amp;= 72.9 \\
+M_4 &amp;= \ldots
+\end{align}\)
 This forms a geometric series and if we were to continue to infinity, we’d get</p>
 
-<script type="math/tex; mode=display">\begin{align}
+\[\begin{align}
 M_\infty = \sum_k^\infty M_0 \cdot (1-r)^k = \frac{M_0}{r}
-\end{align}</script>
+\end{align}\]
 
 <p>With $r=10\%=0.1$ we increase the money supply tenfold but more importantly we create a chain of dependencies in terms of credit.
 By reducing the capital requirements we make every financial institution more susceptible to defaults, the chain along which the money bounces through the system longer and ultimately the entire system more fragile.</p>

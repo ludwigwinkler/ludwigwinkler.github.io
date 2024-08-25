@@ -96,9 +96,9 @@ Intuitively, we want to know for a given $x$ what the latent variables $z$ were 
 This is akin to observing some observation $x$ and being able to say: I know the $z$ ‘s that generated that!.</p>
 
 <p>By Bayes rule we now that for a distribution $ p ( x | z ) $ there also exists the distribution $ p ( z | x ) $, the distribution we are interested in.
-<script type="math/tex">\begin{align}
+\(\begin{align}
 p(z|x) = \frac{p(z,x)}{p(x)} = \frac{p(x|z)p(z)}{p(x)}
-\end{align}</script>
+\end{align}\)
 The crux of the problem is that we can only observe the data distribution $p(x)$ through a data set $\mathcal{D}= \{ x_i \}_{i=0}^N$.
 So we neither know what form the data generating process $p(x|z)$ has nor what the true latent distribution $p(z)$ is.
 Additionally, the data probability $p(x)$ is even more obscure.
@@ -109,33 +109,31 @@ The motivation behind this formulation is that the true latent conditional distr
 It might not be able to represent all the modes and fat tails that could potentially occur in $p(z |x)$ but better than nothing, right?</p>
 
 <p>Information theory gives us the right tools to measure the difference between $q_\phi(z|x)$ and $p(z|x)$ through the Kullback-Leibler divergence:
-<script type="math/tex">\mathbb{KL} \left[ q_\phi(z|x) \ || \ p(z|x) \right]</script>
+\(\mathbb{KL} \left[ q_\phi(z|x) \ || \ p(z|x) \right]\)
 The state of affairs sofar is that we have an easy to work with distribution $q_\phi(z|x)$ with the trainable parameters $\phi$ and that we wish to minimize the divergence to the true latent distribution $p(z|x)$.
 We can also rewrite $p(z|x)$ according to Bayes rule to maybe make the computations a bit more tractable.
 We can now write out the Kullback-Leibler divergence and inspect the terms that arise from some algebraic manipulation:</p>
 
-<p><script type="math/tex">% <![CDATA[
-\begin{align}
-	\mathbb{KL} \left[ q_\phi(z \| x) \ || \ p(z \| x) \right] &= \mathbb{E}_{q_\phi(z \|x)} \left[ \log \frac{q_\phi(z \| x)}{p(z \| x)} \right] \\
-	&= \mathbb{E}_{q_\phi(z|x)} \left[ \log q_\phi(z|x) - \log p(z|x)\right] \\
-	&= \mathbb{E}_{q_\phi(z|x)} \left[ \log q_\phi(z|x) - \log \frac{p(z,x)}{p(x)}\right] \\
-	&= \mathbb{E}_{q_\phi(z|x)} \left[ \log q_\phi(z|x) - \log p(z,x) + \log p(x)\right]
-\end{align} %]]></script>
+<p>\(\begin{align}
+	\mathbb{KL} \left[ q_\phi(z \| x) \ || \ p(z \| x) \right] &amp;= \mathbb{E}_{q_\phi(z \|x)} \left[ \log \frac{q_\phi(z \| x)}{p(z \| x)} \right] \\
+	&amp;= \mathbb{E}_{q_\phi(z|x)} \left[ \log q_\phi(z|x) - \log p(z|x)\right] \\
+	&amp;= \mathbb{E}_{q_\phi(z|x)} \left[ \log q_\phi(z|x) - \log \frac{p(z,x)}{p(x)}\right] \\
+	&amp;= \mathbb{E}_{q_\phi(z|x)} \left[ \log q_\phi(z|x) - \log p(z,x) + \log p(x)\right]
+\end{align}\)
 From earlier we know, that the data marginal probability $p(x)$ is almost surely intractable so we might want to avoid working with it directly.
 But by applying Bayes’ rule we suddenly see that we are working with the joint probability $p(z,x)$.
 Given the fact that $0 \leq \mathbb{KL}$ we can deduce
-<script type="math/tex">% <![CDATA[
-\begin{align}
-	0 &\leq \mathbb{KL} \left[ q_\phi(z|x) \ || \ p(z|x) \right] \\
-	0 &\leq \mathbb{E}_{q_\phi(z|x)} \left[ \log q_\phi(z|x) - \log p(z,x) + \log p(x) \right] \\
-	0 &\geq \mathbb{E}_{q_\phi(z|x)} \left[ -\log q_\phi(z|x) + \log p(z,x) - \log p(x) \right] \\
-	\log p(x) &\geq \mathbb{E}_{q_\phi(z|x)} \left[ - \log q_\phi(z|x) + \log p(z,x)\right] \\
-	\log p(x) &\geq \mathbb{E}_{q_\phi(z|x)} \left[ - \log q_\phi(z|x) + \log p(x|z) p(z)\right] \\
-	\log p(x) &\geq \mathbb{E}_{q_\phi(z|x)} \left[ - \log q_\phi(z|x) + \log p(x|z) + \log p(z)\right] \\
-	\log p(x) &\geq \mathbb{E}_{q_\phi(z|x)} \left[ \log \frac{p(z)}{q_\phi(z|x)} + \log p(x|z) \right] \\
-	\log p(x) &\geq -\mathbb{E}_{q_\phi(z|x)} \left[ \log \frac{q_\phi(z|x)}{p(z)} \right] + \mathbb{E}_{q_\phi(z|x)} \left[ \log p(x | z) \right] \\
-	\log p(x) &\geq -\mathbb{KL} \left[ q_\phi(z|x) || p(z) \right] + \mathbb{E}_{q_\phi(z|x)} \left[ \log p(x|z) \right]
-\end{align} %]]></script>
+\(\begin{align}
+	0 &amp;\leq \mathbb{KL} \left[ q_\phi(z|x) \ || \ p(z|x) \right] \\
+	0 &amp;\leq \mathbb{E}_{q_\phi(z|x)} \left[ \log q_\phi(z|x) - \log p(z,x) + \log p(x) \right] \\
+	0 &amp;\geq \mathbb{E}_{q_\phi(z|x)} \left[ -\log q_\phi(z|x) + \log p(z,x) - \log p(x) \right] \\
+	\log p(x) &amp;\geq \mathbb{E}_{q_\phi(z|x)} \left[ - \log q_\phi(z|x) + \log p(z,x)\right] \\
+	\log p(x) &amp;\geq \mathbb{E}_{q_\phi(z|x)} \left[ - \log q_\phi(z|x) + \log p(x|z) p(z)\right] \\
+	\log p(x) &amp;\geq \mathbb{E}_{q_\phi(z|x)} \left[ - \log q_\phi(z|x) + \log p(x|z) + \log p(z)\right] \\
+	\log p(x) &amp;\geq \mathbb{E}_{q_\phi(z|x)} \left[ \log \frac{p(z)}{q_\phi(z|x)} + \log p(x|z) \right] \\
+	\log p(x) &amp;\geq -\mathbb{E}_{q_\phi(z|x)} \left[ \log \frac{q_\phi(z|x)}{p(z)} \right] + \mathbb{E}_{q_\phi(z|x)} \left[ \log p(x | z) \right] \\
+	\log p(x) &amp;\geq -\mathbb{KL} \left[ q_\phi(z|x) || p(z) \right] + \mathbb{E}_{q_\phi(z|x)} \left[ \log p(x|z) \right]
+\end{align}\)
 What does the inequality above tell us?
 It says that if we want to maximize the probability of the data we must minimize the KL divergence in the first term and maximize the probability of the generative model $p(x|z)$.
 So for any given $z$, we want the generative model $p(x|z)$.
@@ -149,9 +147,9 @@ This might seem bold but if the generative model $p(x|z)$ is flexible enough it 
 Now let’s turn our attention to $p(x|z)$: We will change the unknown $p(x|z)$ to a parameterized and differentiable $p_\theta(x|z)$ such that we can maximize the probability of the data $x$ for a given $z$.</p>
 
 <p>Now we have the following objective function:
-<script type="math/tex">\begin{align}
+\(\begin{align}
 	\log p(x) \geq -\mathbb{KL} \left[ q_\phi(z|x) || p(z) \right] + \mathbb{E}_{q_\phi(z|x)} \left[ \log p_\theta(x|z) \right]
-\end{align}</script>
+\end{align}\)
 which, upon closer inspection, has a lot of similarities to an autoencoder, except that it’s probabilistic!
 We use the distribution $q_\phi(z|x)$ to infer some latent code from a given sample.
 Through the KL divergence we enforce that the latent representation should be close to the simplified assumption of $p(z) = \mathcal{N}(0,I)$.
@@ -173,9 +171,9 @@ In order to derive this alternative bound we will first have to understand Jense
 <p>Let’s assume that we have the quadratic function $f(x) = x^2, x,y \in \mathbb{R}$.
 The quadratic function is convex which is essential for Jensen’s inequality.
 For any convex function $f(x)$, Jensen’s inequality for $t \in (0,1)$ states:
-<script type="math/tex">\begin{align}
+\(\begin{align}
 	f(tx_1 + (1-t) x_2 ) \ \leq \ t \ f(x_1) + (1-t) \ f(x_2)
-\end{align}</script>
+\end{align}\)
 which is the definition of a convex function and quintessentially asks the question of whether we interpolate the function values $f(x)$ or interpolate the arguments $x_1$ and $x_2$.</p>
 
 <p><img src="/blog/VAE/JensensInequalityConvex.png" alt="" class="align=&quot;center&quot;" height="20%" width="50%" /></p>
@@ -186,49 +184,45 @@ Since the quadratic function in its vanilla form is convex, we can conclude that
 
 <p>Jensen’s inequality becomes useful for deriving bounds when applied to probability theory.
 We can expand the interpolation beyond the two values $x_1$ and $x_2$ by weighting the values uniformly:
-<script type="math/tex">\begin{align}
+\(\begin{align}
 	f\left( \frac{1}{2} x_1 + \frac{1}{2} x_2 \right) \ \leq \ \frac{1}{2} \ f\left( x_1 \right) + \frac{1}{2} \ f \left( x_2 \right)
-\end{align}</script>
+\end{align}\)
 We can then extend the interpolation to $x_n \in \{x_1, \ldots, x_N \}$ via
-<script type="math/tex">% <![CDATA[
-\begin{align}
+\(\begin{align}
 	f\left( \frac{1}{N} x_1 + \ldots + \frac{1}{N} x_N \right) \ 
-	& \leq \ 
+	&amp; \leq \ 
 	\frac{1}{N} \ f\left( x_1 \right) + \ldots + \frac{1}{N} \ f \left( x_N \right) \\
 	f\left( \frac{1}{N} \sum_n^N x_n \right) \ 
-	& \leq \ 
+	&amp; \leq \ 
 	\frac{1}{N} \sum_n^N \ f\left( x_n \right) \\
-\end{align} %]]></script>
+\end{align}\)
 which gives us the probabilistic version of Jensen’s inequality for a convex function $f(x)$:
-<script type="math/tex">% <![CDATA[
-\begin{align}
+\(\begin{align}
 	f \left( \mathbb{E}[x_n] \right) \ 
-	& \leq \ 
+	&amp; \leq \ 
 	\mathbb{E} \left[ f(x_n) \right] \\
-\end{align} %]]></script></p>
+\end{align}\)</p>
 
 <p>For a concave function, we simply have to flip the inequality sign, as the function value interpolation $\mathbb{E}[f(x)]$ will always be equal or below the argument interpolation $f(\mathbb{E})[x]$:
-<script type="math/tex">% <![CDATA[
-\begin{align}
+\(\begin{align}
 	f \left( \mathbb{E}[x_n] \right) \ 
-	& \geq \ 
+	&amp; \geq \ 
 	\mathbb{E} \left[ f(x_n) \right] \\
-\end{align} %]]></script></p>
+\end{align}\)</p>
 
 <p><img src="/blog/VAE/JensensInequalityConcave.png" alt="" class="align=&quot;center&quot;" height="20%" width="50%" /></p>
 
 <h3 id="importance-weighted-variational-autoencoders">Importance Weighted Variational Autoencoders</h3>
 
 <p>To derive the loss for the Importance Weighted Variational Autoencoder we will use two tricks: the fact that the logarithm is a concave function and utilizing importance sampling.
-<script type="math/tex">% <![CDATA[
-\begin{align}
+\(\begin{align}
 \log p(x) 
-&= \log \left[ \int p(x| z) p(z) dz \right] \\
-&= \log \left[ \int q(z|x) \frac{p(x|z) p(z)}{q(z|x)} dz \right] \qquad \Leftarrow \text{expanding with $\frac{q(z|x)}{q(z|x)}$} \\
-&= \log \left[ \mathbb{E}_{q(z|x)} \left[ \frac{p(x|z) p(z)}{q(z|x)} \right] \right] \\
-&\geq \mathbb{E}_{q(z|x)} \left[ \log \left[ \frac{p(x|z) p(z)}{q(z|x)} \right] \right]
+&amp;= \log \left[ \int p(x| z) p(z) dz \right] \\
+&amp;= \log \left[ \int q(z|x) \frac{p(x|z) p(z)}{q(z|x)} dz \right] \qquad \Leftarrow \text{expanding with $\frac{q(z|x)}{q(z|x)}$} \\
+&amp;= \log \left[ \mathbb{E}_{q(z|x)} \left[ \frac{p(x|z) p(z)}{q(z|x)} \right] \right] \\
+&amp;\geq \mathbb{E}_{q(z|x)} \left[ \log \left[ \frac{p(x|z) p(z)}{q(z|x)} \right] \right]
 \qquad \Leftarrow \text{pulling in $\log$ with Jensen's inequality = ELBO}
-\end{align} %]]></script>
+\end{align}\)
 and we arrive at the original ELBO derived from the Kullback-Leibler divergence from the original VAE formulation.</p>
 
 <p>The important step is applying Jensen’s inequality where we introduce the bound for the first time.
@@ -249,27 +243,25 @@ But there is no real argument against sampling multiple times from the latent di
 <p>The more samples we draw, the tighter our bound becomes.
 Why is this the case we might ask?
 We take our toy example with the quadratic function again to visualize what’s happening when we draw more samples from the latent distribution
-<script type="math/tex">% <![CDATA[
-\begin{align}
-	f\left( \mathbb{E}[x] \right) &\leq f \left( \frac{1}{N} \sum_n x_n \right) \\
-	f\left( \mu \right) &\leq f \left( \frac{1}{N} \sum_n^N x_n \right)
-\end{align} %]]></script></p>
+\(\begin{align}
+	f\left( \mathbb{E}[x] \right) &amp;\leq f \left( \frac{1}{N} \sum_n x_n \right) \\
+	f\left( \mu \right) &amp;\leq f \left( \frac{1}{N} \sum_n^N x_n \right)
+\end{align}\)</p>
 
 <p><img src="/blog/VAE/TighteningJensens.png" alt="" class="align=&quot;center&quot;" height="20%" width="50%" /></p>
 
 <p>If we evaluate a finite number of samples $x_n$, the mean estimator will have a higher variance.
 There might be occurences where we draw the perfect sample right or very, very close to $\mu$, but on average the mean estimator will have the estimator variance
-<script type="math/tex">% <![CDATA[
-\begin{align}
+\(\begin{align}
 	\mathbb{V} \left[ \frac{1}{N} \sum_n^N x_n \right]
-	&= \frac{1}{N^2} \sum_n^N \mathbb{V}[x] \\
-	&= \frac{1}{N} \mathbb{V}[x] \\
-\end{align} %]]></script></p>
+	&amp;= \frac{1}{N^2} \sum_n^N \mathbb{V}[x] \\
+	&amp;= \frac{1}{N} \mathbb{V}[x] \\
+\end{align}\)</p>
 
 <p>with means that 
-<script type="math/tex">\begin{align}
+\(\begin{align}
 	f\left( \mu \right) \leq f \left( \frac{1}{N+1} \sum_n^{N+1} x_n \right) \leq f \left( \frac{1}{N} \sum_n^N x_n \right)
-\end{align}</script>
+\end{align}\)
 for a convex function $f(\cdot)$.
 Conversely for a concave function, we would have to flip the inequality sign.</p>
 
@@ -279,11 +271,10 @@ The closer the estimated mean is, the tighter the bound.
 This is precisely whats happening when we draw more samples in the expectation of the importance weighted VAE.</p>
 
 <p>Finally, for we can use the probabilistic version of Jensen’s inequality to derive the positive constraint of the variance of a random variable $x$:
-<script type="math/tex">% <![CDATA[
-\begin{align}
-\mathbb{E}[x]^2 &\leq \mathbb{E}[x^2] \\
-0 &\leq \mathbb{E}[x^2] - \mathbb{E}[x]^2 = \mathbb{V}[x]
-\end{align} %]]></script></p>
+\(\begin{align}
+\mathbb{E}[x]^2 &amp;\leq \mathbb{E}[x^2] \\
+0 &amp;\leq \mathbb{E}[x^2] - \mathbb{E}[x]^2 = \mathbb{V}[x]
+\end{align}\)</p>
 </p>
       		</section>
 

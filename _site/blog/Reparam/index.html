@@ -100,16 +100,16 @@ If we were to sample millions of samples from the distribution and use a ever fi
 
 <p>Let’s pick three samples $\epsilon_1, \epsilon_2, \epsilon_3$ from that standard normal distribution</p>
 
-<script type="math/tex; mode=display">\epsilon_1 = -0.5 \\
+\[\epsilon_1 = -0.5 \\
   \epsilon_2=0.5 \\
-  \epsilon_3=1</script>
+  \epsilon_3=1\]
 
 <p>What would happen if we were to multiply these three samples with a constant number $\sigma=3$?
 Well since it is a linear transformation it should be a straight forward multiplication</p>
 
-<script type="math/tex; mode=display">\sigma \cdot \epsilon_1 = -1.5 \\
+\[\sigma \cdot \epsilon_1 = -1.5 \\
   \sigma \cdot \epsilon_2 = 1.5 \\
-  \sigma \cdot \epsilon_3 = 3</script>
+  \sigma \cdot \epsilon_3 = 3\]
 
 <p>Let’s visualize this multiplication with a fixed number for thousands of samples $\epsilon$ from the standard normal distribution.
 In the next image I normalized the samples such that we’re working with a distribution:</p>
@@ -122,9 +122,9 @@ In the next image I normalized the samples such that we’re working with a dist
 
 <p>The second step of the reparameterization step is to ask ourselves what would happen if we added a constant number $\mu =10$ to the samples drawn from $\mathcal{N}(0,1)$ which are already multiplied with $\sigma$.</p>
 
-<script type="math/tex; mode=display">\mu + \sigma \cdot \epsilon_1 = 8.5 \\
+\[\mu + \sigma \cdot \epsilon_1 = 8.5 \\
   \mu + \sigma \cdot \epsilon_2 = 11.5 \\
-  \mu + \sigma \cdot \epsilon_3 = 13</script>
+  \mu + \sigma \cdot \epsilon_3 = 13\]
 
 <p>Let’s visualize this linear transformation on all the samples we drew from $\mathcal{N}(0,1)$ and multiplied with $\sigma=3$.</p>
 
@@ -137,16 +137,16 @@ In the next image I normalized the samples such that we’re working with a dist
 <p>After some eye-candy we can tackle the above-mentioned transformation analytically.
 We transform any Standard-Normally distributed random variable $\mathcal{E} \sim \mathcal{N}(0,1)$ by scaling it first with $\sigma$ and shifting it afterwards with $\mu$ into a Normally distributed random variable $w \sim \mathcal{N}(\mu, \sigma)$ through the linear transformation</p>
 
-<script type="math/tex; mode=display">\begin{align*}
+\[\begin{align*}
   w = t_1 (\mathcal{E}, \mu, \sigma) = \mu + \mathcal{E} \cdot \sigma
-\end{align*}</script>
+\end{align*}\]
 
 <p>Before we can dive into the gradients and properties we have to introduce one more non-trivial trick: keeping the standard deviation strictly positive.
 This can be achieved by reparameterizing the standard deviation itself with the transformation</p>
 
-<script type="math/tex; mode=display">\begin{align*}
+\[\begin{align*}
   \sigma = t_2(\rho) = \log(1+\exp(\rho)) \quad ; \sigma \in \mathbb{R}^+, \rho \in \mathbb{R}
-\end{align*}</script>
+\end{align*}\]
 
 <p>The transformation is important as it allows $\sigma$ to be optimized freely without having to check after every optimization step, whether it is still positive.
 The parameter $\rho$ can be optimized freely from $-\infty$ to $+\infty$ and only the $\log-\exp$ transformation above turns it into a strictly positive number.
@@ -155,49 +155,45 @@ For readability we will only use $\rho$ when it’s absolutely necessary since m
 <p>The important analytical property of this reparameterization is that we can take gradients with respect to its parameters.
 Let’s create a simple example of linear regression of some input $x \in \mathbb{R}$ with a weight $w \sim \mathcal{N}(\mu,\sigma)$:</p>
 
-<script type="math/tex; mode=display">\begin{align*}
+\[\begin{align*}
   \hat{y} = f(x) = w \cdot x = (\mu + \mathcal{E} \cdot \sigma) \ x
-\end{align*}</script>
+\end{align*}\]
 
 <p>Since $t_1$ is nothing else than a linear transformation we can easily take the gradients with respect to it’s parameters just as we would do with any other linear function.
 The objective function for the toy example which follows is</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align*}
-  \mathcal{L}(\hat{y}, y) &= \mathcal{L}( f(x, w), y ) \\\\
-  &= (w\cdot x - y)^2 \\\\
-  &= ((\mu + \mathcal{E} \cdot \sigma) \ x - y)^2
-\end{align*} %]]></script>
+\[\begin{align*}
+  \mathcal{L}(\hat{y}, y) &amp;= \mathcal{L}( f(x, w), y ) \\\\
+  &amp;= (w\cdot x - y)^2 \\\\
+  &amp;= ((\mu + \mathcal{E} \cdot \sigma) \ x - y)^2
+\end{align*}\]
 
 <p>After the double reparameterization of $w$ with $t_1$ and $t_2$ we can compute the gradient for the deterministic parameters $\mu, \rho$ for the given cost function.
 This is possible because we ‘outsourced’ the stochasticity of the distribution $w \sim \mathcal{N}(\mu, \sigma)$ into the Standard Normal random variable $\mathcal{E}$.
 We are not interested in the stochasticity of $\mathcal{E} \sim \mathcal{N}(0,1)$ but in the parameters $\mu, \sigma$.
 All the transformations of the variational parameters above are encapsulated in the cost function below:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align*}
-  \mathcal{L}(\hat{y}, y) &= \mathcal{L} (f(x, t_1(\mathcal{E}, \mu, t_2(\rho))), y)
-\end{align*} %]]></script>
+\[\begin{align*}
+  \mathcal{L}(\hat{y}, y) &amp;= \mathcal{L} (f(x, t_1(\mathcal{E}, \mu, t_2(\rho))), y)
+\end{align*}\]
 
 <p>All we have to do is to apply the chain rule and work from outside towards the inside of the nested functions $\mathcal{L}, f, t_1$ and $t_2$.
 This is what is commonly called reverse-mode auto differentiation and is applied in neural networks in the backpropagation algorithm.
 The gradient for the variational parameter $\mu$ can be computed via:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align*}
-  \frac{\partial \mathcal{L}}{\partial \mu} &= \frac{\partial \mathcal{L}}{\partial f} \frac{\partial f}{\partial w} \frac{\partial w}{\partial t_1} \frac{\partial t_1}{\partial \mu} \\\\
-  \frac{\partial \mathcal{L}(\hat{y}, y)}{\partial \mu} &= \frac{\partial \mathcal{L}(\hat{y}, y)}{\partial f(x, w)} \cdot \frac{\partial f(x, w)}{\partial w} \cdot \frac{\partial w}{\partial t_1(\mathcal{E}, \mu, \sigma)} \cdot \frac{\partial t_1(\mathcal{E}, \mu, \sigma)}{\partial \mu} \\\\
-  &= 2(\hat{y}-y) \cdot x \cdot 1 \cdot 1
-\end{align*} %]]></script>
+\[\begin{align*}
+  \frac{\partial \mathcal{L}}{\partial \mu} &amp;= \frac{\partial \mathcal{L}}{\partial f} \frac{\partial f}{\partial w} \frac{\partial w}{\partial t_1} \frac{\partial t_1}{\partial \mu} \\\\
+  \frac{\partial \mathcal{L}(\hat{y}, y)}{\partial \mu} &amp;= \frac{\partial \mathcal{L}(\hat{y}, y)}{\partial f(x, w)} \cdot \frac{\partial f(x, w)}{\partial w} \cdot \frac{\partial w}{\partial t_1(\mathcal{E}, \mu, \sigma)} \cdot \frac{\partial t_1(\mathcal{E}, \mu, \sigma)}{\partial \mu} \\\\
+  &amp;= 2(\hat{y}-y) \cdot x \cdot 1 \cdot 1
+\end{align*}\]
 
 <p>and to obtain the gradient of the cost function with respect to $\rho$ we compute:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align*}
-  \frac{\partial \mathcal{L}}{\partial \rho} &= \frac{\partial \mathcal{L}}{\partial f} \cdot \frac{\partial f}{\partial w} \cdot \frac{\partial w}{\partial g} \cdot \frac{\partial g}{\partial t_2} \cdot \frac{\partial t_2}{\partial \rho} \\\\
-  \frac{\partial \mathcal{L}(\hat{y}, y)}{\partial \rho} &= \frac{\partial \mathcal{L}(\hat{y}, y)}{\partial f(x, w)} \cdot \frac{\partial f(x, w)}{\partial w} \cdot \frac{\partial w}{\partial t_1(\mathcal{E}, \mu, \sigma)} \cdot \frac{\partial t_1(\mathcal{E}, \mu, \sigma)}{\partial t_2(\rho)} \cdot \frac{t_2(\rho)}{\partial \rho} \\\\
-  &= 2(\hat{y}-y) \cdot x \cdot 1 \cdot \mathcal{E} \cdot \frac{1}{1 + \exp(-\rho)}
-\end{align*} %]]></script>
+\[\begin{align*}
+  \frac{\partial \mathcal{L}}{\partial \rho} &amp;= \frac{\partial \mathcal{L}}{\partial f} \cdot \frac{\partial f}{\partial w} \cdot \frac{\partial w}{\partial g} \cdot \frac{\partial g}{\partial t_2} \cdot \frac{\partial t_2}{\partial \rho} \\\\
+  \frac{\partial \mathcal{L}(\hat{y}, y)}{\partial \rho} &amp;= \frac{\partial \mathcal{L}(\hat{y}, y)}{\partial f(x, w)} \cdot \frac{\partial f(x, w)}{\partial w} \cdot \frac{\partial w}{\partial t_1(\mathcal{E}, \mu, \sigma)} \cdot \frac{\partial t_1(\mathcal{E}, \mu, \sigma)}{\partial t_2(\rho)} \cdot \frac{t_2(\rho)}{\partial \rho} \\\\
+  &amp;= 2(\hat{y}-y) \cdot x \cdot 1 \cdot \mathcal{E} \cdot \frac{1}{1 + \exp(-\rho)}
+\end{align*}\]
 
 <p>In essence, it is simply an extended chain rule where we not only have to backprop to the used weight $w$ but further through the reparameterization $t_1$ to obtain the gradient for $\mu$ and even further through the reparameterization $t_2$ to obtain the gradient for $\rho$.
 Below is a graphical representation of how the the gradient is first backpropagated to the linear product $w \cdot x$ and then subsequently to the variational parameters $\mu, \rho$.
@@ -207,7 +203,7 @@ Since we transform $\rho$ such that it will it be in $\mathbb{R}^+$ with $t_2( \
 
 <p>The final point is a little code snippet which can be analyzed without much plotting</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import numpy as np
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import numpy as np
 
 #Generate 10 data points between 0 and 5
 x = np.linspace(0,5,10)

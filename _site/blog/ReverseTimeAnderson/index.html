@@ -96,9 +96,9 @@
 <p>What follows is a derivation of the main result of ‘Reverse-Time Diffusion Equation Models’ by Brian D.O. Anderson (1982).
 Earlier on this blog we learned that a stochastic differential equation of the form</p>
 
-<script type="math/tex; mode=display">\begin{align}
+\[\begin{align}
 	dX_t = \mu(X_t, t) dt + \sigma(X_t, t) dW_t
-\end{align}</script>
+\end{align}\]
 
 <p>with the derivative of Wiener process $W_t$ admits two types of equations, called the forward Kolmogorov or Fokker-Planck equation and the backward Kolmogorov equation.
 The details of the derivation of the forward and backward Kolmogorov equations via the Kramers-Moyal expansion can be found in the previous blog post.
@@ -106,18 +106,18 @@ For notational brevity we will use the term $\mu(x_t)$ for the drift and $\sigma
 
 <p>The Kolmogorov forward equation is identical to the Fokker Planck equation and states</p>
 
-<script type="math/tex; mode=display">\begin{align}
+\[\begin{align}
 	\partial_t p(x_t) = -\partial_{x_t} \left[ \mu(x_t) p(x_t) \right] + \frac{1}{2} \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right].
-\end{align}</script>
+\end{align}\]
 
 <p>It describes the evolution of a probability distribution $p(x_t)$ forward in time.
 We can quite frankly think of it as, for example, a Normal distribution being slowly transformed into an arbitrary complex distribution according to the drift and diffusion parameters $\mu(x_t)$ and $\sigma(x_t)$.</p>
 
 <p>The Kolmogorov backward equation for $ s \geq t$ is defined as</p>
 
-<script type="math/tex; mode=display">\begin{align}
+\[\begin{align}
 	- \partial_t p(x_s | x_t) = \mu(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t)
-\end{align}</script>
+\end{align}\]
 
 <p>and it basically answers the question how the probability of $x_s$ at a later point in time changes as we change $x_t$ at an earlier point in time.
 The Kolmogorov backward equation is somewhat confounding with respect to time as we’re taking the partial derivative with respect to the earlier time step $t$ on which we are also coniditoning.
@@ -128,148 +128,137 @@ Unfortunately there is no corresponding stochastic differential equation with a 
 
 <p>This is where the remarkable result from Anderson (1982) comes into play.</p>
 
-<p>The granddaddy of all probabilistic equations, Bayes theorem, tells us that a joint distribution can be factorized by conditioning: <script type="math/tex">p(x_s , x_t) = p(x_s|x_t) p(x_t)</script> with the time ordering $t \leq s$.
-Why do we invoke the joint probability <script type="math/tex">p(x_s, x_t)</script> we might ask?
+<p>The granddaddy of all probabilistic equations, Bayes theorem, tells us that a joint distribution can be factorized by conditioning: \(p(x_s , x_t) = p(x_s|x_t) p(x_t)\) with the time ordering $t \leq s$.
+Why do we invoke the joint probability \(p(x_s, x_t)\) we might ask?
 What we’re trying to achieve is to derive a stochastic differential equation that tells us from what values of $x_t$ we can arrive at $x_s$.
 We can ask ourselves what the partial differential equation would be that describes the evolution of the joint distribution over time.
 First multiplying both sides of Bayes theorem with minus one and taking the derivative with respect to time $t$, we obtain via the product rule</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align}
-	- \partial_t p(x_s, x_t) &= - \partial_t \left[ p(x_s| x_t) p(x_t) \right] \\
-	&= \underbrace{-\partial_t p(x_s|x_t)}_{\text{KBE}} p(x_t) - p(x_s | x_t) \underbrace{\partial_t p(x_t)}_{\text{KFE}}
-\end{align} %]]></script>
+\[\begin{align}
+	- \partial_t p(x_s, x_t) &amp;= - \partial_t \left[ p(x_s| x_t) p(x_t) \right] \\
+	&amp;= \underbrace{-\partial_t p(x_s|x_t)}_{\text{KBE}} p(x_t) - p(x_s | x_t) \underbrace{\partial_t p(x_t)}_{\text{KFE}}
+\end{align}\]
 
 <p>into which we can plug in the Kolmogorov forward (KFE) and Kolmogorov backward (KBE) equations,</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align}
-	& -\partial_t p(x_s|x_t) p(x_t) - p(x_s | x_t) \partial_t p(x_t) \\
-	&= \left( \mu(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \right) p(x_t) \\
-	& + p(x_s| x_t) \left( \partial_{x_t} \left[ \mu(x_t) p(x_t) \right] - \frac{1}{2} \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \right)
-\end{align} %]]></script>
+\[\begin{align}
+	&amp; -\partial_t p(x_s|x_t) p(x_t) - p(x_s | x_t) \partial_t p(x_t) \\
+	&amp;= \left( \mu(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \right) p(x_t) \\
+	&amp; + p(x_s| x_t) \left( \partial_{x_t} \left[ \mu(x_t) p(x_t) \right] - \frac{1}{2} \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \right)
+\end{align}\]
 
 <p>The derivative occuring in the backward Kolmogorov equation are</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align}
-	\partial_{x_t} p(x_s|x_t) &= \partial_{x_t} \left[ \frac{p(x_s, x_t)}{p(x_t)} \right] \\
-	& = \frac{\partial_{x_t} p(x_s, x_t) p(x_t) - p(x_s, x_t) \partial_{x_t} p(x_t)}{p^2(x_t)} \\
-	& = \frac{\partial_{x_t} p(x_s, x_t)}{p(x_t)} - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p^2(x_t)}
-\end{align} %]]></script>
+\[\begin{align}
+	\partial_{x_t} p(x_s|x_t) &amp;= \partial_{x_t} \left[ \frac{p(x_s, x_t)}{p(x_t)} \right] \\
+	&amp; = \frac{\partial_{x_t} p(x_s, x_t) p(x_t) - p(x_s, x_t) \partial_{x_t} p(x_t)}{p^2(x_t)} \\
+	&amp; = \frac{\partial_{x_t} p(x_s, x_t)}{p(x_t)} - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p^2(x_t)}
+\end{align}\]
 
 <p>The next step is to evaluate the derivative of the products in the forward Kolmogorov equation.</p>
 
-<p><script type="math/tex">% <![CDATA[
-\begin{align}
-	\partial_{x_t} \left[ \mu(x_t) p(x_t) \right] & = \partial_{x_t} \mu(x_t) \ p(x_t) + \mu(x_t) \ \partial_{x_t} p(x_t) \\
-	\partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] & = \partial_{x_t}^2 \sigma^2(x_t) \ p(x_t) + 2 \ \partial_{x_t} \sigma^2(x_t) \ \partial_{x_t} p(x_t) + \sigma^2(x_t) \ \partial_{x_t}^2 p(x_t)
-\end{align} %]]></script>
+<p>\(\begin{align}
+	\partial_{x_t} \left[ \mu(x_t) p(x_t) \right] &amp; = \partial_{x_t} \mu(x_t) \ p(x_t) + \mu(x_t) \ \partial_{x_t} p(x_t) \\
+	\partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] &amp; = \partial_{x_t}^2 \sigma^2(x_t) \ p(x_t) + 2 \ \partial_{x_t} \sigma^2(x_t) \ \partial_{x_t} p(x_t) + \sigma^2(x_t) \ \partial_{x_t}^2 p(x_t)
+\end{align}\)
 Substituting the derivatives of the probability distributions accordingly we obtain
-<script type="math/tex">% <![CDATA[
-\begin{align}
+\(\begin{align}
 	- \partial_t p(x_s, x_t)
-	= & - \partial_t \left[ p(x_s| x_t) p(x_t) \right] \\
-	= & -\partial_t p(x_s|x_t) p(x_t) - p(x_s | x_t) \partial_t p(x_t) \\
-	= & \left( \mu(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \right) p(x_t) \\
-	& + p(x_s| x_t) \left( \partial_{x_t} \left[ \mu(x_t) p(x_t) \right] - \frac{1}{2} \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \right) \\
-	= & \mu(x_t) \ \partial_{x_t} p(x_s|x_t) \ p(x_t) 
+	= &amp; - \partial_t \left[ p(x_s| x_t) p(x_t) \right] \\
+	= &amp; -\partial_t p(x_s|x_t) p(x_t) - p(x_s | x_t) \partial_t p(x_t) \\
+	= &amp; \left( \mu(x_t) \ \partial_{x_t} p(x_s|x_t) + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \right) p(x_t) \\
+	&amp; + p(x_s| x_t) \left( \partial_{x_t} \left[ \mu(x_t) p(x_t) \right] - \frac{1}{2} \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \right) \\
+	= &amp; \mu(x_t) \ \partial_{x_t} p(x_s|x_t) \ p(x_t) 
 	+ \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) \\
-	& + p(x_s| x_t) \partial_{x_t} \mu(x_t) \ p(x_t) + p(x_s| x_t) \mu(x_t) \ \partial_{x_t} p(x_t) \\
-	& - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
-	= & \mu(x_t) \ \left(\frac{\partial_{x_t} p(x_s, x_t)}{\cancel{p(x_t)}} - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p^{\cancel{2}}(x_t)} \right) \ \cancel{p(x_t)} \\
-	& + p(x_s| x_t) \partial_{x_t} \mu(x_t) \ p(x_t) + p(x_s| x_t) \mu(x_t) \ \partial_{x_t} p(x_t) \\
-	& + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
-	= & \mu(x_t) \ \left(\partial_{x_t} p(x_s, x_t) - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p(x_t)} \right) \\
-	& + p(x_s| x_t) \partial_{x_t} \mu(x_t) \ p(x_t) + p(x_s| x_t) \mu(x_t) \ \partial_{x_t} p(x_t) \\
-	& + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
-	= & \mu(x_t) \ \left(\partial_{x_t} p(x_s, x_t) - \cancel{p(x_s| x_t) \partial_{x_t} p(x_t)} \right) \\
-	& + p(x_s, x_t) \partial_{x_t} \mu(x_t) + \cancel{p(x_s| x_t) \mu(x_t) \ \partial_{x_t} p(x_t)} \\
-	& + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
-	= & \underbrace{\mu(x_t) \ \partial_{x_t} p(x_s, x_t) + p(x_s, x_t) \partial_{x_t} \mu(x_t)}_{\text{product rule}} \\
-	& + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
-	= & \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
-	& + \underbrace{\frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t)}_{(1)} - \underbrace{\frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right]}_{(2)}
-\end{align} %]]></script></p>
+	&amp; + p(x_s| x_t) \partial_{x_t} \mu(x_t) \ p(x_t) + p(x_s| x_t) \mu(x_t) \ \partial_{x_t} p(x_t) \\
+	&amp; - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
+	= &amp; \mu(x_t) \ \left(\frac{\partial_{x_t} p(x_s, x_t)}{\cancel{p(x_t)}} - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p^{\cancel{2}}(x_t)} \right) \ \cancel{p(x_t)} \\
+	&amp; + p(x_s| x_t) \partial_{x_t} \mu(x_t) \ p(x_t) + p(x_s| x_t) \mu(x_t) \ \partial_{x_t} p(x_t) \\
+	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
+	= &amp; \mu(x_t) \ \left(\partial_{x_t} p(x_s, x_t) - \frac{p(x_s, x_t) \partial_{x_t} p(x_t)}{p(x_t)} \right) \\
+	&amp; + p(x_s| x_t) \partial_{x_t} \mu(x_t) \ p(x_t) + p(x_s| x_t) \mu(x_t) \ \partial_{x_t} p(x_t) \\
+	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
+	= &amp; \mu(x_t) \ \left(\partial_{x_t} p(x_s, x_t) - \cancel{p(x_s| x_t) \partial_{x_t} p(x_t)} \right) \\
+	&amp; + p(x_s, x_t) \partial_{x_t} \mu(x_t) + \cancel{p(x_s| x_t) \mu(x_t) \ \partial_{x_t} p(x_t)} \\
+	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
+	= &amp; \underbrace{\mu(x_t) \ \partial_{x_t} p(x_s, x_t) + p(x_s, x_t) \partial_{x_t} \mu(x_t)}_{\text{product rule}} \\
+	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
+	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
+	&amp; + \underbrace{\frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t)}_{(1)} - \underbrace{\frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right]}_{(2)}
+\end{align}\)</p>
 
 <p>In order to transform the partial differential equation above into a form from which we can deduce an equivalent stochastic differential equation, we match the terms of the second order derivatives with the following identity,</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align}
-	& \frac{1}{2} \partial_{x_t}^2 \left[ p(x_s, x_t) \sigma^2(x_t) \right] \\
-	= & \frac{1}{2} \partial_{x_t}^2 \left[ p(x_s | x_t) p(x_t) \sigma^2(x_t) \right] \\
-	= & \frac{1}{2} \partial_{x_t}^2 p(x_s | x_t) p(x_t) \sigma^2(x_t) + \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right] \partial_{x_t} p(x_s| x_t)
+\[\begin{align}
+	&amp; \frac{1}{2} \partial_{x_t}^2 \left[ p(x_s, x_t) \sigma^2(x_t) \right] \\
+	= &amp; \frac{1}{2} \partial_{x_t}^2 \left[ p(x_s | x_t) p(x_t) \sigma^2(x_t) \right] \\
+	= &amp; \frac{1}{2} \partial_{x_t}^2 p(x_s | x_t) p(x_t) \sigma^2(x_t) + \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right] \partial_{x_t} p(x_s| x_t)
 	 + \frac{1}{2} \partial_{x_t}^2 \left[ p(x_t) \sigma^2(x_t) \right] p(x_s| x_t) \\
-	= & \underbrace{\frac{1}{2} \sigma^2(x_t) \partial_{x_t}^2 p(x_s | x_t) p(x_t)}_{(1)} + \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right] \partial_{x_t} p(x_s| x_t)
+	= &amp; \underbrace{\frac{1}{2} \sigma^2(x_t) \partial_{x_t}^2 p(x_s | x_t) p(x_t)}_{(1)} + \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right] \partial_{x_t} p(x_s| x_t)
 	 + \underbrace{\frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ p(x_t) \sigma^2(x_t) \right]}_{(2)}
-\end{align} %]]></script>
+\end{align}\]
 
 <p>by observing that the terms (1) and (2) occur in both equations.
 We can see from the expansion of the derivative above that we can combine the terms in our derivation if we expand the “center term”.
-Furthermore we can employ the identity <script type="math/tex">-\frac{1}{2} X = -X + \frac{1}{2} X</script> to obtain
-<script type="math/tex">% <![CDATA[
-\begin{align}
+Furthermore we can employ the identity \(-\frac{1}{2} X = -X + \frac{1}{2} X\) to obtain
+\(\begin{align}
 	-\partial_t p(x_s, x_t)
-	= & \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
-	& + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
-	= & \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
-	& + \frac{1}{2} \ \sigma^2(x_t) \ p(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \underbrace{ - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] }_{-\frac{1}{2} X = -X + \frac{1}{2} X} \\
-	& \underbrace{\pm \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right]}_{\text{complete the square}} \\
-	= & \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \textcolor{red}{+ \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t)} \\
-	& \underbrace{ - p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] + \textcolor{red}{\frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right]} }_{-\frac{1}{2} X = -X + \frac{1}{2} X} \\
-	& \textcolor{red}{\pm \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right]} \\
-	= & \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] + \textcolor{red}{\frac{1}{2} \partial_{x_t}^2 \left[ p( x_s | x_t) p(x_t) \sigma^2(x_t) \right]} \\
-	& \underbrace{- p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] - \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right]}_{
+	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
+	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t) - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \\
+	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \\
+	&amp; + \frac{1}{2} \ \sigma^2(x_t) \ p(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \underbrace{ - \frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] }_{-\frac{1}{2} X = -X + \frac{1}{2} X} \\
+	&amp; \underbrace{\pm \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right]}_{\text{complete the square}} \\
+	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] \textcolor{red}{+ \frac{1}{2} \ \sigma^2(x_t) \ \partial_{x_t}^2 p(x_s | x_t) \ p(x_t)} \\
+	&amp; \underbrace{ - p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] + \textcolor{red}{\frac{1}{2} p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right]} }_{-\frac{1}{2} X = -X + \frac{1}{2} X} \\
+	&amp; \textcolor{red}{\pm \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right]} \\
+	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] + \textcolor{red}{\frac{1}{2} \partial_{x_t}^2 \left[ p( x_s | x_t) p(x_t) \sigma^2(x_t) \right]} \\
+	&amp; \underbrace{- p(x_s| x_t) \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] - \partial_{x_t} p(x_s | x_t) \partial_{x_t} \left[ p(x_t) \sigma^2(x_t) \right]}_{
 		- \partial_{x_t} \left[ p(x_s| x_t) \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right] \text{ (product rule) }
 		} \\
-	= & \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right] \\
-	& - \partial_{x_t} \left[ p(x_s| x_t) \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right].
-\end{align} %]]></script></p>
+	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) \right] + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right] \\
+	&amp; - \partial_{x_t} \left[ p(x_s| x_t) \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right].
+\end{align}\)</p>
 
 <p>What remains to be done is to combine the joint probability and the conditional probability in the first order derivative terms to combine them,
-<script type="math/tex">% <![CDATA[
-\begin{align}
+\(\begin{align}
     -\partial_t p(x_s, x_t)
-	= & \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) - p(x_s| x_t) \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right] \\
-	& + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right] \\
-	= & \partial_{x_t} \Big[ p(x_s, x_t) \left( \mu(x_t) - \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) \Big] \\
-	& + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right] \\
-	= & - \partial_{x_t} \Big[ p(x_s, x_t) \left( -\mu(x_t) + \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) \Big] \\
-	& + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right]
-\end{align} %]]></script>
+	= &amp; \partial_{x_t} \left[ \mu(x_t) \ p(x_s, x_t) - p(x_s| x_t) \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right] \\
+	&amp; + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right] \\
+	= &amp; \partial_{x_t} \Big[ p(x_s, x_t) \left( \mu(x_t) - \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) \Big] \\
+	&amp; + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right] \\
+	= &amp; - \partial_{x_t} \Big[ p(x_s, x_t) \left( -\mu(x_t) + \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) \Big] \\
+	&amp; + \frac{1}{2} \partial_{x_t}^2 \left[ p( x_s , x_t) \sigma^2(x_t) \right]
+\end{align}\)
 the result of which is in the form of a Kolmogorov forward equation, although using the joint probability distribution $p(x_s, x_t)$.
-For the time ordering of $t \leq s$, we can observe that the term <script type="math/tex">-\partial_t p(x_s, x_t)</script> describes the change of the probability distribution as we move backward in time.
+For the time ordering of $t \leq s$, we can observe that the term \(-\partial_t p(x_s, x_t)\) describes the change of the probability distribution as we move backward in time.
 In accordance with Leibniz’ rule we can marginalize over $x_s$ without interferring with the partial derivative $\partial_t$, to obtain
-<script type="math/tex">% <![CDATA[
-\begin{align}
+\(\begin{align}
     -\partial_t p(x_t) 
-    = & -\partial_{x_t} \left[ p(x_t) \left( -\mu(x_t) + \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) \right] \\
-	& + \frac{1}{2} \partial_{x_t}^2 \left[ p(x_t) \sigma^2(x_t) \right] \\
-\end{align} %]]></script></p>
+    = &amp; -\partial_{x_t} \left[ p(x_t) \left( -\mu(x_t) + \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) \right] \\
+	&amp; + \frac{1}{2} \partial_{x_t}^2 \left[ p(x_t) \sigma^2(x_t) \right] \\
+\end{align}\)</p>
 
 <p>and introduce the time reversal $\tau \doteq 1 - t$ which, with respect to the integration with respect to the flow of time, yields
-<script type="math/tex">% <![CDATA[
-\begin{align}
+\(\begin{align}
     - \partial_t p(x_t)
-    = & \partial_\tau p(x_{1-\tau}) \\
-    = & -\partial_{x_{1-\tau}} \left[ p(x_{1-\tau}) \left( -\mu(x_{1-\tau}) + \frac{1}{p(x_{1-\tau})} \partial_{x_{1-\tau}} \left[ \sigma^2(x_{1-\tau}) \ p(x_{1-\tau}) \right] \right) \right] \\
-	& + \frac{1}{2} \partial_{x_{1-\tau}}^2 \left[ p(x_{1-\tau}) \sigma^2(x_{1-\tau}) \right]
-\end{align} %]]></script></p>
+    = &amp; \partial_\tau p(x_{1-\tau}) \\
+    = &amp; -\partial_{x_{1-\tau}} \left[ p(x_{1-\tau}) \left( -\mu(x_{1-\tau}) + \frac{1}{p(x_{1-\tau})} \partial_{x_{1-\tau}} \left[ \sigma^2(x_{1-\tau}) \ p(x_{1-\tau}) \right] \right) \right] \\
+	&amp; + \frac{1}{2} \partial_{x_{1-\tau}}^2 \left[ p(x_{1-\tau}) \sigma^2(x_{1-\tau}) \right]
+\end{align}\)</p>
 
 <p>which finally gives us a stochastic differential equation analogous to the Fokker-Planck/forward Kolmogorov equation that we can solve backward in time:
-<script type="math/tex">\begin{align}
+\(\begin{align}
 dX_\tau = \left(-\mu(x_{1-\tau}) + \frac{1}{p(x_{1-\tau})} \partial_{x_{1-\tau}} \left[ \sigma^2(x_{1-\tau}) \ p(x_{1-\tau}) \right] \right) d\tau + \sigma(x_{1-\tau}) dW_\tau
-\end{align}</script>
-where <script type="math/tex">\tilde{W}_t</script> is a Wiener process that flows backward in time.</p>
+\end{align}\)
+where \(\tilde{W}_t\) is a Wiener process that flows backward in time.</p>
 
 <p>By keeping the $\sigma^2(x_t)$ constant and independent of $x_t$ and applying the log-derivative trick, the drift simplifies to</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align}
-    dX_\tau & = \Big(-\mu(x_{1-\tau}) + \frac{1}{p(x_{1-\tau})} \partial_{x_{1-\tau}} \big[ \overbrace{\sigma^2(x_{1-\tau})}^{=\sigma^2} \ p(x_{1-\tau}) \big] \Big) d\tau + \sigma(x_{1-\tau}) dW_\tau \\
-    & =\left(-\mu(x_{1-\tau}) + \frac{\sigma^2}{p(x_{1-\tau})} \partial_{x_{1-\tau}} \ p(x_{1-\tau}) \right) d\tau + \sigma(x_{1-\tau}) dW_\tau \\
-    &= \Big(-\mu(x_{1-\tau}) + \sigma^2 \partial_{x_{1-\tau}} \ \log p(x_{1-\tau}) \Big) dt + \sigma(x_{1-\tau}) d\tilde{W}_\tau
-\end{align} %]]></script>
+\[\begin{align}
+    dX_\tau &amp; = \Big(-\mu(x_{1-\tau}) + \frac{1}{p(x_{1-\tau})} \partial_{x_{1-\tau}} \big[ \overbrace{\sigma^2(x_{1-\tau})}^{=\sigma^2} \ p(x_{1-\tau}) \big] \Big) d\tau + \sigma(x_{1-\tau}) dW_\tau \\
+    &amp; =\left(-\mu(x_{1-\tau}) + \frac{\sigma^2}{p(x_{1-\tau})} \partial_{x_{1-\tau}} \ p(x_{1-\tau}) \right) d\tau + \sigma(x_{1-\tau}) dW_\tau \\
+    &amp;= \Big(-\mu(x_{1-\tau}) + \sigma^2 \partial_{x_{1-\tau}} \ \log p(x_{1-\tau}) \Big) dt + \sigma(x_{1-\tau}) d\tilde{W}_\tau
+\end{align}\]
 </p>
       		</section>
 

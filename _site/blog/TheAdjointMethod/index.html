@@ -10,8 +10,8 @@
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 
-<title>Greece</title>
-<meta name="description" content="Sailing through the Cyclades Islands">
+<title>The Adjoint Method for Neural ODE's</title>
+<meta name="description" content="">
 
 <link rel="apple-touch-icon" sizes="180x180" href="http://localhost:4000/assets/icon/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="http://localhost:4000/assets/icon/favicon-32x32.png">
@@ -67,378 +67,32 @@
 				<div id="main">
           <section class="post">
     				<header class="major">
-      				<span class="date">2019</span>
-      				<h1>Greece</h1>
-      				<p>Sailing through the Cyclades Islands</p>
+      				<span class="date">14 Aug 2024</span>
+      				<h1>The Adjoint Method for Neural ODE's</h1>
+      				<p>Three Perspectives on Memory Saving During Training</p>
       			</header>
-      			<!-- <div class="image main"><img src="/photo_gallery/greece19/Greece-10.jpg" alt=""></div> -->
-      			<p><!-- ## Berlin Over The Years -->
-<style>
-    .image-gallery {
-        overflow: auto;
-        margin-left: -1% !important;
-    }
+      			<div class="image main"><img src="" alt=""></div>
+      			<p><head>
+<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
+       <script type="text/x-mathjax-config">
+         MathJax.Hub.Config({
+           tex2jax: {
+             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+             displayMath: [['$$','$$']],
+             processEscapes: true
+           }
+         });
+       </script>
+       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
 
-    .image-gallery li {
-        float: left;
-        float: top;
-        display: block;
-        margin: 0 0 1% 1%;
-        width: 99%;
-    }
+<h2 id="motivation">Motivation</h2>
 
-    .image-gallery li a {
-        text-align: top;
-        text-decoration: none !important;
-        color: #777;
-    }
+<h2 id="the-autograd-approximation">The Autograd Approximation</h2>
 
-    .image-gallery li a span {
-        display: block;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-        padding: 3px 0;
-    }
+<h2 id="the-lagrangian-derivation">The Lagrangian Derivation</h2>
 
-    .image-gallery li a img {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        vertical-align: top;
-    }
-</style>
-
-<ul class="image-gallery">
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <li><a href="/photo_gallery/greece19/Greece-1.jpg"><img src="/photo_gallery/greece19/Greece-1.jpg" /></a></li>
-    
-    
-    
-    
-    <li><a href="/photo_gallery/greece19/Greece-10.jpg"><img src="/photo_gallery/greece19/Greece-10.jpg" /></a></li>
-    
-    
-    
-    
-    <li><a href="/photo_gallery/greece19/Greece-3.jpg"><img src="/photo_gallery/greece19/Greece-3.jpg" /></a></li>
-    
-    
-    
-    
-    <li><a href="/photo_gallery/greece19/Greece-4.jpg"><img src="/photo_gallery/greece19/Greece-4.jpg" /></a></li>
-    
-    
-    
-    
-    <li><a href="/photo_gallery/greece19/Greece-5.jpg"><img src="/photo_gallery/greece19/Greece-5.jpg" /></a></li>
-    
-    
-    
-    
-    <li><a href="/photo_gallery/greece19/Greece-6.jpg"><img src="/photo_gallery/greece19/Greece-6.jpg" /></a></li>
-    
-    
-    
-    
-    <li><a href="/photo_gallery/greece19/Greece-8.jpg"><img src="/photo_gallery/greece19/Greece-8.jpg" /></a></li>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</ul>
+<h2 id="the-adjoint">The Adjoint</h2>
 </p>
       		</section>
 
@@ -451,8 +105,8 @@
                */
 
               var disqus_config = function () {
-                  this.page.url = '/blog/Greece19/';  /*Replace PAGE_URL with your page's canonical URL variable*/
-                  this.page.identifier = '/blog/Greece19/'; /*Replace PAGE_IDENTIFIER with your page's unique identifier variable*/
+                  this.page.url = '/blog/TheAdjointMethod/';  /*Replace PAGE_URL with your page's canonical URL variable*/
+                  this.page.identifier = '/blog/TheAdjointMethod/'; /*Replace PAGE_IDENTIFIER with your page's unique identifier variable*/
               };
 
               (function() {  /* dont endit below this line */
@@ -471,7 +125,7 @@
 					<!-- Footer -->
 						<footer>
               <ul class="actions">
-                <li><a href="http://localhost:4000/photography/" class="button">Other Photos</a></li>
+                <li><a href="http://localhost:4000/blog/" class="button">My Blog</a></li>
               </ul>
 						</footer>
 					</div>

@@ -90,9 +90,9 @@
 
 <p>Most of us are quite familiar with linear and non-linear equations from our 101 math classes and lectures.
 These equations define an equality between the two terms left and right of the equal sign:
-<script type="math/tex">\begin{align}
+\(\begin{align}
 y = f(x)
-\end{align}</script></p>
+\end{align}\)</p>
 
 <p>These functions assert an equality between $y$ and $x$ through the function $f(\cdot)$ and describe a “static” relationship between a value $x$ and its corresponding value $y$.
 Examples of these functions are numerous and we can list a couple of them here:</p>
@@ -111,9 +111,9 @@ Examples of these functions are numerous and we can list a couple of them here:<
 <p>As you can guess from the title there is another important class of equations: differential equations.
 These equations relate one or more functions to their derivatives.
 Mathematically this looks like the following:
-<script type="math/tex">\begin{align}
+\(\begin{align}
   \underbrace{\frac{d y}{dx}}_{\text{derivative}} = f(x)
-\end{align}</script></p>
+\end{align}\)</p>
 
 <p>As we can see from above the one thing that changed to our earlier, non-differential equation is the derivative.
 Instead of telling us what the value $y$ is given the function $f(x)$ as in the case of non-differential equations, the differential equation above tells us the change of $y$ with respect to $x$.
@@ -129,18 +129,18 @@ So we’ll make a detour through physics to keep the intuition alive while divin
 <p>Differential equations are often employed in physics when a physical system is <strong>most accurately described through its instantaneous change in time</strong>.
 It should be noted that the differential could be defined with respect to any argument of the function $f(\cdot)$, but in physics the time differential $d / dt$ is often the differential of interest as we want to predict things into the future.
 In the simplest case, a physical object $x(t)$ moves through time and space according to some function:
-<script type="math/tex">\begin{align}
+\(\begin{align}
   \underbrace{\frac{d}{dt} \ x(t)}_{\text{change over time}}  = \underbrace{f(t, x(t))}_{\text{value of change}} \quad \cong \quad f(x(t))
-\end{align}</script></p>
+\end{align}\)</p>
 
 <p>The equation above simply states that the change over time, $d  x(t) / dt$ is equivalent to the function $f(t, x(t))$.
 Mathematically, we require the time $t$ to appear in the function $f(t, x(t))$ since otherwise the time derivative wouldn’t exist.
 For a more intuitive notation we can drop it and equate the change $d/dt x(t)$ with the function $f( \cdot )$ with the ‘essentially the same’ symbol $\cong$.</p>
 
 <p>We can write the differential equation in a shorter way by using the <a href="https://en.wikipedia.org/wiki/Differential_(infinitesimal)">infinitesimal differential</a> by pulling $dt$ over to the other side:
-<script type="math/tex">\begin{align}
+\(\begin{align}
   dx(t) = f(t, x(t)) dt
-\end{align}</script></p>
+\end{align}\)</p>
 
 <p>which simply states that a “super small” change $dx(t)$ in $x(t)$ corresponds to function $f(t, x(t))$ “scaled” by the “super small” time difference $dt$.</p>
 
@@ -165,9 +165,9 @@ These arrows are computed through the differential equation and tell us what the
 
 <p>The way we solve differential equations is to start at some initial point $x(0)$ and add up all the temperature changes $dx(t)$ that the hot coffee mug is exposed to over time.
 Mathematically, this amounts to little more than:
-<script type="math/tex">\begin{align}
+\(\begin{align}
 x(T) = x(0) + \underbrace{\int_{t=0}^T dx(t)}_{\text{sum up all the changes}}
-\end{align}</script></p>
+\end{align}\)</p>
 
 <p>the solution of which is shown as the grey line in the right plot.</p>
 
@@ -178,11 +178,10 @@ After we kicked the soccer ball about the soccer field enough, we’ll finally l
 
 <p>Unfortunately, computers can’t really work with infinitesimal small number like $dx(t)$ or $dt$ since numbers in computers are stored with a finite amount of bits.
 As so often, the (approximate) solution is to discretize the changes to very small, yet still representable values of $\Delta x(t)$ and $\Delta t$:
-<script type="math/tex">% <![CDATA[
-\begin{align}
-x(T) &= x(0) + \underbrace{\int_{t=0}^T dx(t)}_{\text{sum up all the changes}} \\
-& \underbrace{\approx}_{\text{discretize}} x(0) + \sum_{t=0}^T \Delta x(t)
-\end{align} %]]></script></p>
+\(\begin{align}
+x(T) &amp;= x(0) + \underbrace{\int_{t=0}^T dx(t)}_{\text{sum up all the changes}} \\
+&amp; \underbrace{\approx}_{\text{discretize}} x(0) + \sum_{t=0}^T \Delta x(t)
+\end{align}\)</p>
 
 <p>where $t$ is some finite partition of time into discrete values.</p>
 
@@ -207,9 +206,9 @@ Therefore it does not jiggle and bounce at discrete time steps but will always m
 <p><img src="/blog/SDE/BrownianMotion.png" alt="" class="align=&quot;center&quot;" height="50%" width="50%" /></p>
 
 <p>We can thus proclaim the following, somewhat un-mathematical property of this rambunctious little particle:
-<script type="math/tex">\begin{align}
+\(\begin{align}
   \underbrace{dx_t}_{\text{change in space}} = \overbrace{\epsilon}^{\text{random move}} \underbrace{"dt"}_{\text{some change in time}}
-\end{align}</script></p>
+\end{align}\)</p>
 
 <p>There are a couple of things to observe here:</p>
 
@@ -233,31 +232,28 @@ For that reason we will model the probability of the random movement $\epsilon$ 
 <p>Thirdly, we want to particle to start at zero, so $x_0 = 0$.</p>
 
 <p>Given these modelling assumptions, we are interested where the particle could turn up at a later point in time, so we want to know what $x_T$ is:
-<script type="math/tex">% <![CDATA[
-\begin{align}
-  x_T &= x_0 + \int_{t=0}^T dx_t \\
-  &= \underbrace{x_0}_{\text{$=0$}} + \int_{t=0}^T \epsilon \sqrt{dt} \\
-  &= \int_{t=0}^T \epsilon \sqrt{dt}
-\end{align} %]]></script></p>
+\(\begin{align}
+  x_T &amp;= x_0 + \int_{t=0}^T dx_t \\
+  &amp;= \underbrace{x_0}_{\text{$=0$}} + \int_{t=0}^T \epsilon \sqrt{dt} \\
+  &amp;= \int_{t=0}^T \epsilon \sqrt{dt}
+\end{align}\)</p>
 
 <p>But since $\epsilon$ is a random variable we actually have to treat the position of the particle at $x_T$ as a random variable.
 The most that we can do is thus to treat $x_T$ as a probability distribution for which we can compute the first two moments, the mean and the variance:
-<script type="math/tex">% <![CDATA[
-\begin{align}
-  \mathbb{E}\left[ x_T \right] &= \mathbb{E}\left[\int_{t=0}^T dx_t \right] \\
-  &= \int_{t=0}^T \underbrace{\mathbb{E}\left[ \epsilon \right]}_{\mathcal{N}(0,1)} \sqrt{dt} \\
-  &= 0
-\end{align} %]]></script></p>
+\(\begin{align}
+  \mathbb{E}\left[ x_T \right] &amp;= \mathbb{E}\left[\int_{t=0}^T dx_t \right] \\
+  &amp;= \int_{t=0}^T \underbrace{\mathbb{E}\left[ \epsilon \right]}_{\mathcal{N}(0,1)} \sqrt{dt} \\
+  &amp;= 0
+\end{align}\)</p>
 
 <p>and
-<script type="math/tex">% <![CDATA[
-\begin{align}
-  \mathbb{V}\left[ x_T \right] &= \mathbb{V}\left[\int_{t=0}^T dx_t \right] \\
-  &= \int_{t=0}^T \underbrace{\mathbb{V}\left[ \epsilon \sqrt{dt} \right]}_{\mathbb{V}[a X] = a^2 \mathbb{V}[X]}  \\
-  &= \int_{t=0}^T dt \underbrace{\mathbb{V}\left[ \epsilon \right]}_{\epsilon \sim \mathcal{N}(0,1)}  \\
-  &= \int_{t=0}^T dt  \\
-  &= T
-\end{align} %]]></script></p>
+\(\begin{align}
+  \mathbb{V}\left[ x_T \right] &amp;= \mathbb{V}\left[\int_{t=0}^T dx_t \right] \\
+  &amp;= \int_{t=0}^T \underbrace{\mathbb{V}\left[ \epsilon \sqrt{dt} \right]}_{\mathbb{V}[a X] = a^2 \mathbb{V}[X]}  \\
+  &amp;= \int_{t=0}^T dt \underbrace{\mathbb{V}\left[ \epsilon \right]}_{\epsilon \sim \mathcal{N}(0,1)}  \\
+  &amp;= \int_{t=0}^T dt  \\
+  &amp;= T
+\end{align}\)</p>
 
 <p>We can validate the properties of the Wiener process experimentally through what a good friend of mine calls “computational evidence”:</p>
 
@@ -276,46 +272,46 @@ The most that we can do is thus to treat $x_T$ as a probability distribution for
 	<span class="k">return</span> <span class="n">mu</span><span class="o">*</span><span class="n">dt</span>
 
 <span class="k">def</span> <span class="nf">diffusion</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
-	<span class="k">return</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">dt</span><span class="o">**</span><span class="mf">0.5</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">dt</span><span class="o">**</span><span class="mf">0.5</span><span class="o">*</span><span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="nf">randn</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">.</span><span class="n">shape</span><span class="p">)</span>
 
-<span class="c"># start at zero</span>
-<span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">MC</span><span class="p">)]</span>
+<span class="c1"># start at zero
+</span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="p">.</span><span class="nf">zeros</span><span class="p">(</span><span class="n">MC</span><span class="p">)]</span>
 
-<span class="c"># simulate Brownian Motion in parallel</span>
-<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
-	<span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">drift</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">mu</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span> <span class="o">+</span> <span class="n">diffusion</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">dt</span><span class="p">))</span>
+<span class="c1"># simulate Brownian Motion in parallel
+</span><span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+	<span class="n">x</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="nf">drift</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">mu</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span> <span class="o">+</span> <span class="nf">diffusion</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">dt</span><span class="p">))</span>
 
-<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
-<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="p">.</span><span class="nf">figure</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="p">.</span><span class="nf">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
 
-<span class="c"># plot all the trajectories</span>
-<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">'red'</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="c1"># plot all the trajectories
+</span><span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="sh">'</span><span class="s">red</span><span class="sh">'</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 
-<span class="c"># compute the analytical means and variances of the Brownian Motion</span>
-<span class="n">analytic_var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">T</span><span class="p">)</span><span class="o">*</span><span class="n">dt</span><span class="o">*</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span>
+<span class="c1"># compute the analytical means and variances of the Brownian Motion
+</span><span class="n">analytic_var</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">T</span><span class="p">)</span><span class="o">*</span><span class="n">dt</span><span class="o">*</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span>
 <span class="n">analytic_std</span> <span class="o">=</span> <span class="n">analytic_var</span><span class="o">**</span><span class="mf">0.5</span>
-<span class="n">analytic_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">T</span><span class="p">)</span><span class="o">*</span><span class="n">dt</span><span class="o">*</span><span class="n">mu</span>
+<span class="n">analytic_mean</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">T</span><span class="p">)</span><span class="o">*</span><span class="n">dt</span><span class="o">*</span><span class="n">mu</span>
 
-<span class="c"># compute the empirical mean and variance from the sampled Brownian Motion</span>
-<span class="n">empiric_var</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># compute the empirical mean and variance from the sampled Brownian Motion
+</span><span class="n">empiric_var</span> <span class="o">=</span> <span class="n">x</span><span class="p">.</span><span class="nf">var</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">empiric_std</span> <span class="o">=</span> <span class="n">empiric_var</span><span class="o">**</span><span class="mf">0.5</span>
-<span class="n">empiric_mean</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">empiric_mean</span> <span class="o">=</span> <span class="n">x</span><span class="p">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">empiric_mean</span> <span class="o">+</span> <span class="mi">3</span><span class="o">*</span><span class="n">empiric_std</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s">'--'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">'red'</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">empiric_mean</span> <span class="o">-</span> <span class="mi">3</span><span class="o">*</span><span class="n">empiric_std</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s">'--'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">'red'</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">ls</span><span class="o">=</span><span class="s">'-.'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">'red'</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">empiric_mean</span> <span class="o">+</span> <span class="mi">3</span><span class="o">*</span><span class="n">empiric_std</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="sh">'</span><span class="s">--</span><span class="sh">'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="sh">'</span><span class="s">red</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">empiric_mean</span> <span class="o">-</span> <span class="mi">3</span><span class="o">*</span><span class="n">empiric_std</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="sh">'</span><span class="s">--</span><span class="sh">'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="sh">'</span><span class="s">red</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">x</span><span class="p">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">ls</span><span class="o">=</span><span class="sh">'</span><span class="s">-.</span><span class="sh">'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="sh">'</span><span class="s">red</span><span class="sh">'</span><span class="p">)</span>
 
-<span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">T</span><span class="p">),</span><span class="n">y1</span><span class="o">=</span><span class="n">analytic_mean</span><span class="o">+</span><span class="mi">3</span><span class="o">*</span><span class="n">analytic_std</span><span class="p">,</span> <span class="n">y2</span><span class="o">=</span><span class="n">analytic_mean</span><span class="o">+-</span><span class="mi">3</span><span class="o">*</span><span class="n">analytic_std</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">'gray'</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">analytic_mean</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">'gray'</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s">'-.'</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">.</span><span class="nf">fill_between</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">np</span><span class="p">.</span><span class="nf">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">T</span><span class="p">),</span><span class="n">y1</span><span class="o">=</span><span class="n">analytic_mean</span><span class="o">+</span><span class="mi">3</span><span class="o">*</span><span class="n">analytic_std</span><span class="p">,</span> <span class="n">y2</span><span class="o">=</span><span class="n">analytic_mean</span><span class="o">+-</span><span class="mi">3</span><span class="o">*</span><span class="n">analytic_std</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="sh">'</span><span class="s">gray</span><span class="sh">'</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">analytic_mean</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="sh">'</span><span class="s">gray</span><span class="sh">'</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="sh">'</span><span class="s">-.</span><span class="sh">'</span><span class="p">)</span>
 
-<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([],[])</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([],[])</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">ax</span><span class="p">.</span><span class="nf">grid</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">.</span><span class="nf">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">.</span><span class="nf">set_ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">.</span><span class="nf">set_xticklabels</span><span class="p">([],[])</span>
+<span class="n">ax</span><span class="p">.</span><span class="nf">set_yticklabels</span><span class="p">([],[])</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
 </code></pre></div></div>
 
 <p>We can observe both the sampled mean and the variance (in red) of our 100 Wiener processes match the expected mean and variance (in gray) up to the noise that we introduce through sampling.
@@ -346,17 +342,17 @@ We can basically zoom infinitely far into the movements on the time axis and we 
 </ul>
 
 <p>In order to be all set up for the final chapter of this post, we will define an infinitesimal version of the Gaussian increment property of the Wiener process:
-<script type="math/tex">\begin{align}
+\(\begin{align}
 W_{t+u} - W_t \sim \mathcal{N}(0, u) \quad \Leftrightarrow \quad dW_t \sim \mathcal{N}(0,dt)
-\end{align}</script></p>
+\end{align}\)</p>
 
 <h4 id="stochastic-differential-equations--differential-equations--wiener-processes">Stochastic Differential Equations (= Differential Equations + Wiener Processes)</h4>
 
 <p>Once we understood differential equations and Wiener processes, we’ll realize that (basic) stochastic differential equations are just the combination of the two.
 We can thus define a stochastic differential equation as
-<script type="math/tex">\begin{align}
+\(\begin{align}
   \underbrace{dX_t}_{\text{total change}} = \underbrace{\mu_t dt}_{\text{deterministic}} + \underbrace{\sigma_t dW_t}_{\text{stochastic}}
-\end{align}</script></p>
+\end{align}\)</p>
 
 <p>which defines the infinitesimal change in the random variable $X_t$ at time $t$ as the combination of a deterministic change $\mu_t dt$ and a scaled Wiener process $\sigma_t dW_t \sim \mathcal{N}(0,\sigma_t^2 dt)$.</p>
 
@@ -377,84 +373,81 @@ We can thus define a stochastic differential equation as
 	<span class="k">return</span> <span class="n">mu</span><span class="o">*</span><span class="n">dt</span>
 
 <span class="k">def</span> <span class="nf">diffusion</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">dt</span><span class="p">):</span>
-	<span class="k">return</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">dt</span><span class="o">**</span><span class="mf">0.5</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">dt</span><span class="o">**</span><span class="mf">0.5</span><span class="o">*</span><span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="nf">randn</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">.</span><span class="n">shape</span><span class="p">)</span>
 
-<span class="c"># start at zero</span>
-<span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">MC</span><span class="p">)]</span>
+<span class="c1"># start at zero
+</span><span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="p">.</span><span class="nf">zeros</span><span class="p">(</span><span class="n">MC</span><span class="p">)]</span>
 
-<span class="c"># simulate Brownian Motion in parallel</span>
-<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
-	<span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">drift</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">mu</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span> <span class="o">+</span> <span class="n">diffusion</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">dt</span><span class="p">))</span>
+<span class="c1"># simulate Brownian Motion in parallel
+</span><span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+	<span class="n">x</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="nf">drift</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">mu</span><span class="p">,</span> <span class="n">dt</span><span class="p">)</span> <span class="o">+</span> <span class="nf">diffusion</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">sigma</span><span class="p">,</span> <span class="n">dt</span><span class="p">))</span>
 
-<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
-<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="p">.</span><span class="nf">figure</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="p">.</span><span class="nf">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
 
-<span class="c"># plot all the trajectories</span>
-<span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">'red'</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="c1"># plot all the trajectories
+</span><span class="n">_</span> <span class="o">=</span> <span class="n">ax</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="sh">'</span><span class="s">red</span><span class="sh">'</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 
-<span class="c"># compute the analytical means and variances of the Brownian Motion</span>
-<span class="n">analytic_var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">T</span><span class="p">)</span><span class="o">*</span><span class="n">dt</span><span class="o">*</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span>
+<span class="c1"># compute the analytical means and variances of the Brownian Motion
+</span><span class="n">analytic_var</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">T</span><span class="p">)</span><span class="o">*</span><span class="n">dt</span><span class="o">*</span><span class="n">sigma</span><span class="o">**</span><span class="mi">2</span>
 <span class="n">analytic_std</span> <span class="o">=</span> <span class="n">analytic_var</span><span class="o">**</span><span class="mf">0.5</span>
-<span class="n">analytic_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">T</span><span class="p">)</span><span class="o">*</span><span class="n">dt</span><span class="o">*</span><span class="n">mu</span>
+<span class="n">analytic_mean</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">T</span><span class="p">)</span><span class="o">*</span><span class="n">dt</span><span class="o">*</span><span class="n">mu</span>
 
-<span class="c"># compute the empirical mean and variance from the sampled Brownian Motion</span>
-<span class="n">empiric_var</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># compute the empirical mean and variance from the sampled Brownian Motion
+</span><span class="n">empiric_var</span> <span class="o">=</span> <span class="n">x</span><span class="p">.</span><span class="nf">var</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">empiric_std</span> <span class="o">=</span> <span class="n">empiric_var</span><span class="o">**</span><span class="mf">0.5</span>
-<span class="n">empiric_mean</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">empiric_mean</span> <span class="o">=</span> <span class="n">x</span><span class="p">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">empiric_mean</span> <span class="o">+</span> <span class="mi">3</span><span class="o">*</span><span class="n">empiric_std</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s">'--'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">'red'</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">empiric_mean</span> <span class="o">-</span> <span class="mi">3</span><span class="o">*</span><span class="n">empiric_std</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s">'--'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">'red'</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">ls</span><span class="o">=</span><span class="s">'-.'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">'red'</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">empiric_mean</span> <span class="o">+</span> <span class="mi">3</span><span class="o">*</span><span class="n">empiric_std</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="sh">'</span><span class="s">--</span><span class="sh">'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="sh">'</span><span class="s">red</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">empiric_mean</span> <span class="o">-</span> <span class="mi">3</span><span class="o">*</span><span class="n">empiric_std</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="sh">'</span><span class="s">--</span><span class="sh">'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="sh">'</span><span class="s">red</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">x</span><span class="p">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">ls</span><span class="o">=</span><span class="sh">'</span><span class="s">-.</span><span class="sh">'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="sh">'</span><span class="s">red</span><span class="sh">'</span><span class="p">)</span>
 
-<span class="n">ax</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">T</span><span class="p">),</span><span class="n">y1</span><span class="o">=</span><span class="n">analytic_mean</span><span class="o">+</span><span class="mi">3</span><span class="o">*</span><span class="n">analytic_std</span><span class="p">,</span> <span class="n">y2</span><span class="o">=</span><span class="n">analytic_mean</span><span class="o">+-</span><span class="mi">3</span><span class="o">*</span><span class="n">analytic_std</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">'gray'</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">analytic_mean</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">'gray'</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s">'-.'</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">.</span><span class="nf">fill_between</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">np</span><span class="p">.</span><span class="nf">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">T</span><span class="p">),</span><span class="n">y1</span><span class="o">=</span><span class="n">analytic_mean</span><span class="o">+</span><span class="mi">3</span><span class="o">*</span><span class="n">analytic_std</span><span class="p">,</span> <span class="n">y2</span><span class="o">=</span><span class="n">analytic_mean</span><span class="o">+-</span><span class="mi">3</span><span class="o">*</span><span class="n">analytic_std</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="sh">'</span><span class="s">gray</span><span class="sh">'</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">analytic_mean</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="sh">'</span><span class="s">gray</span><span class="sh">'</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="sh">'</span><span class="s">-.</span><span class="sh">'</span><span class="p">)</span>
 
-<span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([],[])</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([],[])</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+<span class="n">ax</span><span class="p">.</span><span class="nf">grid</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">.</span><span class="nf">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">.</span><span class="nf">set_ylim</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">ax</span><span class="p">.</span><span class="nf">set_xticklabels</span><span class="p">([],[])</span>
+<span class="n">ax</span><span class="p">.</span><span class="nf">set_yticklabels</span><span class="p">([],[])</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
 </code></pre></div></div>
 <p>For such drift-diffusion processes, or more specifically Ito drift-diffusion processes, we can compute the analytical mean and variance of how $X_t$ will be distributed in the future.
 To keep things simple, we will work with a constant mean $\mu = \mu_t$ and diffusion $\sigma = \sigma_t$.
 Solving the SDE amounts to:
-<script type="math/tex">% <![CDATA[
-\begin{align}
-  X_T &= \int_{t=0}^T dX_t \\ 
-  &= \int_{t=0}^T \mu dt + \sigma dW_t \\
-  &= \mu \int_{t=0}^T dt + \sigma \int_{t=0}^T dW_t \\
-  &= \mu T + \sigma \int_{t=0}^T dW_t \\
-  &= \mu T + \sigma W_T \\
-\end{align} %]]></script></p>
+\(\begin{align}
+  X_T &amp;= \int_{t=0}^T dX_t \\ 
+  &amp;= \int_{t=0}^T \mu dt + \sigma dW_t \\
+  &amp;= \mu \int_{t=0}^T dt + \sigma \int_{t=0}^T dW_t \\
+  &amp;= \mu T + \sigma \int_{t=0}^T dW_t \\
+  &amp;= \mu T + \sigma W_T \\
+\end{align}\)</p>
 
 <p>Similarly to earlier, the Brownian motion $W_T \sim \mathcal{N}(0,T)$ is a random variable, which entices us to compute the mean and variance of the term above:
-<script type="math/tex">% <![CDATA[
-\begin{align}
-  \mathbb{E}[X_T] &= \mathbb{E}[\mu T + \sigma W_T] \\
-  &= \mu T + \sigma \mathbb{E}[W_T] \\
-  &= \mu T
-\end{align} %]]></script>
+\(\begin{align}
+  \mathbb{E}[X_T] &amp;= \mathbb{E}[\mu T + \sigma W_T] \\
+  &amp;= \mu T + \sigma \mathbb{E}[W_T] \\
+  &amp;= \mu T
+\end{align}\)
 and
-<script type="math/tex">% <![CDATA[
-\begin{align}
-  \mathbb{V}[X_T] &= \mathbb{V}[\mu T + \sigma W_T] \\
-  &= \underbrace{\mathbb{V}[\mu T]}_{=0} + \mathbb{V}[\sigma W_T] \\
-  &= \sigma^2 \mathbb{V}[ W_T] \\
-  &= \sigma^2 T \\
-  \mathbb{Std}[X_T] &= \sigma \sqrt{T}
-\end{align} %]]></script></p>
+\(\begin{align}
+  \mathbb{V}[X_T] &amp;= \mathbb{V}[\mu T + \sigma W_T] \\
+  &amp;= \underbrace{\mathbb{V}[\mu T]}_{=0} + \mathbb{V}[\sigma W_T] \\
+  &amp;= \sigma^2 \mathbb{V}[ W_T] \\
+  &amp;= \sigma^2 T \\
+  \mathbb{Std}[X_T] &amp;= \sigma \sqrt{T}
+\end{align}\)</p>
 
 <p>which we were able to validate with our “computational evidence” in the plot above.
 The mean increases constantly as time progresses and the standard deviation above and below the mean increases asymptotically due to the $\sqrt{T}$.</p>
 
 <p>This is a fairly simple SDE since we assume that $\mu_t$ and $\sigma_t$ are constant in time and do not depend on the value of $X_t$.
 Things get significantly more interesting when both $\mu_t$ and $\sigma_t$ change over time depending on the value of $X_t$ such that we are working with
-<script type="math/tex">\begin{align}
+\(\begin{align}
   dX_t = \mu(t, X_t) dt + \sigma(t, X_t) dW_t
-\end{align}</script></p>
+\end{align}\)</p>
 
 <p>The drift $\mu(t, X_t)$ and $\sigma(t, X_t)$ can now be potentially highly non-linear and complex functions which could even take in other stochastic processes as additional input.
 But Ito’s lemma, Ornstein-Uhlenbeck processes and Geometric Brownian Motion are topics for another time …</p>

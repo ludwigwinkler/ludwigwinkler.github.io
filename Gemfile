@@ -1,10 +1,7 @@
+# frozen_string_literal: true
+
 source "https://rubygems.org"
 
-gem "jekyll", "~> 3.6.3"
-gem "jekyll-sitemap"
-gem "jekyll-gist"
-gem 'jekyll-mentions'
-gem 'jekyll-feed'
-gem 'jekyll-paginate'
+# gem "rails"
 
-gem "webrick", "~> 1.7"
+gem "jekyll", "~> 4.3"

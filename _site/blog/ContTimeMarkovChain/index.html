@@ -85,9 +85,9 @@
        </script>
        <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 </head>
-<p><script type="math/tex">\def\tr#1{\text{Tr}\left[ #1 \right]}
+<p>\(\def\tr#1{\text{Tr}\left[ #1 \right]}
  \def\Efunc#1{\mathbb{E}\left[ #1\right]}
- \def\Efuncc#1#2{\mathbb{E}_{#1}\left[ #2 \right]}</script></p>
+ \def\Efuncc#1#2{\mathbb{E}_{#1}\left[ #2 \right]}\)</p>
 
 <h3 id="continuous-time-markov-chains">Continuous Time Markov Chains</h3>
 
@@ -112,17 +112,17 @@ For $t=0$ we get $P(0)=I$ as we will surely stay in the same state $i$ since no 
 If no time has passed, we concurrently didn’t have time to transition.</p>
 
 <p>Thus $Q$ and $P(t)$ are connected via
-<script type="math/tex">\begin{align}
+\(\begin{align}
   Q = \lim_{t \rightarrow 0^+} \frac{P(t)- I}{t} = \lim_{t \rightarrow 0^+} \frac{P(t)- P(0)}{t}.
-\end{align}</script></p>
+\end{align}\)</p>
 
 <p>Each row of $P(t)$ has to sum up to 1, namely $\sum_j P_{ij}(t) = 1$. 
 Another intriguing property of the generator matrix $Q$ is that the diagonal terms are negative.
 To see why we can construct a simple example by looking at the first row $i=1$ after one unit of time has passed, $P_{i=1}(t=1) = [0.8, 0.1, 0.1]$.
 Plugging it into the limit (albeit be it with $t=1$), we get 
-<script type="math/tex">\begin{align}
+\(\begin{align}
   Q = P(1) - I = [0.8, 0.1, 0.1] - [1, 0, 0] = [-0.2, 0.1, 0.1].
-\end{align}</script></p>
+\end{align}\)</p>
 
 <p>Taking this to the limit of $\lim t \rightarrow 0^+$ and seeing that the identity matrix only subtracts from the diagonal elements, we can conclude that the diagonal elements $Q_{ii}$ are in effect negative and the negative sum of the off-diagonal terms in each row, $Q_{ii} = - \sum_{i \neq j} Q_{ij}$.
 We can thus interpret the absolute value of the diagonal terms $Q_{ii}$ as the rate of staying in the state $i$, whereas all other rates determine the rate of changing to a different state $j$.</p>
@@ -139,38 +139,35 @@ Any means here simply the minimum that any process changes, namely $\min{X_1, X_
 Each off-diagonal entry $\lambda_j$ denotes the rate of an independent exponentially distributed random variable $\tau_j \sim \text{Exp}[\lambda_j]$.
 Thus we are interested in the probability of how the minimum of all holding times $\tau_j$ is distributed vis-a-vis being larger than some aggregated holding time $t$.
 For that we can employ the complementary cumulative density function (cCDF = 1-CDF so not standard CDF $p(\tau_i &lt; t)$ but $p(\tau_i &gt; t)$ lying outside of $t$) of the exponential distribution and ask whether $p(\tau_i &gt; t)$:
-<script type="math/tex">% <![CDATA[
-\begin{align}
-  p(\min \{ \tau_1, \tau_2, \tau_3 \} > t) &= p(\tau_1 > t, \tau_2 > t, \tau_3 > t) \\
-  &= \prod_{i=1}^3 p(\tau_i > x) \\
-  &= \prod_{i=1}^3 \overbrace{1 - \underbrace{(1 - \exp[-\lambda_i x])}_{\text{Exp CDF}}}^{\text{Exp cCDF}} \\
-  &= \prod_{i=1}^3 \exp[-\lambda_i x] \\
-  &=  \exp \left[- \sum_{i=1}^3 \lambda_i x \right]
-\end{align} %]]></script></p>
+\(\begin{align}
+  p(\min \{ \tau_1, \tau_2, \tau_3 \} &gt; t) &amp;= p(\tau_1 &gt; t, \tau_2 &gt; t, \tau_3 &gt; t) \\
+  &amp;= \prod_{i=1}^3 p(\tau_i &gt; x) \\
+  &amp;= \prod_{i=1}^3 \overbrace{1 - \underbrace{(1 - \exp[-\lambda_i x])}_{\text{Exp CDF}}}^{\text{Exp cCDF}} \\
+  &amp;= \prod_{i=1}^3 \exp[-\lambda_i x] \\
+  &amp;=  \exp \left[- \sum_{i=1}^3 \lambda_i x \right]
+\end{align}\)</p>
 
 <p>Thus the minimum holding time is again an exponential distribution with the rate $\sum_i \lambda_i$.
 Once the holding time is ‘exhausted’ or has passed, we have to determine the second question, namely which process is going to occur next.
 Therefore we want to know the probability
-<script type="math/tex">% <![CDATA[
-\begin{align}
-  p(i = \text{argmin}_i \{ \tau_1, \tau_2, \tau_3 \}) &= \int_0^\infty p(\tau_i = t) \ p(\forall_{k \neq i} \tau_k > t) dt \\
-\end{align} %]]></script></p>
+\(\begin{align}
+  p(i = \text{argmin}_i \{ \tau_1, \tau_2, \tau_3 \}) &amp;= \int_0^\infty p(\tau_i = t) \ p(\forall_{k \neq i} \tau_k &gt; t) dt \\
+\end{align}\)</p>
 
 <p>which states that our $i$ in question is precisely the holding time $t$ and factorizing via conditional independence that every other exponentially distributed holding time $\tau_k$ is larger than $t$ which is again the cCDF.
 Finally we marginalize over $t$ to incorporate the fact the holding time $t$ is itself a random variable which ought to be marginalized out, effectively taking into account every possible value of $t$.
 We obtain
-<script type="math/tex">% <![CDATA[
-\begin{align}
+\(\begin{align}
   p(i = \text{argmin}_i \{ \tau_1, \tau_2, \tau_3 \}) 
-  &= \int_0^\infty p(\tau_i = t) \ p(\forall_{k \neq i} \tau_k > t) dt \\
-  &= \int_0^\infty \underbrace{p(\tau_i = t)}_{\text{Exp}} \ \underbrace{p(\forall_{k \neq i} \tau_k > t)}_{\text{cCDF}} dt \\
-  &= \int_0^\infty \lambda_i \exp[-\lambda_i t] \ \prod_{k \neq i} \exp[- \lambda_k t] dt \\
-  &= \int_0^\infty \lambda_i  \ \prod_{k} \exp[- \lambda_k t] dt \\
-  &= \lambda_i \int_0^\infty  \ \exp \left[- \sum_{k} \lambda_k t \right] dt \\
-  &= \lambda_i  \left[ - \frac{\exp \left[- \sum_{k} \lambda_k t \right]}{\sum_{k} \lambda_k} \right]_0^\infty \\
-  &= \lambda_i  \left(  0 + \frac{1}{\sum_{k} \lambda_k} \right) \\
-  &= \frac{\lambda_i}{\sum_{k} \lambda_k} \\
-\end{align} %]]></script></p>
+  &amp;= \int_0^\infty p(\tau_i = t) \ p(\forall_{k \neq i} \tau_k &gt; t) dt \\
+  &amp;= \int_0^\infty \underbrace{p(\tau_i = t)}_{\text{Exp}} \ \underbrace{p(\forall_{k \neq i} \tau_k &gt; t)}_{\text{cCDF}} dt \\
+  &amp;= \int_0^\infty \lambda_i \exp[-\lambda_i t] \ \prod_{k \neq i} \exp[- \lambda_k t] dt \\
+  &amp;= \int_0^\infty \lambda_i  \ \prod_{k} \exp[- \lambda_k t] dt \\
+  &amp;= \lambda_i \int_0^\infty  \ \exp \left[- \sum_{k} \lambda_k t \right] dt \\
+  &amp;= \lambda_i  \left[ - \frac{\exp \left[- \sum_{k} \lambda_k t \right]}{\sum_{k} \lambda_k} \right]_0^\infty \\
+  &amp;= \lambda_i  \left(  0 + \frac{1}{\sum_{k} \lambda_k} \right) \\
+  &amp;= \frac{\lambda_i}{\sum_{k} \lambda_k} \\
+\end{align}\)</p>
 
 <p>Thus we can conclude that the process that ‘acts first’ is $i \sim \text{Cat}[\lambda_1, \lambda_2, \lambda_3]$.
 We can thus devise a sampling algorithm based on rates $\lambda_i$ which first samples holding time $t \sim \text{Exp}[\sum_i \lambda_i]$ and after the holding time samples the next state as $i \sim \text{Cat}[\lambda_i]$.</p>
@@ -179,50 +176,48 @@ We can thus devise a sampling algorithm based on rates $\lambda_i$ which first s
 
 <p>A birth-death process is a stochastic process $\{X_t\}_{t \in \mathbb{R}^+}$ with $X_t = X_t^\lambda - X_t^\mu$ with two ‘duelling’ rates: the birth rate $\lambda$ and the death rate $\mu$.
 Both rates induce a counting process (albeit be it with opposite signs) such that the infinitissimal generators are
-<script type="math/tex">% <![CDATA[
-\begin{align}
-\lim_{h \rightarrow 0^+} P(X_{t+h} = X_t + 1 | X_t) &= \lambda h \\
-\lim_{h \rightarrow 0^+} P(X_{t+h} = X_t - 1 | X_t) & = \mu h \\
-\lim_{h \rightarrow 0^+} P(X_{t+h} = X_t + 0| X_t) & = 1- (\lambda + \mu) h
-\end{align} %]]></script></p>
+\(\begin{align}
+\lim_{h \rightarrow 0^+} P(X_{t+h} = X_t + 1 | X_t) &amp;= \lambda h \\
+\lim_{h \rightarrow 0^+} P(X_{t+h} = X_t - 1 | X_t) &amp; = \mu h \\
+\lim_{h \rightarrow 0^+} P(X_{t+h} = X_t + 0| X_t) &amp; = 1- (\lambda + \mu) h
+\end{align}\)</p>
 
 <p>the derivation of which can be followed up <a href="https://ludwigwinkler.github.io/blog/Poisson/">here</a>.</p>
 
 <p>We can thus construct a straight forward sampling algorithm by sampling the holding time $\tau$ in state $X_{t+\tau} = X_t$ with $\tau \sim \text{Exp}[ \lambda + \mu]$ and once the holding time is over, sampling either the death or the birth process with ${+1, -1} \sim \text{Cat}[\lambda, \mu]$.</p>
 
 <p>Sampling from the exponential distribution can be easily done with inverse transform sampling by first sampling $u \sim U[0,1]$ and using 
-<script type="math/tex">% <![CDATA[
-\begin{align}
-u &= \text{ExpCDF}(x, \lambda) \\
-u &= 1 - \exp[-\lambda x] \\
-\underbrace{1 - u}_{=u'} &= \exp[-\lambda x] \\
-\log u' &= -\lambda x \\
--\frac{1}{\lambda} \log u' &= x \\
-\end{align} %]]></script></p>
+\(\begin{align}
+u &amp;= \text{ExpCDF}(x, \lambda) \\
+u &amp;= 1 - \exp[-\lambda x] \\
+\underbrace{1 - u}_{=u'} &amp;= \exp[-\lambda x] \\
+\log u' &amp;= -\lambda x \\
+-\frac{1}{\lambda} \log u' &amp;= x \\
+\end{align}\)</p>
 
 <p>where we used the fact that $u’ = 1 - u \sim U[0,1]$ is again a uniformly distributed random variable.</p>
 
 <h3 id="jax">Jax</h3>
 
 <p>If you haven’t been living under a proverbial analog rock in the digital machine learning space, you might have heard of <a href="https://github.com/google/jax">Jax</a>.
-At the core of Jax are four function transforms with three to four letters: <code class="highlighter-rouge">grad</code>, <code class="highlighter-rouge">jit</code>, <code class="highlighter-rouge">vmap</code> and <code class="highlighter-rouge">pmap</code>.</p>
+At the core of Jax are four function transforms with three to four letters: <code class="language-plaintext highlighter-rouge">grad</code>, <code class="language-plaintext highlighter-rouge">jit</code>, <code class="language-plaintext highlighter-rouge">vmap</code> and <code class="language-plaintext highlighter-rouge">pmap</code>.</p>
 
-<p><code class="highlighter-rouge">grad</code> traces a function when it’s called the first time and transforms that function by replacing the operations in the function with its derivatives with respect to the input</p>
+<p><code class="language-plaintext highlighter-rouge">grad</code> traces a function when it’s called the first time and transforms that function by replacing the operations in the function with its derivatives with respect to the input</p>
 
-<p><code class="highlighter-rouge">jit</code> adds a just-in-time compilation function transform which aims at compiling an optimized version of your given function.
+<p><code class="language-plaintext highlighter-rouge">jit</code> adds a just-in-time compilation function transform which aims at compiling an optimized version of your given function.
 Python is an interpreted language which does executes every instruction without anticipating the future.
-After having traced through a <code class="highlighter-rouge">jit</code> marked function for the first time, Jax will know what the whole execution of the function will entail.
+After having traced through a <code class="language-plaintext highlighter-rouge">jit</code> marked function for the first time, Jax will know what the whole execution of the function will entail.
 Since it knows all the operations, it will upon finishing the first evaluation of the function start compiling it fusing operations and removing unneeded data copying for example (this is a very broad example).
 Obviously this entails some programming restrictions which can be read up in the <a href="https://jax.readthedocs.io/en/latest/notebooks/Common_Gotchas_in_JAX.html">Jax - The Sharp Bits</a>.
 You have to essentially live with a few restrictions and in order to ensure deterministic function evaluations the random key has to passed to stochastic functions, rendering the deterministic given the random number generator key.</p>
 
-<p><code class="highlighter-rouge">vmap</code> is in my opinion the true power move of Jax by allowing to replicate the same function over an extra dimension.
+<p><code class="language-plaintext highlighter-rouge">vmap</code> is in my opinion the true power move of Jax by allowing to replicate the same function over an extra dimension.
 You can write a possibly very complicated function for a single data point and simply vmap over to enable it to evaluate the function over batches of data points in parallel.
 No more extra dimensions, no more custom forward passes changing every matrix-vector to a matrix-matrix operation etc.
 Just vmap it.
-We’ll see down below how powerful <code class="highlighter-rouge">vmap</code> can be.</p>
+We’ll see down below how powerful <code class="language-plaintext highlighter-rouge">vmap</code> can be.</p>
 
-<p><code class="highlighter-rouge">pmap</code> does automatic accelerator placement by automatically optimizing the given function over all sorts of TPU’s and GPU’s.
+<p><code class="language-plaintext highlighter-rouge">pmap</code> does automatic accelerator placement by automatically optimizing the given function over all sorts of TPU’s and GPU’s.
 It is akin to PyTorch’s tensor.to(device) by compiles the entire function custom made for each accelerator on you compute node.
 Powerful stuff right there.</p>
 
@@ -245,7 +240,7 @@ Just-in-time compilation should in theory remove an inefficiencies anyway.
 Up first on our to do list is to be able to sample from an exponential distribution.
 This can be achieved readily with the reparameterization trick for the exponential distribution describes earlier,</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import jax
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import jax
 
 la = jnp.array([3., 4., 0.5]).reshape(-1, 1) # birth rates, lambda is already reserved by Python for anonymous functions
 mu = jnp.array([2., 3., 4.]).reshape(-1, 1) # death rate
@@ -278,7 +273,7 @@ plt.show()
 
 <p>Next up is to get acquainted to sampling processes given</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>key = jax.random.PRNGKey(1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>key = jax.random.PRNGKey(1)
 la = jnp.array([0.1, 1.5, 2.]).reshape(-1,1)
 mu = jnp.array([0.1, 1.5, 2.]).reshape(-1,1) - 0.01 * la # slightly smaller death rate
 
@@ -298,7 +293,7 @@ _ = plt.xticks(jnp.arange(jnp.size(weights)))
 
 <p>We can now implement our first CTMC sampling algorithm by packing the sampling into a while loop:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import jax.numpy as jnp
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import jax.numpy as jnp
 la = jnp.array([0.1, 1, 2.]).reshape(-1,1)
 mu = jnp.array([0.1, 1, 2.]).reshape(-1,1) - 0.1 * la # slightly smaller da
 
@@ -357,11 +352,11 @@ We can see from the behaviour of the sampled dimension and their corresponding p
 <p><img src="../../blog/CTMC/firstctmc.png" alt="" /></p>
 
 <p>Our first plotting function was straight out of the matplotlib box.
-We will now implement a custom <code class="highlighter-rouge">plot_ctmc()</code> function which can plot multiple draws of the processes.
+We will now implement a custom <code class="language-plaintext highlighter-rouge">plot_ctmc()</code> function which can plot multiple draws of the processes.
 The following function allows us to plot multiple draws conveniently.
-For this we adopt the convention that all samples from a CTMC must be of the shape <code class="highlighter-rouge">[MC, T, F]</code> where <code class="highlighter-rouge">MC</code> is the number of random draws, <code class="highlighter-rouge">T</code> is the number of time index and <code class="highlighter-rouge">F</code> is the dimensionality of the process.</p>
+For this we adopt the convention that all samples from a CTMC must be of the shape <code class="language-plaintext highlighter-rouge">[MC, T, F]</code> where <code class="language-plaintext highlighter-rouge">MC</code> is the number of random draws, <code class="language-plaintext highlighter-rouge">T</code> is the number of time index and <code class="language-plaintext highlighter-rouge">F</code> is the dimensionality of the process.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import matplotlib
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import matplotlib
 def plot_ctmc(t, traj, la, mu):
 	'''
 	t: [T]
@@ -392,26 +387,26 @@ def plot_ctmc(t, traj, la, mu):
 
 <h3 id="using-jaxjit-and-making-things-go-vrooooom">Using jax.jit and making things go ‘vrooooom’</h3>
 
-<p>Unfortunately <code class="highlighter-rouge">jax.jit</code> is not very good with stochastic control flow.
+<p>Unfortunately <code class="language-plaintext highlighter-rouge">jax.jit</code> is not very good with stochastic control flow.
 We have the problem that we sample the active processes indices and then decide which part of the condition we execute.
 That is a big no-no for JIT compilation as the stochasticity makes mapping out the data flow through the entire function not 100% deterministic.
-Secondly, <code class="highlighter-rouge">vmap</code> will won’t work either as each process that will vmap will decide differently due to separately sampling it’s condition.
+Secondly, <code class="language-plaintext highlighter-rouge">vmap</code> will won’t work either as each process that will vmap will decide differently due to separately sampling it’s condition.
 Figuratively, the first vmapped process will sample the a birth process, but the second vmapped process will sample a death process.
 What branch of the condition should the vmapped function then take?
 Should it follow the first condition or the second?
-Through some testing, which is too verbose for here, I have the very substantiated hunch that <code class="highlighter-rouge">vmap</code> would follow the first condition.</p>
+Through some testing, which is too verbose for here, I have the very substantiated hunch that <code class="language-plaintext highlighter-rouge">vmap</code> would follow the first condition.</p>
 
 <p>What to do then?
-We have to generalize the control flow by using a <code class="highlighter-rouge">mask = jax.numpy.where(condition, a, b)</code> function which allows for control flow to be applied to an arbitrary array, and thus is also vmap-able as new dimension can be added to these arrays.</p>
+We have to generalize the control flow by using a <code class="language-plaintext highlighter-rouge">mask = jax.numpy.where(condition, a, b)</code> function which allows for control flow to be applied to an arbitrary array, and thus is also vmap-able as new dimension can be added to these arrays.</p>
 
-<p>Additionally, the time index in the while loop is not ideal, as <code class="highlighter-rouge">while(current_time &lt; T )</code> allows for vastly different lengths of the time index. Imagine that right before reaching <code class="highlighter-rouge">T</code>, one vmapped process suddenly samples a super long holding time $t$.
+<p>Additionally, the time index in the while loop is not ideal, as <code class="language-plaintext highlighter-rouge">while(current_time &lt; T )</code> allows for vastly different lengths of the time index. Imagine that right before reaching <code class="language-plaintext highlighter-rouge">T</code>, one vmapped process suddenly samples a super long holding time $t$.
 Then you’d have one process which is suddenly significantly longer time-wise than all other processes.
-To alleviate this problem we will discretize the time axis with a <code class="highlighter-rouge">for(jax.numpy.linspace(0,T, steps))</code> similar to a standard stochastic differential equation solved with Runge-Kutta 4 or Euler-Maryuama.
+To alleviate this problem we will discretize the time axis with a <code class="language-plaintext highlighter-rouge">for(jax.numpy.linspace(0,T, steps))</code> similar to a standard stochastic differential equation solved with Runge-Kutta 4 or Euler-Maryuama.
 Sure, in theory we would want to sample continuously and correctly, but if we choose the discretized time grid with a fine enough resolution we get a sufficient result with the added bonus that our time index is standardized over all experiments.</p>
 
 <p>Let’s get coding:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>key = jax.random.PRNGKey(1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>key = jax.random.PRNGKey(1)
 
 la = jnp.array([0.1, 1, 2.])
 mu = jnp.round(la - 0.01 * la, 2) # slightly smaller da
@@ -458,11 +453,11 @@ fig = plot_ctmc(t, traj, la=la, mu=mu)
 <p><img src="../../blog/CTMC/matrixctmc.png" alt="" /></p>
 
 <p>Unfortunately we have to wait close to a minute for the sampling process to execute fully.
-To speed things up, we’ll introduce a single function <code class="highlighter-rouge">jax.jit</code> and see what will happen.
+To speed things up, we’ll introduce a single function <code class="language-plaintext highlighter-rouge">jax.jit</code> and see what will happen.
 We’ll also ‘allocate’ the appropriate memory by fixing the size of arrays holding the sampled trajectories instead of concatenating it.
 The more information the JIT compiler has, the more it can condense the verbose code into it’s minimum viable representation.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>key = jax.random.PRNGKey(1)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>key = jax.random.PRNGKey(1)
 num_process_samples = 20
 key, *process_samples_key = jax.random.split(key, 1 + num_process_samples)
 process_samples_key = jnp.stack(process_samples_key)
@@ -526,19 +521,19 @@ t, traj = fast_matrix_birth_death_process(key, la, mu, jit=False)
 fig = plot_ctmc(t, traj, la=la, mu=mu)
 </code></pre></div></div>
 
-<p>If you run the notebook cell above in Visual Studio Code, and switch the jit flag in <code class="highlighter-rouge">fast_matrix_birth_death_process</code> you will encounter that the jited code block will accelerate the execution to <strong>0.5 seconds</strong> whereas the unjitted version takes a stupendous <strong>23.9 seconds</strong>. That’s a <strong>50X</strong> speed up by merely introducing a single function call more.</p>
+<p>If you run the notebook cell above in Visual Studio Code, and switch the jit flag in <code class="language-plaintext highlighter-rouge">fast_matrix_birth_death_process</code> you will encounter that the jited code block will accelerate the execution to <strong>0.5 seconds</strong> whereas the unjitted version takes a stupendous <strong>23.9 seconds</strong>. That’s a <strong>50X</strong> speed up by merely introducing a single function call more.</p>
 
-<h3 id="making-parallel-evaluations-a-breeze-with-vmap">Making parallel evaluations a breeze with <code class="highlighter-rouge">vmap</code></h3>
+<h3 id="making-parallel-evaluations-a-breeze-with-vmap">Making parallel evaluations a breeze with <code class="language-plaintext highlighter-rouge">vmap</code></h3>
 
-<p>Next up is the simple but powerful functionality of <code class="highlighter-rouge">vmap</code>.</p>
+<p>Next up is the simple but powerful functionality of <code class="language-plaintext highlighter-rouge">vmap</code>.</p>
 
 <p>Sampling a single process is all nice and stuff, but as soon as we’re dealing with probabilistic systems, we need to draw samples,
 In classic numpy or PyTorch we would know rewrite the code from single operations to batch-able operations.
 If you’re smart, you’d always written your code with parallel evaluations in mind, such as a matrix-vector product is just a matrix-matrix product with a single column in the second matrix and so on and so forth.</p>
 
-<p>With <code class="highlighter-rouge">vmap</code> we have to introduce a single modified line to make parallel evaluations of the same function on different data (SIMD: single instruction multiple data) a reality.</p>
+<p>With <code class="language-plaintext highlighter-rouge">vmap</code> we have to introduce a single modified line to make parallel evaluations of the same function on different data (SIMD: single instruction multiple data) a reality.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'''New birth death rates'''
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'''New birth death rates'''
 la = jnp.array([0.1, 1, 2])
 mu = jnp.round(la - 0.1 * la, 2)  # slightly smaller death process
 
@@ -554,22 +549,22 @@ f'{t.shape=} and {traj.shape=}'
 fig = plot_ctmc(t, traj, la=la, mu=mu)
 </code></pre></div></div>
 
-<p>The <code class="highlighter-rouge">jax.vmap</code> command acts as a wrapper around our sampling function.
-It says that we keep the rates <code class="highlighter-rouge">la</code> and <code class="highlighter-rouge">mu</code> fixed and the <code class="highlighter-rouge">vmap</code> wrapped function takes a only the sampling keys.
-A single pseudo random number generator key is of shape <code class="highlighter-rouge">(2,)</code>.
-By stacking the keys we obtain an array of PRNG keys of shape <code class="highlighter-rouge">(4,2)</code>.
-<code class="highlighter-rouge">vmap</code> will automatically recognize the added dimension and evaluate the same function in parallel for each of the 4 PRNG keys.</p>
+<p>The <code class="language-plaintext highlighter-rouge">jax.vmap</code> command acts as a wrapper around our sampling function.
+It says that we keep the rates <code class="language-plaintext highlighter-rouge">la</code> and <code class="language-plaintext highlighter-rouge">mu</code> fixed and the <code class="language-plaintext highlighter-rouge">vmap</code> wrapped function takes a only the sampling keys.
+A single pseudo random number generator key is of shape <code class="language-plaintext highlighter-rouge">(2,)</code>.
+By stacking the keys we obtain an array of PRNG keys of shape <code class="language-plaintext highlighter-rouge">(4,2)</code>.
+<code class="language-plaintext highlighter-rouge">vmap</code> will automatically recognize the added dimension and evaluate the same function in parallel for each of the 4 PRNG keys.</p>
 
-<p>Executing the sampling function with <code class="highlighter-rouge">vmap</code> and <code class="highlighter-rouge">jit</code>, it takes us <strong>2.3 seconds</strong> while the unjitted version takes a whopping <strong>106 seconds</strong>, again the speed up factor of <strong>50X</strong>.
+<p>Executing the sampling function with <code class="language-plaintext highlighter-rouge">vmap</code> and <code class="language-plaintext highlighter-rouge">jit</code>, it takes us <strong>2.3 seconds</strong> while the unjitted version takes a whopping <strong>106 seconds</strong>, again the speed up factor of <strong>50X</strong>.
 One caveat is that jiting loops themselves is usually a bad idea as the compiler will trace the entire slow loop and then optimize it.
-It usually better to <code class="highlighter-rouge">jit</code> code blocks in for loops as the jit tracer doesn’t have to unroll the loops and subsequently optimize them.
+It usually better to <code class="language-plaintext highlighter-rouge">jit</code> code blocks in for loops as the jit tracer doesn’t have to unroll the loops and subsequently optimize them.
 Using JIT on our little for loop in the sampling function predicted a <strong>5 minutes</strong> run time for the first evaluation as it executes and traces the slow unjitted version of the function on its first call.
-I tried recurseively jiting and vmaping hoping that <code class="highlighter-rouge">jit</code> would reuse previously jited code blocks but that’s apparently not the case and it executes only the outer most <code class="highlighter-rouge">jit</code> command.</p>
+I tried recurseively jiting and vmaping hoping that <code class="language-plaintext highlighter-rouge">jit</code> would reuse previously jited code blocks but that’s apparently not the case and it executes only the outer most <code class="language-plaintext highlighter-rouge">jit</code> command.</p>
 
-<p>Where things get really funky is once you start to realize that you can <code class="highlighter-rouge">vmap</code> over all sorts of things.
+<p>Where things get really funky is once you start to realize that you can <code class="language-plaintext highlighter-rouge">vmap</code> over all sorts of things.
 Let’s assume you have different birth death rates, you can then do the following:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'''Vmap over parameters'''
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'''Vmap over parameters'''
 
 key = jax.random.PRNGKey(5)
 la = jnp.array([[0.01, 0.01, 0.01], [0.01, 1, 10], [0.1, 1, 2], [0.5, 1., 2.]]) # [4, 3] birth rate set
@@ -592,7 +587,7 @@ t, traj = vmap_matrix_birth_death_process(process_samples_key, la, mu) # ([4,5,2
 </code></pre></div></div>
 <p>traj.shape=[params, samples, time, F]
 Loop over params dimension as plot_ctmc is only laid out for [Samples, T, F] data</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for t_, traj_, la_, mu_ in zip(t, traj, la, mu): # [params=4, samples=5, time=T, features=F]
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>for t_, traj_, la_, mu_ in zip(t, traj, la, mu): # [params=4, samples=5, time=T, features=F]
 	fig = plot_ctmc(t_, traj_, la=la_, mu=mu_)
 
 </code></pre></div></div>

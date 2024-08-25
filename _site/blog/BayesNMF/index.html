@@ -92,11 +92,11 @@
 But in Bayesian NMF each entry in the parameters is a distribution which will be the trusty Normal distribution $\mathcal{N}(\mu, \sigma)$.
 Now each entry in the matrices $P, Q$, vectors $u, i$ and scalar $b$ will be a distribution, i.e.</p>
 
-<script type="math/tex; mode=display">P_{uk} \sim \mathcal{N}(\mu_{uk}, \sigma_{uk}) \\
+\[P_{uk} \sim \mathcal{N}(\mu_{uk}, \sigma_{uk}) \\
   Q_{ki} \sim \mathcal{N}(\mu_{ki}, \sigma_{ki}) \\
   u_u \sim \mathcal{N}(\mu_{u}, \sigma_{u}) \\
   i_i \sim \mathcal{N}(\mu_{i}, \sigma_{i}) \\
-  b \sim \mathcal{N}(\mu_{b}, \sigma_{b}) \\</script>
+  b \sim \mathcal{N}(\mu_{b}, \sigma_{b}) \\\]
 
 <p>The aim is now to find the optimal $\mu’s$ and $\sigma’s$ for all the parameters in $P, Q, u, i$ and $b$.
 In the previous post we optimized the mean squared error between our predicted matrix $\hat{R}$ and the real matrix $R$ with gradient descent.
@@ -105,32 +105,29 @@ I explained the reparameterization trick in detail in another blog post and will
 
 <p>In order to allow PyTorch (shout out to the devs!) to backpropagate to the variational parameters $\mu, sigma$ we have to reparameterize the every entry in the parameters.</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align*}
-  P_{uk} &= \mu_{uk} + \mathcal{E} \cdot \sigma_{uk} \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
-  Q_{ki} &= \mu_{ki} + \mathcal{E} \cdot \sigma_{ki} \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
-  u_u &= \mu_u + \mathcal{E} \cdot \sigma_u \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
-  i_i &= \mu_i + \mathcal{E} \cdot \sigma_i \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
-  b &= \mu_b + \mathcal{E} \cdot \sigma_b \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
-\end{align*} %]]></script>
+\[\begin{align*}
+  P_{uk} &amp;= \mu_{uk} + \mathcal{E} \cdot \sigma_{uk} \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
+  Q_{ki} &amp;= \mu_{ki} + \mathcal{E} \cdot \sigma_{ki} \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
+  u_u &amp;= \mu_u + \mathcal{E} \cdot \sigma_u \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
+  i_i &amp;= \mu_i + \mathcal{E} \cdot \sigma_i \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
+  b &amp;= \mu_b + \mathcal{E} \cdot \sigma_b \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
+\end{align*}\]
 
 <p>We can rewrite this in matrix notation to write it more compactly with the element-wise multiplication operator $\odot$ and combining the $\mu’s$ and $\sigma’s$ into matrices, i.e. $P_\mu$ and $P_\sigma$:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align*}
-  P &= P_\mu + \mathcal{E} \odot P_\sigma \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
-  Q &= Q_\mu + \mathcal{E} \odot Q_\sigma \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
-  u &= u_\mu + \mathcal{E} \odot u_\sigma \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
-  i &= i_\mu + \mathcal{E} \odot i_\sigma \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
-  b &= b_\mu + \mathcal{E} \odot b_\sigma \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
-\end{align*} %]]></script>
+\[\begin{align*}
+  P &amp;= P_\mu + \mathcal{E} \odot P_\sigma \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
+  Q &amp;= Q_\mu + \mathcal{E} \odot Q_\sigma \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
+  u &amp;= u_\mu + \mathcal{E} \odot u_\sigma \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
+  i &amp;= i_\mu + \mathcal{E} \odot i_\sigma \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
+  b &amp;= b_\mu + \mathcal{E} \odot b_\sigma \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
+\end{align*}\]
 
 <p>We can now sample predictions by first sampling the above matrices and vector and then combining them into:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align*}
-  \hat{R} &= P \ Q + u^T + i + b
-\end{align*} %]]></script>
+\[\begin{align*}
+  \hat{R} &amp;= P \ Q + u^T + i + b
+\end{align*}\]
 
 <p>with $\hat{R} \in \mathbb{R}^{U \times I}, P \in \mathbb{R}^{U \times K}, Q \in \mathbb{R}^{K \times I}, u \in \mathbb{R}^{U}, i \in \mathbb{R}^I$ and $b \in \mathbb{R}$.
 Special attention for adding the vector $u \in \mathbb{R}^U$ column-wise to the matrix product $PQ$, the vector $i \in \mathbb{R}^I$ row-wise to $PQ$ and b simply to every entry in $PQ$.
@@ -140,17 +137,16 @@ The entries in the vector $i$ on the other hand are biases for the items and are
 <p>We can sample multiple prediction matrices $\hat{R}$ by first sampling the corresponding parameters and then combining the into a prediction.
 From these predictions we can estimate the mean and standard deviation:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align*}
-  \mu_{\hat{R}} &= \mathbb{E}[ \ \hat{R} \ \ ] \approx \frac{1}{N} \sum_{i=0}^N \hat{R}_i \\\\
-  \sigma_{\hat{R}} &= \sqrt{\mathbb{V}[ \ \hat{R} \ \ ]} \approx \sqrt{ \frac{1}{N} \sum_{i=0}^N ( \hat{R}_i - \mu_{\hat{R}})^2} \\\\
-\end{align*} %]]></script>
+\[\begin{align*}
+  \mu_{\hat{R}} &amp;= \mathbb{E}[ \ \hat{R} \ \ ] \approx \frac{1}{N} \sum_{i=0}^N \hat{R}_i \\\\
+  \sigma_{\hat{R}} &amp;= \sqrt{\mathbb{V}[ \ \hat{R} \ \ ]} \approx \sqrt{ \frac{1}{N} \sum_{i=0}^N ( \hat{R}_i - \mu_{\hat{R}})^2} \\\\
+\end{align*}\]
 
 <p>Once we have the mean and standard deviation of the prediction we can construct a cost function through the negative log-likelihood of the real prediction matrix $R$ under the estimated distribution $\hat{R}$:</p>
 
-<script type="math/tex; mode=display">\begin{align*}
+\[\begin{align*}
 \mathcal{L}(\hat{R}, R) = - \sum_{u,i}^{U,I} \delta_{ui} \left( \log \frac{1}{\sqrt{2\pi \sigma_{\hat{R}_{ui}}^2}} - \frac{1}{2 \sigma_{\hat{R}_{ui}}^2} (R_{ui} - \mu_{\hat{R}_{ui}})^2 \right)
-\end{align*}</script>
+\end{align*}\]
 
 <p>where $\delta_{ui}$ is a delta function which is 1 if the entry $R_{ui}$ is in the training data and 0 if the entry $R_{ui}$ is to be predicted.
 $\delta_{ui}$ serves as a filter to remove the non-existent data points from the cost function.
@@ -160,7 +156,7 @@ That third dimension will be used to compute the $\mu_{\hat{R}}$ and $\sigma_{\h
 
 <p>After computing the cost function we can let PyTorch do its automatic differentiation magic and we optimize the whole thing with an optimizer such as Adam.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    import numpy as np
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    import numpy as np
     import torch
     import torch.nn.functional as F
 
@@ -346,43 +342,40 @@ That third dimension will be used to compute the $\mu_{\hat{R}}$ and $\sigma_{\h
 <p>The recommendation matrix $R$ in the code snippet above has a tweak: the fourth row does not contain any entries so every item has to be recommended to user 4.
 Upon inspection of the mean $\mu_{\hat{R}}$ and $\sigma_{\hat{R}}$ we can that the variance in the fourth row in markedly increased:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-P_{\sigma} =
+\[P_{\sigma} =
  \left(
 \begin{array}{cccc}
- 0.000 & 0.001 & 0.000 & 0.000 \\
- 0.000 & 0.000 & 0.000 & 0.000 \\
-0.918 & 1.358 & 0.833 & 0.974 \\
-0.001 & 0.001 & 0.000 & 0.000 \\
- \end{array}\right) %]]></script>
+ 0.000 &amp; 0.001 &amp; 0.000 &amp; 0.000 \\
+ 0.000 &amp; 0.000 &amp; 0.000 &amp; 0.000 \\
+0.918 &amp; 1.358 &amp; 0.833 &amp; 0.974 \\
+0.001 &amp; 0.001 &amp; 0.000 &amp; 0.000 \\
+ \end{array}\right)\]
 
 <p>Because the user hasn’t reviewed anything, we cannot leverage any latent structure through the Bayesian Non-Negative Matrix Factorization.</p>
 
 <p>Similarly, when predicting the matrix</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-R =
+\[R =
 \left(
 \begin{array}{cccc}
-5& 3& 5& 0 \\
-                        4& 5& 5& 0\\
-                        3& 0& 0& 0\\
-                        0& 0& 0& 1\\
-                        0& 1& 0& 0\\
-\end{array} \right) %]]></script>
+5&amp; 3&amp; 5&amp; 0 \\
+                        4&amp; 5&amp; 5&amp; 0\\
+                        3&amp; 0&amp; 0&amp; 0\\
+                        0&amp; 0&amp; 0&amp; 1\\
+                        0&amp; 1&amp; 0&amp; 0\\
+\end{array} \right)\]
 
 <p>we will obtain a standard deviation matrix $P_{\sigma}$ which has an increased standard deviation for the fourth row and the last column:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-P_{\sigma} =
+\[P_{\sigma} =
 \left(
 \begin{array}{cccc}
-0  &  0  &  0 &   0.003 \\
-0  &  0  &  0 &   0.005 \\
-0  &  0.  &  0 &   0.001 \\
-0.003 & 0.006 & 0.002 &   0.001    \\
-0  &  0  &  0 &   0.001 \\
-\end{array} \right) %]]></script>
+0  &amp;  0  &amp;  0 &amp;   0.003 \\
+0  &amp;  0  &amp;  0 &amp;   0.005 \\
+0  &amp;  0.  &amp;  0 &amp;   0.001 \\
+0.003 &amp; 0.006 &amp; 0.002 &amp;   0.001    \\
+0  &amp;  0  &amp;  0 &amp;   0.001 \\
+\end{array} \right)\]
 
 <p>Since user 4 does not share any common likes with any other user the standard deviation is increased for all other movies in the fourth row.
 Similarly, movie 4 which user 4 reviewed has an increased standard deviation for the other users as not a single other user has seen it.</p>

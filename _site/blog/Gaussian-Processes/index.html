@@ -110,30 +110,28 @@ Given such a Gaussian distribution over the previous evaluations, information ca
 Compared to other probability distributions, the Gaussian distribution is tractable and it’s parameters have intuitive meaning.
 The theory of the central limit theorem (CLT) makes the Gaussian distribution a versatile distribution which is used in numerous situations in science and engineering.</p>
 
-<p>A convenient property of the Gaussian distribution for a random variable $X$ is its complete characterization by its mean <script type="math/tex">\mu</script> and variance $\Sigma$:</p>
+<p>A convenient property of the Gaussian distribution for a random variable $X$ is its complete characterization by its mean \(\mu\) and variance $\Sigma$:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align}
-     \mu &= \mathbb{E}[X] \\
-     \Sigma &= \mathbb{E}[(X-\mu)^T(X-\mu)]
-\end{align} %]]></script>
+\[\begin{align}
+     \mu &amp;= \mathbb{E}[X] \\
+     \Sigma &amp;= \mathbb{E}[(X-\mu)^T(X-\mu)]
+\end{align}\]
 
 <p>Mathematically, a multivariate Gaussian for a vector $x \in \mathbb{R}^d$ is defined by its mean $\mu \in \mathbb{R}^d$ and covariance function $\Sigma \in \mathbb{R}^{d \times d}$:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align}
-          \mathcal{N}(x | \mu, \Sigma) &=
+\[\begin{align}
+          \mathcal{N}(x | \mu, \Sigma) &amp;=
                \frac{1}{\sqrt{(2 \pi)^d |\Sigma|^2}}
                \exp \left[
                -\frac{1}{2}
                (x-\mu)^T \Sigma^{-1}(x-\mu)
                \right] \\
-               &\propto
+               &amp;\propto
                \exp \left[
                -\frac{1}{2}
                (x-\mu)^T \Sigma^{-1}(x-\mu)
                \right]
-\end{align} %]]></script>
+\end{align}\]
 
 <p>A useful property of the Gaussian distribution is that its shape is determined by its mean and covariance in the exponential term.
 This allows us to omitt the normalization constant and determine the relevant mean and covariance terms from the exponential term.</p>
@@ -156,9 +154,8 @@ is a multivariate distribution.</p>
 <p>A constraint of Gaussian processes as they are used in machine learning, which can be relaxed in specific cases, is that they are assumed to have a zero mean.
 In order to compute a predictive distribution over $ y_* $ we initially construct the joint distribution over the training observations $\mathcal{D} = (X,y) $ and test observations $ \mathcal{D}_* = ( X_* ,y_* ) $:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align}
-     p(y_*, y, X_* , X) &= \frac{1}{\sqrt{(2 \pi)^{ N+N_* } |K|^2}}
+\[\begin{align}
+     p(y_*, y, X_* , X) &amp;= \frac{1}{\sqrt{(2 \pi)^{ N+N_* } |K|^2}}
      \exp \left[
      -\frac{1}{2}
      \begin{bmatrix}
@@ -166,15 +163,15 @@ In order to compute a predictive distribution over $ y_* $ we initially construc
           y_*
      \end{bmatrix}^T
      \begin{bmatrix}
-          K_{ XX } & K_{ X X_* } \\
-          K_{ X_* X } & K_{ X_* X_* }
+          K_{ XX } &amp; K_{ X X_* } \\
+          K_{ X_* X } &amp; K_{ X_* X_* }
      \end{bmatrix}^{-1}
      \begin{bmatrix}
           y \\
           y_*
      \end{bmatrix}
      \right] \\
-     &\propto
+     &amp;\propto
      \exp \left[
      -\frac{1}{2}
      \begin{bmatrix}
@@ -182,15 +179,15 @@ In order to compute a predictive distribution over $ y_* $ we initially construc
           y_*
      \end{bmatrix}^T
      \begin{bmatrix}
-          K_{ X X } & K_{ X X_* } \\
-          K_{ X_* X} & K_{ X_* X_*}
+          K_{ X X } &amp; K_{ X X_* } \\
+          K_{ X_* X} &amp; K_{ X_* X_*}
      \end{bmatrix}^{-1}
      \begin{bmatrix}
           y \\
           y_*
      \end{bmatrix}
      \right] \\
-     &\propto
+     &amp;\propto
      \mathcal{N}
      \left(
      \begin{bmatrix}
@@ -199,37 +196,36 @@ In order to compute a predictive distribution over $ y_* $ we initially construc
      \end{bmatrix} \middle|
      \mathbf{0}, K
      \right)
-\end{align} %]]></script>
+\end{align}\]
 
 <p>where the covariance matrix of the joint Gaussian distribution is given by</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align}
+\[\begin{align}
      K=\begin{bmatrix}
-          K_{ X X} & K_{ X X_* } \\
-          K_{ X_* X} & K_{ X_* X_* }
+          K_{ X X} &amp; K_{ X X_* } \\
+          K_{ X_* X} &amp; K_{ X_* X_* }
      \end{bmatrix}
      =
      \begin{bmatrix}
-          k( X, X) & k( X, X_*) \\
-          k(X_*, X) & k(X_*, X_*)
+          k( X, X) &amp; k( X, X_*) \\
+          k(X_*, X) &amp; k(X_*, X_*)
      \end{bmatrix}
-\end{align} %]]></script>
+\end{align}\]
 
 <p>and $ k(x,x’) $ is an kernel function $ k: \mathcal{X} \times \mathcal{X} \rightarrow \mathbb{R}$ that measures the similarity between two vectors $ x, x’ \in \mathcal{X}$.
 We can observe from \eqref{eq:covariance1} that the covariance between any two observations in the distribution is determined by the similarity through the kernel function $k(x, x’)$, namely</p>
 
-<script type="math/tex; mode=display">\begin{align}
+\[\begin{align}
      \mathbb{C}[y, y'] = k(x, x')
-\end{align}</script>
+\end{align}\]
 
 <p>An essential component of a GP is the kernel function with which the covariances is computed.
 Often the kernels are engineered to incorporate prior knowledge.
 A commonly used kernel is the squared exponential kernel</p>
 
-<script type="math/tex; mode=display">\begin{align}
+\[\begin{align}
      k(x, x' \ ; \ \theta) = \alpha \exp \left[ - \frac{|| x - x'||^2}{2 \sigma^2}\right], \quad \theta = \{ \alpha, \sigma \}
-\end{align}</script>
+\end{align}\]
 
 <p>where $\theta$ corresponds to the hyperparameters of the Gaussian process which can be independently optimized with respect to the observations $(X, y)$.</p>
 
@@ -237,11 +233,10 @@ A commonly used kernel is the squared exponential kernel</p>
 The individual variances $\sigma_i$ of the dimensions $\mathbb{R}^d$ in the exponential kernel can be independently adjusted, or optimized with the maximization of the marginal probability of the data.
 The expanded kernel for multidimensional input is defined as followed:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align}
-     k(x, x'; \ \theta) &= \alpha \exp \left[ - \frac{1}{2} (x-x') \Sigma^{-1} (x-x')     \right], \quad \theta=\{ \alpha, \Sigma \} \\
-     \Sigma &= \text{diag}(\sigma^2_0, \sigma^2_1, \ldots, \sigma^2_d)
-\end{align} %]]></script>
+\[\begin{align}
+     k(x, x'; \ \theta) &amp;= \alpha \exp \left[ - \frac{1}{2} (x-x') \Sigma^{-1} (x-x')     \right], \quad \theta=\{ \alpha, \Sigma \} \\
+     \Sigma &amp;= \text{diag}(\sigma^2_0, \sigma^2_1, \ldots, \sigma^2_d)
+\end{align}\]
 
 <p>The block matrices $k(X,X) \in \mathbb{R}^{N \times N}$
 $ k(X, X_* ) \in \mathbb{R}^{N \times N_* }, $
@@ -255,38 +250,36 @@ In order to derive the mean and covariance function of the posterior distributio
 
 <p>For ease of reading and brevity the respective block matrices were replaced by more easily readible variables in the following identity:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align}
-     K^{-1}&= \begin{bmatrix}
-          K_{ X X} & K_{ X X_* } \\
-          K_{ X_* X} & K_{X_* X_* }
+\[\begin{align}
+     K^{-1}&amp;= \begin{bmatrix}
+          K_{ X X} &amp; K_{ X X_* } \\
+          K_{ X_* X} &amp; K_{X_* X_* }
      \end{bmatrix}^{-1} \label{eq:blockmatrixinversionlemma1} \\
-     & =\begin{bmatrix}
-          A & B \\
-          C & D
+     &amp; =\begin{bmatrix}
+          A &amp; B \\
+          C &amp; D
      \end{bmatrix}^{-1} \\
-     &=\begin{bmatrix}
-          A^{-1} + A^{-1}B(D-CA^{-1}B)^{-1}CA^{-1} & -A^{-1}B(D-CA^{-1}B)^{-1} \\
-          -(D-CA^{-1}B)^{-1}CA^{-1} & (D-CA^{-1}B)^{-1}
+     &amp;=\begin{bmatrix}
+          A^{-1} + A^{-1}B(D-CA^{-1}B)^{-1}CA^{-1} &amp; -A^{-1}B(D-CA^{-1}B)^{-1} \\
+          -(D-CA^{-1}B)^{-1}CA^{-1} &amp; (D-CA^{-1}B)^{-1}
      \end{bmatrix} \\
-     &=\begin{bmatrix}
-          A^{-1} + A^{-1}B\Sigma^{-1}CA^{-1} & -A^{-1}B\Sigma^{-1} \\
-          -\Sigma^{-1}CA^{-1} & \Sigma^{-1}
+     &amp;=\begin{bmatrix}
+          A^{-1} + A^{-1}B\Sigma^{-1}CA^{-1} &amp; -A^{-1}B\Sigma^{-1} \\
+          -\Sigma^{-1}CA^{-1} &amp; \Sigma^{-1}
      \end{bmatrix} \label{eq:Sigma^-1Identity} \\
-     &= \begin{bmatrix}
-          P & Q \\
-          R & S
+     &amp;= \begin{bmatrix}
+          P &amp; Q \\
+          R &amp; S
      \end{bmatrix} \label{eq:blockmatrixinversionlemma-1} \\
-     \Sigma &= D-CA^{-1}B = K_{X_* X_* } - K_{ X_* X}{K_{ X_* X_* }}^{-1}K_{X X_* }
-\end{align} %]]></script>
+     \Sigma &amp;= D-CA^{-1}B = K_{X_* X_* } - K_{ X_* X}{K_{ X_* X_* }}^{-1}K_{X X_* }
+\end{align}\]
 
 <p>Instead of computing the inverse of the entire matrix $K$, which can be computationally expensive for large covariance matrices, the precision matrix $K^{-1}$ can be computed block-wise with the block matrix inversion lemma.
 Given the precision matrix in block matrix notation, the inner product in the exponential term of the Gaussian distribution can be computed as a sum over the inner products with the independent block matrices:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align}
+\[\begin{align}
      p(y_* , y, X_* , X)
-     &\propto
+     &amp;\propto
      \exp \left[
      -\frac{1}{2}
      \begin{bmatrix}
@@ -294,15 +287,15 @@ Given the precision matrix in block matrix notation, the inner product in the ex
           y_*
      \end{bmatrix}^T
      \begin{bmatrix}
-          K_{XX} & K_{X X_* } \\
-          K_{X_* X} & K_{X_* X_* }
+          K_{XX} &amp; K_{X X_* } \\
+          K_{X_* X} &amp; K_{X_* X_* }
      \end{bmatrix}^{-1}
      \begin{bmatrix}
           y \\
           y_*
      \end{bmatrix}
      \right] \\
-     &=
+     &amp;=
      \exp \left[
      -\frac{1}{2}
      \begin{bmatrix}
@@ -310,77 +303,73 @@ Given the precision matrix in block matrix notation, the inner product in the ex
           y_*
      \end{bmatrix}^T
      \begin{bmatrix}
-          P & Q \\
-          R & S
+          P &amp; Q \\
+          R &amp; S
      \end{bmatrix}
      \begin{bmatrix}
           y \\
           y_*
      \end{bmatrix}
      \right] \\
-     &=
+     &amp;=
      \exp \left[
      -\frac{1}{2}
      \left( y^TPy + y^TQ y_* + y_*^TRy + y_* ^TS y_*
      \right)
      \right] \label{eq:jointdist_innersumoverblockmatrices}
-\end{align} %]]></script>
+\end{align}\]
 
 <p>Since we are only interested in the posterior distribution $p(y_*  | y, X_* , X )$, terms which do not include $ y_* $ can be moved into the normalization term.
 The conditional distribution can thus be simplified to:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align}
+\[\begin{align}
      p(y_* |  y, X_* , X)
-     &\propto
+     &amp;\propto
      \exp \left[
      -\frac{1}{2}
      \left( -y^TQy_* - y_*^TRy + y_*^TS y_*
      \right)
      \right] \\
-     &=
+     &amp;=
      \exp \left[
      -\frac{1}{2}
      \left( -y^TA^{-1}B\Sigma^{-1} y_* -y_*^T\Sigma^{-1}CA^{-1}y + y_*^T\Sigma^{-1}y_*
      \right)
      \right] \\
-     &\propto
+     &amp;\propto
      \exp \left[
      -\frac{1}{2}
      \left( -2 y_*^T\Sigma^{-1}CA^{-1}y + y_*^T\Sigma^{-1}y_*
      \right)
      \right] \\
-     &\propto
+     &amp;\propto
      \exp \left[
      -\frac{1}{2}
      \left( -2 y_*^T\Sigma^{-1}K_{X_* X}{K_{ X X }}^{-1} y + y_*^T\Sigma^{-1}y_*
      \right)
      \right]
-\end{align} %]]></script>
+\end{align}\]
 
 <p>with the matrices $\Sigma$ being a symmetric matrix by construction, and $B$ and $C$ being each other transposed, namely $C^T=B$, which gives rise to the identity:
-<script type="math/tex">% <![CDATA[
-\begin{align}
+\(\begin{align}
      (y^TA^{-1}B\Sigma^{-1}y_*)^T
-          &= y_*^T(\Sigma^{-1})^TB^T(A^{-1})^Ty \\
-          &= y_*^T\Sigma^{-1}CA^{-1}y
-\end{align} %]]></script></p>
+          &amp;= y_*^T(\Sigma^{-1})^TB^T(A^{-1})^Ty \\
+          &amp;= y_*^T\Sigma^{-1}CA^{-1}y
+\end{align}\)</p>
 
 <p>Alternatively one would argue that the result of both inner products yields the same scalar value due to $B=C^T$.
 With the derivations above we obtain a posterior distribution $p(y_*  |  y, X_* , X )$ with the mean and covariance function</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align}
-     \mu(y_*)       &= K_{ X_* X}{K_{XX}}^{-1}y \\
-     \Sigma(y_*)    &= K_{ X_* X_* } - K_{ X_* X}{K_{ X X }}^{-1}K_{ X X_*}
-\end{align} %]]></script>
+\[\begin{align}
+     \mu(y_*)       &amp;= K_{ X_* X}{K_{XX}}^{-1}y \\
+     \Sigma(y_*)    &amp;= K_{ X_* X_* } - K_{ X_* X}{K_{ X X }}^{-1}K_{ X X_*}
+\end{align}\]
 
 <p>It should be noted that during plotting only the diagonal entries of the covariance matrix are of interest since the diagonal entries of the covariance matrix denote the variances at the evaluated points.
 Given the computation of both the mean and variance of the posterior distribution we obtain a Gaussian distribution:
-<script type="math/tex">% <![CDATA[
-\begin{align}
-     p(y_* | y, X_*, X) &= \mathcal{N} \big( \underbrace{K_{X_* X} {K_{XX}}^{-1} y}_{\mu}, \underbrace{K_{X_* X_*} - K_{X_* X}{K_{X X}}^{-1}K_{X X_*}}_{\Sigma} \big)
-\end{align} %]]></script></p>
+\(\begin{align}
+     p(y_* | y, X_*, X) &amp;= \mathcal{N} \big( \underbrace{K_{X_* X} {K_{XX}}^{-1} y}_{\mu}, \underbrace{K_{X_* X_*} - K_{X_* X}{K_{X X}}^{-1}K_{X X_*}}_{\Sigma} \big)
+\end{align}\)</p>
 
 <p>Here is an image of a Gaussian Process:</p>
 

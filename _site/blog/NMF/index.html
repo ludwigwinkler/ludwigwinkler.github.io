@@ -101,7 +101,7 @@ I always made a big detour around the topic since it sounded complicated and but
 
 <p>It all starts with the aim to factorize the matrix $R \in \mathbb{R}^{U \times I}$ into two smaller matrices $P \in \mathbb{R}^{U \times K}$ and $Q \in \mathbb{R}^{K \times I}$, such that their matrix product is approximately the original matrix $R$,</p>
 
-<script type="math/tex; mode=display">R \approx P \ Q = \hat{R}.</script>
+\[R \approx P \ Q = \hat{R}.\]
 
 <p>The approximation results from the fact that we want the dimension $K$ to be somewhat or significantly smaller than either $U$ or $I$, namely $K \ll U, I$.</p>
 
@@ -171,7 +171,7 @@ The latter approach can easily be accomplished with a mask of zeros and ones whi
 
 <p>Let’s jump into some code!</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import numpy as np
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import numpy as np
 import torch
 
 FloatTensor = torch.FloatTensor
@@ -311,7 +311,7 @@ In this case special attention has to be paid over which values the loss functio
 <p>In the above example, unknown data points in $R$ were denoted with ‘0’.
 After predicting $\hat{R}$, we simply multiply the entries in $\hat{R}$ with 0 such that loss with respect to these unknown entries is zero.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>self.zero_mask = torch.zeros_like(R)
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>self.zero_mask = torch.zeros_like(R)
 self.zero_mask[R!=0] = 1
 
 . . .
@@ -334,7 +334,7 @@ def forward_fullmatrix(self):
 <p>After converging on a set of parameters for the given recommendation matrix, we can use the existing parameters $Q, u, i, b$ to predict data on a new partially filled user vector $u^* \in \mathbb{R}^{1 \times k}$.
 All we have to do is to use the already existing codebook $Q$ and the biases $u, i, b$ and let the factorization for $p^* \in \mathbb{R}^{1 \times k}$ converge such that</p>
 
-<script type="math/tex; mode=display">u^*_i \approx \sum_{k=0}^K p^*_k Q_{ki} + u_i + i_i + b</script>
+\[u^*_i \approx \sum_{k=0}^K p^*_k Q_{ki} + u_i + i_i + b\]
 </p>
       		</section>
 

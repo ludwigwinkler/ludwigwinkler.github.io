@@ -93,24 +93,22 @@ This is in contrast to how we normally think about Normal distributions and data
 So for example, a data set with 200 data points $x_n$, five features per data point and a scalar target value would create a Normal distribution of dimensionality 200.</p>
 
 <p>Usually the squared exponential kernel is used to compute the covariance between two data points $x_i$ and $x_j$ via
-<script type="math/tex">\begin{align}
+\(\begin{align}
   K_{ij} = k(x_i, x_j ; l) =  exp \left[ \frac{(x_i - x_j)^2}{2l^2} \right]
-\end{align}</script></p>
+\end{align}\)</p>
 
 <p>Once new data points $X_*$ are obtained, we compare it via the kernel to our existing data set $X$, compute a couple of linear operations with the resulting kernel matrices and the target information in your data set and voila, you arrive at your prediction:
-<script type="math/tex">% <![CDATA[
-\begin{align}
-  \mu(x_*) &= K_{XX_*} (K_{XX} + \sigma^2 I)^{-1} y \\
-  \Sigma(x_*) &= K_{X_*X_*} - (K_{XX} + \sigma^2 I)^{-1} K_{XX_*}
-\end{align} %]]></script></p>
+\(\begin{align}
+  \mu(x_*) &amp;= K_{XX_*} (K_{XX} + \sigma^2 I)^{-1} y \\
+  \Sigma(x_*) &amp;= K_{X_*X_*} - (K_{XX} + \sigma^2 I)^{-1} K_{XX_*}
+\end{align}\)</p>
 
 <p>The training of GP’s consists of finding the right parameters, namely the length scale $l$ in the kernel and the variance in the data $\sigma^2$.
 These two terms can be found via the non-linear optimization problem which minimizes the negative log-likelihood of the available training data in the GP defined by the length scale and kernel parameter:
-<script type="math/tex">% <![CDATA[
-\begin{align}
+\(\begin{align}
      \min_{\theta}  -\log{p(\mathcal{D};\theta)}
-     &= \min_{\theta} \ \frac{N}{2} \log\left[ 2 \pi \right] + \log\left[ |k(XX;\theta) + \sigma^2 I|\right] + \frac{1}{2} y^T  (K_{XX} + \sigma^2 I)^{-1} y
-\end{align} %]]></script></p>
+     &amp;= \min_{\theta} \ \frac{N}{2} \log\left[ 2 \pi \right] + \log\left[ |k(XX;\theta) + \sigma^2 I|\right] + \frac{1}{2} y^T  (K_{XX} + \sigma^2 I)^{-1} y
+\end{align}\)</p>
 
 <p>While the necessary computations for training the GP and predicting new data points are only linear, they have quadratic memory and cubic computational cost due to square kernel matrix and the required inversions of the kernel matrix.
 The memory and computational cost arises mainly from the fact that kernel methods like SVM’s or GP’s require the training data set at hand to compute new predictions.
@@ -124,7 +122,7 @@ One can think of this along the line of k-means clustering of the training data 
 
 <p>Let’s first set up the environment and import all the necessary libraries:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import torch
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import torch
 import torch.distributions
 from torch.distributions import Normal, MultivariateNormal
 from torch.utils.data import DataLoader, TensorDataset
@@ -167,7 +165,7 @@ params = params.parse_args()
 
 <p>Now we can do some plotting:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>def generate_weightuncertainty_data():
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>def generate_weightuncertainty_data():
 
 	x = np.linspace(-0.35, 0.55, params.num_samples)
 	x_noise = np.random.normal(0., params.x_noise_std, size=x.shape)
@@ -197,12 +195,11 @@ Remember that we went from 200 data points to 6 data points, ergo a memory cost 
 
 <p>The training objective consists now of maximizing the probability of the training data under the distribution of the GP with the inducing points $\widetilde{\mathcal{D}} = \{ \widetilde{X}, \widetilde{y} \}$.
 Thus we have the following objective function
-<script type="math/tex">% <![CDATA[
-\begin{align}
+\(\begin{align}
  \min_{\theta, \widetilde{\mathcal{D}}}  -\log p(\mathcal{D};\theta, \widetilde{\mathcal{D}})
-&= \min_{\theta, \widetilde{\mathcal{D}}}  -\log p(y| X; \theta, \widetilde{\mathcal{D}}) \\
-&= \min_{\theta, \widetilde{\mathcal{D}}} -\log \mathcal{N} \Big( \overbrace{ K_{X \widetilde{X}} ( K_{\widetilde{X}, \widetilde{X}} + \sigma^2 I)^{-1} y}^{\mu(X)},\overbrace{ K_{XX} - K_{X \widetilde{X}} (K_{\widetilde{X} \widetilde{X}} + \sigma^2 I)^{-1} K_{\widetilde{X} X} + \sigma^2 I }^{\Sigma(X)} \Big)
-\end{align} %]]></script></p>
+&amp;= \min_{\theta, \widetilde{\mathcal{D}}}  -\log p(y| X; \theta, \widetilde{\mathcal{D}}) \\
+&amp;= \min_{\theta, \widetilde{\mathcal{D}}} -\log \mathcal{N} \Big( \overbrace{ K_{X \widetilde{X}} ( K_{\widetilde{X}, \widetilde{X}} + \sigma^2 I)^{-1} y}^{\mu(X)},\overbrace{ K_{XX} - K_{X \widetilde{X}} (K_{\widetilde{X} \widetilde{X}} + \sigma^2 I)^{-1} K_{\widetilde{X} X} + \sigma^2 I }^{\Sigma(X)} \Big)
+\end{align}\)</p>
 
 <p>So let’s code that down in PyTorch!</p>
 
@@ -211,7 +208,7 @@ Next up is the base class for the GP.
 The most straight-forward way of using inducing points is to simply declare them as parameters which have gradients.
 Remember that both the objective function via the logarithm of the Normal distribution as well as the predictions consist of linear terms, so we can easily backpropagate through these operations to obtain the gradients for the kernel parameters and inducing points from the log probability of the true data under the Normal distribution of the GP.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class GP_InducingPoints(torch.nn.Module):
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>class GP_InducingPoints(torch.nn.Module):
 
 	def __init__(self, _x=None, _y=None, _num_inducing_points = params.num_inducing_points, _dim=1):
 
@@ -235,7 +232,7 @@ Remember that both the objective function via the logarithm of the Normal distri
 
 <p>Now we need the kernel method to compute the kernel/covariance matrix between arbitrary points:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	def compute_kernel_matrix(self, x1, x2):
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	def compute_kernel_matrix(self, x1, x2):
 
 			assert x1.shape[1] == x2.shape[1] # check dimension
 			assert x1.numel() &gt;= 0 # sanity check
@@ -249,7 +246,7 @@ Remember that both the objective function via the logarithm of the Normal distri
 
 <p>The third class method of the GP class to implement is the forward method of the GP such that we can take the gradients through PyTorch AutoDiff library:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	def forward(self, _X):
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	def forward(self, _X):
 
 			# compute all the kernel matrices
 			self.K_XsX = self.compute_kernel_matrix(_X, self.inducing_x_mu)
@@ -269,7 +266,7 @@ Remember that both the objective function via the logarithm of the Normal distri
 
 <p>Up next is the loss function as described above:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	def NMLL(self, _X, _y):
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	def NMLL(self, _X, _y):
 
 			# set reasonable constraints on the optimizable parameters
 			self.length_scale.data   = self.length_scale.data.clamp( 0.00001, 3.0)
@@ -297,7 +294,7 @@ Remember that both the objective function via the logarithm of the Normal distri
 
 <p>And finally a nice plotting function:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	def plot(self, _title=""):
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	def plot(self, _title=""):
 
 			x = torch.linspace(self.x.min()*1.5, self.x.max()*1.5, 200).reshape(-1,1)
 
@@ -320,7 +317,7 @@ Remember that both the objective function via the logarithm of the Normal distri
 
 <p>Now we can let the whole thing train via the following script:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># generating data and normalizing it
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># generating data and normalizing it
 X, y = generate_weightuncertainty_data()
 X = FloatTensor(scale(X))
 y = FloatTensor(scale(y))

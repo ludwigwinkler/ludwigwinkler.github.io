@@ -93,12 +93,12 @@
 <script type="text/javascript" async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
 </script>
 </head>
-<p><script type="math/tex">\def\tr#1{\text{Tr}\left[ #1 \right]}
+<p>\(\def\tr#1{\text{Tr}\left[ #1 \right]}
  \def\Efunc#1{\mathPbb{E}\left[ #1\right]}
  \def\Efuncc#1#2{\mathbb{E}_{#1}\left[ #2 \right]}
  \def\red#1{\textcolor{red}{#1}}
  \def\blue#1{\textcolor{blue}{#1}}
- \newcommand\scalemath[2]{\scalebox{#1}{\mbox{\ensuremath{\displaystyle #2}}}}</script></p>
+ \newcommand\scalemath[2]{\scalebox{#1}{\mbox{\ensuremath{\displaystyle #2}}}}\)</p>
 
 <p>During the Easter holiday at my parents house, I discovered a 800 page digital signal processings book in my dad’s book shelf.
 Leafing through the pages and examining the table of contents, I saw a whole section on the Fast Fourier Transform (FFT) which has been called by many scientists one of the most important algorithms of our time.</p>
@@ -122,54 +122,50 @@ So I’m going to skip the introduction on the continuous Fourier transformation
 The names of Gauss, Euler, Fourier and Laplace have appeared so many times in my studies and work that you tend to forgot that those people did their work with a candle on their desk because the use of electricity developed yet, while the fundamental basics of electrical engineering stands on the shoulders of their enormous mathematical contributions.</p>
 
 <p>My understanding of the FFT started out with the innocuous equation known as Euler’s Identity:
-<script type="math/tex">\begin{align}
+\(\begin{align}
   e^{\pm i x} = \cos x \pm i sin x
-\end{align}</script></p>
+\end{align}\)</p>
 
-<p>We’re fairly familiar with the standard <script type="math/tex">e^x</script> which is just the exponential function but once we introduce the complex number $i$ into the fray, things get really, not exactly weird, but circly and trigonometric.</p>
+<p>We’re fairly familiar with the standard \(e^x\) which is just the exponential function but once we introduce the complex number $i$ into the fray, things get really, not exactly weird, but circly and trigonometric.</p>
 
 <p>The real exponential can be rewritten as
-<script type="math/tex">\begin{align}
+\(\begin{align}
   e^{x} = \sum_{k=0}^\infty \frac{x^k}{k!}
-\end{align}</script>
+\end{align}\)
 and if we add the complex number $i$ as an argument modifier, it starts to modify the entire equation:
-<script type="math/tex">% <![CDATA[
-\begin{align}
+\(\begin{align}
   e^{x} 
-  &= \sum_{k=0}^\infty \frac{(ix)^k}{k!} \\
-  &= \sum_{k=0}^\infty i^k \frac{x^k}{k!}.
-\end{align} %]]></script>
+  &amp;= \sum_{k=0}^\infty \frac{(ix)^k}{k!} \\
+  &amp;= \sum_{k=0}^\infty i^k \frac{x^k}{k!}.
+\end{align}\)
 Now we have to deal with infinite power of the complex number $i$ but it turns out it reduces to just four numbers,
-<script type="math/tex">% <![CDATA[
-\begin{align*}
-  i^0 &= 1                  &&  i^4 = i^3 \cdot i = -i \cdot i  && = 1  && \ldots\\
-  i^1 &= i                  &&  i^5 = i^4 \cdot i = 1 \cdot i   && = i   && \ldots\\
-  i^2 &= -1                 &&  i^6 = i^5 \cdot i = i \cdot i   && = -1  && \ldots\\
-  i^3 &= i \cdot i^2 = -i   &&  i^7 = i^6 \cdot i = -1 \cdot i  && = -i && \ldots \\
-\end{align*} %]]></script></p>
+\(\begin{align*}
+  i^0 &amp;= 1                  &amp;&amp;  i^4 = i^3 \cdot i = -i \cdot i  &amp;&amp; = 1  &amp;&amp; \ldots\\
+  i^1 &amp;= i                  &amp;&amp;  i^5 = i^4 \cdot i = 1 \cdot i   &amp;&amp; = i   &amp;&amp; \ldots\\
+  i^2 &amp;= -1                 &amp;&amp;  i^6 = i^5 \cdot i = i \cdot i   &amp;&amp; = -1  &amp;&amp; \ldots\\
+  i^3 &amp;= i \cdot i^2 = -i   &amp;&amp;  i^7 = i^6 \cdot i = -1 \cdot i  &amp;&amp; = -i &amp;&amp; \ldots \\
+\end{align*}\)</p>
 
 <p>the computation of which we can recycle every fourth power with the modulo operator $k \% 4$.</p>
 
 <p>We can now write out the sum for a couple of terms and see whether a convenient structure reveals itself (spoiler alert: it does):
-<script type="math/tex">% <![CDATA[
-\begin{align}
+\(\begin{align}
   e^{ix} 
-  &= 1 + i x - \frac{x^2}{2!} - i \frac{x^3}{3!} + \frac{x^4}{4!} + i \frac{x^5}{5!} - \frac{x^6}{6!} - i \frac{x^7}{7!} + \ldots \\
-  &= \underbrace{1 - \frac{x^2}{2!} + \frac{x^4}{4!} - \frac{x^6}{6!} + \ldots}_{\text{Real}} + \underbrace{i \left( x - \frac{x^3}{3!} + \frac{x^5}{5!} - \frac{x^7}{7!} \ldots \right)}_{\text{Imaginary}} \\
-  &= \sum_{n=0}^{\infty} \frac{(-1)^n}{(2n)!} x^{2n} + i \sum_{n=0}^{\infty} \frac{(-1)^n}{(2n+1)!} x^{2n+1}
-\end{align} %]]></script></p>
+  &amp;= 1 + i x - \frac{x^2}{2!} - i \frac{x^3}{3!} + \frac{x^4}{4!} + i \frac{x^5}{5!} - \frac{x^6}{6!} - i \frac{x^7}{7!} + \ldots \\
+  &amp;= \underbrace{1 - \frac{x^2}{2!} + \frac{x^4}{4!} - \frac{x^6}{6!} + \ldots}_{\text{Real}} + \underbrace{i \left( x - \frac{x^3}{3!} + \frac{x^5}{5!} - \frac{x^7}{7!} \ldots \right)}_{\text{Imaginary}} \\
+  &amp;= \sum_{n=0}^{\infty} \frac{(-1)^n}{(2n)!} x^{2n} + i \sum_{n=0}^{\infty} \frac{(-1)^n}{(2n+1)!} x^{2n+1}
+\end{align}\)</p>
 
 <p>where $i$’th power switches the sign of the terms and whether they’re complex or not according to the table a few lines above.</p>
 
 <p>Fortunately for us, it just so happens that the MacLaurin series (Taylor series when the root is zero) for the sine and cosine are precisely the power series that occured in the equation above, 
-<script type="math/tex">% <![CDATA[
-\begin{align}
+\(\begin{align}
   e^{ix} 
-  &= 1 + i x - \frac{x^2}{2!} - i \frac{x^3}{3!} + \frac{x^4}{4!} + i \frac{x^5}{5!} - \frac{x^6}{6!} - i \frac{x^7}{7!} + \ldots \\
-  &= \underbrace{1 - \frac{x^2}{2!} + \frac{x^4}{4!} - \frac{x^6}{6!} + \ldots}_{\text{Real}} + \underbrace{i \left( x - \frac{x^3}{3!} + \frac{x^5}{5!} - \frac{x^7}{7!} \ldots \right)}_{\text{Imaginary}} \\
-  &= \underbrace{\sum_{n=0}^{\infty} \frac{(-1)^n}{(2n)!} x^{2n}}_{\text{MacLaurin Series: } \cos(x)} + i \underbrace{\sum_{n=0}^{\infty} \frac{(-1)^n}{(2n+1)!} x^{2n+1}}_{\text{MacLaurin Series:} \sin(x)} \\
-  &= \cos(x) + i \sin(x)
-\end{align} %]]></script></p>
+  &amp;= 1 + i x - \frac{x^2}{2!} - i \frac{x^3}{3!} + \frac{x^4}{4!} + i \frac{x^5}{5!} - \frac{x^6}{6!} - i \frac{x^7}{7!} + \ldots \\
+  &amp;= \underbrace{1 - \frac{x^2}{2!} + \frac{x^4}{4!} - \frac{x^6}{6!} + \ldots}_{\text{Real}} + \underbrace{i \left( x - \frac{x^3}{3!} + \frac{x^5}{5!} - \frac{x^7}{7!} \ldots \right)}_{\text{Imaginary}} \\
+  &amp;= \underbrace{\sum_{n=0}^{\infty} \frac{(-1)^n}{(2n)!} x^{2n}}_{\text{MacLaurin Series: } \cos(x)} + i \underbrace{\sum_{n=0}^{\infty} \frac{(-1)^n}{(2n+1)!} x^{2n+1}}_{\text{MacLaurin Series:} \sin(x)} \\
+  &amp;= \cos(x) + i \sin(x)
+\end{align}\)</p>
 
 <p>I like to think of complex numbers as endowing a linear term with an additional, magic dimension which can interact with the real dimension in convenient ways.
 While complex numbers live in a ‘2D’ real and imaginary space with two dimensions, quaternions take it to a whole new level and allow working with multiple dimensions, all enclosed in linear terms.
@@ -180,12 +176,11 @@ So instead of constructing complicated rotation matrices all you have to do is m
 
 <p>The second ingredient to the Discrete Fourier Transform (DFT) is walking in a circle in the complex plane.
 Let us define a function $w(n)$ with $0 \leq n \leq N$
-<script type="math/tex">% <![CDATA[
-\begin{align}
+\(\begin{align}
 w(n) 
-&= e^{-i 2 \pi \frac{n}{N}} \\
-&= \cos\left(2 \pi \frac{n}{N} \right) - i \sin \left(2 \pi \frac{n}{N} \right)
-\end{align} %]]></script>
+&amp;= e^{-i 2 \pi \frac{n}{N}} \\
+&amp;= \cos\left(2 \pi \frac{n}{N} \right) - i \sin \left(2 \pi \frac{n}{N} \right)
+\end{align}\)
 where we can conclude that the ratio lies in $0 \leq \frac{n}{N} \leq 1$ since $0 \leq n \leq N$.
 We know that a full rotation of a sine and cosine function in terms of radians is defined in the range $[0, 2 \pi]$.
 If we plug the fraction $\frac{n}{N}$ as multiplicative factor in front of the $2\pi$ then we will move from $0$ to $2\pi$ in exactly $n$ steps.
@@ -196,21 +191,19 @@ Plugging $2 \pi \frac{n}{N}$ into the sine and cosine function lets us do a full
 <h3 id="the-star-of-the-show-the-discrete-fourier-transform">The Star of the Show: The Discrete Fourier Transform</h3>
 
 <p>Let’s get the horse out of the barn and define the Discrete Fourier Transform (DFT) as
-<script type="math/tex">% <![CDATA[
-\begin{align}
+\(\begin{align}
   X_k 
-  &= \sum_{n=0}^{N-1} x_n e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{n}{N}} \\
-\end{align} %]]></script>
+  &amp;= \sum_{n=0}^{N-1} x_n e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{n}{N}} \\
+\end{align}\)
 which for a signal of length $N$ computes $0 \leq k \leq N-1$ frequency components (where the $N-1$ arises from zero indexing which we use to denote the offset of the signal at $k=0$).</p>
 
 <p>In my undergraduate signals and systems courses, I liked to think of Fourier analysis algorithms as computing the ratio between a signal and a composite frequency by dropping the complex part below the main signal:
-<script type="math/tex">% <![CDATA[
-\begin{align}
+\(\begin{align}
   X_k 
-  &= \sum_{n=0}^{N-1} x_n e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{n}{N}} \\
-  &= \sum_{n=0}^{N-1} \frac{x_n}{e^{i 2 \pi \ \cdot \ k \ \cdot \ \frac{n}{N}}} \\
-\big( \text{contribution of frequency} &= \frac{\text{signal}}{\text{frequency}} \big)
-\end{align} %]]></script>
+  &amp;= \sum_{n=0}^{N-1} x_n e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{n}{N}} \\
+  &amp;= \sum_{n=0}^{N-1} \frac{x_n}{e^{i 2 \pi \ \cdot \ k \ \cdot \ \frac{n}{N}}} \\
+\big( \text{contribution of frequency} &amp;= \frac{\text{signal}}{\text{frequency}} \big)
+\end{align}\)
 An alternative intuition for me is the that the Fourier transform computes the correlation of a signal with a series of sinusoids with increasing frequency.
 If a signal aligns perfectly with a particular sinusoid, it will yield a high correlation score, whereas if the signal is completely orthogonal, it has zero correlation and will the correlation score is zero.</p>
 
@@ -222,31 +215,29 @@ For a signal of length N, we can only have $N/2$ present frequencies which we ca
 <p>I spend a good hour figuring out why the DFT of a real signal is always mirrored in the frequency bins.
 Most explanations on the internet only plot the real part of the spectrum, which is precisely where that detail matters.
 Unsurprisingly for a real signal, this equates to plotting
-<script type="math/tex">% <![CDATA[
-\begin{align}
+\(\begin{align}
 X_k 
-&= \text{Re}\left( \sum_{n=0}^{N-1} x_n e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{n}{N}} \right) \\
-&= \text{Re} \left( \sum_{n=0}^{N-1} x_n \left( \cos\left(2 \pi k \frac{n}{N} \right) - i \sin \left(2 \pi k \frac{n}{N} \right) \right) \right) \\
-&= \sum_{n=0}^{N-1} x_n \cos \left(2 \pi k \frac{n}{N} \right).
-\end{align} %]]></script></p>
+&amp;= \text{Re}\left( \sum_{n=0}^{N-1} x_n e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{n}{N}} \right) \\
+&amp;= \text{Re} \left( \sum_{n=0}^{N-1} x_n \left( \cos\left(2 \pi k \frac{n}{N} \right) - i \sin \left(2 \pi k \frac{n}{N} \right) \right) \right) \\
+&amp;= \sum_{n=0}^{N-1} x_n \cos \left(2 \pi k \frac{n}{N} \right).
+\end{align}\)</p>
 
 <p>Considering that the cosine function is periodic by definition it is mirrored at points $(… -2\pi, -\pi, 0, \pi, 2\pi, …)$.
 Said differently, 
-<script type="math/tex">\begin{align}
+\(\begin{align}
 \cos(x) = \cos(2\pi - x), \quad 0 \leq x \leq 2\pi
-\end{align}</script>
+\end{align}\)
 which repeats for arbitrary integer multiples of 2 in either directions as $\cos$ is an even, periodic function from $0$ to $2\pi$.
 So we have
-<script type="math/tex">% <![CDATA[
-\begin{align}
+\(\begin{align}
 \text{Re}\left( X_k \right) 
-&\stackrel{!}{=} \text{Re}\left( X_{N-k} \right) \\
+&amp;\stackrel{!}{=} \text{Re}\left( X_{N-k} \right) \\
 \sum_{n=0}^{N-1} x_n \cos \left(2 \pi k \frac{n}{N} \right) 
-& = \sum_{n=0}^{N-1} x_n \cos \left(2 \pi (N-k) \frac{n}{N} \right) \\
-& = \sum_{n=0}^{N-1} x_n \cos \left(2 \pi n -2 \pi k \frac{n}{N} \right) \\
-& = \sum_{n=0}^{N-1} x_n \cos \left( - 2 \pi k \frac{n}{N} \right) \\
-& = \sum_{n=0}^{N-1} x_n \cos \left(2 \pi k \frac{n}{N} \right) \\
-\end{align} \\ %]]></script>
+&amp; = \sum_{n=0}^{N-1} x_n \cos \left(2 \pi (N-k) \frac{n}{N} \right) \\
+&amp; = \sum_{n=0}^{N-1} x_n \cos \left(2 \pi n -2 \pi k \frac{n}{N} \right) \\
+&amp; = \sum_{n=0}^{N-1} x_n \cos \left( - 2 \pi k \frac{n}{N} \right) \\
+&amp; = \sum_{n=0}^{N-1} x_n \cos \left(2 \pi k \frac{n}{N} \right) \\
+\end{align} \\\)
 where since $n$ is an integer, the $2 \pi n$ term is just a full period in the cosine function and the for an even function such as the cosine, $f(x)=f(-x)$, the negative sign is in the RHS cosine function is identical to its positive sign.</p>
 
 <p>If the signal $x_n$ is complex, this feature does not hold anymore, as complex $i \sin$ terms would interact with complex parts of the signal $x_n$ resulting in ‘spill overs’ into the real dimension as the multiplication of two imaginary numbers results in a real number.</p>
@@ -255,11 +246,10 @@ where since $n$ is an integer, the $2 \pi n$ term is just a full period in the c
 
 <p>One big drawback of the DFT is that it scales quadratically with the signal length, requiring $N^2$ operations for a signal of length $N$.
 Remember that 
-<script type="math/tex">% <![CDATA[
-\begin{align}
+\(\begin{align}
   X_k 
-  &= \sum_{n=0}^{N-1} x_n e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{n}{N}} \\
-\end{align} %]]></script>
+  &amp;= \sum_{n=0}^{N-1} x_n e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{n}{N}} \\
+\end{align}\)
 which implies that for each $0 \leq k \leq N$ frequencies we need to add $N$ terms in the summation with additional multiplications of complex numbers.
 For a real signal, we can save the second half, $N/2 \leq k \leq N$ as its a symmetric evaluation, but that doesn’t hold for complex signals.</p>
 
@@ -271,30 +261,27 @@ But we can exploit the cyclic structure in the $n$’th root of unity (aka the c
 <h3 id="an-algebraic-approach">An Algebraic Approach</h3>
 
 <p>Let’s consider the DFT for a particular frequency $X_k$:
-<script type="math/tex">% <![CDATA[
-\begin{align}
+\(\begin{align}
   X_k 
-  &= \sum_{n=0}^{N-1} x_n e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{n}{N}} \\
-\end{align} %]]></script></p>
+  &amp;= \sum_{n=0}^{N-1} x_n e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{n}{N}} \\
+\end{align}\)</p>
 
 <p>which we can rewrite to equivalently by dividing the even and odd numbered entries in the signal $x_n$ to
-<script type="math/tex">% <![CDATA[
-\begin{align}
+\(\begin{align}
   X_k 
-  &= \sum_{m=0}^{N/2-1} \underbrace{x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m}{N}} }_{\text{even DFT computations of $x_n$}} + \sum_{m=0}^{N/2-1} \underbrace{ x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m+1}{N}} }_{\text{odd DFT computations of $x_n$}} \\
-\end{align} %]]></script></p>
+  &amp;= \sum_{m=0}^{N/2-1} \underbrace{x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m}{N}} }_{\text{even DFT computations of $x_n$}} + \sum_{m=0}^{N/2-1} \underbrace{ x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m+1}{N}} }_{\text{odd DFT computations of $x_n$}} \\
+\end{align}\)</p>
 
 <p>This split into even and odd entries is valid, as we might only go from $[0, …, m, …, N/2]$ but we compensate for that by scaling the index from $m$ to $2m$.</p>
 
 <p>Next we split off the $+1$ in the complex exponential in the odd DFT computations and drop the $2$ below the fraction in the complex exponential to get
-<script type="math/tex">% <![CDATA[
-\begin{align}
+\(\begin{align}
 X_k 
-&= \sum_{m=0}^{N/2-1} \underbrace{x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m}{N}} }_{\text{even DFT computations of $x_n$}}  + \sum_{m=0}^{N/2-1} \underbrace{ x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m+1}{N}} }_{\text{odd DFT computations of $x_n$}} \\
-&= \sum_{m=0}^{N/2-1}x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m}{N}} + e^{-i 2 \pi \frac{k}{N}} \sum_{m=0}^{N/2-1} x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m}{N}} \\
-&= \sum_{m=0}^{N/2-1}x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{m}{N/2}} + e^{-i 2 \pi \frac{k}{N}} \sum_{m=0}^{N/2-1} x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{m}{N/2}} \\
-&= \text{DFT}(\text{even}(x_n), k, N/2) + e^{-i 2 \pi \frac{k}{N}} \ \text{DFT}(\text{odd}(x_n), k, N/2) \\
-\end{align} %]]></script></p>
+&amp;= \sum_{m=0}^{N/2-1} \underbrace{x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m}{N}} }_{\text{even DFT computations of $x_n$}}  + \sum_{m=0}^{N/2-1} \underbrace{ x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m+1}{N}} }_{\text{odd DFT computations of $x_n$}} \\
+&amp;= \sum_{m=0}^{N/2-1}x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m}{N}} + e^{-i 2 \pi \frac{k}{N}} \sum_{m=0}^{N/2-1} x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{2m}{N}} \\
+&amp;= \sum_{m=0}^{N/2-1}x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{m}{N/2}} + e^{-i 2 \pi \frac{k}{N}} \sum_{m=0}^{N/2-1} x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{m}{N/2}} \\
+&amp;= \text{DFT}(\text{even}(x_n), k, N/2) + e^{-i 2 \pi \frac{k}{N}} \ \text{DFT}(\text{odd}(x_n), k, N/2) \\
+\end{align}\)</p>
 
 <p>and right here is the key insight that each summand has the exact same functional form of a DFT that we defined earlier, except for a multiplication for the odd entries and the shortened index $m$.</p>
 
@@ -305,23 +292,21 @@ An even function is more or less defined as $f(x) = f(-x)$ and an odd function a
 But since we defined our signal of length $N$ over a single period of $2 \pi$ (for specific integer multiple $k$, but that’s not important for the intuition), we now that for a cosine we only have to compute ${0, \ldots, k, \ldots, N/2}$  since ${N/2, \ldots, k, \ldots, N}$ is handed to us on a platter due to the even property of the cosine function.</p>
 
 <p>The same applies to the sinus function which we can mirror for all always of ${N/2, \ldots, k, \ldots, N}$ by adjusting it with the complex exponential.
-<script type="math/tex">% <![CDATA[
-\begin{align}
+\(\begin{align}
   X_k 
-  &= \text{DFT}(\text{even}(x_n), k, N/2) + e^{-i 2 \pi \frac{k}{N}} \ \text{DFT}(\text{odd}(x_n), k, N/2) \\
+  &amp;= \text{DFT}(\text{even}(x_n), k, N/2) + e^{-i 2 \pi \frac{k}{N}} \ \text{DFT}(\text{odd}(x_n), k, N/2) \\
   X_{k + \frac{N}{2}}
-  &= \text{DFT}(\text{even}(x_n), k, N/2) - e^{-i 2 \pi \frac{k}{N}} \ \text{DFT}(\text{odd}(x_n), k, N/2) \\
-\end{align} %]]></script></p>
+  &amp;= \text{DFT}(\text{even}(x_n), k, N/2) - e^{-i 2 \pi \frac{k}{N}} \ \text{DFT}(\text{odd}(x_n), k, N/2) \\
+\end{align}\)</p>
 
 <p>We can show this more rigorously by writing out $X_{k + \frac{N}{2}}$ to get
-<script type="math/tex">% <![CDATA[
-\begin{align}
+\(\begin{align}
   X_{k + \frac{N}{2}} 
-  &= \sum_{m=0}^{N/2-1}x_{2m} e^{-i 2 \pi \ \cdot \ (k + \frac{N}{2}) \ \cdot \ \frac{m}{N/2}} + e^{-i 2 \pi \frac{(k+ \frac{N}{2})}{N}} \sum_{m=0}^{N/2-1} x_{2m+1} e^{-i 2 \pi \ \cdot \ (k + \frac{N}{2}) \ \cdot \ \frac{m}{N/2}} \\
-  &= \sum_{m=0}^{N/2-1}x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{m}{N/2}} \underbrace{\ e^{-i2\pi \ m}}_{=1 + i 0 = 1} + e^{-i 2 \pi \frac{k}{N}} \underbrace{e^{-i\pi}}_{=-1} \sum_{m=0}^{N/2-1} x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{m}{N/2}} \ \underbrace{e^{-i2\pi \ m}}_{= 1 + i0 = 1} \\
-  &= \sum_{m=0}^{N/2-1}x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{m}{N/2}} - e^{-i 2 \pi \frac{k}{N}} \sum_{m=0}^{N/2-1} x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{m}{N/2}} \\
-  &= \text{DFT}(\text{even}(x_n), k, N/2) - e^{-i 2 \pi \frac{k}{N}} \ \text{DFT}(\text{odd}(x_n), k, N/2) \\
-\end{align} %]]></script></p>
+  &amp;= \sum_{m=0}^{N/2-1}x_{2m} e^{-i 2 \pi \ \cdot \ (k + \frac{N}{2}) \ \cdot \ \frac{m}{N/2}} + e^{-i 2 \pi \frac{(k+ \frac{N}{2})}{N}} \sum_{m=0}^{N/2-1} x_{2m+1} e^{-i 2 \pi \ \cdot \ (k + \frac{N}{2}) \ \cdot \ \frac{m}{N/2}} \\
+  &amp;= \sum_{m=0}^{N/2-1}x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{m}{N/2}} \underbrace{\ e^{-i2\pi \ m}}_{=1 + i 0 = 1} + e^{-i 2 \pi \frac{k}{N}} \underbrace{e^{-i\pi}}_{=-1} \sum_{m=0}^{N/2-1} x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{m}{N/2}} \ \underbrace{e^{-i2\pi \ m}}_{= 1 + i0 = 1} \\
+  &amp;= \sum_{m=0}^{N/2-1}x_{2m} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{m}{N/2}} - e^{-i 2 \pi \frac{k}{N}} \sum_{m=0}^{N/2-1} x_{2m+1} e^{-i 2 \pi \ \cdot \ k \ \cdot \ \frac{m}{N/2}} \\
+  &amp;= \text{DFT}(\text{even}(x_n), k, N/2) - e^{-i 2 \pi \frac{k}{N}} \ \text{DFT}(\text{odd}(x_n), k, N/2) \\
+\end{align}\)</p>
 
 <p>where the complex exponentials evaluate accordingly due to $m$ being integers.</p>
 
@@ -331,12 +316,11 @@ But since we defined our signal of length $N$ over a single period of $2 \pi$ (f
 So while we have to do a full ‘spatial’ pass of $n$ over the $x_n$’s, we can save ourselves half the time by mirroring in the ‘frequency’ pass for the index $k$.</p>
 
 <p>We can play this game again to get
-<script type="math/tex">% <![CDATA[
-\begin{align}
+\(\begin{align}
   \text{DFT}(\text{even}(x_n), k, N/2) 
-  &= \text{DFT}(\text{even}(\text{even}(x_n)), k, N/4)+ e^{-i 2 \pi \frac{k}{N}} \ \text{DFT}(\text{odd}(\text{even}(x_n)), k, N/4) \\
-  & + e^{-i 2 \pi \frac{k}{N}} \left( \text{DFT}(\text{even}(\text{odd}(x_n)), k, N/4)+ e^{-i 2 \pi \frac{k}{N}} \ \text{DFT}(\text{odd}(\text{odd}(x_n)), k, N/4) \right) \\
-\end{align} %]]></script></p>
+  &amp;= \text{DFT}(\text{even}(\text{even}(x_n)), k, N/4)+ e^{-i 2 \pi \frac{k}{N}} \ \text{DFT}(\text{odd}(\text{even}(x_n)), k, N/4) \\
+  &amp; + e^{-i 2 \pi \frac{k}{N}} \left( \text{DFT}(\text{even}(\text{odd}(x_n)), k, N/4)+ e^{-i 2 \pi \frac{k}{N}} \ \text{DFT}(\text{odd}(\text{odd}(x_n)), k, N/4) \right) \\
+\end{align}\)</p>
 
 <p>where we realize with <em>a sudden burst of clarity</em> that for every recursive DFT split, we only have to compute the first half of the frequencies, as the second half can be reconstructed from the already computed values in the first half.</p>
 
@@ -353,27 +337,26 @@ For the example above, we have $\exp(-i 2\pi k/N) \cdot \exp(-i 2\pi k/N) = \exp
 For this efficient algorithn, we require that the length $N$ is a root of 2, such that we can repeatedly divide the length $N$ by two until we arrive at a DFT length of one.</p>
 
 <p>First we will define the $n$’th root of unity as
-<script type="math/tex">\begin{align}
+\(\begin{align}
 w_N = e^{-\frac{i 2 \pi}{N}} \qquad w_N^{n \cdot k} = e^{-i 2 \pi \ k \ \frac{n}{N}}
-\end{align}</script></p>
+\end{align}\)</p>
 
 <p>We can now construct the full $K \times N$ matrix where each row of the matrix corresponds to a particular frequency $k$ and where naturally $K=N$.
 For a signal of length $N=8$ this gives us</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{matrix}
+\[\begin{matrix}
 0 \leq k \leq N/2: \\ \\ \\ \\ N/2 \leq k \leq N: \\
 \end{matrix} \begin{bmatrix}
-w^0 & w^0 & w^0 & w^0 & w^0 & w^0 & w^0 & w^0\\
-w^0 & w^1 & w^2 & w^3 & w^4 & w^5 & w^6 & w^7 \\
-w^0 & w^2 & w^4 & w^6 & w^8 & w^{10} & w^{12} & w^{14} \\
-w^0 & w^3 & w^6 & w^9 & w^{12} & w^{15} & w^{18} & w^{21} \\
+w^0 &amp; w^0 &amp; w^0 &amp; w^0 &amp; w^0 &amp; w^0 &amp; w^0 &amp; w^0\\
+w^0 &amp; w^1 &amp; w^2 &amp; w^3 &amp; w^4 &amp; w^5 &amp; w^6 &amp; w^7 \\
+w^0 &amp; w^2 &amp; w^4 &amp; w^6 &amp; w^8 &amp; w^{10} &amp; w^{12} &amp; w^{14} \\
+w^0 &amp; w^3 &amp; w^6 &amp; w^9 &amp; w^{12} &amp; w^{15} &amp; w^{18} &amp; w^{21} \\
 \hline
-w^0 & w^4 & w^8 & w^{12} & w^{16} & w^{20} & w^{24} & w^{28} \\
-w^0 & w^5 & w^{10} & w^{15} & w^{20} & w^{25} & w^{30} & w^{35} \\
-w^0 & w^6 & w^{12} & w^{18} & w^{24} & w^{30} & w^{36} & w^{42} \\
-w^0 & w^7 & w^{14} & w^{21} & w^{28} & w^{35} & w^{42} & w^{49} \\
-\end{bmatrix} %]]></script>
+w^0 &amp; w^4 &amp; w^8 &amp; w^{12} &amp; w^{16} &amp; w^{20} &amp; w^{24} &amp; w^{28} \\
+w^0 &amp; w^5 &amp; w^{10} &amp; w^{15} &amp; w^{20} &amp; w^{25} &amp; w^{30} &amp; w^{35} \\
+w^0 &amp; w^6 &amp; w^{12} &amp; w^{18} &amp; w^{24} &amp; w^{30} &amp; w^{36} &amp; w^{42} \\
+w^0 &amp; w^7 &amp; w^{14} &amp; w^{21} &amp; w^{28} &amp; w^{35} &amp; w^{42} &amp; w^{49} \\
+\end{bmatrix}\]
 
 <p>We use this matrix as a projection for our signal $x_n$ to obtain the frequency bins.
 Doing this naively would cost us exactly $8 \times 8 = 64$ operations</p>
@@ -385,18 +368,17 @@ Similarly $w_8^4=w_8^{12}$.</p>
 
 <p>Additionally, our astute obeservation of earlier tells that we don’t need to compute the second half of the matrix, but can instead reconstruct it from the results in the upper half.</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{matrix} 0 \leq k \leq N/2: \\ \\ \\ \\ N/2 \leq k \leq N: \\ \end{matrix} 
+\[\begin{matrix} 0 \leq k \leq N/2: \\ \\ \\ \\ N/2 \leq k \leq N: \\ \end{matrix} 
 \begin{bmatrix}
-w_8^0 & w_8^0 & w_8^0 & w_8^0 & w_8^0 & w_8^0 & w_8^0 & w_8^0\\
-w_8^0 & w_8^1 & w_8^2 & w_8^3 & w_8^4 & w_8^5 & w_8^6 & w_8^7 \\
-w_8^0 & w_8^2 & w_8^4 & w_8^6 & w_8^8 & w_8^{10} & w_8^{12} & w_8^{14} \\
-w_8^0 & w_8^3 & w_8^6 & w_8^9 & w_8^{12} & w_8^{15} & w_8^{18} & w_8^{21} \\
+w_8^0 &amp; w_8^0 &amp; w_8^0 &amp; w_8^0 &amp; w_8^0 &amp; w_8^0 &amp; w_8^0 &amp; w_8^0\\
+w_8^0 &amp; w_8^1 &amp; w_8^2 &amp; w_8^3 &amp; w_8^4 &amp; w_8^5 &amp; w_8^6 &amp; w_8^7 \\
+w_8^0 &amp; w_8^2 &amp; w_8^4 &amp; w_8^6 &amp; w_8^8 &amp; w_8^{10} &amp; w_8^{12} &amp; w_8^{14} \\
+w_8^0 &amp; w_8^3 &amp; w_8^6 &amp; w_8^9 &amp; w_8^{12} &amp; w_8^{15} &amp; w_8^{18} &amp; w_8^{21} \\
 \hline
-w_8^0 & w_8^4 & w_8^8 & w_8^{12} & w_8^{16} & w_8^{20} & w_8^{24} & w_8^{28} \\
-w_8^0 & w_8^5 & w_8^{10} & w_8^{15} & w_8^{20} & w_8^{25} & w_8^{30} & w_8^{35} \\
-w_8^0 & w_8^6 & w_8^{12} & w_8^{18} & w_8^{24} & w_8^{30} & w_8^{36} & w_8^{42} \\
-w_8^0 & w_8^7 & w_8^{14} & w_8^{21} & w_8^{28} & w_8^{35} & w_8^{42} & w_8^{49} \\
+w_8^0 &amp; w_8^4 &amp; w_8^8 &amp; w_8^{12} &amp; w_8^{16} &amp; w_8^{20} &amp; w_8^{24} &amp; w_8^{28} \\
+w_8^0 &amp; w_8^5 &amp; w_8^{10} &amp; w_8^{15} &amp; w_8^{20} &amp; w_8^{25} &amp; w_8^{30} &amp; w_8^{35} \\
+w_8^0 &amp; w_8^6 &amp; w_8^{12} &amp; w_8^{18} &amp; w_8^{24} &amp; w_8^{30} &amp; w_8^{36} &amp; w_8^{42} \\
+w_8^0 &amp; w_8^7 &amp; w_8^{14} &amp; w_8^{21} &amp; w_8^{28} &amp; w_8^{35} &amp; w_8^{42} &amp; w_8^{49} \\
 \end{bmatrix} \\
 \\
 \qquad \qquad \qquad \Big \downarrow \\
@@ -409,118 +391,116 @@ w_8^0 & w_8^7 & w_8^{14} & w_8^{21} & w_8^{28} & w_8^{35} & w_8^{42} & w_8^{49} 
 N/2 \leq k \leq N: \\
 \end{matrix} \left[ 
 \begin{array}{cccccccc}
-w_8^0 & w_8^0 & w_8^0 & w_8^0 & w_8^0 & w_8^0 & w_8^0 & w_8^0\\
-w_8^0 & w_8^1 & w_8^2 & w_8^3 & w_8^4 & w_8^5 & w_8^6 & w_8^7 \\
-w_8^0 & w_8^2 & w_8^4 & w_8^6 & w_8^8 & w_8^{10} & w_8^{12} & w_8^{14} \\
-w_8^0 & w_8^3 & w_8^6 & w_8^9 & w_8^{12} & w_8^{15} & w_8^{18} & w_8^{21} \\
+w_8^0 &amp; w_8^0 &amp; w_8^0 &amp; w_8^0 &amp; w_8^0 &amp; w_8^0 &amp; w_8^0 &amp; w_8^0\\
+w_8^0 &amp; w_8^1 &amp; w_8^2 &amp; w_8^3 &amp; w_8^4 &amp; w_8^5 &amp; w_8^6 &amp; w_8^7 \\
+w_8^0 &amp; w_8^2 &amp; w_8^4 &amp; w_8^6 &amp; w_8^8 &amp; w_8^{10} &amp; w_8^{12} &amp; w_8^{14} \\
+w_8^0 &amp; w_8^3 &amp; w_8^6 &amp; w_8^9 &amp; w_8^{12} &amp; w_8^{15} &amp; w_8^{18} &amp; w_8^{21} \\
 \hline
-- & - & - & - & - & - & -  & - \\
-- & - & - & - & - & - & -  & - \\
-- & - & - & - & - & - & -  & - \\
-- & - & - & - & - & - & -  & - \\
-\end{array} \right] %]]></script>
+- &amp; - &amp; - &amp; - &amp; - &amp; - &amp; -  &amp; - \\
+- &amp; - &amp; - &amp; - &amp; - &amp; - &amp; -  &amp; - \\
+- &amp; - &amp; - &amp; - &amp; - &amp; - &amp; -  &amp; - \\
+- &amp; - &amp; - &amp; - &amp; - &amp; - &amp; -  &amp; - \\
+\end{array} \right]\]
 
 <p>The next step is to split the matrices into even and odd entries of $x_n$,</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\left[ \begin{array}{cccc cccc}
-w_8^0 & w_8^0 & w_8^0 & w_8^0 & w_8^0 & w_8^0 & w_8^0 & w_8^0\\
-w_8^0 & w_8^1 & w_8^2 & w_8^3 & w_8^4 & w_8^5 & w_8^6 & w_8^7 \\
-w_8^0 & w_8^2 & w_8^4 & w_8^6 & w_8^8 & w_8^{10} & w_8^{12} & w_8^{14} \\
-w_8^0 & w_8^3 & w_8^6 & w_8^9 & w_8^{12} & w_8^{15} & w_8^{18} & w_8^{21} \\
+\[\left[ \begin{array}{cccc cccc}
+w_8^0 &amp; w_8^0 &amp; w_8^0 &amp; w_8^0 &amp; w_8^0 &amp; w_8^0 &amp; w_8^0 &amp; w_8^0\\
+w_8^0 &amp; w_8^1 &amp; w_8^2 &amp; w_8^3 &amp; w_8^4 &amp; w_8^5 &amp; w_8^6 &amp; w_8^7 \\
+w_8^0 &amp; w_8^2 &amp; w_8^4 &amp; w_8^6 &amp; w_8^8 &amp; w_8^{10} &amp; w_8^{12} &amp; w_8^{14} \\
+w_8^0 &amp; w_8^3 &amp; w_8^6 &amp; w_8^9 &amp; w_8^{12} &amp; w_8^{15} &amp; w_8^{18} &amp; w_8^{21} \\
 \hline
-- & - & - & - & - & - & -  & - \\
-- & - & - & - & - & - & -  & - \\
-- & - & - & - & - & - & -  & - \\
-- & - & - & - & - & - & -  & - \\
+- &amp; - &amp; - &amp; - &amp; - &amp; - &amp; -  &amp; - \\
+- &amp; - &amp; - &amp; - &amp; - &amp; - &amp; -  &amp; - \\
+- &amp; - &amp; - &amp; - &amp; - &amp; - &amp; -  &amp; - \\
+- &amp; - &amp; - &amp; - &amp; - &amp; - &amp; -  &amp; - \\
 \end{array} \right] \\
 \qquad \Big \downarrow \quad \text{Split}\\
 \begin{matrix}
 \underbrace{\begin{bmatrix}
-w_8^0 & - & w_8^0 & - & w_8^0 & - & w_8^0 & - \\
-w_8^0 & - & w_8^2 & - & w_8^4 & - & w_8^6 & - \\
-w_8^0 & - & w_8^4 & - & w_8^8 & - & w_8^{12} & - \\
-w_8^0 & - & w_8^6 & - & w_8^{12} & - & w_8^{18} & - \\
+w_8^0 &amp; - &amp; w_8^0 &amp; - &amp; w_8^0 &amp; - &amp; w_8^0 &amp; - \\
+w_8^0 &amp; - &amp; w_8^2 &amp; - &amp; w_8^4 &amp; - &amp; w_8^6 &amp; - \\
+w_8^0 &amp; - &amp; w_8^4 &amp; - &amp; w_8^8 &amp; - &amp; w_8^{12} &amp; - \\
+w_8^0 &amp; - &amp; w_8^6 &amp; - &amp; w_8^{12} &amp; - &amp; w_8^{18} &amp; - \\
 \hline
-- & - & - & - & - & - & -  & - \\
-- & - & - & - & - & - & -  & - \\
-- & - & - & - & - & - & -  & - \\
-- & - & - & - & - & - & -  & - \\
+- &amp; - &amp; - &amp; - &amp; - &amp; - &amp; -  &amp; - \\
+- &amp; - &amp; - &amp; - &amp; - &amp; - &amp; -  &amp; - \\
+- &amp; - &amp; - &amp; - &amp; - &amp; - &amp; -  &amp; - \\
+- &amp; - &amp; - &amp; - &amp; - &amp; - &amp; -  &amp; - \\
 \end{bmatrix}
 }_{\text{even entries of $x_n$}} 
-&, 
+&amp;, 
 \underbrace{ 
 \begin{bmatrix}
-- & w_8^0 & - & w_8^0 & - & w_8^0 & - & w_8^0\\
-- & w_8^1 & - & w_8^3 & - & w_8^5 & - & w_8^7 \\
-- & w_8^2 & - & w_8^6 & - & w_8^{10} & - & w_8^{14} \\
-- & w_8^3 & - & w_8^9 & - & w_8^{15} & - & w_8^{21} \\
+- &amp; w_8^0 &amp; - &amp; w_8^0 &amp; - &amp; w_8^0 &amp; - &amp; w_8^0\\
+- &amp; w_8^1 &amp; - &amp; w_8^3 &amp; - &amp; w_8^5 &amp; - &amp; w_8^7 \\
+- &amp; w_8^2 &amp; - &amp; w_8^6 &amp; - &amp; w_8^{10} &amp; - &amp; w_8^{14} \\
+- &amp; w_8^3 &amp; - &amp; w_8^9 &amp; - &amp; w_8^{15} &amp; - &amp; w_8^{21} \\
 \hline
-- & - & - & - & - & - & -  & - \\
-- & - & - & - & - & - & -  & - \\
-- & - & - & - & - & - & -  & - \\
-- & - & - & - & - & - & -  & - \\
+- &amp; - &amp; - &amp; - &amp; - &amp; - &amp; -  &amp; - \\
+- &amp; - &amp; - &amp; - &amp; - &amp; - &amp; -  &amp; - \\
+- &amp; - &amp; - &amp; - &amp; - &amp; - &amp; -  &amp; - \\
+- &amp; - &amp; - &amp; - &amp; - &amp; - &amp; -  &amp; - \\
 \end{bmatrix}
 }_{\text{odd entries of $x_n$}} \\
-\big \downarrow & \qquad \qquad \qquad \big \downarrow \text{Extract} \ e^{-i2\pi \frac{k}{N}} \\
+\big \downarrow &amp; \qquad \qquad \qquad \big \downarrow \text{Extract} \ e^{-i2\pi \frac{k}{N}} \\
 \begin{bmatrix}
-w_8^0& w_8^0 & w_8^0 & w_8^0\\
-w_8^0& w_8^2 & w_8^4 & w_8^6 \\
-w_8^0& w_8^4 & w_8^{8} & w_8^{12} \\
-w_8^0& w_8^6 & w_8^{12} & w_8^{18} \\
+w_8^0&amp; w_8^0 &amp; w_8^0 &amp; w_8^0\\
+w_8^0&amp; w_8^2 &amp; w_8^4 &amp; w_8^6 \\
+w_8^0&amp; w_8^4 &amp; w_8^{8} &amp; w_8^{12} \\
+w_8^0&amp; w_8^6 &amp; w_8^{12} &amp; w_8^{18} \\
 \end{bmatrix}
-& 
+&amp; 
 \begin{bmatrix}
-w_8^0 &     &     & \\
-    & w_8^1 &     & \\
-    &     & w_8^2 & \\
-    &     &     & w_8^3 \\
+w_8^0 &amp;     &amp;     &amp; \\
+    &amp; w_8^1 &amp;     &amp; \\
+    &amp;     &amp; w_8^2 &amp; \\
+    &amp;     &amp;     &amp; w_8^3 \\
 \end{bmatrix}
 \begin{bmatrix}
-w_8^0 & w_8^0 & w_8^0 & w_8^0\\
-w_8^0 & w_8^2 & w_8^4 & w_8^6 \\
-w_8^0 & w_8^4 & w_8^{8} & w_8^{12} \\
-w_8^0 & w_8^6 & w_8^{12} & w_8^{18} \\
+w_8^0 &amp; w_8^0 &amp; w_8^0 &amp; w_8^0\\
+w_8^0 &amp; w_8^2 &amp; w_8^4 &amp; w_8^6 \\
+w_8^0 &amp; w_8^4 &amp; w_8^{8} &amp; w_8^{12} \\
+w_8^0 &amp; w_8^6 &amp; w_8^{12} &amp; w_8^{18} \\
 \end{bmatrix} \\
-\qquad \big \downarrow \text{DIT} & \qquad \big \downarrow \text{DIT} \\
+\qquad \big \downarrow \text{DIT} &amp; \qquad \big \downarrow \text{DIT} \\
 \begin{bmatrix}
-w_4^0 & w_4^0 & w_4^0 & w_4^0\\
-w_4^0 & w_4^1 & w_4^2 & w_4^3 \\
-w_4^0 & w_4^2 & w_4^{4} & w_4^{6} \\
-w_4^0 & w_4^3 & w_4^6 & w_4^{9} \\
+w_4^0 &amp; w_4^0 &amp; w_4^0 &amp; w_4^0\\
+w_4^0 &amp; w_4^1 &amp; w_4^2 &amp; w_4^3 \\
+w_4^0 &amp; w_4^2 &amp; w_4^{4} &amp; w_4^{6} \\
+w_4^0 &amp; w_4^3 &amp; w_4^6 &amp; w_4^{9} \\
 \end{bmatrix}
-& \begin{bmatrix}
-w_8^0 &     &     & \\
-    & w_8^1 &     & \\
-    &     & w_8^2 & \\
-    &     &     & w_8^3 \\
+&amp; \begin{bmatrix}
+w_8^0 &amp;     &amp;     &amp; \\
+    &amp; w_8^1 &amp;     &amp; \\
+    &amp;     &amp; w_8^2 &amp; \\
+    &amp;     &amp;     &amp; w_8^3 \\
 \end{bmatrix}
 \begin{bmatrix}
-w_4^0 & w_4^0 & w_4^0 & w_4^0\\
-w_4^0 & w_4^1 & w_4^2 & w_4^3 \\
-w_4^0 & w_4^2 & w_4^{4} & w_4^{6} \\
-w_4^0 & w_4^3 & w_4^6 & w_4^{9} \\
+w_4^0 &amp; w_4^0 &amp; w_4^0 &amp; w_4^0\\
+w_4^0 &amp; w_4^1 &amp; w_4^2 &amp; w_4^3 \\
+w_4^0 &amp; w_4^2 &amp; w_4^{4} &amp; w_4^{6} \\
+w_4^0 &amp; w_4^3 &amp; w_4^6 &amp; w_4^{9} \\
 \end{bmatrix} \\
-\end{matrix} %]]></script>
+\end{matrix}\]
 
 <p>where the DIT stands for ‘Decimation in Time’ where we flip the $2$ in the complex exponential $\frac{2m}{N}$ down to $\frac{m}{N/2}$ which halves both the nominator and denominator, i.e.
-<script type="math/tex">\begin{align}
+\(\begin{align}
 w_8^6 = e^{-i2\pi \ k \ \frac{2m}{N}} |_{m=1, k=3, N=8} = e^{-i2\pi \ k \ \frac{m}{N/2}} |_{m=1, k=3, N=8} = w_4^3 
-\end{align}</script>
+\end{align}\)
 Besides being mathematically correct, it makes intuitively sense, as doing $6$ steps with $1/8$’th of a stepsize is the same as doing $3$ steps with $1/4$’th of a step size on a circle.</p>
 
 <p>So we obtain two DFT’s of shape $4 \times 4$,</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{bmatrix}
+\[\begin{bmatrix}
 X_0 \\ X_1 \\ X_2 \\ X_3 \\
 \end{bmatrix} 
 =
 \begin{bmatrix}
-w_4^0 & w_4^0 & w_4^0 & w_4^0\\
-w_4^0 & w_4^1 & w_4^2 & w_4^3 \\
-w_4^0 & w_4^2 & w_4^{4} & w_4^{6} \\
-w_4^0 & w_4^3 & w_4^6 & w_4^{9} \\
+w_4^0 &amp; w_4^0 &amp; w_4^0 &amp; w_4^0\\
+w_4^0 &amp; w_4^1 &amp; w_4^2 &amp; w_4^3 \\
+w_4^0 &amp; w_4^2 &amp; w_4^{4} &amp; w_4^{6} \\
+w_4^0 &amp; w_4^3 &amp; w_4^6 &amp; w_4^{9} \\
 \end{bmatrix}
 \begin{bmatrix}
 x_0 \\ x_2 \\ x_4 \\ x_6 \\
@@ -528,31 +508,30 @@ x_0 \\ x_2 \\ x_4 \\ x_6 \\
 + 
 \underbrace{
 \begin{bmatrix}
-w_8^0 &     &     & \\
-    & w_8^1 &     & \\
-    &     & w_8^2 & \\
-    &     &     & w_8^3 \\
+w_8^0 &amp;     &amp;     &amp; \\
+    &amp; w_8^1 &amp;     &amp; \\
+    &amp;     &amp; w_8^2 &amp; \\
+    &amp;     &amp;     &amp; w_8^3 \\
 \end{bmatrix}}_{e^{-i 2 \pi \frac{k}{N}}}
 \begin{bmatrix}
-w_4^0 & w_4^0 & w_4^0 & w_4^0\\
-w_4^0 & w_4^1 & w_4^2 & w_4^3 \\
-w_4^0 & w_4^2 & w_4^{4} & w_4^{6} \\
-w_4^0 & w_4^3 & w_4^6 & w_4^{9} \\
+w_4^0 &amp; w_4^0 &amp; w_4^0 &amp; w_4^0\\
+w_4^0 &amp; w_4^1 &amp; w_4^2 &amp; w_4^3 \\
+w_4^0 &amp; w_4^2 &amp; w_4^{4} &amp; w_4^{6} \\
+w_4^0 &amp; w_4^3 &amp; w_4^6 &amp; w_4^{9} \\
 \end{bmatrix}
 \begin{bmatrix}
 x_1 \\ x_3 \\ x_5 \\ x_7 \\
-\end{bmatrix} %]]></script>
+\end{bmatrix}\]
 
 <p>The magic periodicity reuses the computations in the first half of the DFT to give the second half $X_{k+N/2}$ frequency bins with minimal overhead:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\left[ \begin{array}{} X_4 \\ X_5 \\ X_6 \\ X_7 \\ \end{array} \right] =
+\[\left[ \begin{array}{} X_4 \\ X_5 \\ X_6 \\ X_7 \\ \end{array} \right] =
 \underbrace{
 \begin{bmatrix}
-w_4^0 & w_4^0 & w_4^0 & w_4^0\\
-w_4^0 & w_4^1 & w_4^2 & w_4^3 \\
-w_4^0 & w_4^2 & w_4^{4} & w_4^{6} \\
-w_4^0 & w_4^3 & w_4^6 & w_4^{9} \\
+w_4^0 &amp; w_4^0 &amp; w_4^0 &amp; w_4^0\\
+w_4^0 &amp; w_4^1 &amp; w_4^2 &amp; w_4^3 \\
+w_4^0 &amp; w_4^2 &amp; w_4^{4} &amp; w_4^{6} \\
+w_4^0 &amp; w_4^3 &amp; w_4^6 &amp; w_4^{9} \\
 \end{bmatrix}
 \begin{bmatrix}
 x_0 \\ x_2 \\ x_4 \\ x_6 \\
@@ -561,22 +540,22 @@ x_0 \\ x_2 \\ x_4 \\ x_6 \\
 -
 \underbrace{
 \begin{bmatrix}
-w_8^4 &     &     & \\
-    & w_8^5 &     & \\
-    &     & w_8^6 & \\
-    &     &     & w_8^7 \\
+w_8^4 &amp;     &amp;     &amp; \\
+    &amp; w_8^5 &amp;     &amp; \\
+    &amp;     &amp; w_8^6 &amp; \\
+    &amp;     &amp;     &amp; w_8^7 \\
 \end{bmatrix}}_{e^{-i 2 \pi \frac{k}{N}}}
 \underbrace{
 \begin{bmatrix}
-w_4^0 & w_4^0 & w_4^0 & w_4^0\\
-w_4^0 & w_4^1 & w_4^2 & w_4^3 \\
-w_4^0 & w_4^2 & w_4^{4} & w_4^{6} \\
-w_4^0 & w_4^3 & w_4^6 & w_4^{9} \\
+w_4^0 &amp; w_4^0 &amp; w_4^0 &amp; w_4^0\\
+w_4^0 &amp; w_4^1 &amp; w_4^2 &amp; w_4^3 \\
+w_4^0 &amp; w_4^2 &amp; w_4^{4} &amp; w_4^{6} \\
+w_4^0 &amp; w_4^3 &amp; w_4^6 &amp; w_4^{9} \\
 \end{bmatrix}
 \begin{bmatrix}
 x_1 \\ x_3 \\ x_5 \\ x_7 \\
 \end{bmatrix}
-}_{\text{already been computed}} %]]></script>
+}_{\text{already been computed}}\]
 
 <p>Not using the structure of the matrix respectively the complex periodicity would have left us with a $ 8 \times 8 = 64$ matrix multiplication.
 Using the tricks laid out above costs us two $4 \times 4$ matrix multplications, two $4$ additions and two $4$ multiplications for a grand total of $2 \cdot (4 \times 4) + 2 \cdot 4 + 2 \cdot 4 = 48$ operations</p>
@@ -586,8 +565,7 @@ This is were the recursion kicks in in the linear algebra formulation.</p>
 
 <p>For that to happen, we take the even of the evens, $[x_0, x_4]$ and the odds of the even $[x_2, x_6]$ and split them as before:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\text{DFT}
+\[\text{DFT}
 \left( \left[
 \begin{array}{}
 x_0 \\ x_2 \\ x_4 \\ x_6 \\
@@ -603,60 +581,58 @@ X_0 \\ X_1 \\ X_2 \\ X_3 \\
 = 
 \underbrace{
 \begin{bmatrix}
-w_4^0 & w_4^0 & w_4^0 & w_4^0\\
-w_4^0 & w_4^1 & w_4^2 & w_4^3 \\
-w_4^0 & w_4^2 & w_4^{4} & w_4^{6} \\
-w_4^0 & w_4^3 & w_4^6 & w_4^{9} \\
+w_4^0 &amp; w_4^0 &amp; w_4^0 &amp; w_4^0\\
+w_4^0 &amp; w_4^1 &amp; w_4^2 &amp; w_4^3 \\
+w_4^0 &amp; w_4^2 &amp; w_4^{4} &amp; w_4^{6} \\
+w_4^0 &amp; w_4^3 &amp; w_4^6 &amp; w_4^{9} \\
 \end{bmatrix}
 }_{\text{yet again a DFT matrix}}
 \begin{bmatrix}
 x_0 \\ x_2 \\ x_4 \\ x_6 \\
-\end{bmatrix} %]]></script>
+\end{bmatrix}\]
 
 <p>Again using the key insight that we can reconstruct the second half of the DFT bins from the first half, we can zero out a lot of computations to essentially break down the original DFT from a $4 \times 4$ to two $2 \times 2$ matrix multiplications:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{bmatrix}
+\[\begin{bmatrix}
 X_0 \\ X_1 \\ - \\ - \\
 \end{bmatrix}
 =
 \begin{bmatrix}
-w_4^0 & - & w_4^0 & - \\
-w_4^0 & - & w_4^2 & - \\
-- & - & - & -  \\
-- & - & - & -  \\
+w_4^0 &amp; - &amp; w_4^0 &amp; - \\
+w_4^0 &amp; - &amp; w_4^2 &amp; - \\
+- &amp; - &amp; - &amp; -  \\
+- &amp; - &amp; - &amp; -  \\
 \end{bmatrix}
 \begin{bmatrix}
 x_0 \\ - \\ x_4 \\ - \\
 \end{bmatrix}
 + 
 \begin{bmatrix}
-w_4^0 &     &     & \\
-    & w_4^1 &     & \\
-    &     & - & \\
-    &     &     & - \\
+w_4^0 &amp;     &amp;     &amp; \\
+    &amp; w_4^1 &amp;     &amp; \\
+    &amp;     &amp; - &amp; \\
+    &amp;     &amp;     &amp; - \\
 \end{bmatrix}
 \begin{bmatrix}
-- & w_4^0 & - & w_4^0\\
-- & w_4^0 & - & w_4^2 \\
-- & - & - & -  \\
-- & - & - & -  \\
+- &amp; w_4^0 &amp; - &amp; w_4^0\\
+- &amp; w_4^0 &amp; - &amp; w_4^2 \\
+- &amp; - &amp; - &amp; -  \\
+- &amp; - &amp; - &amp; -  \\
 \end{bmatrix}
 \begin{bmatrix}
 - \\ x_2 \\ - \\ x_6 \\
-\end{bmatrix} %]]></script>
+\end{bmatrix}\]
 
 <p>and we can reconfigure the already computed $2 \times 2$ matrices to get the second half of the frequency bins</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{bmatrix}
+\[\begin{bmatrix}
 X_3 \\ X_4 \\
 \end{bmatrix}
 =
 \underbrace{
 \begin{bmatrix}
-w_2^0 & w_2^0 \\
-w_2^0 & w_2^1 \\
+w_2^0 &amp; w_2^0 \\
+w_2^0 &amp; w_2^1 \\
 \end{bmatrix}
 \begin{bmatrix}
 x_0 \\ x_4 \\
@@ -664,16 +640,16 @@ x_0 \\ x_4 \\
 }_{\text{already computed}} 
 - 
 \begin{bmatrix}
-w_4^2 &     \\
-    & w_4^3 \\
+w_4^2 &amp;     \\
+    &amp; w_4^3 \\
 \end{bmatrix}
 \begin{bmatrix}
-w_2^0 & w_2^0\\
-w_2^0 & w_2^1 \\
+w_2^0 &amp; w_2^0\\
+w_2^0 &amp; w_2^1 \\
 \end{bmatrix}
 \begin{bmatrix}
 x_2 \\ x_6 \\
-\end{bmatrix} %]]></script>
+\end{bmatrix}\]
 
 <p>And we can do it yet again by observing that the $2 \times 2$ matrix can be broken up again once more (but at size 1 the recursion naturally stops).
 Similarly this recursion applies equally to the original odd entry terms in the upper most recursion layer.</p>
@@ -690,7 +666,7 @@ While the speed up might be small for short signals, audio people with 20.000 sa
 
 <p>In order to reconstruct a signal from its Fourier coefficients $X_k$, we multiply the frequency amplitude $X_k$ with a complex exponential which is a periodic function with a specific frequency $k$.
 We have the reconstruction
-<script type="math/tex">x_n = \frac{1}{N} \sum_{k=0}^K X_k e^{i 2\pi k \frac{n}{N}}</script></p>
+\(x_n = \frac{1}{N} \sum_{k=0}^K X_k e^{i 2\pi k \frac{n}{N}}\)</p>
 
 <p>where the only difference to the DFT is the minus sign in the exponential and a scaling factor $1/N$.
 The cool thing is that the minus sign has no influence on the core structure of the transformation, so we can employ the entire algorithm again for the reconstruction from frequency to time domain.</p>

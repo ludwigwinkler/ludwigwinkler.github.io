@@ -97,37 +97,35 @@ This means that we can’t evaluate the global shape of $f(x)$ but only the sing
 <p>The lack of knowledge of the global shape can be encountered in different scenarios which all boil down to computing a complicated integral.
 In order to offer some intuition let’s have a look at the univariate normal distribution $p(x|\mu, \sigma)$:</p>
 
-<script type="math/tex; mode=display">\begin{align*}
+\[\begin{align*}
 	p(x|\mu, \sigma) = \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x-\mu)^2}{2\sigma^2}}.
-\end{align*}</script>
+\end{align*}\]
 
 <p>The univariate normal distribution is a true and tested distribution in machine learning with many convenient mathematical properties.
 One property is the normalization of the exponential term $\smash{e^{-\frac{(x-\mu)^2}{2\sigma^2}}}$ with the scaling term $1/\sqrt{2\pi\sigma^2}$ such that</p>
 
-<script type="math/tex; mode=display">\begin{align*}
+\[\begin{align*}
 	\int_{- \infty }^{\infty} p(x | \mu, \sigma) dx = 1.
-\end{align*}</script>
+\end{align*}\]
 
 <p>Conversely we know that</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align*}
+\[\begin{align*}
 	\int_{-\infty}^{\infty} p(x|\mu, \sigma) dx
-	&= \int_{-\infty}^{\infty}  \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x-\mu)^2}{2\sigma^2}} dx \\
-	&= \frac{1}{\sqrt{2\pi\sigma^2}} \underbrace{\int_{-\infty}^{\infty} e^{-\frac{(x-\mu)^2}{2\sigma^2}} dx}_{=\sqrt{2\pi\sigma^2}} \\
-	&= 1
-\end{align*} %]]></script>
+	&amp;= \int_{-\infty}^{\infty}  \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x-\mu)^2}{2\sigma^2}} dx \\
+	&amp;= \frac{1}{\sqrt{2\pi\sigma^2}} \underbrace{\int_{-\infty}^{\infty} e^{-\frac{(x-\mu)^2}{2\sigma^2}} dx}_{=\sqrt{2\pi\sigma^2}} \\
+	&amp;= 1
+\end{align*}\]
 
 <p>Obviously we know the exact form of the scaling parameter through the standard deviation $\sigma$ … but what if we didn’t?</p>
 
 <p>In that case we would encounter the distribution as</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align*}
-	p(x|\mu, \sigma) &= \frac{1}{Z} f(x|\mu, \sigma)\\
-	&= \frac{1}{Z} e^{-\frac{(x-\mu)^2}{2\sigma^2}}\\
-	\text{with} \ Z  = \int_{-\infty}^{\infty} f(x| \mu, \sigma) dx &= \int_{-\infty}^{\infty} e^{-\frac{(x-\mu)^2}{2\sigma^2}} dx = \sqrt{2\pi\sigma^2}
-\end{align*} %]]></script>
+\[\begin{align*}
+	p(x|\mu, \sigma) &amp;= \frac{1}{Z} f(x|\mu, \sigma)\\
+	&amp;= \frac{1}{Z} e^{-\frac{(x-\mu)^2}{2\sigma^2}}\\
+	\text{with} \ Z  = \int_{-\infty}^{\infty} f(x| \mu, \sigma) dx &amp;= \int_{-\infty}^{\infty} e^{-\frac{(x-\mu)^2}{2\sigma^2}} dx = \sqrt{2\pi\sigma^2}
+\end{align*}\]
 
 <p>In the case above we could evaluate the distribution $p(x | \mu, \sigma)$ correctly up to the scaling parameter $1/Z$ by evaluating $f(x | \mu, \sigma)$.
 The value of $Z$ is given by the shape of the distribution $p(x | \mu, \sigma)$ which we can’t determine globally but only point-wise for some value $x$.</p>
@@ -142,10 +140,10 @@ This is practically impossible due to computational and time constraints.</p>
 
 <p>Once we have a set which we think contains enough samples, we could approximate the integral by simply summing over our set</p>
 
-<script type="math/tex; mode=display">\begin{align*}
+\[\begin{align*}
 	Z = \int_{-\infty}^{\infty} f(x|\mu, \sigma) dx
 	=\int_{-\infty}^{\infty} e^{-\frac{(x-\mu)^2}{2\sigma^2}} dx \approx \sum_{i=0}^N \frac{1}{\Delta x} e^{-\frac{(x_i-\mu)^2}{2\sigma^2}}
-\end{align*}</script>
+\end{align*}\]
 
 <p>The $\Delta x$ is required since are we approximating the function $f( x | \mu, \sigma)$ with little columns where the exponential term tells us the height and $\Delta x$ the width of the column (look at the animations at Wikipedias entry for Riemann integral).</p>
 
@@ -159,7 +157,7 @@ If we chose $x_{min}$ and $x_{max}$ at the very extreme ends of the number line,
 We choose a standard normal distribution $\mathcal{N}(0,1)$ and sample $200$ values of $x$ from the uniform distribution $\mathcal{U}(-10,10)$.
 Furthermore we consider all probabilities of $\mathcal{N}(0,1)$ interesting which have a probability above $p(x|\mu, \sigma) \geq 0.01$.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>print()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>print()
 print('###########################################')
 print('Uniform Sampler')
 print('###########################################')
@@ -271,11 +269,10 @@ For the Metropolis-Hastings algorithm it is required that the proposal density i
 This can be realized easily with a Normal distribution with constant standard deviation.
 Mathematically, it is required that the Markov chain is reversible which simply states that there should be equal probability when being in state $x$ and moving to $x’$ and reverse:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align*}
-	p(x',x) &= p(x, x') \\
-	p(x' | x) \ p(x) &= p(x | x) \ p(x').
-\end{align*} %]]></script>
+\[\begin{align*}
+	p(x',x) &amp;= p(x, x') \\
+	p(x' | x) \ p(x) &amp;= p(x | x) \ p(x').
+\end{align*}\]
 
 <p>We can now decompose the transition probability
 $ p(x’|x) $
@@ -283,28 +280,27 @@ into the proposal distribution $q(x’|x)$
 and the acceptance probability
 $\alpha(x’|x)$:</p>
 
-<script type="math/tex; mode=display">\begin{align*}
+\[\begin{align*}
 	\alpha(x'|x) q(x'|x) p(x) = \alpha(x|x') q(x|x') p(x')
-\end{align*}</script>
+\end{align*}\]
 
 <p>The equation above simply states that the probability of being in state $x$, proposing to go to state $x’$ and finally accepting to go the state $x’$ should be the same as doing the three steps in reverse.
 This guarantees that no state $x$ is favored in any particular way and that the final Markov chain asymptotically approaches the true value of $Z$.</p>
 
 <p>We can now plug in the acceptance probability of the Metropolis-Hastings sampler and pull the transition and stationary probabilities into the minimum operator:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align*}
-	\min\left(1, \frac{p(x')}{p(x)} \right) q(x'|x) p(x) &= \min \left(1, \frac{p(x)}{p(x')} \right) q(x|x') p(x') \\
-	\min\left( q(x'|x) p(x), \frac{p(x') q(x'|x) p(x)}{p(x)} \right) &= \min \left(q(x|x') p(x'), \frac{p(x)q(x|x') p(x')}{p(x')} \right) \\
-	\min\big( q(x'|x) p(x), p(x') \underbrace{q(x'|x)}_{=q(x|x')} \big) &= \min \big(q(x|x') p(x'), p(x) \underbrace{q(x|x')}_{=q(x'|x)} \big) \\
-	% \min\big( q(x'|x) p(x), p(x') \underbrace{q(x'|x)}_{=q(x|x')} \big) &= \min \big(q(x|x') p(x'), p(x) \underbrace{q(x|x')}_{=q(x'|x)} \big)\\
-	\min\big( q(x'|x) p(x), p(x') q(x|x') \big) &= \min \big( q(x|x') p(x'), p(x) q(x'|x) \big)
-\end{align*} %]]></script>
+\[\begin{align*}
+	\min\left(1, \frac{p(x')}{p(x)} \right) q(x'|x) p(x) &amp;= \min \left(1, \frac{p(x)}{p(x')} \right) q(x|x') p(x') \\
+	\min\left( q(x'|x) p(x), \frac{p(x') q(x'|x) p(x)}{p(x)} \right) &amp;= \min \left(q(x|x') p(x'), \frac{p(x)q(x|x') p(x')}{p(x')} \right) \\
+	\min\big( q(x'|x) p(x), p(x') \underbrace{q(x'|x)}_{=q(x|x')} \big) &amp;= \min \big(q(x|x') p(x'), p(x) \underbrace{q(x|x')}_{=q(x'|x)} \big) \\
+	% \min\big( q(x'|x) p(x), p(x') \underbrace{q(x'|x)}_{=q(x|x')} \big) &amp;= \min \big(q(x|x') p(x'), p(x) \underbrace{q(x|x')}_{=q(x'|x)} \big)\\
+	\min\big( q(x'|x) p(x), p(x') q(x|x') \big) &amp;= \min \big( q(x|x') p(x'), p(x) q(x'|x) \big)
+\end{align*}\]
 
 <p>The above equation is valid and states that the ‘detailed balance’ property holds for the acceptance ratio of the Metropolis-Hastings sampler.
 Thus in statistical lingo, we have an unbiased estimator of the true $Z$ which will asymptotically approach the true of value of $Z$!</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	print()
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	print()
 	print('###########################################')
 	print('Metropolis-Hastings')
 	print('###########################################')
@@ -429,9 +425,9 @@ Additionally, we have transformed the function $f(x|\mu, \sigma)$ into a nice re
 <p>Remember that the Metropolis-Hastings sampler was developed by the physicists at the Manhattan Project to tackle the problem in statistical mechanics of estimating the partition function $Z$.
 In statistical mechanics, the function $f(x)$ is the energy function $E(x)$ of a system in state $x$ and the probability of the system being in state $x$ is defined by</p>
 
-<script type="math/tex; mode=display">\begin{align*}
+\[\begin{align*}
 	p(x) = \frac{1}{Z} e^{-E[x]}
-\end{align*}</script>
+\end{align*}\]
 
 <p>The probability of a system being in state $x$ increases if the energy of that state $x$ is small.
 This corresponds to the basic physical behavior, that physical systems want to be in a minimal energy state.
@@ -446,42 +442,39 @@ For some position $x(0)$ and the momentum $p(0)$, the physical system $\mathcal{
 
 <p>This is possible due to the following Hamiltonian mechanics:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align*}
-	\frac{d p(t)}{d t} &= -\frac{\partial \mathcal{H}(x, p, t)}{\partial x(t)}\\
-	\frac{d x(t)}{d t} &= \frac{\partial \mathcal{H}(x, p, t)}{\partial p(t)}
-\end{align*} %]]></script>
+\[\begin{align*}
+	\frac{d p(t)}{d t} &amp;= -\frac{\partial \mathcal{H}(x, p, t)}{\partial x(t)}\\
+	\frac{d x(t)}{d t} &amp;= \frac{\partial \mathcal{H}(x, p, t)}{\partial p(t)}
+\end{align*}\]
 
 <p>The Hamiltonian $\mathcal{H}(x, p, t)$ corresponds in our simple case to the energy of the system.
 The two differential equations above describes how the energy of the system is allocated to either the momentum $p(t)$ or the position $x(t)$ as time progresses.</p>
 
 <p>The energy of the system $\mathcal{H}(x, p, t)$ consists of the potential energy $E_p(x(t))$ and the kinetic energy $E_k(p(t)) = p(t)^2/2m$ for a particle of mass $m$:
-<script type="math/tex">\begin{align*}
+\(\begin{align*}
 	\mathcal{H}(x, p, t) = E_p(x(t)) + E_k(p(t)) = E_p(x(t)) + \frac{p(t)^2}{2m}
-\end{align*}</script></p>
+\end{align*}\)</p>
 
 <p>We can apply the Hamiltonian mechanics from above to our function $-\log f(x | \mu ,\sigma)$ and simulate the trajectory of a particle with $m=1$.
 For that to happen we first derive both $dp(t)/dt$ and $dx(t)/dt$ for the potential energy provided by $ E_p(x(t)) = - \log f(x(t) | \mu, \sigma)$:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align*}
-	\frac{d p(t)}{d t} &= -\frac{\partial \mathcal{H}(x, p, t)}{\partial x(t)} \\
-	&= \frac{\partial }{\partial x(t)} \log f(x(t) | \mu, \sigma) \\
-	&= \frac{1}{f(x(t) | \mu, \sigma)} \frac{\partial}{\partial x(t)} f(x(t) | \mu, \sigma) \\
-	\frac{d x(t)}{d t} &= \frac{\partial \mathcal{H}(x, p, t)}{\partial p(t)} \\
-	&= \frac{\partial }{ \partial p(t)} \frac{p(t)^2}{2} \\
-	&= p(t)
-\end{align*} %]]></script>
+\[\begin{align*}
+	\frac{d p(t)}{d t} &amp;= -\frac{\partial \mathcal{H}(x, p, t)}{\partial x(t)} \\
+	&amp;= \frac{\partial }{\partial x(t)} \log f(x(t) | \mu, \sigma) \\
+	&amp;= \frac{1}{f(x(t) | \mu, \sigma)} \frac{\partial}{\partial x(t)} f(x(t) | \mu, \sigma) \\
+	\frac{d x(t)}{d t} &amp;= \frac{\partial \mathcal{H}(x, p, t)}{\partial p(t)} \\
+	&amp;= \frac{\partial }{ \partial p(t)} \frac{p(t)^2}{2} \\
+	&amp;= p(t)
+\end{align*}\]
 
 <p>We can now use the derivations above to simulate the trajectory of a particle on the surface of $-\log f(x(t) | \mu, \sigma)$ applying the following update steps to the position $x(t)$ and momentum $p(t)$ of the particle:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align*}
-	x(t+\epsilon) &= x(t) + \epsilon \frac{d p(t)}{d t} \\
-	&= x(t) + \epsilon p(t) \\
-	p(t+ \epsilon) &= p(t) - \epsilon \frac{d p(t)}{dt} \\
-	&= p(t) - \epsilon \frac{\partial }{\partial x(t)} \log f(x(t)|\mu, \sigma)
-\end{align*} %]]></script>
+\[\begin{align*}
+	x(t+\epsilon) &amp;= x(t) + \epsilon \frac{d p(t)}{d t} \\
+	&amp;= x(t) + \epsilon p(t) \\
+	p(t+ \epsilon) &amp;= p(t) - \epsilon \frac{d p(t)}{dt} \\
+	&amp;= p(t) - \epsilon \frac{\partial }{\partial x(t)} \log f(x(t)|\mu, \sigma)
+\end{align*}\]
 
 <p>These two update rules have very intuitive explanations once we have look at the shape of $-\log f(x(t) | \mu, \sigma)$:</p>
 
@@ -501,7 +494,7 @@ After all its momentum has been converted into potential energy, it makes a u-tu
 
 <p>Here’s some code with PyTorch:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	import numpy as np
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	import numpy as np
 	import matplotlib
 	import matplotlib.pyplot as plt
 	import torch
@@ -611,13 +604,12 @@ For example the distance between two points increases as we move into higher and
 A quick example is the Euclidean distance between two points which have a distance of 1 in every of their shared dimensions $\mathbb{R}^N$.
 Depending on the dimensionality $N$ we get a distance $\sqrt{\sum_{n=0}^N 1^2}$:</p>
 
-<script type="math/tex; mode=display">% <![CDATA[
-\begin{align*}
-	\mathbb{R}^1 &: \quad \sqrt{1^2}=1 \\
-	\mathbb{R}^2 &: \quad \sqrt{1^2+1^2}=1.41 \ldots \\
-	\mathbb{R}^3 &: \quad \sqrt{1^2+1^2 +1^2}=1.73 \ldots \\
-	\vdots	&
-\end{align*} %]]></script>
+\[\begin{align*}
+	\mathbb{R}^1 &amp;: \quad \sqrt{1^2}=1 \\
+	\mathbb{R}^2 &amp;: \quad \sqrt{1^2+1^2}=1.41 \ldots \\
+	\mathbb{R}^3 &amp;: \quad \sqrt{1^2+1^2 +1^2}=1.73 \ldots \\
+	\vdots	&amp;
+\end{align*}\]
 
 <p><img src="/blog/HMC/HMC_Distance.png" alt="" class="align=&quot;center&quot;" height="50%" width="50%" /></p>
 
