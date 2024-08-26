@@ -4,7 +4,7 @@ title:  "The Adjoint Method for Neural ODE's"
 category: blog
 date:   2024-08-14
 excerpt: "Two perspectives on Memory Efficient Gradients"
-# image: "/images/GP_2Obs.png"
+image: "/blog//Adjoint/functional.png"
 ---
 <head>
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>

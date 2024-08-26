@@ -1,10 +1,10 @@
 ---
 layout: post
-title:  "Guten Tag, Herr Ehrenfest"
+title:  "Guten Tag, Herr Ehrenfest. You seem to be living in two worlds?"
 category: blog
 date:   2024-05-01
 excerpt: "The Link between Discrete and Continuous Diffusion"
-# image: "/images/GP_2Obs.png"
+image: "/blog/Ehrenfest/OUGif.gif"
 ---
 <head>
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
@@ -208,6 +208,13 @@ $$
 Thus, in law, the scaled Ehrenfest process converges to a continuous state space stochastic process with the drift $-x$ and the diffusion $2$.
 This just so happens to identical to the Ornstein-Uhlenbeck process, $dX_t = -X_t dt + \sqrt{2} dW_t$.
 The OU process is used ubiquitously in variance preserving diffusion processes in generative diffusion models.
+
+We can visualize this quite succinctly (shout out to my co-author Lorenz Richter) and have a look at the dynamics of the scaled Ehrenfest process with increasing state spaces.
+Down below are two Ornstein-Uhlenbeck processes starting from a Gaussian centered at $+1$ and $-1$ and converging towards their equilibrium distribution as time progresses to the right.
+We can see the convergence in law towards of the Ehrenfest process as we start to increase the state space $S$:
+
+![Description of the image](/blog/Ehrenfest/OUGif.gif)
+
 
 From [this blog post](https://ludwigwinkler.github.io/blog/SolvingSDEs/) we know that the analytical solution of the OU process $dX_t = - X_t dt + \sqrt{2} dW_t$ with zero mean is a time dependent Gaussian with mean and variance
 $$

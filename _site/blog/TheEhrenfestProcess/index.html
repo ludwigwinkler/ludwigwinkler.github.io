@@ -10,7 +10,7 @@
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 
-<title>Guten Tag, Herr Ehrenfest</title>
+<title>Guten Tag, Herr Ehrenfest. You seem to be living in two worlds?</title>
 <meta name="description" content="">
 
 <link rel="apple-touch-icon" sizes="180x180" href="http://localhost:4000/assets/icon/apple-touch-icon.png">
@@ -68,10 +68,10 @@
           <section class="post">
     				<header class="major">
       				<span class="date">01 May 2024</span>
-      				<h1>Guten Tag, Herr Ehrenfest</h1>
+      				<h1>Guten Tag, Herr Ehrenfest. You seem to be living in two worlds?</h1>
       				<p>The Link between Discrete and Continuous Diffusion</p>
       			</header>
-      			<div class="image main"><img src="" alt=""></div>
+      			<div class="image main"><img src="/blog/Ehrenfest/OUGif.gif" alt=""></div>
       			<p><head>
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
        <script type="text/x-mathjax-config">
@@ -248,6 +248,12 @@ D(x') &amp;= \sum_{y'\neq x'} (y'-x') (y'-x')^\top r(y'|x') \\
 <p>Thus, in law, the scaled Ehrenfest process converges to a continuous state space stochastic process with the drift $-x$ and the diffusion $2$.
 This just so happens to identical to the Ornstein-Uhlenbeck process, $dX_t = -X_t dt + \sqrt{2} dW_t$.
 The OU process is used ubiquitously in variance preserving diffusion processes in generative diffusion models.</p>
+
+<p>We can visualize this quite succinctly (shout out to my co-author Lorenz Richter) and have a look at the dynamics of the scaled Ehrenfest process with increasing state spaces.
+Down below are two Ornstein-Uhlenbeck processes starting from a Gaussian centered at $+1$ and $-1$ and converging towards their equilibrium distribution as time progresses to the right.
+We can see the convergence in law towards of the Ehrenfest process as we start to increase the state space $S$:</p>
+
+<p><img src="/blog/Ehrenfest/OUGif.gif" alt="Description of the image" /></p>
 
 <p>From <a href="https://ludwigwinkler.github.io/blog/SolvingSDEs/">this blog post</a> we know that the analytical solution of the OU process $dX_t = - X_t dt + \sqrt{2} dW_t$ with zero mean is a time dependent Gaussian with mean and variance
 \(\begin{align}
