@@ -53,7 +53,7 @@ $$
 $$
 which can be as simple as computing the MSE between prediction $x_T$ and target $y_T$.
 
-One very important property of ODE's is the Picard-Lindelöf Theorem (uniquness theorem) which in our case states that the initial value problem which we solved in equation (2) has a **unique solution**.
+One very important property of ODE's is the Picard-Lindelöf Theorem (uniqueness theorem) which in our case states that the initial value problem which we solved in equation (2) has a **unique solution**.
 In practical terms this means that for a trajectory/solution $x_t$ through space and time, there exists a single trajectory from any initial condition $x_0$ to that particular $x_t$.
 Equally, for a given vector field characterized by $f(x, t, \theta)$ we can always recover the initial condition $x_0$ if we are given the tuple $(x_t, t)$ as we can simply integrate the vectorfield backwards until we reach $(x_0, 0)$.
 
@@ -66,6 +66,9 @@ Once we have our loss $\mathcal{L}$ we naturally want to compute the gradients $
 What is the best way to to that?
 
 ## The Autograd Approach
+
+Fundamentally, we're working with ODE's here.
+Let's investigate the gradient computation in these parameterized ODE's and see if and how we can use _the unique solution property of ODE's_ for some gradient improvement.
 
 Without loss of generality, we can stick with the Euler discretization to build up some intuition.
 Furthermore, we will only do three steps and use $x_3$ as our prediction to compare it to $y_3$,
@@ -91,7 +94,7 @@ $$
 Looking at the equation above, your reverse-autograd/vector-jacobian product senses should start to tingle.
 The calculation of $x_3$ moved 'forward' in time ($x_1 \rightarrow x_2 \rightarrow x_3$) whereas the gradients move in 'reverse' time through the computation ($$\frac{\mathcal{L}}{\partial x_3} \frac{\partial x_3}{\partial x_2} \frac{\partial x_2}{\partial x_1} \frac{\partial x_1}{\partial \theta}$$ and thus $x_1 \leftarrow x_2 \leftarrow x_3$ is a good example).
 
-The partial derivative $\frac{\partial x_{t+1}}{\partial x_t}$ keeps occuring a lot of times, particularly if we consider time series with more than our puny three steps.
+The partial derivative $\frac{\partial x_{t+1}}{\partial x_t}$ keeps occurring a lot of times, particularly if we consider time series with more than our puny three steps.
 So let's examine this derivative in more detail and let's take $\frac{\partial x_3}{\partial x_2}$ as an example:
 $$
 \begin{align}
@@ -120,7 +123,7 @@ $$
 $$
 which describes how we can obtain a later part of the solution $x_t$ from the earlier solution $x_{t-1}$.
 Are we allowed to do that?
-Yes, because the Picard-Linedlöf/Cauchy-Lipschitz/Uniqueness Theorem tells us that for any tuple $(x_t, t)$ in a smooth vectorfield there is a unique trajectory.
+Yes, because the Picard-Linedlöf/Cauchy-Lipschitz/Uniqueness Theorem tells us that for any tuple $(x_t, t)$ in a smooth vector field there is a unique trajectory.
 The time reversibility of ODE's allows us to equally apply a reverse time (discrete) solution by using
 $$
 \begin{align}
@@ -156,7 +159,7 @@ We can take the gradient $$\frac{\mathcal{L}}{\partial x_3} \frac{\partial x_3}{
 Reverse-mode autodifferentiation will compute vector-Jacobian products,
 $$
 \begin{align}
-  \frac{\mathcal{L}}{\partial x_1} 
+  \frac{\partial \mathcal{L}}{\partial x_1} 
   &= \underbrace{\overbrace{\frac{\mathcal{L}}{\partial x_3}}^{\text{vector} \ g_3} \ \overbrace{\frac{\partial x_3}{\partial x_2}}^{\text{Jacobian}\ J}}_{g_2 = g_3^T J} \frac{\partial x_2}{\partial x_1} \frac{\partial x_1}{\partial \theta} \\
   &= \underbrace{g_2 \overbrace{\frac{\partial x_2}{\partial x_1}}^{\text{Jacobian} \ J}}_{g_1 = g_2^T J} \frac{\partial x_1}{\partial \theta} \\
   &= \underbrace{g_1 \overbrace{\frac{\partial x_1}{\partial \theta}}^{\text{Jacobian} \ J}}_{g = g_1^T J} \\
@@ -189,9 +192,15 @@ By using the adjoint method you can scale up your batch size to $40\times$ or us
 
 ## The Lagrangian Derivation
 
-Above was a very pragmatic way to look at the memory efficient adjoint gradient computation.
+The approach above was based on an Euler discretization scheme for ODE's.
+We saw how we could use the unique solution/time reversibility property to actually circumvent the explicit storing of the entire computational graph.
 
+Yet, of all the solvers out there for ODE's, Euler is by far the simplest ... but also the worst.
+So in order to move away from the simple time discretization of Euler, we will have to go fully continuous.
+
+Above was a very pragmatic way to look at the memory efficient adjoint gradient computation.
 In the second perspective we will take the math-y road and show how the adjoint quantity can be derived mathematically.
+This will allow us to write down a general gradient ODE for which we can use more sophisticated solvers beyond the Euler scheme.
 
 As before, we consider the differential equation
 $$
@@ -232,12 +241,12 @@ We can wiggle a bit in the $x$ direction and $J$ would change.
 Or we can wiggle a bit in $\theta$ and $J$ would also change.
 Finally, we can wiggle in both $\theta$ and $x$ and then $J$ would change as well.
 
-Unfortunately, this has variations in all degress of freedom $\delta x_t$, $\delta \theta$, $\delta dx_t$ and even $\delta x_T$.
+Unfortunately, this has variations in all degrees of freedom $\delta x_t$, $\delta \theta$, $\delta dx_t$ and even $\delta x_T$.
 Also, we still have the annoying time derivative $dx_t = \dot{x}_t$.
 
 So far the perturbation $\delta J(x, \theta)$ still consists of __both__ the perturbations in $x$ and $\theta$.
 But in machine learning, $x$ is the provided data and we're really want to only quantify the perturbation in $\theta$.
-That pertubation in $\theta$ is precisely the gradient we need for gradient based optimization, as it quite literally encodes how much $J$ would change if we perturbed $\theta$ a bit.
+That perturbation in $\theta$ is precisely the gradient we need for gradient based optimization, as it quite literally encodes how much $J$ would change if we perturbed $\theta$ a bit.
 
 Until know we haven't made zero assumption about what the Lagrangian actually looks like.
 **The idea of the adjoint method is to choose $\lambda_t$ in just such a way, that it completely eliminates the $\delta x$ perturbation from the total loss perturbation $\delta J$ such that we're left with the parameter perturbation $\delta \theta$ which is our gradient.**
@@ -294,7 +303,54 @@ $$
 
 The two equations above form the basis of the **adjoint ODE** where we formulated the terminal condition $\lambda_T^\top$ for the reverse ODE as well as the dynamics $d\lambda_t^\top$.
 
-Comparing this to our 'autograd engineering' solution we can see that the adjoint $\lambda_t$ correspondds to our gradient vector $g$ and the extra minus sign stems from the time direction, which we didn't consider in the 'autograd engineering' approach.
+Our current code base is under active development and subject to public restrictions so I'll use the `torchdiffeq` library to highlight some heavily condensed code ([code link](https://github.com/rtqichen/torchdiffeq/blob/cae73789b929d4dbe8ce955dace0089cf981c1a0/torchdiffeq/_impl/adjoint.py#L72)):
 
-Once we solved the adjoint ODE $\lambda_t$ for all time steps $t$, we can simply use it as the vector in the vector-Jacobian product $\lambda^\top_t \frac{\partial f(x_t, t,\theta)}{\partial \theta}$. 
+```python
+def augmented_dynamics(t, y_aug):
+                x_t = y_aug[1] # state
+                adj_x_t = x_t_aug[2] # adjoint/continuous grad/lambda_t
+
+                with torch.enable_grad():
+                    x_t = x_t.detach().requires_grad_(True) # make x_t
+                    '''Evaluate dx_t = f(x_t, t, θ) for state recomputation
+                        x_{t-1} = x_t - f(x_t, t, θ) dt
+                    '''
+                    func_eval = func(t if t_requires_grad else t_, x_t)
+
+                    '''Derive for 
+                        - state ∂f(x_t, t, θ) / ∂ x_t
+                        - paramters ∂f(x_t, t, θ) / ∂ θ 
+                      in a single call
+                      The adjoint adj_x_t is used as the gradient 
+                      that we backprop through the function
+                    '''
+                    vjp_x_t, *vjp_params = torch.autograd.grad(
+                        output=func_eval, 
+                        input=(x_t) + adjoint_params, 
+                        output_gradient=-adj_x_t,
+                        allow_unused=True, retain_graph=True
+                    )
+                '''
+                func_eval: dx_t used in reverse_time integration -dx_t
+                vjp_x_t: adjoint gradient propagated backward in time
+                vjp_params: accumulate gradients in parameters on the fly
+                ''' 
+                return (func_eval, vjp_x_t, *vjp_params)
+```
+
+Comparing this to our 'autograd engineering' solution we can see that the adjoint $\lambda_t$ corresponds to our gradient vector $g$ and the extra minus sign stems from the time direction, which we didn't consider in the 'autograd engineering' approach.
+
+Remember how we used to go through the chain rule from the back during the autograd backpropagation?
+Intuitively the gradient $g_t$ that we propagated through the evaluations is a discrete time version of the continuous true gradient/adjoint $\lambda_t$: 
+$$
+\begin{align}
+& \text{Discrete Euler/Autograd} & \text{Adjoint/Continuous Gradient} \\
+  \frac{\partial \mathcal{L}}{\partial x_1} 
+  &= \underbrace{\overbrace{\frac{\mathcal{L}}{\partial x_3}}^{\text{vector} \ g_3} \ \overbrace{\frac{\partial x_3}{\partial x_2}}^{\text{Jacobian}\ J}}_{g_2 = g_3^T J} \frac{\partial x_2}{\partial x_1} \frac{\partial x_1}{\partial \theta} & \rightarrow \lambda_3^\top \frac{\partial x_3}{\partial x_2}=\lambda_2\\
+  &= \underbrace{g_2 \overbrace{\frac{\partial x_2}{\partial x_1}}^{\text{Jacobian} \ J}}_{g_1 = g_2^T J} \frac{\partial x_1}{\partial \theta} & \rightarrow \lambda_2^\top \frac{\partial x_2}{\partial x_1} = \lambda_1 \\
+  &= \underbrace{g_1 \overbrace{\frac{\partial x_1}{\partial \theta}}^{\text{Jacobian} \ J}}_{g = g_1^T J} & \rightarrow \lambda_1^\top \frac{\partial x_1}{\partial x_\theta} = \frac{\partial \mathcal{L}}{\partial \theta}\\
+\end{align}
+$$
+
+Once we solved the adjoint ODE $\lambda_t$ for all time steps $t$, we can simply use it as the vector in the vector-Jacobian product $\lambda^\top_t \frac{\partial f(x_t, t,\theta)}{\partial \theta}$ to compute the parameter gradients. 
 Thus again, the adjoint $\lambda_t$ is so to say an instantaneous gradient surrogate as we used it in the classic autograd vector-Jacobian $g^T J$.
