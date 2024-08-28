@@ -352,5 +352,5 @@ $$
 \end{align}
 $$
 
-Once we solved the adjoint ODE $\lambda_t$ for all time steps $t$, we can simply use it as the vector in the vector-Jacobian product $\lambda^\top_t \frac{\partial f(x_t, t,\theta)}{\partial \theta}$ to compute the parameter gradients. 
-Thus again, the adjoint $\lambda_t$ is so to say an instantaneous gradient surrogate as we used it in the classic autograd vector-Jacobian $g^T J$.
+Once we solved the adjoint ODE $\lambda_t$ for all time steps $t$, we can simply use it as the vector in the vector-Jacobian product $\lambda^\top_t \frac{\partial f(x_t, t,\theta)}{\partial \theta}$ to compute the parameter gradients.
+Thus again, the adjoint $\lambda_t$ is so to say an instantaneous gradient surrogate as we used it in the classic time-discretized autograd vector-Jacobian $g^T J$, so $g = \text{TimeDiscretize}(\lambda_t)$.
