@@ -53,12 +53,13 @@ $$
 $$
 which can be as simple as computing the MSE between prediction $x_T$ and target $y_T$.
 
-One very important property of ODE's is the Picard-Lindelöf which in our case states that the initial value problem which we solved in equation (2) has a **unique solution**.
+One very important property of ODE's is the Picard-Lindelöf Theorem (uniquness theorem) which in our case states that the initial value problem which we solved in equation (2) has a **unique solution**.
 In practical terms this means that for a trajectory/solution $x_t$ through space and time, there exists a single trajectory from any initial condition $x_0$ to that particular $x_t$.
 Equally, for a given vector field characterized by $f(x, t, \theta)$ we can always recover the initial condition $x_0$ if we are given the tuple $(x_t, t)$ as we can simply integrate the vectorfield backwards until we reach $(x_0, 0)$.
 
 As a counterfactual example, if the original vector field could for some reason randomly switch directions such that $dx_t = \pm f(x_t, t, \theta)$ the uniqueness property wouldn't hold anymore.
 In this case, for a positive sign, we would still recover the original $x_0$ but if the function would randomly switch to a negative sign, we would integrate backwards to a different $x_0$.
+This, due to the stochastic switching, would be a stochastic differential equation.
 
 Once we have our loss $\mathcal{L}$ we naturally want to compute the gradients $\partial \mathcal{L}/\partial \theta$ to update our parameters $\theta$ to minimize the loss $\mathcal{L}$.
 
@@ -75,11 +76,11 @@ $$
   x_3 &= x_2 + f(x_2, 2, \theta) \Delta t \\ %= x_0 + f(x_0, 0, \theta) \Delta t + f(x_1, 1, \theta) \Delta t + f(x_2, 2, \theta) \Delta t
 \end{align}
 $$
-A quick glance at the three equations above tells us that our parameters $\theta$ occur at every time step.
-Thus the total parameter gradient will be
+A quick glance at the three equations above tells us that our parameters $\theta$ occur at every of the three time step.
+Consequentially, the total gradient $\frac{\partial \mathcal{L}}{\partial \theta}$ would consist of three additive terms,
 $$
 \begin{align}
-  \frac{\mathcal{L}}{\partial \theta} 
+  \frac{\partial \mathcal{L}}{\partial \theta} 
   &= \sum_{t \in \{1,2,3\}} \frac{\mathcal{L}}{\partial x_t} \frac{\partial x_t}{\partial \theta} \\
   &= \frac{\mathcal{L}}{\partial x_1} \frac{\partial x_1}{\partial \theta} + \frac{\mathcal{L}}{\partial x_2} \frac{\partial x_2}{\partial \theta} + \frac{\mathcal{L}}{\partial x_3} \frac{\partial x_3}{\partial \theta} \\
   &= \frac{\mathcal{L}}{\partial x_3} \frac{\partial x_3}{\partial x_2} \frac{\partial x_2}{\partial x_1} \frac{\partial x_1}{\partial \theta} + \frac{\mathcal{L}}{\partial x_3} \frac{\partial x_3}{\partial x_2} \frac{\partial x_2}{\partial \theta} + \frac{\mathcal{L}}{\partial x_3} \frac{\partial x_3}{\partial \theta} \\
@@ -88,7 +89,7 @@ $$
 $$
 
 Looking at the equation above, your reverse-autograd/vector-jacobian product senses should start to tingle.
-The calculation of $x_3$ moved 'forward' in time whereas the gradients move in 'reverse' time through the computation ($$\frac{\mathcal{L}}{\partial x_3} \frac{\partial x_3}{\partial x_2} \frac{\partial x_2}{\partial x_1} \frac{\partial x_1}{\partial \theta}$$ is a good example).
+The calculation of $x_3$ moved 'forward' in time ($x_1 \rightarrow x_2 \rightarrow x_3$) whereas the gradients move in 'reverse' time through the computation ($$\frac{\mathcal{L}}{\partial x_3} \frac{\partial x_3}{\partial x_2} \frac{\partial x_2}{\partial x_1} \frac{\partial x_1}{\partial \theta}$$ and thus $x_1 \leftarrow x_2 \leftarrow x_3$ is a good example).
 
 The partial derivative $\frac{\partial x_{t+1}}{\partial x_t}$ keeps occuring a lot of times, particularly if we consider time series with more than our puny three steps.
 So let's examine this derivative in more detail and let's take $\frac{\partial x_3}{\partial x_2}$ as an example:
@@ -105,7 +106,7 @@ $$
 Generalizing the time indices from this particular example, we get
 $$
 \begin{align}
-  \underbrace{\frac{\partial x_t}{\partial x_{t-1}}}_{\text{quantity}} = \underbrace{\frac{\partial f(x_{t-1}, t-1, \theta)}{\partial x_{t-1}}}_{\text{change}} \underbrace{\Delta t}_{\text{time step}}
+  \underbrace{\frac{\partial x_t}{\partial x_{t-1}}}_{\text{quantity}} = \underbrace{\frac{\partial f(x_{t}, t-1, \theta)}{\partial x_{t-1}}}_{\text{change}} \underbrace{\Delta t}_{\text{time step}}
 \end{align}
 $$
 which seems to look like a somewhat crude ODE itself since the change in the gradient as we move backwards through time seems to be some function we can evaluate (the derivative just being an operator) multiplied by some time differential.
@@ -118,6 +119,8 @@ $$
 \end{align}
 $$
 which describes how we can obtain a later part of the solution $x_t$ from the earlier solution $x_{t-1}$.
+Are we allowed to do that?
+Yes, because the Picard-Linedlöf/Cauchy-Lipschitz/Uniqueness Theorem tells us that for any tuple $(x_t, t)$ in a smooth vectorfield there is a unique trajectory.
 The time reversibility of ODE's allows us to equally apply a reverse time (discrete) solution by using
 $$
 \begin{align}
@@ -128,9 +131,11 @@ $$
 This implies that we can calculate the gradient $\frac{\partial x_t}{x_{t-1}}$ purely from the current state $x_t$,
 $$
 \begin{align}
-  \frac{\partial x_t}{\partial x_{t-1}} = \frac{\partial f(x_{t-1}, t-1, \theta)}{\partial x_{t-1}} \ \Delta t \ \Bigg|_{x_{t-1} = x_{t} - f(x_t, t, \theta) \Delta t}
+  \frac{\partial x_t}{\partial x_{t-1}} = \frac{\partial f(x_{t}, t-1, \theta)}{\partial x_{t-1}} \ \Delta t \ \Bigg|_{x_{t-1} = x_{t} - f(x_t, t, \theta) \Delta t}
 \end{align}
 $$
+
+<!-- This is interesting as all we need to compute the gradient $\frac{\partial x_t}{\partial x_{t-1}}$ seemingly purely from our current state $(x_t, t)$. -->
 
 This is kind of big news in terms of memory requirements when calculating gradients.
 You see, in reverse mode differentiation, we need to store the data that we generate during the forward pass to compute gradients during the backward pass.
@@ -164,6 +169,18 @@ $$
 \end{align}
 $$
 
+I would like to highlight that we're actually computing the vector-Jacobian product $g^T J$, which is PyTorch's "native" gradient computation.
+Computing the Jacobian for a function $f: \mathbb{R}^100 \rightarrow \mathbb{R}^50$ would require us to do $100 \times 50 = 5.000$ individual gradient evaluations.
+The Jacobian matrix measure the sensitivity of each output to a _particular input independent of all other inputs_.
+Mathematically, this forces us to compute every input-output combination manually, as a parallel evaluation of two or more Jacobian entries would "mix gradients" and thus be wrong.
+
+But we're not really interested in the complete data-agnostic Jacobian matrix.
+We already used (conditioned on) data such that our gradient computation (and thus the Jacobian) is in fact a _directional derivative_.
+We're not asking: "For any data, what is the gradient?" but rather "What's the gradient on this particular loss surface that has been determined by the data?".
+Essentially, whereas the Jacobian would measure the independent sensitivity of an input-output pair, with the forward pass we already sort of 'threw the baby out of the window with bath water' as the forward pass already determined the interaction of the inputs and outputs (it's not data agnostic anymore and i.e. determined by a convolution layer).
+The use of data already fixed the input-output interaction and the gradient now flows along the path charted by the data in the forward pass.
+This allows us to instead compute vector-Jacobian products which essentially traverses the entire computational graph in reverse order.
+
 Thus during the backward pass we only need the current gradient $g_t$ (often referred to as the adjoint $a(t)$ or $\lambda(t)$ in the literature) in between the function evaluations and the current state $x_t$ to compute all relevant gradients.
 
 Imagine that you have a GPU with 40GB of memory and each model evaluation consumes 1GB through the activation storage.
@@ -189,7 +206,7 @@ $$
 \end{align}
 $$
 
-To minimize $J$ with respect to the parameters $\theta$ we need to compute the gradient $frac{\partial J}{\partial \theta}$.
+To minimize $J$ with respect to the parameters $\theta$ we need to compute the gradient $\frac{\partial J}{\partial \theta}$.
 But alas, $\theta$ also influences $x_t$ since it occurs in the original differential equation.
 
 Since the dynamics pose a constraint that we have to fulfill at all times, we will add it as a time-dependent Lagrange multiplier $\lambda_t$,
@@ -204,12 +221,18 @@ The Lagrange multiplier $\lambda_t$ has the same dimensionality as $x_t$ ... and
 Next, we assume that a small perturbation in $x_t$ and $\theta$ influence the total perturbation in $J$
 $$
 \begin{align}
-  \delta J(x, \theta) = & \int_0^T \frac{\partial \mathcal{L}(x_t, t, \theta)}{\partial x_t} \ \delta x_t \ + \frac{\partial \mathcal{L}(x_t, t, \theta)}{\partial \theta} \ \delta \theta dt  + \frac{\partial \mathcal{F}(x_T)}{\partial x_T} \delta x_T \\ 
-  &+ \int_0^T \lambda^\top_t \left( \delta dx_t - \frac{f(x_t, t, \theta)}{\partial x_t} \ \delta x_t \ -  \frac{f(x_t, t, \theta)}{\partial \theta} \ \delta \theta \right) dt.
+  \delta J(x, \theta) = & \int_0^T \frac{\partial \mathcal{L}(x_t, t, \theta)}{\partial x_t} \ \color{red}{\delta x_t} \ + \frac{\partial \mathcal{L}(x_t, t, \theta)}{\partial \theta} \ \color{red}{\delta \theta} dt  + \frac{\partial \mathcal{F}(x_T)}{\partial x_T} \color{red}{\delta x_T} \\ 
+  &+ \int_0^T \lambda^\top_t \left( \color{red}{\delta dx_t} - \frac{f(x_t, t, \theta)}{\partial x_t} \ \color{red}{\delta x_t} \ -  \frac{f(x_t, t, \theta)}{\partial \theta} \ \color{red}{\delta \theta} \right) dt.
 \end{align}
 $$
 
-Unfortunately, this has variations in all degress of freedom $\delta x_t$, $\delta \theta$ and $\delta dx_t$.
+The cost functional $J$ has two inputs $x$ and $\theta$ which also interact through $f$.
+One can intuit about it as $J$ having two degrees of freedom.
+We can wiggle a bit in the $x$ direction and $J$ would change.
+Or we can wiggle a bit in $\theta$ and $J$ would also change.
+Finally, we can wiggle in both $\theta$ and $x$ and then $J$ would change as well.
+
+Unfortunately, this has variations in all degress of freedom $\delta x_t$, $\delta \theta$, $\delta dx_t$ and even $\delta x_T$.
 Also, we still have the annoying time derivative $dx_t = \dot{x}_t$.
 
 So far the perturbation $\delta J(x, \theta)$ still consists of __both__ the perturbations in $x$ and $\theta$.
@@ -225,7 +248,7 @@ Here, integration by parts comes to the rescue!
 Namely,
 $$
 \begin{align}
-  \int_0^T \lambda_t^\top \delta dx_t dt = [\lambda_t^\top \delta x_t]_0^T - \int_0^T d\lambda_t^\top \delta x_t dt
+  \int_0^T \lambda_t^\top \delta \color{red}{dx_t} dt = [\lambda_t^\top \delta x_t]_0^T - \int_0^T \color{red}{d\lambda_t}^\top \delta x_t dt
 \end{align}
 $$
 where we shifted the time derivative in $dx_t$ to the time derivative in $d\lambda_t$. 
@@ -235,7 +258,7 @@ $$
 \begin{align}
   \int_0^T \lambda_t^\top \delta dx_t dt 
   &= [\lambda_t^\top \delta x_t]_0^T - \int_0^T d\lambda_t^\top \delta x_t dt \\
-  &= \lambda_T^\top \delta x_T - \lambda_0^\top \underbrace{\delta x_0}_{=0} - \int_0^T d\lambda_t^\top \delta x_t dt \\
+  &= \lambda_T^\top \delta x_T - \lambda_0^\top \underbrace{\delta x_0}_{\color{red}{=0}} - \int_0^T d\lambda_t^\top \delta x_t dt \\
   &= \lambda_T^\top \delta x_T - \int_0^T d\lambda_t^\top \delta x_t dt
 \end{align}
 $$
@@ -255,17 +278,17 @@ $$
   = & \quad \int_0^T \frac{\partial \mathcal{L}(x_t, t, \theta)}{\partial x_t } \ \delta x_t \ + \frac{\partial \mathcal{L}(x_t, t, \theta)}{\partial \theta} \ \delta \theta dt \\
   & + \int_0^T -d\lambda_t^\top \delta x_t - \lambda_t^\top \frac{f(x_t, t, \theta)}{\partial x_t} \ \delta x_t \ -  \lambda_t^\top \frac{f(x_t, t, \theta)}{\partial \theta} \ \delta \theta dt \\
   & + \lambda_T^\top \delta x_T + \frac{\partial \mathcal{F}(x_T)}{\partial x_T} \delta x_T \\ 
-  = & \quad \int_0^T \underbrace{\frac{\partial \mathcal{L}(x_t, t, \theta)}{\partial x_t }}_{(1)} \ \delta x_t \ + \underbrace{\frac{\partial \mathcal{L}(x_t, t, \theta)}{\partial \theta}}_{(2)} \ \delta \theta dt \\
-  & + \int_0^T \underbrace{-\left( d\lambda_t^\top + \lambda_t^\top \frac{f(x_t, t, \theta)}{\partial x_t} \right)}_{(1)} \ \delta x_t \ - \underbrace{\lambda_t^\top \frac{f(x_t, t, \theta)}{\partial \theta}}_{(2)} \ \delta \theta dt \\
-  & \underbrace{+ \lambda_T^\top \delta x_T}_{(3)} + \underbrace{\frac{\partial \mathcal{F}(x_T)}{\partial x_T} \delta x_T}_{(3)} 
+  = & \quad \int_0^T \underbrace{\frac{\partial \mathcal{L}(x_t, t, \theta)}{\partial x_t }}_{\color{red}{(1)}} \ \delta x_t \ + \frac{\partial \mathcal{L}(x_t, t, \theta)}{\partial \theta} \ \delta \theta dt \\
+  & + \int_0^T \underbrace{-\left( d\lambda_t^\top + \lambda_t^\top \frac{f(x_t, t, \theta)}{\partial x_t} \right)}_{\color{red}{(1)}} \ \delta x_t \ - \lambda_t^\top \frac{f(x_t, t, \theta)}{\partial \theta} \ \delta \theta dt \\
+  & \underbrace{+ \lambda_T^\top \delta x_T}_{\color{green}{(3)}} + \underbrace{\frac{\partial \mathcal{F}(x_T)}{\partial x_T} \delta x_T}_{\color{green}{(3)}} 
 \end{align}
 $$
 
 Now we can choose $\lambda_t$ in the following way:
 $$
 \begin{align}
-  (3): \lambda_T^\top &= - \frac{\partial \mathcal{F}(x_T)}{\partial x_T} \\
-  (1): d\lambda_t^T &= \frac{\partial \mathcal{L}(x_t, t, \theta)}{\partial x_t } - \lambda_t^\top \frac{f(x_t, t, \theta)}{\partial x_t}
+  \color{green}{(3)}: \lambda_T^\top &= - \frac{\partial \mathcal{F}(x_T)}{\partial x_T} \\
+  \color{red}{(1)}: d\lambda_t^T &= \frac{\partial \mathcal{L}(x_t, t, \theta)}{\partial x_t } - \lambda_t^\top \frac{f(x_t, t, \theta)}{\partial x_t}
 \end{align}
 $$
 
@@ -274,4 +297,4 @@ The two equations above form the basis of the **adjoint ODE** where we formulate
 Comparing this to our 'autograd engineering' solution we can see that the adjoint $\lambda_t$ correspondds to our gradient vector $g$ and the extra minus sign stems from the time direction, which we didn't consider in the 'autograd engineering' approach.
 
 Once we solved the adjoint ODE $\lambda_t$ for all time steps $t$, we can simply use it as the vector in the vector-Jacobian product $\lambda^\top_t \frac{\partial f(x_t, t,\theta)}{\partial \theta}$. 
-Thus again, the adjoint $\lambda_t$ is so to say an instantaneous gradient surrogate.
+Thus again, the adjoint $\lambda_t$ is so to say an instantaneous gradient surrogate as we used it in the classic autograd vector-Jacobian $g^T J$.
