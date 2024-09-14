@@ -48,45 +48,62 @@ The FPE describes the evolution of the entire probability distribution of a stoc
 We can simulate a single particle by defining the stochastic differential equation (SDE),
 $$
 \begin{align}
-dX_t = \mu(X_t, t) dt + \sigma(t) dW_t
+dX_t = \underbrace{\mu(X_t, t) dt}_{\text{drift}} + \underbrace{\sigma(t) dW_t}_{\text{diffusion}}
 \end{align}
 $$
 
-The importance of the FPE is its holistic approach of modelling the change of an basically infinite large ensemble of particles governed by the SDE above.
+The importance of the FPE is its holistic approach of modelling the change of a basically infinite large ensemble of particles governed by the SDE above.
 Thus whereas simulating a single particle is nice and good, solving the FPE gives us the distribution of trajectories in a single go.
+
+Imagine it as emptying a bucket of marbles onto a staircase which then bounce chaotically down the staircase.
+**The SDE gives you the behavior of a single marble.**
+The drift tells it to go down the staircase but the myriad of interactions and uneven parts of the staircase make it move seemingly random down the staircase.
+**The individual trajectory of a marble is the SDE whereas the FPE tells us in an aggregate fashion where the marbles will be with what probability on the staircase.**
+(Imagine using a million very tiny marbles to simulate the continuous limit.)
+At $t=0$ the probability of all marbles will be concentrated in your bucket.
+At $t=0.1$ they will spill out of the bucket and the probability will still be concentrated.
+But as soon as the marbles hit the first step they will start to disperse.
+In aggregate the marbles move down the staircase and thus the probability of a marble being at a specific point on the staircase will move also down.
+But some marbles will move slower and some marbles will move faster and thus the probability distribution of having a marble at a specific time at a specific point on the staircase will dissipate.
+After sufficient time they will all be at the bottom of the staircase in another bucket (we built a collection contraption).
+There the probability distribution will be highly concentrated again as all marbles will be found inside the very compact space of the bottom bucket.
+
 So obtaining the FPE is of the harder, but more rewarding task as it gives us the underlying probability distribution over time and space instead of a bunch of trajectories.
 
 
-Now we consider a time reversion $\tau(t) = 1 - t$ and are interested in what the change of the probability distribution is under this reversed time index,
+Now we consider a time reversion $\color{blue}{\tau(t)} = 1 - t$ and are interested in what the change of the probability distribution is under this reversed time index,
 $$
 \begin{align}
-	\partial_{t} \ p(x,\tau(t)) = & - \partial_x \left[ \mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t)) \right]       \\
-	                              & + \denom{2} \partial_x^2 \left[ \sigma(\tau(t))^2 \ p(x, \tau(t)) \right].
+	\partial_{t} \ p(x,\color{blue}{\tau(t)}) = & - \partial_x \left[ \mu(X(\color{blue}{\tau(t)}), \color{blue}{\tau(t)}) \ p(x, \color{blue}{\tau(t)}) \right]       \\
+	                              & + \denom{2} \partial_x^2 \left[ \sigma(\color{blue}{\tau(t)})^2 \ p(x, \color{blue}{\tau(t)}) \right].
 \end{align}
 $$
-With the time transformation $\tau(t)$, we apply the chain rule on the time transformation on the left hand side to obtain
+With the time transformation $\color{blue}{\tau(t)}$, we apply the chain rule on the time transformation on the left hand side to obtain
 $$
 \begin{align}
-	\frac{\partial p(x,\tau(t))}{\partial t}
-	= \frac{ \partial p(x,\tau(t))}{\partial \tau} \ \frac{\partial \tau(t)}{\partial t}
-	= \frac{ \partial p(x,\tau(t))}{\partial \tau} \
-	\underbrace{ \frac{\partial \tau(t)}{\partial t}}_{-1}
-	= -\frac{ \partial p(x,\tau(t))}{\partial \tau}.
+	\frac{\partial p(x,\color{blue}{\tau(t)})}{\partial t}
+	= \frac{ \partial p(x,\color{blue}{\tau(t)})}{\partial \tau} \ \frac{\partial \color{blue}{\tau(t)}}{\partial t}
+	= \frac{ \partial p(x,\color{blue}{\tau(t)})}{\partial \tau} \
+	\underbrace{ \frac{\partial \color{blue}{\tau(t)}}{\partial t}}_{-1}
+	= -\frac{ \partial p(x,\color{blue}{\tau(t)})}{\partial \tau}.
 \end{align}
 $$
 Then, we pull the negative factor from the chain rule to the right hand side and combine the drift and diffusion term into a single derivative via the distributive property of the partial derivative,
 $$
 \begin{align}
-	\frac{ \partial p(x,\tau(t))}{\partial \tau} = & \partial_x \left[ \mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t)) \right] - \denom{2} \sigma(\tau(t))^2 \partial_x^2 \left[ \ p(x, \tau(t)) \right]  \label{eq:app_reversetime_derivation1} \\
-	=                                              & - \partial_x \Bigg[ -\mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t)) + \denom{2} \sigma(\tau(t))^2 \partial_x \left[ \ p(x, \tau(t)) \right] \Bigg]
+	\frac{ \partial p(x,\tau(t))}{\partial \tau} = & \partial_x \left[ \mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t)) \right] 
+	- \denom{2} \sigma(\tau(t))^2 \color{blue}{\partial_x^2} \left[ \ p(x, \tau(t)) \right]  \label{eq:app_reversetime_derivation1} \\
+	= & - \color{blue}{\partial_x} \Bigg[ -\mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t)) + \denom{2} \sigma(\tau(t))^2 \color{blue}{\partial_x} \left[ \ p(x, \tau(t)) \right] \Bigg]
 \end{align}
 $$
 Applying the log derivative identity $\partial_x \log p(x) = \frac{1}{p(x)} \partial_x p(x)$, which rearranged yields $ \partial_x p(x) = p(x) \partial_x \log p(x)$, we obtain
 $$
 \begin{align}
-	\frac{ \partial p(x,\tau(t))}{\partial \tau} = & - \partial_x \Bigg[ -\mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t))                            \nonumber                                                                             \\
-	                                               & \qquad \quad + \denom{2} \sigma(\tau(t))^2 \partial_x \log p(x, \tau(t)) p(x, \tau(t) ) \Bigg]                                                                                 \\
-	=                                              & - \partial_x \Bigg[ \Big( \underbrace{-\mu(X(\tau(t)), \tau(t)) + \denom{2} \sigma(\tau(t))^2 \partial_x \log p(x, \tau(t))}_{\text{reverse drift}} \Big) p(x, \tau(t))\Bigg].
+	\frac{ \partial p(x,\tau(t))}{\partial \tau} = & - \partial_x \Bigg[ -\mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t)) + \denom{2} \sigma(\tau(t))^2 
+	\color{blue}{\partial_x \left[ \ p(x, \tau(t)) \right]} \Bigg] \\
+	& - \partial_x \Bigg[ -\mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t)) 
+	 + \denom{2} \sigma(\tau(t))^2 \color{blue}{\partial_x \log p(x, \tau(t)) p(x, \tau(t)} ) \Bigg]                                                                                 \\
+	=                                              & - \partial_x \Bigg[ \Big( \underbrace{-\mu(X(\tau(t)), \tau(t)) + \denom{2} \sigma(\tau(t))^2 \color{blue}{\partial_x \log p(x, \tau(t))}}_{\text{reverse drift}} \Big) p(x, \tau(t))\Bigg].
 \end{align}
 $$
 
@@ -108,8 +125,8 @@ $$
 	=                                              & - \partial_x \left[ - \mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t)) \right]  
 								- \denom{2} \sigma(\tau(t))^2 \left( 1 + \alpha^2 \right) \partial_x^2 \left[ \ p(x, \tau(t)) \right]                                                                                           \\
 	                                               & \underbrace{ + \ \frac{\alpha^2}{2} \ \sigma(\tau(t))^2 \partial_x^2 \left[ \ p(x, \tau(t)) \right]}_{\text{additional diffusion}}                                                                  \\
-	=                                              & - \partial_x \Bigg[ \Big( - \mu(X(\tau(t)), \tau(t))                                                                                                                                                \\
-	                                               & \qquad \qquad + \denom{2} \sigma(\tau(t))^2 \left( 1 + \alpha^2 \right) \partial_x \log p(x, \tau(t)) \Big) \ p(x, \tau(t)) \Bigg]         \nonumber                                            \\
+	=                                              & - \partial_x \Bigg[ \Big( - \mu(X(\tau(t)), \tau(t))
+	+ \denom{2} \sigma(\tau(t))^2 \left( 1 + \alpha^2 \right) \partial_x \log p(x, \tau(t)) \Big) \ p(x, \tau(t)) \Bigg]         \nonumber                                            \\
 	                                               & + \ \partial_x^2 \left[ \frac{\alpha^2}{2} \ \sigma(\tau(t))^2 \ p(x, \tau(t)) \right].
 \end{align}
 $$
@@ -117,7 +134,7 @@ $$
 from which we can infer the reverse drift consisting of the inverted original drift with the additionally scaled score with $\alpha$ and the additional diffusion,
 $$
 \begin{align}
-	dX(\tau) = & \left\{ - \mu(X(\tau(t)), \tau(t)) + \denom{2} \sigma(\tau(t))^2 \left( 1 + \alpha^2 \right) \partial_x \log p(x, \tau(t)) \Big) \ p(x, \tau(t)) \right\} dt \\
+	dX(\tau) = & \left\{ \overbrace{- \mu(X(\tau(t), \tau(t))}^{\text{reversed drift}} + \overbrace{\denom{2} \sigma(\tau(t))^2 \left( 1 + \alpha^2 \right) \partial_x \log p(x, \tau(t)) \Big)}^{\text{"diffusion correction"}} \right\} d\tau \\
 	           & + \alpha \ \sigma(\tau(t)) dW(\tau)
 \end{align}
 $$
