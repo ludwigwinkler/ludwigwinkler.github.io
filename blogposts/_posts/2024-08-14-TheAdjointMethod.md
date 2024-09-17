@@ -96,7 +96,7 @@ The calculation of $x_3$ moved 'forward' in time ($x_1 \rightarrow x_2 \rightarr
 
 The partial derivative $\frac{\partial x_{t+1}}{\partial x_t}$ keeps occurring a lot of times, particularly if we consider time series with more than our puny three steps.
 So let's examine this derivative in more detail and let's take $\frac{\partial x_3}{\partial x_2}$ as an example:
-$$
+<!-- $$
 \begin{align}
   \frac{\partial x_3}{\partial x_2} 
   &= \frac{\partial \ x_2 + f(x_2, 2, \theta) \Delta t}{\partial x_2} \\
@@ -104,15 +104,30 @@ $$
   &= \frac{\partial \ (\overbrace{x_0 + f(x_0, 0, \theta) \Delta t}^{x_1} + f(x_1, 1, \theta) \Delta t) + f(x_2, 2, \theta) \Delta t}{\partial x_2} \\
   &= \frac{\partial f(x_2, 2, \theta)}{\partial x_2}\Delta t
 \end{align}
+$$ -->
+
+$$
+\begin{align}
+  \frac{\partial x_3}{\partial x_2} 
+  &= \frac{\partial \ x_2 + f(x_2, 2, \theta) \Delta t}{\partial x_2} \\
+  &= 1 + \frac{\partial f(x_2, 2, \theta)}{\partial x_2}\Delta t
+\end{align}
 $$
 
 Generalizing the time indices from this particular example, we get
 $$
 \begin{align}
-  \underbrace{\frac{\partial x_t}{\partial x_{t-1}}}_{\text{quantity}} = \underbrace{\frac{\partial f(x_{t}, t-1, \theta)}{\partial x_{t-1}}}_{\text{change}} \underbrace{\Delta t}_{\text{time step}}
+  \underbrace{\frac{\partial x_t}{\partial x_{t-1}}}_{\text{quantity}} = 1 + \underbrace{\frac{\partial f(x_{t}, t-1, \theta)}{\partial x_{t-1}}}_{\text{change}} \underbrace{\Delta t}_{\text{time step}}
 \end{align}
 $$
-which seems to look like a somewhat crude ODE itself since the change in the gradient as we move backwards through time seems to be some function we can evaluate (the derivative just being an operator) multiplied by some time differential.
+which seems to look like a somewhat crude ODE itself which was solved with a weird form of the Euler integrator with an initial condition of $1$.
+The change in the gradient as we move backwards through time seems to be some function we can evaluate (the derivative just being an operator) multiplied by some time differential.
+
+<!-- $$
+\begin{align}
+  g \underbrace{\frac{\partial x_t}{\partial x_{t-1}}}_{\text{quantity}} = g (1 + \underbrace{\frac{\partial f(x_{t}, t-1, \theta)}{\partial x_{t-1}}}_{\text{change}} \underbrace{\Delta t}_{\text{time step}})
+\end{align}
+$$ -->
 
 More consequentially, we can also have a closer look at $x_{t-1}$.
 From earlier, we have the relation
@@ -134,7 +149,7 @@ $$
 This implies that we can calculate the gradient $\frac{\partial x_t}{x_{t-1}}$ purely from the current state $x_t$,
 $$
 \begin{align}
-  \frac{\partial x_t}{\partial x_{t-1}} = \frac{\partial f(x_{t}, t-1, \theta)}{\partial x_{t-1}} \ \Delta t \ \Bigg|_{x_{t-1} = x_{t} - f(x_t, t, \theta) \Delta t}
+  \frac{\partial x_t}{\partial x_{t-1}} = 1 + \frac{\partial f(x_{t}, t-1, \theta)}{\partial \textcolor{blue}{x_{t-1}}} \ \Delta t \ \Bigg|_{\textcolor{blue}{x_{t-1}} = x_{t} - f(x_t, t, \theta) \Delta t}
 \end{align}
 $$
 
@@ -165,15 +180,25 @@ $$
   &= \underbrace{g_1 \overbrace{\frac{\partial x_1}{\partial \theta}}^{\text{Jacobian} \ J}}_{g = g_1^T J} \\
 \end{align}
 $$
-and at each Jacobian $\frac{\partial x_t}{x_{t-1}}$ instead of storing the data in `ctx` of PyTorchs autograd functionality, we simply recompute it via 
+and at each Jacobian $\frac{\partial x_t}{x_{t-1}}$ instead of storing the data in `ctx` of PyTorchs autograd functionality, we simply recompute $x_{t-1}$ and construct the Jacobian (to be used in the efficient vector-Jacobian product) as
 $$
 \begin{align}
-  \frac{\partial x_t}{\partial x_{t-1}} = \frac{\partial f(x_{t-1}, t-1, \theta)}{\partial x_{t-1}} \ \Delta t \ \Bigg|_{x_{t-1} = x_{t} - f(x_t, t, \theta) \Delta t}
+  \frac{\partial x_t}{\partial x_{t-1}} = 1+ \frac{\partial f(x_{t-1}, t-1, \theta)}{\partial x_{t-1}} \ \Delta t \ \Bigg|_{x_{t-1} = x_{t} - f(x_t, t, \theta) \Delta t}
 \end{align}
 $$
 
+Here, the $1$ should also become more clear when we embed it into a chain rule
+$$
+\begin{align}
+  \underbrace{\frac{\partial x_{t+1}}{\partial x_t}}_{\text{incoming gradient}} \frac{\partial x_t}{\partial x_{t-1}} = \underbrace{\frac{\partial x_{t+1}}{\partial x_t}}_{\text{incoming gradient}} \underbrace{\left(1+ \frac{\partial f(x_{t-1}, t-1, \theta)}{\partial x_{t-1}} \ \Delta t \ \Bigg|_{x_{t-1} = x_{t} - f(x_t, t, \theta) \Delta t} \right)}_{\text{multiplicative update}}
+\end{align}
+$$
+where we multiply the 'incoming gradient' from a deeper part of the computational graph with a multiplicative update.
+The Jacobian slightly updates the otherwise constant multiplicative update factor of $1$.
+The finer we choose $\Delta t$ the finer the update to the gradient will be which sounds very ODE-like.
+
 I would like to highlight that we're actually computing the vector-Jacobian product $g^T J$, which is PyTorch's "native" gradient computation.
-Computing the Jacobian for a function $f: \mathbb{R}^100 \rightarrow \mathbb{R}^50$ would require us to do $100 \times 50 = 5.000$ individual gradient evaluations.
+Computing the Jacobian for a function $f: \mathbb{R}^{100} \rightarrow \mathbb{R}^{50}$ would require us to do $100 \times 50 = 5.000$ individual gradient evaluations.
 The Jacobian matrix measure the sensitivity of each output to a _particular input independent of all other inputs_.
 Mathematically, this forces us to compute every input-output combination manually, as a parallel evaluation of two or more Jacobian entries would "mix gradients" and thus be wrong.
 
@@ -302,6 +327,11 @@ $$
 $$
 
 The two equations above form the basis of the **adjoint ODE** where we formulated the terminal condition $\lambda_T^\top$ for the reverse ODE as well as the dynamics $d\lambda_t^\top$.
+
+Since we're solving an ODE, this also explains the $1 + \text{Jacobian} \ \Delta t$ from the autograd approach.
+Solving the adjoint state with the Euler integrator would correspond to 
+$$\lambda_{t-1} = \lambda_t - \lambda_t \frac{\partial f(x_t, t, \theta)}{\partial x_t} \Delta t = \lambda_t \left( 1 - \frac{\partial f(x_t, t, \theta)}{\partial x_t} \Delta t \right)$$
+which is our Euler gradient integration from the autograd but with negative integration sign, since we're going backwards in time.
 
 Our current code base is under active development and subject to public restrictions so I'll use the `torchdiffeq` library to highlight some heavily condensed code ([code link](https://github.com/rtqichen/torchdiffeq/blob/cae73789b929d4dbe8ce955dace0089cf981c1a0/torchdiffeq/_impl/adjoint.py#L72)):
 

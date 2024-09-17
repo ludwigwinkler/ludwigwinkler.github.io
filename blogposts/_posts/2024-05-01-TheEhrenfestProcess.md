@@ -270,8 +270,8 @@ $$
 \begin{align}
     \frac{ p_{t|0}(y|x_0)}{ p_{t|0}(x | x_0)}
     &=\frac{ p_{t|0}(x \pm \frac{2}{\sqrt{S}}|x_0)}{ p_{t|0}(x | x_0)} \\
-    &=\frac{ p_{t|0}(x|x_0) \pm \frac{2}{\sqrt{S}}\frac{d}{dy}p_{t|0}(x|x_0) }{ p_{t|0}(x | x_0)} \\
-    &=1 \pm \frac{2}{\sqrt{S}} \underbrace{\frac{\frac{d}{dy}p_{t|0}(x|x_0) }{ p_{t|0}(x | x_0)}}_{\text{log derivative trick}} \\
+    &=\frac{ p_{t|0}(x|x_0) \pm \frac{2}{\sqrt{S}}\nabla_x p_{t|0}(x|x_0) }{ p_{t|0}(x | x_0)} \\
+    &=1 \pm \frac{2}{\sqrt{S}} \underbrace{\frac{\nabla_x p_{t|0}(x|x_0) }{ p_{t|0}(x | x_0)}}_{\text{log derivative trick}} \\
     &=1 \pm \frac{2}{\sqrt{S}} \nabla_x \log p_{t|0}(x | x_0)
 \end{align}
 $$
