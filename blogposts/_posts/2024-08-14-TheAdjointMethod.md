@@ -105,7 +105,6 @@ So let's examine this derivative in more detail and let's take $\frac{\partial x
   &= \frac{\partial f(x_2, 2, \theta)}{\partial x_2}\Delta t
 \end{align}
 $$ -->
-
 $$
 \begin{align}
   \frac{\partial x_3}{\partial x_2} 
@@ -117,7 +116,7 @@ $$
 Generalizing the time indices from this particular example, we get
 $$
 \begin{align}
-  \underbrace{\frac{\partial x_t}{\partial x_{t-1}}}_{\text{quantity}} = 1 + \underbrace{\frac{\partial f(x_{t}, t-1, \theta)}{\partial x_{t-1}}}_{\text{change}} \underbrace{\Delta t}_{\text{time step}}
+  \underbrace{\frac{\partial x_t}{\partial x_{t-1}}}_{\text{quantity}} = 1 + \underbrace{\frac{\partial f(x_{t-1}, t-1, \theta)}{\partial x_{t-1}}}_{\text{change}} \underbrace{\Delta t}_{\text{time step}}
 \end{align}
 $$
 which seems to look like a somewhat crude ODE itself which was solved with a weird form of the Euler integrator with an initial condition of $1$.
@@ -149,7 +148,7 @@ $$
 This implies that we can calculate the gradient $\frac{\partial x_t}{x_{t-1}}$ purely from the current state $x_t$,
 $$
 \begin{align}
-  \frac{\partial x_t}{\partial x_{t-1}} = 1 + \frac{\partial f(x_{t}, t-1, \theta)}{\partial \textcolor{blue}{x_{t-1}}} \ \Delta t \ \Bigg|_{\textcolor{blue}{x_{t-1}} = x_{t} - f(x_t, t, \theta) \Delta t}
+  \frac{\partial x_t}{\partial x_{t-1}} = 1 + \frac{\partial f(x_{t-1}, t-1, \theta)}{\partial \color{blue}{x_{t-1}}} \ \Delta t \ \Bigg|_{\color{blue}{x_{t-1}} = x_{t} - f(x_t, t, \theta) \Delta t}
 \end{align}
 $$
 
