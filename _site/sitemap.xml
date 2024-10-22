@@ -2,6 +2,15 @@
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
     <url>
+      <loc>http://localhost:4000/blog/Doob/</loc>
+      
+        <lastmod>2024-10-18T00:00:00+02:00</lastmod>
+      
+      <changefreq>weekly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  
+    <url>
       <loc>http://localhost:4000/blog/Girsanov/</loc>
       
         <lastmod>2024-10-07T00:00:00+02:00</lastmod>
