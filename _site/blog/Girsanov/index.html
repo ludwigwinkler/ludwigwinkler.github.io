@@ -177,21 +177,29 @@ A better blue proposal distribution would be:</p>
 
 <h3 id="importance-sampling-for-stochastic-processes">‘Importance Sampling’ for Stochastic Processes</h3>
 
-<p>Let’s assume we have two stochastic processes ${X^p_t}$ and ${X^q_t}$,
-\(\begin{align}
+<p>Let’s assume we have two stochastic processes ${X^p_t}$ and ${X^q_t}$,</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align}
   dX^q_t &amp;= a_t dt + dW_t \\
   dX^p_t &amp;= dW_t
-\end{align}\)</p>
+\end{align}
+$$
+</div>
 
 <p>where as $X^p_t$ is a pure Wiener process, the stochastic process $X^q_t$ exhibits both a drift as well as diffusion term.</p>
 
 <p>Solving these two processes generates a probability distribution over space and time and both are said to be driven by an underlying source of randomness, in this case a Wiener process.
 They induce a probability measure $P$ and $Q$ and their respective probability density functions $p(x)$ and $q(x)$.</p>
 
-<p>Next, would like to compute the expected value over some function of the realizations of the stochastic process $f({X^q_t})$,
-\(\begin{align}
+<p>Next, would like to compute the expected value over some function of the realizations of the stochastic process $f({X^q_t})$,</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align}
 \mathbb{E}_{Q}[f(\{X^q_t\})]
-\end{align}\)</p>
+\end{align}
+$$
+</div>
 
 <p>Similar to above, it now turns out that actually sampling $X^q_t$ is very difficult.
 But fortunately for us, we can apply the intuition that we gained from the importance sampling approach and apply here as well.</p>
@@ -203,10 +211,14 @@ This is due to the fact that in a Wiener proces, every movement is independently
 This means that we do $\Delta t$ steps in time.
 Concurrently, the process $X^p_t$ is now discretized into $\Delta t$ time steps as well.</p>
 
-<p>From the analytical distribution of a Wiener process we can determine the probability of each step as
-\(\begin{align}
+<p>From the analytical distribution of a Wiener process we can determine the probability of each step as</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align}
 p(x_{t + \Delta t} | x_t) = \frac{1}{\sqrt{2 \pi \Delta t}} \exp\left( - \frac{(x_{t +\Delta t} - x_t)^2}{2 \Delta t} \right) = \mathcal{N(x_{t + \Delta t} \ | \ x_t, \Delta t)}
-\end{align}\)</p>
+\end{align}
+$$
+</div>
 
 <p>For a series of steps in a particular realization ${ x^p_{t_k} }$ of the stochastic process $X^p_t$, we would be interested in the total probability of that particular realization.
 Since each step in a Wiener process is independent, we factorize over the steps and get a multiplication of Gaussians,</p>
@@ -248,11 +260,15 @@ q( \{ x_{t_k} \})
 $$
 </div>
 
-<p>Little else is left to arrive at Girsanov’s theorem than computing the ratio between these two probability distributions, since we can do importance sampling over stochastic processes via
-\(\begin{align}
+<p>Little else is left to arrive at Girsanov’s theorem than computing the ratio between these two probability distributions, since we can do importance sampling over stochastic processes via</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align}
 \mathbb{E}_Q[ f(X^q_t)] = \mathbb{E}_P \left[ \frac{dQ}{dP} f(X^p_t) \right] 
 = \mathbb{E}_P \left[ \frac{q(X^p_t)}{p(X^p_t)} f(X^p_t) \right]
-\end{align}\)</p>
+\end{align}
+$$
+</div>
 
 <p>Actually computing the ratio yields</p>
 <div style="overflow-x: auto;">
