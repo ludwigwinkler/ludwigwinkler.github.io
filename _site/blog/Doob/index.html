@@ -270,14 +270,18 @@ We can show that via the Martingale property by simply integrating both sides an
 
 <p>With that proven, we can now define an infinitissimal generator under the transition kernel $\tilde{p}$.
 This is a kind expected finite difference between a state $x_t$ and a next state $x_{t+s}$ where we take the expected value over the slightly modified transition kernel $\tilde{p}$.
-We have
-\(\begin{align}
+We have</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align}
 &amp;\lim_{dt \rightarrow 0^+} \frac{ \mathbb{E}_{\tilde{p}(x_{t+\Delta t} | x_t)} \left[ f(x_{t+\Delta t}, t + \Delta t ) \right] - f(x_{t}, t)}{dt} \\
 =&amp;\lim_{dt \rightarrow 0^+} \frac{ \mathbb{E}_{p(x_{t+\Delta t} | x_t)} \left[ f(x_{t+\Delta t}, t + \Delta t ) \ \frac{p(x_T | x_{t + \Delta t})}{p(x_T | x_t)}\right]}{dt } - \frac{f(x_{t}, t)}{dt} \\
 =&amp;\lim_{dt \rightarrow 0^+} \frac{ \mathbb{E}_{p(x_{t+\Delta t} | x_t)} \left[ f(x_{t+\Delta t}, t + \Delta t ) \ p(x_T | x_{t + \Delta t})\right]}{dt \ p(x_T | x_t)} - \frac{f(x_{t}, t)}{dt} \frac{p(x_T | x_t)}{p(x_T | x_t)} \\ 
 =&amp;\lim_{dt \rightarrow 0^+} \frac{1}{p(x_T | x_t)} \frac{ \mathbb{E}_{p(x_{t+\Delta t} | x_t)} \left[ f(x_{t+\Delta t}, t + \Delta t ) \ p(x_T | x_{t + \Delta t})\right] - f(x_{t}, t)p(x_T | x_t)}{dt} \\
 =&amp; \frac{1}{p(x_T | x_t)} \mathcal{A}_t ( f p )
-\end{align}\)</p>
+\end{align}
+$$
+</div>
 
 <p>The term above shows that the infinitisimal generator $\mathcal{A}_t$ applied under the transition kernel $\tilde{p}$ is in fact a slightly modified infinitisimal generator itself.</p>
 
@@ -304,27 +308,35 @@ Therefore, we have to pay special attention to the order of the differentiation 
 &amp;= \partial_{x}^2 f \ h + 2 \partial_x f \ \partial_x h + f \ \partial_x^2 h  \\
 \end{align}\)</p>
 
-<p>Now, let’s put all these components back together again
-\(\begin{align}
+<p>Now, let’s put all these components back together again</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align}
 \frac{1}{h} \mathcal{A}_t ( f h ) &amp;= \frac{1}{h} \Big\{\partial_t [f h] + \mu(x_t, t) \ \partial_{x_t} [f h] + \frac{1}{2} \sigma^2(x_t, t) \ \partial^2_{x_t} [f h] \Big\} \\
 &amp;= \frac{1}{h} \Big\{ \partial_t [f] \ h + f \ \color{blue}{\partial_t [h]} + \color{blue}{\mu(x_t, t)} \Big(\partial_x f \ h + f \ \color{blue}{\partial_x h}\Big) \\
 &amp; \qquad \qquad \ \ \ + \color{blue}{\frac{1}{2} \sigma^2(x_t, t)} \Big( \partial_{x}^2 f \ h + 2 \partial_x f \ \partial_x h + f \ \color{blue}{\partial_x^2 h} \Big) \Big\}
-\end{align}\)
-where we observe that the terms highlighted in blue evaluate precisely to $0$ according to the Kolmogorov backward equation,
+\end{align}
+$$
+</div>
+<p>where we observe that the terms highlighted in blue evaluate precisely to $0$ according to the Kolmogorov backward equation,
 \(\begin{align}
 \color{blue}{
 0 = \partial_t h(x_{t} , t) + \mu(x_t, t) \ \partial_{x_t} h(x_{t} , t) + \frac{1}{2} \sigma^2(x_t, t) \ \partial^2_{x_t} h(x_t, t)
 }
 \end{align}\)</p>
 
-<p>This simplifies our equation to 
-\(\begin{align}
+<p>This simplifies our equation to</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align}
 \frac{1}{h} \mathcal{A}_t ( f h ) &amp;= \frac{1}{h} \Big\{\partial_t [f h] + \mu(x_t, t) \ \partial_{x_t} [f h] + \frac{1}{2} \sigma^2(x_t, t) \ \partial^2_{x_t} [f h] \Big\} \\
 &amp;= \frac{1}{h} \Big\{ \partial_t [f] \ h + \mu(x_t, t) \partial_x f \ h  + \frac{1}{2} \sigma^2(x_t, t) \Big( \partial_{x}^2 f \ h + 2 \partial_x f \ \partial_x h \Big) \Big\} \\
 &amp;= \partial_t [f] + \mu(x_t, t) \partial_x f  + \frac{1}{2} \sigma^2(x_t, t) \Big( \partial_{x}^2 f + 2 \partial_x f \ \underbrace{\frac{\partial_x h}{h}}_{\partial_x \log h} \Big) \\
 &amp;= \partial_t [f] + \mu(x_t, t) \partial_x f  + \frac{1}{2} \sigma^2(x_t, t) \partial_{x}^2 f + \sigma^2(x_t, t) \ \partial_x f \ \partial_x \log h \\
 &amp;= \partial_t [f] + \Big( \underbrace{\mu(x_t, t) + \sigma^2(x_t, t) \ \partial_x \log h}_{\text{modified SDE drift}} \Big) \partial_x f  + \frac{1}{2} \sigma^2(x_t, t) \partial_{x}^2 f
-\end{align}\)</p>
+\end{align}
+$$
+</div>
 
 <p>Remember how the Kolmogorov backward equation derived for a standard Ito SDE $dx_t = \mu(x_t, t) dt \sigma(x_t, t) dW_t$?
 We can go in reverse and read off a corresponding SDE that fulfills the particular Kolmogorov backward equation above,
