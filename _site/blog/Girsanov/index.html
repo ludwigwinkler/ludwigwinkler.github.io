@@ -90,13 +90,9 @@
 
 <p>I encountered Girsanov’s theorem repeatedly as I was reading stochastic processes paper and talking to people from that community.</p>
 
-<p>A quick look at Wikipedia returned this image …</p>
+<p>A quick look at <a href="https://en.wikipedia.org/wiki/Girsanov_theorem">Wikipedia</a> returned something that was absolute unintelligible to me (without a proper higher math education).</p>
 
-<p><img src="/blog/img/GirsanovWhat.png" alt="Description of the image" width="800" /></p>
-
-<p>… and I was ‘What? What are those terms and where do these expressions come from?’</p>
-
-<p>Logically, the next thought was, ‘Buckle up, Buckaroo … time to do some mathematical digging again.’ :-)</p>
+<p>Thus began a chase down the rabbit whole for alternative sampling in stochastic processes. :-)</p>
 
 <h3 id="importance-sampling">Importance Sampling</h3>
 
@@ -115,31 +111,43 @@ In a grid based approach, we could take every value $x$, evaluate $p(x)$, multip
 Again, for small and simple systems that might be laborious but yield the correct value but is infeasible for relevant systems.
 Also, $x$ could be continuous so we would need by definition an infinite amount of samples as there are an infinite amount of values in any continuous range.
 This leaves us with the sampling approach in which we don’t take every value, but only a subset of size $N$ and literally hope that a finite number of samples will yield a sufficiently exact value.
-The sampling approximation would be
-\(\begin{align}
+The sampling approximation would be</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align}
   \mathbb{E}_{q(x)}[x] &amp;= \int x \cdot q(x) dx \\
   &amp;\approx \sum_i^N x_i \cdot q(x_i), \quad x_i \sim q(x_i)
-\end{align}\)</p>
+\end{align}
+$$
+</div>
 
 <p>But we said earlier that sampling from $q(x)$ is not feasible.
 How do we reconcile this apparent contradiction?
 The answer to this is the simplest mathematical operation we can think of: a multiplication with $1$.
 Ah, and also we need a second easy probability distribution $p(x)$.</p>
 
-<p>To see why let’s write out the expectation,
-\(\begin{align}
+<p>To see why let’s write out the expectation,</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align}
   \mathbb{E}_{q(x)}[X] &amp;= \int x \cdot q(x) dx \\
   &amp;= \int \color{blue}{1} \cdot x \cdot q(x) dx \\
   &amp;= \int \color{blue}{\frac{p(x)}{p(x)}} \cdot x \cdot q(x) dx \\
   &amp;= \int \color{blue}{p(x)} \cdot x \cdot \frac{q(x)}{\color{blue}{p(x)}} dx \\
   &amp;= \mathbb{E}_{\color{blue}{p(x)}}\left[ x \cdot \frac{q(x)}{\color{blue}{p(x)}}\right]
-\end{align}\)</p>
+\end{align}
+$$
+</div>
 
-<p>Now, if we write out this expectation in its sampling approximation we get
-\(\begin{align}
+<p>Now, if we write out this expectation in its sampling approximation we get</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align}
 \mathbb{E}_{\color{blue}{p(x)}}\left[ x \cdot \frac{q(x)}{\color{blue}{p(x)}}\right] 
 \approx \sum_i^N x_i \cdot \frac{q(x_i)}{\color{blue}{p(x_i)}}, \quad x_i \sim \color{blue}{p(x_i)}
-\end{align}\)</p>
+\end{align}
+$$
+</div>
 
 <p>This approximation implies that we can compute the exact integral/expected value by sampling from an alternative distribution $p(x)$ and rescaling and multiplying it not with $q(x_i)$ but with the ratio $\frac{q(x_i)}{p(x_i)}$.</p>
 
@@ -201,32 +209,44 @@ p(x_{t + \Delta t} | x_t) = \frac{1}{\sqrt{2 \pi \Delta t}} \exp\left( - \frac{(
 \end{align}\)</p>
 
 <p>For a series of steps in a particular realization ${ x^p_{t_k} }$ of the stochastic process $X^p_t$, we would be interested in the total probability of that particular realization.
-Since each step in a Wiener process is independent, we factorize over the steps and get a multiplication of Gaussians,
-\(\begin{align}
+Since each step in a Wiener process is independent, we factorize over the steps and get a multiplication of Gaussians,</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align}
 p( \{ x_{t_k} \}) 
 &amp;= \prod_{t_k} p(x_{t_k + \Delta t} | x_{t_k}) \\
 &amp;= \frac{1}{\sqrt{2 \pi \Delta t}^K} \exp\left( - \sum_{t_k} \frac{(x_{t +\Delta t} - x_t)^2}{2 \Delta t} \right)
-\end{align}\)</p>
+\end{align}
+$$
+</div>
 
 <p>Now we can do the same for the $Q$ process with the non-standard-Wiener process.
-Here, the discretization yields
-\(\begin{align}
+Here, the discretization yields</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align}
 q(x_{t + \Delta t} | x_t) 
 = \frac{1}{\sqrt{2 \pi \Delta t}} 
 \exp\left( - \frac{(x_{t +\Delta t} - (x_t + a_t \Delta t) )^2}{2 \Delta t} \right) 
 = \mathcal{N(x_{t + \Delta t} \ | \ x_t + a_t \Delta t, \Delta t)}
-\end{align}\)</p>
+\end{align}
+$$
+</div>
 
 <p>where the probability of the next step is determined by Gaussian with the drift as the mean and the diffusion as the uncertainty.
 Thus large steps away from the predicted drift will naturally receive little probability whereas staying close to the drift will be of high probability.</p>
 
-<p>We can equally compute the probability over an entire sequence by factorizing the individual steps,
-\(\begin{align}
+<p>We can equally compute the probability over an entire sequence by factorizing the individual steps,</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align}
 q( \{ x_{t_k} \}) 
 &amp;= \prod_{t_k} q(x_{t_k + \Delta t} | x_{t_k}) \\
 &amp;= \frac{1}{\sqrt{2 \pi \Delta t}^K} 
 \exp\left( - \sum_{t_k} \frac{(x_{t +\Delta t} - (x_t + a_t \Delta t) )^2}{2 \Delta t} \right) 
-\end{align}\)</p>
+\end{align}
+$$
+</div>
 
 <p>Little else is left to arrive at Girsanov’s theorem than computing the ratio between these two probability distributions, since we can do importance sampling over stochastic processes via
 \(\begin{align}
@@ -234,8 +254,10 @@ q( \{ x_{t_k} \})
 = \mathbb{E}_P \left[ \frac{q(X^p_t)}{p(X^p_t)} f(X^p_t) \right]
 \end{align}\)</p>
 
-<p>Actually computing the ratio yields
-\(\begin{align}
+<p>Actually computing the ratio yields</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align}
 \frac{q}{p}(X^p_t) 
 &amp;\approx \frac{q}{p}(x^p_{t_k}) \\
 &amp;= \frac{
@@ -246,29 +268,43 @@ q( \{ x_{t_k} \})
 &amp;= \frac{
 \exp\left( - \sum_{t_k} \frac{(x_{t +\Delta t} - (x_t + a_t \Delta t) )^2}{2 \Delta t} \right) }{\exp\left( - \sum_{t_k} \frac{(x_{t +\Delta t} - x_t)^2}{2 \Delta t} \right)
 }
-\end{align}\)</p>
+\end{align}
+$$
+</div>
 
-<p>Now we further simplify the upper of the fraction to get
-\(\begin{align}
+<p>Now we further simplify the upper of the fraction to get</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align}
 \frac{(x_{t +\Delta t} - (x_t + a_t \Delta t) )^2}{2 \Delta t}
 &amp;= \frac{((x_{t +\Delta t} - x_t) - a_t \Delta t) ^2}{2 \Delta t} \\
 &amp;= \frac{(x_{t +\Delta t} - x_t)^2 - 2 (x_{t +\Delta t} - x_t) a_t \Delta t + (a_t \Delta t)^2}{2 \Delta t} \\
 &amp;= \frac{(x_{t +\Delta t} - x_t)^2}{2 \Delta t} - (x_{t +\Delta t} - x_t) a_t + \frac{(a_t \Delta t) ^2}{2 \Delta t} \\
 &amp;= \frac{(x_{t +\Delta t} - x_t)^2}{2 \Delta t} - (x_{t +\Delta t} - x_t) a_t + \frac{a_t^2 \Delta t}{2} \\
-\end{align}\)</p>
+\end{align}
+$$
+</div>
 
-<p>We can plug that back in to obtain
-\(\begin{align}
+<p>We can plug that back in to obtain</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align}
 \frac{q}{p}(X^p_t) &amp;= \frac{q}{p}(x^p_{t_k}) \\
 &amp;= \exp \Big( - \sum_{t_k} \frac{(x_{t +\Delta t} - x_t)^2}{2 \Delta t} \Big) - (x_{t +\Delta t} - x_t) a_t + \frac{a_t^2 \Delta t}{2} ) + \sum_{t_k} \frac{(x_{t +\Delta t} - x_t)^2}{2 \Delta t} \Big) \\
 &amp;= \exp \left(\sum_{t_k} (x_{t +\Delta t} - x_t) a_t -  \sum_{t_k}\frac{a_t^2 \Delta t}{2} \right)
-\end{align}\)</p>
+\end{align}
+$$
+</div>
 
-<p>Reverting the time discretization, we in fact see that these sums transform into integrals of the form,
-\(\begin{align}
+<p>Reverting the time discretization, we in fact see that these sums transform into integrals of the form,</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align}
 \lim_{\Delta t \rightarrow 0^+} \sum_{t_k} (x_{t +\Delta t} - x_t) a_t &amp;= \int a_t dX_t \quad \text{(Ito Integral)} \\
 \lim_{\Delta t \rightarrow 0^+} \frac{1}{2}\sum_{t_k} a_t^2 \Delta t &amp;= \frac{1}{2} \int a_t^2 dt
-\end{align}\)</p>
+\end{align}
+$$
+</div>
 
 <p>And thus we arrive at the weighting factor
 \(\begin{align}
@@ -277,11 +313,15 @@ q( \{ x_{t_k} \})
 \right)
 \end{align}\)</p>
 
-<p>which will allow us to sample from a simple Wiener process $X^p_t$, and reweight it such that we’re actually correctly sampling from $X^q_t$:
-\(\begin{align}
+<p>which will allow us to sample from a simple Wiener process $X^p_t$, and reweight it such that we’re actually correctly sampling from $X^q_t$:</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align}
 \mathbb{E}_Q[f(X^q_t)] = \mathbb{E}_P\Big[ \underbrace{\exp \left(\int a_t dX^p_t - \frac{1}{2} \int a_t^2 dt
 \right)}_{Z(X^p_t)} f(X^p_t)\Big]
-\end{align}\)</p>
+\end{align}
+$$
+</div>
 
 <p>The quantity $Z(X^p_t)$ allows us to sample pure Brownian motion $X^p_t$, evaluate it with $f(X^p_t)$ and reweight it correctly with $Z(X^p_t)$ within the expectation over $P$, not $Q$.</p>
 

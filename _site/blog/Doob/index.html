@@ -227,11 +227,15 @@ $$
 <!-- One of our assumptions is that $x_T$ remains fixed during all our mathematical shenanigans and thus we can plug back in our distribution $p(x_T, T | x_t, t)=f(x_t, t)$ where all the partial derivatives apply to the $x_t$ and $t$ components, not the $x_T$ and $T$! -->
 <p>One of our assumptions is that $x_T$ remains fixed during all our mathematical shenanigans and thus we can plug back in our distribution $p(x_T, T | x_t, t)=f(x_t, t)$ where all the partial derivatives apply to the $x_t$ and $t$ components, not the $x_T$ and $T$!</p>
 
-<p>Thus we obtain
-\(\begin{align}
+<p>Thus we obtain</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align}
 -\partial_t p(x_T, T | x_t, t)
 &amp;= \mu(x_t, t) \ \partial_{x_t} p(x_T, T | x_t, t) + \frac{1}{2} \sigma^2(x_t, t) \ \partial^2_{x_t} p(x_T, T | x_t, t) \\
-\end{align}\)</p>
+\end{align}
+$$
+</div>
 
 <p>where again $p(x_T,T|x_t,t)$ is purely a function of $x_t$ (as in $f(x_t, t)$) and is notationally written more elaborately as $p(x_T,T |x_t,t)$.</p>
 
@@ -292,10 +296,14 @@ The operator $\mathcal{A}_t$ encapsulates all relevant SDE terms and partial der
 
 <h3 id="commercial-break-is-over">Commercial Break is Over</h3>
 
-<p>With a bit of foresight, we will define a new transition kernel $\tilde{p}(x_{t+s} | x_t)$ for a slightly adjusted Markov process such that our target value of $p(x_T | x_t)$ is included in the transition kernel,
-\(\begin{align}
+<p>With a bit of foresight, we will define a new transition kernel $\tilde{p}(x_{t+s} | x_t)$ for a slightly adjusted Markov process such that our target value of $p(x_T | x_t)$ is included in the transition kernel,</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align}
 \tilde{p}(x_{t+s} | x_t) = p(x_{t+s} | x_t)  \underbrace{\frac{p(x_T | x_{t+s})}{p(x_T | x_{t})}}_{\text{scaling}}
-\end{align}\)</p>
+\end{align}
+$$
+</div>
 
 <p>Before, we had defined the transition kernel $p(x_{t+s} | x_t)$ which is, based on the SDE being Markovian, also Markovian.
 The SDE above only takes the current state and nothing else to ‘predict’ the next state.</p>
