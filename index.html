@@ -45,58 +45,17 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 		<nav id="nav">
 			{% include nav.html %}
 			<ul class="icons">
-				<li><a href="https://twitter.com/ludiXIVwinkler" class="icon fa-twitter"
-						rel="nofollow"><span class="label">Twitter</span></a></li>
-				<li><a href="https://github.com/ludwigwinkler" class="icon fa-github"
-						rel="nofollow"><span class="label">GitHub</span></a></li>
+				<li><a href="https://twitter.com/ludiXIVwinkler" class="icon fa-twitter" rel="nofollow"><span
+							class="label">Twitter</span></a></li>
+				<li><a href="https://github.com/ludwigwinkler" class="icon fa-github" rel="nofollow"><span
+							class="label">GitHub</span></a></li>
 			</ul>
 		</nav>
 
 		<!-- Main -->
 		<div id="main">
 			<!-- Featured Post -->
-			<article class="post featured">
-				<header class="major">
-					<h2><a href="#">Ludwig Winkler</a></h2>
-					<p>Machine Learning, History&Economics and Life in Berlin</p>
-				</header>
-				<!-- <a href="#" class="image main"><img src="{{ "/images/pic01.jpg" | absolute_url }}" alt="" /></a> -->
-				<p>
-					I'm a PhD student (with a submitted thesis) at the <a href='https://web.ml.tu-berlin.de'> TU Berlin
-						Machine Learning Group</a> under Klaus-Robert Müller and Manfred Opper.
-					Over the course of my studies I gravitated towards machine learning fields with rigorous mathematics.
-					Before I knew it, I ended up working on stochastic processes and stochastic differential equations.
-					These have given me plenty of grey hair ... but maybe that's just my age.
-				</p>
-				<p>
-					In particular, I have trained neural networks in stochastic differential
-					equations in order to solve optimal transport problems and infer the
-					corresponding stochastic process.
-					The stochastic processes I tackled include SDE's, CTMC's, the connection between SDE's and CTMC's in generative modelling and the Schrödinger Bridge Problem.
-					I especially enjoy the mathematical rigor of stochastic processes and
-					probabilistic machine learning in general.
-				</p>
-				<p>
-					Currently I'm spending time at Prescient Design within Genentech/Roche designing and implementing advanced sampling 
-					and sample optimization schemes for protein generation and manipulation with machine learning.
-				</p>
-				<p>
-					Besides my research activity, history in conjunction with economics and politics
-					has been a long standing interest of mine.
-					As I grew older the link between economics and history became more evident to me
-					and my focus shifted to economic and financial history which often does a superb
-					job at explaining the latent forces that shape history.
-				</p>
-				<p>
-					I have been remarkably lucky to be living in Berlin where I explore the
-					multitude of different subcultures that exist so harmoniously in this city.
-					Berlin represents something of an ideal city for me as its history has enabled
-					subcultures to thrive while offering abundant intellectual goodies ranging from
-					art&music, a lot of techno, to blockchain and machine learning.
-				</p>
-				<p>
 
-			</article>
 
 			<!-- Posts -->
 			<section class="posts">
@@ -107,8 +66,8 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 						<span class="date">{{ post.date | date_to_string }}</span>
 						<h2><a href="{{ post.url | absolute_url }}">{{ post.title }}</a></h2>
 					</header>
-					<a href="{{ post.url | absolute_url }}" class="image fit"><img
-							src="{{ post.image | absolute_url }}" alt="" /></a>
+					<a href="{{ post.url | absolute_url }}" class="image fit"><img src="{{ post.image | absolute_url }}"
+							alt="" /></a>
 					<p>{{ post.excerpt }}</p>
 					<ul class="actions">
 						<li><a href="{{ post.url | absolute_url }}" class="button">Full
@@ -130,7 +89,7 @@ Free for personal and commercial use under the CCA 3.0 license (html5up.net/lice
 			<!-- Footer -->
 			<footer>
 				<ul class="actions">
-					<li><a href="{{ " /blog/" | absolute_url }}" class="button">My Blog</a></li>
+					<li><a href="{{ site.baseurl }}/blog/" class="button">My Blog</a></li>
 				</ul>
 			</footer>
 
