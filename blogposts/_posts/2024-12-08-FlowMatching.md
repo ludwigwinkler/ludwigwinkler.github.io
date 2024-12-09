@@ -151,6 +151,8 @@ $$
 </div>
 
 This objective function tasks the neural network parameterizing $v_\theta(x_t, t)$ to predict the direct line between $x_0$ and $\epsilon$.
+Whereas the interpolations are by design crossing each other, the neural network can only settle on a single direction for a $(x_t, t)$ input pair.
+That's the reason why we'll obtain a smooth vector field after training:
 
 <img src="/blog/FlowMatching/trained_flow.png" alt="Description of the image" style="width: 100%; height: auto;"/>
 
@@ -238,7 +240,7 @@ Thus if we can apply the Fourier transform to the two respective PDF's $p(x)$ an
 <div style="overflow-x: auto;">
 $$
 \begin{align*}
-p(z) &= \int_{z=-\infty}^{\infty} p(x) \ \cdot \ p(y - x) \ dx \\
+p(z) &= \int_{z=-\infty}^{\infty} p(x) \ \cdot \ p(z - x) \ dx \\
 &= \text{IFT}\left[ \hat{p}_{x}(k) \cdot \hat{p}_y(k) \right] \\
 \end{align*}
 $$
