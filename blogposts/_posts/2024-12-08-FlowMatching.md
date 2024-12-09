@@ -509,13 +509,13 @@ where all the relevant terms occur in a similar fashion to the flow matching mod
 
 So let's try this out with some code.
 One thing to note, and what I personally think is nice, is that the interpolation paramters $\alpha(t)$, $\beta(t)$ can be chosen independently from the diffusion parameter $\sigma(t)$.
-<!-- <div style="overflow-x: auto;"> -->
+<div style="overflow-x: auto;">
 $$
 \begin{align*}
 dx_\tau = (-v_\theta(x_\tau, \tau) + \frac{1}{2} \sigma^2(\tau) \nabla_x \log p_\tau(x_\tau))d\tau + \sigma(\tau) dW_\tau
 \end{align*}
 $$
-<!-- </div> -->
+</div>
 
 Let's generate some data in form of a 3D GMM:
 ```python

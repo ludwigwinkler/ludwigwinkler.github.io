@@ -573,12 +573,14 @@ $$
 <h3 id="lets-try-it-out-with-some-code">Let’s try it out with some Code</h3>
 
 <p>So let’s try this out with some code.
-One thing to note, and what I personally think is nice, is that the interpolation paramters $\alpha(t)$, $\beta(t)$ can be chosen independently from the diffusion parameter $\sigma(t)$.
-<!-- <div style="overflow-x: auto;"> -->
-\(\begin{align*}
+One thing to note, and what I personally think is nice, is that the interpolation paramters $\alpha(t)$, $\beta(t)$ can be chosen independently from the diffusion parameter $\sigma(t)$.</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
 dx_\tau = (-v_\theta(x_\tau, \tau) + \frac{1}{2} \sigma^2(\tau) \nabla_x \log p_\tau(x_\tau))d\tau + \sigma(\tau) dW_\tau
-\end{align*}\)
-<!-- </div> --></p>
+\end{align*}
+$$
+</div>
 
 <p>Let’s generate some data in form of a 3D GMM:</p>
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">torch</span>
