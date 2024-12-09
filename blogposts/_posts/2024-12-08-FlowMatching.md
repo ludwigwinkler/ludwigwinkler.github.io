@@ -3,7 +3,7 @@ layout: post
 title:  "Matching Flows and Diffusion Models"
 category: blog
 date:   2024-12-08
-excerpt: "It's a (Tinder) Match: Flow Matching, Scores and Diffusion"
+excerpt: "Flow Matching, Diffusion, Scores and Characteristic Functions"
 image: "/blog/FlowMatching/sample_flow.png"
 ---
 <head>
