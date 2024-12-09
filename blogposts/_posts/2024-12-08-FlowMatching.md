@@ -206,27 +206,24 @@ In order to derive the score term $\nabla_x \log p_\tau(x_\tau)$ we have to do a
 #### Characteristic Functions
 
 What we're aiming for is to determine the score term $\nabla_x \log p_\tau(x_t)$ from the stochastic process that connects the two random variables $x_0$ and $\epsilon$.
-But the random variable $x_t$ during simpling is the sum of two unknown random variables $x_0$ and $\epsilon$, namely via $x_t = \alpha(t) x_0 + \beta(t) \epsilon$.
-This is the sum of two random variables.
+But the random variable $x_t$ during sampling is the sum of two random variables $x_0$ and $\epsilon$, namely via $x_t = \alpha(t) x_0 + \beta(t) \epsilon$.
+The probability distribution of the sum of two random variables is the convolution of the respective probability density functions.
 
-The probability distribution of the sum of two random variables is the convolution of the probability density functions of the two respective random variables.
-So in our case we have the sum of two independent weighted random variables $\alpha(t) x_0$ and $\beta(t)\epsilon$.
-For the time being we will first consider the sum of two independent random variables $x_0$ and $\epsilon$ without their respective scaling.
-
-Considering only $Z = X + Y$ the PDF of $Y$ is then the convolution of the PDFs of $X$ and $Y$:
+To ease into the topic, we will for starters only consider $Z = X + Y$, where the PDF of $Z$ is consequentially the convolution of the PDFs of $X$ and $Y$:
 <div style="overflow-x: auto;">
 $$
 \begin{align*}
 p(z) &= p(x) \star p(y) \\
-&= \int_{x=-\infty}^{\infty} p(x) \ \cdot \ p(z - x) \ dx \\
+&= \int_{x=-\infty}^{\infty} p(x) \ \cdot \ p(z - x) \ dx
 % &= \hat{p}_{x_0}(k) \cdot \hat{p}_\epsilon(k) \\
 \end{align*}
 $$
 </div>
 
-which is a bit difficult to work with.
+That doesn't seem to be the most equation to be working with.
 
 Also, why is actually the convolution of the two PDF's?
+
 In the case of the sum of $X$ and $Y$ we have to consider all possible values of $X$ and $Y$ that sum up to $Z$.
 For example, let's consider the probability of obtaining $Z=5$.
 We can then first choose $X$ and choose $Y$ as the remainder such that $Y = Z-X$.
