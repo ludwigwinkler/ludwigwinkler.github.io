@@ -308,14 +308,14 @@ For the Gaussian example above, all we have to do is
 $$
 \begin{align*}
 \mathbb{E}[x] 
-&= i^{-1}\partial_t \hat{p}(k) |_{t=0} \\
-&= i^{-1} \partial_t e^{ik^T \mu - \frac{1}{2} t^T \Sigma \ t} |_{t=0} \\
-&= i^{-1} \left(i\mu - \Sigma \ t \right) e^{ik^T \mu - \frac{1}{2} t^T \Sigma \ t} |_{t=0} \\
+&= i^{-1}\partial_t \hat{p}(k) |_{k=0} \\
+&= i^{-1} \partial_t e^{ik^T \mu - \frac{1}{2} k^T \Sigma \ k} |_{k=0} \\
+&= i^{-1} \left(i\mu - \Sigma \ t \right) e^{ik^T \mu - \frac{1}{2} t^T \Sigma \ k} |_{k=0} \\
 &= \mu \\
 \mathbb{E}[x^2] 
-&= i^{-2}\partial_t \left(i\mu - \Sigma \ t \right) e^{ik^T \mu - \frac{1}{2} t^T \Sigma \ t} |_{t=0} \\
-&= i^{-2} \left( \partial_t \left[ \left(i\mu - \Sigma \ t \right) \right] e^{ik^T \mu - \frac{1}{2} t^T \Sigma \ t} +  \left(i\mu - \Sigma \ t \right) \partial_t \left[e^{ik^T \mu - \frac{1}{2} t^T \Sigma \ t} \right] \right) |_{t=0} \\
-&= \underbrace{i^{-2}}_{=-1} \big( - \Sigma  + \underbrace{\left(i\mu - \Sigma \ t \right)^2 \partial_t \left[e^{ik^T \mu - \frac{1}{2} t^T \Sigma \ t} \right] \big) |_{t=0}}_{=(i\mu)^2 \text{ due to t=0}} \\
+&= i^{-2}\partial_t \left(i\mu - \Sigma \ k \right) e^{ik^T \mu - \frac{1}{2} k^T \Sigma \ k} |_{k=0} \\
+&= i^{-2} \left( \partial_t \left[ \left(i\mu - \Sigma \ k \right) \right] e^{ik^T \mu - \frac{1}{2} k^T \Sigma \ k} +  \left(i\mu - \Sigma \ k \right) \partial_t \left[e^{ik^T \mu - \frac{1}{2} k^T \Sigma \ k} \right] \right) |_{k=0} \\
+&= \underbrace{i^{-2}}_{=-1} \big( - \Sigma  + \underbrace{\left(i\mu - \Sigma \ k \right)^2 \partial_t \left[e^{ik^T \mu - \frac{1}{2} k^T \Sigma \ k} \right] \big) |_{k=0}}_{=(i\mu)^2 \text{ due to k=0}} \\
 &= -(-\Sigma - \mu^2) \\
 &= \Sigma + \mu^2
 \end{align*}
@@ -357,7 +357,7 @@ $$
 \mathbb{E}_{p(x_0, \epsilon)}\left[ \epsilon \ e^{ik \ (\alpha(t) x_0 + \beta(t) \epsilon)} \right] 
 &= \mathbb{E}_{p(x_0)}\left[ e^{ik \ \alpha(t) x_0} \right] \mathbb{E}_{p(\epsilon)}\left[ \color{blue}{\epsilon} \ e^{ik \ \beta(t) \epsilon} \right] \\
 &= \mathbb{E}_{p(x_0)}\left[ e^{ik \ \alpha(t) x_0} \right] \color{blue}{\left(-\frac{i}{\beta(t)} \right) \nabla_k} \ \mathbb{E}_{p(\epsilon)}\left[ e^{ik \ \beta(t) \epsilon} \right] \\
-&= \mathbb{E}_{p(x_0)}\left[ e^{ik \ \alpha(t) x_0} \right] \left(-\frac{i}{\beta(t)} \right) \nabla_k e^{-\frac{1}{2}\beta(t)^2 \ t^T t} \\
+&= \mathbb{E}_{p(x_0)}\left[ e^{ik \ \alpha(t) x_0} \right] \left(-\frac{i}{\beta(t)} \right) \nabla_k e^{-\frac{1}{2}\beta(t)^2 \ k^T k} \\
 &= \mathbb{E}_{p(x_0)}\left[ e^{ik \ \alpha(t) x_0} \right] i \beta(t) k \color{blue}{\underbrace{e^{-\frac{1}{2}\beta(t)^2 \ k^T k}}_{\text{CF of }\mathcal{N}(0, \beta(t) \text{I})} } \\
 &= \mathbb{E}_{p(x_0)}\left[ e^{ik \ \alpha(t) x_0} \right] i \beta(t) k \ \color{blue}{ \mathbb{E}_{p(\epsilon)}\left[ e^{ik \beta(t) \epsilon} \right] } \\
 &= i \beta(t) k \ \mathbb{E}_{p_t(x_t)}\left[ e^{ik (\alpha(t) x_0 + \beta(t) \epsilon)} \right] \\
@@ -417,7 +417,7 @@ Remember that this is how we defined the vector field $v(x_t, t)$ in the first p
 $$
 \begin{align*}
 v_\theta(x_t, t) 
-&= \dot{\alpha}(t) \mathbb{E}[x^*_0 | x_t] + \dot{\beta}(t) \mathbb{E}[\epsilon | x_t] \\ 
+&= \dot{\alpha}(t) \mathbb{E}[x_0 | x_t] + \dot{\beta}(t) \mathbb{E}[\epsilon | x_t] \\ 
 &= \dot{\alpha}(t) \mathbb{E}\left[\frac{x_t - \beta(t) \epsilon}{\alpha(t)} \mid x_t\right] + \dot{\beta}(t) \mathbb{E}[\epsilon | x_t] \\ 
 &= \frac{\dot{\alpha}(t)}{\alpha(t)} x_t - \frac{\dot{\alpha}(t)\beta(t)}{\alpha(t)}\mathbb{E}\left[ \epsilon \mid x_t\right] + \dot{\beta}(t) \mathbb{E}[\epsilon | x_t] \\
 &= \frac{\dot{\alpha}(t)}{\alpha(t)} x_t + \left(\dot{\beta}(t) - \frac{\dot{\alpha}(t)\beta(t)}{\alpha(t)} \right)\mathbb{E}[\epsilon | x_t] \\
