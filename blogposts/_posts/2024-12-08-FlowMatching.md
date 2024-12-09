@@ -247,14 +247,14 @@ where $\hat{p} = \text{FT}\left[ p \right]$ is the Fourier transform of a functi
 Remember that probability density functions are also just functions with some particular properties.
 
 But how do we apply the Fourier transform to a random variable?
-We interpret the probability density function $p(x)$ just like a regular function and on the way aggregate $-2\pi t = k$ to obtain
+We interpret the probability density function $p(x)$ just like a regular function and on the way we absorb $-2\pi$ into $k$ to obtain the characteristic function of the random variable $X$.
 
 <div style="overflow-x: auto;">
 $$
 \begin{align*}
-\hat{p}_x(k) &= \int_{x=-\infty}^{\infty} p(x) e^{\overbrace{-i2\pi k}^{=it}x} dx \\ 
-&= \int_{x=-\infty}^{\infty} p(x) e^{itx} dx \\
-&= \mathbb{E}_{p(x)} \left[ e^{itx} \right]
+\hat{p}_x(k) &= \int_{x=-\infty}^{\infty} p(x) e^{\overbrace{-i2\pi k}^{\rightarrow ik}x} dx \\ 
+&= \int_{x=-\infty}^{\infty} p(x) e^{ik \ x} dx \\
+&= \mathbb{E}_{p(x)} \left[ e^{ik \ x} \right]
 \end{align*}
 $$
 </div>
@@ -265,22 +265,23 @@ We can easily apply the Fourier transform to the sum of two random variables $Z 
 <div style="overflow-x: auto;">
 $$
 \begin{align*}
-\hat{p}_{z}(k) &= \mathbb{E}_{p(z)} \left[ e^{it \ z } \right] \\
-&= \int_{z=-\infty}^{\infty} p(z) \ e^{ikz} dz \\ 
+\hat{p}_{z}(k) &= \mathbb{E}_{p(z)} \left[ e^{ik \ z } \right] \\
+&= \int_{z=-\infty}^{\infty} p(z) \ e^{ik \ z} dz \\ 
 &= \int_{z=-\infty}^{\infty} \overbrace{\int_{x=-\infty}^\infty p(x) \cdot p(z - x) dx}^{p(z)} \ e^{ik \ z} dz \\ 
 &= \int_{z=-\infty}^{\infty} \int_{x=-\infty}^\infty p(x) \cdot p(z - x)  \ e^{ik \ z} \ dx \ dz \\ 
 \end{align*}
 $$
 </div>
-applying the change of variable $y = z - x$, from which follows be rearranging $z = x + y$ and by differentiation $dz = dy$,
+
+Next we apply a change of variable $y = z - x$ from which follows that $z = x + y$ and by differentiation $dz = dy$,
 <div style="overflow-x: auto;">
 $$
 \begin{align*}
-\hat{p}_{z}(k) &= \mathbb{E}_{p(z)} \left[ e^{it \ z } \right] \\
+\hat{p}_{z}(k) &= \mathbb{E}_{p(z)} \left[ e^{ik \ z } \right] \\
 &= \int_{z=-\infty}^{\infty} \int_{x=-\infty}^\infty p(x) \cdot p(\overbrace{z - x}^{y}) \ e^{ik \ z} \ dx \ dz \quad | \quad dz = dy \\ 
 &= \int_{y=-\infty}^{\infty} \int_{x=-\infty}^\infty p(x) \cdot p(y) \ e^{ik \ (x + y)} \ dx \ dy \\
 &= \int_{x=-\infty}^\infty p(x) \ e^{ik \ x} dx \cdot \int_{y=-\infty}^{\infty} p(y) \ e^{ik \ y} \ dy \\
-&= \mathbb{E}_{p(x)} \left[ e^{it \ x } \right] \cdot \mathbb{E}_{p(y)} \left[ e^{it \ y } \right]
+&= \mathbb{E}_{p(x)} \left[ e^{ik \ x } \right] \cdot \mathbb{E}_{p(y)} \left[ e^{ik \ y } \right]
 \end{align*}
 $$
 </div>
@@ -293,26 +294,26 @@ As it will become important for the derivation of the score term, we will now co
 <div style="overflow-x: auto;">
 $$
 \begin{align*}
-\hat{p}(k) &= \mathbb{E}_{p(x)} \left[ e^{it \ x } \right] \\
-&= e^{it^T \mu - \frac{1}{2} t^T \Sigma \ t}
+\hat{p}(k) &= \mathbb{E}_{p(x)} \left[ e^{ik \ x } \right] \\
+&= e^{ik^T \mu - \frac{1}{2} t^T \Sigma \ t}
 \end{align*}
 $$
 </div>
 
-One of the big advantages of the characteristic function is that it is easy to compute the expectation value of the corresponding distribution by simply deriving once for the first moment and twice for the second moment and setting $t=0$ and multiplying the result by $i^{-k}$ where $k$ denotes the oment.
-For the Gaussian example above, all we have to do is 
+One of the big advantages of the characteristic function is that it is easy to compute moments of the corresponding distribution by simply deriving once for the first moment and twice for the second moment and setting $k=0$ and multiplying the result by $i^{-k}$ where $k$ denotes the order of the moment.
+For the Gaussian example above, all we have to do is
 <div style="overflow-x: auto;">
 $$
 \begin{align*}
 \mathbb{E}[x] 
 &= i^{-1}\partial_t \hat{p}(k) |_{t=0} \\
-&= i^{-1} \partial_t e^{it^T \mu - \frac{1}{2} t^T \Sigma \ t} |_{t=0} \\
-&= i^{-1} \left(i\mu - \Sigma \ t \right) e^{it^T \mu - \frac{1}{2} t^T \Sigma \ t} |_{t=0} \\
+&= i^{-1} \partial_t e^{ik^T \mu - \frac{1}{2} t^T \Sigma \ t} |_{t=0} \\
+&= i^{-1} \left(i\mu - \Sigma \ t \right) e^{ik^T \mu - \frac{1}{2} t^T \Sigma \ t} |_{t=0} \\
 &= \mu \\
 \mathbb{E}[x^2] 
-&= i^{-2}\partial_t \left(i\mu - \Sigma \ t \right) e^{it^T \mu - \frac{1}{2} t^T \Sigma \ t} |_{t=0} \\
-&= i^{-2} \left( \partial_t \left[ \left(i\mu - \Sigma \ t \right) \right] e^{it^T \mu - \frac{1}{2} t^T \Sigma \ t} +  \left(i\mu - \Sigma \ t \right) \partial_t \left[e^{it^T \mu - \frac{1}{2} t^T \Sigma \ t} \right] \right) |_{t=0} \\
-&= \underbrace{i^{-2}}_{=-1} \big( - \Sigma  + \underbrace{\left(i\mu - \Sigma \ t \right)^2 \partial_t \left[e^{it^T \mu - \frac{1}{2} t^T \Sigma \ t} \right] \big) |_{t=0}}_{=(i\mu)^2 \text{ due to t=0}} \\
+&= i^{-2}\partial_t \left(i\mu - \Sigma \ t \right) e^{ik^T \mu - \frac{1}{2} t^T \Sigma \ t} |_{t=0} \\
+&= i^{-2} \left( \partial_t \left[ \left(i\mu - \Sigma \ t \right) \right] e^{ik^T \mu - \frac{1}{2} t^T \Sigma \ t} +  \left(i\mu - \Sigma \ t \right) \partial_t \left[e^{ik^T \mu - \frac{1}{2} t^T \Sigma \ t} \right] \right) |_{t=0} \\
+&= \underbrace{i^{-2}}_{=-1} \big( - \Sigma  + \underbrace{\left(i\mu - \Sigma \ t \right)^2 \partial_t \left[e^{ik^T \mu - \frac{1}{2} t^T \Sigma \ t} \right] \big) |_{t=0}}_{=(i\mu)^2 \text{ due to t=0}} \\
 &= -(-\Sigma - \mu^2) \\
 &= \Sigma + \mu^2
 \end{align*}
@@ -324,7 +325,7 @@ For a scaled but centered Gaussian distribution $\mathcal{N}(0, \sigma^2 \text{I
 <div style="overflow-x: auto;">
 $$
 \begin{align*}
-\hat{p}(k) &= e^{-\frac{1}{2} \sigma^2 t^2}
+\hat{p}(k) &= e^{-\frac{1}{2} \sigma^2 k^T k}
 \end{align*}
 $$
 </div>
@@ -351,13 +352,13 @@ The left hand side can be rewritten as
 <div style="overflow-x: auto;">
 $$
 \begin{align*}
-\mathbb{E}_{p(x_0, \epsilon)}\left[ \epsilon e^{ik \ (\alpha(t) x_0 + \beta(t) \epsilon)} \right] 
-&= \mathbb{E}_{p(x_0)}\left[ e^{ik \ \alpha(t) x_0} \right] \mathbb{E}_{p(\epsilon)}\left[ \epsilon e^{ik \ \beta(t) \epsilon} \right] \\
-&= \mathbb{E}_{p(x_0)}\left[ e^{ik \ \alpha(t) x_0} \right] \left(-\frac{i}{\beta(t)} \right) \nabla_k \mathbb{E}_{p(\epsilon)}\left[ e^{ik \ \beta(t) \epsilon} \right] \\
-&= \mathbb{E}_{p(x_0)}\left[ e^{ik \ \alpha(t) x_0} \right] \left(-\frac{i}{\beta(t)} \right) \nabla_k e^{-\frac{1}{2}\beta(t)^2 \ k^T k} \\
-&= \mathbb{E}_{p(x_0)}\left[ e^{ik \ \alpha(t) x_0} \right] i \beta(t) k \underbrace{e^{-\frac{1}{2}\beta(t)^2 \ k^T k}}_{\text{CF of }\mathcal{N}(0, \beta(t) \text{I})} \\
-&= \mathbb{E}_{p(x_0)}\left[ e^{ik \ \alpha(t) x_0} \right] i \beta(t) k \mathbb{E}_{p(\epsilon)}\left[ e^{ik \beta(t) \epsilon} \right] \\
-&= i \beta(t) k \mathbb{E}_{p_t(x_t)}\left[ e^{ik (\alpha(t) x_0 + \beta(t) \epsilon)} \right] \\
+\mathbb{E}_{p(x_0, \epsilon)}\left[ \epsilon \ e^{ik \ (\alpha(t) x_0 + \beta(t) \epsilon)} \right] 
+&= \mathbb{E}_{p(x_0)}\left[ e^{ik \ \alpha(t) x_0} \right] \mathbb{E}_{p(\epsilon)}\left[ \color{blue}{\epsilon} \ e^{ik \ \beta(t) \epsilon} \right] \\
+&= \mathbb{E}_{p(x_0)}\left[ e^{ik \ \alpha(t) x_0} \right] \color{blue}{\left(-\frac{i}{\beta(t)} \right) \nabla_k} \ \mathbb{E}_{p(\epsilon)}\left[ e^{ik \ \beta(t) \epsilon} \right] \\
+&= \mathbb{E}_{p(x_0)}\left[ e^{ik \ \alpha(t) x_0} \right] \left(-\frac{i}{\beta(t)} \right) \nabla_k e^{-\frac{1}{2}\beta(t)^2 \ t^T t} \\
+&= \mathbb{E}_{p(x_0)}\left[ e^{ik \ \alpha(t) x_0} \right] i \beta(t) k \color{blue}{\underbrace{e^{-\frac{1}{2}\beta(t)^2 \ k^T k}}_{\text{CF of }\mathcal{N}(0, \beta(t) \text{I})} } \\
+&= \mathbb{E}_{p(x_0)}\left[ e^{ik \ \alpha(t) x_0} \right] i \beta(t) k \ \color{blue}{ \mathbb{E}_{p(\epsilon)}\left[ e^{ik \beta(t) \epsilon} \right] } \\
+&= i \beta(t) k \ \mathbb{E}_{p_t(x_t)}\left[ e^{ik (\alpha(t) x_0 + \beta(t) \epsilon)} \right] \\
 &= i \beta(t) k \ \hat{p}_{\alpha(t) x_0 + \beta(t) \epsilon}(k) \\
 \end{align*}
 $$
