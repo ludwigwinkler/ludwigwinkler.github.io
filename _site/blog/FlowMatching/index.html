@@ -1,0 +1,895 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+  Jekyll integration by somiibo.com
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+
+<title>Matching Flows and Diffusion Models</title>
+<meta name="description" content="">
+
+<link rel="apple-touch-icon" sizes="180x180" href="http://localhost:4000/assets/icon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:4000/assets/icon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:4000/assets/icon/favicon-16x16.png">
+<link rel="manifest" href="http://localhost:4000/assets/icon/manifest.json">
+<link rel="mask-icon" href="http://localhost:4000/assets/icon/safari-pinned-tab.svg" color="#5bbad5">
+<link rel="shortcut icon" href="http://localhost:4000/assets/icon/favicon.ico">
+<meta name="msapplication-config" content="http://localhost:4000/assets/icon/browserconfig.xml">
+<meta name="theme-color" content="#ffffff">
+
+<!-- CSS -->
+<link rel="stylesheet" href="http://localhost:4000/assets/css/main.css" />
+<noscript><link rel="stylesheet" href="http://localhost:4000/assets/css/noscript.css" /></noscript>
+
+	</head>
+	<body class="is-loading">
+
+		<!-- Wrapper -->
+			<div id="wrapper" class="fade-in">
+
+				<!-- Header -->
+        <header id="header">
+          <a href="http://localhost:4000/" class="logo">Ludwig Winkler</a>
+        </header>
+
+				<!-- Nav -->
+					<nav id="nav">
+
+            <ul class="links">
+  <li class=""><a href="http://localhost:4000/">Home</a></li>
+  <li class=""><a href="http://localhost:4000/blog/">Machine Learning & Math</a></li>
+  <li class=""><a href="http://localhost:4000/globalizedfinance/">Kleptocracy</a></li>
+  <li class=""><a href="http://localhost:4000/readinglist/">Reading List</a></li>
+  <li class=""><a href="http://localhost:4000/photography/">Photography</a></li>
+  <li class=""><a href="http://localhost:4000/about/">About</a></li>
+</ul>
+<!-- <ul class="links">
+  <li class=""><a href="http://localhost:4000/">Home</a></li>
+  <li class=" active "><a href="http://localhost:4000/blog/">Machine Learning & Math</a></li>
+  <li class=""><a href="http://localhost:4000/readinglist/">Reading List</a></li>
+  <li class=""><a href="http://localhost:4000/photography/">Photography</a></li>
+  <li class=""><a href="http://localhost:4000/about/">About</a></li>
+</ul> -->
+
+
+						<ul class="icons">
+              <li><a href="https://twitter.com/default" class="icon fa-twitter" rel="nofollow"><span class="label">Twitter</span></a></li>
+              <li><a href="https://github.com/default" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+				<div id="main">
+          <section class="post">
+    				<header class="major">
+      				<span class="date">08 Dec 2024</span>
+      				<h1>Matching Flows and Diffusion Models</h1>
+      				<p>It's a (Tinder) Match: Flow Matching, Scores and Diffusion</p>
+      			</header>
+      			<div class="image main"><img src="/blog/FlowMatching/sample_flow.png" alt=""></div>
+      			<p><head>
+<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
+       <script type="text/x-mathjax-config">
+         MathJax.Hub.Config({
+           tex2jax: {
+             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+             displayMath: [['$$','$$']],
+             processEscapes: true
+           }
+         });
+       </script>
+       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+
+<p>“Creating noise from data is easy, creating data from noise is generative modelling.”</p>
+
+<p>That was the first sentence in the seminal ‘Score-Based Generative Modelling Through Stochastic Differential Equations’ by Yang Song et al.
+It introduced a rigorous mathematical framework for A) turning data into noise with a predetermined stochastic process and B) training a neural network to revert this process.
+While congruent work had been done by other groups and researchers that paper was the starting point that kicked off generative modelling for me by introducing ‘Diffusion Models’.</p>
+
+<p>Diffusion models have delivered a breakthrough in generative modelling thanks to (IMHO) two main properties: simulation-free training and separating the modelling problem into many separate smaller problems.
+They use a forward process which transforms data into noise <em>over time</em>.
+During training, we can jump to any time step of this forward process and train the model to make the noisy data slightly less noisy.
+Just as we can turn data into noise by repeatedly adding just a sliver of noise to it, we can equally denoise data (with the right model) repeatedly to recover the original data.</p>
+
+<p>The data samples are transformed into noise samples by a stochastic process which is defined by a stochastic differential equation (SDE),</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+dX_t &amp;= \mu(X_t, t) dt + \sigma(t) dW_t \\
+% &amp;= \dot{\alpha}(t) X_t + \dot{\sigma}(t) dW_t
+\end{align*}
+$$
+</div>
+
+<p>We can take a sample $x_0 \sim p(x)$ from the data distribution $p(x)$ and if we simulate the SDE long enough, we will end up with a sample $x_1$ that is indistinguishable (in a statistical sense) from a sample $\epsilon \sim p(\epsilon)$ from the noise distribution $p(\epsilon)$.</p>
+
+<p>The reverse process, which transforms noise samples $\epsilon$ into sample from the data distribution $p(x)$, is defined by the reverse SDE,</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+dX_\tau = \left\{-\mu(X_\tau, \tau) + \frac{1}{2} \sigma_\tau^2 \left(1 +\alpha^2 \right)\nabla_x \log p_\tau(x_\tau) \right\} d\tau + \alpha \sigma_\tau dW_\tau
+\end{align*}
+$$
+</div>
+
+<p>where the score function $\nabla_x \log p_\tau(x_\tau)$ is learned by a neural network and the $\alpha$ serves as a hyperparameter.</p>
+
+<p>The free choice of $\alpha$ can revert the original stochastic process in a number of different ways.
+The formulation of the reverse SDE automatically takes care of the different behaviors of $\alpha$.
+The score term acts as an optimal control term with which we control the reverse process.
+If we scale up the diffusion with a large $\alpha$, in turn we automatically act with greater control on the stochastic system.
+We could also set $\alpha=0$ in which case the Wiener process vanishes and we’re dealing with a deterministic ODE</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+dX_\tau &amp;= \left\{-\mu(X_\tau, \tau) + \frac{1}{2} \sigma_\tau^2 \left(1 +\alpha^2 \right)\nabla_x \log p_\tau(x_\tau) \right\} d\tau + \alpha \sigma_\tau dW_\tau \Big|_{\alpha=0} \\
+&amp;= -\mu(X_\tau, \tau) d\tau + \frac{1}{2} \sigma_\tau^2 \nabla_x \log p_\tau(x_\tau) d\tau
+\end{align*}
+$$
+</div>
+
+<p>One interpretation of diffusion model is that we want to connect a data distribution with a noise distribution.
+Upon successfull training, we can then sample from the noise distribution and transform it into data.
+The stochastic process at the heart of diffusion models provides this (stochastic) connection.</p>
+
+<p>While we originally started out with the idea of connecting data and noise with a stochastic process, setting $\alpha=0$ in the reverse SDE gives us a deterministic connection.</p>
+
+<!-- Fundamentally, their formulation rested upon the provision of a tractable, analytically accessible stochastic process.
+As derived in this [blog post](https://ludwigwinkler.github.io/blog/SimpleReverseSDE/), these stochastic processes could also be simulated in a deterministic fashion with the idea of probability flows. -->
+
+<p>But does the connection really have to be stochastic at all?
+The probability flow interpretation of diffusion models suggests that we can also connect data and noise deterministically by setting $\alpha=0$ in the reverse SDE.</p>
+
+<h3 id="flow-matching-vector-fields">Flow Matching Vector Fields</h3>
+
+<p>The authors of the original Flow Matching paper followed this chain of thought and directly parameterized the ‘connection’ between the data and the noise distribution with a deterministic vector field.
+But instead of going through the trouble of deriving a stochastic process that would transform data into noise, they started out from a deterministic map by defining a vector field $v(x_t, t)$ that would transform data samples $x_0$ into noise samples $\epsilon$.</p>
+
+<p><img src="/blog/FlowMatching/setup.png" alt="Description of the image" style="width: 100%; height: auto;" /></p>
+
+<p>Comparing this with the SDE formulation above, we can see that the vector field $v(x_t, t)$ directly defines a deterministic transformation from data $x_0$ to noise $\epsilon$:</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+dX_t &amp;= \mu(X_t, t) dt + \sigma(t) dW_t \\
+&amp; \downarrow \\
+dx_t &amp;= v(x_t, t) dt \\
+&amp;= \dot{\alpha}(t) x_0 + \dot{\beta}(t) \epsilon
+\end{align*}
+$$
+</div>
+
+<p>The two terms $\dot{\alpha}(t)$ and $\dot{\beta}(t)$ are the time derivative of the interpolation</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+x_t &amp;= \alpha(t) x_0 + \beta(t) \epsilon
+\end{align*}
+$$
+</div>
+<p>where the interpolation functions $\alpha(t)$ and $\beta(t)$ are chosen such that $\alpha(t)$ monotonically decreases from 1 to 0 and $\beta(t)$ monotonically increases from 0 to 1.
+In fact, they can be chosen as simple as a linear function of time:</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\alpha(t) &amp;= 1-t\\
+\beta(t) &amp;= t.
+\end{align*}
+$$
+</div>
+
+<p>And that’s it: we have defined the mathematics of a generative model in less than four straightforward lines of equations.
+We can take a sample $x$ from the data distribution and transform it into a sample $\epsilon$ from the noise distribution by integrating the vector field $v(x_t, t)$ over time,</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\epsilon &amp;= x_0 + \int_{t=0}^1 v(x_t, t) dt \\
+&amp;= x_0 + \int_{t=0}^1 \dot{\alpha}(t) \ x_0 + \dot{\beta}(t) \ \epsilon \ dt \\
+&amp;= x_0 + [\alpha(t)]_{t=0}^{t=1} \ x_0 + [\beta(t)]_{t=0}^{t=1} \ \epsilon\\
+&amp;= x_0 - \ x_0 + \epsilon \\
+&amp;= \epsilon
+\end{align*}
+$$
+</div>
+
+<p>The integration above is straightforward and unsurprisingly the equation holds.
+But also that is the direction that we can model easily since we’re already given a data sample $x_0$.
+Sampling $\epsilon$ from the noise distribution and computing the interpolation is trivial in this setup.</p>
+
+<p>The reverse direction is more interesting.
+We want to sample $\epsilon$ and integrate the interpolation backwards such that we obtain a sample from $p(x)$.</p>
+
+<p>For that we parameterize a vector field $v_\theta(x_t, t)$ that transforms noise samples $\epsilon$ into data samples $x_0$.
+To train we minimize the difference between the vector field $v_\theta(x_t, t)$ and the true vector field $v(x_t, t)$.</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\mathcal{L}(\theta) &amp;= \mathbb{E}_{x_0 \sim p(x), \epsilon \sim p(\epsilon), t \sim \mathcal{U}(0,1)} \left[ \left\| v_\theta(x_t, t) - v(x_t, t) \right\|^2 \right] \\ 
+&amp;= \mathbb{E}_{x_0 \sim p(x), \epsilon \sim p(\epsilon), t \sim \mathcal{U}(0,1)} \left[ \left\| v_\theta(x_t, t) - (\dot{\alpha}(t)x_0 + \dot{\beta}(t) \epsilon) \right\|^2 \right]
+\end{align*}
+$$
+</div>
+
+<p>This objective function tasks the neural network parameterizing $v_\theta(x_t, t)$ to predict the direct line between $x_0$ and $\epsilon$.</p>
+
+<p><img src="/blog/FlowMatching/trained_flow.png" alt="Description of the image" style="width: 100%; height: auto;" /></p>
+
+<p>To achieve sampling ‘all’ we have to do is integrate the learned vector field $v_\theta(x_t, t)$ backwards in time from the noise distribution to obtain a sample $x_0$ from the data distribution.
+In this setup, we don’t have $x_0$ and we will integrate the learned vector field $v_\theta(x_t, t)$ backwards in time to obtain a sample $x_0$ from the data distribution,</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+x_0 = \epsilon + \int_{\tau=1}^0 v_\theta(x_\tau, \tau) d\tau
+\end{align*}
+$$
+</div>
+
+<p><img src="/blog/FlowMatching/sample_flow.png" alt="Description of the image" style="width: 100%; height: auto;" /></p>
+
+<p>Voila, we have a generative model that can sample from the data distribution by integrating a vector field backwards in time.</p>
+
+<!-- ### Interpolants $\alpha(t)$ and $\beta(t)$ -->
+
+<!-- <div style="overflow-x: auto;"> -->
+<!-- $$
+\begin{align*}
+dx_t &= \dot{\alpha}(t) x_0 + \dot{\beta}(t) \epsilon \\
+&= v(x_t, t)
+\end{align*}
+$$ -->
+<!-- </div> -->
+
+<h3 id="the-score-in-flow-matching">The Score in Flow Matching</h3>
+
+<p>So far we have only talked about the vector field $v(x_t, t)$ and its learned counterpart $v_\theta(x_t, t)$.
+We saw that the vector field $v(x_t, t)$ directly connects data samples $x_0$ with noise samples $\epsilon$ with a deterministic map.
+The vector field $v_\theta(x_t, t)$ is trained to approximate this connection.
+For sampling we have to solve the ODE $dx_\tau = v_\theta(x_\tau, \tau) d\tau$ backwards in time from the noise distribution.</p>
+
+<p>Can we construct an SDE from this vector field, to obtain a stochastic process that connects data and noise?
+If we can answer this question to the affirmative we would like to have a reverse time SDE in the following form:</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+dX_\tau = \left\{-v_\theta(x_\tau, \tau) + \frac{1}{2} \sigma^2(\tau) \nabla_x \log p_\tau(x_\tau) \right\}d\tau + \sigma(\tau) dW_\tau
+\end{align*}
+$$
+</div>
+
+<p>So the role of the diffusion term $\sigma(\tau)$ is to introduce noise into the system which we control with the score term $\nabla_x \log p_\tau(x_\tau)$.
+Remember that setting the diffusion parameter $\sigma(\tau)=0$ would recover our ODE.
+Adding a Wiener process $dW_\tau$ to the ODE is easy but deriving the correct stochastic control term $\nabla_x \log p_\tau(x_\tau)$ is a whole other story.</p>
+
+<p>In order to derive the score term $\nabla_x \log p_\tau(x_\tau)$ we have to do a quick excursion into the realm of characteristic functions.</p>
+
+<h4 id="characteristic-functions">Characteristic Functions</h4>
+
+<p>What we’re aiming for is to determine the score term $\nabla_x \log p_\tau(x_t)$ from the stochastic process that connects the two random variables $x_0$ and $\epsilon$.
+But the random variable $x_t$ during simpling is the sum of two unknown random variables $x_0$ and $\epsilon$, namely via $x_t = \alpha(t) x_0 + \beta(t) \epsilon$.
+This is the sum of two random variables.</p>
+
+<p>The probability distribution of the sum of two random variables is the convolution of the probability density functions of the two respective random variables.
+So in our case we have the sum of two independent weighted random variables $\alpha(t) x_0$ and $\beta(t)\epsilon$.
+For the time being we will first consider the sum of two independent random variables $x_0$ and $\epsilon$ without their respective scaling.</p>
+
+<p>Considering only $Z = X + Y$ the PDF of $Y$ is then the convolution of the PDFs of $X$ and $Y$:</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+p(z) &amp;= p(x) \star p(y) \\
+&amp;= \int_{x=-\infty}^{\infty} p(x) \ \cdot \ p(z - x) \ dx \\
+% &amp;= \hat{p}_{x_0}(k) \cdot \hat{p}_\epsilon(k) \\
+\end{align*}
+$$
+</div>
+
+<p>which is a bit difficult to work with.</p>
+
+<p>Also, why is actually the convolution of the two PDF’s?
+In the case of the sum of $X$ and $Y$ we have to consider all possible values of $X$ and $Y$ that sum up to $Z$.
+For example, let’s consider the probability of obtaining $Z=5$.
+We can then first choose $X$ and choose $Y$ as the remainder such that $Y = Z-X$.
+In order to get $Z=5$ we need to consider the joint probability of all permissible combinations of $X$ and $Y$, so for example $X=2$ and $Y=3$, or $X=3$ and $Y=2$, or $X=4$ and $Y=1$ or $X=-1000$ and $Y=995$.
+In terms of a decision tree, the convolution symbolizes first choosing $X$ and then choosing $Y = Z - X$ such that ultimately $X+Y=Z$.</p>
+
+<p>Computing the convolution would be a bit of a hassle.
+But fortunately, we can use the Fourier transform to turn this into a more amenable expression.
+People with signal processing experience will already know that the convolution in the spatial domain corresponds to the multiplication in the frequency domain.
+Thus if we can apply the Fourier transform to the two respective PDF’s $p(x)$ and $p(y)$, we can instead just multiply them and then transform the resulting PDF back to the spatial domain,</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+p(z) &amp;= \int_{z=-\infty}^{\infty} p(x) \ \cdot \ p(y - x) \ dx \\
+&amp;= \text{IFT}\left[ \hat{p}_{x}(k) \cdot \hat{p}_y(k) \right] \\
+\end{align*}
+$$
+</div>
+<p>where $\hat{p} = \text{FT}\left[ p \right]$ is the Fourier transform of a function $p$ and $\text{IFT}$ is the inverse Fourier transform.
+Remember that probability density functions are also just functions with some particular properties.</p>
+
+<p>But how do we apply the Fourier transform to a random variable?
+We interpret the probability density function $p(x)$ just like a regular function and on the way aggregate $-2\pi t = k$ to obtain</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\hat{p}_x(k) &amp;= \int_{x=-\infty}^{\infty} p(x) e^{\overbrace{-i2\pi k}^{=it}x} dx \\ 
+&amp;= \int_{x=-\infty}^{\infty} p(x) e^{itx} dx \\
+&amp;= \mathbb{E}_{p(x)} \left[ e^{itx} \right]
+\end{align*}
+$$
+</div>
+
+<p>Applying the Fourier transformation on a PDF gives us, what is referred to as, the characteristic function of the random variable.</p>
+
+<p>We can easily apply the Fourier transform to the sum of two random variables $Z = X + Y$, and obtain</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\hat{p}_{z}(k) &amp;= \mathbb{E}_{p(z)} \left[ e^{it \ z } \right] \\
+&amp;= \int_{z=-\infty}^{\infty} p(z) \ e^{ikz} dz \\ 
+&amp;= \int_{z=-\infty}^{\infty} \overbrace{\int_{x=-\infty}^\infty p(x) \cdot p(z - x) dx}^{p(z)} \ e^{ik \ z} dz \\ 
+&amp;= \int_{z=-\infty}^{\infty} \int_{x=-\infty}^\infty p(x) \cdot p(z - x)  \ e^{ik \ z} \ dx \ dz \\ 
+\end{align*}
+$$
+</div>
+<p>applying the change of variable $y = z - x$, from which follows be rearranging $z = x + y$ and by differentiation $dz = dy$,</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\hat{p}_{z}(k) &amp;= \mathbb{E}_{p(z)} \left[ e^{it \ z } \right] \\
+&amp;= \int_{z=-\infty}^{\infty} \int_{x=-\infty}^\infty p(x) \cdot p(\overbrace{z - x}^{y}) \ e^{ik \ z} \ dx \ dz \quad | \quad dz = dy \\ 
+&amp;= \int_{y=-\infty}^{\infty} \int_{x=-\infty}^\infty p(x) \cdot p(y) \ e^{ik \ (x + y)} \ dx \ dy \\
+&amp;= \int_{x=-\infty}^\infty p(x) \ e^{ik \ x} dx \cdot \int_{y=-\infty}^{\infty} p(y) \ e^{ik \ y} \ dy \\
+&amp;= \mathbb{E}_{p(x)} \left[ e^{it \ x } \right] \cdot \mathbb{E}_{p(y)} \left[ e^{it \ y } \right]
+\end{align*}
+$$
+</div>
+
+<p>It should be noted that the separation of the two random variables $X$ and $Y$ in the Fourier domain is a direct consequence of their independence.
+But this bodes well for our original problem of the sum of two random variables $x_t = \alpha(t) x_0 + \beta(t) \epsilon$ where the random variables $x_0$ and $\epsilon$ are chosen to be statistically independent by design.</p>
+
+<p>As it will become important for the derivation of the score term, we will now consider the characteristic function of a multivariate Normal distribution,</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\hat{p}(k) &amp;= \mathbb{E}_{p(x)} \left[ e^{it \ x } \right] \\
+&amp;= e^{it^T \mu - \frac{1}{2} t^T \Sigma \ t}
+\end{align*}
+$$
+</div>
+
+<p>One of the big advantages of the characteristic function is that it is easy to compute the expectation value of the corresponding distribution by simply deriving once for the first moment and twice for the second moment and setting $t=0$ and multiplying the result by $i^{-k}$ where $k$ denotes the oment.
+For the Gaussian example above, all we have to do is</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\mathbb{E}[x] 
+&amp;= i^{-1}\partial_t \hat{p}(k) |_{t=0} \\
+&amp;= i^{-1} \partial_t e^{it^T \mu - \frac{1}{2} t^T \Sigma \ t} |_{t=0} \\
+&amp;= i^{-1} \left(i\mu - \Sigma \ t \right) e^{it^T \mu - \frac{1}{2} t^T \Sigma \ t} |_{t=0} \\
+&amp;= \mu \\
+\mathbb{E}[x^2] 
+&amp;= i^{-2}\partial_t \left(i\mu - \Sigma \ t \right) e^{it^T \mu - \frac{1}{2} t^T \Sigma \ t} |_{t=0} \\
+&amp;= i^{-2} \left( \partial_t \left[ \left(i\mu - \Sigma \ t \right) \right] e^{it^T \mu - \frac{1}{2} t^T \Sigma \ t} +  \left(i\mu - \Sigma \ t \right) \partial_t \left[e^{it^T \mu - \frac{1}{2} t^T \Sigma \ t} \right] \right) |_{t=0} \\
+&amp;= \underbrace{i^{-2}}_{=-1} \big( - \Sigma  + \underbrace{\left(i\mu - \Sigma \ t \right)^2 \partial_t \left[e^{it^T \mu - \frac{1}{2} t^T \Sigma \ t} \right] \big) |_{t=0}}_{=(i\mu)^2 \text{ due to t=0}} \\
+&amp;= -(-\Sigma - \mu^2) \\
+&amp;= \Sigma + \mu^2
+\end{align*}
+$$
+</div>
+<p>which is the rearranged definition of the variance $\Sigma = \mathbb{E}[x^2] - \mathbb{E}[x]^2$.</p>
+
+<p>For a scaled but centered Gaussian distribution $\mathcal{N}(0, \sigma^2 \text{I})$ we have the characteristic function</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\hat{p}(k) &amp;= e^{-\frac{1}{2} \sigma^2 t^2}
+\end{align*}
+$$
+</div>
+<p>which will be of importance for defining the score term in the flow matching approach</p>
+
+<h4 id="the-fundamental-score-term">The (Fundamental) Score Term</h4>
+
+<p>In the following, we will try (and suceed) to express the conditional noise $\mathbb{E}[\epsilon | x_t]$ with characteristic functions.</p>
+
+<p>Let’s consider the equation</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\mathbb{E}_{p(x_t, \epsilon)}\left[ \epsilon e^{ik \ x_t} \right] 
+&amp;= \mathbb{E}_{p(x_t)}\left[ \mathbb{E}_{p(\epsilon)}\left[ \epsilon e^{ik \ x_t} \big| x_t \right] \right] \\
+&amp;= \mathbb{E}_{p(x_t)}\left[ \mathbb{E}_{p(\epsilon)}\left[ \epsilon \big| x_t \right] e^{ik \ x_t} \right] \\
+&amp;= \int_{x_t} \mathbb{E}_{p(\epsilon)}\left[ \epsilon \big| x_t \right] e^{ik \ x_t} p(x_t) dx_t \\
+\end{align*}
+$$
+</div>
+<p>where we used the law of iterated expectations.</p>
+
+<p>The left hand side can be rewritten as</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\mathbb{E}_{p(x_0, \epsilon)}\left[ \epsilon e^{ik \ (\alpha(t) x_0 + \beta(t) \epsilon)} \right] 
+&amp;= \mathbb{E}_{p(x_0)}\left[ e^{ik \ \alpha(t) x_0} \right] \mathbb{E}_{p(\epsilon)}\left[ \epsilon e^{ik \ \beta(t) \epsilon} \right] \\
+&amp;= \mathbb{E}_{p(x_0)}\left[ e^{ik \ \alpha(t) x_0} \right] \left(-\frac{i}{\beta(t)} \right) \nabla_k \mathbb{E}_{p(\epsilon)}\left[ e^{ik \ \beta(t) \epsilon} \right] \\
+&amp;= \mathbb{E}_{p(x_0)}\left[ e^{ik \ \alpha(t) x_0} \right] \left(-\frac{i}{\beta(t)} \right) \nabla_k e^{-\frac{1}{2}\beta(t)^2 \ k^T k} \\
+&amp;= \mathbb{E}_{p(x_0)}\left[ e^{ik \ \alpha(t) x_0} \right] i \beta(t) k \underbrace{e^{-\frac{1}{2}\beta(t)^2 \ k^T k}}_{\text{CF of }\mathcal{N}(0, \beta(t) \text{I})} \\
+&amp;= \mathbb{E}_{p(x_0)}\left[ e^{ik \ \alpha(t) x_0} \right] i \beta(t) k \mathbb{E}_{p(\epsilon)}\left[ e^{ik \beta(t) \epsilon} \right] \\
+&amp;= i \beta(t) k \mathbb{E}_{p_t(x_t)}\left[ e^{ik (\alpha(t) x_0 + \beta(t) \epsilon)} \right] \\
+&amp;= i \beta(t) k \ \hat{p}_{\alpha(t) x_0 + \beta(t) \epsilon}(k) \\
+\end{align*}
+$$
+</div>
+
+<p>Combining the two expressions we obtain</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\int_{x_t} \mathbb{E}_{p(\epsilon)}\left[ \epsilon \big| x_t \right] e^{ik \ x_t} p(x_t) dx_t
+&amp;= i \beta(t) k \ \hat{p}_{\alpha(t) x_0 + \beta(t) \epsilon}(k) \\
+&amp;= i \beta(t) k \mathbb{E}_{p_t(x_t)}\left[ e^{ik (\alpha(t) x_0 + \beta(t) \epsilon)} \right] \\
+&amp;= i \beta(t) k \int e^{ik x_t} p_t(x_t) dx_t \\
+&amp;= \beta(t) \int \nabla_{x_t} \left[ e^{ik x_t} \right] p_t(x_t) dx_t \\
+&amp;= - \beta(t) \int  e^{ik x_t} \nabla_{x_t} \left[ p_t(x_t) \right] dx_t \\
+&amp;= - \beta(t) \int  e^{ik x_t} \nabla_{x_t} \log p_t(x_t) \cdot p_t(x_t) dx_t \\
+\end{align*}
+$$
+</div>
+
+<p>Where we used the nice property of integration by parts on probability density functions which evaluate to $0$ at the boundaries of $x=\pm \infty$.
+If we consider a test function $f(x)$ and a probability density function $p(x)$, we have</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\int \nabla_x f(x) p(x) dx &amp;= \underbrace{[f(x) p(x)]_{x=-\infty}^{\infty}}_{=0} - \int f(x) \nabla_x p(x) dx \\
+&amp;= - \int f(x) \nabla_x p(x) dx
+\end{align*}
+$$
+</div>
+
+<p>Putting these two expressions together we obtain it will only hold if the differing terms actually equate to each other, namely</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\int_{x_t} \mathbb{E}_{p(\epsilon)}\left[ \epsilon \big| x_t \right] e^{ik \ x_t} p(x_t) dx_t
+&amp;= - \beta(t) \int \nabla_{x_t} \log p_t(x_t) \cdot  e^{ik x_t} \ p_t(x_t) dx_t \\
+&amp; \downarrow \\
+\mathbb{E}_{p(\epsilon)}\left[ \epsilon \big| x_t \right] &amp;= -\beta(t) \nabla_{x_t} \log p_t(x_t)
+\end{align*}
+$$
+</div>
+
+<h3 id="obtaining-scores-from-the-vector-field">Obtaining Scores from the Vector Field</h3>
+
+<p>plot that with x and vector field allows estimating epsilon and data, ‘projection’</p>
+
+<p>Flow matching trains a neural network to approximate the vector field $v(x_t, t)$.
+Given a data sample $x_t$ we can then extract the conditional expectation of both $x_0$ and $\epsilon$ from the vector field $v(x_t, t)$.
+Intuitively, this can be achieved by projecting via the vector field $v(x_t, t)$ from the data sample $x_t$ to the noise sample $\epsilon$ and back to the data sample $x_0$.
+Remember that this is how we defined the vector field $v(x_t, t)$ in the first place.</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+v_\theta(x_t, t) 
+&amp;= \dot{\alpha}(t) \mathbb{E}[x^*_0 | x_t] + \dot{\beta}(t) \mathbb{E}[\epsilon | x_t] \\ 
+&amp;= \dot{\alpha}(t) \mathbb{E}\left[\frac{x_t - \beta(t) \epsilon}{\alpha(t)} \mid x_t\right] + \dot{\beta}(t) \mathbb{E}[\epsilon | x_t] \\ 
+&amp;= \frac{\dot{\alpha}(t)}{\alpha(t)} x_t - \frac{\dot{\alpha}(t)\beta(t)}{\alpha(t)}\mathbb{E}\left[ \epsilon \mid x_t\right] + \dot{\beta}(t) \mathbb{E}[\epsilon | x_t] \\
+&amp;= \frac{\dot{\alpha}(t)}{\alpha(t)} x_t + \left(\dot{\beta}(t) - \frac{\dot{\alpha}(t)\beta(t)}{\alpha(t)} \right)\mathbb{E}[\epsilon | x_t] \\
+&amp;= \frac{\dot{\alpha}(t)}{\alpha(t)} x_t + \left( \frac{\dot{\beta}(t) \alpha(t) - \dot{\alpha}(t)\beta(t)}{\alpha(t)} \right)\mathbb{E}[\epsilon | x_t] \\
+\end{align*}
+$$
+</div>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+v_\theta(x_t, t) - \frac{\dot{\alpha}(t)}{\alpha(t)} x_t
+&amp;= \frac{\dot{\beta}(t) \alpha(t) - \dot{\alpha}(t)\beta(t)}{\alpha(t)}\mathbb{E}[\epsilon | x_t] \\
+\alpha(t) v_θ(x_t, t) - \dot{\alpha}(t)x_t
+&amp;=  \left( \dot{\beta}(t) \alpha(t) - \dot{\alpha}(t)\beta(t) \right)\mathbb{E}[\epsilon | x_t] \\
+\frac{\alpha(t) v_\theta(x_t, t) - \dot{\alpha}(t)x_t}{\dot{\beta}(t) \alpha(t) - \dot{\alpha}(t)\beta(t)}
+&amp;= \mathbb{E}[\epsilon | x_t] \\
+\frac{\alpha(t) v_\theta(x_t, t) - \dot{\alpha}(t)x_t}{\dot{\beta}(t) \alpha(t) - \dot{\alpha}(t)\beta(t)}
+&amp;= -\beta(t) \nabla_x \log p_t(x_t) \\
+\nabla_x \log p_t(x_t) &amp;= \frac{1}{\beta(t)}\frac{\alpha(t) v_\theta(x_t, t) - \dot{\alpha}(t)x_t}{\dot{\alpha}(t)\beta(t) - \dot{\beta}(t) \alpha(t) }
+\end{align*}
+$$
+</div>
+
+<p>We can actually gain some insight into the score term by reducing the score estimator and plugging in the linear interpolation functions $\alpha(t) = 1-t$ and $\beta(t) = t$ and $\dot{\alpha}(t) = -1$ and $\dot{\beta}(t) = 1$.</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\nabla_x \log p_t(x_t) &amp;= \frac{1}{\beta(t)}\frac{\alpha(t) v_\theta(x_t, t) - \dot{\alpha}(t)x_t}{\dot{\alpha}(t)\beta(t) - \dot{\beta}(t) \alpha(t) } \\
+&amp;= -\frac{1}{\beta(t)}\left(\alpha(t) v_\theta(x_t, t) - \dot{\alpha}(t) \ x_t \right) \\
+&amp;= - \frac{1}{\beta(t)}\left(x_t + (1-t) \cdot v_\theta(x_t, t) \right) \\ 
+&amp;= - \frac{1}{\beta(t)} \ \epsilon \\
+&amp;= - \frac{1}{\beta(t)} \ \frac{x_t - \alpha(t)x_0}{\beta(t)} \\
+\end{align*}
+$$
+</div>
+
+<p>Here, $\epsilon$ is the best guess we can estimate given the data sample $x_t$ and the vector field $v_\theta(x_t, t)$.
+Looking at the drift of the reverse time SDE, we can simplify things to</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\mathbb{E}[dX_\tau] &amp;= \left(-v_\theta(x_\tau, \tau) + \frac{1}{2} \sigma^2(\tau) \nabla_x \log p_\tau(x_\tau)\right) d\tau \\
+&amp;= \left(-v_\theta(x_\tau, \tau) + \frac{1}{2} \sigma^2(\tau) \frac{\color{blue}{\epsilon}}{\beta(t)} \right) d\tau \\
+&amp;= \left(-v_\theta(x_\tau, \tau) + \frac{1}{2} \sigma^2(\tau) \frac{1}{\beta(t)} \color{blue}{\frac{x_t - \alpha(t) x_0}{\beta(t)}} \right) d\tau \\
+&amp;= \left(-v_\theta(x_\tau, \tau) + \frac{1}{2} \sigma^2(\tau) \frac{x_t - \alpha(t) x_0}{\beta(t)^2} \right) d\tau
+\end{align*}
+$$
+</div>
+
+<p><img src="/blog/FlowMatching/flow_score.png" alt="Description of the image" style="width: 100%; height: auto;" /></p>
+
+<p>The score in the flow matching approach pushes the sample $x_t$ towards what it believes is the interpolated data $\alpha(t) x_0$.
+Close to the noise, this will naturally be very close around $0$, as the noise is centered around $0$.
+But as we’re approaching the data sample $x_0$, the score term will push the sample $x_t$ towards the data sample $x_0$.</p>
+
+<p>We can in fact compare this to the score of a in a DDPM model with attenuation $\alpha(t)$ and noise $\sigma(t)$.
+The forward process can be sampled in an almost identical fashion to the flow matching model.
+DDPM models differ in their choice of $\alpha(t)$ and $\sigma(t)$ which are analogous in the continuous time limit to the Ornstein Uhlenbeck process.</p>
+
+<p>Sampling $x_t$ in a DDPM model is functionally identical to the flow matching model.</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+x_t &amp;\sim \mathcal{N}(\alpha(t) x_0, \sigma(t)^2) \\
+x_t &amp;= \alpha(t) x_0 + \sigma(t) \epsilon \\
+\epsilon &amp;= \frac{x_t - \alpha(t) x_0}{\sigma(t)}
+\end{align*}
+$$
+</div>
+
+<p>Since DDPM is built on the Ornstein Uhlenbeck process, the score term is given by by the gradient of the log marginal probability density function of a time-dependent Gaussian:</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\nabla_{x_t} \log p_t(x_t) &amp;= \nabla_{x_t} \log \mathcal{N}(x_t | \alpha(t) x_0, \sigma(t)^2)\\
+&amp;= \nabla_{x_t} -\frac{(x_t - \alpha(t) x_0)^2}{2 \sigma(t)^2} \\
+&amp;= -\frac{x_t - \alpha(t) x_0}{\sigma(t)^2} \\
+&amp;= - \frac{\epsilon}{\sigma(t)}
+\end{align*}
+$$
+</div>
+
+<p>where all the relevant terms occur in a similar fashion to the flow matching model.</p>
+
+<h3 id="lets-try-it-out-with-some-code">Let’s try it out with some Code</h3>
+
+<p>So let’s try this out with some code.
+One thing to note, and what I personally think is nice, is that the interpolation paramters $\alpha(t)$, $\beta(t)$ can be chosen independently from the diffusion parameter $\sigma(t)$.
+<!-- <div style="overflow-x: auto;"> -->
+\(\begin{align*}
+dx_\tau = (-v_\theta(x_\tau, \tau) + \frac{1}{2} \sigma^2(\tau) \nabla_x \log p_\tau(x_\tau))d\tau + \sigma(\tau) dW_\tau
+\end{align*}\)
+<!-- </div> --></p>
+
+<p>Let’s generate some data in form of a 3D GMM:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">torch</span>
+<span class="kn">import</span> <span class="n">einops</span>
+<span class="kn">import</span> <span class="n">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+
+<span class="sh">'''</span><span class="s">Generate Samples from a rudimentary GMM</span><span class="sh">'''</span>
+<span class="n">means</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="nc">Tensor</span><span class="p">([[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">]])</span>
+<span class="n">stds</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="nc">Tensor</span><span class="p">([[</span><span class="mf">0.25</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.15</span><span class="p">]]).</span><span class="nf">repeat</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">means</span><span class="p">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">stds</span><span class="p">.</span><span class="n">shape</span>
+<span class="n">num_samples</span> <span class="o">=</span> <span class="mi">1_000</span>
+<span class="n">gmm</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">distributions</span><span class="p">.</span><span class="nc">Normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="n">means</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">stds</span><span class="p">)</span>
+<span class="n">samples</span> <span class="o">=</span> <span class="n">einops</span><span class="p">.</span><span class="nf">rearrange</span><span class="p">(</span><span class="n">gmm</span><span class="p">.</span><span class="nf">sample</span><span class="p">((</span><span class="n">num_samples</span><span class="p">,)),</span> <span class="sh">'</span><span class="s">n d c -&gt; (n c) d</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">samples</span><span class="p">.</span><span class="n">shape</span>
+
+<span class="sh">'''</span><span class="s">Visualize GMM Samples</span><span class="sh">'''</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="p">.</span><span class="nf">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">samples</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">dim</span><span class="p">].</span><span class="nf">hist</span><span class="p">(</span><span class="n">samples</span><span class="p">[:,</span><span class="n">dim</span><span class="p">],</span> <span class="n">density</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">dim</span><span class="p">].</span><span class="nf">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="/blog/FlowMatching/data.png" alt="Description of the image" style="width: 100%; height: auto;" /></p>
+
+<p>Let’s define the flow matching model and the loss function:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">torch.nn</span> <span class="kn">import</span> <span class="n">Sequential</span><span class="p">,</span> <span class="n">Module</span><span class="p">,</span> <span class="n">Linear</span><span class="p">,</span> <span class="n">ELU</span><span class="p">,</span> <span class="n">GELU</span>
+<span class="kn">import</span> <span class="n">tqdm</span>
+<span class="k">class</span> <span class="nc">FlowMatchingModule</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">pos_emb_dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">net</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="nf">super</span><span class="p">().</span><span class="nf">__init__</span><span class="p">()</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">dim</span> <span class="o">=</span> <span class="n">dim</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">pos_emb_dim</span> <span class="o">=</span> <span class="n">pos_emb_dim</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">net</span><span class="p">:</span>
+            <span class="n">self</span><span class="p">.</span><span class="n">net</span> <span class="o">=</span> <span class="nc">Sequential</span><span class="p">(</span>
+                <span class="nc">Linear</span><span class="p">(</span><span class="n">dim</span> <span class="o">+</span> <span class="n">pos_emb_dim</span><span class="p">,</span> <span class="n">hidden</span><span class="p">),</span> <span class="c1"># R^Input x R_[0,1] -&gt; R^Hidden
+</span>                <span class="nc">GELU</span><span class="p">(),</span>
+                <span class="nc">Linear</span><span class="p">(</span><span class="n">hidden</span><span class="p">,</span> <span class="n">hidden</span><span class="p">),</span> <span class="nc">GELU</span><span class="p">(),</span>
+                <span class="nc">Linear</span><span class="p">(</span><span class="n">hidden</span><span class="p">,</span> <span class="n">hidden</span><span class="p">),</span> <span class="nc">GELU</span><span class="p">(),</span>
+                <span class="nc">Linear</span><span class="p">(</span><span class="n">hidden</span><span class="p">,</span> <span class="n">hidden</span><span class="p">),</span> <span class="nc">GELU</span><span class="p">(),</span>
+                <span class="nc">Linear</span><span class="p">(</span><span class="n">hidden</span><span class="p">,</span> <span class="n">dim</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">self</span><span class="p">.</span><span class="n">net</span> <span class="o">=</span> <span class="n">net</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">t_emb</span> <span class="o">=</span> <span class="nc">Linear</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">pos_emb_dim</span><span class="o">//</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="nf">t_emb</span><span class="p">(</span><span class="n">t</span><span class="p">).</span><span class="nf">mul</span><span class="p">(</span><span class="n">torch</span><span class="p">.</span><span class="n">pi</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="nf">cat</span><span class="p">((</span><span class="n">t</span><span class="p">.</span><span class="nf">cos</span><span class="p">(),</span> <span class="n">t</span><span class="p">.</span><span class="nf">sin</span><span class="p">()),</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">self</span><span class="p">.</span><span class="nf">net</span><span class="p">(</span><span class="n">torch</span><span class="p">.</span><span class="nf">cat</span><span class="p">((</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">),</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">ot_loss</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sh">'''</span><span class="s">Learns the vector field from data to noise</span><span class="sh">'''</span>
+        <span class="n">time</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="nf">rand</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="mi">1</span><span class="p">).</span><span class="nf">to</span><span class="p">(</span><span class="n">x</span><span class="p">.</span><span class="n">device</span><span class="p">)</span> <span class="c1"># random time t ~ U(0,1)
+</span>        <span class="n">noise</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="nf">randn_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="c1"># noise distribution epsilon ~ N(0,1)
+</span>        <span class="n">noisedx</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">time</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="p">(</span><span class="mf">0.001</span> <span class="o">+</span> <span class="mf">0.999</span> <span class="o">*</span> <span class="n">time</span><span class="p">)</span> <span class="o">*</span> <span class="n">noise</span> <span class="c1"># OT interpolation with time stabilization
+</span>        <span class="n">target</span> <span class="o">=</span> <span class="n">noise</span><span class="p">.</span><span class="nf">mul</span><span class="p">(</span><span class="mf">0.999</span><span class="p">)</span> <span class="o">-</span> <span class="n">x</span> <span class="c1"># vector from data to noise
+</span>        <span class="n">prediction</span> <span class="o">=</span> <span class="nf">model</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">noisedx</span><span class="p">)</span>
+        <span class="nf">return </span><span class="p">(</span><span class="n">prediction</span> <span class="o">-</span> <span class="n">target</span><span class="p">).</span><span class="nf">square</span><span class="p">()</span> <span class="c1"># compute per dim per sample loss
+</span>
+</code></pre></div></div>
+<p>Let’s write the Runge-Kutta 4 integrator and the sampling function:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@torch.no_grad</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">num_samples</span><span class="p">,</span> <span class="n">num_steps</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">show_traj</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="n">device</span> <span class="o">=</span> <span class="nf">next</span><span class="p">(</span><span class="n">model</span><span class="p">.</span><span class="nf">parameters</span><span class="p">()).</span><span class="n">device</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="nf">randn</span><span class="p">((</span><span class="n">num_samples</span><span class="p">,</span> <span class="n">model</span><span class="p">.</span><span class="n">dim</span><span class="p">)).</span><span class="nf">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">dt</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">num_steps</span>
+    <span class="n">traj_data_prediction</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">.</span><span class="nf">tqdm</span><span class="p">(</span><span class="nf">enumerate</span><span class="p">(</span><span class="n">torch</span><span class="p">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">num_steps</span><span class="p">))):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="p">.</span><span class="nf">expand</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="mi">1</span><span class="p">).</span><span class="nf">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">True</span><span class="p">:</span> <span class="c1"># RK4
+</span>            <span class="n">k1</span> <span class="o">=</span> <span class="nf">model</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+            <span class="n">k2</span> <span class="o">=</span> <span class="nf">model</span><span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="n">dt</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">x</span> <span class="o">-</span> <span class="p">(</span><span class="n">dt</span><span class="o">*</span><span class="n">k1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">k3</span> <span class="o">=</span> <span class="nf">model</span><span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="n">dt</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">x</span> <span class="o">-</span> <span class="p">(</span><span class="n">dt</span><span class="o">*</span><span class="n">k2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">k4</span> <span class="o">=</span> <span class="nf">model</span><span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="n">dt</span><span class="p">,</span> <span class="n">x</span> <span class="o">-</span> <span class="n">dt</span><span class="o">*</span><span class="n">k3</span><span class="p">)</span>
+            <span class="n">dx</span> <span class="o">=</span> <span class="p">(</span><span class="n">k1</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">k2</span> <span class="o">+</span> <span class="mi">2</span><span class="o">*</span><span class="n">k3</span> <span class="o">+</span> <span class="n">k4</span><span class="p">)</span> <span class="o">/</span> <span class="mi">6</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">dt</span> <span class="o">*</span><span class="n">dx</span>
+            <span class="k">if</span> <span class="n">i</span><span class="o">%</span><span class="p">(</span><span class="n">num_steps</span><span class="o">//</span><span class="mi">10</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                <span class="n">traj_data_prediction</span> <span class="o">+=</span> <span class="p">[</span><span class="n">x</span> <span class="o">-</span> <span class="n">t</span><span class="o">*</span><span class="n">dx</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">dt</span> <span class="o">*</span> <span class="p">(</span><span class="nf">model</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">x</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">show_traj</span><span class="p">:</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="p">.</span><span class="nf">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nf">len</span><span class="p">(</span><span class="n">traj_data_prediction</span><span class="p">),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nf">enumerate</span><span class="p">(</span><span class="n">traj_data_prediction</span><span class="p">):</span>
+            <span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="nf">hist</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span><span class="mi">0</span><span class="p">].</span><span class="nf">cpu</span><span class="p">().</span><span class="nf">numpy</span><span class="p">(),</span> <span class="n">density</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="nf">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="nf">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="nf">set_title</span><span class="p">(</span><span class="sa">f</span><span class="sh">'</span><span class="s">Integration Time t=</span><span class="si">{</span><span class="mi">1</span><span class="o">-</span><span class="n">i</span><span class="o">/</span><span class="nf">len</span><span class="p">(</span><span class="n">traj_data_prediction</span><span class="p">)</span><span class="si">:</span><span class="p">.</span><span class="mi">2</span><span class="n">f</span><span class="si">}</span><span class="sh">'</span><span class="p">)</span>
+        <span class="n">fig</span><span class="p">.</span><span class="nf">suptitle</span><span class="p">(</span><span class="sh">'</span><span class="s">Predicted target tilde{x} of generative Process (Direction: noise -&gt; data)</span><span class="sh">'</span><span class="p">)</span>
+        <span class="n">plt</span><span class="p">.</span><span class="nf">tight_layout</span><span class="p">()</span>
+        <span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">x</span>
+</code></pre></div></div>
+
+<p>and visualize the samples and the intermediate trajectories</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gen_samples</span> <span class="o">=</span> <span class="nf">sample</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="n">num_steps</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">show_traj</span><span class="o">=</span><span class="bp">True</span><span class="p">).</span><span class="nf">cpu</span><span class="p">().</span><span class="nf">numpy</span><span class="p">()</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">gen_samples</span><span class="p">.</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="p">.</span><span class="nf">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">samples</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">dim</span><span class="p">,</span><span class="mi">1</span><span class="p">].</span><span class="nf">hist</span><span class="p">(</span><span class="n">gen_samples</span><span class="p">[:,</span><span class="n">dim</span><span class="p">],</span> <span class="n">density</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">dim</span><span class="p">,</span><span class="mi">0</span><span class="p">].</span><span class="nf">hist</span><span class="p">(</span><span class="n">samples</span><span class="p">[:,</span><span class="n">dim</span><span class="p">],</span> <span class="n">density</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">dim</span><span class="p">,</span><span class="mi">0</span><span class="p">].</span><span class="nf">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">dim</span><span class="p">,</span><span class="mi">0</span><span class="p">].</span><span class="nf">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">dim</span><span class="p">,</span><span class="mi">1</span><span class="p">].</span><span class="nf">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">dim</span><span class="p">,</span><span class="mi">1</span><span class="p">].</span><span class="nf">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">].</span><span class="nf">set_title</span><span class="p">(</span><span class="sh">'</span><span class="s">Ground Truth Dist</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">].</span><span class="nf">set_title</span><span class="p">(</span><span class="sh">'</span><span class="s">Generated Samples</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">.</span><span class="nf">suptitle</span><span class="p">(</span><span class="sh">'</span><span class="s">Ground Truth Data vs Generated Samples</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="/blog/FlowMatching/ode_samples.png" alt="Description of the image" style="width: 100%; height: auto;" />
+<img src="/blog/FlowMatching/ode.png" alt="Description of the image" style="width: 100%; height: auto;" /></p>
+
+<p>Now let’s do some SDE sampling</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">sample_sde</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span> <span class="n">num_steps</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">show_traj</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sh">"""</span><span class="s">
+        x_t = (1 - t) * x + t * noise
+            = α * x + σ * noise
+        score(velocity):
+            s(x,t) = σ_t^-1 ( α v(x,t) - dα/dt x ) / (dα/dt * σ_t - α_t * dσ_t/dt )^2
+        </span><span class="sh">"""</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="nf">randn</span><span class="p">((</span><span class="n">n_samples</span><span class="p">,</span> <span class="mi">3</span><span class="p">)).</span><span class="nf">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">num_steps</span>
+
+        <span class="n">alpha_t</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">t</span>
+        <span class="n">dalpha_t</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">sigma_t</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="mf">0.001</span> <span class="o">+</span> <span class="mf">0.999</span> <span class="o">*</span> <span class="n">t</span>
+        <span class="n">dsigma_t</span> <span class="o">=</span> <span class="mf">0.999</span>
+        <span class="n">traj_data_prediction</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="p">.</span><span class="nf">no_grad</span><span class="p">():</span>  <span class="c1"># runge-kutta-4 diffeq solver
+</span>            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">.</span><span class="nf">tqdm</span><span class="p">(</span><span class="nf">enumerate</span><span class="p">(</span><span class="n">torch</span><span class="p">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">num_steps</span><span class="p">))):</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="p">.</span><span class="nf">expand</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="mi">1</span><span class="p">).</span><span class="nf">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="nf">model</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+                <span class="n">score</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="mi">1</span>
+                    <span class="o">/</span> <span class="p">(</span><span class="nf">sigma_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1e-6</span><span class="p">)</span>
+                    <span class="o">*</span> <span class="p">(</span><span class="nf">alpha_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">v</span> <span class="o">-</span> <span class="n">dalpha_t</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+                    <span class="o">/</span> <span class="p">(</span><span class="n">dalpha_t</span> <span class="o">*</span> <span class="nf">sigma_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">-</span> <span class="nf">alpha_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">dsigma_t</span> <span class="o">+</span> <span class="mf">1e-6</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">dx</span> <span class="o">=</span> <span class="n">v</span> <span class="o">*</span> <span class="n">dt</span>
+                <span class="n">dx</span> <span class="o">+=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="nf">sigma_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">score</span> <span class="o">*</span> <span class="n">dt</span>
+                <span class="n">dx</span> <span class="o">+=</span> <span class="p">(</span><span class="nf">sigma_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">dt</span><span class="p">).</span><span class="nf">pow</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">torch</span><span class="p">.</span><span class="nf">randn_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">dx</span>
+                <span class="k">if</span> <span class="n">i</span><span class="o">%</span><span class="p">(</span><span class="n">num_steps</span><span class="o">//</span><span class="mi">10</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+                    <span class="n">traj_data_prediction</span> <span class="o">+=</span> <span class="p">[</span><span class="n">x</span> <span class="o">-</span> <span class="n">t</span><span class="o">*</span><span class="n">dx</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">show_traj</span><span class="p">:</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="p">.</span><span class="nf">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nf">len</span><span class="p">(</span><span class="n">traj_data_prediction</span><span class="p">),</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nf">enumerate</span><span class="p">(</span><span class="n">traj_data_prediction</span><span class="p">):</span>
+                <span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="nf">hist</span><span class="p">(</span><span class="n">data</span><span class="p">[:,</span><span class="mi">0</span><span class="p">].</span><span class="nf">cpu</span><span class="p">().</span><span class="nf">numpy</span><span class="p">(),</span> <span class="n">density</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+                <span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="nf">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="nf">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+                <span class="n">axs</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="nf">set_title</span><span class="p">(</span><span class="sa">f</span><span class="sh">'</span><span class="s">Integration Time t=</span><span class="si">{</span><span class="mi">1</span><span class="o">-</span><span class="n">i</span><span class="o">/</span><span class="nf">len</span><span class="p">(</span><span class="n">traj_data_prediction</span><span class="p">)</span><span class="si">:</span><span class="p">.</span><span class="mi">2</span><span class="n">f</span><span class="si">}</span><span class="sh">'</span><span class="p">)</span>
+            <span class="n">fig</span><span class="p">.</span><span class="nf">suptitle</span><span class="p">(</span><span class="sh">'</span><span class="s">Predicted target tilde{x} of generative Process (Direction: noise -&gt; data)</span><span class="sh">'</span><span class="p">)</span>
+            <span class="n">plt</span><span class="p">.</span><span class="nf">tight_layout</span><span class="p">()</span>
+            <span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">x</span>
+</code></pre></div></div>
+
+<p>And visualize the SDE samples:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">gen_samples</span> <span class="o">=</span> <span class="nf">sample_sde</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="n">num_steps</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">show_traj</span><span class="o">=</span><span class="bp">True</span><span class="p">).</span><span class="nf">cpu</span><span class="p">().</span><span class="nf">numpy</span><span class="p">()</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">gen_samples</span><span class="p">.</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="p">.</span><span class="nf">subplots</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">samples</span><span class="p">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">dim</span><span class="p">,</span><span class="mi">1</span><span class="p">].</span><span class="nf">hist</span><span class="p">(</span><span class="n">gen_samples</span><span class="p">[:,</span><span class="n">dim</span><span class="p">],</span> <span class="n">density</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">dim</span><span class="p">,</span><span class="mi">0</span><span class="p">].</span><span class="nf">hist</span><span class="p">(</span><span class="n">samples</span><span class="p">[:,</span><span class="n">dim</span><span class="p">],</span> <span class="n">density</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">dim</span><span class="p">,</span><span class="mi">0</span><span class="p">].</span><span class="nf">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">dim</span><span class="p">,</span><span class="mi">0</span><span class="p">].</span><span class="nf">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">dim</span><span class="p">,</span><span class="mi">1</span><span class="p">].</span><span class="nf">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">axs</span><span class="p">[</span><span class="n">dim</span><span class="p">,</span><span class="mi">1</span><span class="p">].</span><span class="nf">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">].</span><span class="nf">set_title</span><span class="p">(</span><span class="sh">'</span><span class="s">Ground Truth Dist</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">].</span><span class="nf">set_title</span><span class="p">(</span><span class="sh">'</span><span class="s">Generated Samples</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">.</span><span class="nf">suptitle</span><span class="p">(</span><span class="sh">'</span><span class="s">Ground Truth Data vs Generated Samples</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p><img src="/blog/FlowMatching/sde_samples.png" alt="Description of the image" style="width: 100%; height: auto;" />
+<img src="/blog/FlowMatching/sde.png" alt="Description of the image" style="width: 100%; height: auto;" /></p>
+
+<p>What I find interesting is that the ODE samples settle quite quickly on the bifurcation of the GMM:
+<img src="/blog/FlowMatching/ode_samples.png" alt="Description of the image" style="width: 100%; height: auto;" />
+Already at 40% of the integration time, the samples are quite close to the GMM.</p>
+
+<p>Compare that to the SDE sample which takes a bit longer to settle on the GMM:
+<img src="/blog/FlowMatching/sde_samples.png" alt="Description of the image" style="width: 100%; height: auto;" />
+Only in the last 30% or so are the modes actually captured.
+This is actually very close to classic diffusion models where the schedules are chosen in such a way that a perceptual sample only crystallizes close to the end of the sampling process.</p>
+
+<p>Coolio, that’s it for today.</p>
+</p>
+      		</section>
+
+          <!-- <div class="comments-wrapper">
+          <div id="disqus_thread"></div> -->
+          <!-- <script>
+              /**
+               *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+               *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+               */
+
+              var disqus_config = function () {
+                  this.page.url = '/blog/FlowMatching/';  /*Replace PAGE_URL with your page's canonical URL variable*/
+                  this.page.identifier = '/blog/FlowMatching/'; /*Replace PAGE_IDENTIFIER with your page's unique identifier variable*/
+              };
+
+              (function() {  /* dont endit below this line */
+                  var d = document, s = d.createElement('script');
+
+                  s.src = 'https://default.disqus.com/embed.js';
+
+                  s.setAttribute('data-timestamp', +new Date());
+                  (d.head || d.body).appendChild(s);
+              })();
+          </script> -->
+          <!-- <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript> -->
+        <!-- </div>/.comments-wrapper -->
+
+
+					<!-- Footer -->
+						<footer>
+              <ul class="actions">
+                <li><a href="http://localhost:4000/blog/" class="button">My Blog</a></li>
+              </ul>
+						</footer>
+					</div>
+
+				<!-- Footer -->
+        <!-- <footer id="footer">
+  <section>
+    <form method="POST" action="https://formspree.io/">
+      <div class="field">
+        <label for="name">Name</label>
+        <input type="text" name="name" id="name" />
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="text" name="email" id="email" />
+      </div>
+      <div class="field">
+        <label for="message">Message</label>
+        <textarea name="message" id="message" rows="3"></textarea>
+      </div>
+      <ul class="actions">
+        <li><input type="submit" value="Send Message" /></li>
+      </ul>
+    </form>
+  </section>
+  <section class="split contact">
+    <section class="alt">
+      <h3>Location</h3>
+      <p>Berlin, Germany</p>
+    </section>
+    <section>
+      <h3>Phone</h3>
+      <p><a href="tel:"></a></p>
+    </section>
+    <section>
+      <h3>Email</h3>
+      <p><a href="mailto:"></a></p>
+    </section>
+    <section>
+      <h3>Social</h3>
+      <ul class="icons alt">
+        <li><a href="https://twitter.com/ludiXIVwinkler" class="icon fa-twitter" rel="nofollow"><span class="label">Twitter</span></a></li>
+        <!-- <li><a href="https://facebook.com/default" class="icon fa-facebook" rel="nofollow"><span class="label">Facebook</span></a></li> -->
+        <!-- <li><a href="https://instagram.com/default" class="icon fa-instagram" rel="nofollow"><span class="label">Instagram</span></a></li> -->
+        <li><a href="https://github.com/ludwigwinkler" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
+      </ul>
+    </section>
+  </section>
+</footer>
+<!-- Copyright -->
+<div id="copyright">
+  <ul>
+       <li>&copy; HTML5 UP</li>
+       <li>Design by <a href="https://html5up.net" rel="nofollow">HTML5 UP</a></li>
+       <li>Jekyll Integration by <a href="https://soundgrail.com">SoundGrail</a></li>
+       <li>Theme made by <a href="https://github.com/iwiedenm/jekyll-theme-massively-src"> iwiedenm</a></li>
+ </ul>
+</div>
+ -->
+
+			</div>
+
+      <!-- Scripts -->
+  		<!-- <!-- DYN -->
+<script src="http://localhost:4000/assets/js/jquery.min.js"></script>
+<script src="http://localhost:4000/assets/js/jquery.scrollex.min.js"></script>
+<script src="http://localhost:4000/assets/js/jquery.scrolly.min.js"></script>
+<script src="http://localhost:4000/assets/js/skel.min.js"></script>
+<script src="http://localhost:4000/assets/js/util.js"></script>
+<script src="http://localhost:4000/assets/js/main.js"></script>
+ -->
+			<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=default"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments)};
+  gtag('js', new Date());
+
+  gtag('config', 'default');
+</script>
+ -->
+
+	</body>
+</html>
