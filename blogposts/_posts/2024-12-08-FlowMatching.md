@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Matching Flows and Diffusion Models"
+title:  "Matching Flows and Scores"
 category: blog
 date:   2024-12-08
 excerpt: "Flow Matching, Diffusion, Scores and Characteristic Functions"
