@@ -10,7 +10,7 @@
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 
-<title>Matching Flows and Diffusion Models</title>
+<title>Matching Flows and Scores</title>
 <meta name="description" content="">
 
 <link rel="apple-touch-icon" sizes="180x180" href="http://localhost:4000/assets/icon/apple-touch-icon.png">
@@ -68,8 +68,8 @@
           <section class="post">
     				<header class="major">
       				<span class="date">08 Dec 2024</span>
-      				<h1>Matching Flows and Diffusion Models</h1>
-      				<p>It's a (Tinder) Match: Flow Matching, Scores and Diffusion</p>
+      				<h1>Matching Flows and Scores</h1>
+      				<p>Flow Matching, Diffusion, Scores and Characteristic Functions</p>
       			</header>
       			<div class="image main"><img src="/blog/FlowMatching/sample_flow.png" alt=""></div>
       			<p><head>
@@ -216,7 +216,9 @@ $$
 $$
 </div>
 
-<p>This objective function tasks the neural network parameterizing $v_\theta(x_t, t)$ to predict the direct line between $x_0$ and $\epsilon$.</p>
+<p>This objective function tasks the neural network parameterizing $v_\theta(x_t, t)$ to predict the direct line between $x_0$ and $\epsilon$.
+Whereas the interpolations are by design crossing each other, the neural network can only settle on a single direction for a $(x_t, t)$ input pair.
+That’s the reason why we’ll obtain a smooth vector field after training:</p>
 
 <p><img src="/blog/FlowMatching/trained_flow.png" alt="Description of the image" style="width: 100%; height: auto;" /></p>
 
@@ -304,7 +306,7 @@ Thus if we can apply the Fourier transform to the two respective PDF’s $p(x)$ 
 <div style="overflow-x: auto;">
 $$
 \begin{align*}
-p(z) &amp;= \int_{z=-\infty}^{\infty} p(x) \ \cdot \ p(y - x) \ dx \\
+p(z) &amp;= \int_{z=-\infty}^{\infty} p(x) \ \cdot \ p(z - x) \ dx \\
 &amp;= \text{IFT}\left[ \hat{p}_{x}(k) \cdot \hat{p}_y(k) \right] \\
 \end{align*}
 $$
@@ -372,14 +374,14 @@ For the Gaussian example above, all we have to do is</p>
 $$
 \begin{align*}
 \mathbb{E}[x] 
-&amp;= i^{-1}\partial_t \hat{p}(k) |_{t=0} \\
-&amp;= i^{-1} \partial_t e^{ik^T \mu - \frac{1}{2} t^T \Sigma \ t} |_{t=0} \\
-&amp;= i^{-1} \left(i\mu - \Sigma \ t \right) e^{ik^T \mu - \frac{1}{2} t^T \Sigma \ t} |_{t=0} \\
+&amp;= i^{-1}\partial_t \hat{p}(k) |_{k=0} \\
+&amp;= i^{-1} \partial_t e^{ik^T \mu - \frac{1}{2} k^T \Sigma \ k} |_{k=0} \\
+&amp;= i^{-1} \left(i\mu - \Sigma \ t \right) e^{ik^T \mu - \frac{1}{2} t^T \Sigma \ k} |_{k=0} \\
 &amp;= \mu \\
 \mathbb{E}[x^2] 
-&amp;= i^{-2}\partial_t \left(i\mu - \Sigma \ t \right) e^{ik^T \mu - \frac{1}{2} t^T \Sigma \ t} |_{t=0} \\
-&amp;= i^{-2} \left( \partial_t \left[ \left(i\mu - \Sigma \ t \right) \right] e^{ik^T \mu - \frac{1}{2} t^T \Sigma \ t} +  \left(i\mu - \Sigma \ t \right) \partial_t \left[e^{ik^T \mu - \frac{1}{2} t^T \Sigma \ t} \right] \right) |_{t=0} \\
-&amp;= \underbrace{i^{-2}}_{=-1} \big( - \Sigma  + \underbrace{\left(i\mu - \Sigma \ t \right)^2 \partial_t \left[e^{ik^T \mu - \frac{1}{2} t^T \Sigma \ t} \right] \big) |_{t=0}}_{=(i\mu)^2 \text{ due to t=0}} \\
+&amp;= i^{-2}\partial_t \left(i\mu - \Sigma \ k \right) e^{ik^T \mu - \frac{1}{2} k^T \Sigma \ k} |_{k=0} \\
+&amp;= i^{-2} \left( \partial_t \left[ \left(i\mu - \Sigma \ k \right) \right] e^{ik^T \mu - \frac{1}{2} k^T \Sigma \ k} +  \left(i\mu - \Sigma \ k \right) \partial_t \left[e^{ik^T \mu - \frac{1}{2} k^T \Sigma \ k} \right] \right) |_{k=0} \\
+&amp;= \underbrace{i^{-2}}_{=-1} \big( - \Sigma  + \underbrace{\left(i\mu - \Sigma \ k \right)^2 \partial_t \left[e^{ik^T \mu - \frac{1}{2} k^T \Sigma \ k} \right] \big) |_{k=0}}_{=(i\mu)^2 \text{ due to k=0}} \\
 &amp;= -(-\Sigma - \mu^2) \\
 &amp;= \Sigma + \mu^2
 \end{align*}
@@ -421,7 +423,7 @@ $$
 \mathbb{E}_{p(x_0, \epsilon)}\left[ \epsilon \ e^{ik \ (\alpha(t) x_0 + \beta(t) \epsilon)} \right] 
 &amp;= \mathbb{E}_{p(x_0)}\left[ e^{ik \ \alpha(t) x_0} \right] \mathbb{E}_{p(\epsilon)}\left[ \color{blue}{\epsilon} \ e^{ik \ \beta(t) \epsilon} \right] \\
 &amp;= \mathbb{E}_{p(x_0)}\left[ e^{ik \ \alpha(t) x_0} \right] \color{blue}{\left(-\frac{i}{\beta(t)} \right) \nabla_k} \ \mathbb{E}_{p(\epsilon)}\left[ e^{ik \ \beta(t) \epsilon} \right] \\
-&amp;= \mathbb{E}_{p(x_0)}\left[ e^{ik \ \alpha(t) x_0} \right] \left(-\frac{i}{\beta(t)} \right) \nabla_k e^{-\frac{1}{2}\beta(t)^2 \ t^T t} \\
+&amp;= \mathbb{E}_{p(x_0)}\left[ e^{ik \ \alpha(t) x_0} \right] \left(-\frac{i}{\beta(t)} \right) \nabla_k e^{-\frac{1}{2}\beta(t)^2 \ k^T k} \\
 &amp;= \mathbb{E}_{p(x_0)}\left[ e^{ik \ \alpha(t) x_0} \right] i \beta(t) k \color{blue}{\underbrace{e^{-\frac{1}{2}\beta(t)^2 \ k^T k}}_{\text{CF of }\mathcal{N}(0, \beta(t) \text{I})} } \\
 &amp;= \mathbb{E}_{p(x_0)}\left[ e^{ik \ \alpha(t) x_0} \right] i \beta(t) k \ \color{blue}{ \mathbb{E}_{p(\epsilon)}\left[ e^{ik \beta(t) \epsilon} \right] } \\
 &amp;= i \beta(t) k \ \mathbb{E}_{p_t(x_t)}\left[ e^{ik (\alpha(t) x_0 + \beta(t) \epsilon)} \right] \\
@@ -481,7 +483,7 @@ Remember that this is how we defined the vector field $v(x_t, t)$ in the first p
 $$
 \begin{align*}
 v_\theta(x_t, t) 
-&amp;= \dot{\alpha}(t) \mathbb{E}[x^*_0 | x_t] + \dot{\beta}(t) \mathbb{E}[\epsilon | x_t] \\ 
+&amp;= \dot{\alpha}(t) \mathbb{E}[x_0 | x_t] + \dot{\beta}(t) \mathbb{E}[\epsilon | x_t] \\ 
 &amp;= \dot{\alpha}(t) \mathbb{E}\left[\frac{x_t - \beta(t) \epsilon}{\alpha(t)} \mid x_t\right] + \dot{\beta}(t) \mathbb{E}[\epsilon | x_t] \\ 
 &amp;= \frac{\dot{\alpha}(t)}{\alpha(t)} x_t - \frac{\dot{\alpha}(t)\beta(t)}{\alpha(t)}\mathbb{E}\left[ \epsilon \mid x_t\right] + \dot{\beta}(t) \mathbb{E}[\epsilon | x_t] \\
 &amp;= \frac{\dot{\alpha}(t)}{\alpha(t)} x_t + \left(\dot{\beta}(t) - \frac{\dot{\alpha}(t)\beta(t)}{\alpha(t)} \right)\mathbb{E}[\epsilon | x_t] \\
