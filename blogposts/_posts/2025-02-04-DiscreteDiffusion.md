@@ -293,36 +293,37 @@ This poses a problem because we can't pull in readily the expectation into the f
 
 But there is a trick we can apply to simplify the expression.
 Since $x_0$ can only take on two distinct states $x_0 \in \{-1, +1\}$, we can linearize the fraction, like so
-<!-- <div style="overflow-x: auto;"> -->
+<div style="overflow-x: auto;">
 $$
 \begin{align}
 \frac{2}{1 + x_t x_0 w_t} = A + x_t x_0 B
 \end{align}
 $$
-<!-- </div> -->
+</div>
 
 Since $x_t x_0 = \pm 1$ we can evaluate those two cases and get
 
-<!-- <div style="overflow-x: auto;"> -->
+<div style="overflow-x: auto;">
 $$
 \begin{align}
 x_t x_0 = - 1: \quad \frac{2}{1 + w_t} &= A + B \\
 x_t x_0 = + 1: \quad \frac{2}{1 - w_t} &= A - B \\
 \end{align}
 $$
-<!-- </div> -->
+</div>
 
 Solving this gives us
-<!-- <div style="overflow-x: auto;"> -->
+<div style="overflow-x: auto;">
 $$
 \begin{align}
 A &= \frac{2}{1 - w_t^2} \\
 B &= \frac{-2w_t}{1 - w_t^2}
 \end{align}
 $$
-<!-- </div> -->
+</div>
 
 which let's us factorize the entire thing to
+<div style="overflow-x: auto;">
 $$
 \begin{align}
     r(x_t) 
@@ -332,21 +333,26 @@ $$
     &= 2 \frac{ 1 - w(t) \ x_t \ \mathbb{E}_{x_0|x_t} \left[x_0 \right]}{1 - w(t)^2} -1 \\
 \end{align}
 $$
+</div>
 
 This effectively gives us a denoising objective $\mathbb{E}_{x_0\|x_t} [ x_0 ]$ which is the initial condition of our jump process that would have generated $x_t$.
 
 ## Categorical Diffusion
 
 This can be extended to a finite state setup with $S > 2$ states with
+<div style="overflow-x: auto;">
 $$
 \begin{align}
     p_i(t + dt) =  p_i(t) \left( 1 - \sum_{j \neq i} \lambda_{i\rightarrow j} \ dt \right) + \sum_{j \neq i} p_{j}(t) \ \lambda_{j \rightarrow i} dt
 \end{align}
 $$
+</div>
+
 with the first term summing up all outgoing transitions and the second summing all incoming probability mass.
 In effect, we simplify the state transition from a $S$-way state transition to a two way transition of one versus any other state.
 
 In classical diffusion fashion, we determine the forward process rates $\lambda$ with a shared noising rate $\beta(t)$ and obtain
+<div style="overflow-x: auto;">
 $$
 \begin{align}
     p_i(t + dt) 
@@ -355,8 +361,11 @@ $$
     &= p_i(t) \left(1 - (S-1) \beta(t) dt \right) + \beta(t) (1-p_i(t)) dt \\
 \end{align}
 $$
+</div>
+
 where $\sum_{j \neq i} \beta(t) = (S-1) \beta(t)$.
 Taking the time derivative gives us
+<div style="overflow-x: auto;">
 $$
 \begin{align}
     \dot{p}_i(t) 
@@ -367,9 +376,10 @@ $$
     &= - S \beta(t) \big\{p_i(t) \frac{1}{S} \big\}
 \end{align}
 $$
+</div>
 
 To solve this ordinary differential equation, we will work with the substitution $u(t) = \beta(t) (1 - S p(t))$,
-
+<div style="overflow-x: auto;">
 $$
 \begin{align}
     u(t) &= \beta(t) (1 - S p(t)) \\
@@ -384,7 +394,10 @@ $$
     u(0) \exp \left[ - S \int_0^t \beta(\tau) d\tau \right] &= u(t)
 \end{align}
 $$
-plugging $u(t)$ back in gives us 
+</div>
+
+plugging $u(t)$ back in gives us
+<div style="overflow-x: auto;">
 $$
 \begin{align}
     \beta(t) (1 - S p(t)) &= \beta(t) (1 - S p(0)) \exp \left[ - S \int_0^t \beta(\tau) d\tau \right] \\
@@ -393,6 +406,7 @@ $$
     p(t) &= \frac{1}{S} + \left( p(0) - \frac{1}{S} \right) \underbrace{\exp \left[ - S \int_0^t \beta(\tau) d\tau \right]}_{\text{exponential interpolator}}
 \end{align}
 $$
+</div>
 which yields a nice exponential interpolation between $\frac{1}{S}, \beta(t) \gg 0$ at equilibrium and $p(0), \beta(0)=0$.
 
 This is identical to the binary Ising case, where we rescaled the states from $\{0,1\}$ to $\{-1, +1\}$ with $2 \cdot x -1$.
@@ -403,35 +417,41 @@ In the Ising case, the equilibrium was 0 which is in the middle of $\{-1, +1\}$ 
 We now aim to work with data with $D$ dimensions and $S$ states, $x_t \in \mathbb{R}^{D \times S}$.
 
 For each discrete state of the process we obtain the forward process of
-
+<div style="overflow-x: auto;">
 $$
 \begin{align}
     p_i(t) = \frac{1}{S} + \left( p_i(0) - \frac{1}{S} \right) \exp \left[ - S \int_0^t \beta(\tau) d\tau \right]
 \end{align}
 $$
+</div>
 where $p_i(0)$ is a one hot discrete distribution.
 
 We have the backward rate defined as
+<div style="overflow-x: auto;">
 $$
 \begin{align}
     f^-_t(y|x) &= \frac{p_t(y)}{p_t(x)} f^+_t(x|y) \\
     &= \mathbb{E}_{x_0 | x_t}\left[ \frac{p_t(y|x_0) }{p_t(x|x_0)} \right] f^+_t(x|y) 
 \end{align}
 $$
+</div>
 with which we can condition our backward ratio on a data set of $x_0$'s
 
-For the backward rate we require two probabilities in the ratio $p_t(y|x_0) / p_t(x|x_0)$ conditioned on the same data sample $x_0$, which we can compute readily via 
+For the backward rate we require two probabilities in the ratio $p_t(y|x_0) / p_t(x|x_0)$ conditioned on the same data sample $x_0$, which we can compute readily via
+<div style="overflow-x: auto;">
 $$
 \begin{align}
     p_t(x_t | x_0) = \frac{1}{S} + \left( p(x_0) - \frac{1}{S} \right) \exp \left[ - S \int_0^t \beta(\tau) d\tau \right]
 \end{align}
 $$
+</div>
 with $p(x_0)$ being a discrete, one-hot distribution with $S$ bins in $D$ dimensions.
 The noising process $p_t(x_t| x_0)$ can be evaluated readily with the equation above.
 
 ### Multi-Class ODE
 
 Going from $i$ to $j$ with the ratio with $w_t = \exp( - S \int_{\tau=0}^t \beta(\tau) d\tau)$
+<div style="overflow-x: auto;">
 $$
 \begin{align}
     r_{ij}(x_0) &= \frac{p(x_t = j | x_0)}{p(x_t = i | x_0)} \\ 
@@ -439,8 +459,10 @@ $$
     &= A + \delta_{i, x_0} \ B + \delta_{j, x_0} \ C
 \end{align}
 $$
+</div>
 
 Since we have only three combinations of variables, we can solve the system of linear equations in the following
+<div style="overflow-x: auto;">
 $$
 \begin{align}
     \delta_{i, x_0} = \delta_{j, x_0} = 0 : & \quad r_{ij}(x_0) = \frac{\frac{1}{S} - w_t \frac{1}{S}}{\frac{1}{S} - w_t \frac{1}{S}} = 1 = A\\
@@ -448,8 +470,10 @@ $$
     \delta_{i, x_0} = 0, \delta_{j, x_0} = 1 : & \quad r_{ij}(x_0) = \frac{\frac{1}{S} + w_t(1 - \frac{1}{S})}{\frac{1}{S} - w_t \frac{1}{S}} = A + C \\
 \end{align}
 $$
+</div>
 
 Plugging in the solution gives us
+<div style="overflow-x: auto;">
 $$
 \begin{align}
     r_{ij}(x_0) &= \frac{p(x_t = j | x_0)}{p(x_t = i | x_0)} \\ 
@@ -460,6 +484,7 @@ $$
     + \underbrace{\left( \frac{\frac{1}{S} + w_t(1 - \frac{1}{S})}{\frac{1}{S} - w_t \frac{1}{S}} -1 \right) \delta_{j, x_0}}_{\text{switching rate}}
 \end{align}
 $$
+</div>
 
 For large $t$, the diffusion rate $\beta_t$ will be concurrently large, while $\lim_{t \rightarrow 0} \rightarrow 1$, such that the switching rate becomes larger and larger for incorrect states.
 This necessitates how to design the function $w_t$.
@@ -467,32 +492,39 @@ This necessitates how to design the function $w_t$.
 ### Tweaking the Diffusion Function $w_t$
 
 The weighting function $w_t$ is defined as
+<div style="overflow-x: auto;">
 $$
 \begin{align}
 w_t &= \exp( - S \int_{\tau=0}^t \beta(\tau) d\tau) \\
 &= \exp( -S \ \beta(t))
 \end{align}
 $$
+</div>
 which is data independent and can be chosen freely.
 
 For starters, I propose to use for $t \in [0, 1]$
+<div style="overflow-x: auto;">
 $$
 \begin{align}
     w_t = \frac{1}{2}\left( 1 + \cos(\pi t) \right)
 \end{align}
 $$
+</div>
 which is a cosine weighting function with 'flattened' edges (flattens out at $t=0$ and $t=1$ via a shifting and scaling).
 
-We can then deduce $\beta_t$ as 
+We can then deduce $\beta_t$ as
+<div style="overflow-x: auto;">
 $$
 \begin{align}
     \beta_t = - \frac{1}{S}\log \left[ \frac{1}{2}\left( 1 + \cos(\pi t) \right) \right]
 \end{align}
 $$
+</div>
 
 We can see that the diffusion rate $\beta_t$ is directly scaled with the number of states, such that for more states $S$ the diffusion rate is reduce as there is intrinsically more variance due to more possibilities of state switching.
 
 Secondly, we would like to regularize the weighting function to a range $w_t \in [w_{min}/(S-1), (1 - w_{min}) \cdot \delta_{i,0}]$, where we bound the weighting of the true state $i$ at time $t=0$ to $1- w_{min}$ and distribute the remaining probability $w_{min}$ onto the $S-1$ remaining states,
+<div style="overflow-x: auto;">
 $$
 \begin{align}
     p_t(x_t=i | x_0) &= \frac{1}{S} + \left( \delta_{i,0} - \frac{1}{S} \right) w_t \underbrace{- \left( w_{min} \ \delta_{i,0} + \frac{w_{\min}}{S-1} ( 1 - \delta_{i,0}) \right) w_t}_{\text{state switching regularization}} \\
@@ -500,9 +532,9 @@ $$
     + \left( ( 1 - w_{min}) \delta_{i,0} - \frac{1}{S} + \frac{w_{\min}}{S-1} ( 1 - \delta_{i,0}) \right) w_t
 \end{align}
 $$
+</div>
 
 During optimization, this state switching regularization might be unimportant, but during sampling, this might provide an important regularization to prevent exploding state switching rates at $t \approx 0$.
 
 While the equation above characterize a smooth function, we can for simplicity's sake also bound the function with a floor and a ceiling by restricting $w_t$ to $w_t \in [ \frac{w_{min}}{S-1}, 1 - w_{min} ]$.
 There only difference is that the weighting function is not smooth anymore, which should be of little importance to the prediction task during sampling.
-
