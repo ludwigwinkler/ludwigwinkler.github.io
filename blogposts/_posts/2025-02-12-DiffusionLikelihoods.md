@@ -4,7 +4,7 @@ title:  "Likelihood Calculations in Diffusion Models"
 category: blog
 date:   2025-02-12
 excerpt: "Mr. Fokker and Mr. Planck, meet Ito-San"
-# image: "/blog/DiscreteDiffusion/cover.png"
+image: "/blog/ItoDensityEstimator.png"
 ---
 <head>
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
