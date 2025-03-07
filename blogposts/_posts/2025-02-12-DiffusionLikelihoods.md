@@ -349,7 +349,7 @@ $$
 Comparing that to $x_t = \alpha_t x_0$ we have succesfully identified $\alpha_t = \exp[ \int_0^t -f_s ds]$.
 
 Equating $\sigma_t$ with $g_t$ will be slightly more difficult because we have to factor in the effect of $-f_t X_t$.
-To properly quantify the relationship between $\sigma_t and $g_t$, we would have to first eliminate the effect of the drift.
+To properly quantify the relationship between $\sigma_t$ and $g_t$, we would have to first eliminate the effect of the drift.
 In order to achieve this we can leverage the idea of a martingale which is the fancy word of a SDE without a drift.
 
 For that we define a new stochastic process $y_t = \frac{x_t}{\alpha_t}$ and differentiating it with either Ito or the quotient rule yields
@@ -360,11 +360,12 @@ dy_t &= d \left[ \frac{x_t}{\alpha_t} \right] \\
 &= \frac{dx_t}{\alpha_t} - \frac{x_t}{\alpha_t^2} \frac{d\alpha_t}{dt} dt \\
 &= \frac{-f_t x_t dt + g_t dW_t}{\alpha_t} - \frac{x_t}{\alpha_t^2} (-f_t) \alpha_t dt \\
 &= \cancel{\frac{-f_t x_t dt}{\alpha_t}} + \frac{g_t dW_t}{\alpha_t} - \cancel{\frac{x_t}{\alpha_t} (-f_t) dt} \\
-&= \frac{g_t dW_t}{\alpha_t}
+&= \frac{g_t}{\alpha_t} dW_t
 \end{align}
 $$
 
 This is highly useful as we can now study the diffusion of $y_t$ over time without having to deal with the drift.
+For martingale, all the convenient properties of Brownian motion hold out of the box, and adding a time-dependent scaling parameter is only a very small nuisance.
 Integrating this time-dependent Brownian Motion yields
 $$
 \begin{align}
@@ -418,7 +419,7 @@ $$
 The identities above allow us to seamlessly translate flow matching schedules $\alpha_t, \sigma_t$ to OU diffusion schedules $f_t, g_t$ and vice versa.
 
 So far, we've only considered the vanilla score matching. 
-But we've seen from this [blog post](https://ludwigwinkler.github.io/blog/FlowMatching/) that we can in fact extract the score out of a flow model.
+But we've seen from this [**blog post**](https://ludwigwinkler.github.io/blog/FlowMatching/) that we can in fact extract the score out of a flow model.
 This implies that we can run a SDE purely from a flow matching model.
 In this case the flow sampling that was previously an ODE can be extended to an SDE, like so
 $$
@@ -440,7 +441,7 @@ $$
 
 The nice thing is that we can scale $\eta_\tau$ up and down as we like and the noise $\eta_\tau dW_\tau$ and the corrective score term automatically balance each other out.
 
-Similarly, we can add extra noise to the SDE formulation as detailed in this [blog post](https://ludwigwinkler.github.io/blog/SimpleReverseSDE/),
+Similarly, we can add extra noise to the SDE formulation as detailed in this [**blog post**](https://ludwigwinkler.github.io/blog/SimpleReverseSDE/),
 $$
 \begin{align}
 dX_\tau = (-f_\tau x_\tau + \frac{1}{2}g_\tau^2(1+\eta_\tau^2)\nabla_x \log p_\theta(x_\tau, \tau))d\tau + \eta_\tau g_\tau dW_\tau
