@@ -58,7 +58,7 @@ It is a generalization of the heat equation, which describes the diffusion of he
 Following these two 'representations' of a stochastic process, we can now ask the question: How can we calculate the likelihood of the observed data given a stochastic process?
 In the following, we will derive two different ways to calculate the likelihood of the observed data given a diffusion model: the probability flow formulation and Ito's density estimator.
 
-# Probability Flows
+### Probability Flows
 
 The first way to compute likelihoods of observed data given a diffusion model is to use the probability flow formulation.
 **This approach rewrites the FPE such that we "pull in" in the diffusive component $\sigma^2(t)$ into the drift component, thereby making the stochastic part "disappear".**
@@ -171,7 +171,7 @@ Effectively, we're backpropagating the vector $\epsilon$ through the neural netw
 We do that for multiple samples of $\epsilon$ and average the results to obtain an unbiased estimate of the trace of the Jacobian matrix.
 Taking a single sample of $\epsilon$ and computing the Jacobian-vector product is computationally more efficient than computing the full Jacobian matrix but comes with a higher estimator variance.
 
-# Ito Density Estimators
+### Ito Density Estimators
 
 The probability flow log-likelihood estimator is derived through the Fokker-Planck equation.
 Here we will compute the log-likelihood of the observed data given a diffusion model using Ito's lemma based on the SDE formulation.
@@ -299,3 +299,164 @@ $$
 
 The result above stands in contrast to the probability flow formulation for calculating the likelihood of the observed data given a diffusion model.
 Whereas the probability flow formulation relies on integrating an ODE, here we can directly compute the log-likelihood of the observed data given a diffusion model by solving a SDE.
+
+### Transforming Flows to Diffusion Models and back
+
+We saw in the beginning how the probability flow formulation of a SDE can extracted from the corresponding FPE.
+This is an ordinary differential equation which we can integrate to obtain the log-likelihood of the observed data given a diffusion model.
+The Ito density estimator, on the other hand, is a stochastic differential equation which we can solve to obtain the log-likelihood of the observed data given a diffusion model.
+
+Wouldn't it be nice if we could train a flow with an optimal transport plan, and subsequently transform it into a diffusion model?
+Can we also transform a diffusion model into a flow?
+
+In order to achieve that should first write out the main equation at the heart of each approach:
+
+$$
+\begin{align}
+\text{Flow Matching} & \quad : X_t = \alpha_t x_0 + \sigma_t \varepsilon \\
+\text{Diffusion Model}& \quad : dX_t = -f_t X_t dt + g_t dW_t
+\end{align}
+$$
+
+Ideally we would like to have the integrated diffusion model $\int_0^t dX_t = X_t$ for both the flow matching and the diffusion model.
+If that were the case, then integrating the diffusion model would yield a random variable witch an identical probability distribution as the flow matching variable $X_t$.
+
+Since integrating stochastic dynamics is always a hassle, we will first look at the average dynamics by taking the expectation over both random variables $dX_t$ and $X_t$.
+Thus we get 
+$$
+\begin{align}
+\text{Flow Matching} & \quad : \mathbb{E}[X_t] = \mathbb{E}[\alpha_t x_0] + \overbrace{\mathbb{E}[\sigma_t \varepsilon]}^{\mathbb{E}[\varepsilon]=0} \\
+\text{Diffusion Model}& \quad : \mathbb{E}[dX_t] = \mathbb{E}[-f_t X_t dt] + \underbrace{\mathbb{E}[g_t dW_t]}_{\mathbb{E}[dW_t]=0}.
+\end{align}
+$$
+
+Now we want $\mathbb{E}[X_t] = \int_0^t \mathbb{E}[-f_s X_s] ds$ to hold such that we can equate $\alpha_t$ with $\int_0^t -f_s ds$.
+We proceed by solving the differential equation $dx_t = f_t x_t dt$:
+$$
+\begin{align}
+dx_t &= -f_t x_t dt \\
+\frac{dx_t}{x_t} &= -f_t dt \\
+d \log x_t &= -f_t dt \\
+\int_0^t d\log x_s &= \int_0^t -f_s ds \\
+\left[ \log x_s \right]_{s=0}^t &= \int_0^t -f_s ds \\
+\log x_t - \log x_0 &= \int_0^t -f_s ds \\
+\log \frac{x_t}{x_0} &= \int_0^t -f_s ds \\
+x_t &= x_0 \ \exp\left[ \int_0^t -f_s ds\right] \\
+&\downarrow \\
+\alpha_t &= \exp\left[ \int_0^t -f_s ds \right]
+\end{align}
+$$
+
+Comparing that to $x_t = \alpha_t x_0$ we have succesfully identified $\alpha_t = \exp[ \int_0^t -f_s ds]$.
+
+Equating $\sigma_t$ with $g_t$ will be slightly more difficult because we have to factor in the effect of $-f_t X_t$.
+To properly quantify the relationship between $\sigma_t and $g_t$, we would have to first eliminate the effect of the drift.
+In order to achieve this we can leverage the idea of a martingale which is the fancy word of a SDE without a drift.
+
+For that we define a new stochastic process $y_t = \frac{x_t}{\alpha_t}$ and differentiating it with either Ito or the quotient rule yields
+$$
+\begin{align}
+dy_t &= d \left[ \frac{x_t}{\alpha_t} \right] \\
+&= \frac{dx_t \alpha_t - x_t d\alpha_t}{\alpha_t^2} \\
+&= \frac{dx_t}{\alpha_t} - \frac{x_t}{\alpha_t^2} \frac{d\alpha_t}{dt} dt \\
+&= \frac{-f_t x_t dt + g_t dW_t}{\alpha_t} - \frac{x_t}{\alpha_t^2} (-f_t) \alpha_t dt \\
+&= \cancel{\frac{-f_t x_t dt}{\alpha_t}} + \frac{g_t dW_t}{\alpha_t} - \cancel{\frac{x_t}{\alpha_t} (-f_t) dt} \\
+&= \frac{g_t dW_t}{\alpha_t}
+\end{align}
+$$
+
+This is highly useful as we can now study the diffusion of $y_t$ over time without having to deal with the drift.
+Integrating this time-dependent Brownian Motion yields
+$$
+\begin{align}
+y_t = y_0 + \int_0^t \frac{g_s}{\alpha_s} dW_s
+\end{align}
+$$
+and pulling the initial condition $y_0$ over to the left side to adjust for the offset of the initial condition we get a variance of
+$$
+\begin{align}
+\mathbb{V}[y_t-y_0] &= \mathbb{E}\left[ ( y_t - y_0 - \mathbb{E}[y_t - y_0])^2 \right] \\
+&= \mathbb{E}\left[ \left( \int_0^t \frac{g_s}{\alpha_s} dW_s  - \underbrace{\mathbb{E}\left[\int_0^t \frac{g_s}{\alpha_s} dW_s \right]}_{\mathbb{E}[dW_s]=0} \right)^2 \right] \\
+&= \mathbb{E}\left[ \left( \int_0^t \frac{g_s}{\alpha_s} dW_s  \right)^2 \right] \quad \quad | \quad \quad \text{Ito Isommetry} \\
+&= \int_0^t \left(\frac{g_s}{\alpha_s}\right)^2 ds
+\end{align}
+$$
+
+With this result, we can now go back to our original definition of $y_t = x_t / \alpha_t$ and substitute back to get the diffusion of the original, non-martingale process,
+$$
+\begin{align}
+\mathbb{V}[y_t-y_0] 
+&= \mathbb{V} \left[\frac{x_t}{\alpha_t}-\frac{x_0}{\alpha_t} \right] \\
+&= \frac{1}{\alpha_t^2} \mathbb{V} \left[x_t-x_0 \right] \\
+&= \int_0^t \left(\frac{g_s}{\alpha_s}\right)^2 ds \\
+& \downarrow \\
+\sigma_t^2 &= \alpha_t^2 \int_0^t \left(\frac{g_s}{\alpha_s}\right)^2 ds
+\end{align}
+$$
+
+Going from flow matching to diffusion is easier once we have one correspondence.
+To obtain the drift parameter $f$, we simply determine the inverse function,
+$$
+\begin{align}
+\alpha_t &= \exp\left[ \int_0^t f_s ds \right] \\
+\log \alpha_t &= \int_0^t f_s ds \\
+d\log \alpha_t &= f_t \\
+\end{align}
+$$
+and to obtain $g_t$ from an existing flow, we have
+$$
+\begin{align}
+\sigma_t^2 &= \alpha_t^2 \int_0^t \left(\frac{g_s}{\alpha_s}\right)^2 ds \\
+\frac{\sigma_t^2}{\alpha_t^2} &=\int_0^t \left(\frac{g_s}{\alpha_s}\right)^2 ds \\
+d\left[\frac{\sigma_t^2}{\alpha_t^2}\right] &= \left(\frac{g_t}{\alpha_t}\right)^2 \\
+2 \frac{\sigma_t}{\alpha_t} d\left[\frac{\sigma_t}{\alpha_t}\right] &= \frac{g_t^2}{\alpha_t^2} \\
+2 \ \sigma_t \ \alpha_t \ d\left[\frac{\sigma_t}{\alpha_t}\right] &= g_t^2
+\end{align}
+$$
+
+The identities above allow us to seamlessly translate flow matching schedules $\alpha_t, \sigma_t$ to OU diffusion schedules $f_t, g_t$ and vice versa.
+
+So far, we've only considered the vanilla score matching. 
+But we've seen from this [blog post](https://ludwigwinkler.github.io/blog/FlowMatching/) that we can in fact extract the score out of a flow model.
+This implies that we can run a SDE purely from a flow matching model.
+In this case the flow sampling that was previously an ODE can be extended to an SDE, like so
+$$
+\begin{align}
+dx_\tau &= (v_\theta(x_\tau, \tau) \\
+& \downarrow  \text{add stochasticity} \ \epsilon_\tau \\
+dx_\tau &= \big(v_\theta(x_\tau, \tau) -\underbrace{\frac{1}{2}\epsilon_\tau^2 \log \nabla_x \log p_{\theta}(x_\tau, \tau)}_{\text{stochastic control}}\big) \ d\tau + \underbrace{\epsilon_\tau dW_\tau}_{\text{extra noise}}\\
+\end{align}
+$$
+
+All that the augmented flow matching model does is add additional noise to sampling process which is then corrected by the additional score term $\nabla_x \log p_{\theta}$ which is extracted from the flow model.
+We can recover the original flow matching sampling with 
+$$
+\begin{align}
+\quad dx_\tau &= \left[ (v_\theta(x_\tau, \tau) - \frac{1}{2}\epsilon_\tau^2 \log \nabla_x \log p_{\theta}(x_\tau, \tau)) \ d\tau + \epsilon_\tau dW_\tau \right]_{\epsilon_\tau=0} \\ 
+&= v_\theta(x_\tau, \tau) \ d\tau.
+\end{align}
+$$
+
+The nice thing is that we can scale $\eta_\tau$ up and down as we like and the noise $\eta_\tau dW_\tau$ and the corrective score term automatically balance each other out.
+
+Similarly, we can add extra noise to the SDE formulation as detailed in this [blog post](https://ludwigwinkler.github.io/blog/SimpleReverseSDE/),
+$$
+\begin{align}
+dX_\tau = (-f_\tau x_\tau + \frac{1}{2}g_\tau^2(1+\eta_\tau^2)\nabla_x \log p_\theta(x_\tau, \tau))d\tau + \eta_\tau g_\tau dW_\tau
+\end{align}
+$$
+
+While the double occurence of $\eta_\tau$ might seem daunting on first sight to translate into the flow matching framework, it actually is quite straightforward.
+All we have to remember is that the flow matching objective trains the model on the ODE of probability flow.
+Thus we can rearrange the terms such that
+$$
+\begin{align}
+dX_\tau 
+&= (-f_\tau x_\tau + \frac{1}{2}g_\tau^2(1+\eta_\tau^2)\nabla_x \log p_\theta(x_\tau, \tau))d\tau \\ 
+& \quad + \eta_\tau g_\tau dW_\tau \\
+&= (\overbrace{-f_\tau x_\tau + \frac{1}{2}g_\tau^2\nabla_x \log p_\theta(x_\tau, \tau)}^{v_\theta(x_\tau, \tau)} + \frac{1}{2}\overbrace{g_\tau^2\eta_\tau^2}^{\epsilon_\tau^2}  \log p_\theta(x_\tau, \tau))d\tau \\ 
+& \quad + \underbrace{\eta_\tau  g_\tau}_{\epsilon_\tau} dW_\tau \\
+\end{align}
+$$
+
+and so we can conclude that the last flow matching parameter $\eta_\tau$ can also be translated to the diffusion framework via $\epsilon_\tau = g_\tau \eta_\tau$.
