@@ -375,12 +375,11 @@ The Ito density estimator, on the other hand, is a stochastic differential equat
 <p>Wouldn’t it be nice if we could train a flow with an optimal transport plan, and subsequently transform it into a diffusion model?
 Can we also transform a diffusion model into a flow?</p>
 
-<p>In order to achieve that should first write out the main equation at the heart of each approach:</p>
-
-\[\begin{align}
+<p>In order to achieve that should first write out the main equation at the heart of each approach:
+\(\begin{align}
 \text{Flow Matching} &amp; \quad : X_t = \alpha_t x_0 + \sigma_t \varepsilon \\
 \text{Diffusion Model}&amp; \quad : dX_t = -f_t X_t dt + g_t dW_t
-\end{align}\]
+\end{align}\)</p>
 
 <p>Ideally we would like to have the integrated diffusion model $\int_0^t dX_t = X_t$ for both the flow matching and the diffusion model.
 If that were the case, then integrating the diffusion model would yield a random variable witch an identical probability distribution as the flow matching variable $X_t$.</p>
@@ -459,7 +458,9 @@ and to obtain $g_t$ from an existing flow, we have
 \frac{\sigma_t^2}{\alpha_t^2} &amp;=\int_0^t \left(\frac{g_s}{\alpha_s}\right)^2 ds \\
 d\left[\frac{\sigma_t^2}{\alpha_t^2}\right] &amp;= \left(\frac{g_t}{\alpha_t}\right)^2 \\
 2 \frac{\sigma_t}{\alpha_t} d\left[\frac{\sigma_t}{\alpha_t}\right] &amp;= \frac{g_t^2}{\alpha_t^2} \\
-2 \ \sigma_t \ \alpha_t \ d\left[\frac{\sigma_t}{\alpha_t}\right] &amp;= g_t^2
+2 \ \sigma_t \ \alpha_t \ d\left[\frac{\sigma_t}{\alpha_t}\right] &amp;= g_t^2 \\
+2 \ \sigma_t \ \alpha_t \ \frac{\dot{\sigma}_t \alpha_t - \sigma_t \dot{\alpha}_t}{\alpha_t^2} &amp;= g_t^2 \\
+2 \ ( \sigma_t \dot{\sigma}_t - \sigma_t^2 \ \text{d}\log\alpha_t)&amp;= g_t^2 \\
 \end{align}\)</p>
 
 <p>The identities above allow us to seamlessly translate flow matching schedules $\alpha_t, \sigma_t$ to OU diffusion schedules $f_t, g_t$ and vice versa.</p>

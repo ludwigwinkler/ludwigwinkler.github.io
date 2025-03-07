@@ -310,7 +310,6 @@ Wouldn't it be nice if we could train a flow with an optimal transport plan, and
 Can we also transform a diffusion model into a flow?
 
 In order to achieve that should first write out the main equation at the heart of each approach:
-
 $$
 \begin{align}
 \text{Flow Matching} & \quad : X_t = \alpha_t x_0 + \sigma_t \varepsilon \\
@@ -410,7 +409,9 @@ $$
 \frac{\sigma_t^2}{\alpha_t^2} &=\int_0^t \left(\frac{g_s}{\alpha_s}\right)^2 ds \\
 d\left[\frac{\sigma_t^2}{\alpha_t^2}\right] &= \left(\frac{g_t}{\alpha_t}\right)^2 \\
 2 \frac{\sigma_t}{\alpha_t} d\left[\frac{\sigma_t}{\alpha_t}\right] &= \frac{g_t^2}{\alpha_t^2} \\
-2 \ \sigma_t \ \alpha_t \ d\left[\frac{\sigma_t}{\alpha_t}\right] &= g_t^2
+2 \ \sigma_t \ \alpha_t \ d\left[\frac{\sigma_t}{\alpha_t}\right] &= g_t^2 \\
+2 \ \sigma_t \ \alpha_t \ \frac{\dot{\sigma}_t \alpha_t - \sigma_t \dot{\alpha}_t}{\alpha_t^2} &= g_t^2 \\
+2 \ ( \sigma_t \dot{\sigma}_t - \sigma_t^2 \ \text{d}\log\alpha_t)&= g_t^2 \\
 \end{align}
 $$
 
