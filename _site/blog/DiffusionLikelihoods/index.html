@@ -467,7 +467,7 @@ d\left[\frac{\sigma_t^2}{\alpha_t^2}\right] &amp;= \left(\frac{g_t}{\alpha_t}\ri
 <p>The identities above allow us to seamlessly translate flow matching schedules $\alpha_t, \sigma_t$ to OU diffusion schedules $f_t, g_t$ and vice versa.</p>
 
 <p>So far, we’ve only considered the vanilla score matching. 
-But we’ve seen from this <a href="https://ludwigwinkler.github.io/blog/FlowMatching/"><strong>blog post</strong></a> that we can in fact extract the score out of a flow model.
+But we’ve seen from this <a href="https://ludwigwinkler.github.io/blog/FlowMatching/"><span style="color:blue">blog post</span></a> that we can in fact extract the score out of a flow model.
 This implies that we can run a SDE purely from a flow matching model.
 In this case the flow sampling that was previously an ODE can be extended to an SDE, like so
 \(\begin{align}
@@ -485,7 +485,7 @@ We can recover the original flow matching sampling with
 
 <p>The nice thing is that we can scale $\eta_\tau$ up and down as we like and the noise $\eta_\tau dW_\tau$ and the corrective score term automatically balance each other out.</p>
 
-<p>Similarly, we can add extra noise to the SDE formulation as detailed in this <a href="https://ludwigwinkler.github.io/blog/SimpleReverseSDE/"><strong>blog post</strong></a>,
+<p>Similarly, we can add extra noise to the SDE formulation as detailed in this <a href="https://ludwigwinkler.github.io/blog/SimpleReverseSDE/"><span style="color:blue">blog post</span></a>,
 \(\begin{align}
 dX_\tau = (-f_\tau x_\tau + \frac{1}{2}g_\tau^2(1+\eta_\tau^2)\nabla_x \log p_\theta(x_\tau, \tau))d\tau + \eta_\tau g_\tau dW_\tau
 \end{align}\)</p>
