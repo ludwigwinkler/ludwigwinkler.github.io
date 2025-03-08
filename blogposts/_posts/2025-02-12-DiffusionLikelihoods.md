@@ -398,9 +398,9 @@ Going from flow matching to diffusion is easier once we have one correspondence.
 To obtain the drift parameter $f$, we simply determine the inverse function,
 $$
 \begin{align}
-\alpha_t &= \exp\left[ \int_0^t f_s ds \right] \\
-\log \alpha_t &= \int_0^t f_s ds \\
-d\log \alpha_t &= f_t \\
+\alpha_t &= \exp\left[ -\int_0^t f_s ds \right] \\
+\log \alpha_t &= -\int_0^t f_s ds \\
+-d\log \alpha_t &= f_t \\
 \end{align}
 $$
 and to obtain $g_t$ from an existing flow, we have
