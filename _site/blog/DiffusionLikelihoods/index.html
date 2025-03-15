@@ -71,15 +71,11 @@
       				<h1>Likelihood Calculations in Diffusion Models</h1>
       				<p>Mr. Fokker and Mr. Planck, meet Ito-San</p>
       			</header>
-      			<div class="image main"><img src="/blog/ItoDensityEstimator.png" alt=""></div>
+      			<div class="image main"><img src="" alt=""></div>
       			<p><head>
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
        <script type="text/x-mathjax-config">
          MathJax.Hub.Config({
-          TeX: {
-                equationNumbers: { autoNumber: "all" },
-                extensions: ["AMSmath.js", "AMSsymbols.js", "cancel.js"]
-            },
            tex2jax: {
              inlineMath: [ ['$','$'], ["\\(","\\)"] ],
              displayMath: [['$$','$$']],
@@ -90,30 +86,28 @@
        <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 </head>
 
-<p>Let’s start out this blog post with the one equation that is at the heart of diffusion models, the Fokker-Planck equation,</p>
-<div style="overflow-x: auto;">
-$$
+<p>Let’s start out this blog post with the one equation that is at the heart of diffusion models, the Fokker-Planck equation.</p>
+
+<p>$$
 \begin{align}
 \partial_t \ p(x, t) 
-&amp;= - \sum_{i=1}^D \partial_{x_i} \left[ \mu_i(x, t) p(x, t) \right] + \frac{1}{2} \sum_{i=1}^D \sum_{j=1}^D \partial_{x_i} \partial_{x_j} \left[ \sigma_{ij}^2(x, t) p(x, t) \right] \\ 
-&amp;= - \nabla \cdot \left[ \mathbf{\mu}(x, t) p(x, t) \right] + \frac{1}{2} \nabla \cdot \left[ \nabla \cdot \left[ \sigma^2(x, t) p(x, t) \right] \right] \\
-&amp;= - \nabla \cdot \left[ \mathbf{\mu}(x, t) \ p(x, t) \right] + \frac{1}{2} \Delta \cdot \left[ \sigma^2(x, t) \ p(x, t) \right] \\
+&amp;= - \sum_{i=1}^D \partial_{x_i} \left[ \mu_i(x, t) p(x, t) \right]</p>
+<ul>
+  <li>\frac{1}{2} \sum_{i=1}^D \sum_{j=1}^D \partial_{x_i} \partial_{x_j} \left[ \sigma_{ij}^2(x, t) p(x, t) \right] \ 
+&amp;= - \nabla \cdot \left[ \mathbf{\mu}(x, t) p(x, t) \right] + \frac{1}{2} \nabla \cdot \left[ \nabla \cdot \left[ \sigma^2(x, t) p(x, t) \right] \right] <br />
+&amp;= - \nabla \cdot \left[ \mathbf{\mu}(x, t) \ p(x, t) \right] + \frac{1}{2} \Delta \cdot \left[ \sigma^2(x, t) \ p(x, t) \right] <br />
 \end{align}
-$$
-</div>
-<p>which describes the evolution of the probability density function of a stochastic process that follows a stochastic differential equation</p>
-<div style="overflow-x: auto;">
-$$
+\(which describes the evolution of the probability density function of a stochastic process that follows a stochastic differential equation\)
 \begin{align}
 dX_t = \mu(X_t, t) dt + \sigma(X_t, t) dW_t.
 \end{align}
-$$
-</div>
+$$</li>
+</ul>
 
 <p>These two equations allow us to work with the underlying stochastic process in two different ways.
 Either we integrate the stochastic differential equation to obtain the sample path of the process, or we solve the Fokker-Planck equation to obtain the probability density function of the process.</p>
 
-<!-- <span style="color:red;">Add image to visualize a trajectory of $X_t$ vs $p(x,t)$.</span> -->
+<p><span style="color:red;">Add image to visualize a trajectory of $X_t$ vs $p(x,t)$.</span></p>
 
 <p>The FPE describes the evolution of the probability density function of a stochastic process.
 The first term on the right-hand side is the drift term, and the second term is the diffusion term.
@@ -124,135 +118,63 @@ It is a generalization of the heat equation, which describes the diffusion of he
 <p>Following these two ‘representations’ of a stochastic process, we can now ask the question: How can we calculate the likelihood of the observed data given a stochastic process?
 In the following, we will derive two different ways to calculate the likelihood of the observed data given a diffusion model: the probability flow formulation and Ito’s density estimator.</p>
 
-<h3 id="probability-flows">Probability Flows</h3>
+<h1 id="probability-flows">Probability Flows</h1>
 
 <p>The first way to compute likelihoods of observed data given a diffusion model is to use the probability flow formulation.
 <strong>This approach rewrites the FPE such that we “pull in” in the diffusive component $\sigma^2(t)$ into the drift component, thereby making the stochastic part “disappear”.</strong></p>
-<div style="overflow-x: auto;">
-$$
-\begin{align}
+
+\[\begin{align}
 \partial_t \ p(x, t) 
 &amp;= - \nabla \cdot \left[ \mathbf{\mu}(x, t) p(x, t) \right] + \frac{1}{2} \Delta \cdot \left[ \sigma^2(t) p(x, t) \right] \\
 &amp;= - \nabla \cdot \left[ \mathbf{\mu}(x, t) p(x, t) \right] + \nabla \cdot \left[\frac{1}{2} \sigma^2(t)  \nabla p(x, t) \right] \\
 &amp;= - \nabla \cdot \left[ \mathbf{\mu}(x, t) p(x, t) \right] + \nabla \cdot \left[ \frac{1}{2} \sigma^2(t) \ p(x, t) \ \nabla \log p(x, t) \right]  \\
 &amp;= - \nabla \cdot \left[ \left( \mathbf{\mu}(x, t) - \frac{1}{2} \sigma^2(t) \nabla \log p(x, t) \right) p(x, t) \right] \\
 &amp;= - \nabla \cdot \left[ \ \tilde{\mu}(x, t) \ p(x, t) \right] \\
-\end{align}
-$$
-</div>
+\end{align}\]
 
 <p>In fact, both the distribution $p(x,t)$ and the sample $x$ are a function of time.
-To make this really explicit, we can write out the probability distribution as $p(x(t), t)$ and taking its total derivative with respect to time gives us</p>
-<div style="overflow-x: auto;">
-$$
-\begin{align}
+To make this really explicit, we can write out the probability distribution as $p(x(t), t)$ and taking it’s total derivative with respect to time gives us
+\(\begin{align}
 d_t \ p(x(t), t) &amp;= \partial_t \ p(x(t), t) + \nabla_x p(x(t), t)^\top \ \partial_t x(t) \\
  &amp;= \partial_t \ p(x(t), t) + \nabla_x p(x(t), t)^\top \ \mu(x,t) \\
-\end{align}
-$$
-</div>
+\end{align}\)</p>
 
 <p>Essentially, the time $t$ occurs in two places: in the probability distribution $p(x,t)$ and nested in the sample $x(t)$.
 If we want to derive with respect to the time $t$, we have to consider both the explicit dependence of the probability distribution on the time $p( \cdot , t)$ and the dependence of time in the sample $\partial_t p(x(t), t) = \partial_x p(x(t), t) \ \partial_t x(t)$.</p>
 
-<p>Let’s circle back to the FPE in which we relate the change in time $\partial_t p(x,t)$ to the change in space $\nabla \cdot \mathbf{\mu}(x, t) \ p(x, t)$.</p>
-<div style="overflow-x: auto;">
-$$
-\begin{align}
+<p>Let’s circle back to the FPE in which we relate the change in time $\partial_t p(x,t)$ to the change in space $\nabla \cdot \mathbf{\mu}(x, t) \ p(x, t)$.
+\(\begin{align}
 \partial_t \ p(x, t) 
 &amp;= - \nabla \cdot \left[ \mathbf{\mu}(x, t) \ p(x, t) \right] \\
 &amp;= - \sum_i \partial_{x_i} \left[ \mathbf{\mu}_i(x, t) \ p(x, t) \right] \\
 &amp;= - \sum_i \left[ \partial_{x_i} \ \mathbf{\mu}_i(x, t) \ p(x, t) + \mathbf{\mu}_i(x, t) \ \partial_{x_i} \ p(x, t) \right] \\
 &amp;= - \nabla_x \cdot \left[ \mathbf{\mu}(x, t) \right] \ p(x, t) - \mathbf{\mu}(x, t)^\top \ \nabla_{x} \ p(x, t)
-\end{align}
-$$
-</div>
+\end{align}\)</p>
 
-<p>and substituting the FPE into the total derivative yields</p>
-<div style="overflow-x: auto;">
-$$
-\begin{align}
+<p>and substituting the FPE into the total derivative yields
+\(\begin{align}
 d_t \ p(x(t), t) &amp;= \partial_t \ p(x(t), t) + \nabla_x \ p(x(t), t) \ \partial_t x(t) \\
 &amp;= \partial_t \ p(x(t), t) + \nabla_x \ p(x(t), t) \ \mu(x, t) \\
 &amp;= - \nabla_x \cdot \left[ \mathbf{\mu}(x, t) \right] \ p(x, t) - \cancel{\mathbf{\mu}(x, t)^\top \ \nabla_x \ p(x, t)} + \cancel{\nabla_x p(x(t), t)^\top \ \mu(x,t)} \\
 &amp;= - \nabla_x \cdot \left[ \mathbf{\mu}(x, t) \right] \ p(x, t)
-\end{align}
-$$
-</div>
+\end{align}\)</p>
 
-<p>Pulling $p(x,t)$ over to the left side then yields the total derivative of the log-likelihood,</p>
-<div style="overflow-x: auto;">
-$$
-\begin{align}
+<p>Pulling $p(x,t)$ over to the left side then yields the total derivative of the log-likelihood,
+\(\begin{align}
 d_t \ p(x(t), t) &amp;= - \nabla_x \cdot \left[ \mathbf{\mu}(x, t) \right] \ p(x, t) \\
 \frac{d_t \ p(x(t), t)}{p(x(t),t)} &amp;=- \nabla_x \cdot \left[ \mathbf{\mu}(x, t) \right] \\
 d_t \log p(x(t), t) &amp;= - \nabla_x \cdot \left[ \mathbf{\mu}(x, t) \right].
-\end{align}
-$$
-</div>
+\end{align}\)</p>
 
 <p>The result above is remarkable as it allows us to compute the likelihood of the observed data given a diffusion model by integrating an ordinary differential equation.
 This is in fact a continuous normalizing flow.
 To apply this way of computing log-likelihoods, we need to identify the deterministic drift, which we saw in equations (5) - (9), and integrate the ODE to obtain the log-likelihood of the observed data given a diffusion model.</p>
 
-<p>Computing the log-likelihood of a sample $x(T)$ is then given by integrating the change in the log-likelihood from time $0$ to time $T$:</p>
-<div style="overflow-x: auto;">
-$$
-\begin{align}
+<p>Computing the log-likelihood of a sample $x(T)$ is then given by integrating the change in the log-likelihood from time $0$ to time $T$:
+\(\begin{align}
 \log p(x(T), T) &amp;= \log p(x(0), 0) - \int_0^T d_t \log p(x(s), s) \ ds \\
 &amp;= \log p(x(0), 0) - \int_0^T \nabla_x \cdot \left[ \mathbf{\mu}(x, s) \right] \ ds \\
-\end{align}
-$$
-</div>
-
-<p>In code this is comparatively straight forward to compute.
-The full code can be found in this little <a href="https://github.com/ludwigwinkler/genai/blob/main/flowmatching_vs_diffusion_probabilityflow_vs_itodensity.py">repository</a> but we can see the simple OT vector field integration and the likelihood computation below:</p>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nf">tqdm</span><span class="p">(</span><span class="nf">enumerate</span><span class="p">(</span><span class="n">torch</span><span class="p">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n_steps</span><span class="p">))):</span>
-  <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="p">.</span><span class="nf">expand</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
-  <span class="n">dx</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="nf">forward</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-  <span class="k">if</span> <span class="n">likelihood</span><span class="p">:</span>
-      <span class="n">likelihood</span> <span class="o">+=</span> <span class="p">[</span><span class="n">likelihood</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="nf">divergence</span><span class="p">(</span><span class="n">euler_fn</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">dt</span><span class="p">]</span>
-  <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">dx</span> <span class="o">*</span> <span class="n">dt</span>  <span class="c1"># integrating vector field backwards
-</span>
-<span class="c1"># with the divergence code:
-</span><span class="k">def</span> <span class="nf">divergence</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
-    <span class="sh">"""</span><span class="s">
-    Compute the analytical divergence of v(t, x) using PyTorch autograd.
-
-    Args:
-        v_func: Function v(t, x) that computes the velocity field.
-        x: Input tensor of shape (batch_size, dim).
-        t: Scalar tensor representing time.
-
-    Returns:
-        Analytical divergence of v(t, x) for each batch element.
-    </span><span class="sh">"""</span>
-    <span class="n">batch_size</span><span class="p">,</span> <span class="n">dim</span> <span class="o">=</span> <span class="n">x</span><span class="p">.</span><span class="n">shape</span>
-    <span class="n">divergence</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="nf">zeros</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">x</span><span class="p">.</span><span class="n">device</span><span class="p">)</span>
-
-    <span class="k">with</span> <span class="n">torch</span><span class="p">.</span><span class="nf">enable_grad</span><span class="p">():</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">dim</span><span class="p">):</span>
-            <span class="n">x</span><span class="p">.</span><span class="nf">requires_grad_</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
-            <span class="n">v_t</span> <span class="o">=</span> <span class="nf">f</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>  <span class="c1"># Compute velocity field v(t, x)
-</span>            <span class="n">grad_outputs</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="nf">ones_like</span><span class="p">(</span>
-                <span class="n">v_t</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span>
-            <span class="p">)</span>  <span class="c1"># Compute gradient wrt each output dimension
-</span>            <span class="n">div_v_i</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">autograd</span><span class="p">.</span><span class="nf">grad</span><span class="p">(</span>
-                <span class="n">v_t</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span>
-                <span class="n">x</span><span class="p">,</span>
-                <span class="n">grad_outputs</span><span class="o">=</span><span class="n">grad_outputs</span><span class="p">,</span>
-                <span class="n">retain_graph</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                <span class="n">create_graph</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-            <span class="p">)[</span><span class="mi">0</span><span class="p">][:,</span> <span class="n">i</span><span class="p">]</span>
-            <span class="c1"># div_v_i = torch.autograd.grad(v_t[:, i], x, grad_outputs=grad_outputs)[0][:, i]
-</span>            <span class="n">divergence</span> <span class="o">+=</span> <span class="n">div_v_i</span>  <span class="c1"># Sum over all diagonal elements
-</span>            <span class="n">x</span><span class="p">.</span><span class="nf">detach</span><span class="p">()</span>
-
-    <span class="n">x</span><span class="p">.</span><span class="nf">detach</span><span class="p">()</span>
-
-    <span class="k">return</span> <span class="n">divergence</span>
-</code></pre></div></div>
+\end{align}\)</p>
 
 <p>A small disclaimer: the tricky part is computing the divergence of the drift vector field $\mathbf{\mu}(x, t)$ efficiently.
 The problem here is that for $D$ dimensions, we have to compute $D$ partial derivatives for each dimension, which can be computationally expensive in higher dimensions.
@@ -260,87 +182,41 @@ To alleviate this problem, Hutchinson’s stochastic trace estimator is commonly
 
 <p>What does the trace have to do with the divergence?
 Well, essentially the divergence sums over the diagonal elements of the Jacobian matrix $J_\mu \in \mathbb{R}^{D \times D}$ of the drift vector field $\mathbf{\mu}(x, t)$, and $J_{\mu, ij} = \partial_{x_i} \mu_j(x,t)$ by its definition</p>
-<div style="overflow-x: auto;">
-$$
-\begin{align}
-\nabla_x \cdot \left[ \mathbf{\mu}(x, t) \right] = \sum_{i}^D \partial_{x_i} \mu_i(x, t) =  \text{Tr}(J_\mu).
-\end{align}
-$$
-</div>
 
-<p>Hutchinson’s stochastic trace estimator approximates the trace of a matrix by sampling random vectors and computing the inner product of the matrix with the random vectors, like so</p>
-<div style="overflow-x: auto;">
-$$
-\begin{align}
+\[\begin{align}
+\nabla_x \cdot \left[ \mathbf{\mu}(x, t) \right] = \sum_{i}^D \partial_{x_i} \mu_i(x, t) =  \text{Tr}(J_\mu).
+\end{align}\]
+
+<p>Hutchinson’s stochastic trace estimator approximates the trace of a matrix by sampling random vectors and computing the inner product of the matrix with the random vectors, like so
+\(\begin{align}
 \nabla_x \cdot \left[ \mathbf{\mu}(x, t) \right] &amp;= \text{Tr}[J_\mu] \\
 &amp;= \text{Tr}[J_\mu \ \text{I}] \quad \quad \quad \ \ \  | \quad \text{identity matrix I}\\
 &amp;= \mathbb{E}\left[ \text{Tr}[J_\mu \ \epsilon \epsilon^T ] \right] \quad | \quad \text{identity matrix I} = \mathbb{E}[\epsilon \epsilon^T], \epsilon \sim \mathcal{N}(0,I), \epsilon \in \mathbb{R}^D  \\
 &amp;= \mathbb{E}\left[ \text{Tr}[\epsilon^T J_\mu \ \epsilon ] \right] \quad | \quad \text{circularity of trace}: \text{Tr}[ABC] = \text{Tr}[CAB]\\
 &amp;= \mathbb{E}\left[ \epsilon^T J_\mu \ \epsilon  \right] \quad \quad \ \ \ | \quad \epsilon^T J_\mu \epsilon \in \mathbb{R} \text{ is scalar, so drop trace operator}\\
-\end{align}
-$$
-</div>
+\end{align}\)</p>
 
 <p>Furthemore the term $J_\mu \epsilon$ is a Jacobian-vector product and can be computed efficiently using automatic differentiation.
 Effectively, we’re backpropagating the vector $\epsilon$ through the neural network evaluation ( in pseudo-code <code class="language-plaintext highlighter-rouge">torch.autograd.grad(outputs=mu, inputs=x, grad_outputs=epsilon)</code>) and contract it with <code class="language-plaintext highlighter-rouge">epsilon</code> again.
 We do that for multiple samples of $\epsilon$ and average the results to obtain an unbiased estimate of the trace of the Jacobian matrix.
 Taking a single sample of $\epsilon$ and computing the Jacobian-vector product is computationally more efficient than computing the full Jacobian matrix but comes with a higher estimator variance.</p>
 
-<p>In code this looks like this:</p>
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">stochastic_divergence</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
-    <span class="sh">"""</span><span class="s">
-    Compute the divergence of v(t, x) using Hutchinson</span><span class="sh">'</span><span class="s">s trace estimator.
-
-    Args:
-        v_func: Function v(t, x) that computes the velocity field.
-        x: Input tensor of shape (batch_size, dim).
-        t: Scalar tensor representing time.
-        num_samples: Number of Hutchinson samples for estimation.
-
-    Returns:
-        Estimated divergence of v(t, x).
-    </span><span class="sh">"""</span>
-    <span class="n">batch_size</span><span class="p">,</span> <span class="n">dim</span> <span class="o">=</span> <span class="n">x</span><span class="p">.</span><span class="n">shape</span>
-    <span class="n">divergence_estimate</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="nf">zeros</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">x</span><span class="p">.</span><span class="n">device</span><span class="p">)</span>
-
-    <span class="k">with</span> <span class="n">torch</span><span class="p">.</span><span class="nf">enable_grad</span><span class="p">():</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">num_samples</span><span class="p">):</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="nf">randn_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># Sample Gaussian noise v ~ N(0, I)
-</span>            <span class="n">x</span><span class="p">.</span><span class="nf">requires_grad_</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>  <span class="c1"># Enable gradient tracking
-</span>
-            <span class="n">v_t</span> <span class="o">=</span> <span class="nf">f</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>  <span class="c1"># Compute velocity field v(t, x), shape (batch_size, dim)
-</span>            <span class="n">div_v</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">autograd</span><span class="p">.</span><span class="nf">grad</span><span class="p">(</span><span class="n">v_t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">grad_outputs</span><span class="o">=</span><span class="n">v</span><span class="p">,</span> <span class="n">create_graph</span><span class="o">=</span><span class="bp">True</span><span class="p">)[</span>
-                <span class="mi">0</span>
-            <span class="p">]</span>  <span class="c1"># Compute Jv
-</span>
-            <span class="n">divergence_estimate</span> <span class="o">+=</span> <span class="n">torch</span><span class="p">.</span><span class="nf">sum</span><span class="p">(</span><span class="n">div_v</span> <span class="o">*</span> <span class="n">v</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Estimate trace
-</span>
-    <span class="k">return</span> <span class="n">divergence_estimate</span> <span class="o">/</span> <span class="n">num_samples</span>  <span class="c1"># Average over samples
-</span>
-</code></pre></div></div>
-
-<h3 id="ito-density-estimators">Ito Density Estimators</h3>
+<h1 id="ito-density-estimators">Ito Density Estimators</h1>
 
 <p>The probability flow log-likelihood estimator is derived through the Fokker-Planck equation.
 Here we will compute the log-likelihood of the observed data given a diffusion model using Ito’s lemma based on the SDE formulation.</p>
 
-<p>We start out by splitting the Laplace operator $\Delta$ into two divergences,</p>
-<div style="overflow-x: auto;">
-$$
-\begin{align}
+<p>We start out by splitting the Laplace operator $\Delta$ into two divergences,
+\(\begin{align}
 \partial_t \ p(x, t) 
 &amp;= - \nabla \cdot \left[ \mathbf{\mu}(x, t) p(x, t) \right] + \frac{1}{2} \Delta \left[ \sigma^2(t) p(x, t) \right] \\
 &amp;= - \nabla \cdot \left[ \mathbf{\mu}(x, t) p(x, t) \right] + \nabla \cdot \left[\frac{1}{2} \sigma^2(t)  \nabla p(x, t) \right].
-\end{align}
-$$
-</div>
+\end{align}\)</p>
 
 <p>Working with the change in the probability $\partial_t \ p(x,t)$ is nice per se but working with the log-likelihood $\partial_t \ \log p(x,t)$ is even nicer as it is numerically more stable.
 The goal is therefore to express the change in probability not in the probability space $p(x,t)$ itself but instead in the log-probability space $\log p(x,t)$.
-To achieve that, we’ll use the chain rule for the log-likelihood which is also known as the log-derivative trick which also applies to the Laplace operator:</p>
-<div style="overflow-x: auto;">
-$$
-\begin{align}
+To achieve that, we’ll use the chain rule for the log-likelihood which is also known as the log-derivative trick which also applies to the Laplace operator:
+\(\begin{align}
 \partial_t \ \log p(x, t) &amp;= \frac{1}{p(x, t)} \partial_t \ p(x, t) \\
 &amp; \downarrow \\
 \partial_t \ p(x, t) &amp;= p(x,t) \ \partial_t \ \log p(x, t) \\
@@ -351,36 +227,32 @@ $$
 % &amp;= \sum_i^D \partial_{x_i} \left[ p(x, t) \ \nabla_x \log p(x, t) \right] \\
 % &amp;= \sum_i^D \partial_{x_i} p_i(x, t) \ \nabla_x \log p(x, t) + p(x,t) \\
 &amp;= \nabla p(x, t) \cdot \nabla_x \log p(x, t) + p(x, t) \ \nabla_x^2 \log p(x, t) \\
-\end{align}
-$$
-</div>
+\end{align}\)</p>
 
-<p>The first step is to write out the FPE in terms of the derivatives,</p>
-<div style="overflow-x: auto;">
-$$
-\begin{align}
-\partial_t \ p(x, t) &amp;= - \nabla \cdot \left[ \mathbf{\mu}(x, t) p(x, t) \right] + \frac{1}{2} \Delta \cdot \left[ \sigma^2(t) p(x, t) \right] \\
+<p>The first step is to write out the FPE in terms of the derivatives,
+\(\begin{align}
+\partial_t \ p(x, t) 
+&amp;= - \nabla \cdot \left[ \mathbf{\mu}(x, t) p(x, t) \right] + \frac{1}{2} \Delta \cdot \left[ \sigma^2(t) p(x, t) \right] \\
 &amp;= - \nabla \cdot \left[ \mathbf{\mu}(x, t) p(x, t) \right] + \frac{1}{2} \sigma^2(t) \ \Delta \cdot p(x, t) \\
 &amp;= - \nabla \cdot \left[ \mathbf{\mu}(x, t) \right] \ p(x, t) - \mathbf{\mu}(x, t)^\top \ \nabla p(x, t) + \frac{1}{2} \sigma^2(t) \ \Delta \cdot p(x, t) \\
 &amp;= - \nabla \cdot \left[ \mathbf{\mu}(x, t) \right] \ p(x, t) - \mathbf{\mu}(x, t)^\top \ \nabla p(x, t) + \frac{1}{2} \sigma^2(t) \ \nabla_x \cdot \left[ \nabla_x p(x, t) \right] \\
-\end{align}
-$$
-</div>
+\end{align}\)</p>
 
-<p>Step two is then to express these derivatives with derivatives of the log-likelihood,</p>
-<div style="overflow-x: auto;">
+<p>Step two is then to express these derivatives with derivatives of the log-likelihood,
 $$
 \begin{align}
-p(x,t) \ \partial_t \ \log p(x, t) &amp;= - \nabla \cdot \left[ \mathbf{\mu}(x, t) \right] \ p(x, t) - \mathbf{\mu}(x, t)^\top \ p(x,t) \ \nabla_x \ \log p(x, t) \\
-&amp; \quad + \frac{1}{2} \sigma^2(t) \ \left( \nabla_x p(x, t) \cdot \nabla_x \log p(x, t) + p(x, t) \ \Delta \log p(x, t)\right) \\
+p(x,t) \ \partial_t \ \log p(x, t) 
+&amp;= - \nabla \cdot \left[ \mathbf{\mu}(x, t) \right] \ p(x, t) - \mathbf{\mu}(x, t)^\top \ p(x,t) \ \nabla_x \ \log p(x, t) <br />
+&amp; \quad + \frac{1}{2} \sigma^2(t) \ \left( \nabla_x p(x, t) \cdot \nabla_x \log p(x, t) + p(x, t) \ \Delta \log p(x, t)\right) <br />
 \partial_t \ \log p(x, t) 
-&amp;= - \nabla_x \cdot \left[ \mathbf{\mu}(x, t) \right] - \mathbf{\mu}(x, t)^\top \ \nabla_x \ \log p(x, t) \\
-&amp; \quad + \frac{1}{2} \sigma^2(t) \ \left( \frac{\nabla_x p(x, t)}{p(x,t)} \cdot \nabla_x \log p(x, t) + \Delta \log p(x, t)\right) \\
-&amp;= - \nabla_x \cdot \left[ \mathbf{\mu}(x, t) \right] - \mathbf{\mu}(x, t)^\top \ \nabla_x \ \log p(x, t) \\
-&amp; \quad + \frac{1}{2} \sigma^2(t) \ \left( \left\| \nabla_x \log p(x, t) \right\| ^2 + \Delta \log p(x, t)\right)
+&amp;= - \nabla_x \cdot \left[ \mathbf{\mu}(x, t) \right] - \mathbf{\mu}(x, t)^\top \ \nabla_x \ \log p(x, t)</p>
+<ul>
+  <li>\frac{1}{2} \sigma^2(t) \ \left( \frac{\nabla_x p(x, t)}{p(x,t)} \cdot \nabla_x \log p(x, t) + \Delta \log p(x, t)\right) <br />
+&amp;= - \nabla_x \cdot \left[ \mathbf{\mu}(x, t) \right] - \mathbf{\mu}(x, t)^\top \ \nabla_x \ \log p(x, t)</li>
+  <li>\frac{1}{2} \sigma^2(t) \ \left( \left| \nabla_x \log p(x, t) \right| ^2 + \Delta \log p(x, t)\right)
 \end{align}
-$$
-</div>
+$$</li>
+</ul>
 
 <p>Thus we have obtained an ODE for the log-likelihood (instead of the likelihood $p(x,t)$) for a sample of the diffusion model.
 This is essentially the log transformed version of the FPE.
@@ -388,7 +260,7 @@ This equation is actually closely related to the Hamilton-Jacobi-Bellman equatio
 
 <p>This is still a PDE and describes the evolution of the log-probability.
 But we’re not interested in the overall evolution of the log-probability, but rather in the likelihood of the observed data given a diffusion model.
-Intuitively, we’re only interested in the change of probability of a particular sample $x_t$ which has its own additional dynamics expressed through the sampling SDE.</p>
+Intuitively, we’re only interested in the change of probability of a particular sample $x_t$ which has it’s own additional dynamics expressed through the sampling SDE.</p>
 
 <p>In order to obtain the total derivative $d \log p(x,t)$ which takes into account the change in probability as well as the change in the sample $x_t$, we have to consider the chain rule for the log-likelihood.
 For that we will take Ito’s lemma.</p>
@@ -397,251 +269,51 @@ For that we will take Ito’s lemma.</p>
 
 <p>The real application of log-likelihood calculations in diffusion models is to compute the likelihood of the observed data given a diffusion model where the flow of time is reversed.
 To achieve that we ‘simply’ introduce a new time index $\tau = 1 - t$ and respectively $t = 1 - \tau$.
-Now we can express the time in terms of the reversed time $\tau$,</p>
-<div style="overflow-x: auto;">
-$$
-\begin{align}
-\partial_t \ \log p(x, 1-t) =  \partial_\tau \ \log p(x, 1-t) \ \partial_t \ \tau = - \ \partial_\tau \ \log p(x, \tau)
-\end{align}
-$$
-</div>
+Now we can express the time in terms of the reversed time $\tau$.</p>
 
-<p>Applying the time reversion to the log transformed FPE, the evolution of the probability density function in terms of the reversed time $\tau$ is given by:</p>
-<div style="overflow-x: auto;">
+\[\partial_t \ \log p(x, 1-t) =  \partial_\tau \ \log p(x, 1-t) \ \partial_t \ \tau = - \ \partial_\tau \ \log p(x, \tau)\]
+
+<p>Applying the time reversion to the log transformed FPE, the evolution of the probability density function in terms of the reversed time $\tau$ is given by:
 $$
-\begin{align}
-\partial_\tau \ \log p(x, \tau) = \nabla_x \cdot \mathbf{\mu}(x, \tau) + \mathbf{\mu}(x, \tau) \ \nabla_x \ \log p(x, \tau) - \frac{1}{2} \sigma^2(\tau) \ \left( \left(\nabla_x \log p(x, \tau) \right)^2 + \Delta \cdot \log p(x, \tau)\right)
-\end{align}
-$$
-</div>
+\partial_\tau \ \log p(x, \tau) = \nabla_x \cdot \mathbf{\mu}(x, \tau) + \mathbf{\mu}(x, \tau) \ \nabla_x \ \log p(x, \tau)</p>
+<ul>
+  <li>\frac{1}{2} \sigma^2(\tau) \ \left( \left(\nabla_x \log p(x, \tau) \right)^2 + \Delta \cdot \log p(x, \tau)\right)
+$$</li>
+</ul>
 
 <p>Now, we’ll hand over the calculations to Ito-san to actually compute the likelihood of the observed data given a diffusion model.</p>
-<div style="overflow-x: auto;">
-$$
-\begin{align}
+
+\[\begin{align}
 df(X_t, t) &amp;= \left( \partial_t f(X_t, t) + \nabla_x f(X_t, t)^T  \ \mu(X_t, t) + \frac{1}{2} \Delta \cdot f(X_t, t) \ \sigma(X_t, t)^2 \right) dt + \nabla_x f(X_t, t)^T \sigma(X_t, t) dW_t \\
 &amp; \downarrow f = \log p(x,t)\\
-d \log p(x_t, t) &amp;= \left( \partial_t \log p(x_t, t) + \nabla_x \log p(x_t, t)^T  \ \mu(X_t, t) + \frac{1}{2} \Delta \cdot \log p(x_t, t) \sigma(t)^2 \right) dt + \nabla_x \log p(x_t, t)^T \sigma(t) dW_t \\
-\end{align}
-$$
-</div>
+d \log p(x_t, t) &amp;= \left( \partial_t \log p(x_t, t) + \nabla_x \log p(x_t, t)^T  \ \mu(X_t, t) + \frac{1}{2} \Delta \cdot \log p(x_t, t) \ \sigma(t)^2 \right) dt + \nabla_x \log p(x_t, t)^T \sigma(t) dW_t \\
+\end{align}\]
 
 <p>The essential step in Skreta et al’s paper is to combine the log-transformed FPE with Ito’s lemma to obtain the likelihood of the observed data given a diffusion model.
 This expresses the total change in log-likelihood originating both from the particle dynamics $dX_t$ and the evolution of the probability density function $d \log p(x_t, t)$.</p>
 
-<p>We have</p>
-<div style="overflow-x: auto;">
+<p>We have
 $$
 \begin{align}
-d \log p(x_t, \tau) &amp;= \left( \color{blue}{\partial_\tau \log p(x_\tau, \tau)} + \nabla_x \log p(x_\tau, \tau)^T  \ \mu(x_\tau, \tau) + \frac{1}{2} \Delta \cdot \log p(x_\tau, \tau) \ \sigma(t)^2 \right) d\tau + \nabla_x \log p(x_\tau, \tau)^T \sigma(\tau) dW_\tau \\
-&amp;= \Big( \color{blue}{\nabla_x \cdot \mu(x, \tau) + \mu(x, \tau) \ \nabla_x \ \log p(x, \tau) - \frac{1}{2} \sigma^2(\tau) \ \left( \left(\nabla_x \log p(x, \tau) \right)^2 + \cancel{\Delta \cdot \log p(x, \tau)} \right) } \\
-&amp; \quad \quad + \nabla_x \log p(x_\tau, \tau)^T  \ \mu(X_\tau, \tau) + \frac{1}{2} \cancel{\Delta \cdot \log p(x_\tau, \tau) \ \sigma(\tau)^2} \Big) d\tau \\
-&amp; \quad + \nabla_x \log p(x_\tau, \tau)^T \sigma(\tau) dW_\tau \\
-&amp;= \left( \nabla_x \cdot \mu(x, \tau) + \nabla_x \ \log p(x, \tau) \left( ~~\mathbf{\mu}(x, \tau)~~ - \frac{1}{2} \sigma^2(\tau) \nabla \log p(x, \tau) \right) \right) d\tau \\
-&amp; \quad + \nabla_x \log p(x_\tau, \tau) \left(\mu(x, \tau) d\tau + \sigma(\tau) dW_\tau \right) \\
-&amp;= \left( \nabla_x \cdot \mu(x, \tau) + \nabla_x \ \log p(x, \tau) \left( \mathbf{\mu}(x, \tau) - \frac{1}{2} \sigma^2(\tau) \nabla \log p(x, \tau) \right) \right) d\tau \\
-&amp; \quad + \nabla_x \log p(x_\tau, \tau) \ dx_\tau \\
+d \log p(x_t, \tau) 
+&amp;= \left( \textcolor{blue}{\partial_\tau \log p(x_\tau, \tau)} + \nabla_x \log p(x_\tau, \tau)^T  \ \mu(x_\tau, \tau) + \frac{1}{2} \Delta \cdot \log p(x_\tau, \tau) \ \sigma(t)^2 \right) d\tau + \nabla_x \log p(x_\tau, \tau)^T \sigma(\tau) dW_\tau <br />
+&amp;= \Big( \textcolor{blue}{\nabla_x \cdot \mathbf{\mu}(x, \tau) + \mathbf{\mu}(x, \tau) \ \nabla_x \ \log p(x, \tau)</p>
+<ul>
+  <li>\frac{1}{2} \sigma^2(\tau) \ \left( \left(\nabla_x \log p(x, \tau) \right)^2 + \cancel{\Delta \cdot \log p(x, \tau)} \right) } <br />
+&amp; \quad \quad + \nabla_x \log p(x_\tau, \tau)^T  \ \mu(X_\tau, \tau) + \frac{1}{2} \cancel{\Delta \cdot \log p(x_\tau, \tau) \ \sigma(\tau)^2} \Big) d\tau <br />
+&amp; \quad + \nabla_x \log p(x_\tau, \tau)^T \sigma(\tau) dW_\tau <br />
+&amp;= \left( \nabla_x \cdot \mathbf{\mu}(x, \tau)</li>
+  <li>\nabla_x \ \log p(x, \tau) \left( \mathbf{\mu}(x, \tau) - \frac{1}{2} \sigma^2(\tau) \nabla \log p(x, \tau) \right) \right) d\tau</li>
+  <li>\nabla_x \log p(x_\tau, \tau) \left(\mu(x, \tau) d\tau + \sigma(\tau) dW_\tau \right) <br />
+&amp;= \left( \nabla_x \cdot \mathbf{\mu}(x, \tau)</li>
+  <li>\nabla_x \ \log p(x, \tau) \left( \mathbf{\mu}(x, \tau) - \frac{1}{2} \sigma^2(\tau) \nabla \log p(x, \tau) \right) \right) d\tau</li>
+  <li>\nabla_x \log p(x_\tau, \tau) \ dx_\tau <br />
 \end{align}
-$$
-</div>
+$$</li>
+</ul>
 
 <p>The result above stands in contrast to the probability flow formulation for calculating the likelihood of the observed data given a diffusion model.
 Whereas the probability flow formulation relies on integrating an ODE, here we can directly compute the log-likelihood of the observed data given a diffusion model by solving a SDE.</p>
-
-<p>In <a href="https://github.com/ludwigwinkler/genai/blob/2b5a6e17fae5696d39223f2ee2b3402d546a98a6/flowmatching_vs_diffusion_probabilityflow_vs_itodensity.py#L219">code</a> this is straight forward to implement like this</p>
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nf">tqdm</span><span class="p">(</span><span class="nf">enumerate</span><span class="p">(</span><span class="n">torch</span><span class="p">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mf">0.99</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">,</span> <span class="n">n_steps</span><span class="p">))):</span>
-  <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="p">.</span><span class="nf">expand</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
-  <span class="n">v</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="nf">forward</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-  <span class="n">score</span> <span class="o">=</span> <span class="p">(</span>
-      <span class="mi">1</span>
-      <span class="o">/</span> <span class="p">(</span><span class="nf">sigma_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1e-6</span><span class="p">)</span>
-      <span class="o">*</span> <span class="p">(</span><span class="nf">alpha_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">v</span> <span class="o">-</span> <span class="nf">dalpha_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
-      <span class="o">/</span> <span class="p">(</span><span class="nf">dalpha_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="nf">sigma_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">-</span> <span class="nf">alpha_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="nf">dsigma_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1e-6</span><span class="p">)</span>
-  <span class="p">)</span>
-  <span class="n">score</span> <span class="o">=</span> <span class="n">score</span><span class="p">.</span><span class="nf">clamp</span><span class="p">(</span><span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-  <span class="c1"># score = (
-</span>  <span class="c1">#     -1 / sigma_t(t) * (x + (1 - t) * v)
-</span>  <span class="c1"># )  # - 1/sigma E[\epsilon | x_t]
-</span>  <span class="n">drift</span> <span class="o">=</span> <span class="nf">f_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="nf">g_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="nf">diff_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">score</span>
-  <span class="n">brownian_motion</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="nf">randn_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-  <span class="n">diffusion</span> <span class="o">=</span> <span class="nf">diff_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="nf">g_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">brownian_motion</span>
-  <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">drift</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="n">dt</span><span class="p">)</span> <span class="o">+</span> <span class="n">diffusion</span> <span class="o">*</span> <span class="n">dt</span><span class="o">**</span><span class="mf">0.5</span>
-  <span class="n">traj</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># x - t * dx for x1 prediction
-</span>  <span class="k">if</span> <span class="n">likelihood</span><span class="p">:</span>
-      <span class="c1"># Cartoonist notation: arXiv:2411.01293v2
-</span>      <span class="n">det_update</span> <span class="o">=</span> <span class="o">-</span><span class="nf">f_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="nf">g_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">score</span><span class="o">**</span><span class="mi">2</span>
-      <span class="n">stoch_update</span> <span class="o">=</span> <span class="nf">g_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">score</span> <span class="o">*</span> <span class="n">brownian_motion</span>
-      <span class="n">update</span> <span class="o">=</span> <span class="n">det_update</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="n">dt</span><span class="p">)</span> <span class="o">+</span> <span class="n">stoch_update</span> <span class="o">*</span> <span class="n">dt</span><span class="o">**</span><span class="mf">0.5</span>
-      <span class="n">loglikelihood</span> <span class="o">+=</span> <span class="p">[</span><span class="n">loglikelihood</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">update</span><span class="p">.</span><span class="nf">squeeze</span><span class="p">()]</span>
-
-</code></pre></div></div>
-
-<h3 id="transforming-flows-to-diffusion-models-and-back">Transforming Flows to Diffusion Models and back</h3>
-
-<p>We saw in the beginning how the probability flow formulation of a SDE can extracted from the corresponding FPE.
-This is an ordinary differential equation which we can integrate to obtain the log-likelihood of the observed data given a diffusion model.
-The Ito density estimator, on the other hand, is a stochastic differential equation which we can solve to obtain the log-likelihood of the observed data given a diffusion model.</p>
-
-<p>Wouldn’t it be nice if we could train a flow with an optimal transport plan, and subsequently transform it into a diffusion model?
-Can we also transform a diffusion model into a flow?</p>
-
-<p>In order to achieve that should first write out the main equation at the heart of each approach:
-\(\begin{align}
-\text{Flow Matching} &amp; \quad : X_t = \alpha_t x_0 + \sigma_t \varepsilon \\
-\text{Diffusion Model}&amp; \quad : dX_t = -f_t X_t dt + g_t dW_t
-\end{align}\)</p>
-
-<p>Ideally we would like to have the integrated diffusion model $\int_0^t dX_t = X_t$ for both the flow matching and the diffusion model.
-If that were the case, then integrating the diffusion model would yield a random variable witch an identical probability distribution as the flow matching variable $X_t$.</p>
-
-<p>Since integrating stochastic dynamics is always a hassle, we will first look at the average dynamics by taking the expectation over both random variables $dX_t$ and $X_t$.
-Thus we get 
-\(\begin{align}
-\text{Flow Matching} &amp; \quad : \mathbb{E}[X_t] = \mathbb{E}[\alpha_t x_0] + \overbrace{\mathbb{E}[\sigma_t \varepsilon]}^{\mathbb{E}[\varepsilon]=0} \\
-\text{Diffusion Model}&amp; \quad : \mathbb{E}[dX_t] = \mathbb{E}[-f_t X_t dt] + \underbrace{\mathbb{E}[g_t dW_t]}_{\mathbb{E}[dW_t]=0}.
-\end{align}\)</p>
-
-<p>Now we want $\mathbb{E}[X_t] = \int_0^t \mathbb{E}[-f_s X_s] ds$ to hold such that we can equate $\alpha_t$ with $\int_0^t -f_s ds$.
-We proceed by solving the differential equation $dx_t = f_t x_t dt$:
-\(\begin{align}
-dx_t &amp;= -f_t x_t dt \\
-\frac{dx_t}{x_t} &amp;= -f_t dt \\
-d \log x_t &amp;= -f_t dt \\
-\int_0^t d\log x_s &amp;= \int_0^t -f_s ds \\
-\left[ \log x_s \right]_{s=0}^t &amp;= \int_0^t -f_s ds \\
-\log x_t - \log x_0 &amp;= \int_0^t -f_s ds \\
-\log \frac{x_t}{x_0} &amp;= \int_0^t -f_s ds \\
-x_t &amp;= x_0 \ \exp\left[ \int_0^t -f_s ds\right] \\
-&amp;\downarrow \\
-\alpha_t &amp;= \exp\left[ \int_0^t -f_s ds \right]
-\end{align}\)</p>
-
-<p>Comparing that to $x_t = \alpha_t x_0$ we have succesfully identified $\alpha_t = \exp[ \int_0^t -f_s ds]$.</p>
-
-<p>Equating $\sigma_t$ with $g_t$ will be slightly more difficult because we have to factor in the effect of $-f_t X_t$.
-To properly quantify the relationship between $\sigma_t$ and $g_t$, we would have to first eliminate the effect of the drift.
-In order to achieve this we can leverage the idea of a martingale which is the fancy word of a SDE without a drift.</p>
-
-<p>For that we define a new stochastic variable $y_t = \frac{x_t}{\alpha_t}$ and differentiating it with either Ito or the quotient rule yields
-\(\begin{align}
-dy_t &amp;= d \left[ \frac{x_t}{\alpha_t} \right] \\
-&amp;= \frac{dx_t \alpha_t - x_t d\alpha_t}{\alpha_t^2} \\
-&amp;= \frac{dx_t}{\alpha_t} - \frac{x_t}{\alpha_t^2} \frac{d\alpha_t}{dt} dt \\
-&amp;= \frac{-f_t x_t dt + g_t dW_t}{\alpha_t} - \frac{x_t}{\alpha_t^2} (-f_t) \alpha_t dt \\
-&amp;= \cancel{\frac{-f_t x_t dt}{\alpha_t}} + \frac{g_t dW_t}{\alpha_t} - \cancel{\frac{x_t}{\alpha_t} (-f_t) dt} \\
-&amp;= \frac{g_t}{\alpha_t} dW_t
-\end{align}\)
-yields a SDE without a drift. 
-This implies that the stochastic variable $y_t$ is a martingale where knowing something about the current value $y_t$ does not give us any information about the future value $y_{t+dt}$.
-This is due to the fact that the drift term is zero and thus this is a scaled Wiener process which could basically go either up or down with equal probability.</p>
-
-<p>This is highly useful as we can now study the diffusion of $y_t$ over time without having to deal with the drift.
-For martingale, all the convenient properties of Brownian motion hold out of the box, and adding a time-dependent scaling parameter is only a very small nuisance.
-Integrating this time-dependent Brownian Motion yields
-\(\begin{align}
-y_t = y_0 + \int_0^t \frac{g_s}{\alpha_s} dW_s
-\end{align}\)
-and pulling the initial condition $y_0$ over to the left side to adjust for the offset of the initial condition we get a variance of
-\(\begin{align}
-\mathbb{V}[y_t-y_0] &amp;= \mathbb{E}\left[ ( y_t - y_0 - \mathbb{E}[y_t - y_0])^2 \right] \\
-&amp;= \mathbb{E}\left[ \left( \int_0^t \frac{g_s}{\alpha_s} dW_s  - \underbrace{\mathbb{E}\left[\int_0^t \frac{g_s}{\alpha_s} dW_s \right]}_{\mathbb{E}[dW_s]=0} \right)^2 \right] \\
-&amp;= \mathbb{E}\left[ \left( \int_0^t \frac{g_s}{\alpha_s} dW_s  \right)^2 \right] \quad \quad | \quad \quad \text{Ito Isommetry} \\
-&amp;= \int_0^t \left(\frac{g_s}{\alpha_s}\right)^2 ds
-\end{align}\)</p>
-
-<p>With this result, we can now go back to our original definition of $y_t = x_t / \alpha_t$ and substitute back to get the diffusion of the original, non-martingale process,
-\(\begin{align}
-\mathbb{V}[y_t-y_0] 
-&amp;= \mathbb{V} \left[\frac{x_t}{\alpha_t}-\frac{x_0}{\alpha_t} \right] \\
-&amp;= \frac{1}{\alpha_t^2} \mathbb{V} \left[x_t-x_0 \right] \\
-&amp;= \int_0^t \left(\frac{g_s}{\alpha_s}\right)^2 ds \\
-&amp; \downarrow \\
-\sigma_t^2 &amp;= \alpha_t^2 \int_0^t \left(\frac{g_s}{\alpha_s}\right)^2 ds
-\end{align}\)</p>
-
-<p>Going from flow matching to diffusion is easier once we have one correspondence.
-To obtain the drift parameter $f$, we simply determine the inverse function,
-\(\begin{align}
-\alpha_t &amp;= \exp\left[ -\int_0^t f_s ds \right] \\
-\log \alpha_t &amp;= -\int_0^t f_s ds \\
--d\log \alpha_t &amp;= f_t \\
-\end{align}\)
-and to obtain $g_t$ from an existing flow, we have
-\(\begin{align}
-\sigma_t^2 &amp;= \alpha_t^2 \int_0^t \left(\frac{g_s}{\alpha_s}\right)^2 ds \\
-\frac{\sigma_t^2}{\alpha_t^2} &amp;=\int_0^t \left(\frac{g_s}{\alpha_s}\right)^2 ds \\
-d\left[\frac{\sigma_t^2}{\alpha_t^2}\right] &amp;= \left(\frac{g_t}{\alpha_t}\right)^2 \\
-2 \frac{\sigma_t}{\alpha_t} d\left[\frac{\sigma_t}{\alpha_t}\right] &amp;= \frac{g_t^2}{\alpha_t^2} \\
-2 \ \sigma_t \ \alpha_t \ d\left[\frac{\sigma_t}{\alpha_t}\right] &amp;= g_t^2 \\
-2 \ \sigma_t \ \alpha_t \ \frac{\dot{\sigma}_t \alpha_t - \sigma_t \dot{\alpha}_t}{\alpha_t^2} &amp;= g_t^2 \\
-2 \ ( \sigma_t \dot{\sigma}_t - \sigma_t^2 \ \text{d}\log\alpha_t)&amp;= g_t^2 \\
-\end{align}\)</p>
-
-<p>The identities above allow us to seamlessly translate flow matching schedules $\alpha_t, \sigma_t$ to OU diffusion schedules $f_t, g_t$ and vice versa.</p>
-
-<p>In <a href="https://github.com/ludwigwinkler/genai/blob/2b5a6e17fae5696d39223f2ee2b3402d546a98a6/flowmatching_vs_diffusion_probabilityflow_vs_itodensity.py#L191">code</a> this looks like this:</p>
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="sh">"""</span><span class="s">
-Flow Matching to Diffusion SDE Conversion
-FM:     x_t = (1 - t) * x + t * noise
-SDE:    dX_t = -f(t, X_t) dt + g(t, X_t) dW_t
-f = - ∂_t log(α_t) = = - dlog(α_t) = - 1 / (1 - t + 1e-6)
-g_t^2 = 2 (σ_t ∂_t[σ_t] - σ_t^2 dlog[α_t])
-</span><span class="sh">"""</span>
-
-<span class="n">alpha_t</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">t</span>
-<span class="n">dalpha_t</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span>
-<span class="n">dlog_alpha_t</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">t</span> <span class="o">+</span> <span class="mf">1e-6</span><span class="p">)</span>
-<span class="n">sigma_t</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="mf">0.001</span> <span class="o">+</span> <span class="mf">0.999</span> <span class="o">*</span> <span class="n">t</span>
-<span class="n">dsigma_t</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="mf">0.9999</span>
-<span class="n">diff_t</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="mf">1.0</span>
-<span class="n">f_t</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="nf">dlog_alpha_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>  <span class="c1"># f(t) already incorporates - sign
-</span><span class="n">g_t</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="p">(</span>
-    <span class="mi">2</span>
-    <span class="o">*</span> <span class="p">(</span>
-        <span class="nf">sigma_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="nf">dsigma_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-        <span class="o">-</span> <span class="nf">sigma_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="nf">dalpha_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nf">alpha_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1e-6</span><span class="p">)</span>
-    <span class="p">)</span>
-    <span class="o">+</span> <span class="mf">1e-6</span>
-<span class="p">).</span><span class="nf">pow</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
-
-</code></pre></div></div>
-
-<p>So far, we’ve only considered the vanilla score matching. 
-But we’ve seen from this <a href="https://ludwigwinkler.github.io/blog/FlowMatching/"><span style="color:blue">blog post</span></a> that we can in fact extract the score out of a flow model.
-This implies that we can run a SDE purely from a flow matching model.
-In this case the flow sampling that was previously an ODE can be extended to an SDE, like so
-\(\begin{align}
-dx_\tau &amp;= v_\theta(x_\tau, \tau) \\
-&amp; \downarrow  \text{add stochasticity} \ \epsilon_\tau \\
-dx_\tau &amp;= \big(v_\theta(x_\tau, \tau) -\underbrace{\frac{1}{2}\epsilon_\tau^2 \nabla_x \log p_{\theta}(x_\tau, \tau)}_{\text{stochastic control}}\big) \ d\tau + \underbrace{\epsilon_\tau dW_\tau}_{\text{extra noise}}\\
-\end{align}\)</p>
-
-<p>All that the augmented flow matching model does is add additional noise to sampling process which is then corrected by the additional score term $\nabla_x \log p_{\theta}$ which is extracted from the flow model.
-We can recover the original flow matching sampling with 
-\(\begin{align}
-\quad dx_\tau &amp;= \left[ (v_\theta(x_\tau, \tau) - \frac{1}{2}\epsilon_\tau^2 \nabla_x \log p_{\theta}(x_\tau, \tau)) \ d\tau + \epsilon_\tau dW_\tau \right]_{\epsilon_\tau=0} \\ 
-&amp;= v_\theta(x_\tau, \tau) \ d\tau.
-\end{align}\)</p>
-
-<p>The nice thing is that we can scale $\epsilon_\tau$ up and down as we like, and the noise $\epsilon_\tau dW_\tau$ and the corrective score term automatically balance each other out.</p>
-
-<p>Similarly, we can add extra noise to the SDE formulation as detailed in this <a href="https://ludwigwinkler.github.io/blog/SimpleReverseSDE/"><span style="color:blue">blog post</span></a>,
-\(\begin{align}
-dX_\tau = (-f_\tau x_\tau + \frac{1}{2}g_\tau^2(1+\eta_\tau^2)\nabla_x \log p_\theta(x_\tau, \tau))d\tau + \eta_\tau g_\tau dW_\tau
-\end{align}\)</p>
-
-<p>While the double occurence of $\eta_\tau$ might seem daunting on first sight to translate into the flow matching framework, it actually is quite straightforward.
-All we have to remember is that the flow matching objective trains the model on the ODE of probability flow.
-Thus we can rearrange the terms such that
-\(\begin{align}
-dX_\tau 
-&amp;= (-f_\tau x_\tau + \frac{1}{2}g_\tau^2(1+\eta_\tau^2)\nabla_x \log p_\theta(x_\tau, \tau))d\tau \\ 
-&amp; \quad + \eta_\tau g_\tau dW_\tau \\
-&amp;= (\overbrace{-f_\tau x_\tau + \frac{1}{2}g_\tau^2\nabla_x \log p_\theta(x_\tau, \tau)}^{v_\theta(x_\tau, \tau)} + \frac{1}{2}\overbrace{g_\tau^2\eta_\tau^2}^{\epsilon_\tau^2}  \log p_\theta(x_\tau, \tau))d\tau \\ 
-&amp; \quad + \underbrace{\eta_\tau  g_\tau}_{\epsilon_\tau} dW_\tau \\
-\end{align}\)</p>
-
-<p>and so we can conclude that the last flow matching parameter $\eta_\tau$ can also be translated to the diffusion framework via $\epsilon_\tau = g_\tau \eta_\tau$.</p>
 </p>
       		</section>
 
