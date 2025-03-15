@@ -60,7 +60,7 @@ A number of inducing points are selected which are meant to represent the full t
 One can think of this along the line of k-means clustering of the training data set.
 
 Let's first set up the environment and import all the necessary libraries:
-
+```python
 	import torch
 	import torch.distributions
 	from torch.distributions import Normal, MultivariateNormal
@@ -123,6 +123,7 @@ Now we can do some plotting:
 		return x, y
 
 	generate_weightuncertainty_data()
+```
 
 ![](/blog/InducingPoints/Data.png){: .align="center" height="50%" width="50%"}
 

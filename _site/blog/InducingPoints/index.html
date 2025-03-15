@@ -122,70 +122,68 @@ A number of inducing points are selected which are meant to represent the full t
 One can think of this along the line of k-means clustering of the training data set.</p>
 
 <p>Let’s first set up the environment and import all the necessary libraries:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	<span class="kn">import</span> <span class="n">torch</span>
+	<span class="kn">import</span> <span class="n">torch.distributions</span>
+	<span class="kn">from</span> <span class="n">torch.distributions</span> <span class="kn">import</span> <span class="n">Normal</span><span class="p">,</span> <span class="n">MultivariateNormal</span>
+	<span class="kn">from</span> <span class="n">torch.utils.data</span> <span class="kn">import</span> <span class="n">DataLoader</span><span class="p">,</span> <span class="n">TensorDataset</span>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import torch
-import torch.distributions
-from torch.distributions import Normal, MultivariateNormal
-from torch.utils.data import DataLoader, TensorDataset
+	<span class="kn">import</span> <span class="n">sklearn</span>
+	<span class="kn">from</span> <span class="n">sklearn.datasets</span> <span class="kn">import</span> <span class="n">make_moons</span>
+	<span class="kn">from</span> <span class="n">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">scale</span>
 
-import sklearn
-from sklearn.datasets import make_moons
-from sklearn.preprocessing import scale
+	<span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
+	<span class="kn">import</span> <span class="n">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+	<span class="kn">import</span> <span class="n">time</span>
+	<span class="kn">import</span> <span class="n">copy</span>
+	<span class="kn">import</span> <span class="n">sys</span><span class="p">,</span> <span class="n">os</span><span class="p">,</span> <span class="n">argparse</span><span class="p">,</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">time</span>
 
-import numpy as np
-import matplotlib.pyplot as plt
-import time
-import copy
-import sys, os, argparse, datetime, time
+	<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="nf">device</span><span class="p">(</span><span class="sh">"</span><span class="s">cuda:0</span><span class="sh">"</span> <span class="k">if</span> <span class="n">torch</span><span class="p">.</span><span class="n">cuda</span><span class="p">.</span><span class="nf">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="sh">"</span><span class="s">cpu</span><span class="sh">"</span><span class="p">)</span>
 
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+	<span class="k">if</span> <span class="n">torch</span><span class="p">.</span><span class="n">cuda</span><span class="p">.</span><span class="nf">is_available</span><span class="p">():</span>
+		<span class="n">FloatTensor</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">cuda</span><span class="p">.</span><span class="n">FloatTensor</span>
+	<span class="k">elif</span> <span class="ow">not</span> <span class="n">torch</span><span class="p">.</span><span class="n">cuda</span><span class="p">.</span><span class="nf">is_available</span><span class="p">():</span>
+		<span class="n">FloatTensor</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">FloatTensor</span>
 
-if torch.cuda.is_available():
-	FloatTensor = torch.cuda.FloatTensor
-elif not torch.cuda.is_available():
-	FloatTensor = torch.FloatTensor
+	<span class="kn">import</span> <span class="n">torch.nn.functional</span> <span class="k">as</span> <span class="n">F</span>
 
-import torch.nn.functional as F
+	<span class="n">params</span> <span class="o">=</span> <span class="n">argparse</span><span class="p">.</span><span class="nc">ArgumentParser</span><span class="p">()</span>
+	<span class="n">params</span><span class="p">.</span><span class="nf">add_argument</span><span class="p">(</span><span class="sh">'</span><span class="s">-logging</span><span class="sh">'</span><span class="p">,</span>                   <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>           <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
-params = argparse.ArgumentParser()
-params.add_argument('-logging',                   type=int,           default=0)
+	<span class="n">params</span><span class="p">.</span><span class="nf">add_argument</span><span class="p">(</span><span class="sh">'</span><span class="s">-num_samples</span><span class="sh">'</span><span class="p">,</span>               <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>           <span class="n">default</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+	<span class="n">params</span><span class="p">.</span><span class="nf">add_argument</span><span class="p">(</span><span class="sh">'</span><span class="s">-num_inducing_points</span><span class="sh">'</span><span class="p">,</span>       <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>           <span class="n">default</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+	<span class="n">params</span><span class="p">.</span><span class="nf">add_argument</span><span class="p">(</span><span class="sh">'</span><span class="s">-x_noise_std</span><span class="sh">'</span><span class="p">,</span>               <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>         <span class="n">default</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+	<span class="n">params</span><span class="p">.</span><span class="nf">add_argument</span><span class="p">(</span><span class="sh">'</span><span class="s">-y_noise_std</span><span class="sh">'</span><span class="p">,</span>               <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>         <span class="n">default</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+	<span class="n">params</span><span class="p">.</span><span class="nf">add_argument</span><span class="p">(</span><span class="sh">'</span><span class="s">-zoom</span><span class="sh">'</span><span class="p">,</span>                      <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>           <span class="n">default</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 
-params.add_argument('-num_samples',               type=int,           default=200)
-params.add_argument('-num_inducing_points',       type=int,           default=6)
-params.add_argument('-x_noise_std',               type=float,         default=0.01)
-params.add_argument('-y_noise_std',               type=float,         default=0.1)
-params.add_argument('-zoom',                      type=int,           default=10)
+	<span class="n">params</span><span class="p">.</span><span class="nf">add_argument</span><span class="p">(</span><span class="sh">'</span><span class="s">-lr_kernel</span><span class="sh">'</span><span class="p">,</span>                 <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>         <span class="n">default</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+	<span class="n">params</span><span class="p">.</span><span class="nf">add_argument</span><span class="p">(</span><span class="sh">'</span><span class="s">-lr_ip</span><span class="sh">'</span><span class="p">,</span>                     <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>         <span class="n">default</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
 
-params.add_argument('-lr_kernel',                 type=float,         default=0.01)
-params.add_argument('-lr_ip',                     type=float,         default=0.1)
+	<span class="n">params</span><span class="p">.</span><span class="nf">add_argument</span><span class="p">(</span><span class="sh">'</span><span class="s">-num_epochs</span><span class="sh">'</span><span class="p">,</span>                <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>           <span class="n">default</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
 
-params.add_argument('-num_epochs',                type=int,           default=300)
+	<span class="n">params</span> <span class="o">=</span> <span class="n">params</span><span class="p">.</span><span class="nf">parse_args</span><span class="p">()</span>
 
-params = params.parse_args()
-</code></pre></div></div>
+<span class="n">Now</span> <span class="n">we</span> <span class="n">can</span> <span class="n">do</span> <span class="n">some</span> <span class="n">plotting</span><span class="p">:</span>
 
-<p>Now we can do some plotting:</p>
+	<span class="k">def</span> <span class="nf">generate_weightuncertainty_data</span><span class="p">():</span>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>def generate_weightuncertainty_data():
+		<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">0.35</span><span class="p">,</span> <span class="mf">0.55</span><span class="p">,</span> <span class="n">params</span><span class="p">.</span><span class="n">num_samples</span><span class="p">)</span>
+		<span class="n">x_noise</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="nf">normal</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">params</span><span class="p">.</span><span class="n">x_noise_std</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">x</span><span class="p">.</span><span class="n">shape</span><span class="p">)</span>
+		<span class="n">y_noise</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="nf">normal</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">params</span><span class="p">.</span><span class="n">y_noise_std</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">x</span><span class="p">.</span><span class="n">shape</span><span class="p">)</span>
 
-	x = np.linspace(-0.35, 0.55, params.num_samples)
-	x_noise = np.random.normal(0., params.x_noise_std, size=x.shape)
-	y_noise = np.random.normal(0., params.y_noise_std, size=x.shape)
+		<span class="n">y</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="mf">0.3</span> <span class="o">*</span> <span class="n">np</span><span class="p">.</span><span class="nf">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="p">.</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x_noise</span><span class="p">))</span> <span class="o">+</span> <span class="mf">0.3</span> <span class="o">*</span> <span class="n">np</span><span class="p">.</span><span class="nf">sin</span><span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="p">.</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x_noise</span><span class="p">))</span> <span class="o">+</span> <span class="n">y_noise</span>
 
-	y = x + 0.3 * np.sin(2 * np.pi * (x + x_noise)) + 0.3 * np.sin(4 * np.pi * (x + x_noise)) + y_noise
+		<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="p">.</span><span class="nf">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">y</span><span class="p">.</span><span class="nf">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
-	x, y = x.reshape(-1, 1), y.reshape(-1, 1)
+		<span class="n">mu</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">array</span><span class="p">([[</span><span class="o">-</span><span class="mf">0.3</span><span class="p">,</span><span class="o">-</span><span class="mf">0.3</span><span class="p">],[</span><span class="o">-</span><span class="mf">0.18</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.8</span><span class="p">],[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.35</span><span class="p">,</span><span class="mf">0.3</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.55</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">]])</span>
 
-	mu = np.array([[-0.3,-0.3],[-0.18, -0.8],[0,0], [0.15, 0.8], [0.35,0.3], [0.55, 0.6]])
+		<span class="k">if</span> <span class="bp">True</span><span class="p">:</span>
+			<span class="n">plt</span><span class="p">.</span><span class="nf">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+			<span class="n">plt</span><span class="p">.</span><span class="nf">scatter</span><span class="p">(</span><span class="n">mu</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">mu</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="sh">'</span><span class="s">red</span><span class="sh">'</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="sh">'</span><span class="s">+</span><span class="sh">'</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+			<span class="n">plt</span><span class="p">.</span><span class="nf">show</span><span class="p">()</span>
 
-	if True:
-		plt.scatter(x, y, alpha=0.5)
-		plt.scatter(mu[:,0], mu[:,1], color='red', marker='+', s=100)
-		plt.show()
+		<span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
 
-	return x, y
-
-generate_weightuncertainty_data()
+	<span class="nf">generate_weightuncertainty_data</span><span class="p">()</span>
 </code></pre></div></div>
 
 <p><img src="/blog/InducingPoints/Data.png" alt="" class="align=&quot;center&quot;" height="50%" width="50%" /></p>
