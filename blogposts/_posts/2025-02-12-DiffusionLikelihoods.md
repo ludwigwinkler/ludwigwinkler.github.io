@@ -4,7 +4,7 @@ title:  "Likelihood Calculations in Diffusion Models"
 category: blog
 date:   2025-02-12
 excerpt: "Mr. Fokker and Mr. Planck, meet Ito-San"
-highlighter: rouge
+# highlighter: rouge
 image: "/blog/ItoDensityEstimator.png"
 ---
 <head>
@@ -26,27 +26,16 @@ image: "/blog/ItoDensityEstimator.png"
 </head>
 
 ```ruby
-def greet(name)
-  puts "Hello, #{name}!"
-end
-
-# Call the function
-greet("Ludwig")
-
-# Conditional statement
-number = 10
-if number > 5
-  puts "The number is greater than 5"
-else
-  puts "The number is 5 or less"
-end
-
-# Loop through an array
-fruits = ["apple", "banana", "cherry"]
-fruits.each do |fruit|
-  puts "I like #{fruit}"
-end
+require 'redcarpet'
+markdown = Redcarpet.new("Hello World!")
+puts markdown.to_html()
 ```
+
+```py
+print('Hello World!)
+a = 1
+```
+
 
 Let's start out this blog post with the one equation that is at the heart of diffusion models, the Fokker-Planck equation,
 <div style="overflow-x: auto;">
@@ -166,7 +155,7 @@ $$
 In code this is comparatively straight forward to compute.
 The full code can be found in this little [repository](https://github.com/ludwigwinkler/genai/blob/main/flowmatching_vs_diffusion_probabilityflow_vs_itodensity.py) but we can see the simple OT vector field integration and the likelihood computation below:
 
-```python
+```py
 for step, t in tqdm(enumerate(torch.linspace(1, 0, n_steps))):
   t = t.expand(len(x), 1)
   dx = self.forward(t, x)

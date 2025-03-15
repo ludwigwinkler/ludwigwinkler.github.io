@@ -19,12 +19,18 @@ defaults:
 permalink: /blog/:title/
 markdown: kramdown
 highlighter: rouge
+rouge_theme: base16.solarized
 kramdown:
+  input: GFM
   auto_ids: true
   footnote_nr: 1
   entity_output: as_char
   toc_levels: 1..6
   enable_coderay: false
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    # Use existing pygments syntax highlighting css
+    css_class: "highlight"
 mathjax: true
 sass:
   sass_dir: _sass
