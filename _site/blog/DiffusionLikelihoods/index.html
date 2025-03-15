@@ -205,6 +205,55 @@ $$
 $$
 </div>
 
+<p>In code this is comparatively straight forward to compute.
+The full code can be found in this little <a href="https://github.com/ludwigwinkler/genai/blob/main/flowmatching_vs_diffusion_probabilityflow_vs_itodensity.py">repository</a> but we can see the simple OT vector field integration and the likelihood computation below:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nf">tqdm</span><span class="p">(</span><span class="nf">enumerate</span><span class="p">(</span><span class="n">torch</span><span class="p">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n_steps</span><span class="p">))):</span>
+  <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="p">.</span><span class="nf">expand</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="n">dx</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="nf">forward</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">likelihood</span><span class="p">:</span>
+      <span class="n">likelihood</span> <span class="o">+=</span> <span class="p">[</span><span class="n">likelihood</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="nf">divergence</span><span class="p">(</span><span class="n">euler_fn</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">dt</span><span class="p">]</span>
+  <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">dx</span> <span class="o">*</span> <span class="n">dt</span>  <span class="c1"># integrating vector field backwards
+</span>
+<span class="c1"># with the divergence code:
+</span><span class="k">def</span> <span class="nf">divergence</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="sh">"""</span><span class="s">
+    Compute the analytical divergence of v(t, x) using PyTorch autograd.
+
+    Args:
+        v_func: Function v(t, x) that computes the velocity field.
+        x: Input tensor of shape (batch_size, dim).
+        t: Scalar tensor representing time.
+
+    Returns:
+        Analytical divergence of v(t, x) for each batch element.
+    </span><span class="sh">"""</span>
+    <span class="n">batch_size</span><span class="p">,</span> <span class="n">dim</span> <span class="o">=</span> <span class="n">x</span><span class="p">.</span><span class="n">shape</span>
+    <span class="n">divergence</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="nf">zeros</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">x</span><span class="p">.</span><span class="n">device</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">torch</span><span class="p">.</span><span class="nf">enable_grad</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">dim</span><span class="p">):</span>
+            <span class="n">x</span><span class="p">.</span><span class="nf">requires_grad_</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+            <span class="n">v_t</span> <span class="o">=</span> <span class="nf">f</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>  <span class="c1"># Compute velocity field v(t, x)
+</span>            <span class="n">grad_outputs</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="nf">ones_like</span><span class="p">(</span>
+                <span class="n">v_t</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span>
+            <span class="p">)</span>  <span class="c1"># Compute gradient wrt each output dimension
+</span>            <span class="n">div_v_i</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">autograd</span><span class="p">.</span><span class="nf">grad</span><span class="p">(</span>
+                <span class="n">v_t</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span>
+                <span class="n">x</span><span class="p">,</span>
+                <span class="n">grad_outputs</span><span class="o">=</span><span class="n">grad_outputs</span><span class="p">,</span>
+                <span class="n">retain_graph</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                <span class="n">create_graph</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="p">)[</span><span class="mi">0</span><span class="p">][:,</span> <span class="n">i</span><span class="p">]</span>
+            <span class="c1"># div_v_i = torch.autograd.grad(v_t[:, i], x, grad_outputs=grad_outputs)[0][:, i]
+</span>            <span class="n">divergence</span> <span class="o">+=</span> <span class="n">div_v_i</span>  <span class="c1"># Sum over all diagonal elements
+</span>            <span class="n">x</span><span class="p">.</span><span class="nf">detach</span><span class="p">()</span>
+
+    <span class="n">x</span><span class="p">.</span><span class="nf">detach</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">divergence</span>
+</code></pre></div></div>
+
 <p>A small disclaimer: the tricky part is computing the divergence of the drift vector field $\mathbf{\mu}(x, t)$ efficiently.
 The problem here is that for $D$ dimensions, we have to compute $D$ partial derivatives for each dimension, which can be computationally expensive in higher dimensions.
 To alleviate this problem, Hutchinson’s stochastic trace estimator is commonly used.</p>
@@ -236,6 +285,39 @@ $$
 Effectively, we’re backpropagating the vector $\epsilon$ through the neural network evaluation ( in pseudo-code <code class="language-plaintext highlighter-rouge">torch.autograd.grad(outputs=mu, inputs=x, grad_outputs=epsilon)</code>) and contract it with <code class="language-plaintext highlighter-rouge">epsilon</code> again.
 We do that for multiple samples of $\epsilon$ and average the results to obtain an unbiased estimate of the trace of the Jacobian matrix.
 Taking a single sample of $\epsilon$ and computing the Jacobian-vector product is computationally more efficient than computing the full Jacobian matrix but comes with a higher estimator variance.</p>
+
+<p>In code this looks like this:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">stochastic_divergence</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="sh">"""</span><span class="s">
+    Compute the divergence of v(t, x) using Hutchinson</span><span class="sh">'</span><span class="s">s trace estimator.
+
+    Args:
+        v_func: Function v(t, x) that computes the velocity field.
+        x: Input tensor of shape (batch_size, dim).
+        t: Scalar tensor representing time.
+        num_samples: Number of Hutchinson samples for estimation.
+
+    Returns:
+        Estimated divergence of v(t, x).
+    </span><span class="sh">"""</span>
+    <span class="n">batch_size</span><span class="p">,</span> <span class="n">dim</span> <span class="o">=</span> <span class="n">x</span><span class="p">.</span><span class="n">shape</span>
+    <span class="n">divergence_estimate</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="nf">zeros</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">x</span><span class="p">.</span><span class="n">device</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">torch</span><span class="p">.</span><span class="nf">enable_grad</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">num_samples</span><span class="p">):</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="nf">randn_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># Sample Gaussian noise v ~ N(0, I)
+</span>            <span class="n">x</span><span class="p">.</span><span class="nf">requires_grad_</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>  <span class="c1"># Enable gradient tracking
+</span>
+            <span class="n">v_t</span> <span class="o">=</span> <span class="nf">f</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>  <span class="c1"># Compute velocity field v(t, x), shape (batch_size, dim)
+</span>            <span class="n">div_v</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">autograd</span><span class="p">.</span><span class="nf">grad</span><span class="p">(</span><span class="n">v_t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">grad_outputs</span><span class="o">=</span><span class="n">v</span><span class="p">,</span> <span class="n">create_graph</span><span class="o">=</span><span class="bp">True</span><span class="p">)[</span>
+                <span class="mi">0</span>
+            <span class="p">]</span>  <span class="c1"># Compute Jv
+</span>
+            <span class="n">divergence_estimate</span> <span class="o">+=</span> <span class="n">torch</span><span class="p">.</span><span class="nf">sum</span><span class="p">(</span><span class="n">div_v</span> <span class="o">*</span> <span class="n">v</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># Estimate trace
+</span>
+    <span class="k">return</span> <span class="n">divergence_estimate</span> <span class="o">/</span> <span class="n">num_samples</span>  <span class="c1"># Average over samples
+</span>
+</code></pre></div></div>
 
 <h3 id="ito-density-estimators">Ito Density Estimators</h3>
 
@@ -366,6 +448,34 @@ $$
 <p>The result above stands in contrast to the probability flow formulation for calculating the likelihood of the observed data given a diffusion model.
 Whereas the probability flow formulation relies on integrating an ODE, here we can directly compute the log-likelihood of the observed data given a diffusion model by solving a SDE.</p>
 
+<p>In <a href="https://github.com/ludwigwinkler/genai/blob/2b5a6e17fae5696d39223f2ee2b3402d546a98a6/flowmatching_vs_diffusion_probabilityflow_vs_itodensity.py#L219">code</a> this is straight forward to implement like this</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nf">tqdm</span><span class="p">(</span><span class="nf">enumerate</span><span class="p">(</span><span class="n">torch</span><span class="p">.</span><span class="nf">linspace</span><span class="p">(</span><span class="mf">0.99</span><span class="p">,</span> <span class="mf">0.001</span><span class="p">,</span> <span class="n">n_steps</span><span class="p">))):</span>
+  <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="p">.</span><span class="nf">expand</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+  <span class="n">v</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="nf">forward</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+  <span class="n">score</span> <span class="o">=</span> <span class="p">(</span>
+      <span class="mi">1</span>
+      <span class="o">/</span> <span class="p">(</span><span class="nf">sigma_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1e-6</span><span class="p">)</span>
+      <span class="o">*</span> <span class="p">(</span><span class="nf">alpha_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">v</span> <span class="o">-</span> <span class="nf">dalpha_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+      <span class="o">/</span> <span class="p">(</span><span class="nf">dalpha_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="nf">sigma_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">-</span> <span class="nf">alpha_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="nf">dsigma_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1e-6</span><span class="p">)</span>
+  <span class="p">)</span>
+  <span class="n">score</span> <span class="o">=</span> <span class="n">score</span><span class="p">.</span><span class="nf">clamp</span><span class="p">(</span><span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+  <span class="c1"># score = (
+</span>  <span class="c1">#     -1 / sigma_t(t) * (x + (1 - t) * v)
+</span>  <span class="c1"># )  # - 1/sigma E[\epsilon | x_t]
+</span>  <span class="n">drift</span> <span class="o">=</span> <span class="nf">f_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="nf">g_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="nf">diff_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">score</span>
+  <span class="n">brownian_motion</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="nf">randn_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+  <span class="n">diffusion</span> <span class="o">=</span> <span class="nf">diff_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="nf">g_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">brownian_motion</span>
+  <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">drift</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="n">dt</span><span class="p">)</span> <span class="o">+</span> <span class="n">diffusion</span> <span class="o">*</span> <span class="n">dt</span><span class="o">**</span><span class="mf">0.5</span>
+  <span class="n">traj</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># x - t * dx for x1 prediction
+</span>  <span class="k">if</span> <span class="n">likelihood</span><span class="p">:</span>
+      <span class="c1"># Cartoonist notation: arXiv:2411.01293v2
+</span>      <span class="n">det_update</span> <span class="o">=</span> <span class="o">-</span><span class="nf">f_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">*</span> <span class="nf">g_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">score</span><span class="o">**</span><span class="mi">2</span>
+      <span class="n">stoch_update</span> <span class="o">=</span> <span class="nf">g_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="n">score</span> <span class="o">*</span> <span class="n">brownian_motion</span>
+      <span class="n">update</span> <span class="o">=</span> <span class="n">det_update</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="n">dt</span><span class="p">)</span> <span class="o">+</span> <span class="n">stoch_update</span> <span class="o">*</span> <span class="n">dt</span><span class="o">**</span><span class="mf">0.5</span>
+      <span class="n">loglikelihood</span> <span class="o">+=</span> <span class="p">[</span><span class="n">loglikelihood</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">update</span><span class="p">.</span><span class="nf">squeeze</span><span class="p">()]</span>
+
+</code></pre></div></div>
+
 <h3 id="transforming-flows-to-diffusion-models-and-back">Transforming Flows to Diffusion Models and back</h3>
 
 <p>We saw in the beginning how the probability flow formulation of a SDE can extracted from the corresponding FPE.
@@ -412,7 +522,7 @@ x_t &amp;= x_0 \ \exp\left[ \int_0^t -f_s ds\right] \\
 To properly quantify the relationship between $\sigma_t$ and $g_t$, we would have to first eliminate the effect of the drift.
 In order to achieve this we can leverage the idea of a martingale which is the fancy word of a SDE without a drift.</p>
 
-<p>For that we define a new stochastic process $y_t = \frac{x_t}{\alpha_t}$ and differentiating it with either Ito or the quotient rule yields
+<p>For that we define a new stochastic variable $y_t = \frac{x_t}{\alpha_t}$ and differentiating it with either Ito or the quotient rule yields
 \(\begin{align}
 dy_t &amp;= d \left[ \frac{x_t}{\alpha_t} \right] \\
 &amp;= \frac{dx_t \alpha_t - x_t d\alpha_t}{\alpha_t^2} \\
@@ -420,7 +530,10 @@ dy_t &amp;= d \left[ \frac{x_t}{\alpha_t} \right] \\
 &amp;= \frac{-f_t x_t dt + g_t dW_t}{\alpha_t} - \frac{x_t}{\alpha_t^2} (-f_t) \alpha_t dt \\
 &amp;= \cancel{\frac{-f_t x_t dt}{\alpha_t}} + \frac{g_t dW_t}{\alpha_t} - \cancel{\frac{x_t}{\alpha_t} (-f_t) dt} \\
 &amp;= \frac{g_t}{\alpha_t} dW_t
-\end{align}\)</p>
+\end{align}\)
+yields a SDE without a drift. 
+This implies that the stochastic variable $y_t$ is a martingale where knowing something about the current value $y_t$ does not give us any information about the future value $y_{t+dt}$.
+This is due to the fact that the drift term is zero and thus this is a scaled Wiener process which could basically go either up or down with equal probability.</p>
 
 <p>This is highly useful as we can now study the diffusion of $y_t$ over time without having to deal with the drift.
 For martingale, all the convenient properties of Brownian motion hold out of the box, and adding a time-dependent scaling parameter is only a very small nuisance.
@@ -449,9 +562,9 @@ and pulling the initial condition $y_0$ over to the left side to adjust for the 
 <p>Going from flow matching to diffusion is easier once we have one correspondence.
 To obtain the drift parameter $f$, we simply determine the inverse function,
 \(\begin{align}
-\alpha_t &amp;= \exp\left[ \int_0^t f_s ds \right] \\
-\log \alpha_t &amp;= \int_0^t f_s ds \\
-d\log \alpha_t &amp;= f_t \\
+\alpha_t &amp;= \exp\left[ -\int_0^t f_s ds \right] \\
+\log \alpha_t &amp;= -\int_0^t f_s ds \\
+-d\log \alpha_t &amp;= f_t \\
 \end{align}\)
 and to obtain $g_t$ from an existing flow, we have
 \(\begin{align}
@@ -466,24 +579,51 @@ d\left[\frac{\sigma_t^2}{\alpha_t^2}\right] &amp;= \left(\frac{g_t}{\alpha_t}\ri
 
 <p>The identities above allow us to seamlessly translate flow matching schedules $\alpha_t, \sigma_t$ to OU diffusion schedules $f_t, g_t$ and vice versa.</p>
 
+<p>In <a href="https://github.com/ludwigwinkler/genai/blob/2b5a6e17fae5696d39223f2ee2b3402d546a98a6/flowmatching_vs_diffusion_probabilityflow_vs_itodensity.py#L191">code</a> this looks like this:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="sh">"""</span><span class="s">
+Flow Matching to Diffusion SDE Conversion
+FM:     x_t = (1 - t) * x + t * noise
+SDE:    dX_t = -f(t, X_t) dt + g(t, X_t) dW_t
+f = - ∂_t log(α_t) = = - dlog(α_t) = - 1 / (1 - t + 1e-6)
+g_t^2 = 2 (σ_t ∂_t[σ_t] - σ_t^2 dlog[α_t])
+</span><span class="sh">"""</span>
+
+<span class="n">alpha_t</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">t</span>
+<span class="n">dalpha_t</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span>
+<span class="n">dlog_alpha_t</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">t</span> <span class="o">+</span> <span class="mf">1e-6</span><span class="p">)</span>
+<span class="n">sigma_t</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="mf">0.001</span> <span class="o">+</span> <span class="mf">0.999</span> <span class="o">*</span> <span class="n">t</span>
+<span class="n">dsigma_t</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="mf">0.9999</span>
+<span class="n">diff_t</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="mf">1.0</span>
+<span class="n">f_t</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="nf">dlog_alpha_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>  <span class="c1"># f(t) already incorporates - sign
+</span><span class="n">g_t</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="p">(</span>
+    <span class="mi">2</span>
+    <span class="o">*</span> <span class="p">(</span>
+        <span class="nf">sigma_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">*</span> <span class="nf">dsigma_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="o">-</span> <span class="nf">sigma_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="nf">dalpha_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nf">alpha_t</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1e-6</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="o">+</span> <span class="mf">1e-6</span>
+<span class="p">).</span><span class="nf">pow</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+
+</code></pre></div></div>
+
 <p>So far, we’ve only considered the vanilla score matching. 
 But we’ve seen from this <a href="https://ludwigwinkler.github.io/blog/FlowMatching/"><span style="color:blue">blog post</span></a> that we can in fact extract the score out of a flow model.
 This implies that we can run a SDE purely from a flow matching model.
 In this case the flow sampling that was previously an ODE can be extended to an SDE, like so
 \(\begin{align}
-dx_\tau &amp;= (v_\theta(x_\tau, \tau) \\
+dx_\tau &amp;= v_\theta(x_\tau, \tau) \\
 &amp; \downarrow  \text{add stochasticity} \ \epsilon_\tau \\
-dx_\tau &amp;= \big(v_\theta(x_\tau, \tau) -\underbrace{\frac{1}{2}\epsilon_\tau^2 \log \nabla_x \log p_{\theta}(x_\tau, \tau)}_{\text{stochastic control}}\big) \ d\tau + \underbrace{\epsilon_\tau dW_\tau}_{\text{extra noise}}\\
+dx_\tau &amp;= \big(v_\theta(x_\tau, \tau) -\underbrace{\frac{1}{2}\epsilon_\tau^2 \nabla_x \log p_{\theta}(x_\tau, \tau)}_{\text{stochastic control}}\big) \ d\tau + \underbrace{\epsilon_\tau dW_\tau}_{\text{extra noise}}\\
 \end{align}\)</p>
 
 <p>All that the augmented flow matching model does is add additional noise to sampling process which is then corrected by the additional score term $\nabla_x \log p_{\theta}$ which is extracted from the flow model.
 We can recover the original flow matching sampling with 
 \(\begin{align}
-\quad dx_\tau &amp;= \left[ (v_\theta(x_\tau, \tau) - \frac{1}{2}\epsilon_\tau^2 \log \nabla_x \log p_{\theta}(x_\tau, \tau)) \ d\tau + \epsilon_\tau dW_\tau \right]_{\epsilon_\tau=0} \\ 
+\quad dx_\tau &amp;= \left[ (v_\theta(x_\tau, \tau) - \frac{1}{2}\epsilon_\tau^2 \nabla_x \log p_{\theta}(x_\tau, \tau)) \ d\tau + \epsilon_\tau dW_\tau \right]_{\epsilon_\tau=0} \\ 
 &amp;= v_\theta(x_\tau, \tau) \ d\tau.
 \end{align}\)</p>
 
-<p>The nice thing is that we can scale $\eta_\tau$ up and down as we like and the noise $\eta_\tau dW_\tau$ and the corrective score term automatically balance each other out.</p>
+<p>The nice thing is that we can scale $\epsilon_\tau$ up and down as we like, and the noise $\epsilon_\tau dW_\tau$ and the corrective score term automatically balance each other out.</p>
 
 <p>Similarly, we can add extra noise to the SDE formulation as detailed in this <a href="https://ludwigwinkler.github.io/blog/SimpleReverseSDE/"><span style="color:blue">blog post</span></a>,
 \(\begin{align}
