@@ -25,18 +25,6 @@ image: "/blog/ItoDensityEstimator.png"
        <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 </head>
 
-```ruby
-require 'redcarpet'
-markdown = Redcarpet.new("Hello World!")
-puts markdown.to_html()
-```
-
-```py
-print('Hello World!)
-a = 1
-```
-
-
 Let's start out this blog post with the one equation that is at the heart of diffusion models, the Fokker-Planck equation,
 <div style="overflow-x: auto;">
 $$
