@@ -256,6 +256,13 @@ def stochastic_divergence(f, t, x, num_samples=10):
 
 ```
 
+And plotting the corresponding data likelihood for a series of points in the base space yields
+
+<div style="text-align: center;">
+    <img src="flow.png" alt="Likelihood Visualization" style="max-width: 100%; height: auto;">
+</div>
+
+
 ### Ito Density Estimators
 
 The probability flow log-likelihood estimator is derived through the Fokker-Planck equation.
@@ -413,6 +420,10 @@ for step, t in tqdm(enumerate(torch.linspace(0.99, 0.001, n_steps))):
       loglikelihood += [loglikelihood[-1] + update.squeeze()]
 
 ```
+
+<div style="text-align: center;">
+    <img src="ito.png" alt="Likelihood Visualization" style="max-width: 100%; height: auto;">
+</div>
 
 ### Transforming Flows to Diffusion Models and back
 

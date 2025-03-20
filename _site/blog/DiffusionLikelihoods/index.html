@@ -320,6 +320,12 @@ Taking a single sample of $\epsilon$ and computing the Jacobian-vector product i
 </span>
 </code></pre></div></div>
 
+<p>And plotting the corresponding data likelihood for a series of points in the base space yields</p>
+
+<div style="text-align: center;">
+    <img src="flow.png" alt="Likelihood Visualization" style="max-width: 100%; height: auto;" />
+</div>
+
 <h3 id="ito-density-estimators">Ito Density Estimators</h3>
 
 <p>The probability flow log-likelihood estimator is derived through the Fokker-Planck equation.
@@ -476,6 +482,10 @@ Whereas the probability flow formulation relies on integrating an ODE, here we c
       <span class="n">loglikelihood</span> <span class="o">+=</span> <span class="p">[</span><span class="n">loglikelihood</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">update</span><span class="p">.</span><span class="nf">squeeze</span><span class="p">()]</span>
 
 </code></pre></div></div>
+
+<div style="text-align: center;">
+    <img src="ito.png" alt="Likelihood Visualization" style="max-width: 100%; height: auto;" />
+</div>
 
 <h3 id="transforming-flows-to-diffusion-models-and-back">Transforming Flows to Diffusion Models and back</h3>
 
