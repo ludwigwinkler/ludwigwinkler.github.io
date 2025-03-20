@@ -222,7 +222,7 @@ Effectively, we're backpropagating the vector $\epsilon$ through the neural netw
 We do that for multiple samples of $\epsilon$ and average the results to obtain an unbiased estimate of the trace of the Jacobian matrix.
 Taking a single sample of $\epsilon$ and computing the Jacobian-vector product is computationally more efficient than computing the full Jacobian matrix but comes with a higher estimator variance.
 
-In code this looks like this:
+In [code](https://github.com/ludwigwinkler/genai) this looks like this: 
 ```python
 def stochastic_divergence(f, t, x, num_samples=10):
     """
