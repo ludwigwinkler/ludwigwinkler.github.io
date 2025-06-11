@@ -1,0 +1,328 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+  Jekyll integration by somiibo.com
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+
+<title>Annealed Importance Sampling</title>
+<meta name="description" content="">
+
+<link rel="apple-touch-icon" sizes="180x180" href="http://localhost:4000/assets/icon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:4000/assets/icon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:4000/assets/icon/favicon-16x16.png">
+<link rel="manifest" href="http://localhost:4000/assets/icon/manifest.json">
+<link rel="mask-icon" href="http://localhost:4000/assets/icon/safari-pinned-tab.svg" color="#5bbad5">
+<link rel="shortcut icon" href="http://localhost:4000/assets/icon/favicon.ico">
+<meta name="msapplication-config" content="http://localhost:4000/assets/icon/browserconfig.xml">
+<meta name="theme-color" content="#ffffff">
+
+<!-- CSS -->
+<link rel="stylesheet" href="http://localhost:4000/assets/css/main.css" />
+<noscript><link rel="stylesheet" href="http://localhost:4000/assets/css/noscript.css" /></noscript>
+
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+	</head>
+	<body class="is-loading">
+
+		<!-- Wrapper -->
+			<div id="wrapper" class="fade-in">
+
+				<!-- Header -->
+        <header id="header">
+          <a href="http://localhost:4000/" class="logo">Ludwig Winkler</a>
+        </header>
+
+				<!-- Nav -->
+					<nav id="nav">
+
+            <ul class="links">
+  <li class=""><a href="http://localhost:4000/">Home</a></li>
+  <li class=""><a href="http://localhost:4000/blog/">Machine Learning & Math</a></li>
+  <li class=""><a href="http://localhost:4000/globalizedfinance/">Kleptocracy</a></li>
+  <li class=""><a href="http://localhost:4000/readinglist/">Reading List</a></li>
+  <li class=""><a href="http://localhost:4000/photography/">Photography</a></li>
+  <li class=""><a href="http://localhost:4000/about/">About</a></li>
+</ul>
+<!-- <ul class="links">
+  <li class=""><a href="http://localhost:4000/">Home</a></li>
+  <li class=" active "><a href="http://localhost:4000/blog/">Machine Learning & Math</a></li>
+  <li class=""><a href="http://localhost:4000/readinglist/">Reading List</a></li>
+  <li class=""><a href="http://localhost:4000/photography/">Photography</a></li>
+  <li class=""><a href="http://localhost:4000/about/">About</a></li>
+</ul> -->
+
+
+						<ul class="icons">
+              <li><a href="https://twitter.com/default" class="icon fa-twitter" rel="nofollow"><span class="label">Twitter</span></a></li>
+              <li><a href="https://github.com/default" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+				<div id="main">
+          <section class="post">
+    				<header class="major">
+      				<span class="date">12 Apr 2025</span>
+      				<h1>Annealed Importance Sampling</h1>
+      				<p>... it's giving off the same energy!</p>
+      			</header>
+      			<div class="image main"><img src="" alt=""></div>
+      			<p><head>
+<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
+       <script type="text/x-mathjax-config">
+         MathJax.Hub.Config({
+          TeX: {
+                equationNumbers: { autoNumber: "all" },
+                extensions: ["AMSmath.js", "AMSsymbols.js", "cancel.js"]
+            },
+           tex2jax: {
+             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+             displayMath: [['$$','$$']],
+             processEscapes: true
+           }
+         });
+       </script>
+       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+
+<h3 id="energy">Energy</h3>
+
+<p>In the context of statistical mechanics, the energy of a system is a measure of its state. In the context of machine learning, we can think of the energy as a measure of how well a model fits the data. The lower the energy, the better the fit.</p>
+
+<ul>
+  <li>absolute energy doesn’t matter, only relative energy matters</li>
+  <li>potential energy defined with reference to earth surface, just add six feet if you’re dead</li>
+  <li>we can always add +/-c to the energy of a system, it doesn’t change the physics</li>
+  <li>plot where two energy functions with different heights result in the same probability distribution</li>
+  <li>why not work with the energy directly? after all lower is better, right?
+    <ul>
+      <li>because absolute values of energy without an anchor are meaningless, but a probability of 0.000001 or 0.98 is meaningful</li>
+      <li>I give you energy values of 100, 200, 300, and 400, you have no idea what they mean, but I give you probabilities of 0.01, 0.02, 0.03, and 0.04, you know exactly what they mean</li>
+      <li>because we want to work with probabilities, not energies</li>
+      <li>we can convert energy to probability using the Boltzmann distribution</li>
+    </ul>
+  </li>
+  <li>Boltzmann distribution: $P(x) = \frac{e^{-E(x)}}{Z}$, where $Z$ is the partition function</li>
+  <li>in ML, this occurs in logsumexp and softmax, where we can add a constant to the log likelihood without changing the model, used to avoid numerical issues</li>
+</ul>
+
+<h3 id="mcmc-sampling">MCMC Sampling</h3>
+
+<ul>
+  <li>acceptance rate proof</li>
+  <li>show why we can sample along unnormalized distributions as the partitioning function cancels out</li>
+</ul>
+
+<p>Detailed Balance
+\(\begin{align}
+\pi(x) q(x'|x) = \pi(x')q(x|x')
+\end{align}\)</p>
+
+<p>Acceptance Ratios
+\(\begin{align}
+a(x'|x) &amp;= \min\left[1, \frac{q(x|x')\pi(x')}{q(x'|x)\pi(x)}\right] \\
+a(x|x') &amp;= \min\left[1, \frac{q(x'|x)\pi(x)}{q(x|x')\pi(x')}\right]
+\end{align}\)</p>
+
+<p>Multiply detailed balance equation with other factors should preserve DB
+\(\begin{align}
+\pi(x) q(x'|x) a(x'|x) &amp;= \pi(x')q(x|x') a(x|x') \\
+\pi(x) q(x'|x) \min\left[1, \frac{q(x|x')\pi(x')}{q(x'|x)\pi(x)}\right]
+&amp;= \pi(x')q(x|x') \min\left[1, \frac{q(x'|x)\pi(x)}{q(x|x')\pi(x')}\right] \\
+ \min\big[\pi(x) q(x'|x), q(x|x')\pi(x')\big] 
+&amp;=  \min\big[\pi(x')q(x|x'), q(x'|x)\pi(x)\big] \\
+\end{align}\)</p>
+
+<h3 id="importance-sampling">Importance Sampling</h3>
+
+<p>how to estimate $Z$ with importance sampling
+\(\begin{align}
+\pi(x) &amp;= \frac{1}{Z} e^{-E(x)} \\
+&amp;= \frac{1}{Z} \tilde{\pi}(x) \\
+\end{align}\)
+\(\begin{align}
+Z 
+&amp;= \int e^{-E(x)}dx \\
+&amp;= \int \frac{q(x)}{q(x)}e^{-E(x)}dx \\
+&amp;= \int \frac{e^{-E(x)}}{q(x)} q(x)dx \\
+&amp;= \int \frac{e^{-E(x)}}{q(x)} dQ(x) \\
+&amp;=\mathbb{E}_{x\sim q}\left[ \frac{e^{-E(x)}}{q(x)} \right]
+\end{align}\)</p>
+
+<h3 id="annealed-importance-sampling">Annealed Importance Sampling</h3>
+
+\[\begin{align}
+\tilde{\pi}_t(x) = \tilde{\pi}_0(x)^{(1-t)} \tilde{\pi}(x)^t \
+\end{align}\]
+
+<p>discretize to $t\in {0, 0.33, 0.66, 1 }$.</p>
+
+<p>As the initial distribution $\pi_0$ we can take a standard normal distribution with a large standard deviation $\sigma »1$
+\(\begin{align}
+\pi_0(x) = \mathcal{N}(x; \mu, \sigma^2) = \underbrace{\frac{1}{\sqrt{2\pi \sigma^2}}}_{=Z_0} \overbrace{e^{-\frac{1}{2\sigma^2}(x-\mu)^2}}^{\tilde{\pi}_0}
+\end{align}\)</p>
+
+\[\begin{align}
+Z_{0.33}
+&amp;= \int \tilde{\pi}_{0.33} \ dx \\
+&amp;= \int  \frac{\pi_{0}}{\pi_{0}}\tilde{\pi}_{0.33} \ dx \\ 
+&amp;= \int  \frac{\tilde{\pi}_{0.33}}{\pi_{0}} \ d\pi_{0} \\
+&amp;= \mathbb{E}_{x_0 \sim \pi_0} \left[ \frac{\tilde{\pi}_{0.33}}{\pi_{0}} \right] \\
+&amp;= \mathbb{E}_{x_0 \sim \pi_0} \left[ \frac{\tilde{\pi}_{0.33}}{\frac{1}{Z_0}\tilde{\pi}_{0}} \right] \\
+&amp;= Z_0 \ \mathbb{E}_{x_0 \sim \pi_0} \left[ \frac{\tilde{\pi}_{0.33}}{\tilde{\pi}_{0}} \right] \\
+&amp; \downarrow\\
+\pi_{0.33}(x)
+&amp;= \frac{1}{Z_{0.33}}\tilde{\pi}_{0.33}(x)
+\end{align}\]
+
+<p>proceed to next stage
+\(\begin{align}
+\pi_{0.66}(x)
+&amp;= \frac{1}{Z_{0.66}}\tilde{\pi}_{0.66}(x)
+\end{align}\)</p>
+
+<p>we repeat the whole procedure
+\(\begin{align}
+Z_{0.66}(x)
+&amp;= \int \tilde{\pi}_{0.66} \ dx \\
+&amp;= \mathbb{E}_{x \sim \pi_{0.33}} \left[ \frac{\tilde{\pi}_{0.66}}{\pi_{0.33}} \right] \\
+&amp;= \mathbb{E}_{x \sim \pi_{0.33}} \left[ \frac{\tilde{\pi}_{0.66}}{\frac{1}{Z_{0.33}}\tilde{\pi}_{0.33}} \right] \\
+&amp;= Z_{0.33} \ \mathbb{E}_{x \sim \pi_{0.33}} \left[ \frac{\tilde{\pi}_{0.66}}{\tilde{\pi}_{0.33}} \right] \\
+&amp;= Z_0 \ \mathbb{E}_{x_0 \sim \pi_0} \left[ \frac{\tilde{\pi}_{0.33}}{\pi_{0}} \right] \mathbb{E}_{x \sim \pi_{0.33}} \left[ \frac{\tilde{\pi}_{0.66}}{\tilde{\pi}_{0.33}} \right] \\
+\end{align}\)</p>
+
+\[\begin{align}
+Z_{1}(x)
+&amp;= \int \tilde{\pi}_{1} \ dx \\
+&amp;= \mathbb{E}_{x \sim \pi_{0.66}} \left[ \frac{\tilde{\pi}_{1}}{\pi_{0.66}} \right] \\
+&amp;= \mathbb{E}_{x \sim \pi_{0.66}} \left[ \frac{\tilde{\pi}_{1}}{\frac{1}{Z_{0.66}}\tilde{\pi}_{0.66}} \right] \\
+&amp;= Z_{0.66} \ \mathbb{E}_{x \sim \pi_{0.66}} \left[ \frac{\tilde{\pi}_{1}}{\tilde{\pi}_{0.66}} \right] \\
+&amp;= Z_0 \ \mathbb{E}_{x_0 \sim \pi_0} \left[ \frac{\tilde{\pi}_{0.33}}{\pi_{0}} \right] \mathbb{E}_{x \sim \pi_{0.33}} \left[ \frac{\tilde{\pi}_{0.66}}{\tilde{\pi}_{0.33}} \right]  \ \mathbb{E}_{x \sim \pi_{0.66}} \left[ \frac{\tilde{\pi}_{1}}{\tilde{\pi}_{0.66}} \right] \\
+\end{align}\]
+
+<p>Under ideal circumstances, we would be able to sample from the intermediate distribution $\pi_t$, because we would know them with a magic oracle.
+Unfortunately, we we will have to draw the samples which we use in the importance sampling somehow.</p>
+
+<h3 id="sequential-monte-carlo">Sequential Monte Carlo</h3>
+</p>
+      		</section>
+
+          <!-- <div class="comments-wrapper">
+          <div id="disqus_thread"></div> -->
+          <!-- <script>
+              /**
+               *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+               *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+               */
+
+              var disqus_config = function () {
+                  this.page.url = '/blog/AISSMC/';  /*Replace PAGE_URL with your page's canonical URL variable*/
+                  this.page.identifier = '/blog/AISSMC/'; /*Replace PAGE_IDENTIFIER with your page's unique identifier variable*/
+              };
+
+              (function() {  /* dont endit below this line */
+                  var d = document, s = d.createElement('script');
+
+                  s.src = 'https://default.disqus.com/embed.js';
+
+                  s.setAttribute('data-timestamp', +new Date());
+                  (d.head || d.body).appendChild(s);
+              })();
+          </script> -->
+          <!-- <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript> -->
+        <!-- </div>/.comments-wrapper -->
+
+
+					<!-- Footer -->
+						<footer>
+              <ul class="actions">
+                <li><a href="http://localhost:4000/blog/" class="button">My Blog</a></li>
+              </ul>
+						</footer>
+					</div>
+
+				<!-- Footer -->
+        <!-- <footer id="footer">
+  <section>
+    <form method="POST" action="https://formspree.io/">
+      <div class="field">
+        <label for="name">Name</label>
+        <input type="text" name="name" id="name" />
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="text" name="email" id="email" />
+      </div>
+      <div class="field">
+        <label for="message">Message</label>
+        <textarea name="message" id="message" rows="3"></textarea>
+      </div>
+      <ul class="actions">
+        <li><input type="submit" value="Send Message" /></li>
+      </ul>
+    </form>
+  </section>
+  <section class="split contact">
+    <section class="alt">
+      <h3>Location</h3>
+      <p>Berlin, Germany</p>
+    </section>
+    <section>
+      <h3>Phone</h3>
+      <p><a href="tel:"></a></p>
+    </section>
+    <section>
+      <h3>Email</h3>
+      <p><a href="mailto:"></a></p>
+    </section>
+    <section>
+      <h3>Social</h3>
+      <ul class="icons alt">
+        <li><a href="https://twitter.com/ludiXIVwinkler" class="icon fa-twitter" rel="nofollow"><span class="label">Twitter</span></a></li>
+        <!-- <li><a href="https://facebook.com/default" class="icon fa-facebook" rel="nofollow"><span class="label">Facebook</span></a></li> -->
+        <!-- <li><a href="https://instagram.com/default" class="icon fa-instagram" rel="nofollow"><span class="label">Instagram</span></a></li> -->
+        <li><a href="https://github.com/ludwigwinkler" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
+      </ul>
+    </section>
+  </section>
+</footer>
+<!-- Copyright -->
+<div id="copyright">
+  <ul>
+       <li>&copy; HTML5 UP</li>
+       <li>Design by <a href="https://html5up.net" rel="nofollow">HTML5 UP</a></li>
+       <li>Jekyll Integration by <a href="https://soundgrail.com">SoundGrail</a></li>
+       <li>Theme made by <a href="https://github.com/iwiedenm/jekyll-theme-massively-src"> iwiedenm</a></li>
+ </ul>
+</div>
+ -->
+
+			</div>
+
+      <!-- Scripts -->
+  		<!-- <!-- DYN -->
+<script src="http://localhost:4000/assets/js/jquery.min.js"></script>
+<script src="http://localhost:4000/assets/js/jquery.scrollex.min.js"></script>
+<script src="http://localhost:4000/assets/js/jquery.scrolly.min.js"></script>
+<script src="http://localhost:4000/assets/js/skel.min.js"></script>
+<script src="http://localhost:4000/assets/js/util.js"></script>
+<script src="http://localhost:4000/assets/js/main.js"></script>
+ -->
+			<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=default"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments)};
+  gtag('js', new Date());
+
+  gtag('config', 'default');
+</script>
+ -->
+
+	</body>
+</html>
