@@ -7,6 +7,7 @@ __pycache__/
 */wandb/*
 */vendor/*
 */cache/*
+.github/copilot-instructions.md
 # C extensions
 *.so
 

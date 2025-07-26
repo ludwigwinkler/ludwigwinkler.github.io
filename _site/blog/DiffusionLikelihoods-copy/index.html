@@ -287,7 +287,7 @@ Effectively, we’re backpropagating the vector $\epsilon$ through the neural ne
 We do that for multiple samples of $\epsilon$ and average the results to obtain an unbiased estimate of the trace of the Jacobian matrix.
 Taking a single sample of $\epsilon$ and computing the Jacobian-vector product is computationally more efficient than computing the full Jacobian matrix but comes with a higher estimator variance.</p>
 
-<p>In code this looks like this:</p>
+<p>In <a href="https://github.com/ludwigwinkler/genai">code</a> this looks like this:</p>
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">stochastic_divergence</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
     <span class="sh">"""</span><span class="s">
     Compute the divergence of v(t, x) using Hutchinson</span><span class="sh">'</span><span class="s">s trace estimator.
@@ -665,8 +665,8 @@ dX_\tau
                */
 
               var disqus_config = function () {
-                  this.page.url = '/blog/DiffusionLikelihoods/';  /*Replace PAGE_URL with your page's canonical URL variable*/
-                  this.page.identifier = '/blog/DiffusionLikelihoods/'; /*Replace PAGE_IDENTIFIER with your page's unique identifier variable*/
+                  this.page.url = '/blog/DiffusionLikelihoods-copy/';  /*Replace PAGE_URL with your page's canonical URL variable*/
+                  this.page.identifier = '/blog/DiffusionLikelihoods-copy/'; /*Replace PAGE_IDENTIFIER with your page's unique identifier variable*/
               };
 
               (function() {  /* dont endit below this line */
