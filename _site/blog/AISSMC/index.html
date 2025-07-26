@@ -107,12 +107,14 @@ It’s a common misconception that the total energy of a system is always fixed.
 <p>The answer comes from the maximum entropy principle: among all possible probability distributions consistent with our knowledge (such as the average energy), we choose the one with the largest entropy. This ensures we are not making any unwarranted assumptions beyond what is known. The result of this maximization is the Boltzmann distribution, which connects the energy of a state to its probability of being observed.</p>
 
 <p>We should remember that the logarithm of small values are large and negative, while the logarithm of large values are small and positive.
-The entropy of a probability distribution $p$ computes the expected surprise of observing a state $x$ with probability $p(x)$:
-<!-- <div style="overflow-x: auto;"> -->
-\(\begin{align*}
+The entropy of a probability distribution $p$ computes the expected surprise of observing a state $x$ with probability $p(x)$:</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
 S[p] = \underbrace{\mathbb{E_{p(x)}}}_{\text{expected}} \big[ \ \underbrace{- \ln p(x)}_{\text{surprise}} \ \big]
-\end{align*}\)
-<!-- </div> --></p>
+\end{align*}
+$$
+</div>
 
 <p>With only knowledge of the energies $E_i$ of the states, we would like to find a probability distribution $p_i$ that maximizes the entropy $S[p]$ while satisfying certain constraints, such as normalization and a fixed average energy.
 The entropy maximization arises from the principle of maximum entropy, which states that we should choose the probability distribution that has the highest entropy among all distributions that satisfy our constraints.
@@ -124,26 +126,35 @@ That’s because the only thing we know about the system is the energy, and we w
   <li>Fixed average energy: $\sum_x p(x) E(x)) = \langle E \rangle$</li>
 </ul>
 
-<p>Next, we can use the method of Lagrange multipliers to incorporate these constraints into our optimization problem. We introduce Lagrange multipliers $\alpha$ and $\beta$ for the normalization and average energy constraints, respectively.
-<!-- <div style="overflow-x: auto;"> -->
-\(L = \mathbb{E}_{p(x)} \left[ - \ln p(x) \right] - \alpha \left(\sum_x p(x) - 1\right) - \beta \left(\sum_x p(x) E(x) - \langle E \rangle\right)\)
-<!-- </div> --></p>
+<p>Next, we can use the method of Lagrange multipliers to incorporate these constraints into our optimization problem. We introduce Lagrange multipliers $\alpha$ and $\beta$ for the normalization and average energy constraints, respectively.</p>
+<div style="overflow-x: auto;">
+$$
+L = \mathbb{E}_{p(x)} \left[ - \ln p(x) \right] - \alpha \left(\sum_x p(x) - 1\right) - \beta \left(\sum_x p(x) E(x) - \langle E \rangle\right)
+$$
+</div>
 
-<p>To find the optimal probability distribution $p_i$, we need to maximize the Lagrangian $L$ with respect to $p(x)$. This involves taking the derivative of $L$ with respect to $p(x)$ and setting it to zero.
-<!-- <div style="overflow-x: auto;"> -->
-\(\begin{align*}
+<p>To find the optimal probability distribution $p_i$, we need to maximize the Lagrangian $L$ with respect to $p(x)$. This involves taking the derivative of $L$ with respect to $p(x)$ and setting it to zero.</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
 \frac{\partial L}{\partial p(x)} &amp;= \frac{\partial}{\partial p(x)} \left[ - \sum_x p(x) \log p(x)- \alpha \left(\sum_x p(x) - 1\right) - \beta \left(\sum_x p(x) E(x) - \langle E \rangle\right) \log p(x)  \right] \\
 &amp;= -\log p(x) - p(x) \frac{1}{p(x)} \frac{\partial p(x)}{\partial p(x)} - \alpha - \beta E(x) \stackrel{!}{=} 0 \\
 &amp;= -\log p(x) - 1 - \alpha - \beta E(x) \stackrel{!}{=} 0 \\
-\end{align*}\)
-<!-- </div> --></p>
+\end{align*}
+$$
+</div>
 
-<p>Rearranging this equation gives us the expression for the probability distribution:
-\(\begin{align*}
+<p>Rearranging this equation gives us the expression for the probability distribution:</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
 p_i &amp;= \exp(-1 - \alpha) \exp(-\beta E_i) \\
 &amp;\propto \exp(-\beta E_i)
-\end{align*}\)
-where $\alpha$ is a/any/some constant that does not depend on $i$.</p>
+\end{align*}
+$$
+</div>
+
+<p>where $\alpha$ is a/any/some constant that does not depend on $i$.</p>
 
 <p>It is important to note that the sign of the Lagrange multiplier $\beta$ in the exponent is not arbitrary. In principle, one might wonder why we choose $-\beta E(x)$ rather than $+\beta E(x)$ in the Boltzmann distribution.
 If we were to use $+\beta E(x)$, the resulting probability distribution would assign higher probabilities to higher-energy states, which contradicts both physical intuition and the requirement that the distribution be normalizable.
@@ -151,17 +162,19 @@ Specifically, for many systems, the sum or integral $\sum_x \exp(\beta E(x))$ wo
 
 <p>By choosing $-\beta E(x)$, we ensure that higher-energy states are exponentially suppressed, and the partition function $Z = \sum_x \exp(-\beta E(x))$ converges for physically meaningful energy functions. This guarantees that the Boltzmann distribution is a proper, normalizable probability distribution, consistent with both the maximum entropy principle and the laws of thermodynamics.</p>
 
-<p>This shows that the probability of each state is proportional to the exponential of its negative energy, scaled by constants determined by the constraints.
-<!-- <div style="overflow-x: auto;"> -->
-\(p(x) = \frac{1}{Z} \exp\left(-\beta E(x)\right), \quad Z = \sum_x \exp\left(-\beta E(x)\right)\)
-<!-- </div> --></p>
+<p>This shows that the probability of each state is proportional to the exponential of its negative energy, scaled by constants determined by the constraints.</p>
+<div style="overflow-x: auto;">
+$$
+p(x) = \frac{1}{Z} \exp\left(-\beta E(x)\right), \quad Z = \sum_x \exp\left(-\beta E(x)\right)
+$$
+</div>
 
 <p>where $Z$ is the partition function that ensures normalization, and $\beta$ is a constant that can be interpreted as the inverse temperature (in physics, $\beta = \frac{1}{kT}$, where $k$ is Boltzmann’s constant and $T$ is the temperature).</p>
 
 <p>This is the Boltzmann distribution.</p>
 
 <h3 id="energy">Energy</h3>
-<!-- </div> -->
+
 <p>In both statistical mechanics and machine learning, the concept of energy provides a way to quantify the “preference” for different states or configurations. In physics, the energy of a system describes its physical state, while in machine learning, energy can be interpreted as a measure of how well a model fits the data—lower energy corresponds to a better fit.</p>
 
 <p>However, it is important to recognize that the absolute value of energy is not meaningful; only differences in energy between states matter.
@@ -171,27 +184,33 @@ But shifting this reference point (such as adding a constant to all energy value
 
 <p>This property means that we can always add or subtract a constant $c$ to the energy of every state in a system without changing the resulting probabilities.
 The Boltzmann distribution, which assigns probabilities to states based on their energies, is invariant to such shifts because the normalization constant (the partition function $Z$) absorbs the change.
-Suppose we shift the energy function by a constant $c$, so $E’(x) = E(x) + c$. The Boltzmann distribution becomes:
-<!-- <div style="overflow-x: auto;"> -->
-\(\begin{align*}
+Suppose we shift the energy function by a constant $c$, so $E’(x) = E(x) + c$. The Boltzmann distribution becomes:</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
 p(x) &amp; \propto \exp(-\beta (E(x) + c)) \\
 &amp; = \exp(-\beta c) \ \exp(-\beta E(x))
-\end{align*}\)
-<!-- </div> --></p>
+\end{align*}
+$$
+</div>
 
-<p>The new normalization constant is:
-<!-- <div style="overflow-x: auto;"> -->
-\(\begin{align*}
+<p>The new normalization constant is:</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
 Z_c &amp;=\sum_x \exp( - \beta c) \ \exp(-\beta E(x)) \\ 
 &amp;= \exp(-\beta c) \sum_x \exp(-\beta E(x)) \\ 
 &amp;= \exp(-\beta c) \ Z
-\end{align*}\)
-<!-- </div> --></p>
+\end{align*}
+$$
+</div>
 
-<p>Therefore,
-<!-- <div style="overflow-x: auto;"> -->
-\(p_c(x) = \frac{1}{\exp(-\beta c) Z}  \exp(-\beta c) \exp(-\beta E(x)) = \frac{1}{Z} \exp(-\beta E(x)) = p(x)\)
-<!-- </div> --></p>
+<p>Therefore,</p>
+<div style="overflow-x: auto;">
+$$
+p_c(x) = \frac{1}{\exp(-\beta c) Z}  \exp(-\beta c) \exp(-\beta E(x)) = \frac{1}{Z} \exp(-\beta E(x)) = p(x)
+$$
+</div>
 
 <p>Thus, adding a constant $c$ to the energy does not change the resulting probability distribution; the effect is fully absorbed by the normalization constant $Z$.
 As a result, two energy functions that differ only by a constant offset will yield the same probability distribution over states.</p>
@@ -205,10 +224,12 @@ This is why, in practice, we prefer to work with probabilities rather than raw e
 
 <p>The conversion from energy to probability is accomplished using the Boltzmann distribution: $P(x) = \frac{e^{-E(x)}}{Z}$, where $Z$ is the partition function that ensures normalization. In machine learning, this principle appears in functions like logsumexp and softmax, where adding a constant to all log-likelihoods does not change the resulting probabilities.</p>
 
-<p>By the way, the softmax is a Boltzmann distribution with a temperature of 1. The log softmax function is defined as:
-<!-- <div style="overflow-x: auto;"> -->
-\(\log \text{softmax}(x_i) = \log \frac{e^{x_i}}{\sum_j e^{x_j}}\)
-<!-- </div> --></p>
+<p>By the way, the softmax is a Boltzmann distribution with a temperature of 1. The log softmax function is defined as:</p>
+<div style="overflow-x: auto;">
+$$
+\log \text{softmax}(x_i) = \log \frac{e^{x_i}}{\sum_j e^{x_j}}
+$$
+</div>
 
 <p>where $x_i$ are the input values. This is equivalent to the Boltzmann distribution.</p>
 
@@ -222,14 +243,16 @@ This is why, in practice, we prefer to work with probabilities rather than raw e
 <p>This property is often exploited to improve numerical stability during computation, as it allows us to shift energy or log-likelihood values without affecting the model’s predictions.
 A common numerical trick when computing the log-sum-exp (logsumexp) function is to subtract the maximum value from all inputs before exponentiating. This does not change the resulting probabilities, since adding or subtracting a constant from all energies (or logits) is absorbed by the normalization. However, it greatly improves numerical stability by ensuring that the largest exponent is $\exp(0) = 1$, preventing overflow. The logsumexp is computed as:</p>
 
-<!-- <div style="overflow-x: auto;"> -->
-<p>\(\begin{align*}
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
 \log \sum_{i} \exp(x_i) &amp;= \log \left( \sum_{i} \exp(x_i \pm \max_i(x)) \right) \\
 &amp;= \log \left( \sum_{i} \exp(x_i - \max_i(x)) \ \exp(\max_i(x)) \right) \\
 &amp;= \log \left[ \exp(\max_i(x)) \left( \sum_{i} \exp(x_i - \max_i(x)) \right) \right] \\
 &amp;= \max_i(x) + \log \sum_{i} \exp(x_i - \max_i(x))
-\end{align*}\)
-<!-- </div> --></p>
+\end{align*}
+$$
+</div>
 
 <p>This transformation ensures that all values in the exponential function $x_i - \max_i(x)&lt;=0$, which prevents overflow and maintains numerical stability. The final result is the same as if we had computed the log-sum-exp without the shift, but it avoids potential issues with large exponentials.
 Again, we can see that the absolute values of the energies (or logits) do not matter; we can add and subtract constants without changing the final probabilities.</p>
@@ -241,33 +264,46 @@ It turns out that the concept of temperature is actually way more involved.
 In fact, if you check Wikipedia, you will find that the definition of temperature is actually quite complicated and involves statistical mechanics, thermodynamics, and even quantum mechanics.</p>
 
 <p>Above, we’ve seen that the Boltzmann distribution is given by:</p>
-
-\[\begin{align*}
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
 p(x) = \frac{1}{Z} e^{-\beta E(x)}, \quad Z = \sum_x e^{-\beta E(x)}
-\end{align*}\]
+\end{align*}
+$$
+</div>
+
+<p>where $\beta$ is a constant that can be interpreted as the inverse temperature.</p>
 
 <p>and usually, the factor $\beta$ is defined as $\beta = \frac{1}{kT}$, where $k$ is Boltzmann’s constant and $T$ is the temperature in Kelvin.
 Thus for higher temperature, the more uniform the distribution becomes, and for lower temperature, the more peaked it becomes around the lowest energy states.</p>
 
 <p>But how do we connect the temperature to the previously defined Lagrangian multiplier $\beta$?
 For that we have to explore both the entropy $S[p]$ as a function of the Boltzman distribution $p$ and the partition function $Z$.
-The entropy of the Boltzmann distribution is given by:
-<!-- <div style="overflow-x: auto;"> -->
-\(\begin{align*}
+The entropy of the Boltzmann distribution is given by:</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
 S[p] &amp;= -\sum_x p(x) \log p(x) \\
 &amp;= -\sum_x p(x) \left( -\beta E(x) - \log Z \right) \\
 &amp;= -\sum_x p(x) \log \left[\frac{1}{Z} e^{-\beta E(x)} \right] \\
 &amp;= \log Z \sum_x p(x) + \beta \sum_x p(x) E(x) \\
 &amp;= \log Z + \beta \langle E \rangle \\
 &amp;= \log Z + \beta U
-\end{align*}\)
-<!-- </div>  --></p>
+\end{align*}
+$$
+</div>
 
 <p>It was completely new to me that the temperature is in fact not a physical quantity, but rather a mathematical construct that arises from thermodynamics.
-The temperature is the differential coefficient in the form of 
-\(\begin{align}
+The temperature is the differential coefficient in the form of</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align}
 \frac{dS}{dU} = \frac{1}{T}
-\end{align}\)</p>
+\end{align}
+$$
+</div>
+
+<p>where $S$ is the entropy and $U$ is the expected energy.</p>
 
 <p>So the temperature $T$ actually is the derivative of the entropy with respect to the expected energy $U = \mathbb{E}_p[E]$.
 <strong>It tells us by what amount the entropy of the system increases or decreases if we add or subtract energy.</strong>
@@ -275,6 +311,7 @@ There is naturally a certain disconnect of how temperature is defined in a therm
 Particularly the reciprocal coefficient $1/T$ is somewhat counterintuitive but actually makes a lot of sense.</p>
 
 <h4 id="a-little-though-experiment-">A little though experiment …</h4>
+
 <p>The best example I could think of was water at a the phase transitions of ice to water and water to gas.
 For that we will look at the number of positions the water atoms can take inside an ice cube and inside a liquid.
 For this visual example, we define entropy as the number of positions the water atoms can take according to Boltzmann $S = \log \Omega$.
@@ -323,35 +360,51 @@ But we only wanted to illustrate the point that the temperature is a measure of 
 More specifically, we want to find the derivative $dS/dU$ in terms of $\beta$.
 The only free variable in our entire setup is the Lagrange multiplier $\beta$, as both $Z=\sum \exp(-\beta E(x))$ and $U = \sum p(x) E(x) = \sum 1/Z \exp(-\beta E(x)) E(x)$ are functions of $\beta$ and $E(x)$ ultimately.</p>
 
-<p>Thus we write out the total derivative of the entropy $S[p]$ with respect to $\beta$:
-\(\begin{align*}
+<p>Thus we write out the total derivative of the entropy $S[p]$ with respect to $\beta$:</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
 S[p] &amp;= \log Z + \beta U \\
 dS &amp;= \frac{\partial \log Z}{\partial \beta} d\beta + \frac{\partial (\beta U)}{\partial \beta} d\beta \\
-\end{align*}\)</p>
+\end{align*}
+$$
+</div>
 
-<p>With a bit more calculus, we can compute the partial derivatives:
-\(\begin{align*}
+<p>With a bit more calculus, we can compute the partial derivatives:</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
 \frac{\partial \log Z}{\partial \beta} &amp;= \frac{1}{Z} \frac{\partial Z}{\partial \beta} \\ 
 &amp;= \frac{1}{Z} \frac{\partial}{\partial \beta}\sum_x e^{-\beta E(x)} \\ 
 &amp;= \sum_x -E(x) \frac{1}{Z} e^{-\beta E(x)} \\
 &amp;= - \langle E \rangle \\
-&amp;= - U \\ 
+&amp;= - U \\
 \frac{\partial (\beta U)}{\partial \beta} &amp;= U + \beta \frac{\partial U}{\partial \beta} \\
-\end{align*}\)</p>
+\end{align*}
+$$
+</div>
 
-<p>which after subtituing in yields:
-\(\begin{align*}
+<p>which after subtituing in yields:</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
 dS &amp;= - U d\beta + \left( U + \beta \frac{\partial U}{\partial \beta} \right) d\beta \\
 dS &amp;= \beta \frac{\partial U}{\partial \beta} d\beta \\
-\end{align*}\)</p>
+\end{align*}
+$$
+</div>
 
-<p>The relationship of interest is just a step away by observing that
-\(\begin{align*}
+<p>The relationship of interest is just a step away by observing that</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
 \frac{dS}{dU} &amp;= \frac{\beta \frac{\partial U}{\partial \beta} d\beta }{dU} \\
 &amp;= \frac{\beta \frac{\partial U}{\partial \beta} }{\frac{dU}{d\beta}} \\
 &amp;= \beta \\
 &amp;= \frac{1}{T} \quad \text{(by definition from thermodynamics)}
-\end{align*}\)</p>
+\end{align*}
+$$
+</div>
 
 <h3 id="mcmc-sampling">MCMC Sampling</h3>
 
@@ -361,8 +414,12 @@ dS &amp;= \beta \frac{\partial U}{\partial \beta} d\beta \\
 
 <p>When sampling from an unnormalized probability distribution, such as the Boltzmann distribution, our goal is to explore the energy landscape in a way that reflects the physical behavior of real systems. In practice, this means we want to accept moves to states with lower energy (and thus higher probability) much more frequently than moves to higher energy states. Transitions to higher energy states are rare and typically only occur due to significant fluctuations—mirroring the physical intuition that systems tend to settle into low-energy configurations and only occasionally “jump” to higher-energy ones. This principle is at the heart of Markov Chain Monte Carlo (MCMC) methods, which propose random moves across the energy surface, readily accepting transitions to lower energy states while being reluctant to accept (only sometimes) moves to higher energy states. The acceptance mechanism ensures that the sampling process faithfully reproduces the statistical properties of the target distribution, efficiently exploring regions of high probability while suppressing unlikely, high-energy configurations.</p>
 
-<p>A key insight in working with unnormalized probability distributions, such as the Boltzmann distribution, is that the ratio of two distributions removes the partition function. Mathematically, if we have a distributions $\pi(x) = \frac{1}{Z} \tilde{\pi}(x) = \frac{1}{Z} \exp(-\beta E(x))$ and two samples $x$ and $x’$, then their ratio is
-\(\frac{\pi(x)}{\pi(x')} = \frac{\frac{1}{Z} \tilde{\pi}(x)}{\frac{1}{Z}\tilde{\pi}(x')} = \frac{\tilde{\pi}(x)}{\tilde{\pi}(x')} = \frac{\exp(-\beta E(x))}{\exp(-\beta E(x'))} = \exp(-\beta (E(x) - E(x')))\)</p>
+<p>A key insight in working with unnormalized probability distributions, such as the Boltzmann distribution, is that the ratio of two distributions removes the partition function. Mathematically, if we have a distributions $\pi(x) = \frac{1}{Z} \tilde{\pi}(x) = \frac{1}{Z} \exp(-\beta E(x))$ and two samples $x$ and $x’$, then their ratio is</p>
+<div style="overflow-x: auto;">
+$$
+\frac{\pi(x)}{\pi(x')} = \frac{\frac{1}{Z} \tilde{\pi}(x)}{\frac{1}{Z}\tilde{\pi}(x')} = \frac{\tilde{\pi}(x)}{\tilde{\pi}(x')} = \frac{\exp(-\beta E(x))}{\exp(-\beta E(x'))} = \exp(-\beta (E(x) - E(x')))
+$$
+</div>
 
 <p>The partition functions cancel out, allowing us to work directly with the unnormalized densities.
 This brings us one step closer to sampling from the Boltzmann distribution without needing to compute the partition function $Z$ explicitly.</p>
@@ -371,51 +428,69 @@ This brings us one step closer to sampling from the Boltzmann distribution witho
 <p>The principle of detailed balance arises naturally from the physical intuition of how systems explore their energy landscapes. Imagine a particle moving randomly among states: it will gladly transition to a lower energy state $x’$ from a higher energy state $x$, as this is energetically favorable and thus more probable. However, transitions to higher energy states $x$ are less likely from lower energy states $x’$, reflecting the fact that such moves require an input of energy and occur only due to rare fluctuations.</p>
 
 <p>In summary we should define the following terms:</p>
-
-\[\begin{align*}
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
 \pi(x): &amp;\text{low energy state} \\
 T(x'|x): &amp;\text{high probability of transitioning to low energy state} \\
 \pi(x'): &amp; \text{high energy state} \\
 T(x | x'): &amp;\text{low probability of transitioning to high energy state}\\
-\end{align*}\]
+\end{align*}
+$$
+</div>
 
 <p><strong>Detailed balance is crucial because it allows the Markov chain to move freely over the energy landscape, exploring all regions without bias, while still respecting the underlying probabilities dictated by the energy differences.</strong> This guarantees that the sampling process is both physically meaningful and statistically correct and the four terms above should relate to each other in the following way:</p>
-
-\[\begin{align}
+<div style="overflow-x: auto;">
+$$
+\begin{align}
 \pi(x) T(x'|x) = \pi(x')T(x|x')
-\end{align}\]
+\end{align}
+$$
+</div>
 
-<p>In order to get a functioning sampling algorithm out of the detailed balance equation, Mrs Metropolis and Hasting split the transition probabilities $T(x|x’)$ and $T(x’|x)$ into a proposal step $q$ and an acceptance step $a$.
-\(\begin{align}
+<p>In order to get a functioning sampling algorithm out of the detailed balance equation, Mrs Metropolis and Hasting split the transition probabilities $T(x|x’)$ and $T(x’|x)$ into a proposal step $q$ and an acceptance step $a$.</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align}
 T(x'|x) = q(x'|x) a(x'|x) &amp;= q(x'|x) \ \overbrace{\min\left[1, \frac{q(x|x')\pi(x')}{q(x'|x)\pi(x)}\right]}^{a(x'|x)} \\
 T(x'|x) = q(x|x')a(x|x') &amp;= q(x|x') \ \underbrace{\min\left[1, \frac{q(x'|x)\pi(x)}{q(x|x')\pi(x')}\right]}_{a(x|x')}
-\end{align}\)</p>
+\end{align}
+$$
+</div>
 
 <p>For simplicities sake we’ll use a symmetric proposal distribution $q(x’|x) = q(x|x’)$.
 This means that the proposal distribution is the same in both directions, which is often a reasonable assumption in practice.
 An example would be a isotropic Gaussian distribution centered around the current state $x$ with a fixed standard deviation and we would have $\mathcal{N}(x’|\mu=x, \sigma^2) = \mathcal{N}(x|\mu=x’, \sigma^2)$.</p>
 
-<p>In the symmetric proposal probability case, the acceptance ratio simplifies to
-\(\begin{align}
+<p>In the symmetric proposal probability case, the acceptance ratio simplifies to</p>
+<div style="overflow-x: auto;">
+$$\begin{align}
 a(x'|x) = \min\left[1, \frac{\pi(x')}{\pi(x)}\right] 
 = \min\left[1, \frac{e^{-\beta E(x')}}{e^{-\beta E(x)}}\right]
 = \min\left[1, e^{-\beta (E(x') - E(x))}\right].
-\end{align}\)</p>
+\end{align}
+$$
+</div>
 
 <p>The acceptance probability is $100\%$ if the new state $x’$ has lower energy than the current state $x$, and it is less than $100\%$ if the new state has higher energy.
 If $\pi(x) &lt; \pi(x’)$, then the acceptance probability is $a(x’|x) = 1$.
 If the new state $x’$ has higher energy than the current state $x$, then the acceptance probability is less than $100\%$ and given by the ratio $\pi(x’)/\pi(x)$.
 We thus always accept moves to lower energy states, and we accept moves to higher energy states with a probability that decreases exponentially with the energy difference.</p>
 
-<p>We can in fact check that the proposed sampling algorithm satisfies the detailed balance condition
-\(\begin{align}
+<p>We can in fact check that the proposed sampling algorithm satisfies the detailed balance condition</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align}
 \pi(x) q(x'|x) a(x'|x) &amp;= \pi(x')q(x|x') a(x|x') \\
 \pi(x) q(x'|x) \min\left[1, \frac{q(x|x')\pi(x')}{q(x'|x)\pi(x)}\right]
 &amp;= \pi(x')q(x|x') \min\left[1, \frac{q(x'|x)\pi(x)}{q(x|x')\pi(x')}\right] \\
  \min\big[\pi(x) q(x'|x), q(x|x')\pi(x')\big] 
 &amp;=  \min\big[\pi(x')q(x|x'), q(x'|x)\pi(x)\big]
-\end{align}\)
-from which we see that the detailed balance equality still holds true, albeit in a slightly different form.</p>
+\end{align}
+$$
+</div>
+
+<p>from which we see that the detailed balance equality still holds true, albeit in a slightly different form.</p>
 
 <h3 id="importance-sampling">Importance Sampling</h3>
 
@@ -455,26 +530,44 @@ This distribution is chosen to be easy to sample from and to cover the support o
 
 <p>At each annealing stage, we use the samples from the previous distribution as starting points for an MCMC sampler targeting the next intermediate distribution. For instance, after sampling from $\pi_0$, we run MCMC targeting $\pi_{0.33}$, then use those samples to initialize MCMC for $\pi_{0.66}$, and so on, gradually shifting the energy landscape toward the target.</p>
 
-<p>The partition function for each intermediate distribution can be estimated recursively using importance weights:
-\(Z_{0.33}
+<p>The partition function for each intermediate distribution can be estimated recursively using importance weights:</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+Z_{0.33}
 = \int \tilde{\pi}_{0.33} \ dx
 = \mathbb{E}_{x_0 \sim \pi_0} \left[ \frac{\tilde{\pi}_{0.33}}{\pi_{0}} \right]
-= Z_0 \ \mathbb{E}_{x_0 \sim \pi_0} \left[ \frac{\tilde{\pi}_{0.33}}{\tilde{\pi}_{0}} \right]\)</p>
+= Z_0 \ \mathbb{E}_{x_0 \sim \pi_0} \left[ \frac{\tilde{\pi}_{0.33}}{\tilde{\pi}_{0}} \right]
+\end{align*}
+$$
+</div>
 
-<p>At each stage, we repeat the process:
-\(Z_{0.66}
-= \mathbb{E}_{x \sim \pi_{0.33}} \left[ \frac{\tilde{\pi}_{0.66}}{\pi_{0.33}} \right]
-= Z_{0.33} \ \mathbb{E}_{x \sim \pi_{0.33}} \left[ \frac{\tilde{\pi}_{0.66}}{\tilde{\pi}_{0.33}} \right]\)</p>
+<p>At each stage, we repeat the process:</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+Z_{0.66}
+&amp;= \mathbb{E}_{x \sim \pi_{0.33}} \left[ \frac{\tilde{\pi}_{0.66}}{\pi_{0.33}} \right] \\
+&amp;= Z_{0.33} \ \mathbb{E}_{x \sim \pi_{0.33}} \left[ \frac{\tilde{\pi}_{0.66}}{\tilde{\pi}_{0.33}} \right]
+\end{align*}
+$$
+</div>
 
-<p>By chaining these estimates, we obtain an unbiased estimator for the partition function of the target:
-\(Z_{1}
-= Z_0 \ \mathbb{E}_{x_0 \sim \pi_0} \left[ \frac{\tilde{\pi}_{0.33}}{\pi_{0}} \right] \mathbb{E}_{x \sim \pi_{0.33}} \left[ \frac{\tilde{\pi}_{0.66}}{\tilde{\pi}_{0.33}} \right]  \ \mathbb{E}_{x \sim \pi_{0.66}} \left[ \frac{\tilde{\pi}_{1}}{\tilde{\pi}_{0.66}} \right]\)</p>
+<p>Finally, we reach the target distribution:</p>
 
-<p>In summary, AIS leverages a sequence of intermediate distributions to guide samples gradually from the proposal to the target, using MCMC at each stage to adaptively explore the energy landscape. This approach mitigates mode collapse and improves the reliability of partition function estimation in challenging, high-dimensional settings.</p>
-
-\[\begin{align}
+<p>By chaining these estimates, we obtain an unbiased estimator for the partition function of the target:</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+Z_{1}
+= Z_0 \ \mathbb{E}_{x_0 \sim \pi_0} \left[ \frac{\tilde{\pi}_{0.33}}{\pi_{0}} \right] \mathbb{E}_{x \sim \pi_{0.33}} \left[ \frac{\tilde{\pi}_{0.66}}{\tilde{\pi}_{0.33}} \right]  \ \mathbb{E}_{x \sim \pi_{0.66}} \left[ \frac{\tilde{\pi}_{1}}{\tilde{\pi}_{0.66}} \right]
+\end{align*}
+$$
+</div>
+<p>In summary, AIS leverages a sequence of intermediate distributions to guide samples gradually from the proposal to the target, using MCMC at each stage to adaptively explore the energy landscape. This approach mitigates mode collapse and improves the reliability of partition function estimation in challenging, high-dimensional settings.
+\(\begin{align}
 \tilde{\pi}_t(x) = \tilde{\pi}_0(x)^{(1-t)} \tilde{\pi}(x)^t \
-\end{align}\]
+\end{align}\)</p>
 
 <p>discretize to $t\in {0, 0.33, 0.66, 1 }$.</p>
 
@@ -483,7 +576,8 @@ This distribution is chosen to be easy to sample from and to cover the support o
 \pi_0(x) = \mathcal{N}(x; \mu, \sigma^2) = \underbrace{\frac{1}{\sqrt{2\pi \sigma^2}}}_{=Z_0} \overbrace{e^{-\frac{1}{2\sigma^2}(x-\mu)^2}}^{\tilde{\pi}_0}
 \end{align}\)</p>
 
-\[\begin{align}
+<p>We now start with the first annealing step, which is to estimate the partition function $Z_{0.33}$ for the intermediate distribution $\pi_{0.33}(x)$,
+\(\begin{align}
 Z_{0.33}
 &amp;= \int \tilde{\pi}_{0.33} \ dx \\
 &amp;= \int  \frac{\pi_{0}}{\pi_{0}}\tilde{\pi}_{0.33} \ dx \\ 
@@ -494,18 +588,24 @@ Z_{0.33}
 &amp; \downarrow\\
 \pi_{0.33}(x)
 &amp;= \frac{1}{Z_{0.33}}\tilde{\pi}_{0.33}(x)
-\end{align}\]
+\end{align}\)</p>
 
 <p>Having obtained the partition function $Z_{0.33}$, we now have an (approximate) distribution $\pi_{0.33}(x)$ from which we can sample. These samples serve as proposals for the next stage: estimating $Z_{0.66}$ via importance sampling. Specifically, we draw samples from $\pi_{0.33}$ and use them to compute expectations under the intermediate distribution $\pi_{0.66}$, continuing the annealing process.</p>
-
-\[\begin{align}
+<div style="overflow-x: auto;">
+$$
+\begin{align}
 \pi_{0.66}(x)
 &amp;= \frac{1}{Z_{0.66}}\tilde{\pi}_{0.66}(x)
-\end{align}\]
+\end{align}
+$$
+</div>
 
 <p>We can repeat this process for each subsequent step in the annealing schedule. At every stage, the partition function from the previous distribution is propagated forward, allowing us to express the partition function at the current step as a product of the initial partition function and a chain of expected importance weights. Specifically, for any intermediate step $t_k$, we have:</p>
-
-\[Z_{t_k} = Z_0 \prod_{j=1}^{k} \mathbb{E}_{x \sim \pi_{t_{j-1}}} \left[ \frac{\tilde{\pi}_{t_j}(x)}{\tilde{\pi}_{t_{j-1}}(x)} \right]\]
+<div style="overflow-x: auto;">
+$$
+Z_{t_k} = Z_0 \prod_{j=1}^{k} \mathbb{E}_{x \sim \pi_{t_{j-1}}} \left[ \frac{\tilde{\pi}_{t_j}(x)}{\tilde{\pi}_{t_{j-1}}(x)} \right]
+$$
+</div>
 
 <p>This telescoping structure means that the initial partition function $Z_0$ is “pulled through” all the way to the final target, accumulating the necessary corrections at each stage via the intermediate expectations.</p>
 
@@ -527,7 +627,7 @@ Z_{1}(x)
 
 <p>It’s tempting to think we can simply multiply the expectations at each annealing stage as if the samples are independent. However, this is not the case—and it’s a subtle but important point. The initial samples from $\pi_0$ only assign probability mass to regions they actually visit. If those samples miss significant regions of the target distribution, subsequent stages cannot recover them, no matter how many samples we draw later. This means that the coverage of the initial proposal is crucial: if a mode is missed early, it remains inaccessible throughout the annealing process. Thus, the reliability of AIS depends not just on the number of samples, but on their ability to explore all relevant regions of the energy landscape from the very beginning.</p>
 
-<p>But all is not lost. Instead of relying solely on “simple” importance sampling, we can run full MCMC chains targeting each intermediate energy function. We begin with samples $x_0$ from $\pi_0$ and use them to initialize an MCMC chain targeting $\tilde{\pi}<em>{0.33}$. After sufficient sampling, we obtain representative samples $x</em>{0.33}$ from $\pi_{0.33}$. These samples then serve as starting points for an MCMC chain targeting $\tilde{\pi}<em>{0.66}$, and after enough steps, we have samples $x</em>{0.66}$ distributed according to $\pi_{0.66}$. This process continues recursively, with each stage’s samples initializing the next chain, until we reach $x_1$—samples from the final target distribution. This approach ensures that each intermediate distribution is properly explored, improving coverage and reducing the risk of missing important modes.</p>
+<p>But all is not lost. Instead of relying solely on “simple” importance sampling, we can run full MCMC chains targeting each intermediate energy function. We begin with samples $x_0$ from $\pi_0$ and use them to initialize an MCMC chain targeting $\pi_{0.33}$. After sufficient sampling, we obtain representative samples $x_{0.33}$ from $\pi_{0.33}$. These samples then serve as starting points for an MCMC chain targeting $\pi_{0.66}$, and after enough steps, we have samples $x_{0.66}$ distributed according to $\pi_{0.66}$. This process continues recursively, with each stage’s samples initializing the next chain, until we reach $x_1$—samples from the final target distribution. This approach ensures that each intermediate distribution is properly explored, improving coverage and reducing the risk of missing important modes.</p>
 
 <p>By leveraging MCMC at each annealing stage, AIS can adaptively traverse the energy landscape, allowing samples to migrate between modes that would otherwise be inaccessible in a single-step importance sampling scheme. This staged approach helps mitigate the risk of mode collapse and ensures that the final samples better represent the target distribution. In practice, the choice of annealing schedule (the sequence of $t$ values) and the number of MCMC steps per stage are critical hyperparameters that balance computational cost against the quality of partition function estimates and sample diversity.</p>
 
