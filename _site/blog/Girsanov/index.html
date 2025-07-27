@@ -100,7 +100,7 @@
 <p>The first thing that I noticed was that the term \(\frac{dQ}{dP}\) occured in a lot of text books that I found on Google.
 In this context both $P$ and $Q$ are probability measures which assign a scalar value to whatever space they are assigned to.
 This ratio occurs often in what machine learners call importance sampling.
-Imagine you want to compute the average value of a random variable $X$ which follows a very complicated probability density function $p(x)$ which <strong>you can only evaluate and never sample from</strong>.
+Imagine you want to compute the average value of a random variable $X$ which follows a very complicated probability density function $q(x)$ which <strong>you can only evaluate and never sample from</strong>.
 Mathematically, you would be interested in $\mathbb{E}_{q(x)}[X] = \int x \cdot q(x) dx$.</p>
 
 <p>Fundamentally, this expected value is an integral.
@@ -108,7 +108,7 @@ For simple systems this integral might offer a way to compute it analytically, b
 Imagine some highly complicated physical, chemical or biological system that on theoretical grounds follows some probability distribution but which is just really difficult to sample from.</p>
 
 <p>This leaves us the numerical approach.
-In a grid based approach, we could take every value $x$, evaluate $p(x)$, multiply them and add them.
+In a grid based approach, we could take every value $x$, evaluate $q(x)$, multiply them and add them.
 Again, for small and simple systems that might be laborious but yield the correct value but is infeasible for relevant systems.
 Also, $x$ could be continuous so we would need by definition an infinite amount of samples as there are an infinite amount of values in any continuous range.
 This leaves us with the sampling approach in which we don’t take every value, but only a subset of size $N$ and literally hope that a finite number of samples will yield a sufficiently exact value.
