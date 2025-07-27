@@ -70,9 +70,9 @@
     				<header class="major">
       				<span class="date">12 Apr 2025</span>
       				<h1>Annealed Importance Sampling</h1>
-      				<p>NRJ: Hitmusic only!</p>
+      				<p>Step by Step, We're happily sampling our energy.</p>
       			</header>
-      			<div class="image main"><img src="" alt=""></div>
+      			<div class="image main"><img src="/blog/blogthumbnails/ais_energy_evolution.gif" alt=""></div>
       			<p><head>
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
        <script type="text/x-mathjax-config">
@@ -631,6 +631,13 @@ Z_{1}(x)
 
 <p>By leveraging MCMC at each annealing stage, AIS can adaptively traverse the energy landscape, allowing samples to migrate between modes that would otherwise be inaccessible in a single-step importance sampling scheme. This staged approach helps mitigate the risk of mode collapse and ensures that the final samples better represent the target distribution. In practice, the choice of annealing schedule (the sequence of $t$ values) and the number of MCMC steps per stage are critical hyperparameters that balance computational cost against the quality of partition function estimates and sample diversity.</p>
 
+<p>The whole thing in action can be observed down below.
+Here, we’re running MCMC on each interpolation level $t$ and reuse the thus obtained samples on the next level $t+\Delta t$:</p>
+
+<div style="max-width: 100%; text-align: center;">
+  <img src="/blog/blogthumbnails/ais_energy_evolution.gif" alt="AIS Energy Evolution" style="width: 100%; height: auto; max-width: 700px; margin: 0 auto;" />
+</div>
+
 <p>AIS is widely used in machine learning for estimating partition functions of complex models, such as Restricted Boltzmann Machines and energy-based models, where direct computation is infeasible. Its combination of importance weighting and staged MCMC sampling makes it a powerful tool for tackling high-dimensional inference problems.</p>
 
 <p>In fact, this approach has been directly implemented as a machine learning algorithm in the paper <a href="https://arxiv.org/pdf/2002.06707">Stochastic Normalizing Flows</a>, which leverages annealed importance sampling and MCMC transitions to improve sample diversity and partition function estimation in high-dimensional models.
@@ -646,7 +653,7 @@ Then the PyTorch teams implemented a series of <a href="https://docs.pytorch.org
 
 <p>Chief among them was the ability to evaluate multiple sets of parameters in parallel, which implicitly allowed to evaluate sets of intricate, nested parameters in parallel. That smelled like a nice application to run multiple MCMC chains over arbitrarily nested inputs in parallel.</p>
 
-<p>I reimplemented the MCMC samplers in a functional way and uploaded them to a second branch of the original repository called <a href="https://github.com/ludwigwinkler/pytorch_MCMC/tree/v2">pytorch_MCMC_functional</a>.</p>
+<p>I reimplemented the MCMC samplers in a functional way and uploaded them to a second branch of the original repository called <a href="https://github.com/ludwigwinkler/pytorch_MCMC/tree/v2">pytorch_MCMC</a>.</p>
 </p>
       		</section>
 
