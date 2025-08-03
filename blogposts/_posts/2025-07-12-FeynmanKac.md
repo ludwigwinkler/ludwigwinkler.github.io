@@ -4,8 +4,8 @@ title:  "Feynamn-Kac"
 category: blog
 date:   2025-07-12
 excerpt: "Is it Katz, Kak, Kaz, Katsch? Anyway, it's nice math."
-# highlighter: rouge
-# image: "/blog/ItoDensityEstimator.png"
+highlighter: rouge
+image: "/blog/blogthumbnails/FeynmanKac.png"
 ---
 <head>
 <script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
@@ -46,7 +46,6 @@ $$dX_t = \mu(X_t, t) dt + \sigma(X_t, t) dW_t$$
 where $\mu$ is the drift term, $\sigma$ is the diffusion term, and $W_t$ is a Wiener process (or Brownian motion).
 
 What happens to a function $f(X_t, t)$ as it evolves over time? The Ito derivative gives us a way to compute this by extending the classical Taylor expansion to the stochastic process realm:
-
 <div style="overflow-x: auto;">
 $$
 \begin{align*}
@@ -61,6 +60,7 @@ An important factor that we'll encounter in a second again is that we won't cons
 
 We then get the Ito derivative:
 
+<div style="overflow-x: auto;">
 $$
 \begin{align*}
 f(X_{t+\Delta t}, t+ \Delta t) 
@@ -70,9 +70,11 @@ f(X_{t+\Delta t}, t+ \Delta t)
 % &+ \frac{1}{2} \frac{\partial^2 f(X_t, t)}{\partial X_t^2} (X_{t+\Delta t} - X_t)^2
 \end{align*}
 $$  
+</div>  
 
 For an infinitissimally small time increment $\Delta t$, we assume that the difference becomes a continuous $dt$ and we can plug in our SDE:
 
+<div style="overflow-x: auto;">
 $$\begin{align*}
 f(X_{t+\Delta t}, t+ \Delta t)
 =& f(X_t, t) + \frac{\partial f(X_t, t)}{\partial t} dt + \frac{\partial f(X_t, t)}{\partial X_t} \overbrace{(X_{t+\Delta t} - X_t)}^{=dX_t} \\ 
@@ -82,11 +84,13 @@ f(X_{t+\Delta t}, t+ \Delta t)
 =& f(X_t, t) + \frac{\partial f(X_t, t)}{\partial t} dt + \frac{\partial f(X_t, t)}{\partial X_t} (\mu(X_t, t)dt + \sigma(X_t, t) dW_t) \\ 
 &+ \frac{1}{2} \frac{\partial^2 f(X_t, t)}{\partial X_t^2} (\mu(X_t, t)^2dt^2 + 2\mu(X_t, t)\sigma(x_t, t) dt dW_t + \sigma(X_t, t)^2 dW_t^2) \\
 \end{align*}$$
+</div>
 
 The next step to observe is that $dW_t = \epsilon \sqrt{dt}$ and that in the limit for a very small $dt$ (think of $dt=10^{-5}$), any effect of a term with $dt$ raised to any power larger than $1$ will diminish even faster (think of $dt^{1.5}=(10^{-5})^{1.5} = 10^{-7.5}$) and thus become negligible.
 This allows us to drop any term where $dt^p$ where $p>1$. Isn't math convenient?
 
 We thus get
+<div style="overflow-x: auto;">
 $$\begin{align*}
 f(X_{t+\Delta t}, t+ \Delta t)
 =& f(X_t, t) + \frac{\partial f(X_t, t)}{\partial t} dt + \frac{\partial f(X_t, t)}{\partial X_t} (\mu(X_t, t)dt + \sigma(X_t, t) dW_t) \\ 
@@ -94,22 +98,27 @@ f(X_{t+\Delta t}, t+ \Delta t)
 =& f(X_t, t) + \frac{\partial f(X_t, t)}{\partial t} \Delta t + \frac{\partial f(X_t, t)}{\partial X_t} (\mu(X_t, t)dt + \sigma(X_t, t) dW_t) \\
 &+ \frac{1}{2} \frac{\partial^2 f(X_t, t)}{\partial X_t^2}\sigma(X_t, t)^2 dt
 \end{align*}$$
+</div>
 
 Rearranging a bit we have
+<div style="overflow-x: auto;">
 $$\begin{align*}
 f(X_{t+\Delta t}, t+ \Delta t)- f(X_t, t)
 =& \frac{\partial f(X_t, t)}{\partial t} dt + \frac{\partial f(X_t, t)}{\partial X_t} (\mu(X_t, t)dt + \sigma(X_t, t) dW_t) \\
 &+ \frac{1}{2} \frac{\partial^2 f(X_t, t)}{\partial X_t^2}\sigma(X_t, t)^2 dt
 \end{align*}
 $$
+</div>
 
 So the infinitesimal change on the right hand side, properly denoted by $dt$ and $dW_t$, would equate the difference in the function $f(X_{t+\Delta t}, t+ \Delta t)$ and $f(X_t, t)$.
 Given a step of $dt$ in time, the change in the function $f(X_t, t)$ is given by
+<div style="overflow-x: auto;">
 $$
 \begin{align*}
 df(X_t, t) =&\left\{\frac{\partial f(X_t, t)}{\partial t} + \frac{\partial f(X_t, t)}{\partial X_t} \mu(X_t, t) + \frac{1}{2} \frac{\partial^2 f(X_t, t)}{\partial X_t^2}\sigma(X_t, t)^2\right\} dt \\
 & + \sigma(X_t, t) \frac{\partial f(X_t, t)}{\partial X_t} dW_t
 \end{align*}$$
+</div>
 
 ### Backward Kolmogorov Equation
 
@@ -149,17 +158,17 @@ Can we also reverse time in a way to compute earlier values of $f(x_t,t)$ starti
 It turns out that there is a partial differential equation hiden beneath all this stochasticity that allows us to compute the expected value of $f(x_t, t)$ backwards in time.
 
 To show this we'll start out with Ito's lemma above but this time integrate it all the way from $t$ to $T$.
-
+<div style="overflow-x: auto;">
 $$
 \begin{align*}
 f_T(X_T) | X_t =& f(X_t, t) + \int_t^T \left\{\frac{\partial f(X_t, t)}{\partial t} + \frac{\partial f(X_t, t)}{\partial X_t} \mu(X_t, t) + \frac{1}{2} \frac{\partial^2 f(X_t, t)}{\partial X_t^2}\sigma(X_t, t)^2\right\} dt \\ 
 & + \int_t^T \sigma(X_t, t) \frac{\partial f(X_t, t)}{\partial X_t} dW_t
 \end{align*}
 $$
+</div>
 
 (where I should have used the integration variable $s$ or $\tau$ instead of $t$ but I didn't want to introduce unnecessary notational noise ;-) ).
 More importantly, this equation tells us that if we start with some intermediate value $f(X_t, t)$ and integrate the infinitesimal changes in the function $f(X_t, t)$ from $t$ to $T$, we will end up with the final value of the function $f_T(X_T)$ which is our terminal payout.
-
 
 And now comes the important step ...
 
@@ -169,17 +178,20 @@ And now comes the important step ...
 
 The important thing to note is that the expectation of a Wiener process, however he might be scaled over any time, is zero.
 
+<div style="overflow-x: auto;">
 $$
 \begin{align*}
 \mathbb{E}\left[ f_T(X_T) | X_t \right] =& \mathbb{E} \left[ f(X_t, t) + \int_t^T\left\{\frac{\partial f(X_t, t)}{\partial t} + \frac{\partial f(X_t, t)}{\partial X_t} \mu(X_t, t) + \frac{1}{2} \frac{\partial^2 f(X_t, t)}{\partial X_t^2}\sigma(X_t, t)^2\right\} dt \right] \\ 
 & + \underbrace{\cancel{\mathbb{E}\left[\sigma(X_t, t) \frac{\partial f(X_t, t)}{\partial X_t} dW_t \right]}}_{=0}
 \end{align*}
 $$
+</div>
 
 While $X_t$ is a random variable, its stochasticity arises completely from the input of the Wiener process $dW_t$.
 If we eliminate the influence of the Wiener process with the expectation $\mathbb{E}$ at every step, we will essentially obtain a deterministic ODE.
 With this intuition, the expectation essentially has no influence on the remaining terms and we can write
 
+<div style="overflow-x: auto;">
 $$
 \begin{align*}
 \underbrace{\mathbb{E}\left[ f_T(x_T) | X_t \right]}_{=f(X_t, t)}
@@ -187,14 +199,16 @@ $$
 f(X_t, t) &= f(X_t, t) + \int_t^T\Bigg\{ \underbrace{\frac{\partial f(X_t, t)}{\partial t} + \frac{\partial f(X_t, t)}{\partial X_t} \mu(X_t, t) + \frac{1}{2} \frac{\partial^2 f(X_t, t)}{\partial X_t^2}\sigma(X_t, t)^2}_{\stackrel{!}{=} 0}\Bigg\} dt
 \end{align*}
 $$
+</div>
 
 The equation above can only hold if the term we're integrating
-
+<div style="overflow-x: auto;">
 $$
 \begin{align*}
 0 &\stackrel{!}{=} \int_t^T \left\{\frac{\partial f(X_t, t)}{\partial t} + \frac{\partial f(X_t, t)}{\partial X_t} \mu(X_t, t) + \frac{1}{2} \frac{\partial^2 f(X_t, t)}{\partial X_t^2}\sigma(X_t, t)^2 \right\} dt
 \end{align*}
 $$
+</div>
 
 An important observation is that the integral above is a definite integral over the arbitrary time interval $[t, T]$.
 This means that the integrand must be zero for all $t$ in the interval $[t, T]$ as we could choose $t$ arbitrarily close to $T$ and the integral would still have to be zero.
@@ -274,12 +288,14 @@ $$
 because all the "cross terms" where $t \neq t'$ vanish due to the property of the Wiener process. This is also known as Ito Isometry.
 This gives us the mean and variance of the random variable $f_T(X_T) | X_t$:
 
+<div style="overflow-x: auto;">
 $$\begin{align*}
 \mathbb{E}[f_T(X_T) | X_t] &= f(X_t, t) \\
 \text{Var}[f_T(X_T) | X_t] &= \int_t^T \sigma(X_t, t)^2 \frac{\partial f(X_t, t)}{\partial X_t}^2 dt \\
 &\downarrow \\
 f_T(X_T) | X_t &\sim \mathcal{N}\left(f(X_t, t), \int_t^T \sigma(X_t, t)^2 \frac{\partial f(X_t, t)}{\partial X_t}^2 dt\right)
 \end{align*}$$
+</div>
 
 ### Feynman-Kac Equation
 
@@ -310,10 +326,12 @@ $v(X_t, t)$ can be interpreted as a "forcing" term that adds an additional contr
 
 In order to make the notation a bit easier we'll shorten the notation to
 
+<div style="overflow-x: auto;">
 $$\begin{align*}
 -\partial_t u &= \partial_{x} u \ \mu + \frac{1}{2} \partial_{xx} u \ \sigma^2 + c \ u + v
 \end{align*}
 $$
+</div>
 
 Solving this equation backwards in time from the terminal condition $u(X_T, T)$ gives us the expected value of the function $u(X_t, t)$ at an earlier time $t$ given the terminal condition $u(X_T, T)$.
 
@@ -406,17 +424,21 @@ where integrating any quantity a zero amount $\int_t^t \ldots dt$ is always equa
 
 We then ultimately have
 
+<div style="overflow-x: auto;">
 $$\begin{align*}
 u_T \ e^{\int_t^T c_r dr} - u_t &= \int_t^T -v_s e^{\int_t^s c_r dr} ds + \int_t^T \sigma \ \partial_x u_s \ e^{\int_t^s c_r dr} \ dW_s
 \end{align*}
 $$
+</div>
 
 Now, we're going to pull off our favourite, slick stochastic process move and take the expectation of both sides which eliminates the martingale $\int dW_s$ term on the right hand side,
 
+<div style="overflow-x: auto;">
 $$\begin{align*}
 u_t &= \mathbb{E}\left[ u_T \ e^{\int_t^T c_r dr} +  \int_t^T v_s e^{\int_t^s c_r dr} ds \right]
 \end{align*}
 $$
+</div>
 
 If we now set $c_r=0$ and $v_s =0$, we indeed recover OG Kolmogorov backward equation $u_t = \mathbb{E}[u_T]$.
 
@@ -424,6 +446,7 @@ If we now set $c_r=0$ and $v_s =0$, we indeed recover OG Kolmogorov backward equ
 
 Diffusion models are able to produce an estimate of a fully denoised sample $\hat{x}_0$ from a diffusive sample $x_t$ by either leveraging the score identity
 
+<div style="overflow-x: auto;">
 $$
 \begin{align*}
 \nabla_{x_t} \log p_t(x_t|x_0) &=  -\frac{(x_t - \alpha_t x_0)}{\sigma_t^2} \quad ; \quad x_t = \alpha_t x_0 + \sigma_t \epsilon\\ 
@@ -432,6 +455,7 @@ $$
 &= \frac{x_t - \sigma_t \ \epsilon_\theta}{\alpha_t}
 \end{align*}
 $$
+</div>
 
 or by using a denoising loss which directly aims at estimating the fully denoised sample $x_0$ from a noisy sample $x_t$.
 
