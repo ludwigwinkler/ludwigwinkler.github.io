@@ -138,7 +138,7 @@ So essentially, you're gold coin score $f(X_T)$ now is a random variable.
 The next question we have to ask to naturally arrive at the Kolmogorov backward equation is whether there is a function $f_T(x_T)$ that describes the expected value of $f_T(X_T)$ for the current state $x_t$ _given that the dynamics are stochastic!_
 
 So we'd be interested in the equation
-
+<div style="overflow-x: auto;">
 $$
 \begin{align*}
 f(x_t, t) 
@@ -146,11 +146,16 @@ f(x_t, t)
 &= \int \underbrace{p(X_T = x_T|x_t)}_{\text{Stochastic Process}} f_T(X_T) dx_T
 \end{align*}
 $$
+</div>
 
 where the expectation how likely a state $X_T$ is given the current state $x_t$ is given by the stochastic process $p(X_T | x_t)$.
 So $f_T(x_T)$ gives you an estimate of how much payout at the end you'll get midway through your Temple Run.
 
-TODO: do little plot where u_t, u_t1 and ut_2 and a bifurcation where u_t sits at the source of the bifurcation
+<div style="max-width: 100%; overflow-x: auto;">
+  <img src="/blog/blogthumbnails/FeynmanKac.png" alt="Feynman-Kac Illustration" style="width: 100%; height: auto; display: block; margin: 0 auto;" />
+</div>
+
+*Figure: Visual intuition for Feynman-Kac. The stochastic process $X_t$ evolves under random noise, while the expected value of a terminal criterion $f_T(X_T)$ is "pulled back" to earlier times via the backward PDE. Particle trajectories (red) and expectation (blue) illustrate the connection between stochastic paths and deterministic backward evolution.*
 
 But the definition $f_T(x_T)$ is inherently forward looking as it relies on the solving the SDE forward in time.
 Can we also reverse time in a way to compute earlier values of $f(x_t,t)$ starting from the terminal values $f_T(X_T)$?
@@ -216,12 +221,13 @@ We can go backward in time from the terminal time $T$ to $T-dt$ and the integral
 If that integral is zero, then the integral $\int_{T-2dt}^{T-dt} \ldots dt = 0$ also has to be zero in order for the whole integral $\int_{T-2dt}^T \ldots dt = 0$ to hold.
 This means that the integrand must be zero for all $t$ in the interval $[t, T]$.
 This gives us the backward Kolmogorov equation:
-
+<div style="overflow-x: auto;">
 $$
 \begin{align*}
 -\frac{\partial f(X_t, t)}{\partial t} &= \frac{\partial f(X_t, t)}{\partial X_t} \mu(X_t, t) + \frac{1}{2} \frac{\partial^2 f(X_t, t)}{\partial X_t^2}\sigma(X_t, t)^2
 \end{align*}
 $$
+</div>
 
 with some terminal condition $f_T(X_T)$.
 This result is quite remarkable as it allows us to compute the expected value of a function of a stochastic process at an earlier time $t$ given the terminal condition $f_T(X_T)$ with a PDE backward in time instead of solving a SDE forward in time.
@@ -232,12 +238,13 @@ In practical terms, this means that if we have a function $f_T(X_T)$ at the term
 
 For example, we could redefine the function $f_T(X_T)$ as the probability of $p(x_T)$ at the terminal time $T$.
 We could then solve the Kolmogorov backward equation in the form of a PDE backwards in time to obtain the expected value of the probability at an earlier time $t$, which we would denote as $p(X_T | X_t)$.
-
+<div style="overflow-x: auto;">
 $$
 \begin{align*}
 - \frac{\partial p(X_T | X_t)}{\partial t} =& \frac{\partial p(X_T|X_t)}{\partial X_t} \mu(X_t, t) + \frac{1}{2} \frac{\partial^2 p(X_T | X_t)}{\partial X_t^2}\sigma(X_t, t)^2
 \end{align*}
 $$
+</div>
 
 This equation would evolve backward the probability density $p(X_T | X_t)$ from the terminal time $T$ to the earlier time $t$.
 At some earlier point $t$, we could evaluate the how likely the state $X_T$ would be given the earlier state $X_t$.
@@ -245,26 +252,28 @@ At some earlier point $t$, we could evaluate the how likely the state $X_T$ woul
 ### A Stochastic Sidenote
 
 For some function $f(x_t, t)$ and a terminal value $f_T(x_T)$, we derived the following identity above
-
+<div style="overflow-x: auto;">
 $$
 \begin{align*}
 f_T(X_T) | X_t =& f(X_t, t) + \int_t^T \left\{\frac{\partial f(X_t, t)}{\partial t} + \frac{\partial f(X_t, t)}{\partial X_t} \mu(X_t, t) + \frac{1}{2} \frac{\partial^2 f(X_t, t)}{\partial X_t^2}\sigma(X_t, t)^2\right\} dt \\ 
 & + \int_t^T \sigma(X_t, t) \frac{\partial f(X_t, t)}{\partial X_t} dW_t
 \end{align*}
 $$
+</div>
 
 But now with our previously gained knowledge we can ascertain that the deterministic integrand is always zero, so we obtain the following equation
-
+<div style="overflow-x: auto;">
 $$
 \begin{align*}
 f_T(X_T) | X_t =& f(X_t, t) + \int_t^T \sigma(X_t, t) \frac{\partial f(X_t, t)}{\partial X_t} dW_t
 \end{align*}
 $$
+</div>
 
 which is A) a martingale and B) a random variable due to the Ito integral.
 We can make this more precise by observing as before that the expectation is zero because $\mathbb{E}[dW_t] = 0$.
 Also, we can quite easily compute the variance of this random variable by computing
-
+<div style="overflow-x: auto;">
 $$
 \begin{align*}
 \mathbb{E}\left[ \left( \int_t^T \sigma(X_t, t) \frac{\partial f(X_t, t)}{\partial X_t} dW_t \right)^2 \right]
@@ -273,10 +282,11 @@ $$
 \left( \int_t^T \sigma(X_{t'}, {t'}) \frac{\partial f(X_{t'}, {t'})}{\partial X_{t'}} dW_{t'} \right) \right].
 \end{align*}
 $$
+</div>
 
 By definition a Wiener process $W_t$ has the property that $\mathbb{E}[dW_t dW_{t'}] = \delta(t-t') dt$ which says that the product of a Wiener process at two different times is zero unless the two times are the same.
 This means that we can rewrite the above equation as
-
+<div style="overflow-x: auto;">
 $$
 \begin{align*}
 \mathbb{E}\left[ \left( \int_t^T \sigma(X_t, t) \frac{\partial f(X_t, t)}{\partial X_t} dW_t \right)^2 \right]
@@ -284,6 +294,7 @@ $$
 &= \int_t^T \sigma(X_t, t)^2 \frac{\partial f(X_t, t)}{\partial X_t}^2 dt
 \end{align*}
 $$
+</div>
 
 because all the "cross terms" where $t \neq t'$ vanish due to the property of the Wiener process. This is also known as Ito Isometry.
 This gives us the mean and variance of the random variable $f_T(X_T) | X_t$:
@@ -300,12 +311,13 @@ f_T(X_T) | X_t &\sim \mathcal{N}\left(f(X_t, t), \int_t^T \sigma(X_t, t)^2 \frac
 ### Feynman-Kac Equation
 
 Previously, we've observed how with a terminal condition at time $T$, we can compute the expected value of a function of a stochastic process at an earlier time $t$ by solving the backward Kolmogorov equation
-
+<div style="overflow-x: auto;">
 $$
 \begin{align*}
 -\frac{\partial f(X_t, t)}{\partial t} &= \frac{\partial f(X_t, t)}{\partial X_t} \mu(X_t, t) + \frac{1}{2} \frac{\partial^2 f(X_t, t)}{\partial X_t^2}\sigma(X_t, t)^2
 \end{align*}
 $$
+</div>
 
 where the dynamics of a stochastic process $X_t$ are given by the SDE
 $$dX_t = \mu(X_t, t) dt + \sigma(X_t, t) dW_t$$
@@ -315,11 +327,14 @@ In their famous equation, Mark Kac and Richard Feynman asked "Yo, what if we add
 
 In order to align with the normal notation of the Feynman-Kac equation, we will be using $u$ instead of $f$.
 The FK equation then is posited as follows:
-
+<div style="overflow-x: auto;">
 $$
 \begin{align*}-\frac{\partial u(X_t, t)}{\partial t} &= \frac{\partial u(X_t, t)}{\partial X_t} \mu(X_t, t) + \frac{1}{2} \frac{\partial^2 u(X_t, t)}{\partial X_t^2}\sigma(X_t, t)^2 \underbrace{+ c(X_t, t) u(X_t, t) + v(X_t, t)}_{\text{new FK terms}}
 \end{align*}
 $$
+</div>
+
+where $c(X_t, t)$ and $v(X_t, t)$ are some functions that we can choose.
 
 We can interpret $c(X_t, t)$ as a "potential" term that modifies the expected value of the function $u(X_t, t)$ at time $t$ by interacting with the function $u(X_t, t)$.
 $v(X_t, t)$ can be interpreted as a "forcing" term that adds an additional contribution to the expected value of the function $u(X_t, t)$ at time $t$.
@@ -340,7 +355,7 @@ Solving PDE's is fiendlishly hard and no easy task.
 
 Usually, there are a couple of 'ansatz's that we can use to solve PDE's.
 For the FK equation we'll chose the ansatz of defining a new function $y(x_t, t)$ as
-
+<div style="overflow-x: auto;">
 $$
 \begin{align*}
 y(X_s, s) &= u(X_s, s) \ e^{\int_t^s c(x_r, r) dr} \\
@@ -348,14 +363,18 @@ y(X_s, s) &= u(X_s, s) \ e^{\int_t^s c(x_r, r) dr} \\
 y_s &= u_s \ e^{\int_t^s c_r dr}
 \end{align*}
 $$
+</div>
+
+where $u_s$ is the function $u(X_s, s)$ and $c_r$ is the function $c(X_r, r)$.
 
 Differentiating this function with respect to $s$ and the product rule gives us
-
+<div style="overflow-x: auto;">
 $$
 \begin{align*}
 dy_s &= du_s \ e^{\int_t^s c_r dr} + u_s \ c_s \ e^{\int_t^s c_r dr}
 \end{align*}
 $$
+</div>
 
 where $du$ is an Ito derivative but $u_s \ d e^{\int_t^s c_r dr}$ is not.
 
@@ -368,32 +387,35 @@ $$d e^{\int_t^s c_r dr} = e^{\int_t^s c_r dr} c_r ds$$
 In short: use Itô’s lemma for functions of $X_s$; use the chain rule for pathwise functionals without stochastic terms.
 
 Evaluating the Ito derivative we get
-
+<div style="overflow-x: auto;">
 $$
 \begin{align*}
 du &= \left\{ \partial_t u + \partial_x u \ \mu + \frac{1}{2} \partial_{xx} u \ \sigma^2 \right\} dt + \sigma \ \partial_x u_t \ dW_t \\
 \end{align*}
 $$
+</div>
 
 and we can compare that to our original FK equation
-
+<div style="overflow-x: auto;">
 $$
 \begin{align*}
 -\partial_t u &= \partial_{x} u \ \mu + \frac{1}{2} \partial_{xx} u \ \sigma^2 + c \ u + v \\
 - c \ u - v &= \partial_t u +\partial_{x} u \ \mu + \frac{1}{2} \partial_{xx} u \ \sigma^2
 \end{align*}
 $$
+</div>
 
 We can then proceed to plug our $-c \ v - u$ into our Ito derivative and get
-
+<div style="overflow-x: auto;">
 $$
 \begin{align*}
 du &= \left\{ -c \ u - v \right\} dt + \sigma \ \partial_x u_t \ dW_t \\
 \end{align*}
 $$
+</div>
 
 Now we take the $du$ and plug that back into our definition of $dy$ and get
-
+<div style="overflow-x: auto;">
 $$
 \begin{align*}
 dy_s &= du_s \ e^{\int_t^s c_r dr} + u_s \ c_s \ e^{\int_t^s c_r dr} \\
@@ -402,23 +424,24 @@ dy_s &= du_s \ e^{\int_t^s c_r dr} + u_s \ c_s \ e^{\int_t^s c_r dr} \\
 &= \left(- v_s \ ds + \sigma \ \partial_x u_s \  dW_s \right) e^{\int_t^s c_r dr}
 \end{align*}
 $$
-
+</div>
 Integrating both sides form $s=t$ to $s=T$ gives us
-
+<div style="overflow-x: auto;">
 $$
 \begin{align*}y_T - y_t &= \int_t^T \left(- v_s \ ds + \sigma \ \partial_x u_s \  dW_s \right) e^{\int_t^s c_r dr} \ ds\\
 &= -\int_t^T v_s e^{\int_t^s c_r dr} ds + \int_t^T \sigma \ \partial_x u_s \ e^{\int_t^s c_r dr} \ dW_s
 \end{align*}
 $$
-
+</div>
 and evaluating the left hand side gives us
-
+<div style="overflow-x: auto;">
 $$
 \begin{align*}
 y_T - y_t &= u_T \ e^{\int_t^T c_r dr} - u_t \ \underbrace{e^{\int_t^t c_r dr}}_{=e^0=1} \\
 &= u_T \ e^{\int_t^T c_r dr} - u_t
 \end{align*}
 $$
+</div>
 
 where integrating any quantity a zero amount $\int_t^t \ldots dt$ is always equal to zero as nothing get's added to the integral.
 
