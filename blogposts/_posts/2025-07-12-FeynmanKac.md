@@ -47,7 +47,7 @@ where $\mu$ is the drift term, $\sigma$ is the diffusion term, and $W_t$ is a Wi
 
 What happens to a function $f(X_t, t)$ as it evolves over time? The Ito derivative gives us a way to compute this by extending the classical Taylor expansion to the stochastic process realm:
 
-<!-- <div style="overflow-x: auto;"> -->
+<div style="overflow-x: auto;">
 $$
 \begin{align*}
 f(X_{t+\Delta t}, t+ \Delta t) 
@@ -55,7 +55,7 @@ f(X_{t+\Delta t}, t+ \Delta t)
 &+ \frac{1}{2} \frac{\partial^2 f(X_t, t)}{\partial X_t^2} (X_{t+\Delta t} - X_t)^2 + o(\Delta t)
 \end{align*}
 $$
-<!-- </div> -->
+</div>
 
 An important factor that we'll encounter in a second again is that we won't consider effects of higher order as A) they get divided by ever decreasing factors  and B) they are negligible for small $\Delta t^p$ where $p>2$.
 
