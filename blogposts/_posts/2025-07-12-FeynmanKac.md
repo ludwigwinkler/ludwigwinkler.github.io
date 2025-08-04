@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Feynamn-Kac"
+title:  "Feynman-Kac"
 category: blog
 date:   2025-07-12
 excerpt: "Is it Katz, Kak, Kaz, Katsch? Anyway, it's nice math."
@@ -72,16 +72,16 @@ f(X_{t+\Delta t}, t+ \Delta t)
 $$  
 </div>  
 
-For an infinitissimally small time increment $\Delta t$, we assume that the difference becomes a continuous $dt$ and we can plug in our SDE:
+For an infinitesimally small time increment $\Delta t$, we assume that the difference becomes a continuous $dt$ and we can plug in our SDE:
 
 <div style="overflow-x: auto;">
 $$\begin{align*}
 f(X_{t+\Delta t}, t+ \Delta t)
-=& f(X_t, t) + \frac{\partial f(X_t, t)}{\partial t} dt + \frac{\partial f(X_t, t)}{\partial X_t} \overbrace{(X_{t+\Delta t} - X_t)}^{=dX_t} \\ 
+=& f(X_t, t) + \frac{\partial f(X_t, t)}{\partial t} dt + \frac{\partial f(X_t, t)}{\partial X_t} \overbrace{(X_{t+\Delta t} - X_t)}^{=dX_t} \\
 &+ \frac{1}{2} \frac{\partial^2 f(X_t, t)}{\partial X_t^2} \overbrace{(X_{t+\Delta t} - X_t)^2}^{=dX_t^2} \\
-=& f(X_t, t) + \frac{\partial f(X_t, t)}{\partial t} dt + \frac{\partial f(X_t, t)}{\partial X_t} (\mu(X_t, t)dt + \sigma(X_t, t) dW_t) \\ 
+=& f(X_t, t) + \frac{\partial f(X_t, t)}{\partial t} dt + \frac{\partial f(X_t, t)}{\partial X_t} (\mu(X_t, t)dt + \sigma(X_t, t) dW_t) \\
 &+ \frac{1}{2} \frac{\partial^2 f(X_t, t)}{\partial X_t^2} (\mu(X_t, t)dt + \sigma(X_t, t) dW_t)^2 \\
-=& f(X_t, t) + \frac{\partial f(X_t, t)}{\partial t} dt + \frac{\partial f(X_t, t)}{\partial X_t} (\mu(X_t, t)dt + \sigma(X_t, t) dW_t) \\ 
+=& f(X_t, t) + \frac{\partial f(X_t, t)}{\partial t} dt + \frac{\partial f(X_t, t)}{\partial X_t} (\mu(X_t, t)dt + \sigma(X_t, t) dW_t) \\
 &+ \frac{1}{2} \frac{\partial^2 f(X_t, t)}{\partial X_t^2} (\mu(X_t, t)^2dt^2 + 2\mu(X_t, t)\sigma(x_t, t) dt dW_t + \sigma(X_t, t)^2 dW_t^2) \\
 \end{align*}$$
 </div>
@@ -160,7 +160,7 @@ So $f_T(x_T)$ gives you an estimate of how much payout at the end you'll get mid
 But the definition $f_T(x_T)$ is inherently forward looking as it relies on the solving the SDE forward in time.
 Can we also reverse time in a way to compute earlier values of $f(x_t,t)$ starting from the terminal values $f_T(X_T)$?
 
-It turns out that there is a partial differential equation hiden beneath all this stochasticity that allows us to compute the expected value of $f(x_t, t)$ backwards in time.
+It turns out that there is a partial differential equation hidden beneath all this stochasticity that allows us to compute the expected value of $f(x_t, t)$ backwards in time.
 
 To show this we'll start out with Ito's lemma above but this time integrate it all the way from $t$ to $T$.
 <div style="overflow-x: auto;">
@@ -485,7 +485,7 @@ or by using a denoising loss which directly aims at estimating the fully denoise
 In both cases, we can use the denoised sample $\hat{x}_0$ as an estimate of the fully denoised sample $x_0$.
 This denoised sample is then evaluated with a criterion $c(\hat{x}_0)$ that tells us how good the sample is.
 
-The Feynma-Kac/Kolmogorov Backward equation give us a mathematical tool to "pull back" $c(\hat{x}_0)$ to a more diffused sample $x_t$.
+The Feynman-Kac/Kolmogorov Backward equation give us a mathematical tool to "pull back" $c(\hat{x}_0)$ to a more diffused sample $x_t$.
 In essence it allows us to estimate a diffused version of the criterion $c(x_t)$ at an earlier time step $t$.
 We use the Feynman-Kac framework to estimate the expected value of the criterion at an earlier time step $t$.
 Theoretically, we could try to evaluate the full expectation $\mathbb{E}[c(x_t)] = \int c(x_t) p(x_t) dx_t$ but this is computationally expensive and not feasible in practice.
