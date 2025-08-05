@@ -27,6 +27,8 @@ image: "../../blog/blogthumbnails/reverse.png"
        <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 </head>
 
+This was my first venture into reverse diffusion and the derivation, although correct, is a bit intricate.
+I'd recommend [this more elegant derivation](https://ludwigwinkler.github.io/blog/SimpleReverseSDE/) which is more accessible.
 
 What follows is a derivation of the main result of 'Reverse-Time Diffusion Equation Models' by Brian D.O. Anderson (1982).
 Earlier on this blog we learned that a stochastic differential equation of the form
