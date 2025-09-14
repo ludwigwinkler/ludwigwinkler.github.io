@@ -10,10 +10,12 @@ sitemap:
 
 Howdy ho, I'm Ludwig Winkler, a machine learner with a focus on stochastic processes and generative models.
 
-I defended my PhD at the <a href='https://web.ml.tu-berlin.de'> TU Berlin Machine Learning Group</a> under Klaus-Robert Müller and Manfred Opper in November 2024 and got a nice new hat 🎓.
+I defended my PhD at the <a href='https://web.ml.tu-berlin.de' style="color: blue; text-decoration: underline;text-decoration-style:">TU Berlin Machine Learning Group</a> under Klaus-Robert Müller and Manfred Opper in November 2024 and got a nice new hat 🎓.
 During my PhD I worked on time-reversible dynamics of deterministic and stochastic systems.
 I went deep down the rabbit hole on stochastic processes with stochastic differential equations, autograd functions and diffusion models on geometric manifolds.
-You can read up on that on my [Google scholar](https://scholar.google.com/citations?hl=en&user=nu_vtVkAAAAJ&view_op=list_works&gmla=AH8HC4zHZJ3Z14D96SJvVcbAzVqP2X1y0Ql1My9Jm4wfFPfB1sTBNHdQj9JICXP8RA07rj8JHtK57BXxQhbcdCEJ).
+You can read up on that on my
+<a href="https://scholar.google.com/citations?hl=en&user=nu_vtVkAAAAJ&view_op=list_works&gmla=AH8HC4zHZJ3Z14D96SJvVcbAzVqP2X1y0Ql1My9Jm4wfFPfB1sTBNHdQj9JICXP8RA07rj8JHtK57BXxQhbcdCEJ" style="color: blue; text-decoration: underline;text-decoration-style:">Google scholar</a>.
+
 
 <!-- The title of my thesis was 'Time-Reversible Bridges of Data with Machine Learning'.
 In my PhD I considered different state spaces and trained neural networks to recreate time-reversible dynamics in these state spaces with boundary conditions.
@@ -27,9 +29,12 @@ In particular, I have trained neural networks in stochastic differential equatio
 The stochastic processes I tackled include SDE's, CTMC's, the connection between SDE's and CTMC's in generative modelling and the Schrödinger Bridge Problem.
 I especially enjoy the mathematical rigor of stochastic processes and probabilistic machine learning in general.
 
-I spent time at [Prescient Design](https://www.gene.com/scientists/our-scientists/prescient-design) within Genentech/Roche designing and implementing advanced sampling  and sample optimization schemes for protein generation and manipulation with machine learning models.
+I spent time at
+<a href="https://www.gene.com/scientists/our-scientists/prescient-design" style="color: blue; text-decoration: underline;text-decoration-style:">Prescient Design</a> within Genentech/Roche designing and implementing advanced sampling  and sample optimization schemes for protein generation and manipulation with machine learning models.
 
-Currently, I'm a senior research engineer with [Microsoft Research](https://www.microsoft.com/en-us/research/people/luwinkler/) in the AI4Science division. I'm part of the BioEmu team working on modelling the **equilibrium distribution** of biomolecules with generative machine learning models.
+Currently, I'm a senior research engineer with 
+<a href="https://www.microsoft.com/en-us/research/people/luwinkler/" style="color: blue; text-decoration: underline;text-decoration-style:">Microsoft Research</a>
+ in the AI4Science division. I'm part of the BioEmu team working on modelling the **equilibrium distribution** of biomolecules with generative machine learning models.
 
 Besides my research activity, history in conjunction with economics and politics has been a long standing interest of mine.
 As I grew older the link between economics and history became more evident to me and my focus shifted to economic and financial history which often does a superb job at explaining the latent forces that shape history.
