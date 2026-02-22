@@ -1,0 +1,466 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+  Jekyll integration by somiibo.com
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+
+<title>The Weight of Sequential Monte Carlo</title>
+<meta name="description" content="">
+
+<link rel="apple-touch-icon" sizes="180x180" href="http://localhost:4000/assets/icon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:4000/assets/icon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:4000/assets/icon/favicon-16x16.png">
+<link rel="manifest" href="http://localhost:4000/assets/icon/manifest.json">
+<link rel="mask-icon" href="http://localhost:4000/assets/icon/safari-pinned-tab.svg" color="#5bbad5">
+<link rel="shortcut icon" href="http://localhost:4000/assets/icon/favicon.ico">
+<meta name="msapplication-config" content="http://localhost:4000/assets/icon/browserconfig.xml">
+<meta name="theme-color" content="#ffffff">
+
+<!-- CSS -->
+<link rel="stylesheet" href="http://localhost:4000/assets/css/main.css" />
+<noscript><link rel="stylesheet" href="http://localhost:4000/assets/css/noscript.css" /></noscript>
+
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+	</head>
+	<body class="is-loading">
+
+		<!-- Wrapper -->
+			<div id="wrapper" class="fade-in">
+
+				<!-- Header -->
+        <header id="header">
+          <a href="http://localhost:4000/" class="logo">Ludwig Winkler</a>
+        </header>
+
+				<!-- Nav -->
+					<nav id="nav">
+
+            <ul class="links">
+  <li class=""><a href="http://localhost:4000/">Home</a></li>
+  <li class=""><a href="http://localhost:4000/blog/">Machine Learning & Math</a></li>
+  <li class=""><a href="http://localhost:4000/globalizedfinance/">Kleptocracy</a></li>
+  <li class=""><a href="http://localhost:4000/readinglist/">Reading List</a></li>
+  <li class=""><a href="http://localhost:4000/photography/">Photography</a></li>
+  <li class=""><a href="http://localhost:4000/about/">About</a></li>
+</ul>
+<!-- <ul class="links">
+  <li class=""><a href="http://localhost:4000/">Home</a></li>
+  <li class=" active "><a href="http://localhost:4000/blog/">Machine Learning & Math</a></li>
+  <li class=""><a href="http://localhost:4000/readinglist/">Reading List</a></li>
+  <li class=""><a href="http://localhost:4000/photography/">Photography</a></li>
+  <li class=""><a href="http://localhost:4000/about/">About</a></li>
+</ul> -->
+
+
+						<ul class="icons">
+              <li><a href="https://twitter.com/default" class="icon fa-twitter" rel="nofollow"><span class="label">Twitter</span></a></li>
+              <li><a href="https://github.com/default" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+				<div id="main">
+          <section class="post">
+    				<header class="major">
+      				<span class="date">12 Jul 2025</span>
+      				<h1>The Weight of Sequential Monte Carlo</h1>
+      				<p>Weight Watchers</p>
+      			</header>
+      			<div class="image main"><img src="" alt=""></div>
+      			<p><head>
+<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
+       <script type="text/x-mathjax-config">
+         MathJax.Hub.Config({
+          TeX: {
+                equationNumbers: { autoNumber: "all" },
+                extensions: ["AMSmath.js", "AMSsymbols.js", "cancel.js"]
+            },
+           tex2jax: {
+             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+             displayMath: [['$$','$$']],
+             processEscapes: true
+           }
+         });
+       </script>
+       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\mathbb{E}_p[X] 
+&amp;= \int x \ p(x) dx \\
+&amp;= \int \frac{q(x)}{q(x)} \ x \ p(x) dx \\
+&amp;= \int \frac{p(x)}{q(x)} \ x \ q(x) dx \\
+&amp;= \mathbb{E}_q \left[\frac{p(x)}{q(x)} \ x \right] \\ 
+&amp;= \mathbb{E}_q \left[w(x) \ x \right]
+\end{align*}
+$$
+</div>
+
+<p>Normalize weights</p>
+
+\[\begin{align*}
+\tilde{w}_i 
+&amp;= \frac{w(x_i)}{\sum_{j=1}^N w(x_j)} \\
+&amp;= \frac{w(x_i)}{\frac{N}{N}\sum_{j=1}^N w(x_j)} \\
+&amp;= \frac{w(x_i)}{N\sum_{j=1}^N \frac{1}{N} w(x_j)} \\
+&amp;= \frac{w(x_i)}{N \mathbb{E}_q[ w(x)]} \\
+\end{align*}\]
+
+<p>Technically,</p>
+
+\[\begin{align*}
+\tilde{w}_i 
+&amp;= \frac{w(x_i)}{N \mathbb{E}_q[ w(x)]} \\
+&amp;= \frac{w(x_i)}{N \int q(x) \frac{p(x)}{q(x)} dx} \\
+&amp;= \frac{w(x_i)}{N \int p(x) dx} \\
+&amp;= \frac{w(x_i)}{N}
+\end{align*}\]
+
+<!-- ######################################################################################### -->
+<h1 id="effective-sample-size-ess">Effective Sample Size (ESS)</h1>
+
+<h2 id="1-the-necessity">1. The Necessity</h2>
+
+<p>Suppose you want to estimate $\mathbb{E}_p[f(X)]$ for some target distribution $p$. In a perfect world, you’d draw $N$ i.i.d. samples from $p$ and compute the sample mean. The variance of that estimator drops as $1/N$ — clean and predictable.</p>
+
+<p>But in practice, your samples are almost never i.i.d. from the target:</p>
+
+<ul>
+  <li><strong>MCMC</strong> produces samples that are serially correlated (each sample depends on the previous one).</li>
+  <li><strong>Importance sampling</strong> draws from a proposal $q \neq p$, then corrects with weights — but those weights can be wildly uneven.</li>
+  <li><strong>Particle filters</strong> resample with replacement, creating duplicate particles.</li>
+</ul>
+
+<p>In all these cases, your $N$ raw samples carry <em>less information</em> than $N$ truly independent samples would. You need a single number that answers: <strong>“how many i.i.d. samples is my collection of correlated/weighted samples actually worth?”</strong> That number is the ESS.</p>
+
+<p>Without it, you’re flying blind — you can’t meaningfully compare algorithms, diagnose poor mixing, set stopping criteria, or calibrate your confidence in Monte Carlo estimates.</p>
+
+<hr />
+
+<h2 id="2-the-intuition">2. The Intuition</h2>
+
+<p>Think of it this way. You have $N$ people in a room voting on something, but some people’s votes count more than others (importance weights), or groups of people always vote together (correlation).</p>
+
+<ul>
+  <li>If one person holds 99% of the voting power, you effectively have 1 voter.</li>
+  <li>If everyone votes identically (perfect correlation), you effectively have 1 voter.</li>
+  <li>If everyone has equal weight and votes independently, you have $N$ effective voters.</li>
+</ul>
+
+<p><strong>ESS quantifies the “democratic health” of your sample.</strong> It measures how much of your nominal sample size $N$ is actually doing useful work.</p>
+
+<p>The core principle: <strong>match the variance.</strong> If your fancy estimator has the same variance as a simple average of $N_{\text{eff}}$ i.i.d. samples, then your effective sample size is $N_{\text{eff}}$.</p>
+
+<hr />
+
+<h2 id="3-setup-and-derivation">3. Setup and Derivation</h2>
+
+<h3 id="31-the-importance-sampling-case">3.1 The Importance Sampling Case</h3>
+
+<p>This is the most commonly cited derivation. We want to compute:</p>
+
+\[\mu = \mathbb{E}_p[f(X)] = \int f(x)\, p(x)\, dx\]
+
+<p>We can’t sample from $p$ directly, so we draw $X_1, \dots, X_N \overset{\text{i.i.d.}}{\sim} q$ from a proposal distribution $q$, and use the importance sampling identity:</p>
+
+\[\mu = \int f(x) \frac{p(x)}{q(x)} q(x)\, dx = \mathbb{E}_q\!\left[f(X)\,w(X)\right]\]
+
+<p>where $w(x) = p(x)/q(x)$ are the (unnormalized) importance weights.</p>
+
+<h4 id="deriving-the-self-normalized-estimator">Deriving the self-normalized estimator</h4>
+
+<h5 id="the-problem-with-standard-importance-sampling">The problem with standard importance sampling</h5>
+
+<p>If we know $p$ exactly (including its normalizing constant), life is simple. The <strong>standard IS estimator</strong> is:</p>
+
+\[\hat{\mu}_{\text{IS}} = \frac{1}{N} \sum_{i=1}^{N} w(X_i)\, f(X_i), \qquad w(x) = \frac{p(x)}{q(x)}\]
+
+<p>This is unbiased: $\mathbb{E}<em>q[\hat{\mu}</em>{\text{IS}}] = \mathbb{E}_q[w(X)f(X)] = \int f(x)\frac{p(x)}{q(x)}q(x)\,dx = \int f(x)\,p(x)\,dx = \mu$. Done.</p>
+
+<p>But in practice — especially in Bayesian inference — we only know $p$ up to a normalizing constant $p = \tilde{p} / Z$. 
+While we’re interested in estimating $w = p / q$, we’re left holding the bag with it’s unnormalized cousin where $Z$ is unknown,</p>
+
+\[\begin{align*}
+w(x) = \frac{p(x)}{q(x)} = \frac{1}{Z}\frac{\tilde{p}(x)}{q(x)} = \frac{1}{Z} \tilde{w}(x)
+\end{align*}\]
+
+<p>which makes us arrive again at the same spot we started from that we don’t know $Z$ in the first place.
+But with unnormalized weights $\tilde{w}$, there is a trick we can pull to bootstrap ourselves out of this seemingly dead end.</p>
+
+<p>The key observation is that the normalizing constant $Z$ is itself is an integral over the whole space $x$ of $\tilde{p}(x)$.
+We can therefore use importance sampling to evaluate the integral as in</p>
+
+\[Z = \int \tilde{p}(x)\,dx \int \frac{q(x)}{q(x)} \tilde{p}(x) = \int \ q(x) \ \frac{\tilde{p}(x)}{q(x)}\,dx = \int q(x) \ \tilde{w}(x) dx = \mathbb{E}_q[\bar{w}(X)]\]
+
+<p>Given that we’ve generated the samples $x \sim q$ proportionally to the distribution $q$ by definition, the expectation reduces to a simple average over the samples $x$,</p>
+
+\[\hat{Z} = \frac{1}{N}\sum_{i=1}^{N} \bar{w}(X_i)\]
+
+<p>Going back to our original objective we want to identify</p>
+
+\[\begin{align*}
+\hat{\mu}_{\text{IS}} &amp;= \frac{1}{N} \sum_{i=1}^{N} w(X_i)\, f(X_i) \\
+&amp;= \frac{1}{N} \sum_{i=1}^{N} \frac{p(X_i)}{q(X_i)}\, f(X_i) \\
+&amp;=\frac{1}{N} \sum_{i=1}^{N} \frac{1}{Z}\frac{\tilde{p}(X_i)}{q(X_i)}\, f(X_i) \\
+&amp;\approx \frac{1}{N}  \frac{1}{\hat{Z}} \sum_{i=1}^{N} \tilde{w}(X_i)\, f(X_i) \\
+&amp;= \frac{1}{N}  \frac{1}{\frac{1}{N}\sum_{i=1}^{N} \tilde{w}(X_i)} \sum_{i=1}^{N} \tilde{w}(X_i)\, f(X_i) \\
+&amp;= \frac{\sum_{i=1}^{N} \tilde{w}(X_i)\, f(X_i)}{\sum_{i=1}^{N} \tilde{w}(X_i)} \\
+\end{align*}\]
+
+<p>Whereas the importance estimator $\hat{\mu}<em>{\text{IS}}$ assumes access to the target distribution $p$ including its normalization constant $Z$, using the unnormalized weights $\tilde{w}$ to estimate $\hat{Z}$ turns this estimator it to the _self-normalized</em> estimator $\hat{\mu}_{\text{SN}}$.</p>
+
+<p>We can simplify the equation for $\hat{\mu}_{\text{SN}}$ even further by observing that the sum in the denominator is self contained, so we can write
+\(\begin{align*}
+\hat{\mu}_{\text{SN}} 
+&amp;= \frac{\sum_{i=1}^{N} \tilde{w}(X_i)\, f(X_i)}{\sum_{j=1}^{N} \tilde{w}(X_j)} \\
+&amp;= \sum_{i=1}^{N} \frac{\tilde{w}(X_i)}{\sum_{j=1}^{N} \tilde{w}(X_j)}\, f(X_i) \\
+&amp;= \sum_{i=1}^{N} \bar{w}(X_i)\, f(X_i) \\
+\end{align*}\)</p>
+
+<p>where the normalized weights $\bar{w}$ are defined as</p>
+
+\[\bar{w}_i = \frac{\tilde{w}_i}{\sum_{j=1}^{N} \tilde{w}_j}\]
+
+<h4 id="variance-of-the-iid-baseline">Variance of the i.i.d. baseline</h4>
+
+<p>For comparison, if we had $N_{\text{eff}}$ i.i.d. samples from $p$, the variance of the sample mean would be:</p>
+
+\[\text{Var}\!\left[\frac{1}{N_{\text{eff}}}\sum_{i=1}^{N_{\text{eff}}} f(X_i)\right] = \frac{\sigma_f^2}{N_{\text{eff}}}\]
+
+<p>where $\sigma_f^2 = \text{Var}_p[f(X)]$.</p>
+
+<h4 id="variance-of-the-self-normalized-estimator">Variance of the self-normalized estimator</h4>
+
+<p>Now we need the variance of $\hat{\mu}_{\text{SN}}$. Using a delta-method / linearization argument (treating the ratio of two sample means), one can show that to first order:</p>
+
+\[\text{Var}[\hat{\mu}_{\text{SN}}] \approx \frac{1}{N} \cdot \frac{\mathbb{E}_q[w^2(X)\,(f(X) - \mu)^2]}{\left(\mathbb{E}_q[w(X)]\right)^2}\]
+
+<p>For the purpose of defining ESS, we want a <strong>function-independent</strong> diagnostic (otherwise you’d need a different ESS for every $f$). So we focus on the dominant factor coming from the weight variability alone. The key insight is that the weight variance inflates the estimator variance by a factor related to the second moment of the weights.</p>
+
+<p>Consider the simplified case $f(x) = 1$ (or more precisely, factor out $\sigma_f^2$). The variance inflation comes entirely from:</p>
+
+\[\text{Var}[\hat{\mu}_{\text{SN}}] \propto \frac{\sigma_f^2}{N} \cdot \frac{\mathbb{E}_q[w^2]}{(\mathbb{E}_q[w])^2}\]
+
+<h4 id="setting-up-the-equivalence">Setting up the equivalence</h4>
+
+<p>We define $N_{\text{eff}}$ by equating:</p>
+
+\[\frac{\sigma_f^2}{N_{\text{eff}}} = \frac{\sigma_f^2}{N} \cdot \frac{\mathbb{E}_q[w^2]}{(\mathbb{E}_q[w])^2}\]
+
+<p>The $\sigma_f^2$ cancels (this is why ESS is function-independent), giving:</p>
+
+\[\boxed{N_{\text{eff}} = N \cdot \frac{(\mathbb{E}_q[w])^2}{\mathbb{E}_q[w^2]}}\]
+
+<h4 id="the-sample-level-estimate">The sample-level estimate</h4>
+
+<p>Replacing population moments with sample moments:</p>
+
+\[\hat{N}_{\text{eff}} = N \cdot \frac{\left(\frac{1}{N}\sum_i w_i\right)^2}{\frac{1}{N}\sum_i w_i^2} = \frac{\left(\sum_i w_i\right)^2}{\sum_i w_i^2}\]
+
+<p>Or equivalently, in terms of the normalized weights $\tilde{w}_i$:</p>
+
+\[\boxed{\hat{N}_{\text{eff}} = \frac{1}{\sum_{i=1}^{N} \tilde{w}_i^2}}\]
+
+<p>This is the famous formula. Note it equals $N$ when all weights are equal ($\tilde{w}_i = 1/N$), and equals $1$ when a single weight dominates.</p>
+
+<hr />
+
+<h3 id="32-connection-to-rényi-divergence">3.2 Connection to Rényi Divergence</h3>
+
+<p>The population-level ESS has an elegant information-theoretic interpretation. Recall that the Rényi divergence of order $\alpha = 2$ between $p$ and $q$ is:</p>
+
+\[D_2(p \| q) = \log \int \frac{p^2(x)}{q(x)}\, dx = \log\, \mathbb{E}_q[w^2(X)]\]
+
+<p>(using $\mathbb{E}_q[w] = 1$ when $p$ and $q$ are both normalized). Then:</p>
+
+\[N_{\text{eff}} = \frac{N}{\exp(D_2(p \| q))}\]
+
+<p>So ESS decays exponentially with the Rényi-2 divergence between target and proposal. This gives you a direct information-geometric lens: importance sampling “works” when $q$ is close to $p$ in the $D_2$ sense.</p>
+
+<hr />
+
+<h3 id="33-the-mcmc--autocorrelation-case">3.3 The MCMC / Autocorrelation Case</h3>
+
+<p>For MCMC, the samples $X_1, \dots, X_N$ are from the correct target $p$ (asymptotically), but they are correlated. Here the setup differs.</p>
+
+<p>The variance of the MCMC sample mean is:</p>
+
+\[\text{Var}\!\left[\bar{f}_N\right] = \frac{\sigma_f^2}{N}\left(1 + 2\sum_{k=1}^{N-1}\left(1 - \frac{k}{N}\right)\rho_k\right)\]
+
+<p>where $\rho_k = \text{Corr}[f(X_t), f(X_{t+k})]$ is the lag-$k$ autocorrelation of the chain.</p>
+
+<p>For large $N$, this simplifies to:</p>
+
+\[\text{Var}[\bar{f}_N] \approx \frac{\sigma_f^2}{N} \cdot \tau\]
+
+<p>where $\tau = 1 + 2\sum_{k=1}^{\infty} \rho_k$ is the <strong>integrated autocorrelation time (IAT)</strong>.</p>
+
+<p>Setting this equal to the i.i.d. baseline $\sigma_f^2 / N_{\text{eff}}$:</p>
+
+\[\boxed{N_{\text{eff}} = \frac{N}{\tau} = \frac{N}{1 + 2\sum_{k=1}^{\infty} \rho_k}}\]
+
+<p><strong>Intuition:</strong> if consecutive samples have autocorrelation $\rho_1 \approx 0.95$, the chain is barely moving between steps. You might need ~40 samples to get the equivalent of one independent draw. The IAT captures exactly this — it’s the “number of steps per independent sample.”</p>
+
+<hr />
+
+<h2 id="4-summary-table">4. Summary Table</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Setting</th>
+      <th>ESS Formula</th>
+      <th>What drives it down</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Importance sampling</td>
+      <td>$\left(\sum w_i\right)^2 / \sum w_i^2$</td>
+      <td>Weight variance (proposal ≠ target)</td>
+    </tr>
+    <tr>
+      <td>MCMC</td>
+      <td>$N / \tau$</td>
+      <td>Autocorrelation (slow mixing)</td>
+    </tr>
+    <tr>
+      <td>Particle filters</td>
+      <td>Both effects compound</td>
+      <td>Resampling + propagation</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="5-practical-notes">5. Practical Notes</h2>
+
+<ul>
+  <li><strong>ESS ≪ N is a red flag.</strong> For importance sampling, a common rule of thumb is to worry when $N_{\text{eff}} / N &lt; 0.5$ or even $&lt; 0.1$.</li>
+  <li><strong>ESS is necessary but not sufficient.</strong> High ESS doesn’t guarantee your sampler has explored all modes — it only measures weight/correlation quality conditional on where you’ve sampled.</li>
+  <li><strong>For MCMC</strong>, estimating $\tau$ reliably is itself nontrivial (see Geyer’s initial monotone sequence estimator, or the autowindow method in Stan).</li>
+  <li><strong>The $1/\sum \tilde{w}_i^2$ formula</strong> is sometimes called the <strong>Kong (1992)</strong> or <strong>Liu (1996)</strong> effective sample size, after the authors who formalized it in the context of sequential Monte Carlo.</li>
+</ul>
+</p>
+      		</section>
+
+          <!-- <div class="comments-wrapper">
+          <div id="disqus_thread"></div> -->
+          <!-- <script>
+              /**
+               *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+               *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+               */
+
+              var disqus_config = function () {
+                  this.page.url = '/blog/ESSSMC/';  /*Replace PAGE_URL with your page's canonical URL variable*/
+                  this.page.identifier = '/blog/ESSSMC/'; /*Replace PAGE_IDENTIFIER with your page's unique identifier variable*/
+              };
+
+              (function() {  /* dont endit below this line */
+                  var d = document, s = d.createElement('script');
+
+                  s.src = 'https://default.disqus.com/embed.js';
+
+                  s.setAttribute('data-timestamp', +new Date());
+                  (d.head || d.body).appendChild(s);
+              })();
+          </script> -->
+          <!-- <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript> -->
+        <!-- </div>/.comments-wrapper -->
+
+
+					<!-- Footer -->
+						<footer>
+              <ul class="actions">
+                <li><a href="http://localhost:4000/blog/" class="button">My Blog</a></li>
+              </ul>
+						</footer>
+					</div>
+
+				<!-- Footer -->
+        <!-- <footer id="footer">
+  <section>
+    <form method="POST" action="https://formspree.io/">
+      <div class="field">
+        <label for="name">Name</label>
+        <input type="text" name="name" id="name" />
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="text" name="email" id="email" />
+      </div>
+      <div class="field">
+        <label for="message">Message</label>
+        <textarea name="message" id="message" rows="3"></textarea>
+      </div>
+      <ul class="actions">
+        <li><input type="submit" value="Send Message" /></li>
+      </ul>
+    </form>
+  </section>
+  <section class="split contact">
+    <section class="alt">
+      <h3>Location</h3>
+      <p>Berlin, Germany</p>
+    </section>
+    <section>
+      <h3>Phone</h3>
+      <p><a href="tel:"></a></p>
+    </section>
+    <section>
+      <h3>Email</h3>
+      <p><a href="mailto:"></a></p>
+    </section>
+    <section>
+      <h3>Social</h3>
+      <ul class="icons alt">
+        <li><a href="https://twitter.com/ludiXIVwinkler" class="icon fa-twitter" rel="nofollow"><span class="label">Twitter</span></a></li>
+        <!-- <li><a href="https://facebook.com/default" class="icon fa-facebook" rel="nofollow"><span class="label">Facebook</span></a></li> -->
+        <!-- <li><a href="https://instagram.com/default" class="icon fa-instagram" rel="nofollow"><span class="label">Instagram</span></a></li> -->
+        <li><a href="https://github.com/ludwigwinkler" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
+      </ul>
+    </section>
+  </section>
+</footer>
+<!-- Copyright -->
+<div id="copyright">
+  <ul>
+       <li>&copy; HTML5 UP</li>
+       <li>Design by <a href="https://html5up.net" rel="nofollow">HTML5 UP</a></li>
+       <li>Jekyll Integration by <a href="https://soundgrail.com">SoundGrail</a></li>
+       <li>Theme made by <a href="https://github.com/iwiedenm/jekyll-theme-massively-src"> iwiedenm</a></li>
+ </ul>
+</div>
+ -->
+
+			</div>
+
+      <!-- Scripts -->
+  		<!-- <!-- DYN -->
+<script src="http://localhost:4000/assets/js/jquery.min.js"></script>
+<script src="http://localhost:4000/assets/js/jquery.scrollex.min.js"></script>
+<script src="http://localhost:4000/assets/js/jquery.scrolly.min.js"></script>
+<script src="http://localhost:4000/assets/js/skel.min.js"></script>
+<script src="http://localhost:4000/assets/js/util.js"></script>
+<script src="http://localhost:4000/assets/js/main.js"></script>
+ -->
+			<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=default"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments)};
+  gtag('js', new Date());
+
+  gtag('config', 'default');
+</script>
+ -->
+
+	</body>
+</html>
