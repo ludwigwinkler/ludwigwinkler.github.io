@@ -1,0 +1,1247 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+  Jekyll integration by somiibo.com
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+
+<title>The Weight of Sampling</title>
+<meta name="description" content="">
+
+<link rel="apple-touch-icon" sizes="180x180" href="http://localhost:4000/assets/icon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:4000/assets/icon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:4000/assets/icon/favicon-16x16.png">
+<link rel="manifest" href="http://localhost:4000/assets/icon/manifest.json">
+<link rel="mask-icon" href="http://localhost:4000/assets/icon/safari-pinned-tab.svg" color="#5bbad5">
+<link rel="shortcut icon" href="http://localhost:4000/assets/icon/favicon.ico">
+<meta name="msapplication-config" content="http://localhost:4000/assets/icon/browserconfig.xml">
+<meta name="theme-color" content="#ffffff">
+
+<!-- CSS -->
+<link rel="stylesheet" href="http://localhost:4000/assets/css/main.css" />
+<noscript><link rel="stylesheet" href="http://localhost:4000/assets/css/noscript.css" /></noscript>
+
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+	</head>
+	<body class="is-loading">
+
+		<!-- Wrapper -->
+			<div id="wrapper" class="fade-in">
+
+				<!-- Header -->
+        <header id="header">
+          <a href="http://localhost:4000/" class="logo">Ludwig Winkler</a>
+        </header>
+
+				<!-- Nav -->
+					<nav id="nav">
+
+            <ul class="links">
+  <li class=""><a href="http://localhost:4000/">Home</a></li>
+  <li class=""><a href="http://localhost:4000/blog/">Machine Learning & Math</a></li>
+  <li class=""><a href="http://localhost:4000/globalizedfinance/">Kleptocracy</a></li>
+  <li class=""><a href="http://localhost:4000/readinglist/">Reading List</a></li>
+  <li class=""><a href="http://localhost:4000/photography/">Photography</a></li>
+  <li class=""><a href="http://localhost:4000/about/">About</a></li>
+</ul>
+<!-- <ul class="links">
+  <li class=""><a href="http://localhost:4000/">Home</a></li>
+  <li class=" active "><a href="http://localhost:4000/blog/">Machine Learning & Math</a></li>
+  <li class=""><a href="http://localhost:4000/readinglist/">Reading List</a></li>
+  <li class=""><a href="http://localhost:4000/photography/">Photography</a></li>
+  <li class=""><a href="http://localhost:4000/about/">About</a></li>
+</ul> -->
+
+
+						<ul class="icons">
+              <li><a href="https://twitter.com/default" class="icon fa-twitter" rel="nofollow"><span class="label">Twitter</span></a></li>
+              <li><a href="https://github.com/default" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+				<div id="main">
+          <section class="post">
+    				<header class="major">
+      				<span class="date">12 Feb 2026</span>
+      				<h1>The Weight of Sampling</h1>
+      				<p>Weight Watchers</p>
+      			</header>
+      			<div class="image main"><img src="/blog/ESS/ess_cover.png" alt=""></div>
+      			<p><head>
+<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
+       <script type="text/x-mathjax-config">
+         MathJax.Hub.Config({
+          TeX: {
+                equationNumbers: { autoNumber: "all" },
+                extensions: ["AMSmath.js", "AMSsymbols.js", "cancel.js"]
+            },
+           tex2jax: {
+             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+             displayMath: [['$$','$$']],
+             processEscapes: true
+           }
+         });
+       </script>
+       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+
+<h2 id="why-we-need-it">Why we need it</h2>
+
+<p>Suppose you want to estimate $\mathbb{E}_p[f(X)]$ for some target distribution $p$. In a perfect world, you’d draw $N$ i.i.d. samples from $p$ and compute the sample mean. The variance of that estimator drops as $1/N$ — that’s what you learn in ML 101.</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\hat{\mu}_f = \frac{1}{N} \sum_{i=1}^{N} f(X_i) \quad \quad \text{where} \quad X_i \sim p \quad \quad \text{and} \quad \quad \mathbb{V}[\hat{\mu}_f] = \frac{1}{N} \sigma_f
+\end{align*}
+$$
+</div>
+
+<p>If we can draw i.i.d. samples from $p$, then there’s no real problem in computing the expectation.
+But alas, we can’t always draw i.i.d. samples from $p$.</p>
+
+<p>But sampling from $p$ is not always possible.
+This can be for a variety of reasons, but one common reason is that the distribution $p$ is complex and high-dimensional and it’s normalization constant is not known.
+Oftentimes, we only know $p$ up to a normalizing constant $p = \tilde{p} / Z$.
+Without knowing $Z$, we can’t assign the correct probability to a point $x$ under $p(x)$.
+For the same value of $\tilde{p}(x)$, the probability of $x$ under $p(x)$ is different if $Z$ is different.</p>
+
+<p>The mathematical version of this predicament shows up everywhere.
+Consider the workhorse of modern machine learning: Bayesian posterior inference.
+You observe data $\mathcal{D}$ and want to reason about parameters $\theta$ under the posterior</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+p(\theta | \mathcal{D}) = \frac{p(\mathcal{D} | \theta)\, p(\theta)}{p(\mathcal{D})}, \quad \text{where} \quad p(\mathcal{D}) = \int p(\mathcal{D} | \theta)\, p(\theta)\, d\theta
+\end{align*}
+$$
+</div>
+
+<p>The numerator — likelihood times prior — you can evaluate pointwise, no problem.
+But the denominator $p(\mathcal{D})$, the marginal likelihood, requires the probability of your entire dataset $\mathcal{D}$ under the model.</p>
+
+<p>So either you somehow magically know the probability of every sample in your dataset $\mathcal{D}$ under the model, or you need to estimate it by defining every possible value of $\theta$ and evaluating the likelihood and prior for each of them.
+Every possible vaue of $\theta$ for continuous parameters is an infinite number of values, so you’d need an infinite amount of computational resources to evaluate the likelihood and prior for each of them.</p>
+
+<p>For anything beyond toy conjugate models, this integral is intractable: there is no closed-form solution and the dimensionality of $\theta$ makes brute-force numerical integration hopeless.
+So you’re stuck with a <strong>distribution you can <em>evaluate</em> (up to a constant) but can’t <em>sample from</em> directly</strong>.
+You know the shape of the landscape, but you have no way to generate points that are distributed according to it.</p>
+
+<p>This is where sampling schemes come in.
+But in practice, the samples these schemes produce are almost never i.i.d. from the target:</p>
+
+<ul>
+  <li><strong>MCMC</strong> produces samples that are serially correlated (each sample depends on the previous one).</li>
+  <li><strong>Importance sampling</strong> draws from a proposal $q \neq p$, then corrects with weightsf — but those weights can be wildly uneven.</li>
+  <li><strong>Particle filters</strong> resample with replacement, creating duplicate particles.</li>
+</ul>
+
+<p>All of these schemes are ways to sample from $p$ even if you can’t sample from $p$ directly. In all these cases, your $N$ raw samples carry <em>less information</em> than $N$ truly independent samples from the OG $p$ would. You need a single number that answers: <strong>“how many i.i.d. samples is my collection of samples I proposed actually worth?”</strong> That number is the ESS.</p>
+
+<p>Without it, you’re flying blind — you can’t meaningfully compare algorithms, diagnose poor mixing, set stopping criteria, or calibrate your confidence in Monte Carlo estimates.</p>
+
+<h2 id="lets-get-the-equations-rolling">Let’s get the equations rolling</h2>
+
+<h3 id="importance-sampling">Importance Sampling</h3>
+
+<p>We want to compute:</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\mu = \mathbb{E}_p[f(X)] = \int f(x)\, p(x)\, dx
+\end{align*}
+$$
+</div>
+
+<p>We can’t sample from $p$ directly, so we draw $X_1, \dots, X_N \overset{\text{i.i.d.}}{\sim} q$ from a proposal distribution $q$, and use the importance sampling identity:</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\mu =\int \underbrace{\frac{q(x)}{q(x)}}_{=1} \ p(x) \ f(x) dx =  \int q(x) \frac{p(x)}{q(x)} q(x)\ f(x) dx = \mathbb{E}_q\!\left[w(X) \ f(X)\right]
+\end{align*}
+$$
+</div>
+
+<p>where $w(x) = p(x)/q(x)$ are the (unnormalized) importance weights.</p>
+
+<p>Below you can see the importance weights $w(x) = p(x)/q(x)$ for a Gaussian mixture model from the cover.
+If we sample from $q$ we have to take into consideration that we’re not sampling from $p$ directly.
+The correction for sampling from $q$ but wanting to estimate the expectation under $p$ is given by the importance weights $w(x) = p(x)/q(x)$.
+For all examples in the visualization below, $p(x) &lt; q(x)$, such that th importance weights will all be smaller than 1.
+These weights $w(x) &lt; 1$, will thus downweight the contribution of the samples from $q$ in the expectation estimator,</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\hat{\mu}_f = \frac{1}{N} \sum_{i=1}^{N} w(X_i)\, f(X_i)
+\end{align*}
+$$
+</div>
+
+<p>whereas parts where $p(x) &gt; q(x)$, the importance weights will be greater than 1, thus upweighting the contribution of the samples from $q$ in the expectation estimator.</p>
+
+<p><img src="/blog/ESS/weights.png" alt="Importance Sampling" style="max-width: 100%; height: auto; display: block; margin: 0 auto;" /></p>
+
+<h4 id="deriving-the-self-normalized-estimator">Deriving the self-normalized estimator</h4>
+
+<h5 id="the-problem-with-standard-importance-sampling">The problem with standard importance sampling</h5>
+
+<p>If we know $p$ exactly (including its normalizing constant), life is simple. The <strong>standard IS estimator</strong> is:</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\hat{\mu}_{\text{IS}} = \frac{1}{N} \sum_{i=1}^{N} w(X_i)\, f(X_i), \qquad w(x) = \frac{p(x)}{q(x)}
+\end{align*}
+$$
+</div>
+
+<p>This is unbiased:</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\mathbb{E}_q[\hat{\mu}_{\text{IS}}] = \mathbb{E}_q[w(X)f(X)] = \int f(x)\frac{p(x)}{q(x)}q(x)\,dx = \int f(x)\,p(x)\,dx = \mu
+\end{align*}
+$$
+</div>
+
+<p>But in practice — especially in Bayesian inference — we only know $p$ up to a normalizing constant $p = \tilde{p} / Z$. 
+While we’re interested in estimating $w = p / q$, we’re left holding the bag with it’s unnormalized cousin where $Z$ is unknown,</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+w(x) = \frac{p(x)}{q(x)} = \frac{1}{Z}\frac{\tilde{p}(x)}{q(x)} = \frac{1}{Z} \tilde{w}(x)
+\end{align*}
+$$
+</div>
+
+<p>which makes us arrive again at the same spot we started from that we don’t know $Z$ in the first place.
+But with unnormalized weights $\tilde{w}$, there is a trick we can pull to bootstrap ourselves out of this seemingly dead end.</p>
+
+<p>The key observation is that the normalizing constant $Z$ is itself is an integral over the whole space $x$ of $\tilde{p}(x)$.
+We can therefore use importance sampling to evaluate the integral as in</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+Z = \int \tilde{p}(x)\,dx =  \int \frac{q(x)}{q(x)} \tilde{p}(x) = \int \ q(x) \ \frac{\tilde{p}(x)}{q(x)}\,dx = \int q(x) \ \tilde{w}(x) dx = \mathbb{E}_q[\tilde{w}(X)]
+\end{align*}
+$$
+</div>
+
+<p>Given that we’ve generated the samples $x \sim q$ proportionally to the distribution $q$ by definition, the expectation reduces to a simple average over the samples $x$,</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\hat{Z} = \frac{1}{N}\sum_{i=1}^{N} \tilde{w}(X_i) \quad \quad ; \quad \quad X_i \sim q
+\end{align*}
+$$
+</div>
+
+<p>Going back to our original objective we want to identify</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\hat{\mu}_{\text{IS}} &amp;= \frac{1}{N} \sum_{i=1}^{N} w(X_i)\, f(X_i) \\
+&amp;= \frac{1}{N} \sum_{i=1}^{N} \frac{p(X_i)}{q(X_i)}\, f(X_i) \\
+&amp;=\frac{1}{N} \sum_{i=1}^{N} \frac{1}{Z}\frac{\tilde{p}(X_i)}{q(X_i)}\, f(X_i) \\
+&amp;\approx \frac{1}{N}  \frac{1}{\hat{Z}} \sum_{i=1}^{N} \tilde{w}(X_i)\, f(X_i) \\
+&amp;= \frac{1}{N}  \frac{1}{\frac{1}{N}\sum_{i=j}^{N} \tilde{w}(X_j)} \sum_{i=1}^{N} \tilde{w}(X_i)\, f(X_i) \\
+&amp;= \frac{\sum_{j=i}^{N} \tilde{w}(X_i)\, f(X_i)}{\sum_{j=i}^{N} \tilde{w}(X_j)} \\
+\end{align*}
+$$
+</div>
+
+<p>Whereas the importance estimator \(\hat{\mu}_{\text{IS}}\) assumes access to the target distribution $p$ including its normalization constant $Z$, using the unnormalized weights \(\tilde{w}\) to estimate \(\hat{Z}\) turns this estimator it to the <em>self-normalized</em> estimator \(\hat{\mu}_{\text{SN}}\).</p>
+
+<p>We can simplify the equation for $\hat{\mu}_{\text{SN}}$ even further by observing that the sum in the denominator is self contained (as in sum over $j$), so we can write</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\hat{\mu}_{\text{SN}} 
+&amp;= \frac{\sum_{i=1}^{N} \tilde{w}(X_i)\, f(X_i)}{\sum_{j=1}^{N} \tilde{w}(X_j)} \\
+&amp;= \sum_{i=1}^{N} \frac{\tilde{w}(X_i)}{\sum_{j=1}^{N} \tilde{w}(X_j)}\, f(X_i) \\
+&amp;= \sum_{i=1}^{N} \bar{w}(X_i)\, f(X_i) \\
+\end{align*}
+$$
+</div>
+
+<p>where the normalized weights $\bar{w}$ are defined as</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\bar{w}_i = \frac{\tilde{w}_i}{\sum_{j=1}^{N} \tilde{w}_j}
+\end{align*}
+$$
+</div>
+
+<h4 id="how-much-does-our-estimator-actually-vary">How much does our estimator actually vary?</h4>
+
+<p>The self-normalized estimator $\hat{\mu}_{\text{SN}}$ is a ratio of two random quantities.
+This makes its variance analysis more subtle than the simple i.i.d. case.</p>
+
+<p>The key question is: how much does our estimate vary from one set of samples to the next?
+If we draw $N$ samples from $q$ repeatedly, how much will $\hat{\mu}_{\text{SN}}$ fluctuate around the true mean $\mu$?</p>
+
+<p>Here’s a (somewhat) intuitive example: Let’s assume we want an estimate of the average height of people in Europe by sending $N$ random people a text message. Imagine you picking 100 random cell phone numbers and blasting off a text saying “Yo, how tall are you?”. These text message could arrive on a Greek island in the sun, in the eternal winter darkness of a Finnish village or in the land of the giants, Holland.</p>
+
+<p>Problem is, you don’t know how tall nor how representative the person reading the text is for the average height of people in Europe.
+Ideally, you want to representatively sample from all countries in Europe from all height groups: the small people in Holland, the tall and small people in Portugal and the average tall people in Greece.</p>
+
+<p>The variance of your little survey depends on two factors:</p>
+<ol>
+  <li>The intrinsicly different heights in Europe that exists regardless of who you pick. Every country has differently tall people.</li>
+  <li>Who you send the text to in Europe from your 100 allowed text messages.</li>
+</ol>
+
+<p>Particularly the second source of variability is tricky in our case. 
+Did you send the text message it by accident to all Dutch men measuring 2.14m? Then your average is like 2.05m. Hardly realistic.
+Or maybe you send it to all Greek grandmas towering at a mighty 1.55m. Also hardly representative.</p>
+
+<p>In more mathy terms we would say that the variance of $\hat{\mu}_{\text{SN}}$ depends on two factors:</p>
+<ol>
+  <li>The intrinsic variability of $f(X)$ under the target distribution $p$ captured by $\sigma_f^2 = \text{Var}_p[f(X)]$. (the natural distribution of heights in Europe)</li>
+  <li>The mismatch between proposal $q$ and target $p$, reflected in the weight variability. ($q$ being the proposed people you send your height text message to)</li>
+</ol>
+
+<p>When $q$ is a poor approximation to $p$, a few samples will have very large weights while most have tiny weights.
+For simplicites sake assume that $q$ is a uniform $q=1/100$.
+The probability of picking the tiny Greek grandmas or the super tall male Dutchies is very small as their heights are at the far ends of the height distribution in Europe. The average height is around 1.75m, so picking a height of 1.55m or 2.14m is very unlikely.</p>
+
+<p>It’s important to note that we’re self-normalizing the weights $\tilde{w}_i$ with all our samples, so we have \(\bar{w}_i = \tilde{w} / \sum_{j=1}^{100} \tilde{w}_j\).</p>
+
+<p>If we ask 98 Greek grandmas and towering Dutchies and only 2 slightly less extreme samples, the contribution of those extreme 98 weights will be negligible.
+Remember that in order to compute the average weight we’ll compute,</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\hat{\mu}_{\text{SN}} 
+&amp;= \sum_{i=1}^{N} \frac{\tilde{w}(X_i)}{\sum_{j=1}^{N} \tilde{w}(X_j)}\, f(X_i) \\
+&amp;= \overbrace{\sum_{i=1}^{98} \underbrace{\frac{\tilde{w}(X_i)}{\sum_{j=1}^{N} \tilde{w}(X_j)}}_{\approx 0}\, f(X_i)}^{\text{Unrepresentative Greek Grandmas \&amp; Tall Dutchies}} + \overbrace{\sum_{i=1}^{2} \frac{\tilde{w}(X_i)}{\sum_{j=1}^{N} \tilde{w}(X_j)}\, f(X_i)}^{\text{effective number of samples}=2} \\
+\end{align*}
+$$
+</div>
+
+<p>But lo and behold, due to $p$ being very small, the weights of the 98 unrepresentative samples have a negligible contribution to the overall value.
+In effect, we’re trying to estimate the average European height with two samples. Not ideal when we had assumed that we used 100 samples.</p>
+
+<p>This weight concentration in those two meaningful samples means we’re effectively using far fewer than $N$ samples, inflating the estimator variance.
+The <strong>effective sample size</strong> (ESS) quantifies exactly how many “equivalent i.i.d. samples” our weighted samples represent. In our case it’s two, not a hundred.</p>
+
+<p>But how do we quantify this effetive sample size?</p>
+
+<h3 id="the-variance-of-our-estimator">The Variance of our Estimator</h3>
+
+<p>Let’s denote the number of effective samples as $N_{\text{eff}}$.</p>
+
+<p>If we had $N$ i.i.d. samples from $p$, the variance of the sample mean would be:</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\mathbb{V}[\mu] = \mathbb{V}\!\left[\frac{1}{N}\sum_{i=1}^{N} f(X_i)\right] = \frac{1}{N^2} \sum_{i=0}^{N} \mathbb{V}[f(X)] = \frac{\sigma_f^2}{N}
+\end{align*}
+$$
+</div>
+
+<p>where $\sigma_f^2 = \text{Var}_p[f(X)]$.</p>
+
+<p>But alas, we don’t have access to samples from $p$ because if we had, I wouldn’t have to write this blog post explaining ESS.</p>
+
+<p>What we do have is our estimator $\hat{\mu}_{\text{SN}}$,</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\hat{\mu}_{\text{SN}} 
+&amp;= \frac{\sum_{i=1}^{N} \tilde{w}(X_i) \ f(X_i)}{\sum_{j=1}^{N} \tilde{w}(X_j)} \\
+\end{align*}
+$$
+</div>
+
+<p>The variance is easy to set up, but actually a bit tricky to compute analytically as we’re dealing with a ratio of random variables</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\mathbb{V}[\hat{\mu}_{\text{SN}}]
+&amp;= \mathbb{V}\left[ \frac{\sum_{i=1}^{N} \tilde{w}(X_i) \ f(X_i)}{\sum_{j=1}^{N} \tilde{w}(X_j)} \right]
+\end{align*}
+$$
+</div>
+
+<h2 id="the-delta-method-or-everybodys-favourite-tool-linearization-with-taylor-expansions">The Delta Method (or <em>“Everybody’s Favourite Tool: Linearization with Taylor Expansions”</em>)</h2>
+
+<p>Imagine you have two random variables, say $X$ and $Y$, and you care about the ratio $g(X, Y) = X/Y$. You know the variances and covariance of $X$ and $Y$, but what’s the variance of the ratio? That’s awkward because the ratio is nonlinear — variances don’t just “pass through” nonlinear functions.</p>
+
+<p>The delta method’s trick is simple. All we gonna do is <strong>locally linearize</strong> the function via a first-order Taylor expansion around the means, then compute the variance of that linear approximation. Since variance behaves nicely under linear transforms, you get a clean closed-form result (albeit be it an only locally valid result due to the linearization).</p>
+
+<p>Let $g(X, Y) = X / Y$.</p>
+
+<p>Let’s start with the one-dimensional case to build intuition. The Taylor expansion of a smooth function $g(X)$ around a point $\mu_X$ is:</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+g(X) = \sum_{n=0}^{\infty} \frac{g^{(n)}(\mu_X)}{n!} \cdot (X - \mu_X)^n
+\end{align*}
+$$
+</div>
+
+<p>Now let’s extend this to two dimensions. The exact formula is actually bit complicated for the infinite sum but the practically interesting parts are</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+g(X, Y) &amp;= g(\mu_X, \mu_Y) \\
+&amp;\quad + \frac{\partial g}{\partial X}\bigg|_{\mu} (X - \mu_X) + \frac{\partial g}{\partial Y}\bigg|_{\mu} (Y - \mu_Y) + \\
+&amp;\quad + \frac{1}{2}\frac{\partial^2 g}{\partial X^2}\bigg|_{\mu} (X - \mu_X)^2 + \frac{\partial^2 g}{\partial X \partial Y}\bigg|_{\mu} (X - \mu_X)(Y - \mu_Y) + \frac{1}{2}\frac{\partial^2 g}{\partial Y^2}\bigg|_{\mu} (Y - \mu_Y)^2 \\
+\end{align*}
+$$
+</div>
+
+<p>Only using the first order yields the truncated version in the form of</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+g(X, Y) &amp;= g(\mu_X, \mu_Y) + \frac{\partial g}{\partial X}\bigg|_{\mu} (X - \mu_X) + \frac{\partial g}{\partial Y}\bigg|_{\mu} (Y - \mu_Y)
+\end{align*}
+$$
+</div>
+
+<p>For the delta method, we keep only the <strong>first-order</strong> term (linearization):</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+g(X, Y) \approx g(\mu_X) + g_X(\mu_X) \cdot (X - \mu_X) + g_Y(\mu_Y) \cdot (Y - \mu_Y)
+\end{align*}
+$$
+</div>
+
+<p>Taking the variance of both sides (and noting that $\mu_X , \mu_Y$ is a constant so $\mathbb{V}[\mu_X] = \mathbb{V}[\mu_Y] = 0$), we have</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\mathbb{V}[g(X,Y)] \approx [g_X(\mu_X)]^2 \cdot \mathbb{V}[X] + [g_Y(\mu_Y)]^2 \cdot \mathbb{V}[Y] + 2 \ g_X \cdot g_Y \cdot \mathbb{C}[X,Y]
+\end{align*}
+$$
+</div>
+
+<p>where the last term $\mathbb{C}[X, Y]$ is the covariance between $X$ and $Y$ as they might or might not be correlated.</p>
+
+<p>The required partial derivatives are:</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+g_X = \frac{\partial}{\partial X}\frac{X}{Y}\bigg|_{\mu} = \frac{1}{\mu_Y}, \qquad g_Y = \frac{\partial}{\partial Y}\frac{X}{Y}\bigg|_{\mu} = -\frac{\mu_X}{\mu_Y^2}
+\end{align*}
+$$
+</div>
+
+<!-- Now take the variance of the linear approximation:
+
+$$\mathbb{V}\!\left[\frac{X}{Y}\right] \approx g_X^2 \,\mathbb{V}[X] + g_Y^2 \,\mathbb{V}[Y] + 2\, g_X\, g_Y \,\mathbb{C}[X, Y]$$ -->
+
+<p>Substituting:</p>
+
+<div style="overflow-x: auto;">
+$$
+\mathbb{V}\left[\frac{X}{Y}\right] 
+\approx \frac{1}{\mu_Y^2}\left(\mathbb{V}[X] + \frac{\mu_X^2}{\mu_Y^2}\,\mathbb{V}[Y] - 2\frac{\mu_X}{\mu_Y}\,\mathbb{C}[X, Y]\right)
+$$
+</div>
+
+<p>Naturally, this approximation degrades when $\mu_Y$ is close to zero since we’re effectively dividing by something close to zero or when the distributions have heavy tails.
+In ML contexts (e.g., variance of a metric ratio in A/B testing), if our samples are large enough for CLT to kick in, this works extremely well.</p>
+
+<p>For our case, we would have</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\hat{\mu}_{\text{SN}}
+= \frac{\sum_{i=1}^{N} \tilde{w}(X_i) \ f(X_i)}{\sum_{j=1}^{N} \tilde{w}(X_j)}
+= \frac{\frac{1}{N}\sum_{i=1}^{N} \tilde{w}(X_i) \ f(X_i)}{\frac{1}{N}\sum_{j=1}^{N} \tilde{w}(X_j)} 
+\stackrel{N \rightarrow \infty}{=} \frac{\mathbb{E}_q[ \tilde{w}(X_i) \ f(X_i)]}{\mathbb{E}_q[ \tilde{w}(X_j)]} 
+= \frac{"X"}{"Y"}
+\end{align*}
+$$
+</div>
+
+<h3 id="linearizing-the-ratio-in-the-variance-estimator">Linearizing the Ratio in the Variance Estimator</h3>
+
+<p>For the linearization to be applicable we need the expected values and the variances of the nominator and denominator in our self-normalizing importance sampler.</p>
+
+<p>First up we need to compute the mean and the variance of nominator and denominator</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\mathbb{E}_p[f] &amp;= \mu_f \\
+\mathbb{E}_q[\tilde{w} \ f] &amp;= \ldots \text{nothing to simplify here} &amp; \quad \leftarrow \mu_X  \\
+\mathbb{V}_q[\tilde{w} \ f] &amp;= \mathbb{E}[\tilde{w}^2 \ f^2] - \mathbb{E}[\tilde{w} \ f]^2 &amp; \quad \leftarrow \mathbb{V}[X] \\
+\mathbb{E}_q[\tilde{w}] &amp;= \int q \ \tilde{w} \ dx = \int q \ \frac{\tilde{p}}{q} \ dx = \int \tilde{p} \ dx = Z &amp; \quad \leftarrow \mu_Y \\
+\mathbb{V}_q[\tilde{w}] &amp;= \mathbb{E}_q[\tilde{w}^2] - \mathbb{E}_q[\tilde{w}]^2 
+= \mathbb{E}_q[\tilde{w}^2] - Z^2 &amp; \quad \leftarrow \mathbb{V}[Y]\\
+\frac{\mathbb{E}_q[\tilde{w} \ f]}{\mathbb{E}_q[\tilde{w}]} 
+&amp;= \frac{\mathbb{E}_q[\tilde{w} \ f]}{Z} 
+= \mathbb{E}_q\left[\frac{1}{Z}\tilde{w} \ f\right] \\
+&amp;= \mathbb{E}_q\left[\frac{1}{Z}\frac{\tilde{p}}{q} \ f\right] 
+= \int q \ \frac{p}{q} \ f \ dx \\
+&amp;= \mathbb{E}_p[f] \\
+&amp;= \mu_f &amp; \quad \leftarrow \frac{\mu_X}{\mu_Y}\\
+\mathbb{C}[\tilde{w} \ f, \tilde{w}] 
+&amp;= \mathbb{E}_q[\tilde{w} \ f \ \tilde{w}] - \mathbb{E}_q[f] \mathbb{E}_q[\tilde{w}] \\
+&amp;= \mathbb{E}_q[\tilde{w}^2 \ f ] - \mu_f \ Z &amp;\quad \leftarrow \mathbb{C}[X, Y]\\
+\end{align*}
+$$
+</div>
+
+<p>All of the expectations and variances above are with respect to a random variable $X$ and it’s functions $\tilde{w}(X)$ or $f(X)$.
+The expectation and variance operator are both linear for a sum of random variables, so we can generically write</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\mathbb{E}\left[\frac{1}{N}\sum_i X_i'\right] &amp;= \frac{1}{N}\sum_i \mathbb{E}[X_i'] = \mathbb{E}\left[ X'_i\right] \\
+\mathbb{V}\left[\frac{1}{N}\sum_i X_i'\right] &amp;= \frac{1}{N^2}\sum_i \mathbb{V}[X_i'] = \frac{1}{N}\mathbb{V}\left[ X'_i\right] \\
+\mathbb{C}\left[\frac{1}{N}\sum_i W'_i X_i' \ , \ \frac{1}{N}\sum_i X_i' \right]
+&amp;= \mathbb{E}\left[\frac{1}{N}\sum_i W'_i X_i' \ \frac{1}{N}\sum_j W'_j \right] - \mathbb{E}\left[\frac{1}{N}\sum_i X_i'\right] \mathbb{E}\left[\frac{1}{N}\sum_i W'_i X_i'\right] \\
+&amp;= \frac{1}{N^2}\left( \sum_i \mathbb{E}[ W'_i X_i' \ W'_i] + \sum_{i \neq j} \mathbb{E}[ W'_i X_i' \ W'_j] \right) - \mathbb{E}[W'_i X_i'] \ \mathbb{E}[W'_i] \\
+&amp;= \frac{1}{N^2}\left( N \ \mathbb{E}[ W'_i X_i' \ W'_i] + N(N-1) \ \mathbb{E}[ W'_i X_i'] \ \mathbb{E}[ W'_j] \right) - \mathbb{E}[W'_i X_i'] \ \mathbb{E}[W'_i] \\
+&amp;= \frac{1}{N}\left( \mathbb{E}[ W'_i X_i' \ W'_i] + (N-1) \mathbb{E}[ W'_i X_i'] \ \mathbb{E}[ W'_i] \right) - \mathbb{E}[W'_i X_i'] \ \mathbb{E}[W'_i] \\
+&amp;= \frac{1}{N}\ \mathbb{E}[ W'_i X_i' \ W'_i] + \left(1-\frac{1}{N}\right) \mathbb{E}[ W'_i X_i'] \ \mathbb{E}[ W'_i] - \mathbb{E}[W'_i X_i'] \ \mathbb{E}[W'_i] \\
+&amp;= \frac{1}{N}\ \mathbb{E}[ W'_i X_i' \ W'_i] + \frac{1}{N}\mathbb{E}[ W'_i X_i'] \ \mathbb{E}[ W'_i]
+\end{align*}
+$$
+</div>
+
+<p>For the covariance calculation we’ve exploited the fact that over $N$ samples, we assume that only samples with the same index are correlated, whereas samples with different indices are independent.</p>
+
+<p>Since the terms in $\mathbb{V}[X/Y]$ are all variances, we have to simply add a $1/N$ factor to each term, if we choose to work with the sum instead of the mean. In any case, since the $1/N$ factor can be inserted in both the nominator and denominator, it won’t change the final result anyway.</p>
+
+<p>Putting all of these terms together we get</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\mathbb{V}\left[\frac{\sum \tilde{w} \ f}{\sum \tilde{w}}\right]
+&amp;= \mathbb{V}\left[\frac{\frac{1}{N}\sum \tilde{w} \ f}{\frac{1}{N}\sum \tilde{w}}\right] \\
+&amp;\approx \frac{1}{E[\frac{1}{N}\Sigma \ \tilde{w}]^2} \left( \mathbb{V}\left[\frac{1}{N} \sum \tilde{w} \ f\right] 
++ \frac{\mathbb{E}[\frac{1}{N} \sum \tilde{w} \ f]^2}{\mathbb{E}[\frac{1}{N} \sum \tilde{w}]^2} \mathbb{V}\left[\frac{1}{N} \sum \tilde{w}\right] 
+- 2 \frac{\mathbb{E}[\frac{1}{N} \sum \tilde{w} \ f]}{\mathbb{E}[\frac{1}{N} \sum \tilde{w}]} \mathbb{C}\left[\frac{1}{N} \sum \tilde{w}, \frac{1}{N} \sum \tilde{w} \ f\right] \right)\\
+&amp;= \frac{1}{E[ \tilde{w}]^2} \frac{1}{N} \left( \mathbb{V}\left[ \tilde{w} \ f\right] 
++ \frac{\mathbb{E}[\tilde{w} \ f]^2}{\mathbb{E}[\tilde{w}]^2} \mathbb{V}\left[\tilde{w}\right] 
+- 2 \frac{\mathbb{E}[\tilde{w} \ f]}{\mathbb{E}[\tilde{w}]} \mathbb{C}\left[\tilde{w},\tilde{w} \ f\right] \right)\\
+&amp;= \overbrace{\frac{1}{Z^2}}^{\frac{1}{\mu_Y^2}}\frac{1}{N} \Big( \overbrace{\mathbb{E}[\tilde{w}^2 \ f^2] - \mathbb{E}[\tilde{w} \ f]^2}^{\mathbb{V}[X]} + \underbrace{\mathbb{E}_p[f]^2}_{\frac{\mu_X^2}{\mu_Y^2}} \big(\underbrace{\mathbb{E}_q[\tilde{w}^2] - Z^2}_{\mathbb{V}[Y]} \big) - 2 \ \underbrace{\mathbb{E}_p[f]}_{\frac{\mu_X}{\mu_Y}} \big(\underbrace{\mathbb{E}_q[\tilde{w}^2 \ f] -  \mathbb{E}_q[\tilde{w}] Z}_{\mathbb{C}[X, Y]} \big)\Big) \\
+&amp;= \frac{1}{Z^2}\frac{1}{N} \Big( \mathbb{E}[\tilde{w}^2 \ f^2] - \underbrace{\frac{Z^2}{Z^2} \mathbb{E}[\tilde{w} \ f]^2}_{=Z^2 \ \mathbb{E}_p[f]} 
++ \mathbb{E}_p[f]^2 \big(\mathbb{E}_q[\tilde{w}^2] - Z^2\big) 
+- 2 \ \mathbb{E}_p[f] \big(\mathbb{E}_q[\tilde{w}^2 \ f] - \underbrace{\frac{Z}{Z} \mathbb{E}_q[\tilde{w}] Z}_{=Z^2 \mathbb{E}_p[f]}\big)\Big) \\
+&amp;= \frac{1}{Z^2}\frac{1}{N} \Big( \mathbb{E}[\tilde{w}^2 \ f^2] \ \cancel{- Z^2 \ \mathbb{E}_p[f]} 
++ \mathbb{E}_p[f]^2 \big(\mathbb{E}_q[\tilde{w}^2] \ \cancel{- Z^2} \big) 
+- 2 \ \mathbb{E}_p[f] \big(\mathbb{E}_q[\tilde{w}^2 \ f] \cancel{- Z^2 \mathbb{E}_p[f]}\big)\Big) \\
+&amp;= \frac{1}{Z^2}\frac{1}{N} \Big( \mathbb{E}[\tilde{w}^2 \ f^2] 
++ \mu_f^2 \ \mathbb{E}_q[\tilde{w}^2] 
+- 2 \ \mu_f \ \mathbb{E}_q[\tilde{w}^2 \ f] \Big) \\
+&amp;= \frac{1}{Z^2}\frac{1}{N} \Big( \mathbb{E}\left[\tilde{w}^2 \ f^2 + \mu_f^2 \ \tilde{w}^2 - 2 \ \mu_f \ \tilde{w}^2 \ f\right] \Big) \\
+&amp;= \frac{1}{Z^2}\frac{1}{N} \Big( \mathbb{E}\left[\tilde{w}^2 \ \left( f^2 + \mu_f^2 - 2 \ \mu_f \ f\right)\right] \Big) \\
+&amp;= \frac{1}{Z^2}\frac{1}{N} \Big( \mathbb{E}\left[\tilde{w}^2 \ \left( f - \mu_f\right)^2\right] \Big) \\
+&amp;= \frac{1}{N} \frac{\mathbb{E}\left[\tilde{w}^2 \ \left( f - \mu_f\right)^2\right]}{\mathbb{E}[\tilde{w}]^2} \\
+\end{align*}
+$$
+</div>
+
+<p>The equation above is an approximation of the variance of the self-normalized estimator.
+If we sample the samples from a proposal distribution $q$ that is different from the unnormalized target distribution $\tilde{p}$ resulting in the weights $\tilde{w}$.</p>
+
+<p>But what if we wouldn’t sample from $q$ but from the true target distribution $p$ resulting in the weights $w$?
+This implies that we can really generate $N_p$ samples from $p$ directly, and thus our samples will be i.i.d. from $p$, not suffering from the approximation error of $q$ to $p$.
+Let’s calculate the variance of the self-normalized estimator if we were to sample from $p$ directly,</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\mathbb{V}_p\left[\frac{\sum \tilde{w} \ f}{\sum \tilde{w}}\right]
+&amp;= \frac{1}{N_p} \frac{\mathbb{E}_p\left[\tilde{w}^2 \ \left( f - \mu_f\right)^2\right]}{\mathbb{E}_p[\tilde{w}]^2} \\
+&amp;= \frac{1}{N_p} \frac{\mathbb{E}_p\left[\tilde{w}^2 \ \left( f - \mu_f\right)^2\right]}{\underbrace{\int p \frac{\tilde{p}}{p}\ dx^2}_{=Z^2}} \\
+&amp;= \frac{1}{N_p} \mathbb{E}_p\left[\frac{1}{Z^2}\tilde{w}^2 \ \left( f - \mu_f\right)^2\right]\\
+&amp;= \frac{1}{N_p} \mathbb{E}_p\left[\frac{1}{Z^2}\frac{\tilde{p}^2}{p^2} \ \left( f - \mu_f\right)^2\right]\\
+&amp;= \frac{1}{N_p} \mathbb{E}_p\left[ \ \left( f - \mu_f\right)^2\right]\\
+\end{align*}
+$$
+</div>
+
+<p>And thus we can see that the variance is actually decreasing with the number of samples $N_p$ from $p$ directly as we would expect from a standard i.i.d. estimator.
+If $N_p$ is large, we consequently decrease the inherent variance of the estimator by a factor of $N_p$.</p>
+
+<p>But again, we can only sample from $q$, not from $p$.
+But we can pose a clever question: How many samples $N_q$ from $q$ would we need to get the same variance as $N_p$ samples from $p$?
+At the very beginning we said that our correlated samples from $q$ carry less information than $N_p$ truly independent samples would.
+So the ESS metric asks the question how many samples $N_q$ from $q$ are worth $N_p$ perfect, i.i.d, super-duper-excellent samples from $p$?</p>
+
+<p>In order to solidify this, we’ll set the two variance estimators equal to each other, one with $N_p$ samples and one with $N_q$ samples.
+\(\begin{align*}
+\mathbb{V}_p\left[\frac{\sum \tilde{w} \ f}{\sum \tilde{w}}\right]
+&amp;= \mathbb{V}_q\left[\frac{\sum \tilde{w} \ f}{\sum \tilde{w}}\right] \\
+\frac{1}{N_p} \mathbb{E}_p\left[ \ \left( f - \mu_f\right)^2\right] 
+&amp;= \frac{1}{N_q} \frac{\mathbb{E}_q\left[ \tilde{w}^2 \ \left( f - \mu_f\right)^2\right]}{\mathbb{E}_q[\tilde{w}]^2} \\
+\end{align*}\)</p>
+
+<p>In order to arrive at the ESS formula, we’ll need to do a final approximation by assuming that the weights $\tilde{w}^2$ actually aren’t too correlated with $(f - \mu_f)^2$ which is in practice actually somewhat true,</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\frac{1}{N_p} \mathbb{E}_p\left[ \ \left( f - \mu_f\right)^2\right] 
+&amp;\approx \frac{1}{N_q} \frac{\mathbb{E}_q\left[ \tilde{w}^2 \right] \ \mathbb{E}_p \left[ \left( f - \mu_f\right)^2\right]}{\mathbb{E}_q[\tilde{w}]^2} \\
+\frac{1}{N_p} 
+&amp;\approx \frac{1}{N_q} \frac{\mathbb{E}_q\left[ \tilde{w}^2 \right] }{\mathbb{E}_q[\tilde{w}]^2} \\
+N_q 
+&amp;\approx N_p \cdot \frac{\mathbb{E}_q[\tilde{w}]^2}{\mathbb{E}_q\left[ \tilde{w}^2 \right] } \\
+\end{align*}
+$$
+</div>
+
+<p>The samples $N_q$ are then the effective number of samples from $q$ that are worth $N_p$ samples from $p$.
+The ratio $\frac{\mathbb{E}_q\left[ \tilde{w}^2 \right] }{\mathbb{E}_q[\tilde{w}]^2}$ can intuitively be interpreted as a discount factor.
+You can quite literally think of the discount factor like a conversion rate between the number of samples from $q$ and the number of samples from $p$ that are worth the same.
+This really akin to conversion factors between currencies.
+Take $N_q$ Zimbabwen dollars and try to convert them to $N_p$ US dollars. Since Zimbabwen dollars <a href="https://en.wikipedia.org/wiki/Hyperinflation_in_Zimbabwe">aren’t worth anything</a>, you got like 0.000001 Dollar per Zimbabwen dollar.
+So you need an inordinate amount of Zimbabwen dollars to get a single $N_p=1$ US dollar.</p>
+
+<p>We can also express the effective sampling size in terms of normalized weights $\tilde{w}$ instead of $\tilde{w}^2$.
+Remember that</p>
+
+<div style="overflow-x: auto;">
+$$\begin{align*}
+\frac{1}{N} \sum_{i=1}^{N} \tilde{w}_i &amp;= \mathbb{E}_q[\tilde{w}] = \int q \ \tilde{w} \ dx = \int q \ \frac{\tilde{p}}{q} \ dx = \int \tilde{p} \ dx = Z \\
+&amp; \downarrow \\
+\sum_{i=1}^{N} \tilde{w}_i &amp;= N \ Z
+\end{align*}
+$$
+</div>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+N_q 
+&amp;\approx N \ \frac{\mathbb{E}_q[\tilde{w}]^2}{\mathbb{E}_q\left[ \tilde{w}^2 \right] } \\
+&amp;\approx N \ \frac{(\frac{1}{N} \sum_i \tilde{w}_i)^2}{\frac{1}{N} \sum_i \tilde{w}_i^2} \\
+&amp;\approx N^2 \ \frac{\frac{1}{N^2} (\sum_i \tilde{w}_i)^2}{\sum_i \tilde{w}_i^2} \\
+&amp;= \frac{(\sum_i \tilde{w}_i)^2}{\sum_i \tilde{w}_i^2} \\
+&amp;= \frac{1}{\sum_i \frac{1}{(\sum_j^N \tilde{w}_j)^2}  \tilde{w}_i^2}  &amp; \quad \quad \text{with} \ \bar{w}_i = \frac{\tilde{w}_i}{\sum_j^N \tilde{w}_j} \\
+&amp;= \frac{1}{\sum_i \bar{w}_i^2} \\
+\end{align*}
+$$
+</div>
+
+<p>This gives us an easy way to calculate the ESS purely from the normalized weights $\tilde{w}_i$.</p>
+
+<h3 id="mcmc">MCMC</h3>
+
+<p>In the importance sampling case, the problem was that we couldn’t sample from $p$ and had to use a proposal $q$, leading to weights that could be wildly uneven.
+MCMC flips the script entirely: we <em>are</em> sampling from $p$ (at least asymptotically), but our samples are <strong>serially correlated</strong> because each sample depends on the previous one.</p>
+
+<p>Think of it this way: if importance sampling suffers from “some samples mattering way more than others”, MCMC suffers from “consecutive samples being almost the same thing”.
+You’re walking through the mountainous landscape we described at the very beginning, but you can only take small steps from where you currently are.
+If you’re standing on a peak, your next few hundred positions will all be near that same peak — you haven’t explored the valleys yet.
+Your chain might eventually visit the entire landscape, but <em>locally</em>, your samples are redundant.</p>
+
+<p>So the question is the same one we’ve been asking all along: <strong>how many i.i.d. samples is our correlated chain actually worth?</strong></p>
+
+<p>Let’s set up the math. Denote the sample mean of our MCMC chain as</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\bar{f}_N = \frac{1}{N}\sum_{t=1}^{N} f(X_t)
+\end{align*}
+$$
+</div>
+
+<p>where $X_1, X_2, \ldots, X_N$ are the states of our Markov chain targeting $p$.</p>
+
+<p>We want $\mathbb{V}[\bar{f}_N]$. Let’s expand this directly from the definition:</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\mathbb{V}[\bar{f}_N] = \mathbb{V}\!\left[\frac{1}{N}\sum_{t=1}^N f(X_t)\right] = \frac{1}{N^2}\,\mathbb{V}\!\left[\sum_{t=1}^N f(X_t)\right]
+\end{align*}
+$$
+</div>
+
+<p>Now here’s where the correlation makes life interesting.
+What we’ve done is run a MCMC chain which always takes the last value $X_{t-1}$ as the starting point for the next step $X_t$.
+So for all intents and purposes, the samples $X_t$ are correlated.
+The variance of a sum is <em>not</em> just the sum of the variances when the summands are correlated. We have to account for all the cross-terms:</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\mathbb{V}\!\left[\sum_{t=1}^N f(X_t)\right] = \sum_{t=1}^N \sum_{s=1}^N \mathbb{C}[f(X_t), f(X_s)] = \underbrace{\sum_{t=1}^N \mathbb{V}[f(X_t)]}_{\text{diagonal } (t=s)} + \underbrace{\sum_{t=1}^N \sum_{\substack{s=1 \\ s \neq t}}^N \mathbb{C}[f(X_t), f(X_s)]}_{\text{off-diagonal } (t \neq s)}
+\end{align*}
+$$
+</div>
+
+<p>This is a double sum — every pair of samples $(t, s)$ contributes a covariance term. The diagonal terms ($t = s$) give us the familiar sum of variances, while the off-diagonal terms ($t \neq s$) capture the correlations between different samples. For i.i.d. samples, all the off-diagonal terms vanish because $\mathbb{C}[f(X_t), f(X_s)] = 0$ for $t \neq s$, and we’d recover</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\mathbb{V}\!\left[\frac{1}{N}\sum_{t=1}^N f(X_t)\right] = \frac{1}{N^2}\sum_{t=1}^N \mathbb{V}[f(X_t)] = \frac{N\sigma_f^2}{N^2} = \frac{\sigma_f^2}{N}
+\end{align*}
+$$
+</div>
+
+<p>But for MCMC, they don’t vanish. Consecutive samples are correlated, and that correlation bleeds into the variance.</p>
+
+<p>The saving grace is <strong>stationarity</strong>: if you run the chain long enough after which the chain is said to have “converged”, the covariance between $f(X_t)$ and $f(X_s)$ depends only on the lag $k = |t - s|$, not on the absolute positions $t$ and $s$.
+With stationarity, this allows us define the <strong>autocovariance function</strong>:</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+c_k = \mathbb{C}[f(X_t), f(X_{t+k})] = \mathbb{E}[(f(X_t) - \mu_f)(f(X_{t+k}) - \mu_f)]
+\end{align*}
+$$
+</div>
+
+<p>Note that $c_0 = \sigma_f^2$ (the marginal variance of $f$ under $p$, the same $\sigma_f^2$ we’ve been carrying around since the beginning) and $c_k = c_{-k}$ by symmetry — the covariance doesn’t care about the direction of time.</p>
+
+<p>In the double sum $\sum_{t=1}^N \sum_{s=1}^N$, we need to count how many pairs $(t, s)$ produce each lag $k = t - s$. This is a straightforward combinatorial exercise:</p>
+
+<ul>
+  <li>Lag $k = 0$: pairs $(1,1), (2,2), \ldots, (N,N)$ → exactly $N$ terms</li>
+  <li>Lag $k = 1$: pairs $(2,1), (3,2), \ldots, (N, N-1)$ → exactly $N-1$ terms</li>
+  <li>Lag $k = -1$: pairs $(1,2), (2,3), \ldots, (N-1, N)$ → exactly $N-1$ terms</li>
+  <li>In general, lag $k$: exactly $N - |k|$ terms, for $k = -(N-1), \ldots, N-1$</li>
+</ul>
+
+<p>This allows us to simplify the equation as for any fixed $k=t-s$, there are $N - |k|$ pairs $(t, s)$ that produce this lag with a fixed value of $c_k$ for the stationary/converged chain.
+So the double sum collapses to</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\sum_{t=1}^N \sum_{s=1}^N \mathbb{C}[f(X_t), f(X_s)] = \sum_{k=-(N-1)}^{N-1} (N - |k|)\,c_k
+\end{align*}
+$$
+</div>
+
+<p>Using the symmetry $c_k = c_{-k}$, we fold the negative lags into the positive ones:</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\sum_{t=1}^N \sum_{s=1}^N \mathbb{C}[f(X_t), f(X_s)]= Nc_0 + 2\sum_{k=1}^{N-1}(N-k)\,c_k
+\end{align*}
+$$
+</div>
+
+<p>Plugging this back into our variance expression:</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\mathbb{V}[\bar{f}_N] &amp;= \frac{1}{N^2}\left[Nc_0 + 2\sum_{k=1}^{N-1}(N-k)\,c_k\right] \\
+&amp;= \frac{c_0}{N} + \frac{2}{N^2}\sum_{k=1}^{N-1}(N-k)\,c_k \\
+&amp;= \frac{c_0}{N}\left[1 + 2\sum_{k=1}^{N-1}\underbrace{\left(1 - \frac{k}{N}\right)}_{\text{Bartlett weight}}\frac{c_k}{c_0}\right]
+\end{align*}
+$$
+</div>
+
+<p>Defining the <strong>autocorrelation function</strong> $\rho_k = c_k / c_0$ (the normalized version of the autocovariance), we arrive at</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\mathbb{V}[\bar{f}_N] = \frac{\sigma_f^2}{N}\left[1 + 2\sum_{k=1}^{N-1}\left(1 - \frac{k}{N}\right)\rho_k\right]
+\end{align*}
+$$
+</div>
+
+<p>For i.i.d. samples, $\rho_k = 0$ for all $k \geq 1$, and the bracket collapses to $1$, recovering the familiar $\sigma_f^2/N$ we know and love.</p>
+
+<p>The Bartlett weights $(1 - k/N)$ are worth pausing on. They arise purely from counting: at lag $k$, there are only $N - k$ pairs of samples separated by exactly $k$ steps. The further apart two samples are in the chain, the fewer such pairs exist. For large $N$, these weights are approximately $1$ for any fixed lag — the edge effects wash out.</p>
+
+<p>Thus for large $N$, the Bartlett weights $(1 - k/N) \to 1$ for any fixed $k$. If the autocorrelations decay fast enough that $\sum_{k=1}^\infty \|\rho_k\| &lt; \infty$ — which holds for any geometrically ergodic chain, i.e. pretty much every well-behaved MCMC sampler you’ll encounter in practice — we can take the limit:</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\mathbb{V}[\bar{f}_N] \approx \frac{\sigma_f^2}{N}\left[1 + 2\sum_{k=1}^{\infty}\rho_k\right] = \frac{\sigma_f^2}{N}\cdot\tau_f
+\end{align*}
+$$
+</div>
+
+<p>where we’ve defined the <strong>integrated autocorrelation time (IAT)</strong>:</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\tau_f = 1 + 2\sum_{k=1}^{\infty} \rho_k
+\end{align*}
+$$
+</div>
+
+<p>The name “integrated” comes from viewing this as the discrete analogue of integrating the continuous autocorrelation function. It collapses the entire memory structure of the chain into a single number.</p>
+
+<p><strong>What does $\tau_f$ tell us?</strong></p>
+
+<ul>
+  <li>$\tau_f = 1$: no autocorrelation at all, we’re back in i.i.d. land because all $\rho_k = 0$ for $k \geq 1$</li>
+  <li>$\tau_f = 10$: each sample carries only $1/10$-th the information of an independent draw</li>
+  <li>$\tau_f = 100$: the chain is mixing like molasses — you need 100 steps to get one effective independent sample</li>
+</ul>
+
+<p>One subtlety worth flagging: notice the subscript $f$ on $\tau_f$. Unlike the importance sampling ESS we derived above — which is purely a function of the weights and therefore the same no matter what $f$ you’re estimating — the MCMC IAT is <strong>function-dependent</strong>. A chain might mix quickly for the mean of $f$ but slowly for its variance, or zip along in one direction of parameter space while crawling in another. This is a fundamental difference between the two flavors of ESS.</p>
+
+<p>We now play exactly the same game as in the importance sampling case. We ask: how many i.i.d. samples $N_{\text{eff}}$ from $p$ would give us the same variance as our $N$ correlated MCMC samples?</p>
+
+<p>The i.i.d. baseline is, as before:</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\mathbb{V}_{\text{i.i.d.}} = \frac{\sigma_f^2}{N_{\text{eff}}}
+\end{align*}
+$$
+</div>
+
+<p>Setting this equal to the MCMC variance:</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\frac{\sigma_f^2}{N_{\text{eff}}} = \frac{\sigma_f^2}{N}\cdot \tau_f
+\end{align*}
+$$
+</div>
+
+<p>The $\sigma_f^2$ cancels — though this is a bit misleading, since $\tau_f$ itself depends on $f$, so the ESS is still function-dependent unlike the IS case:</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+N_{\text{eff}} = \frac{N}{\tau_f} = \frac{N}{1 + 2\sum_{k=1}^{\infty}\rho_k}
+\end{align*}
+$$
+</div>
+
+<p>The logic is beautifully parallell to what we did for importance sampling. There, the “discount factor” was the weight variability $\mathbb{E}_q[\tilde{w}^2] / \mathbb{E}_q[\tilde{w}]^2$. Here, the discount factor is the integrated autocorrelation time $\tau_f$. Both tell you how many of your $N$ samples you’re <em>actually</em> using.</p>
+
+<p>Going back to our currency analogy: if importance sampling was converting Zimbabwean dollars to US dollars (with the exchange rate determined by weight concentration), then MCMC is like converting a time series of correlated price observations to independent ones (with the exchange rate determined by how sticky the prices are). Either way, you’re asking: what’s my real purchasing power?</p>
+
+<h3 id="diffusion-models-as-sequential-monte-carlo">Diffusion Models as Sequential Monte Carlo</h3>
+
+<p>We’ve now built up the entire ESS toolkit: for importance sampling, it measures weight concentration; for MCMC, it measures autocorrelation-induced information loss. These two stories converge in one of the most consequential generative modeling frameworks of the last few years — <strong>diffusion models</strong> — where the denoising process can be interpreted as a sequential Monte Carlo sampler.</p>
+
+<p>But before we get to diffusion models, let’s set up the general SMC framework. The whole point of SMC is to do inference in <strong>state-space models</strong> (also known as hidden Markov models in the discrete case), where we have:</p>
+
+<ul>
+  <li>A sequence of <strong>hidden states</strong> $x_0, x_1, \ldots, x_T$ that we can’t observe directly</li>
+  <li>A <strong>prior</strong> over the initial state: $p(x_0)$</li>
+  <li>A <strong>transition kernel</strong> $p(x_t | x_{t-1})$ describing how the hidden state evolves over time</li>
+  <li>An <strong>emission model</strong> (also called the observation model) $p(y_t | x_t)$ describing how the observed data $y_t$ is generated from the hidden state</li>
+</ul>
+
+<p>The joint distribution over the full trajectory and observations factorizes as</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+p(x_{0:T}, y_{1:T}) = p(x_0) \prod_{t=1}^{T} p(x_t | x_{t-1}) \cdot \prod_{t=1}^{T} p(y_t | x_t)
+\end{align*}
+$$
+</div>
+
+<p>The goal is to compute the <strong>filtering distribution</strong> $p(x_t | y_{1:t})$ — what do we believe about the current hidden state, given everything we’ve observed so far? — or, more ambitiously, the <strong>smoothing distribution</strong> $p(x_{0:T} | y_{1:T})$ over the entire trajectory.</p>
+
+<p>The emission probability $p(y_t | x_t)$ is the likelihood of the observed data $y_t$ given the hidden state $x_t$. 
+In effect, it works as a critic of the trajectory $x_{0:t}$ that was sampled so far. 
+At each step (but also maybe only at other steps) it evaluates the probability $p(y_t | x_{0:t})$ of the observed data $y_t$ given the trajectory $x_{0:t}$.
+If you did a lot of steps that moved your samples $x_t$ into some part of space where the data $y_t$ is very unlikely, your weight will be low, and thus that particular sample path $x_{0:t}$ will be highly discouraged.</p>
+
+<p>The trouble is that the corresponding analytical posteriors are intractable in general. The exact recursion involves integrating over all possible previous states at every step, and this integral doesn’t have a closed form except in special cases (linear-Gaussian dynamics give you the Kalman filter; finite state spaces give you the forward-backward algorithm).</p>
+
+<p><strong>Sequential Monte Carlo</strong> approximates these intractable distributions using a weighted set of <strong>particles</strong> — sample trajectories ${x_{0:t}^{(i)}, w_t^{(i)}}_{i=1}^N$ that represent an empirical approximation to the posterior. The algorithm proceeds sequentially:</p>
+
+<ol>
+  <li><strong>Propagate</strong>: Move each particle forward in time by sampling from the transition kernel $x_t^{(i)} \sim p(x_t | x_{t-1}^{(i)})$</li>
+  <li><strong>Weight</strong>: Assign each particle an importance weight based on the emission model $\tilde{w}_t^{(i)} = p(y_t | x_t^{(i)})$</li>
+  <li><strong>Normalize</strong>: Compute $\bar{w}_t^{(i)} = \tilde{w}_t^{(i)} / \sum_j \tilde{w}_t^{(j)}$</li>
+  <li><strong>Evaluate</strong>: Compute the ESS $\hat{N}_{\text{eff}} = 1 / \sum_i (\bar{w}_t^{(i)})^2$</li>
+  <li><strong>Resample</strong>: If the ESS drops below a threshold, resample particles according to the weights — duplicate the promising ones, discard the dead weight — and reset all weights to $1/N$</li>
+</ol>
+
+<p>Essentially, you keep sampling trajectories and you keep using the “critic” to evaluate them by checking what the probability is that the trajectory would have produced the data $y_t$ that you observed.
+This information is encapsulated in the weights $w_t^{(i)}$ that you assign to each trajectory.
+If the weights become too low, this implies that your trajectories have become more and more unlikely for the “critic” $p(y_t | x_{0:t})$.
+What do you do? You look at your trajectories and you decide to keep only the ones that are still likely, and you discard the ones that are not.
+The normalized weights $\bar{w}_t^{(i)}$ can then be used as the probabilities for a categorical distribution that you use to sample new trajectories.</p>
+
+<p>Now — what does any of this have to do with diffusion models?</p>
+
+<p>For diffusion models, we have the generative <strong>reverse-time SDE</strong>:</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+dx_t = \left[f(x_t, t) - g^2(t)\, \nabla_{x_t} \log p_t(x_t)\right] dt + g(t)\, dW_t
+\end{align*}
+$$
+</div>
+
+<p>where $W_t$ is a reverse-time Wiener process and $\nabla_{x_t} \log p_t(x_t)$ is the <strong>score function</strong> — the gradient of the log-density at time $t$. This is the quantity a diffusion model learns: a neural network $s_\theta(x_t, t) \approx \nabla_{x_t} \log p_t(x_t)$.</p>
+
+<p>To actually generate samples, we discretize the reverse SDE with an Euler-Maruyama step of size $\Delta t$:</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+x_{t - \Delta t} = x_t + \left[f(x_t, t) - g^2(t)\, s_\theta(x_t, t)\right] \Delta t + g(t)\sqrt{\Delta t}\, \epsilon, \quad \epsilon \sim \mathcal{N}(0, I)
+\end{align*}
+$$
+</div>
+
+<p>This discretization <em>is</em> our <strong>transition kernel</strong> — reading it off as a Gaussian:</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+p_\theta(x_{t-\Delta t} | x_t) = \mathcal{N}\!\left(x_{t-\Delta t};\, \underbrace{x_t + [f(x_t, t) - g^2(t)\, s_\theta(x_t, t)]\,\Delta t}_{\text{mean}},\, \underbrace{g^2(t)\,\Delta t}_{\text{variance}}\, I\right)
+\end{align*}
+$$
+</div>
+
+<p>This is the transition kernel that enters the SMC framework. Unconditional generation is then straightforward: sample $x_T \sim \mathcal{N}(0, I)$, apply $p_\theta(x_{t-\Delta t} | x_t)$ for each step backwards, and out pops a sample $x_0 \approx p_{\text{data}}$. This is just a Markov chain — no weights, no resampling, no ESS to speak of.</p>
+
+<h4 id="the-one-step-denoiser-tweedies-formula">The one-step denoiser: Tweedie’s formula</h4>
+
+<p>Before we get to SMC, we need one more ingredient: the “critic” $p(y_t | x_t)$. At any noise level $t$, the diffusion model implicitly gives us a <strong>one-step denoiser</strong> — a direct estimate of what the clean data $x_0$ looks like, given only the current noisy state $x_t$.</p>
+
+<p>This comes from <strong>Tweedie’s formula</strong>. Given the forward marginal $q(x_t | x_0) = \mathcal{N}(x_t;\, \alpha(t)\, x_0,\, \sigma^2(t)\, I)$, the posterior mean of $x_0$ given $x_t$ is:</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\hat{x}_0(x_t) = \mathbb{E}[x_0 | x_t] = \frac{1}{\alpha(t)}\left(x_t + \sigma^2(t)\, \nabla_{x_t} \log p_t(x_t)\right)
+\end{align*}
+$$
+</div>
+
+<p>Since the diffusion model learns the score $s_\theta(x_t, t) \approx \nabla_{x_t} \log p_t(x_t)$, we get $\hat{x}_0(x_t)$ essentially for free — it’s just a different way of reading off the network output.</p>
+
+<p>Think of $\hat{x}_0(x_t)$ as the model’s best guess of the clean image, peeking through the noise at step $t$. Early in the denoising process (large $t$, lots of noise), this guess is blurry and uncertain. Late in the process (small $t$, little noise), it’s sharp and confident.</p>
+
+<p>We’ll call this one-step denoiser prediction the “observation” that the current noisy state $x_t$ produces — and denote the observation model as $p(y_t | x_t)$, where $y_t$ encodes what we can infer about the data from $x_t$.</p>
+
+<h4 id="conditional-generation-enter-the-state-space-model">Conditional generation: enter the state-space model</h4>
+
+<p>Now suppose we don’t just want any sample from $p_{\text{data}}$ — we want a sample that satisfies some condition $y$. Maybe we want an image of a golden retriever, or we want to inpaint a missing region, or we want a molecule with certain properties.</p>
+
+<p>What we want is to sample from the <strong>conditional</strong> reverse process:</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+p(x_{0:T} | y) \propto p(x_T) \prod_{t=1}^{T} p_\theta(x_{t-1} | x_t) \cdot p(y | x_0)
+\end{align*}
+$$
+</div>
+
+<p>The problem? The likelihood $p(y | x_0)$ only tells us about the final clean sample $x_0$. We don’t get any signal about whether our denoising trajectory is heading in the right direction until the very end. By then, it’s too late — all our computational budget is spent.</p>
+
+<p>This is where the one-step denoiser saves the day. Instead of waiting until $x_0$ to evaluate $p(y | x_0)$, we can get an <em>approximate</em> per-step likelihood using the Tweedie estimate:</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+p(y_t \| x_t) \approx p(y \| \hat{x}_0(x_t))
+\end{align*}
+$$
+</div>
+
+<p>We’re peeking at the model’s current best guess of the clean output and asking: “does this look like it satisfies the condition?”</p>
+
+<p>And now we have all the pieces to write down a <strong>state-space model</strong> — exactly the structure we introduced in the general SMC framework above:</p>
+
+<ul>
+  <li><strong>Hidden states</strong> $x_T, x_{T-\Delta t}, \ldots, x_0$ — the noisy latents at each denoising step</li>
+  <li><strong>Prior</strong> $p(x_T) = \mathcal{N}(0, I)$ — pure noise at the start of the reverse process</li>
+  <li><strong>Transition kernel</strong> $p_\theta(x_{t-\Delta t} \| x_t)$ — the Euler-Maruyama discretization of the reverse SDE</li>
+  <li><strong>Emission model</strong> $p(y_t | x_t) \approx p(y | \hat{x}_0(x_t))$ — how consistent is the current state with the desired condition, as estimated through the one-step denoiser</li>
+</ul>
+
+<p>This is <em>exactly</em> the structure we need for a particle filter.</p>
+
+<p>Combining everything we get the following algorithm:</p>
+
+<p><strong>Initialize:</strong> Draw $N$ particles from the prior (pure noise):</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+x_T^{(i)} \sim \mathcal{N}(0, I), \quad i = 1, \ldots, N
+\end{align*}
+$$
+</div>
+
+<p><strong>For each denoising step $t = T, T-\Delta t, \ldots, \Delta t$:</strong></p>
+
+<p><strong>1. Propagate</strong> each particle through the transition kernel (one reverse SDE step):</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+x_{t-\Delta t}^{(i)} \sim p_\theta(x_{t-\Delta t} | x_t^{(i)})
+\end{align*}
+$$
+</div>
+
+<p><strong>2. Compute the unnormalized importance weights</strong> via the observation model:</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\tilde{w}_t^{(i)} = p(y_t | x_t^{(i)}) = p(y | \hat{x}_0(x_t^{(i)}))
+\end{align*}
+$$
+</div>
+
+<p>The weight of each particle reflects how well its one-step denoiser prediction $\hat{x}_0(x_t^{(i)})$ matches the desired condition $y$.</p>
+
+<p><strong>3. Normalize the weights:</strong></p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\bar{w}_t^{(i)} = \frac{\tilde{w}_t^{(i)}}{\sum_{j=1}^N \tilde{w}_t^{(j)}}
+\end{align*}
+$$
+</div>
+
+<p>Look familiar? These are exactly the self-normalized weights $\bar{w}_i = \tilde{w}_i / \sum_j \tilde{w}_j$ we spent the first half of this post deriving.</p>
+
+<p><strong>4. Compute the ESS</strong> using the formula we derived:</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\hat{N}_{\text{eff}} = \frac{1}{\sum_{i=1}^{N} (\bar{w}_t^{(i)})^2}
+\end{align*}
+$$
+</div>
+
+<p><strong>5. Resample if necessary:</strong> if $\hat{N}_{\text{eff}}$ drops below some threshold (a common choice is $N/2$), resample the particles according to the weights — duplicate the high-weight particles and discard the low-weight ones. After resampling, reset all weights to $1/N$ and continue denoising from the refreshed particle cloud.</p>
+
+<h4 id="why-ess-matters-here-the-weight-degeneracy-problem">Why ESS matters here: the weight degeneracy problem</h4>
+
+<p>And here’s where our entire ESS derivation pays off.</p>
+
+<p>Remember the Dutch giants and Greek grandmas? In the diffusion context, the particles are like our text message recipients. Each particle $x_t^{(i)}$ is a different “hypothesis” for what the clean image looks like. Some particles, by chance, will be heading toward images that satisfy the condition $y$ — samples that score highly under the observation model. Others will be heading toward something completely different: samples that bear no resemblance to the desired condition, effectively dead weight in the particle cloud.</p>
+
+<p>The weights $\tilde{w}_t^{(i)} = p(y | \hat{x}_0(x_t^{(i)}))$ quantify this mismatch: particles whose one-step denoiser prediction aligns well with the condition $y$ get large weights, while those drifting toward irrelevant regions of the sample space get negligible weights. If only 2 out of 100 particles are heading in the right direction, the ESS will be approximately 2 — just like our Dutch-and-Greek height survey.</p>
+
+<p>Without resampling, the particle cloud degenerates: a handful of particles carry all the weight, and you’re effectively running the denoising process with just those few trajectories. The estimator variance explodes, and the quality of your conditional samples plummets.</p>
+
+<p>Resampling — triggered when the ESS drops below a threshold — is the remedy. It prunes the dead-weight particles and replicates the promising ones, refreshing the particle cloud. But the price is that resampled particles are no longer independent (they share common ancestors), introducing the autocorrelation that we analyzed in the MCMC section. So we’re back to our old friend: correlated samples carrying less information than independent ones.</p>
+
+<p>This is the fundamental tension of SMC: <strong>resampling fights weight degeneracy but creates sample correlation</strong>. The ESS, in both its importance-sampling and MCMC flavors, is the diagnostic that navigates this tradeoff.</p>
+
+<h4 id="deriving-the-incremental-weights">Deriving the incremental weights</h4>
+
+<p>So far we have the transition probabilities $p_\theta(x_{t-\Delta t} | x_t)$ — the reverse SDE that propagates our particles from noise toward data. But transitions alone just tell us <em>how</em> particles move; they say nothing about <em>which</em> particles are worth keeping. For that, we need the emission probabilities $p(y_t | x_t)$.</p>
+
+<p>The idea is simple: we define a function that takes in a particle $x_t$ and returns a scalar value evaluating how well that particle’s trajectory aligns with the desired observation $y$. In the diffusion setting, we use the one-step denoiser to peek ahead: $p(y_t | x_t) \approx p(y | \hat{x}_0(x_t))$. This is our critic — it scores each particle at time $t$ by asking “if I were to denoise this particle all the way to $x_0$ right now, how well would the result match the condition $y$?”.
+In the literature, this is often called the “potential function” and denoted by the function $G_t(x_t)$.</p>
+
+<p>The whole point of tracking importance weights is to keep score of which samples are good and which are bad, so that we can resample accordingly — duplicate the promising trajectories and prune the hopeless ones. And for that resampling decision to be well-informed, we need the most up-to-date emission probability at every time step $t$, not just at the very end.</p>
+
+<p>We can achieve exactly this with a telescoping product. Define the <strong>per-step potential function</strong> $G_t(x_t)$:</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+G_t(x_t) = \frac{p(\hat{x}_0 \| x_t)}{p(\hat{x}_0 \| x_{t+\Delta t})}
+\end{align*}
+$$
+</div>
+
+<p>This is the ratio of the current emission score to the previous one — how much our assessment of the particle has changed in a single denoising step. Remember, we’re going from $T \to 0$, so the previous step is $t + \Delta t$. If the particle is making progress toward satisfying the condition, $G_t &gt; 1$ and the weight increases. If it’s drifting away, $G_t &lt; 1$ and the weight decreases. The incremental unnormalized importance weight at step $t$ is then simply</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\tilde{w}_t^{(i)} \propto G_t(x_t^{(i)})
+\end{align*}
+$$
+</div>
+
+<p>Now watch what happens when we accumulate these incremental updates. The denominators and numerators of consecutive steps cancel each other:</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\prod_{t=T-\Delta t}^{0} G_t(x_t) &amp;= \frac{p(\hat{x}_0 | x_{T-\Delta t})}{p(\hat{x}_0 | x_T)} \cdot \frac{p(\hat{x}_0 | x_{T-2\Delta t})}{p(\hat{x}_0 | x_{T-\Delta t})} \cdots \frac{p(\hat{x}_0 | x_0)}{p(\hat{x}_0 | x_{\Delta t})} \\
+&amp;= \frac{p(\hat{x}_0 | x_0)}{p(\hat{x}_0 | x_T)} \\
+&amp;\approx \frac{p(x_0)}{\underbrace{p(\hat{x}_0 | x_T)}_{\text{const (pure noise)}}} \\
+&amp;\propto p(x_0)
+\end{align*}
+$$
+</div>
+
+<p>since $\hat{x}_0(x_0) = x_0$ (fully denoised) and $p(y | \hat{x}_0(x_T))$ is essentially constant — pure noise carries no information about $y$. The telescoping gives us the best of both worlds: at any point in time $t$, the accumulated weight reflects the most up-to-date emission probability $p(y | \hat{x}_0(x_t))$, while the recursive update via $G_t$ means we only ever need to compute a single ratio per step (instead of keeping track of the entire trajectory).</p>
+
+<h4 id="the-big-picture">The big picture</h4>
+
+<p><img src="/blog/ESS/SMC.png" alt="ESS SMC Diagram" style="max-width: 100%; height: auto; display: block; margin: 0 auto;" /></p>
+
+<p>Let’s step back and admire the view from the top of this particular mountain. What we’ve shown is that conditional diffusion generation is, at its core, a particle filter:</p>
+
+<ul>
+  <li>The <strong>prior</strong> $p(x_T) = \mathcal{N}(0, I)$ is where our particles start: pure isotropic noise.</li>
+  <li>The <strong>transition kernel</strong> $p_\theta(x_{t-\Delta t} | x_t)$ — the discretized reverse SDE — propagates particles toward cleaner states.</li>
+  <li>The <strong>emission model</strong> $p(\hat{x}_0 | x_t)$ evaluates each particle’s one-step denoiser prediction against the desired condition.</li>
+  <li>The <strong>importance weights</strong> $\tilde{w}_t$ measure how well each particle’s denoised prediction matches $y$.</li>
+  <li>The <strong>ESS</strong> — computed as $1/\sum_i \bar{w}_i^2$ — tells us how many particles are effectively contributing.</li>
+  <li><strong>Resampling</strong> prunes bad hypotheses and replicates promising ones when the ESS signals weight degeneracy.</li>
+</ul>
+
+<p>Unconditional generation is the degenerate special case where $p(\hat{x}_0 | x_t) = \text{const}$ — there is no condition to satisfy, all weights are equal, the ESS equals $N$ at every step, and no resampling is ever triggered. You’re just running $N$ independent Markov chains in parallel. The moment you introduce any form of guidance — classifier guidance, classifier-free guidance, inpainting constraints, compositional objectives — you’ve entered SMC territory, and the ESS machinery we derived throughout this post becomes indispensable.</p>
+</p>
+      		</section>
+
+          <!-- <div class="comments-wrapper">
+          <div id="disqus_thread"></div> -->
+          <!-- <script>
+              /**
+               *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+               *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+               */
+
+              var disqus_config = function () {
+                  this.page.url = '/blog/ESSSMC/';  /*Replace PAGE_URL with your page's canonical URL variable*/
+                  this.page.identifier = '/blog/ESSSMC/'; /*Replace PAGE_IDENTIFIER with your page's unique identifier variable*/
+              };
+
+              (function() {  /* dont endit below this line */
+                  var d = document, s = d.createElement('script');
+
+                  s.src = 'https://default.disqus.com/embed.js';
+
+                  s.setAttribute('data-timestamp', +new Date());
+                  (d.head || d.body).appendChild(s);
+              })();
+          </script> -->
+          <!-- <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript> -->
+        <!-- </div>/.comments-wrapper -->
+
+
+					<!-- Footer -->
+						<footer>
+              <ul class="actions">
+                <li><a href="http://localhost:4000/blog/" class="button">My Blog</a></li>
+              </ul>
+						</footer>
+					</div>
+
+				<!-- Footer -->
+        <!-- <footer id="footer">
+  <section>
+    <form method="POST" action="https://formspree.io/">
+      <div class="field">
+        <label for="name">Name</label>
+        <input type="text" name="name" id="name" />
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="text" name="email" id="email" />
+      </div>
+      <div class="field">
+        <label for="message">Message</label>
+        <textarea name="message" id="message" rows="3"></textarea>
+      </div>
+      <ul class="actions">
+        <li><input type="submit" value="Send Message" /></li>
+      </ul>
+    </form>
+  </section>
+  <section class="split contact">
+    <section class="alt">
+      <h3>Location</h3>
+      <p>Berlin, Germany</p>
+    </section>
+    <section>
+      <h3>Phone</h3>
+      <p><a href="tel:"></a></p>
+    </section>
+    <section>
+      <h3>Email</h3>
+      <p><a href="mailto:"></a></p>
+    </section>
+    <section>
+      <h3>Social</h3>
+      <ul class="icons alt">
+        <li><a href="https://twitter.com/ludiXIVwinkler" class="icon fa-twitter" rel="nofollow"><span class="label">Twitter</span></a></li>
+        <!-- <li><a href="https://facebook.com/default" class="icon fa-facebook" rel="nofollow"><span class="label">Facebook</span></a></li> -->
+        <!-- <li><a href="https://instagram.com/default" class="icon fa-instagram" rel="nofollow"><span class="label">Instagram</span></a></li> -->
+        <li><a href="https://github.com/ludwigwinkler" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
+      </ul>
+    </section>
+  </section>
+</footer>
+<!-- Copyright -->
+<div id="copyright">
+  <ul>
+       <li>&copy; HTML5 UP</li>
+       <li>Design by <a href="https://html5up.net" rel="nofollow">HTML5 UP</a></li>
+       <li>Jekyll Integration by <a href="https://soundgrail.com">SoundGrail</a></li>
+       <li>Theme made by <a href="https://github.com/iwiedenm/jekyll-theme-massively-src"> iwiedenm</a></li>
+ </ul>
+</div>
+ -->
+
+			</div>
+
+      <!-- Scripts -->
+  		<!-- <!-- DYN -->
+<script src="http://localhost:4000/assets/js/jquery.min.js"></script>
+<script src="http://localhost:4000/assets/js/jquery.scrollex.min.js"></script>
+<script src="http://localhost:4000/assets/js/jquery.scrolly.min.js"></script>
+<script src="http://localhost:4000/assets/js/skel.min.js"></script>
+<script src="http://localhost:4000/assets/js/util.js"></script>
+<script src="http://localhost:4000/assets/js/main.js"></script>
+ -->
+			<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=default"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments)};
+  gtag('js', new Date());
+
+  gtag('config', 'default');
+</script>
+ -->
+
+	</body>
+</html>
