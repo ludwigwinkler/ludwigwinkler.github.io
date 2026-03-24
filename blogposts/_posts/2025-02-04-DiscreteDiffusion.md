@@ -6,19 +6,7 @@ date:   2025-02-04
 excerpt: "Diffusion, ODEs and Expressing One with the Other"
 image: "/blog/DiscreteDiffusion/cover.png"
 ---
-<head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+{% include mathjax3.html %}
 
 ## Binary Diffusion
 Let us have a stochastic process $\{X(t): 0 \leq t \leq 1 \}$.

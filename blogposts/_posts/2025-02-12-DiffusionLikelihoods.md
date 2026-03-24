@@ -7,23 +7,7 @@ excerpt: "Mr. Fokker and Mr. Planck, meet Ito-San"
 # highlighter: rouge
 image: "/blog/ItoDensityEstimator.png"
 ---
-<head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-          TeX: {
-                equationNumbers: { autoNumber: "all" },
-                extensions: ["AMSmath.js", "AMSsymbols.js", "cancel.js"]
-            },
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+{% include mathjax3.html %}
 
 Let's start out this blog post with the one equation that is at the heart of diffusion models, the Fokker-Planck equation,
 <div style="overflow-x: auto;">

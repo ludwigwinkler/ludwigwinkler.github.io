@@ -6,19 +6,7 @@ date:   2018-04-23
 excerpt: "Extensions to Gaussian Processes"
 image: "/images/GP_4Obs_Deriv.png"
 ---
-<head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+{% include mathjax3.html %}
 
 ## Noise
 

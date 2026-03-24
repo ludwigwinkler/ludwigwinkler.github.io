@@ -5,19 +5,7 @@ date:   2020-05-20
 excerpt: "Reverse-Mode Sensitivity Training"
 image: "/blog/Adjoint/Adjoint1.png"
 ---
-<head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+{% include mathjax3.html %}
 
 ### The Adjoint Method in Neural Ordinary Differential Equations
 

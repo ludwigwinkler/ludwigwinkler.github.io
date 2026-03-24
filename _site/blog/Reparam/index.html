@@ -73,19 +73,21 @@
       				<p>Outsourcing Stochasticity and Making Normal Distributions Differentiable</p>
       			</header>
       			<div class="image main"><img src="/blog/ReparamTrick/ReparamTrick.png" alt=""></div>
-      			<p><head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+      			<p><script>
+MathJax = {
+  tex: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    tags: 'all'
+  },
+  options: {
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+};
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async=""></script>
 
 <!-- ## Non-Negative Matrix Factorization -->
 
@@ -94,7 +96,7 @@ We can draw lots of samples from it which will be distributed just like the para
 
 <p><img src="/blog/img/N01_0.png" alt="" class="align=&quot;center&quot;" height="50%" width="50%" /></p>
 
-<p>Unsuprisingly, the distribution of the samples follows the parameterized Normal distribution $\mathcal{N}(\mu=0, \sigma=1)$.
+<p>Unsurprisingly, the distribution of the samples follows the parameterized Normal distribution $\mathcal{N}(\mu=0, \sigma=1)$.
 If we were to sample millions of samples from the distribution and use a ever finer resolution of the histogram we would arrive at a perfect $\mathcal{N}(\mu=0, \sigma=1)$ distribution.</p>
 
 <p><img src="/blog/img/N01_1.png" alt="" class="align=&quot;center&quot;" height="50%" width="50%" /></p>
@@ -160,7 +162,7 @@ Let’s create a simple example of linear regression of some input $x \in \mathb
   \hat{y} = f(x) = w \cdot x = (\mu + \mathcal{E} \cdot \sigma) \ x
 \end{align*}\]
 
-<p>Since $t_1$ is nothing else than a linear transformation we can easily take the gradients with respect to it’s parameters just as we would do with any other linear function.
+<p>Since $t_1$ is nothing else than a linear transformation we can easily take the gradients with respect to its parameters just as we would do with any other linear function.
 The objective function for the toy example which follows is</p>
 
 \[\begin{align*}
@@ -197,8 +199,8 @@ The gradient for the variational parameter $\mu$ can be computed via:</p>
 \end{align*}\]
 
 <p>In essence, it is simply an extended chain rule where we not only have to backprop to the used weight $w$ but further through the reparameterization $t_1$ to obtain the gradient for $\mu$ and even further through the reparameterization $t_2$ to obtain the gradient for $\rho$.
-Below is a graphical representation of how the the gradient is first backpropagated to the linear product $w \cdot x$ and then subsequently to the variational parameters $\mu, \rho$.
-Since we transform $\rho$ such that it will it be in $\mathbb{R}^+$ with $t_2( \cdot )$ we also have to backpropagate through the transformation to obtain the gradient for $\rho$.</p>
+Below is a graphical representation of how the gradient is first backpropagated to the linear product $w \cdot x$ and then subsequently to the variational parameters $\mu, \rho$.
+Since we transform $\rho$ such that it will be in $\mathbb{R}^+$ with $t_2( \cdot )$ we also have to backpropagate through the transformation to obtain the gradient for $\rho$.</p>
 
 <p><img src="/blog/ReparamTrick/ReparamTrick.png" alt="" align="center" height="50%" width="50%" /></p>
 

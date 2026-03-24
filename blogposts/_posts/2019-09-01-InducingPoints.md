@@ -5,19 +5,7 @@ date:   2019-09-30
 excerpt: "Tackling the computational cost of GP's"
 image: "/blog/InducingPoints/Cover.png"
 ---
-<head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+{% include mathjax3.html %}
 
 Gaussian processes (GP) are extremely flexible probabilistic models with a sound theoretical footing.
 In essence, you treat your available data as a giant Normal distribution and infer the covariances between the data points via a kernel.

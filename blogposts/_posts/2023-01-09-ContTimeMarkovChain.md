@@ -5,19 +5,7 @@ date:   2023-01-09
 excerpt: "jax.jit(jax.vmap(x=Discrete Space, t=Continuous Time))"
 image: "../../blog/CTMC/vmap4.png"
 ---
-<head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+{% include mathjax3.html %}
 $$
  \def\tr#1{\text{Tr}\left[ #1 \right]}
  \def\Efunc#1{\mathbb{E}\left[ #1\right]}

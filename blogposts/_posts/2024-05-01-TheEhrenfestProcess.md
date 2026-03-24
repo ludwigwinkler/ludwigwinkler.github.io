@@ -6,19 +6,7 @@ date:   2024-05-01
 excerpt: "The Link between Discrete and Continuous Diffusion"
 image: "/blog/Ehrenfest/OUGif.gif"
 ---
-<head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+{% include mathjax3.html %}
 
 One of the things that kept me from working on stochastic processes in discrete spaces was their somewhat unintuitive definition.
 

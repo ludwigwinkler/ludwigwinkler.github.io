@@ -73,19 +73,21 @@
       				<p>Flow Matching, Diffusion, Scores and Characteristic Functions</p>
       			</header>
       			<div class="image main"><img src="/blog/FlowMatching/sample_flow.png" alt=""></div>
-      			<p><head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+      			<p><script>
+MathJax = {
+  tex: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    tags: 'all'
+  },
+  options: {
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+};
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async=""></script>
 
 <p>“Creating noise from data is easy, creating data from noise is generative modelling.”</p>
 
@@ -135,8 +137,8 @@ dX_\tau &amp;= \left\{-\mu(X_\tau, \tau) + \frac{1}{2} \sigma_\tau^2 \left(1 +\a
 $$
 </div>
 
-<p>One interpretation of diffusion model is that we want to connect a data distribution with a noise distribution.
-Upon successfull training, we can then sample from the noise distribution and transform it into data.
+<p>One interpretation of diffusion models is that we want to connect a data distribution with a noise distribution.
+Upon successful training, we can then sample from the noise distribution and transform it into data.
 The stochastic process at the heart of diffusion models provides this (stochastic) connection.</p>
 
 <p>While we originally started out with the idea of connecting data and noise with a stochastic process, setting $\alpha=0$ in the reverse SDE gives us a deterministic connection.</p>
@@ -291,7 +293,7 @@ $$
 
 <p>That doesn’t seem to be the most equation to be working with.</p>
 
-<p>Also, why is actually the convolution of the two PDF’s?</p>
+<p>Also, why it is actually the convolution of the two PDF’s?</p>
 
 <p>In the case of the sum of $X$ and $Y$ we have to consider all possible values of $X$ and $Y$ that sum up to $Z$.
 For example, let’s consider the probability of obtaining $Z=5$.
@@ -559,7 +561,7 @@ x_t &amp;= \alpha(t) x_0 + \sigma(t) \epsilon \\
 $$
 </div>
 
-<p>Since DDPM is built on the Ornstein Uhlenbeck process, the score term is given by by the gradient of the log marginal probability density function of a time-dependent Gaussian:</p>
+<p>Since DDPM is built on the Ornstein Uhlenbeck process, the score term is given by the gradient of the log marginal probability density function of a time-dependent Gaussian:</p>
 <div style="overflow-x: auto;">
 $$
 \begin{align*}
@@ -576,7 +578,7 @@ $$
 <h3 id="lets-try-it-out-with-some-code">Let’s try it out with some Code</h3>
 
 <p>So let’s try this out with some code.
-One thing to note, and what I personally think is nice, is that the interpolation paramters $\alpha(t)$, $\beta(t)$ can be chosen independently from the diffusion parameter $\sigma(t)$.</p>
+One thing to note, and what I personally think is nice, is that the interpolation parameters $\alpha(t)$, $\beta(t)$ can be chosen independently from the diffusion parameter $\sigma(t)$.</p>
 <div style="overflow-x: auto;">
 $$
 \begin{align*}

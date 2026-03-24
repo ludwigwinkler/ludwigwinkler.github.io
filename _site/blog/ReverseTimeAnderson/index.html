@@ -73,26 +73,21 @@
       				<p> 'If I Could Turn Back Time' by Cher (1989)</p>
       			</header>
       			<div class="image main"><img src="../../blog/blogthumbnails/reverse.png" alt=""></div>
-      			<p><head>
-<style>
-.MathJax_Display, .MJXc-display, .MathJax_SVG_Display {
-    overflow-x: auto;
-    overflow-y: hidden;
-}
-</style>
+      			<p><script>
+MathJax = {
+  tex: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    tags: 'all'
+  },
+  options: {
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+};
+</script>
 
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             processEscapes: true
-           },
-		   TeX: {extensions:["autoload-all.js"]}
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async=""></script>
 
 <p>This was my first venture into reverse diffusion and the derivation, although correct, is a bit intricate.
 I’d recommend <a href="https://ludwigwinkler.github.io/blog/SimpleReverseSDE/">this more elegant derivation</a> which is more accessible.</p>
@@ -124,7 +119,7 @@ We can quite frankly think of it as, for example, a Normal distribution being sl
 \end{align}\]
 
 <p>and it basically answers the question how the probability of $x_s$ at a later point in time changes as we change $x_t$ at an earlier point in time.
-The Kolmogorov backward equation is somewhat confounding with respect to time as we’re taking the partial derivative with respect to the earlier time step $t$ on which we are also coniditoning.
+The Kolmogorov backward equation is somewhat confounding with respect to time as we’re taking the partial derivative with respect to the earlier time step $t$ on which we are also conditioning.
 But we can think of it as asking ‘How does the probability of $x_s$ at the later point in time $s$ change, as we slowly evolve the probability distribution backwards through time and condition on $x_t$’.</p>
 
 <p>Taking inspiration from our crude example earlier, the backward equation offers a partial differential equation which we can solve backward in time, which would correspond to evolving the arbitrarily complex distribution backwards to our original Normal distribution. 
@@ -151,7 +146,7 @@ First multiplying both sides of Bayes theorem with minus one and taking the deri
 	&amp; + p(x_s| x_t) \left( \partial_{x_t} \left[ \mu(x_t) p(x_t) \right] - \frac{1}{2} \partial_{x_t}^2 \left[ \sigma^2(x_t) \ p(x_t) \right] \right)
 \end{align}\]
 
-<p>The derivative occuring in the backward Kolmogorov equation are</p>
+<p>The derivatives occurring in the backward Kolmogorov equation are</p>
 
 \[\begin{align}
 	\partial_{x_t} p(x_s|x_t) &amp;= \partial_{x_t} \left[ \frac{p(x_s, x_t)}{p(x_t)} \right] \\
@@ -235,7 +230,7 @@ Furthermore we can employ the identity \(-\frac{1}{2} X = -X + \frac{1}{2} X\) t
 \end{align}\)
 the result of which is in the form of a Kolmogorov forward equation, although using the joint probability distribution $p(x_s, x_t)$.
 For the time ordering of $t \leq s$, we can observe that the term \(-\partial_t p(x_s, x_t)\) describes the change of the probability distribution as we move backward in time.
-In accordance with Leibniz’ rule we can marginalize over $x_s$ without interferring with the partial derivative $\partial_t$, to obtain
+In accordance with Leibniz’ rule we can marginalize over $x_s$ without interfering with the partial derivative $\partial_t$, to obtain
 \(\begin{align}
     -\partial_t p(x_t) 
     = &amp; -\partial_{x_t} \left[ p(x_t) \left( -\mu(x_t) + \frac{1}{p(x_t)} \partial_{x_t} \left[ \sigma^2(x_t) \ p(x_t) \right] \right) \right] \\

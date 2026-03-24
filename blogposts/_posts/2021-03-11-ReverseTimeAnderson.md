@@ -6,26 +6,7 @@ excerpt: " 'If I Could Turn Back Time' by Cher (1989)"
 image: "../../blog/blogthumbnails/reverse.png"
 ---
 
-<head>
-<style>
-.MathJax_Display, .MJXc-display, .MathJax_SVG_Display {
-    overflow-x: auto;
-    overflow-y: hidden;
-}
-</style>
-
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             processEscapes: true
-           },
-		   TeX: {extensions:["autoload-all.js"]}
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+{% include mathjax3.html %}
 
 This was my first venture into reverse diffusion and the derivation, although correct, is a bit intricate.
 I'd recommend [this more elegant derivation](https://ludwigwinkler.github.io/blog/SimpleReverseSDE/) which is more accessible.

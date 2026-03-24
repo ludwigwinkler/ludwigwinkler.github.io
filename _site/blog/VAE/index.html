@@ -73,19 +73,21 @@
       				<p>How to get to the objective function of VAEs ... </p>
       			</header>
       			<div class="image main"><img src="../../blog/blogthumbnails/iwae.png" alt=""></div>
-      			<p><head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+      			<p><script>
+MathJax = {
+  tex: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    tags: 'all'
+  },
+  options: {
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+};
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async=""></script>
 
 <h3 id="variational-autoencoders">Variational Autoencoders</h3>
 
@@ -96,7 +98,7 @@ We are interested in the latent distribution of $p(z |x)$ given the data $x$ and
 Intuitively, we want to know for a given $x$ what the latent variables $z$ were that generated them.
 This is akin to observing some observation $x$ and being able to say: I know the $z$ ‘s that generated that!.</p>
 
-<p>By Bayes rule we now that for a distribution $ p ( x | z ) $ there also exists the distribution $ p ( z | x ) $, the distribution we are interested in.
+<p>By Bayes rule we know that for a distribution $ p ( x | z ) $ there also exists the distribution $ p ( z | x ) $, the distribution we are interested in.
 \(\begin{align}
 p(z|x) = \frac{p(z,x)}{p(x)} = \frac{p(x|z)p(z)}{p(x)}
 \end{align}\)
@@ -111,7 +113,7 @@ It might not be able to represent all the modes and fat tails that could potenti
 
 <p>Information theory gives us the right tools to measure the difference between $q_\phi(z|x)$ and $p(z|x)$ through the Kullback-Leibler divergence:
 \(\mathbb{KL} \left[ q_\phi(z|x) \ || \ p(z|x) \right]\)
-The state of affairs sofar is that we have an easy to work with distribution $q_\phi(z|x)$ with the trainable parameters $\phi$ and that we wish to minimize the divergence to the true latent distribution $p(z|x)$.
+The state of affairs so far is that we have an easy to work with distribution $q_\phi(z|x)$ with the trainable parameters $\phi$ and that we wish to minimize the divergence to the true latent distribution $p(z|x)$.
 We can also rewrite $p(z|x)$ according to Bayes rule to maybe make the computations a bit more tractable.
 We can now write out the Kullback-Leibler divergence and inspect the terms that arise from some algebraic manipulation:</p>
 
@@ -144,7 +146,7 @@ If we optimize the two terms on the right, we will obtain an inference model $q_
 Here comes the fun part: Let’s just assume stuff and parameterize both $p(z)$ and $p(x|z)$ such that we can easily and conveniently work with them.
 Since $p(z)$ is a latent distribution we will enforce a strong simplicity by assuming that it follows a standard normal distribution $\mathcal{N}(0, I)$.
 We could assume any other family of distributions but the standard normal distribution has lots of nice perks and properties.
-This might seem bold but if the generative model $p(x|z)$ is flexible enough it can generate any $x$ from this comparatively simpel $z$.
+This might seem bold but if the generative model $p(x|z)$ is flexible enough it can generate any $x$ from this comparatively simple $z$.
 Now let’s turn our attention to $p(x|z)$: We will change the unknown $p(x|z)$ to a parameterized and differentiable $p_\theta(x|z)$ such that we can maximize the probability of the data $x$ for a given $z$.</p>
 
 <p>Now we have the following objective function:
@@ -231,8 +233,8 @@ If we leave the expectation in the log we are still working with marginal data l
 Only after applying Jensen’s inequality do we loosen the equality to an inequality which is the ELBO.</p>
 
 <p>The remedy to fending off the loose ELBO is given by evaluating the term before applying Jensen’s inequality by pulling in the logarithm.
-This gives us an importance sampling algorithm which repeatedly samples $z \sim q(z|x)$ and subsequently evaluating $p(x|z)$.
-This tightens the bound and we have better criterion.</p>
+This gives us an importance sampling algorithm which repeatedly samples $z \sim q(z|x)$ and subsequently evaluates $p(x|z)$.
+This tightens the bound and we have a better criterion.</p>
 
 <h3 id="squeezing-jensen">Squeezing Jensen</h3>
 
@@ -259,7 +261,7 @@ There might be occurences where we draw the perfect sample right or very, very c
 	&amp;= \frac{1}{N} \mathbb{V}[x] \\
 \end{align}\)</p>
 
-<p>with means that 
+<p>which means that 
 \(\begin{align}
 	f\left( \mu \right) \leq f \left( \frac{1}{N+1} \sum_n^{N+1} x_n \right) \leq f \left( \frac{1}{N} \sum_n^N x_n \right)
 \end{align}\)
@@ -269,7 +271,7 @@ Conversely for a concave function, we would have to flip the inequality sign.</p
 <p>By simply drawing more samples $N$ we reduce the variance and thus tighten the bound of the estimator.
 Visually, sampling more samples $x_n$ in the figure above asymptotically lets the estimated mean converge on the true mean.
 The closer the estimated mean is, the tighter the bound.
-This is precisely whats happening when we draw more samples in the expectation of the importance weighted VAE.</p>
+This is precisely what’s happening when we draw more samples in the expectation of the importance weighted VAE.</p>
 
 <p>Finally, for we can use the probabilistic version of Jensen’s inequality to derive the positive constraint of the variance of a random variable $x$:
 \(\begin{align}

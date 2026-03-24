@@ -73,22 +73,25 @@
       				<p>Warning: May contain traces of nuts (and matrices)</p>
       			</header>
       			<div class="image main"><img src="../../blog/blogthumbnails/stein.png" alt=""></div>
-      			<p><head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
-<p>\(\def\tr#1{\text{Tr}\left[ #1 \right]}
+      			<p><script>
+MathJax = {
+  tex: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    tags: 'all'
+  },
+  options: {
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+};
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async=""></script>
+
+\[\def\tr#1{\text{Tr}\left[ #1 \right]}
  \def\Efunc#1{\mathbb{E}\left[ #1\right]}
- \def\Efuncc#1#2{\mathbb{E}_{#1}\left[ #2 \right]}\)</p>
+ \def\Efuncc#1#2{\mathbb{E}_{#1}\left[ #2 \right]}\]
 
 <h3 id="the-trace-of-a-matrix">The Trace of a Matrix</h3>
 
@@ -157,7 +160,7 @@ Let the derivative of the normal distribution with respect to $x$ be
 &amp;= -\frac{(x-\mu)}{\sigma^2} \frac{1}{\sqrt{2\pi} \sigma} e^{-\frac{(x-\mu)^2}{2\sigma^2}} \\
 &amp;= - \frac{(x-\mu)}{\sigma^2} p(x).
 \end{align}\)
-Integration by parts (IbP) serves as a inverse of the product rule $\partial_x [u(x) v(x)] = \partial_x u(x) v(x) + u(x) \partial_x v(x)$ namely 
+Integration by parts (IbP) serves as an inverse of the product rule $\partial_x [u(x) v(x)] = \partial_x u(x) v(x) + u(x) \partial_x v(x)$ namely 
 \(\begin{align}
 [u(x)v(x)]_{x=-\infty}^{\infty} &amp;= \int_{x=-\infty}^{\infty} u(x) \partial_x v(x) + \partial_x u(x) v(x) dx \\
 &amp;= \int_{x=-\infty}^{\infty} u(x) \partial_x v(x) dx + \int_{x=-\infty}^{\infty} \partial_x u(x) v(x) dx

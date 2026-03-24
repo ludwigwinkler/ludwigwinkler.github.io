@@ -73,31 +73,33 @@
       				<p>Walk the Walk (differently)</p>
       			</header>
       			<div class="image main"><img src="/blog/img/Girsanov.png" alt=""></div>
-      			<p><head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+      			<p><script>
+MathJax = {
+  tex: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    tags: 'all'
+  },
+  options: {
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+};
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async=""></script>
 
 <h1 id="girsanov-what">Girsanov What?</h1>
 
-<p>I encountered Girsanov’s theorem repeatedly as I was reading stochastic processes paper and talking to people from that community.</p>
+<p>I encountered Girsanov’s theorem repeatedly as I was reading stochastic processes papers and talking to people from that community.</p>
 
-<p>A quick look at <a href="https://en.wikipedia.org/wiki/Girsanov_theorem">Wikipedia</a> returned something that was absolute unintelligible to me (without a proper higher math education).</p>
+<p>A quick look at <a href="https://en.wikipedia.org/wiki/Girsanov_theorem">Wikipedia</a> returned something that was absolutely unintelligible to me (without a proper higher math education).</p>
 
-<p>Thus began a chase down the rabbit whole for alternative sampling in stochastic processes. :-)</p>
+<p>Thus began a chase down the rabbit hole for alternative sampling in stochastic processes. :-)</p>
 
 <h3 id="importance-sampling">Importance Sampling</h3>
 
-<p>The first thing that I noticed was that the term \(\frac{dQ}{dP}\) occured in a lot of text books that I found on Google.
+<p>The first thing that I noticed was that the term \(\frac{dQ}{dP}\) occurred in a lot of text books that I found on Google.
 In this context both $P$ and $Q$ are probability measures which assign a scalar value to whatever space they are assigned to.
 This ratio occurs often in what machine learners call importance sampling.
 Imagine you want to compute the average value of a random variable $X$ which follows a very complicated probability density function $q(x)$ which <strong>you can only evaluate and never sample from</strong>.
@@ -193,7 +195,7 @@ $$
 <p>Solving these two processes generates a probability distribution over space and time and both are said to be driven by an underlying source of randomness, in this case a Wiener process.
 They induce a probability measure $P$ and $Q$ and their respective probability density functions $p(x)$ and $q(x)$.</p>
 
-<p>Next, would like to compute the expected value over some function of the realizations of the stochastic process $f({X^q_t})$,</p>
+<p>Next, we would like to compute the expected value over some function of the realizations of the stochastic process $f({X^q_t})$,</p>
 <div style="overflow-x: auto;">
 $$
 \begin{align}
@@ -203,10 +205,10 @@ $$
 </div>
 
 <p>Similar to above, it now turns out that actually sampling $X^q_t$ is very difficult.
-But fortunately for us, we can apply the intuition that we gained from the importance sampling approach and apply here as well.</p>
+But fortunately for us, we can apply the intuition that we gained from the importance sampling approach and apply it here as well.</p>
 
 <p>Recall that $X^p_t$ is a pure Wiener process and thus the probability of a particular realization can be computed quite easily.
-This is due to the fact that in a Wiener proces, every movement is independently and identically distributed (iid).</p>
+This is due to the fact that in a Wiener process, every movement is independently and identically distributed (iid).</p>
 
 <p>To make things easier to show, we have to agree on a time discretization, which we will here choose as $\Delta t$.
 This means that we do $\Delta t$ steps in time.
@@ -344,12 +346,12 @@ $$
 <img src="/blog/img/Girsanov.png" alt="Description of the image" style="width: 100%; height: auto;" />
 <!-- <img src="/blog/img/Girsanov.png" alt="Description of the image" style="width: 100%; height: auto;"/> --></p>
 
-<p>In the draw a series of conclusions from the plot above:</p>
+<p>We draw a series of conclusions from the plot above:</p>
 <ul>
   <li>We sample two realizations of the stochastic process $X^p_{t,1}$ and $X^p_{t,2}$.</li>
-  <li>Visually, we can see that whereas $X^p_{t,1}$ ‘hit’ the target measure $\mathbb{Q}$ quite well, $X^p_{t,2}$ did almost not all all.</li>
+  <li>Visually, we can see that whereas $X^p_{t,1}$ ‘hit’ the target measure $\mathbb{Q}$ quite well, $X^p_{t,2}$ did almost not at all.</li>
   <li>Correspondingly, the probability $q(X^p_{t,1})$ is quite high, which makes reweighting $Z(X^p_{t,1})$ close to one, and contributes to the expected value $\mathbb{E}[Z(X^p_{t,1}) f(X^p_t)]$ almost unadulterated.</li>
-  <li>The contribution of $X^p_{t,2}$ to the expected value on the other hand has to be downscaled/graded significantely.</li>
+  <li>The contribution of $X^p_{t,2}$ to the expected value on the other hand has to be downscaled/graded significantly.</li>
 </ul>
 </p>
       		</section>

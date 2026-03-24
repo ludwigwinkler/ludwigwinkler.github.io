@@ -6,19 +6,7 @@ date:   2024-08-14
 excerpt: "Two perspectives on Memory Efficient Gradients"
 image: "/blog//Adjoint/functional.png"
 ---
-<head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+{% include mathjax3.html %}
 
 For my recent work, we started working on a custom made adjoint method to compute gradients for ODE's with particular constraints.
 Since the [2019 paper](https://arxiv.org/abs/1806.07366) at Neurips I was familiar with the problem that the adjoint method in neural ODE's was trying to solve, yet I hadn't really understood it in depth.

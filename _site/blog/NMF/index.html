@@ -73,19 +73,21 @@
       				<p>What Shall We Recommend?</p>
       			</header>
       			<div class="image main"><img src="/images/NMF_01.png" alt=""></div>
-      			<p><head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+      			<p><script>
+MathJax = {
+  tex: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    tags: 'all'
+  },
+  options: {
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+};
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async=""></script>
 
 <h2 id="non-negative-matrix-factorization">Non-Negative Matrix Factorization</h2>
 
@@ -303,7 +305,7 @@ print(mf.full_matrix())
 
 <p>I prefer to encapsulate my code in objects/Python classes.
 We initialize the NMF-Algorithm by defining all the relevant parameters and data matrices.
-Here we’re using an exponential distribution with a larger $\lambda$ to initialize $P, Q, u, i, b$ such that the their values and small and positive.</p>
+Here we’re using an exponential distribution with a larger $\lambda$ to initialize $P, Q, u, i, b$ such that their values are small and positive.</p>
 
 <p>The classic additive NMF algorithm iterates through all existing data points in the data matrix and minimizes the mean squared error loss between the prediction and the true data matrix.
 I rewrote the gradient descent to compute the entire matrix in parallel and do one gradient descent step after evaluating the entire data matrix.

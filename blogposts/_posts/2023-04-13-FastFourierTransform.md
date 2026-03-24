@@ -5,28 +5,7 @@ date:   2023-04-11
 excerpt: "From Complex Exponentials to Frequencies in  O(N log N)"
 image: "../../blog/blogthumbnails/FFT.png"
 ---
-<head>
-<!-- <script type="text/x-mathjax-config">  -->
-  <!-- MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script> -->
-<!-- uncomment two lines above and remove the html css to svg lines -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    TeX: { equationNumbers: { autoNumber: "all" } },
-    tex2jax: {
-      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      displayMath: [['$$','$$'], ['\[' , '\]'], ['\\[', '\\]']],
-      processEscapes: true
-    },
-    "HTML-CSS": { linebreaks: { automatic: true } },
-    CommonHTML: { linebreaks: { automatic: true } },
-    SVG: { linebreaks: { automatic: true } }
-    });
-</script>
-<script type="text/javascript" async
-  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-</head>
+{% include mathjax3.html %}
 $$
  \def\tr#1{\text{Tr}\left[ #1 \right]}
  \def\Efunc#1{\mathPbb{E}\left[ #1\right]}
