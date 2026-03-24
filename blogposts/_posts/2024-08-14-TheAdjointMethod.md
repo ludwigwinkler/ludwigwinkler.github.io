@@ -63,7 +63,7 @@ This, due to the stochastic switching, would be a stochastic differential equati
 
 Once we have our loss $\mathcal{L}$ we naturally want to compute the gradients $\partial \mathcal{L}/\partial \theta$ to update our parameters $\theta$ to minimize the loss $\mathcal{L}$.
 
-What is the best way to to that?
+What is the best way to do that?
 
 ## The Autograd Approach
 
@@ -79,7 +79,7 @@ $$
   x_3 &= x_2 + f(x_2, 2, \theta) \Delta t \\ %= x_0 + f(x_0, 0, \theta) \Delta t + f(x_1, 1, \theta) \Delta t + f(x_2, 2, \theta) \Delta t
 \end{align}
 $$
-A quick glance at the three equations above tells us that our parameters $\theta$ occur at every of the three time step.
+A quick glance at the three equations above tells us that our parameters $\theta$ occur at each of the three time steps.
 Consequentially, the total gradient $\frac{\partial \mathcal{L}}{\partial \theta}$ would consist of three additive terms,
 $$
 \begin{align}
@@ -137,7 +137,7 @@ $$
 $$
 which describes how we can obtain a later part of the solution $x_t$ from the earlier solution $x_{t-1}$.
 Are we allowed to do that?
-Yes, because the Picard-Linedlöf/Cauchy-Lipschitz/Uniqueness Theorem tells us that for any tuple $(x_t, t)$ in a smooth vector field there is a unique trajectory.
+Yes, because the Picard-Lindelöf/Cauchy-Lipschitz/Uniqueness Theorem tells us that for any tuple $(x_t, t)$ in a smooth vector field there is a unique trajectory.
 The time reversibility of ODE's allows us to equally apply a reverse time (discrete) solution by using
 $$
 \begin{align}
@@ -198,7 +198,7 @@ The finer we choose $\Delta t$ the finer the update to the gradient will be whic
 
 I would like to highlight that we're actually computing the vector-Jacobian product $g^T J$, which is PyTorch's "native" gradient computation.
 Computing the Jacobian for a function $f: \mathbb{R}^{100} \rightarrow \mathbb{R}^{50}$ would require us to do $100 \times 50 = 5.000$ individual gradient evaluations.
-The Jacobian matrix measure the sensitivity of each output to a _particular input independent of all other inputs_.
+The Jacobian matrix measures the sensitivity of each output to a _particular input independent of all other inputs_.
 Mathematically, this forces us to compute every input-output combination manually, as a parallel evaluation of two or more Jacobian entries would "mix gradients" and thus be wrong.
 
 But we're not really interested in the complete data-agnostic Jacobian matrix.
@@ -272,7 +272,7 @@ So far the perturbation $\delta J(x, \theta)$ still consists of __both__ the per
 But in machine learning, $x$ is the provided data and we're really want to only quantify the perturbation in $\theta$.
 That perturbation in $\theta$ is precisely the gradient we need for gradient based optimization, as it quite literally encodes how much $J$ would change if we perturbed $\theta$ a bit.
 
-Until know we haven't made zero assumption about what the Lagrangian actually looks like.
+Until now we haven't made any assumption about what the Lagrangian actually looks like.
 **The idea of the adjoint method is to choose $\lambda_t$ in just such a way, that it completely eliminates the $\delta x$ perturbation from the total loss perturbation $\delta J$ such that we're left with the parameter perturbation $\delta \theta$ which is our gradient.**
 
 But in the perturbed Lagrangian, there is still the perturbed time derivative $\delta dx_t = \delta \dot{x}_t$ which is unpleasant to work with, respectively we don't even know what it might be.

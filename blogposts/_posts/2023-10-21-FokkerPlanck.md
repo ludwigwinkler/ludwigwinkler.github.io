@@ -55,7 +55,7 @@ $$
 \end{align}
 $$
 
-For the infinitissimal values $$dt$$, any term with an exponent higher than one will go towards zero at a faster rate.
+For the infinitesimal values $$dt$$, any term with an exponent higher than one will go towards zero at a faster rate.
 Thus the terms $$dt^2$$, $$dt dW_t = dt^{1.5}$$ will evaluate to zero at the limit.
 We can then plug in the dynamics of $$X_t$$ to obtain
 $$
@@ -103,7 +103,7 @@ $$
 	\partial_x \left[ u(x) v(x) \right] = \partial_x \left[  u(x) \right] v(x) + u(x) \partial_x \left[ v(x) \right]
 \end{align} 
 $$
-or in a easier form
+or in an easier form
 $$
 \begin{align}
 	\left( u(x) v(x) \right)' = u'(x) v(x) + u(x) v'(x)

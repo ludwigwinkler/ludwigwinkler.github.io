@@ -120,7 +120,7 @@ We can thus devise a sampling algorithm based on rates $\lambda_i$ which first s
 ### Birth-Death Process
 
 A birth-death process is a stochastic process $\\{X_t\\}_{t \in \mathbb{R}^+}$ with $X_t = X_t^\lambda - X_t^\mu$ with two 'duelling' rates: the birth rate $\lambda$ and the death rate $\mu$.
-Both rates induce a counting process (albeit be it with opposite signs) such that the infinitissimal generators are
+Both rates induce a counting process (albeit be it with opposite signs) such that the infinitesimal generators are
 $$
 \begin{align}
 \lim_{h \rightarrow 0^+} P(X_{t+h} = X_t + 1 | X_t) &= \lambda h \\
@@ -154,7 +154,7 @@ At the core of Jax are four function transforms with three to four letters: `gra
 `grad` traces a function when it's called the first time and transforms that function by replacing the operations in the function with its derivatives with respect to the input
 
 `jit` adds a just-in-time compilation function transform which aims at compiling an optimized version of your given function.
-Python is an interpreted language which does executes every instruction without anticipating the future.
+Python is an interpreted language which executes every instruction without anticipating the future.
 After having traced through a `jit` marked function for the first time, Jax will know what the whole execution of the function will entail.
 Since it knows all the operations, it will upon finishing the first evaluation of the function start compiling it fusing operations and removing unneeded data copying for example (this is a very broad example).
 Obviously this entails some programming restrictions which can be read up in the [Jax - The Sharp Bits](https://jax.readthedocs.io/en/latest/notebooks/Common_Gotchas_in_JAX.html).
@@ -167,7 +167,7 @@ Just vmap it.
 We'll see down below how powerful `vmap` can be.
 
 `pmap` does automatic accelerator placement by automatically optimizing the given function over all sorts of TPU's and GPU's.
-It is akin to PyTorch's tensor.to(device) by compiles the entire function custom made for each accelerator on you compute node.
+It is akin to PyTorch's tensor.to(device) but compiles the entire function custom made for each accelerator on your compute node.
 Powerful stuff right there.
 
 ### Continuous Time Markov Chains in Jax
@@ -183,9 +183,9 @@ This allows us to construct the following algorithm to sample the multi-dimensio
 3. From 'active' process $i$ sample the increment $\Delta X_t \sim \text{Cat}(\lambda_i, \mu_i)$ with $\Delta X_t \in \\{ +1, -1 \\}$
 
 In practice, we could combine step 2 and step 3 into a single categorical distribution but this is fiddly and splitting it into two sampling looks cleaner. 
-Just-in-time compilation should in theory remove an inefficiencies anyway.
+Just-in-time compilation should in theory remove any inefficiencies anyway.
 Up first on our to do list is to be able to sample from an exponential distribution.
-This can be achieved readily with the reparameterization trick for the exponential distribution describes earlier,
+This can be achieved readily with the reparameterization trick for the exponential distribution described earlier,
 
 ```
 import jax
@@ -341,8 +341,8 @@ def plot_ctmc(t, traj, la, mu):
 Unfortunately `jax.jit` is not very good with stochastic control flow.
 We have the problem that we sample the active processes indices and then decide which part of the condition we execute.
 That is a big no-no for JIT compilation as the stochasticity makes mapping out the data flow through the entire function not 100% deterministic.
-Secondly, `vmap` will won't work either as each process that will vmap will decide differently due to separately sampling it's condition.
-Figuratively, the first vmapped process will sample the a birth process, but the second vmapped process will sample a death process.
+Secondly, `vmap` won't work either as each process that will vmap will decide differently due to separately sampling its condition.
+Figuratively, the first vmapped process will sample a birth process, but the second vmapped process will sample a death process.
 What branch of the condition should the vmapped function then take?
 Should it follow the first condition or the second?
 Through some testing, which is too verbose for here, I have the very substantiated hunch that `vmap` would follow the first condition.
@@ -407,7 +407,7 @@ fig = plot_ctmc(t, traj, la=la, mu=mu)
 Unfortunately we have to wait close to a minute for the sampling process to execute fully.
 To speed things up, we'll introduce a single function `jax.jit` and see what will happen.
 We'll also 'allocate' the appropriate memory by fixing the size of arrays holding the sampled trajectories instead of concatenating it.
-The more information the JIT compiler has, the more it can condense the verbose code into it's minimum viable representation.
+The more information the JIT compiler has, the more it can condense the verbose code into its minimum viable representation.
 
 ```
 key = jax.random.PRNGKey(1)
@@ -481,7 +481,7 @@ If you run the notebook cell above in Visual Studio Code, and switch the jit fla
 Next up is the simple but powerful functionality of `vmap`.
 
 Sampling a single process is all nice and stuff, but as soon as we're dealing with probabilistic systems, we need to draw samples,
-In classic numpy or PyTorch we would know rewrite the code from single operations to batch-able operations.
+In classic numpy or PyTorch we would now rewrite the code from single operations to batch-able operations.
 If you're smart, you'd always written your code with parallel evaluations in mind, such as a matrix-vector product is just a matrix-matrix product with a single column in the second matrix and so on and so forth.
 
 With `vmap` we have to introduce a single modified line to make parallel evaluations of the same function on different data (SIMD: single instruction multiple data) a reality.
@@ -513,7 +513,7 @@ Executing the sampling function with `vmap` and `jit`, it takes us **2.3 seconds
 One caveat is that jiting loops themselves is usually a bad idea as the compiler will trace the entire slow loop and then optimize it.
 It usually better to `jit` code blocks in for loops as the jit tracer doesn't have to unroll the loops and subsequently optimize them.
 Using JIT on our little for loop in the sampling function predicted a **5 minutes** run time for the first evaluation as it executes and traces the slow unjitted version of the function on its first call.
-I tried recurseively jiting and vmaping hoping that `jit` would reuse previously jited code blocks but that's apparently not the case and it executes only the outer most `jit` command.
+I tried recursively jiting and vmaping hoping that `jit` would reuse previously jited code blocks but that's apparently not the case and it executes only the outer most `jit` command.
 
 Where things get really funky is once you start to realize that you can `vmap` over all sorts of things.
 Let's assume you have different birth death rates, you can then do the following:

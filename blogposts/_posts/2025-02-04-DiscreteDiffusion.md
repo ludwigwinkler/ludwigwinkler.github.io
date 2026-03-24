@@ -44,7 +44,7 @@ $$
 All that the equation above states is that residing in state $$x^+_t$$ 
 with probability $$p_{t}(x^+_t)$$ and moving to $$x^-_t$$ should equal the probability of moving in the reverse direction $$x^-_t \rightarrow x^+_t$$.
 If this equation wouldn't hold, simulating the process forward in time would in the long run yield a different marginal distribution than simulating the process backward in time.
-Essential we would deal with two different stochastic processes instead with a single time-reversible one.
+Essentially we would deal with two different stochastic processes instead of a single time-reversible one.
 This property is called _detailed balance_ and is essential for time reversible stochastic processes and is pivotal for MCMC sampling for example.
 
 Applying the limit to the time difference $$\lim_{\Delta t \rightarrow 0}$$, we will obtain the instantaneous rate $$r^+_t$$.
@@ -186,7 +186,7 @@ $$
 $$
 <!-- </div> -->
 
-Taking the time derivative $\dot{\mu}_t$ of $\mu_t$ we can express it's solution via the rate $\beta_t$,
+Taking the time derivative $\dot{\mu}_t$ of $\mu_t$ we can express its solution via the rate $\beta_t$,
 <!-- <div style="overflow-x: auto;"> -->
 $$
 \begin{align}
@@ -231,7 +231,7 @@ Further up, we saw the detailed balance requirement for a time-reversible stocha
 While solving the forward process, we only considered the forward rates.
 
 Here, we will derive the correct reverse rates.
-But first, let's revisit the detailed balance equation for the reverse process and extrac the reverse rate,
+But first, let's revisit the detailed balance equation for the reverse process and extract the reverse rate,
 <!-- <div style="overflow-x: auto;"> -->
 $$
 \begin{align}
@@ -260,7 +260,7 @@ $$
 $$
 <!-- </div> -->
 
-In the binary case we can easily express $p_t^-$ in terms of it's reciprocal $p_t^+$,
+In the binary case we can easily express $p_t^-$ in terms of its reciprocal $p_t^+$,
 <!-- <div style="overflow-x: auto;"> -->
 $$
 \begin{align}
@@ -521,7 +521,7 @@ $$
 $$
 </div>
 
-We can see that the diffusion rate $\beta_t$ is directly scaled with the number of states, such that for more states $S$ the diffusion rate is reduce as there is intrinsically more variance due to more possibilities of state switching.
+We can see that the diffusion rate $\beta_t$ is directly scaled with the number of states, such that for more states $S$ the diffusion rate is reduced as there is intrinsically more variance due to more possibilities of state switching.
 
 Secondly, we would like to regularize the weighting function to a range $w_t \in [w_{min}/(S-1), (1 - w_{min}) \cdot \delta_{i,0}]$, where we bound the weighting of the true state $i$ at time $t=0$ to $1- w_{min}$ and distribute the remaining probability $w_{min}$ onto the $S-1$ remaining states,
 <div style="overflow-x: auto;">
@@ -537,4 +537,4 @@ $$
 During optimization, this state switching regularization might be unimportant, but during sampling, this might provide an important regularization to prevent exploding state switching rates at $t \approx 0$.
 
 While the equation above characterize a smooth function, we can for simplicity's sake also bound the function with a floor and a ceiling by restricting $w_t$ to $w_t \in [ \frac{w_{min}}{S-1}, 1 - w_{min} ]$.
-There only difference is that the weighting function is not smooth anymore, which should be of little importance to the prediction task during sampling.
+The only difference is that the weighting function is not smooth anymore, which should be of little importance to the prediction task during sampling.

@@ -162,7 +162,7 @@ Remember that both the objective function via the logarithm of the Normal distri
 
 			self.num_inducing_points = _num_inducing_points
 
-			inducing_x = torch.linspace(_x.min().item(), _x.max().item(), self.num_inducing_points).reshape(-1,1) 	# distribute the data points as a linspace between x.min() and x.max() to get a good initializaiton of the inducing points
+			inducing_x = torch.linspace(_x.min().item(), _x.max().item(), self.num_inducing_points).reshape(-1,1) 	# distribute the data points as a linspace between x.min() and x.max() to get a good initialization of the inducing points
 			self.inducing_x_mu = torch.nn.Parameter(inducing_x + torch.randn_like(inducing_x).clamp(-0.1,0.1)) 			# add some noise to the x values of the inducing points
 			self.inducing_y_mu = torch.nn.Parameter(FloatTensor(_num_inducing_points, _dim).uniform_(-0.5,0.5)) 		# since we normalized the data to N(0,1) we initialize the y values in the middle of N(0,1)
 

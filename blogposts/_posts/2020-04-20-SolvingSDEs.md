@@ -24,7 +24,7 @@ image: "/blog/SolvingSDEs/GeomBM.png"
 Brownian motion can have both positive and negative values as long as its mean is centered around zero and the distribution over time follows the characteristics of the Wiener process.
 Yet certain quantities can only have positive values such as stocks.
 
-In order to accomodate the specific requires of such quantities we can work with geometric Brownian motion,
+In order to accommodate the specific requirements of such quantities we can work with geometric Brownian motion,
 $$
 \begin{align}
 dS_t &= \mu_t S_t dt + \sigma_t S_t dW_t \\
@@ -102,7 +102,7 @@ dY_t &= dX_t \\
 \end{align}
 $$
 The next step is to recognize that we are equating the derivative of a random variable with itself.
-We'll abuse the mathematical notation for brief period to make the point more clear:
+We'll abuse the mathematical notation for a brief period to make the point more clear:
 $$
 \begin{align}
 dY_t & \propto \theta Y_t dt \\

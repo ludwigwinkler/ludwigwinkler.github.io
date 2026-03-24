@@ -217,7 +217,7 @@ $$
 $$
 </div>
 
-Furthemore the term $J_\mu \epsilon$ is a Jacobian-vector product and can be computed efficiently using automatic differentiation.
+Furthermore the term $J_\mu \epsilon$ is a Jacobian-vector product and can be computed efficiently using automatic differentiation.
 Effectively, we're backpropagating the vector $\epsilon$ through the neural network evaluation ( in pseudo-code `torch.autograd.grad(outputs=mu, inputs=x, grad_outputs=epsilon)`) and contract it with `epsilon` again.
 We do that for multiple samples of $\epsilon$ and average the results to obtain an unbiased estimate of the trace of the Jacobian matrix.
 Taking a single sample of $\epsilon$ and computing the Jacobian-vector product is computationally more efficient than computing the full Jacobian matrix but comes with a higher estimator variance.
@@ -427,7 +427,7 @@ for step, t in tqdm(enumerate(torch.linspace(0.99, 0.001, n_steps))):
 
 ### Transforming Flows to Diffusion Models and back
 
-We saw in the beginning how the probability flow formulation of a SDE can extracted from the corresponding FPE.
+We saw in the beginning how the probability flow formulation of a SDE can be extracted from the corresponding FPE.
 This is an ordinary differential equation which we can integrate to obtain the log-likelihood of the observed data given a diffusion model.
 The Ito density estimator, on the other hand, is a stochastic differential equation which we can solve to obtain the log-likelihood of the observed data given a diffusion model.
 
@@ -443,7 +443,7 @@ $$
 $$
 
 Ideally we would like to have the integrated diffusion model $\int_0^t dX_t = X_t$ for both the flow matching and the diffusion model.
-If that were the case, then integrating the diffusion model would yield a random variable witch an identical probability distribution as the flow matching variable $X_t$.
+If that were the case, then integrating the diffusion model would yield a random variable with an identical probability distribution as the flow matching variable $X_t$.
 
 Since integrating stochastic dynamics is always a hassle, we will first look at the average dynamics by taking the expectation over both random variables $dX_t$ and $X_t$.
 Thus we get 
@@ -471,7 +471,7 @@ x_t &= x_0 \ \exp\left[ \int_0^t -f_s ds\right] \\
 \end{align}
 $$
 
-Comparing that to $x_t = \alpha_t x_0$ we have succesfully identified $\alpha_t = \exp[ \int_0^t -f_s ds]$.
+Comparing that to $x_t = \alpha_t x_0$ we have successfully identified $\alpha_t = \exp[ \int_0^t -f_s ds]$.
 
 Equating $\sigma_t$ with $g_t$ will be slightly more difficult because we have to factor in the effect of $-f_t X_t$.
 To properly quantify the relationship between $\sigma_t$ and $g_t$, we would have to first eliminate the effect of the drift.
@@ -505,7 +505,7 @@ $$
 \begin{align}
 \mathbb{V}[y_t-y_0] &= \mathbb{E}\left[ ( y_t - y_0 - \mathbb{E}[y_t - y_0])^2 \right] \\
 &= \mathbb{E}\left[ \left( \int_0^t \frac{g_s}{\alpha_s} dW_s  - \underbrace{\mathbb{E}\left[\int_0^t \frac{g_s}{\alpha_s} dW_s \right]}_{\mathbb{E}[dW_s]=0} \right)^2 \right] \\
-&= \mathbb{E}\left[ \left( \int_0^t \frac{g_s}{\alpha_s} dW_s  \right)^2 \right] \quad \quad | \quad \quad \text{Ito Isommetry} \\
+&= \mathbb{E}\left[ \left( \int_0^t \frac{g_s}{\alpha_s} dW_s  \right)^2 \right] \quad \quad | \quad \quad \text{Ito Isometry} \\
 &= \int_0^t \left(\frac{g_s}{\alpha_s}\right)^2 ds
 \end{align}
 $$

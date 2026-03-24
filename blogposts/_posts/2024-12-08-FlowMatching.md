@@ -68,8 +68,8 @@ dX_\tau &= \left\{-\mu(X_\tau, \tau) + \frac{1}{2} \sigma_\tau^2 \left(1 +\alpha
 $$
 </div>
 
-One interpretation of diffusion model is that we want to connect a data distribution with a noise distribution.
-Upon successfull training, we can then sample from the noise distribution and transform it into data.
+One interpretation of diffusion models is that we want to connect a data distribution with a noise distribution.
+Upon successful training, we can then sample from the noise distribution and transform it into data.
 The stochastic process at the heart of diffusion models provides this (stochastic) connection.
 
 While we originally started out with the idea of connecting data and noise with a stochastic process, setting $\alpha=0$ in the reverse SDE gives us a deterministic connection.
@@ -224,7 +224,7 @@ $$
 
 That doesn't seem to be the most equation to be working with.
 
-Also, why is actually the convolution of the two PDF's?
+Also, why it is actually the convolution of the two PDF's?
 
 In the case of the sum of $X$ and $Y$ we have to consider all possible values of $X$ and $Y$ that sum up to $Z$.
 For example, let's consider the probability of obtaining $Z=5$.
@@ -493,7 +493,7 @@ x_t &= \alpha(t) x_0 + \sigma(t) \epsilon \\
 $$
 </div>
 
-Since DDPM is built on the Ornstein Uhlenbeck process, the score term is given by by the gradient of the log marginal probability density function of a time-dependent Gaussian:
+Since DDPM is built on the Ornstein Uhlenbeck process, the score term is given by the gradient of the log marginal probability density function of a time-dependent Gaussian:
 <div style="overflow-x: auto;">
 $$
 \begin{align*}
@@ -510,7 +510,7 @@ where all the relevant terms occur in a similar fashion to the flow matching mod
 ### Let's try it out with some Code
 
 So let's try this out with some code.
-One thing to note, and what I personally think is nice, is that the interpolation paramters $\alpha(t)$, $\beta(t)$ can be chosen independently from the diffusion parameter $\sigma(t)$.
+One thing to note, and what I personally think is nice, is that the interpolation parameters $\alpha(t)$, $\beta(t)$ can be chosen independently from the diffusion parameter $\sigma(t)$.
 <div style="overflow-x: auto;">
 $$
 \begin{align*}

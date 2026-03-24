@@ -100,7 +100,7 @@ $$
 &= -\frac{(x-\mu)}{\sigma^2} \frac{1}{\sqrt{2\pi} \sigma} e^{-\frac{(x-\mu)^2}{2\sigma^2}} \\
 &= - \frac{(x-\mu)}{\sigma^2} p(x).
 \end{align}$$
-Integration by parts (IbP) serves as a inverse of the product rule $\partial_x [u(x) v(x)] = \partial_x u(x) v(x) + u(x) \partial_x v(x)$ namely 
+Integration by parts (IbP) serves as an inverse of the product rule $\partial_x [u(x) v(x)] = \partial_x u(x) v(x) + u(x) \partial_x v(x)$ namely 
 $$\begin{align}
 [u(x)v(x)]_{x=-\infty}^{\infty} &= \int_{x=-\infty}^{\infty} u(x) \partial_x v(x) + \partial_x u(x) v(x) dx \\
 &= \int_{x=-\infty}^{\infty} u(x) \partial_x v(x) dx + \int_{x=-\infty}^{\infty} \partial_x u(x) v(x) dx

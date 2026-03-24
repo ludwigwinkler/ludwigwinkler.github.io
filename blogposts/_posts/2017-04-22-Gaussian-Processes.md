@@ -28,7 +28,7 @@ Local optimization is considered an easier problem, in which it suffices to find
 Such a local optimum is obviously a suboptimal solution and, while harder to find, global optima are more preferred.
 
 Generally, optimization problems are formulated as finding the optimal solution which minimizes, respectively maximizes, a criterion, which is commonly referred to as the objective function.
-Further constraints on the the set of solutions can be formulated, such that only a subset of solutions are permissible as candidates for the optimum.
+Further constraints on the set of solutions can be formulated, such that only a subset of solutions are permissible as candidates for the optimum.
 
 Optimization is commonly done in an iterative manner where the objective function is evaluated for multiple candidate solutions.
 Due to the iterative nature, it becomes desirable to evaluate this function as few times as possible over the course of the entire optimization, which becomes even more crucial when the evaluation of the objective function itself is costly.
@@ -72,7 +72,7 @@ $$
 $$
 
 A useful property of the Gaussian distribution is that its shape is determined by its mean and covariance in the exponential term.
-This allows us to omitt the normalization constant and determine the relevant mean and covariance terms from the exponential term.
+This allows us to omit the normalization constant and determine the relevant mean and covariance terms from the exponential term.
 
 Let $y=f(x)$, where $x \in \mathbb{R}^d$ and $y \in \mathbb{R}$ be the function which we want to estimate with a Gaussian Process.
 Furthermore, let $\mathcal{D} = (X, y) = \\{(x_i, y_i)\\}_{i=0}^N$
@@ -154,7 +154,7 @@ $$
 \end{align}
 $$
 
-and $ k(x,x') $ is an kernel function $ k: \mathcal{X} \times \mathcal{X} \rightarrow \mathbb{R}$ that measures the similarity between two vectors $ x, x' \in \mathcal{X}$.
+and $ k(x,x') $ is a kernel function $ k: \mathcal{X} \times \mathcal{X} \rightarrow \mathbb{R}$ that measures the similarity between two vectors $ x, x' \in \mathcal{X}$.
 We can observe from \eqref{eq:covariance1} that the covariance between any two observations in the distribution is determined by the similarity through the kernel function $k(x, x')$, namely
 
 $$
@@ -163,7 +163,7 @@ $$
 \end{align}
 $$
 
-An essential component of a GP is the kernel function with which the covariances is computed.
+An essential component of a GP is the kernel function with which the covariance is computed.
 Often the kernels are engineered to incorporate prior knowledge.
 A commonly used kernel is the squared exponential kernel
 
@@ -177,7 +177,7 @@ where $\theta$ corresponds to the hyperparameters of the Gaussian process which 
 
 Gaussian Processes can be readily extended to multiple dimensions by simply adjusting the kernel to incorporate multiple dimensions.
 The individual variances $\sigma_i$ of the dimensions $\mathbb{R}^d$ in the exponential kernel can be independently adjusted, or optimized with the maximization of the marginal probability of the data.
-The expanded kernel for multidimensional input is defined as followed:
+The expanded kernel for multidimensional input is defined as follows:
 
 $$
 \begin{align}
@@ -196,7 +196,7 @@ Furthermore both $k(X,X)$ and $k( X\_* , X\_* )$ are symmetric matrices and $k( 
 Given the joint distribution $ p(y\_* , y, X\_* , X) $, the aim for modeling the training and test observations with a GP is to derive the posterior distribution $ p( y\_*  \| y, X\_* , X ) $ .
 In order to derive the mean and covariance function of the posterior distribution, the block matrix inversion lemma is used to compute the inverse of the covariance matrix.
 
-For ease of reading and brevity the respective block matrices were replaced by more easily readible variables in the following identity:
+For ease of reading and brevity the respective block matrices were replaced by more easily readable variables in the following identity:
 
 $$
 \begin{align}
