@@ -7,32 +7,16 @@ excerpt: "Is it Katz, Kak, Kaz, Katsch? Anyway, it's nice math."
 highlighter: rouge
 image: "/blog/blogthumbnails/FeynmanKac.png"
 ---
-<head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-          TeX: {
-                equationNumbers: { autoNumber: "all" },
-                extensions: ["AMSmath.js", "AMSsymbols.js", "cancel.js"]
-            },
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+{% include mathjax3.html %}
 
-Recently there has been quite interest in the idea of _Feynman-Kac Steering_.
+Recently there has been quite some interest in the idea of _Feynman-Kac Steering_.
 
 For a given diffusion model, we can generate samples by iteratively removing noise, transforming a sample of pure noise into a sample of the target distribution.
 At each step during the denoising process we can let the model estimate what the fully denoised sample would look like.
 This can happen either through the score identity or is even more readily available if the model was trained on a denoising loss.
 These fully denoised samples are then evaluated with a criterion.
 This criterion is then "pulled back" into the denoising process to gauge whether the sample is going to be sufficiently good if fully denoised.
-Feynman-Kac steering the implements a resampling step where all the samples are evaluated with the criterion in parallel and the batch is resampled from the noisy samples proportional to each samples fully denoised criterion.
+Feynman-Kac steering then implements a resampling step where all the samples are evaluated with the criterion in parallel and the batch is resampled from the noisy samples proportional to each samples fully denoised criterion.
 This is essentially particle filtering with extra steps with stochastic PDE theory wrapped around it.
 
 So let's dissect the theory.
@@ -130,10 +114,10 @@ As a sort of cognitive crutch, you can think of $f(X_T)$ as your Temple Run gold
 You always start from the same starting point $x_t$ and you always do the same 5 moves in the time $\Delta t$.
 If the coin positions stay fixed and you do the same five moves every time you run, you'll always get the same score $f(x_T)$ at the end.
 This is what the deterministic part models.
-But now the stochastic parts keeps on changing the gold coin positions.
+But now the stochastic part keeps on changing the gold coin positions.
 Even for a fixed score $f(x_t)$ and deterministic moves/dynamics, you final gold coin score $f(x_T)$ will vary.
 Sometimes you'll get a lot of gold coins, sometimes you'll get none.
-So essentially, you're gold coin score $f(X_T)$ now is a random variable.
+So essentially, your gold coin score $f(X_T)$ now is a random variable.
 
 The next question we have to ask to naturally arrive at the Kolmogorov backward equation is whether there is a function $f_T(x_T)$ that describes the expected value of $f_T(X_T)$ for the current state $x_t$ _given that the dynamics are stochastic!_
 
@@ -351,7 +335,7 @@ $$
 Solving this equation backwards in time from the terminal condition $u(X_T, T)$ gives us the expected value of the function $u(X_t, t)$ at an earlier time $t$ given the terminal condition $u(X_T, T)$.
 
 So how do we solve this equation?
-Solving PDE's is fiendlishly hard and no easy task.
+Solving PDEs is fiendishly hard and no easy task.
 
 Usually, there are a couple of 'ansatz's that we can use to solve PDE's.
 For the FK equation we'll chose the ansatz of defining a new function $y(x_t, t)$ as
@@ -405,7 +389,7 @@ $$
 $$
 </div>
 
-We can then proceed to plug our $-c \ v - u$ into our Ito derivative and get
+We can then proceed to plug our $-c \ u - v$ into our Ito derivative and get
 <div style="overflow-x: auto;">
 $$
 \begin{align*}
@@ -425,7 +409,7 @@ dy_s &= du_s \ e^{\int_t^s c_r dr} + u_s \ c_s \ e^{\int_t^s c_r dr} \\
 \end{align*}
 $$
 </div>
-Integrating both sides form $s=t$ to $s=T$ gives us
+Integrating both sides from $s=t$ to $s=T$ gives us
 <div style="overflow-x: auto;">
 $$
 \begin{align*}y_T - y_t &= \int_t^T \left(- v_s \ ds + \sigma \ \partial_x u_s \  dW_s \right) e^{\int_t^s c_r dr} \ ds\\
@@ -443,7 +427,7 @@ y_T - y_t &= u_T \ e^{\int_t^T c_r dr} - u_t \ \underbrace{e^{\int_t^t c_r dr}}_
 $$
 </div>
 
-where integrating any quantity a zero amount $\int_t^t \ldots dt$ is always equal to zero as nothing get's added to the integral.
+where integrating any quantity a zero amount $\int_t^t \ldots dt$ is always equal to zero as nothing gets added to the integral.
 
 We then ultimately have
 

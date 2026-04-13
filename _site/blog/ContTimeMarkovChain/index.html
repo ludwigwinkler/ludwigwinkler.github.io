@@ -73,22 +73,25 @@
       				<p>jax.jit(jax.vmap(x=Discrete Space, t=Continuous Time))</p>
       			</header>
       			<div class="image main"><img src="../../blog/CTMC/vmap4.png" alt=""></div>
-      			<p><head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
-<p>\(\def\tr#1{\text{Tr}\left[ #1 \right]}
+      			<p><script>
+MathJax = {
+  tex: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    tags: 'all'
+  },
+  options: {
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+};
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async=""></script>
+
+\[\def\tr#1{\text{Tr}\left[ #1 \right]}
  \def\Efunc#1{\mathbb{E}\left[ #1\right]}
- \def\Efuncc#1#2{\mathbb{E}_{#1}\left[ #2 \right]}\)</p>
+ \def\Efuncc#1#2{\mathbb{E}_{#1}\left[ #2 \right]}\]
 
 <h3 id="continuous-time-markov-chains">Continuous Time Markov Chains</h3>
 
@@ -176,7 +179,7 @@ We can thus devise a sampling algorithm based on rates $\lambda_i$ which first s
 <h3 id="birth-death-process">Birth-Death Process</h3>
 
 <p>A birth-death process is a stochastic process $\{X_t\}_{t \in \mathbb{R}^+}$ with $X_t = X_t^\lambda - X_t^\mu$ with two ‘duelling’ rates: the birth rate $\lambda$ and the death rate $\mu$.
-Both rates induce a counting process (albeit be it with opposite signs) such that the infinitissimal generators are
+Both rates induce a counting process (albeit be it with opposite signs) such that the infinitesimal generators are
 \(\begin{align}
 \lim_{h \rightarrow 0^+} P(X_{t+h} = X_t + 1 | X_t) &amp;= \lambda h \\
 \lim_{h \rightarrow 0^+} P(X_{t+h} = X_t - 1 | X_t) &amp; = \mu h \\
@@ -206,7 +209,7 @@ At the core of Jax are four function transforms with three to four letters: <cod
 <p><code class="language-plaintext highlighter-rouge">grad</code> traces a function when it’s called the first time and transforms that function by replacing the operations in the function with its derivatives with respect to the input</p>
 
 <p><code class="language-plaintext highlighter-rouge">jit</code> adds a just-in-time compilation function transform which aims at compiling an optimized version of your given function.
-Python is an interpreted language which does executes every instruction without anticipating the future.
+Python is an interpreted language which executes every instruction without anticipating the future.
 After having traced through a <code class="language-plaintext highlighter-rouge">jit</code> marked function for the first time, Jax will know what the whole execution of the function will entail.
 Since it knows all the operations, it will upon finishing the first evaluation of the function start compiling it fusing operations and removing unneeded data copying for example (this is a very broad example).
 Obviously this entails some programming restrictions which can be read up in the <a href="https://jax.readthedocs.io/en/latest/notebooks/Common_Gotchas_in_JAX.html">Jax - The Sharp Bits</a>.
@@ -219,7 +222,7 @@ Just vmap it.
 We’ll see down below how powerful <code class="language-plaintext highlighter-rouge">vmap</code> can be.</p>
 
 <p><code class="language-plaintext highlighter-rouge">pmap</code> does automatic accelerator placement by automatically optimizing the given function over all sorts of TPU’s and GPU’s.
-It is akin to PyTorch’s tensor.to(device) by compiles the entire function custom made for each accelerator on you compute node.
+It is akin to PyTorch’s tensor.to(device) but compiles the entire function custom made for each accelerator on your compute node.
 Powerful stuff right there.</p>
 
 <h3 id="continuous-time-markov-chains-in-jax">Continuous Time Markov Chains in Jax</h3>
@@ -237,9 +240,9 @@ This allows us to construct the following algorithm to sample the multi-dimensio
 </ol>
 
 <p>In practice, we could combine step 2 and step 3 into a single categorical distribution but this is fiddly and splitting it into two sampling looks cleaner. 
-Just-in-time compilation should in theory remove an inefficiencies anyway.
+Just-in-time compilation should in theory remove any inefficiencies anyway.
 Up first on our to do list is to be able to sample from an exponential distribution.
-This can be achieved readily with the reparameterization trick for the exponential distribution describes earlier,</p>
+This can be achieved readily with the reparameterization trick for the exponential distribution described earlier,</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>import jax
 
@@ -391,8 +394,8 @@ def plot_ctmc(t, traj, la, mu):
 <p>Unfortunately <code class="language-plaintext highlighter-rouge">jax.jit</code> is not very good with stochastic control flow.
 We have the problem that we sample the active processes indices and then decide which part of the condition we execute.
 That is a big no-no for JIT compilation as the stochasticity makes mapping out the data flow through the entire function not 100% deterministic.
-Secondly, <code class="language-plaintext highlighter-rouge">vmap</code> will won’t work either as each process that will vmap will decide differently due to separately sampling it’s condition.
-Figuratively, the first vmapped process will sample the a birth process, but the second vmapped process will sample a death process.
+Secondly, <code class="language-plaintext highlighter-rouge">vmap</code> won’t work either as each process that will vmap will decide differently due to separately sampling its condition.
+Figuratively, the first vmapped process will sample a birth process, but the second vmapped process will sample a death process.
 What branch of the condition should the vmapped function then take?
 Should it follow the first condition or the second?
 Through some testing, which is too verbose for here, I have the very substantiated hunch that <code class="language-plaintext highlighter-rouge">vmap</code> would follow the first condition.</p>
@@ -456,7 +459,7 @@ fig = plot_ctmc(t, traj, la=la, mu=mu)
 <p>Unfortunately we have to wait close to a minute for the sampling process to execute fully.
 To speed things up, we’ll introduce a single function <code class="language-plaintext highlighter-rouge">jax.jit</code> and see what will happen.
 We’ll also ‘allocate’ the appropriate memory by fixing the size of arrays holding the sampled trajectories instead of concatenating it.
-The more information the JIT compiler has, the more it can condense the verbose code into it’s minimum viable representation.</p>
+The more information the JIT compiler has, the more it can condense the verbose code into its minimum viable representation.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>key = jax.random.PRNGKey(1)
 num_process_samples = 20
@@ -529,7 +532,7 @@ fig = plot_ctmc(t, traj, la=la, mu=mu)
 <p>Next up is the simple but powerful functionality of <code class="language-plaintext highlighter-rouge">vmap</code>.</p>
 
 <p>Sampling a single process is all nice and stuff, but as soon as we’re dealing with probabilistic systems, we need to draw samples,
-In classic numpy or PyTorch we would know rewrite the code from single operations to batch-able operations.
+In classic numpy or PyTorch we would now rewrite the code from single operations to batch-able operations.
 If you’re smart, you’d always written your code with parallel evaluations in mind, such as a matrix-vector product is just a matrix-matrix product with a single column in the second matrix and so on and so forth.</p>
 
 <p>With <code class="language-plaintext highlighter-rouge">vmap</code> we have to introduce a single modified line to make parallel evaluations of the same function on different data (SIMD: single instruction multiple data) a reality.</p>
@@ -560,7 +563,7 @@ By stacking the keys we obtain an array of PRNG keys of shape <code class="langu
 One caveat is that jiting loops themselves is usually a bad idea as the compiler will trace the entire slow loop and then optimize it.
 It usually better to <code class="language-plaintext highlighter-rouge">jit</code> code blocks in for loops as the jit tracer doesn’t have to unroll the loops and subsequently optimize them.
 Using JIT on our little for loop in the sampling function predicted a <strong>5 minutes</strong> run time for the first evaluation as it executes and traces the slow unjitted version of the function on its first call.
-I tried recurseively jiting and vmaping hoping that <code class="language-plaintext highlighter-rouge">jit</code> would reuse previously jited code blocks but that’s apparently not the case and it executes only the outer most <code class="language-plaintext highlighter-rouge">jit</code> command.</p>
+I tried recursively jiting and vmaping hoping that <code class="language-plaintext highlighter-rouge">jit</code> would reuse previously jited code blocks but that’s apparently not the case and it executes only the outer most <code class="language-plaintext highlighter-rouge">jit</code> command.</p>
 
 <p>Where things get really funky is once you start to realize that you can <code class="language-plaintext highlighter-rouge">vmap</code> over all sorts of things.
 Let’s assume you have different birth death rates, you can then do the following:</p>

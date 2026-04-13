@@ -73,19 +73,21 @@
       				<p>Being Unsure About What To Recommend</p>
       			</header>
       			<div class="image main"><img src="" alt=""></div>
-      			<p><head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+      			<p><script>
+MathJax = {
+  tex: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    tags: 'all'
+  },
+  options: {
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+};
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async=""></script>
 
 <h2 id="non-negative-matrix-factorization">Non-Negative Matrix Factorization</h2>
 
@@ -104,7 +106,7 @@ In the previous post we optimized the mean squared error between our predicted m
 As it turns out we can train the distributions in the same way by applying a trick which is one of the many advantages of the Normal distribution: the reparameterization trick.
 I explained the reparameterization trick in detail in another blog post and will simply refer to it <a href="https://ludwigwinkler.github.io/blog/Reparam/">here</a>.</p>
 
-<p>In order to allow PyTorch (shout out to the devs!) to backpropagate to the variational parameters $\mu, sigma$ we have to reparameterize the every entry in the parameters.</p>
+<p>In order to allow PyTorch (shout out to the devs!) to backpropagate to the variational parameters $\mu, sigma$ we have to reparameterize every entry in the parameters.</p>
 
 \[\begin{align*}
   P_{uk} &amp;= \mu_{uk} + \mathcal{E} \cdot \sigma_{uk} \quad ; \mathcal{E} \sim \mathcal{N}(0,1) \\\\
@@ -236,7 +238,7 @@ That third dimension will be used to compute the $\mu_{\hat{R}}$ and $\sigma_{\h
 
             def forward1(self):
                     '''
-                    Sample multipile parameters in parallel
+                    Sample multiple parameters in parallel
                     :return: Prediction matrix of shape [N_MC, U, I]
                     '''
 
@@ -299,7 +301,7 @@ That third dimension will be used to compute the $\mu_{\hat{R}}$ and $\sigma_{\h
 
             def full_matrix(self):
                     """
-                    Computer a single full matrix using the resultant biases, P and Q
+                    Compute a single full matrix using the resultant biases, P and Q
                     """
                     b = self.b_mu + torch.randn(*self.b_rho.shape)* F.softplus(self.b_rho)
                     b_i = self.b_i_mu + torch.randn(*self.b_i_rho.shape)* F.softplus(self.b_i_rho)
@@ -341,7 +343,7 @@ That third dimension will be used to compute the $\mu_{\hat{R}}$ and $\sigma_{\h
 </code></pre></div></div>
 
 <p>The recommendation matrix $R$ in the code snippet above has a tweak: the fourth row does not contain any entries so every item has to be recommended to user 4.
-Upon inspection of the mean $\mu_{\hat{R}}$ and $\sigma_{\hat{R}}$ we can that the variance in the fourth row in markedly increased:</p>
+Upon inspection of the mean $\mu_{\hat{R}}$ and $\sigma_{\hat{R}}$ we can see that the variance in the fourth row is markedly increased:</p>
 
 \[P_{\sigma} =
  \left(

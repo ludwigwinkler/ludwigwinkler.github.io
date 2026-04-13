@@ -73,26 +73,28 @@
       				<p>Talk on AlphaGo and Hierarchical RL</p>
       			</header>
       			<div class="image main"><img src="/images/AdvRL_Cover.png" alt=""></div>
-      			<p><head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+      			<p><script>
+MathJax = {
+  tex: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    tags: 'all'
+  },
+  options: {
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+};
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async=""></script>
 
 <h2 id="introduction">Introduction</h2>
 
 <p>This is a talk I gave at the Berlin Machine Learning Meetup on Nov 6, 2017.
 It is somewhat more high level than usual since the audience came from a broad range of backgrounds.</p>
 
-<p>The content of the talk were ‘AlphaGo’, it’s successor ‘AlphaGo Zero’ and ‘Feudal Networks’ all published by DeepMind.
+<p>The content of the talk were ‘AlphaGo’, its successor ‘AlphaGo Zero’ and ‘Feudal Networks’ all published by DeepMind.
 The talk can be downloaded <a href="BML-AdvRL.pdf">here</a></p>
 </p>
       		</section>

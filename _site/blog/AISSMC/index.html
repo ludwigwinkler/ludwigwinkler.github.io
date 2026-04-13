@@ -73,23 +73,21 @@
       				<p>Step by Step, We're happily sampling our energy.</p>
       			</header>
       			<div class="image main"><img src="/blog/blogthumbnails/ais_energy_evolution.gif" alt=""></div>
-      			<p><head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-          TeX: {
-                equationNumbers: { autoNumber: "all" },
-                extensions: ["AMSmath.js", "AMSsymbols.js", "cancel.js"]
-            },
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+      			<p><script>
+MathJax = {
+  tex: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    tags: 'all'
+  },
+  options: {
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+};
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async=""></script>
 
 <h3 id="boltzmann-distribution">Boltzmann Distribution</h3>
 <p>In statistical mechanics, a system can take on different states $x_i$ and every possible state (or “microstate”) of a system is assigned an energy value, $E_i$. Intuitively, states with lower energy are more likely to occur, while those with higher energy are less likely. 
@@ -123,7 +121,7 @@ That’s because the only thing we know about the system is the energy, and we w
 <p>Secondly, we want to ensure that the probabilities are normalized and that the average energy matches a given value. This leads us to the following constraints:</p>
 <ul>
   <li>Normalization: $\sum_x p(x) = 1$</li>
-  <li>Fixed average energy: $\sum_x p(x) E(x)) = \langle E \rangle$</li>
+  <li>Fixed average energy: $\sum_x p(x) E(x) = \langle E \rangle$</li>
 </ul>
 
 <p>Next, we can use the method of Lagrange multipliers to incorporate these constraints into our optimization problem. We introduce Lagrange multipliers $\alpha$ and $\beta$ for the normalization and average energy constraints, respectively.</p>
@@ -278,7 +276,7 @@ $$
 Thus for higher temperature, the more uniform the distribution becomes, and for lower temperature, the more peaked it becomes around the lowest energy states.</p>
 
 <p>But how do we connect the temperature to the previously defined Lagrangian multiplier $\beta$?
-For that we have to explore both the entropy $S[p]$ as a function of the Boltzman distribution $p$ and the partition function $Z$.
+For that we have to explore both the entropy $S[p]$ as a function of the Boltzmann distribution $p$ and the partition function $Z$.
 The entropy of the Boltzmann distribution is given by:</p>
 <div style="overflow-x: auto;">
 $$
@@ -310,9 +308,9 @@ $$
 There is naturally a certain disconnect of how temperature is defined in a thermodynamic sense and how we experience it as humans.
 Particularly the reciprocal coefficient $1/T$ is somewhat counterintuitive but actually makes a lot of sense.</p>
 
-<h4 id="a-little-though-experiment-">A little though experiment …</h4>
+<h4 id="a-little-thought-experiment-">A little thought experiment …</h4>
 
-<p>The best example I could think of was water at a the phase transitions of ice to water and water to gas.
+<p>The best example I could think of was water at the phase transitions of ice to water and water to gas.
 For that we will look at the number of positions the water atoms can take inside an ice cube and inside a liquid.
 For this visual example, we define entropy as the number of positions the water atoms can take according to Boltzmann $S = \log \Omega$.
 We divvy up the ice cube and the liquid into many, many small cells in the respective three dimensions and count whether each of these cells is occupied by a water molecule or not.</p>
@@ -320,12 +318,12 @@ We divvy up the ice cube and the liquid into many, many small cells in the respe
 <p>We put an ice cube into a pan, we start adding energy to our water molecules by turning on the stove.
 At 0 degrees Celsius, they are quite literally frozen in place into a semi-regular grid and the number of states it can assume is actually quite low (because none of the water molecules can move).
 There is exactly one configuration and combinatorially, a single set of 3D cells is occupied by the water molecules.
-Since there is only one configurations of the atoms the Boltzman entropy is $S = \log 1 = 0$.
+Since there is only one configurations of the atoms the Boltzmann entropy is $S = \log 1 = 0$.
 Consequentially, the entropy is zero.</p>
 
 <p>Now we increase the expected energy $U$ by adding a bit of heat.
 Some of the ice melts and suddenly the water molecules are free to move around.
-Since the water molecules can suddenly move around, they can take fill one of the many 3D cells in the pan (just positions in space since it’s a liquid)
+Since the water molecules can suddenly move around, they can fill one of the many 3D cells in the pan (just positions in space since it’s a liquid)
 They can now be anywhere in the pan thus markedly increasing the entropy (when measured in possible positions in the pan).</p>
 
 <p>Imagine we increased the energy by just right amount to release 5 single water molecules.
@@ -334,7 +332,7 @@ With the binomial coefficient, this gives $\left(\stackrel{100}{5} \right) = 100
 Take the logarithm of that and we have the entropy $S = 18.3$.
 Consequently, the entropy has increased from $0$ to $18.3$ by adding just a bit of energy to release some puny 5 water molecules.</p>
 
-<p>As we’ve increased the entropy significicantly by adding a bit of energy, the differential should be high, which is exactly what the reciprocal term $1/T$ measures.
+<p>As we’ve increased the entropy significantly by adding a bit of energy, the differential should be high, which is exactly what the reciprocal term $1/T$ measures.
 If we add a bit of energy at $T=0.001$, the differential will be $dS/dU = 1,000$.
 For every bit of energy we add at a low temperature, we release some water molecules to be free to be anywhere in the pan and they go from being at a single position in space to potentially being anywhere in the pan.</p>
 
@@ -350,7 +348,7 @@ But as we keep adding energy, the number of water molecule configurations (i.e. 
 After the proverbial half-time break, the entropy would actually decrease again, because the water molecules would be able to move around more freely and thus the number of positions they can take would decrease.
 If all the water molecules were thawed, there would only be one configuration of the water molecules, namely that they are all in the pan in one specific cell each.</p>
 
-<p>But here our simplefied example breaks down, because we are not considering the fact that the water molecules can actually store energy in their kinetic motion, their rotational and vibrational modes etc.
+<p>But here our simplified example breaks down, because we are not considering the fact that the water molecules can actually store energy in their kinetic motion, their rotational and vibrational modes etc.
 In reality, the entropy would continue to increase as we add more energy.
 But we only wanted to illustrate the point that the temperature is a measure of how much the entropy changes with respect to energy.</p>
 
@@ -384,7 +382,7 @@ $$
 $$
 </div>
 
-<p>which after subtituing in yields:</p>
+<p>which after substituting in yields:</p>
 <div style="overflow-x: auto;">
 $$
 \begin{align*}
@@ -448,7 +446,7 @@ $$
 $$
 </div>
 
-<p>In order to get a functioning sampling algorithm out of the detailed balance equation, Mrs Metropolis and Hasting split the transition probabilities $T(x|x’)$ and $T(x’|x)$ into a proposal step $q$ and an acceptance step $a$.</p>
+<p>In order to get a functioning sampling algorithm out of the detailed balance equation, Mrs Metropolis and Hastings split the transition probabilities $T(x|x’)$ and $T(x’|x)$ into a proposal step $q$ and an acceptance step $a$.</p>
 <div style="overflow-x: auto;">
 $$
 \begin{align}
@@ -458,9 +456,9 @@ T(x'|x) = q(x|x')a(x|x') &amp;= q(x|x') \ \underbrace{\min\left[1, \frac{q(x'|x)
 $$
 </div>
 
-<p>For simplicities sake we’ll use a symmetric proposal distribution $q(x’|x) = q(x|x’)$.
+<p>For simplicity’s sake we’ll use a symmetric proposal distribution $q(x’|x) = q(x|x’)$.
 This means that the proposal distribution is the same in both directions, which is often a reasonable assumption in practice.
-An example would be a isotropic Gaussian distribution centered around the current state $x$ with a fixed standard deviation and we would have $\mathcal{N}(x’|\mu=x, \sigma^2) = \mathcal{N}(x|\mu=x’, \sigma^2)$.</p>
+An example would be an isotropic Gaussian distribution centered around the current state $x$ with a fixed standard deviation and we would have $\mathcal{N}(x’|\mu=x, \sigma^2) = \mathcal{N}(x|\mu=x’, \sigma^2)$.</p>
 
 <p>In the symmetric proposal probability case, the acceptance ratio simplifies to</p>
 <div style="overflow-x: auto;">
@@ -643,7 +641,7 @@ Here, we’re running MCMC on each interpolation level $t$ and reuse the thus ob
 <p>In fact, this approach has been directly implemented as a machine learning algorithm in the paper <a href="https://arxiv.org/pdf/2002.06707">Stochastic Normalizing Flows</a>, which leverages annealed importance sampling and MCMC transitions to improve sample diversity and partition function estimation in high-dimensional models.
 In that paper, the normalizing flow layers do the approximate distribution of probability mass.
 You can imagine it as the invertible flow layers moving probability mass approximately (sort of like proposing initial samples) and the stochastic MCMC layers refining the samples by exploring the energy landscape more thoroughly.
-The MCMC samples don’t require any parameters in their transition probabilities, at least in their straight forward implemention so they are very cheap to compute.
+The MCMC samples don’t require any parameters in their transition probabilities, at least in their straightforward implementation so they are very cheap to compute.
 The authors propose a novel approach to normalizing flows that incorporates annealed importance sampling to improve the quality of samples generated from complex distributions. By using MCMC transitions between flow layers, they can effectively explore the energy landscape and ensure that the final samples are representative of the target distribution. This method allows for more efficient training of generative models and better estimates of partition functions, making it a valuable contribution to the field of probabilistic modeling.</p>
 
 <h3 id="implementation">Implementation</h3>

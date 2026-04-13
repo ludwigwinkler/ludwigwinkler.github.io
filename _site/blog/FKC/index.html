@@ -1,0 +1,676 @@
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+  Jekyll integration by somiibo.com
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+
+<title>Feynman-Kac Correctors</title>
+<meta name="description" content="">
+
+<link rel="apple-touch-icon" sizes="180x180" href="http://localhost:4000/assets/icon/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:4000/assets/icon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:4000/assets/icon/favicon-16x16.png">
+<link rel="manifest" href="http://localhost:4000/assets/icon/manifest.json">
+<link rel="mask-icon" href="http://localhost:4000/assets/icon/safari-pinned-tab.svg" color="#5bbad5">
+<link rel="shortcut icon" href="http://localhost:4000/assets/icon/favicon.ico">
+<meta name="msapplication-config" content="http://localhost:4000/assets/icon/browserconfig.xml">
+<meta name="theme-color" content="#ffffff">
+
+<!-- CSS -->
+<link rel="stylesheet" href="http://localhost:4000/assets/css/main.css" />
+<noscript><link rel="stylesheet" href="http://localhost:4000/assets/css/noscript.css" /></noscript>
+
+    <link rel="stylesheet" href="/assets/css/syntax.css">
+	</head>
+	<body class="is-loading">
+
+		<!-- Wrapper -->
+			<div id="wrapper" class="fade-in">
+
+				<!-- Header -->
+        <header id="header">
+          <a href="http://localhost:4000/" class="logo">Ludwig Winkler</a>
+        </header>
+
+				<!-- Nav -->
+					<nav id="nav">
+
+            <ul class="links">
+  <li class=""><a href="http://localhost:4000/">Home</a></li>
+  <li class=""><a href="http://localhost:4000/blog/">Machine Learning & Math</a></li>
+  <li class=""><a href="http://localhost:4000/globalizedfinance/">Kleptocracy</a></li>
+  <li class=""><a href="http://localhost:4000/readinglist/">Reading List</a></li>
+  <li class=""><a href="http://localhost:4000/photography/">Photography</a></li>
+  <li class=""><a href="http://localhost:4000/about/">About</a></li>
+</ul>
+<!-- <ul class="links">
+  <li class=""><a href="http://localhost:4000/">Home</a></li>
+  <li class=" active "><a href="http://localhost:4000/blog/">Machine Learning & Math</a></li>
+  <li class=""><a href="http://localhost:4000/readinglist/">Reading List</a></li>
+  <li class=""><a href="http://localhost:4000/photography/">Photography</a></li>
+  <li class=""><a href="http://localhost:4000/about/">About</a></li>
+</ul> -->
+
+
+						<ul class="icons">
+              <li><a href="https://twitter.com/default" class="icon fa-twitter" rel="nofollow"><span class="label">Twitter</span></a></li>
+              <li><a href="https://github.com/default" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+				<div id="main">
+          <section class="post">
+    				<header class="major">
+      				<span class="date">18 Mar 2026</span>
+      				<h1>Feynman-Kac Correctors</h1>
+      				<p>Correct your steps.</p>
+      			</header>
+      			<div class="image main"><img src="/blog/FKC/steered_diffusion.gif" alt=""></div>
+      			<p><script>
+MathJax = {
+  tex: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    tags: 'all'
+  },
+  options: {
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+};
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async=""></script>
+
+<h2 id="fokker-planck-equation">Fokker-Planck Equation</h2>
+
+<p>The Fokker-Planck equation describes the time evolution of the probability density function $p(\mathbf{x}, t)$ of a stochastic process:</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\frac{\partial p(x, t)}{\partial t} = -\nabla \cdot \left[ \mu(x, t) p(x, t) \right] + \Delta \left[ \sigma^2(x, t) p(x, t) \right]
+\end{align*}
+$$
+</div>
+
+<p>where:</p>
+<ul>
+  <li>$\mu(x, t)$ is the drift coefficient (deterministic force)</li>
+  <li>$\sigma^2(x, t)$ is the diffusion coefficient (related to the noise strength)</li>
+  <li>$\nabla$ is the gradient operator</li>
+  <li>$\Delta = \nabla^2$ is the Laplacian operator</li>
+</ul>
+
+<p>What this essential equation tells us is how the probability density of a system’s state changes over time due to both deterministic forces (drift) and random fluctuations (diffusion). The first term on the right-hand side represents the effect of the drift, while the second term accounts for the diffusion.
+If we compute $\partial_t p(x,t)$ for a given $p(x,t)$, we can determine how the probability distribution evolves over time, which is crucial for understanding the dynamics of stochastic systems.
+The nice thing is that normalization is automatically baked into this equation. The total probability is conserved, meaning that if we integrate $p(x, t)$ over all possible states $x$, it will always equal 1 for all time $t$.</p>
+
+<p><img src="/blog/FKC/fokker_planck_gmm.gif" alt="Fokker-Planck Equation Evolution" style="max-width: 100%; height: auto; display: block; margin: 0 auto;" /></p>
+
+<h2 id="the-product-of-distributions">The product of distributions</h2>
+
+<p>The product of two distributions $p(x)$ and $q(x)$ is defined as:</p>
+<div style="overflow-x: auto;">
+$$
+(p \cdot q)(x) = \frac{p(x) q(x)}{\int p(x') q(x') dx'} = \frac{1}{Z} p(x) q(x)
+$$
+</div>
+
+<p>Why does the integral in the denominator appear? It ensures that the resulting distribution is properly normalized, meaning that the total probability integrates to 1.
+The product $p(x) q(x)$ represents the unnormalized joint distribution and therefore has the correct shape, and dividing by the integral $\int p(x’) q(x’) dx’$ normalizes it to become a valid probability distribution.</p>
+
+<h2 id="reward-tilted-sde">Reward Tilted SDE</h2>
+
+<p>We consider the product of the original distribution $q_t(x)$ and an exponential of a reward function $r_t(x)$, scaled by a factor $\beta_t$:</p>
+<div style="overflow-x: auto;">
+$$
+p_t(x) = \frac{1}{Z} \ q_t(x) \ \exp( \ \beta_t \ r(x))
+$$
+</div>
+
+<p><strong>The big question is: what is the Fokker Planck equation of $p_t(x)$ from which we can easily read off the SDE if the process evolves according to the original process dynamics of $q_t(x)$?</strong>
+Said differently, what’s the probability of a sample $x$ under the tilted $p_t$ if it evolves according to the stochastic differential equation of $q_t$?</p>
+
+<p>So we need</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\partial_t p_t(x) &amp;= - \nabla \cdot [\mu \ p_t] + \frac{\sigma_p^2}{2} \Delta p_t \\
+% &amp;= - \nabla \mu \cdot p_t - \mu \cdot \nabla p_t + \frac{\sigma_p^2}{2} \nabla \cdot [ \nabla p_t] \\
+\end{align*}
+$$
+</div>
+
+<p>where $\mu$ and $\sigma_p^2$ are the drift and diffusion of the SDE that generates $q_t$.</p>
+
+<p>In order to obtain the FPE for the tilted distribution $p_t(x)$, we will exploit the FPE in log space, which offers some nice algebraic advantages.
+To realize that we seek to obtain the log FPE, namely not $\partial_t p_t(x)$, but</p>
+<div style="overflow-x: auto;">
+$$
+\partial_t \log p_t(x) =  \partial_t\log q_t(x) + \partial_t \beta_t \ r(x) - \partial_t \log Z
+$$
+</div>
+
+<h3 id="fpe-in-log-space">FPE in log space</h3>
+
+<p>Let us first recall the log-derivative trick which we will use extensively in the following calculations. For any function (or distribution) $q_t(x)$, we have the following identities:</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\partial_t \log p_t = \frac{1}{p_t} \partial_t p_t \quad \rightarrow \quad \partial_t p_t &amp;= p_t \ \partial_t \log p_t \\
+\nabla \log p_t = \frac{1}{p_t} \nabla p_t \quad \rightarrow \quad \nabla p_t &amp;= p_t \ \nabla \log p_t \\
+\Delta p_t = \nabla \cdot \nabla p_t \quad \rightarrow \quad \Delta p_t &amp;= \nabla \cdot [p_t \nabla \log p_t]  \\
+&amp;= p_t \Delta \log p_t + \underbrace{\nabla p_t}_{=p_t \nabla \log p_t} \cdot \nabla \log p_t  \\
+&amp;= p_t \Delta \log p_t + p_t ||\nabla \log p_t||^2
+\end{align*}
+$$
+</div>
+
+<p>This allows us to substitute all the gradient calculations in the FPE of our original process $q_t$ with the log derivatives,</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\partial_t q_t(x) &amp;= - \nabla \cdot [\mu \ q_t] + \frac{\sigma_q^2}{2} \Delta q_t \\
+&amp;= - \nabla \mu_q \cdot q_t - \mu_q \cdot \nabla q_t + \frac{\sigma_q^2}{2} \nabla \cdot [ \nabla q_t] \\
+&amp; \downarrow \quad \text{transform into log space} \\
+q_t \ \partial_t \log q_t 
+&amp;= - \nabla \mu_q \cdot q_t - \mu_q \cdot q_t \ \nabla \log q_t + \frac{\sigma_q^2}{2} q_t \ \left( \Delta \log q_t + ||\nabla \log q_t||^2 \right) \\ 
+&amp; \downarrow \quad \text{divide by} \ q_t \\
+\partial_t \log q_t 
+&amp;= - \nabla \mu_q - \mu_q \cdot \nabla \log q_t + \frac{\sigma_q^2}{2} \Delta \log q_t + \frac{\sigma_q^2}{2} ||\nabla \log q_t||^2
+\end{align*}
+$$
+</div>
+
+<p>The term $\partial_t \log q_t$ is log transformed Fokker Planck equation and governs the evolution of the original distribution $q_t$ in log space.</p>
+
+<p>How $q_t$ (or $\log q_t$) evolves over time is determined by the drift $\mu_q$ and the diffusion $\sigma_q^2$ of the original process.
+We’re able to model that with the FPE of the original process $q_t$, but here we’re actually interested in the dynamics of $p_t$.
+So the question is whether we can somehow massage the term</p>
+<div style="overflow-x: auto;">
+$$
+\partial_t \log p_t(x) =  \partial_t\log q_t(x) + \partial_t \beta_t \ r(x) - \partial_t \log Z
+$$
+</div>
+<p>into the form of the FPE from which we can then read off the drift and diffusion of the SDE the tilted process $p_t$.</p>
+
+<p>In fact, we can express the change $\log q_t$ in terms of the sought-after process $p_t$ by rearranging the terms,</p>
+<div style="overflow-x: auto;">
+$$
+\log q_t = \log p_t - \beta_t \ r(x) + \log Z
+$$
+</div>
+
+<p>The derivatives of $\log q_t$ are</p>
+<div style="overflow-x: auto;">
+$$
+\nabla \log q_t = \nabla \log p_t - \beta_t \nabla r(x) \quad \text{and} \quad \Delta \log q_t = \Delta \log p_t - \beta_t \Delta r(x)
+$$
+</div>
+
+<p>Substituting these into the log FPE of $q_t$ gives us</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\partial_t \log q_t 
+&amp;= - \nabla \mu_q - \mu_q \cdot {\color{red}\nabla \log q_t} + \frac{\sigma_q^2}{2} {\color{blue}\Delta \log q_t} + \frac{\sigma_q^2}{2} {\color{green}||\nabla \log q_t||^2} \\
+&amp;= - \nabla \mu_q - \mu_q \cdot {\color{red}(\nabla \log p_t - \beta_t \nabla r(x))} + \frac{\sigma_q^2}{2} {\color{blue}(\Delta \log p_t - \beta_t \Delta r(x))} + \frac{\sigma_q^2}{2} {\color{green}||\nabla \log p_t - \beta_t \nabla r(x)||^2} \\
+&amp;= \underbrace{- \nabla \mu_q - \mu_q \cdot {\color{red}\nabla \log p_t} + \frac{\sigma_q^2}{2} {\color{blue}\Delta \log p_t} + \frac{\sigma_q^2}{2} {\color{green}||\nabla \log p_t||^2}}_{\text{log FPE of} \ p_t}
++ {\color{red} \mu_q \cdot \beta_t \nabla r(x)} - \frac{\sigma_q^2}{2} {\color{blue}\beta_t \Delta r(x)} - \frac{\sigma_q^2}{2} \beta_t^2 ({\color{green} 2 \nabla\log p_t \cdot \nabla r(x) +||\nabla r(x)||^2)}
+\end{align*}
+$$
+</div>
+
+<p>And what do we spy with our little eyes?
+The first four terms are actually the log FPE of $p_t$ itself!</p>
+
+<p>We we plug in $\partial_t \log q_t$ into $\partial_t \log p_t(x)$, we get</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\partial_t \log p_t(x)
+&amp;=  \partial_t\log q_t(x) + \partial_t \beta_t \ r(x) - \partial_t \log Z \\
+&amp;= \overbrace{\underbrace{- \nabla \mu_q - \mu_q \cdot {\color{red}\nabla \log p_t} + \frac{\sigma_q^2}{2} {\color{blue}\Delta \log p_t} + \frac{\sigma_q^2}{2} {\color{green}||\nabla \log p_t||^2}}_{\text{log FPE of} \ p_t}
++ {\color{red} \mu_q \cdot \beta_t \nabla r(x)} - \frac{\sigma_q^2}{2} {\color{blue}\beta_t \Delta r(x)} - \frac{\sigma_q^2}{2} \beta_t^2 ({\color{green} 2 \nabla\log p_t \cdot \nabla r(x) +||\nabla r(x)||^2)}}^{\partial_t \log q_t} + \partial_t \beta_t \ r(x) - \partial_t \log Z 
+\end{align*}
+$$
+</div>
+
+<p>In order to go back to the non-log FPE, we just have to multiply both sides by $p_t$ and apply the log derivative identities from above in reverse,</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+p_t \partial_t \log p_t(x)
+&amp;=  p_t \left( \partial_t\log q_t(x) + \partial_t \beta_t \ r(x) - \partial_t \log Z \right) \\
+\partial_t p_t &amp;= - \nabla \mu_q \cdot p_t - \mu_q \cdot p_t \nabla \log p_t + \frac{\sigma_q^2}{2} p_t \left( \Delta \log p_t + ||\nabla \log p_t||^2 \right)
++ p_t \left(\mu_q \cdot \beta_t \nabla r(x) - \frac{\sigma_q^2}{2} \beta_t \Delta r(x) - \frac{\sigma_q^2}{2} \beta_t^2 (2 \nabla\log p_t \cdot \nabla r(x) +||\nabla r(x)||^2) + \partial_t \beta_t \ r(x) - \partial_t \log Z \right) \\
+\partial_t p_t &amp;= - \nabla \mu_q \cdot p_t - \mu_q \cdot \nabla p_t + \frac{\sigma_q^2}{2} \left(  p_t \nabla \cdot [ \nabla \log p_t] + p_t \nabla \log p_t \cdot \nabla \log p_t \right)
++ p_t \left(\ldots \right) \\
+\partial_t p_t &amp;= - \nabla \cdot [ \mu \ p_t ] + \frac{\sigma_q^2}{2} \left( p_t \nabla \cdot [ \nabla \log p_t] + \nabla p_t  \cdot \nabla \log p_t \right)
++ p_t \left(\ldots \right) \\
+\partial_t p_t &amp;= - \nabla \cdot [ \mu \ p_t ] + \frac{\sigma_q^2}{2} \nabla \cdot [ \underbrace{p_t \nabla \log p_t}_{\nabla p_t}]
++ p_t \left(\ldots \right) \\
+\partial_t p_t &amp;= - \nabla \cdot [ \mu \ p_t ] + \frac{\sigma_q^2}{2} \Delta p_t
++ p_t \Big(\underbrace{\mu_q \cdot \beta_t \nabla r(x) - \frac{\sigma_q^2}{2} \beta_t \Delta r(x) - \frac{\sigma_q^2}{2} \beta_t^2 (2 \nabla\log p_t \cdot \nabla r(x) +||\nabla r(x)||^2) + \partial_t \beta_t \ r(x)}_{g(x) } - \partial_t \log Z \Big) \\
+\end{align*}
+$$
+</div>
+
+<p>The last thing is how we actually compute $\partial_t \log Z$.
+We can compute $\partial_t \log Z$ by differentiating the definition of $Z$.
+For notational simplicity, let us define $\tilde{p} = \int q_t \exp(\beta_t r(x)) dx$</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\partial_t \log Z &amp;= \partial_t \log \int q_t(x) \exp(\beta_t r(x)) dx \\
+&amp;= \frac{1}{Z} \ \partial_t \int q_t(x) \exp(\beta_t r(x)) dx \\
+&amp;= \frac{1}{Z} \int \partial_t \ \tilde{p}_t \ dx \\
+&amp;= \frac{1}{Z} \int \tilde{p} \ \partial_t \log \tilde{p}_t \ dx \\
+&amp;= \int p_t \ \partial_t \log \tilde{p}_t \ dx \\
+&amp;= \int p_t \ \left[  \partial_t \ \log q_t + \partial_t \beta_t \ r(x) \ \right] dx \\
+\end{align*}
+$$
+</div>
+
+<p>It should immediately be obvious that the term $\partial_t \log q_t + \partial_t \beta_t \ r(x)$ is the same term into which we’ve inserted the log derivatives.
+So we expand the $\log q_t$ in the same way as we did above, and then multiply it with the $p_t$ in the integral, we get</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\partial_t \log Z_t 
+&amp;= \int  - \nabla \cdot [ \mu \ p_t ] + \frac{\sigma_q^2}{2} \Delta p_t + p_t g(x) \ dx \\
+&amp;= \int  \partial_t p_t + p_t g(x) \ dx \\
+&amp;= \underbrace{\int  \partial_t p_t dx}_{=0} + \int p_t g(x) \ dx \\
+&amp;= \mathbb{E}_{p_t} \left[ g(x) \right]
+\end{align*}
+$$
+</div>
+<p>which is literally just repeating the same steps that we did above to transform the log FPE to the FPE.</p>
+
+<p>One of the key properties of the Fokker-Planck equation is that it conserves probability, meaning that the total probability integrates to 1 for all time $t$.
+So if we integrate all the outflows and inflows of probability across the entire state space, they should balance out to zero, ensuring that the total probability remains constant.
+If at any time step $t$, the change in probability $\partial_t$ over the entire space $x$ would not be zero, it would imply that probability is either being created or destroyed, which violates the fundamental principle of probability conservation.
+So if from one $t$ to the next $t+dt$, all the changes in probability across the state space would be $-0.1$, it would imply that the total probability has decreased by 0.1 which would render our distribution $p_t$ invalid as it would no longer integrate to 1.</p>
+
+<p>But in fact, we can show this analytically by integrating the FPE of $p_t$ over the entire state space.
+For the left hand side, we have</p>
+<div style="overflow-x: auto;">
+$$
+\int \partial_t p_t dx = \partial_t \int p_t dx = \partial_t 1 = 0
+$$
+</div>
+<p>where we’ve used Leibniz rule where we can interchange differentiation and integration for different variables.
+For the right hand side of the FPE, we have</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+&amp;\int - \nabla \cdot [ \mu \ p_t ] + \frac{\sigma_q^2}{2} \Delta p_t \ dx \\
+= &amp; \int - \nabla \cdot [ \mu \ p_t ] + \frac{\sigma_q^2}{2} \Delta p_t \ dx \\
+= &amp; \int - \nabla \mu \ p_t - \nabla p_t \mu + \frac{\sigma_q^2}{2} \nabla^2 p_t  \ dx \\
+\end{align*}
+$$
+</div>
+
+<p>Using integration by parts,</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\int f \ \nabla g \ dx = [f \ g]^{\infty}_{-\infty} - \int g \ \nabla f \ dx
+\end{align*}
+$$
+</div>
+<p>we can exploit that fact that for any reasonable probability distribution $p_t$, the probability density at the boundaries of the state space should be zero, meaning that $\lim_{x \to \infty} p_t(x) = 0$ and $\lim_{x \to -\infty} p_t(x) = 0$.</p>
+
+<p>Thus we have,</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+&amp; \int - \nabla \mu \ p_t - \nabla p_t \mu + \frac{\sigma_q^2}{2} \nabla^2 p_t  \ dx \\
+= &amp; \int - \nabla \mu \ p_t - [ p_t \ \mu ]^{\infty}_{-\infty} + p_t \nabla \mu + \frac{\sigma_q^2}{2} \nabla^2 p_t \ dx \\
+= &amp; \int \frac{\sigma_q^2}{2} \nabla \ [p_t \nabla \log p_t ] \ dx \\
+= &amp; \frac{\sigma_q^2}{2} \int  \nabla \ [p_t \nabla \log p_t ] \ dx \\
+= &amp; \frac{\sigma_q^2}{2} [p_t \nabla \log p_t ]^{\infty}_{-\infty} \\
+= &amp; \frac{\sigma_q^2}{2} \ 0
+\end{align*}
+$$
+</div>
+<p>where we’ve used the fact integration and derivatives cancel each other out while preserving the boundary evaluation conditions of $p_t$ at $\pm \infty$.</p>
+
+<p>We can also play the integration by parts game one more time and show that</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+&amp; \frac{\sigma_q^2}{2} \int  \nabla \ [p_t \nabla \log p_t ] \ dx \\
+= &amp; \frac{\sigma_q^2}{2} \int  \nabla p_t \cdot \nabla \log p_t + p_t \nabla^2 \log p_t \ dx \\
+= &amp; \frac{\sigma_q^2}{2} \int  [p_t \nabla \log p_t]^\infty_{-\infty} - p_t \nabla^2 \log p_t + p_t \nabla^2 \log p_t \ dx \\
+= &amp; \frac{\sigma_q^2}{2} \ 0
+\end{align*}
+$$
+</div>
+
+<p>All of this let’s us rewrite the FPE of our tilted distribution $p_t$ as</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\partial_t p_t &amp;= - \nabla \cdot [ \mu \ p_t ] + \frac{\sigma_q^2}{2} \Delta p_t
++ p_t \Big(g(x) - \mathbb{E}_{p_t} \left[ g(x) \right] \Big)
+\end{align*}
+$$
+</div>
+
+<p>Is it in fact quite interesting that the change of probability equation that we’ve derived consists of two different parts: the original FP equation of $p_t$ and an additional term that captures the effect of the reward tilt on the probability distribution.</p>
+
+<p>The first term consists only of the original drift $\mu_q$ and diffusion $\sigma_q^2$ of the original process $q_t$, which implies that we can model the original SDE as is.
+It is only the second term that introduces the effect of the reward tilt, modifying the probability distribution according to the function $g(x)$.
+Every term in the second part $g(x)$ contains in fact the reward function $r(x)$, whether it be $r(x)$ directly or its gradients $\nabla r(x)$ and $\Delta r(x)$, which means that the reward function is the only source of change in the probability distribution $p_t$.</p>
+
+<h2 id="the-feynman-kac-equation">The Feynman-Kac Equation</h2>
+
+<p>The Feynman-Kac equation is a fundamental result that links partial differential equations (PDEs) to expectations of stochastic processes. For a function $p$ satisfying certain boundary conditions, it defines a PDE.</p>
+
+<p>For a SDE for a particle $x_t$ defined as</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+dx_s = \mu(x_s) ds + \sigma(x_s) dW_s
+\end{align*}
+$$
+</div>
+<p>We can define two key operators:
+The first one is the the generator that acts on the test function and describes its instantaneous rate of change of the test function $\theta$ along the paths of the SDE. We’ve seen this in the Feynman Kac equation where we used it to define</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\mathcal{L}_t [\phi] = \mu(x) \cdot \nabla \phi + \frac{\sigma^2(x)}{2} \nabla^2 \phi
+\end{align*}
+$$
+</div>
+<p>where the FK equation is defined as $\partial_t \phi +\mathcal{L}_t[\phi] + g \ \phi = 0$.</p>
+
+<p>The adjoint generator acts on the probability distribution $p$ and describes how the probability distribution evolves over time under the dynamics of the SDE. It is defined as</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\mathcal{L}^*_t [p] = - \nabla \cdot [\mu(x) p] + \frac{\sigma^2(x)}{2} \nabla^2 p
+\end{align*}
+$$
+</div>
+
+<p>Both generators are linked through the identity</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\int \phi \ \mathcal{L}^*_t [p] dx = \int p \ \mathcal{L}_t [\phi] dx
+\end{align*}
+$$
+</div>
+
+<p>Now, we’re interested in some test function on $x$ that we name $\phi(x, t)$ and we’re interested in what the distribution of $\phi(x,0)$ and the end of our reverse diffusion process is.
+We have defined the probability evolution of $p$ to be governed by the Feynman-Kac PDE,</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\partial_t p_t &amp;= - \nabla \cdot [ \mu \ p_t ] + \frac{\sigma_q^2}{2} \Delta p_t
++ p_t \overbrace{\Big(g(x) - \mathbb{E}_{p_t} \left[ g(x) \right] \Big)}^{\bar{g}}
+\end{align*}
+$$
+</div>
+
+<p>This tells us how the probability distribution $p_t$ evolves over time under the influence of both the original dynamics of the SDE (captured by the first two terms) and the reward tilt (captured by the last term).</p>
+
+<h2 id="connecting-it-to-the-feynman-kac-equation">Connecting it to the Feynman Kac equation</h2>
+
+<p>In a previous <a href="https://ludwigwinkler.github.io/blog/FeynmanKac/">blog post on the Feynman-Kac equation</a>, we saw that for very particular PDE that are defined in the state space of the SDE, we can express the solution of the PDE as an expectation over the trajectories of the SDE.
+Namely, we have a PDE of the form</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+-\partial_t u(x,t) = \mu(x,t) \nabla u(x,t) + \frac{1}{2}\sigma^2(x,t) \nabla^2 u(x,t) + g(x,t) u(x,t)
+\end{align*}
+$$
+</div>
+<p>subject to the terminal condition $u(x,T) = \Phi_T(x)$, then the solution of this PDE is given by the Feynman-Kac formula.
+A straightforward option would be to evolve this very particular PDE backward in time form $T$ to an earlier $t$ and then read off the solution at $t=0$. This would give us $u(x,t)$.</p>
+
+<p>If the dynamics of $x$ are governed by the Ito drift-diffusion process defined above, then the solution of the PDE is given by the Feynman-Kac formula</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+u(x,t) = \mathbb{E} \Big[ \Phi_T(x_T) \exp \left( \int_t^T g(x_s, s) ds \right) \Big| x_t = x \Big]
+\end{align*}
+$$
+</div>
+<p>where the expectation is taken over all trajectories of the SDE that start at $x$ at time $t$ and evolve according to the dynamics of the SDE until time $T$ with values $x_T$.</p>
+
+<p>We now have two differential equations</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}\partial_t p_t &amp;= - \nabla \cdot [ \mu \ p_t ] + \frac{\sigma_q^2}{2} \Delta p_t
++ p_t \Big(g(x) - \mathbb{E}_{p_t} \left[ g(x) \right] \Big) \\
+g(x,t) = &amp; \mu_q \cdot \beta_t \nabla r(x) - \frac{\sigma_q^2}{2} \beta_t \Delta r(x) - \frac{\sigma_q^2}{2} \beta_t^2 (2 \nabla\log p_t \cdot \nabla r(x) +||\nabla r(x)||^2) + \partial_t \beta_t \ r(x) \\
+-\partial_t u(x,t) &amp;= \mu(x,t) \nabla u(x,t) + \frac{1}{2}\sigma^2(x,t) \nabla^2 u(x,t) + g(x,t) u(x,t)
+\end{align*}
+$$
+</div>
+
+<p>The samples $x$ evolve according to the $dx = \mu_t dt + \sigma_t dW_t$ and induce the stochastic process $q_t$ but we’re interested in the distribution $p_t(x) = \frac{1}{Z} q_t(x) \exp(\beta r(x))$ and want to know how likely it is to sample $x$ from $p_t$ if we evolve according to the SDE of $q_t$.
+The function $g$ consists almost exclusively of terms that contain the reward function $r(x)$, which nicely shows that any change in the probability distribution $p_t$ is solely due to the reward tilt encapsulated in $g$.</p>
+
+<p>Let’s assume a test function $u(x,t)$ with some terminal condition $u(x,T)$ and we evolve it backward in time according to the Feynman-Kac PDE over the trajectories of the SDE defined by $\mu$ and $\sigma$. As we’re evolving some terminal function backwards in time, this is obviously very closely linked to the Kolmogorov backward equation.</p>
+
+<p><strong>The question the FKC correctors try to answer is: Given my samples $x$ generated from $q_t$ but tilted towards some reward function $r(x)$, what is the expectation of $u(x,T)$ if I were to evolve further from $t$ to $T$ according to the original SDE of $q_t$?</strong></p>
+
+<p>We’re interested in the expectation</p>
+
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\mathbb{E}_{p_T} \Big[ u(x,T) \ \Big| \ x_t = x \Big] = \int u(x,T) \ p_T(x) dx = \int u(x,T) \ \frac{1}{Z_T} q_T(x) \exp(\beta_T r(x)) dx
+\end{align*}
+$$
+</div>
+
+<p>In the equation above, $q$ generates the samples $x$ according to the SDE, $r(x)$ tilts our distribution towards higher rewards such that our samples $x$ should exhibit certain characteristics favoured by $r(x)$ and then we want to know the expected value of $u(x,T)$ under this tilted distribution.</p>
+
+<p>Now we can ask ourselves how $\int u(x,T) \ p_T(x) dx$ evolves over time. To make things a tad easier, we’ll for now just consider the unnormalized distribution $\tilde{p}_t(x) = q_t(x) \exp(\beta_t r(x))$ and then we can later on divide by (some estimate of) $Z_t$ to get the normalized distribution $p_t$.
+Fortunately, every component in $\partial_t p_t$ is a function of $p_t$, so we extract $1/Z_t$ out of every component to get</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\partial_t \tilde{p}_t &amp;= - \nabla \cdot [ \mu \ \tilde{p}_t ] + \frac{\sigma_q^2}{2} \Delta \tilde{p}_t
++ \tilde{p}_t \bar{g}(x)
+\end{align*}
+$$
+</div>
+<p>The proof for this is in the FKC paper, but it is quite intuitive if you think about it. The original FPE of $p_t$ is linear in $p_t$, so if we replace $p_t$ with $\tilde{p}_t / Z_t$, we can just pull out the $1/Z_t$ from every term and get the FPE of $\tilde{p}_t$.
+The authors show the consistency of this in the appendix.</p>
+
+<p>Thus we’re want to know</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\frac{d}{dt} \int u(x,t) \ \tilde{p}_t(x) dx
+\end{align*}
+$$
+</div>
+<p>behaves.
+Using Leibniz rule, we can interchange differentiation and integration for different variables, which gives us</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\frac{d}{dt} \int u(x,t) \ \tilde{p}_t(x) dx 
+&amp;= \int \partial_t u(x,t) \ \tilde{p}_t(x) dx + \int u(x,t) \ \partial_t \tilde{p}_t(x) dx \\
+&amp;= \int \left(-\mu(x,t) \nabla u(x,t) - \frac{1}{2}\sigma^2(x,t) \nabla^2 u(x,t) - g(x,t) u(x,t) \right) \ \tilde{p}_t(x) dx \\
+&amp; \quad + \int u(x,t) \ \left(- \nabla \cdot [ \mu \ \tilde{p}_t ] + \frac{\sigma_q^2}{2} \Delta \tilde{p}_t + \tilde{p}_t \bar{g}(x) \right) dx \\
+&amp;= \int \left(-\mu(x,t) \nabla u(x,t) - \frac{1}{2}\sigma^2(x,t) \nabla^2 u(x,t) - g(x,t) u(x,t) \right) \ \tilde{p}_t(x) dx \\
+&amp; \quad + \int \left(\mu(x,t) \nabla u(x,t) + \frac{1}{2}\sigma^2(x,t) \nabla^2 u(x,t) + g(x,t) u(x,t) \right) \ \tilde{p}_t(x) dx \quad \quad | \quad \quad \text{integration by parts with } \tilde{p}_t(\pm \infty) = 0 \\
+&amp;= 0
+\end{align*} 
+$$
+</div>
+<p>The integration by parts substitution is a pure algebraic busy work and I skipped it here. It’s just applying the product rule many times to fully separate every term, then applying integration by parts to every term by pulling in $u$ and recombining the terms.</p>
+
+<p>Integrating the dynamics from $0$ to $T$ gives us</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\int_0^T \frac{d}{dt} \int u(x,t) \ \tilde{p}_t(x) dx dt
+&amp;= \left[ \int u(x,t) \ \tilde{p}_t(x) dx \right]^T_0 \\
+&amp;= \int u(x,T) \ \tilde{p}_T(x) dx - \int u(x,0) \ \tilde{p}_0(x) dx \\ 
+&amp;= 0 \\
+&amp; \downarrow \quad \text{rearranging} \\
+\int u(x,T) \ \tilde{p}_T(x) dx &amp;= \int u(x,0) \ \tilde{p}_0(x) dx
+\end{align*}
+$$
+</div>
+
+<p>All that remains is substituing back the Feynman-Kac formula for $u(x,0)$ and substituting $\tilde{p}_t = p_t Z_t$, which gives us</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+\int u(x,T) \ \tilde{p}_T(x) dx &amp;= \int \mathbb{E} \Big[ \Phi_T(x_T) \exp \left( \int_0^T g(x_s, s) ds \right) \Big| x_0 = x \Big] \ \tilde{p}_0(x) dx \\ 
+Z_T \int u(x,T) \ p_T(x) dx &amp;= Z_0 \int \mathbb{E} \Big[ \Phi_T(x_T) \exp \left( \int_0^T g(x_s, s) ds \right) \Big| x_0 = x \Big] \ p_0(x) dx
+\end{align*}
+$$
+</div>
+
+<p>Since at $t=0$, we have $p_0(x) = q_0(x) \exp(\beta_0 r(x)) / Z_0$ with $\beta_0 = 0$ we get $p_0(x) = q_0(x) / Z_0$ with $Z_0 = 1$, we can simplify the right hand side to get</p>
+<div style="overflow-x: auto;">
+$$
+\begin{align*}
+Z_T \int u(x,T) \ p_T(x) dx &amp;= \int \mathbb{E} \Big[ \Phi_T(x_T) \exp \left( \int_0^T g(x_s, s) ds \right) \Big| x_0 = x \Big] \ q_0(x) dx \\
+Z_T \mathbb{E}_{p_T} [ u(x,T)] &amp;= \mathbb{E}_{q_0} \Big[ \mathbb{E} \Big[ \Phi_T(x_T) \exp \left( \int_0^T g(x_s, s) ds \right) \Big| x_0 = x \Big] \Big] \\
+\mathbb{E}_{p_T} [ u(x,T)] &amp;= \frac{1}{Z_T} \mathbb{E} \Big[ \Phi_T(x_T) \exp \left( \int_0^T g(x_s, s) ds \right) \Big| x_0 = x \Big] \\
+\end{align*}
+$$
+</div>
+
+<p>This is pure importance sampling on a trajectory level, where we sample trajectories from the original SDE, calculate $g(x_s, s)$ along the trajectory and simply integrating it in log space as a simple sum over the time steps.
+In the <a href="https://ludwigwinkler.github.io/blog/ESSSMC/">SMC blog post</a> we saw that we can use the weights from SMC to estimate $\hat{Z}_T = 1/K \sum_k^K \exp(\int_0^T g(x,s) ds)$, which gives us a practical way to compute the expectation of $u(x,T)$ under the tilted distribution $p_T$ by sampling trajectories from the original SDE and weighting them according to the reward tilt encapsulated in $g$.</p>
+
+<p><img src="/blog/FKC/importance_weights.gif" alt="Importance Weighting of Generated Samples" style="max-width: 100%; height: auto; display: block; margin: 0 auto;" /></p>
+</p>
+      		</section>
+
+          <!-- <div class="comments-wrapper">
+          <div id="disqus_thread"></div> -->
+          <!-- <script>
+              /**
+               *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+               *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
+               */
+
+              var disqus_config = function () {
+                  this.page.url = '/blog/FKC/';  /*Replace PAGE_URL with your page's canonical URL variable*/
+                  this.page.identifier = '/blog/FKC/'; /*Replace PAGE_IDENTIFIER with your page's unique identifier variable*/
+              };
+
+              (function() {  /* dont endit below this line */
+                  var d = document, s = d.createElement('script');
+
+                  s.src = 'https://default.disqus.com/embed.js';
+
+                  s.setAttribute('data-timestamp', +new Date());
+                  (d.head || d.body).appendChild(s);
+              })();
+          </script> -->
+          <!-- <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript> -->
+        <!-- </div>/.comments-wrapper -->
+
+
+					<!-- Footer -->
+						<footer>
+              <ul class="actions">
+                <li><a href="http://localhost:4000/blog/" class="button">My Blog</a></li>
+              </ul>
+						</footer>
+					</div>
+
+				<!-- Footer -->
+        <!-- <footer id="footer">
+  <section>
+    <form method="POST" action="https://formspree.io/">
+      <div class="field">
+        <label for="name">Name</label>
+        <input type="text" name="name" id="name" />
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="text" name="email" id="email" />
+      </div>
+      <div class="field">
+        <label for="message">Message</label>
+        <textarea name="message" id="message" rows="3"></textarea>
+      </div>
+      <ul class="actions">
+        <li><input type="submit" value="Send Message" /></li>
+      </ul>
+    </form>
+  </section>
+  <section class="split contact">
+    <section class="alt">
+      <h3>Location</h3>
+      <p>Berlin, Germany</p>
+    </section>
+    <section>
+      <h3>Phone</h3>
+      <p><a href="tel:"></a></p>
+    </section>
+    <section>
+      <h3>Email</h3>
+      <p><a href="mailto:"></a></p>
+    </section>
+    <section>
+      <h3>Social</h3>
+      <ul class="icons alt">
+        <li><a href="https://twitter.com/ludiXIVwinkler" class="icon fa-twitter" rel="nofollow"><span class="label">Twitter</span></a></li>
+        <!-- <li><a href="https://facebook.com/default" class="icon fa-facebook" rel="nofollow"><span class="label">Facebook</span></a></li> -->
+        <!-- <li><a href="https://instagram.com/default" class="icon fa-instagram" rel="nofollow"><span class="label">Instagram</span></a></li> -->
+        <li><a href="https://github.com/ludwigwinkler" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
+      </ul>
+    </section>
+  </section>
+</footer>
+<!-- Copyright -->
+<div id="copyright">
+  <ul>
+       <li>&copy; HTML5 UP</li>
+       <li>Design by <a href="https://html5up.net" rel="nofollow">HTML5 UP</a></li>
+       <li>Jekyll Integration by <a href="https://soundgrail.com">SoundGrail</a></li>
+       <li>Theme made by <a href="https://github.com/iwiedenm/jekyll-theme-massively-src"> iwiedenm</a></li>
+ </ul>
+</div>
+ -->
+
+			</div>
+
+      <!-- Scripts -->
+  		<!-- <!-- DYN -->
+<script src="http://localhost:4000/assets/js/jquery.min.js"></script>
+<script src="http://localhost:4000/assets/js/jquery.scrollex.min.js"></script>
+<script src="http://localhost:4000/assets/js/jquery.scrolly.min.js"></script>
+<script src="http://localhost:4000/assets/js/skel.min.js"></script>
+<script src="http://localhost:4000/assets/js/util.js"></script>
+<script src="http://localhost:4000/assets/js/main.js"></script>
+ -->
+			<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=default"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments)};
+  gtag('js', new Date());
+
+  gtag('config', 'default');
+</script>
+ -->
+
+	</body>
+</html>

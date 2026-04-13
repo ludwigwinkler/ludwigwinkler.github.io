@@ -5,26 +5,14 @@ date:   2018-04-24
 excerpt: "Using Gaussian Processes for Optimization"
 image: "/images/BO_EI4.png"
 ---
-<head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+{% include mathjax3.html %}
 
 ## Bayesian Optimization
 
 As stated above, many problem settings in engineering and science can be formulated as optimization problems of a criterion, commonly called an objective function, $\mathcal{F}(x)$ with respect to some argument $x$.
 The goal of any optimization is to find the global optimum of such a function $\mathcal{F}(x)$.
 For linear or convex optimization problems, this is usually feasible, yet optimization becomes difficult for non-linear objective functions.
-Bayesian optimization tries to tackle such non-linear objective functions by searching for a global optimum in a probabilistical manner.
+Bayesian optimization tries to tackle such non-linear objective functions by searching for a global optimum in a probabilistic manner.
 
 ## Optimization
 
@@ -46,7 +34,7 @@ $$
 $$
 
 Since $\mathcal{F}(x)$ is often a complicated, non-linear function the solution is searched for in an iterative manner.
-Most optimization algorithms evaluate the objective function $\mathcal{F}(x)$ through a set of succesive queries $x_{1:n}=\\{ x_i \\}\_{i=1}^n \subset \mathcal{X}$ such that the information of the previous evaluations guide the next evaluation $x\_{n+1}$ through a utility function
+Most optimization algorithms evaluate the objective function $\mathcal{F}(x)$ through a set of successive queries $x_{1:n}=\\{ x_i \\}\_{i=1}^n \subset \mathcal{X}$ such that the information of the previous evaluations guide the next evaluation $x\_{n+1}$ through a utility function
 
 $$
 \begin{align}
@@ -70,7 +58,7 @@ The next evaluation is chosen such that it maximizes the acquisition function, i
 By computing posterior distributions over all predictions at once, Gaussian processes have a powerful property which enables them to search for an optimum globally.
 The posterior distributions allow Gaussian processes to balance both exploitation and exploration of the set of feasible solutions by incorporating their uncertainty into optimization task.
 
-The acqusition function $\Lambda(x \ | \ x\_{1:n})$ serves as an improvement criterion for the yet unevaluated feasible solutions.
+The acquisition function $\Lambda(x \ | \ x\_{1:n})$ serves as an improvement criterion for the yet unevaluated feasible solutions.
 The improvement is computed relative to the optimal solution $x^+ \in x_{1:n}$ in the set of previous evaluations $x_{1:n}$,
 
 $$

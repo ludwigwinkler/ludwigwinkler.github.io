@@ -73,33 +73,28 @@
       				<p>Save yourself a lot of Bayes with a linear function</p>
       			</header>
       			<div class="image main"><img src="../../blog/blogthumbnails/simple_reverse_sde.png" alt=""></div>
-      			<p><head>
-<!-- <script type="text/x-mathjax-config">  -->
-  <!-- MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script> -->
-<!-- uncomment two lines above and remove the html css to svg lines -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    TeX: { equationNumbers: { autoNumber: "all" } },
-    tex2jax: {
-      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      displayMath: [['$$','$$'], ['\[' , '\]'], ['\\[', '\\]']],
-      processEscapes: true
-    },
-    "HTML-CSS": { linebreaks: { automatic: true } },
-    CommonHTML: { linebreaks: { automatic: true } },
-    SVG: { linebreaks: { automatic: true } }
-    });
+      			<p><script>
+MathJax = {
+  tex: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    tags: 'all'
+  },
+  options: {
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+};
 </script>
-<script type="text/javascript" async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-</head>
-<p>\(\newcommand{\Efunc}[1]{\mathbb{E}\left[ #1\right]}
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async=""></script>
+
+\[\newcommand{\Efunc}[1]{\mathbb{E}\left[ #1\right]}
 \newcommand{\Vfunc}[1]{\mathbb{V}\left[ #1\right]}
 \newcommand{\KL}[2]{\text{KL}\left[ #1 \ || \ #2 \right]}
 \newcommand{\denom}[1]{\frac{1}{#1}}
 \newcommand{\drift}{\mu(X_t, t)}
-\newcommand{\diff}{\sigma(X_t, t)}\)</p>
+\newcommand{\diff}{\sigma(X_t, t)}\]
 
 <p>We start out with the Fokker-Planck equation (FPE) which relates the change over time for the probability for a specific value of $x$ with a diffusion term $\sigma(t)$ which is only dependent on the time,
 \(\begin{align}
@@ -129,7 +124,7 @@ But some marbles will move slower and some marbles will move faster and thus the
 After sufficient time they will all be at the bottom of the staircase in another bucket (we built a collection contraption).
 There the probability distribution will be highly concentrated again as all marbles will be found inside the very compact space of the bottom bucket.</p>
 
-<p>So obtaining the FPE is of the harder, but more rewarding task as it gives us the underlying probability distribution over time and space instead of a bunch of trajectories.</p>
+<p>So obtaining the FPE is the harder, but more rewarding task as it gives us the underlying probability distribution over time and space instead of a bunch of trajectories.</p>
 
 <p>Now we consider a time reversion $\color{blue}{\tau(t)} = 1 - t$ and are interested in what the change of the probability distribution is under this reversed time index,
 \(\begin{align}
@@ -185,7 +180,7 @@ In the equations below, we incorporate the negative and the positive side of the
 	           &amp; + \alpha \ \sigma(\tau(t)) dW(\tau)
 \end{align}\)</p>
 
-<p>In the intuition is quite clear: If we add extra diffusion to our forward process, we will ‘diffuse’ more and the probability mass will be distributed over a larger, more spread out area.
+<p>The intuition is quite clear: If we add extra diffusion to our forward process, we will ‘diffuse’ more and the probability mass will be distributed over a larger, more spread out area.
 Therefore, if we want to invert this particular stochastic process, we need to increase the score term dependent on the \(\alpha\) which pushes the particles back into the high probability region.</p>
 </p>
       		</section>

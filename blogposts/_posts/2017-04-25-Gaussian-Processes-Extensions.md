@@ -6,19 +6,7 @@ date:   2018-04-23
 excerpt: "Extensions to Gaussian Processes"
 image: "/images/GP_4Obs_Deriv.png"
 ---
-<head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+{% include mathjax3.html %}
 
 ## Noise
 
@@ -77,8 +65,8 @@ $$
 where $I$ is an identity matrix $I\in \mathbb{R}^{N \times N}$.
 While the noise itself decreases the precision with which we can fit the GP to the observations, it has convenient numerical properties.
 The Gramian block matrix $K_{XX}$ has to be inverted during the computation of the mean and covariance function.
-Due to possible rank defincencies, $K_{XX}$ can become singular which prohibits its inversion.
-Rank definencies in the covariance matrix can arise when two observations are numerically almost identical.
+Due to possible rank deficiencies, $K_{XX}$ can become singular which prohibits its inversion.
+Rank deficiencies in the covariance matrix can arise when two observations are numerically almost identical.
 Incorporating the noise variance into the covariance matrix can be thus regarded as a regularization of the Gaussian process.
 This opens the possibility of different regularization themes as both the mean and variance can be independently regularized with respect to the inverse of $K_{XX}$ in $\mu(y\_* )$ and $\Sigma(y\_* )$.
 
@@ -130,7 +118,7 @@ $$
 $$
 
 where the parameters $\theta$ determine the Gramian matrix $k(XX;\theta)$.
-The maximization of the data likelihood is commonly reformulated as a minimzation of the negative log-likelihood.
+The maximization of the data likelihood is commonly reformulated as a minimization of the negative log-likelihood.
 Working with the log-probability offers a higher numerical stability with respect to floating-point arithmetic of modern computers.
 
 $$
@@ -265,8 +253,8 @@ $$
 $$
 
 While derivative observations themselves are usually hard to come by for computationally expensive functions $f(x)$, derivative observations are of numerical advantage in cases where observations lie very close to each other.
-In these cases the inversion can become unstable or even impossible due to the rank definciency.
-Derivative observations pose a useful way to circumvent such rank definciencies for very close observations by combining two observations into one observation and a derivative observation.
+In these cases the inversion can become unstable or even impossible due to the rank deficiency.
+Derivative observations pose a useful way to circumvent such rank deficiencies for very close observations by combining two observations into one observation and a derivative observation.
 
 A Gaussian process:
 

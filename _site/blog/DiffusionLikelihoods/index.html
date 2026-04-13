@@ -73,23 +73,21 @@
       				<p>Mr. Fokker and Mr. Planck, meet Ito-San</p>
       			</header>
       			<div class="image main"><img src="/blog/ItoDensityEstimator.png" alt=""></div>
-      			<p><head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-          TeX: {
-                equationNumbers: { autoNumber: "all" },
-                extensions: ["AMSmath.js", "AMSsymbols.js", "cancel.js"]
-            },
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+      			<p><script>
+MathJax = {
+  tex: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    tags: 'all'
+  },
+  options: {
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+};
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async=""></script>
 
 <p>Let’s start out this blog post with the one equation that is at the heart of diffusion models, the Fokker-Planck equation,</p>
 <div style="overflow-x: auto;">
@@ -282,7 +280,7 @@ $$
 $$
 </div>
 
-<p>Furthemore the term $J_\mu \epsilon$ is a Jacobian-vector product and can be computed efficiently using automatic differentiation.
+<p>Furthermore the term $J_\mu \epsilon$ is a Jacobian-vector product and can be computed efficiently using automatic differentiation.
 Effectively, we’re backpropagating the vector $\epsilon$ through the neural network evaluation ( in pseudo-code <code class="language-plaintext highlighter-rouge">torch.autograd.grad(outputs=mu, inputs=x, grad_outputs=epsilon)</code>) and contract it with <code class="language-plaintext highlighter-rouge">epsilon</code> again.
 We do that for multiple samples of $\epsilon$ and average the results to obtain an unbiased estimate of the trace of the Jacobian matrix.
 Taking a single sample of $\epsilon$ and computing the Jacobian-vector product is computationally more efficient than computing the full Jacobian matrix but comes with a higher estimator variance.</p>
@@ -489,7 +487,7 @@ Whereas the probability flow formulation relies on integrating an ODE, here we c
 
 <h3 id="transforming-flows-to-diffusion-models-and-back">Transforming Flows to Diffusion Models and back</h3>
 
-<p>We saw in the beginning how the probability flow formulation of a SDE can extracted from the corresponding FPE.
+<p>We saw in the beginning how the probability flow formulation of a SDE can be extracted from the corresponding FPE.
 This is an ordinary differential equation which we can integrate to obtain the log-likelihood of the observed data given a diffusion model.
 The Ito density estimator, on the other hand, is a stochastic differential equation which we can solve to obtain the log-likelihood of the observed data given a diffusion model.</p>
 
@@ -503,7 +501,7 @@ Can we also transform a diffusion model into a flow?</p>
 \end{align}\)</p>
 
 <p>Ideally we would like to have the integrated diffusion model $\int_0^t dX_t = X_t$ for both the flow matching and the diffusion model.
-If that were the case, then integrating the diffusion model would yield a random variable witch an identical probability distribution as the flow matching variable $X_t$.</p>
+If that were the case, then integrating the diffusion model would yield a random variable with an identical probability distribution as the flow matching variable $X_t$.</p>
 
 <p>Since integrating stochastic dynamics is always a hassle, we will first look at the average dynamics by taking the expectation over both random variables $dX_t$ and $X_t$.
 Thus we get 
@@ -527,7 +525,7 @@ x_t &amp;= x_0 \ \exp\left[ \int_0^t -f_s ds\right] \\
 \alpha_t &amp;= \exp\left[ \int_0^t -f_s ds \right]
 \end{align}\)</p>
 
-<p>Comparing that to $x_t = \alpha_t x_0$ we have succesfully identified $\alpha_t = \exp[ \int_0^t -f_s ds]$.</p>
+<p>Comparing that to $x_t = \alpha_t x_0$ we have successfully identified $\alpha_t = \exp[ \int_0^t -f_s ds]$.</p>
 
 <p>Equating $\sigma_t$ with $g_t$ will be slightly more difficult because we have to factor in the effect of $-f_t X_t$.
 To properly quantify the relationship between $\sigma_t$ and $g_t$, we would have to first eliminate the effect of the drift.
@@ -556,7 +554,7 @@ and pulling the initial condition $y_0$ over to the left side to adjust for the 
 \(\begin{align}
 \mathbb{V}[y_t-y_0] &amp;= \mathbb{E}\left[ ( y_t - y_0 - \mathbb{E}[y_t - y_0])^2 \right] \\
 &amp;= \mathbb{E}\left[ \left( \int_0^t \frac{g_s}{\alpha_s} dW_s  - \underbrace{\mathbb{E}\left[\int_0^t \frac{g_s}{\alpha_s} dW_s \right]}_{\mathbb{E}[dW_s]=0} \right)^2 \right] \\
-&amp;= \mathbb{E}\left[ \left( \int_0^t \frac{g_s}{\alpha_s} dW_s  \right)^2 \right] \quad \quad | \quad \quad \text{Ito Isommetry} \\
+&amp;= \mathbb{E}\left[ \left( \int_0^t \frac{g_s}{\alpha_s} dW_s  \right)^2 \right] \quad \quad | \quad \quad \text{Ito Isometry} \\
 &amp;= \int_0^t \left(\frac{g_s}{\alpha_s}\right)^2 ds
 \end{align}\)</p>
 

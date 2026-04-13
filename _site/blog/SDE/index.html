@@ -73,19 +73,21 @@
       				<p>A Wiener twist to differential equations</p>
       			</header>
       			<div class="image main"><img src="/blog/SDE/EqVsDiffEq.png" alt=""></div>
-      			<p><head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+      			<p><script>
+MathJax = {
+  tex: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    tags: 'all'
+  },
+  options: {
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+};
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async=""></script>
 
 <h4 id="non-differential-equations">Non-Differential Equations</h4>
 
@@ -145,7 +147,7 @@ For a more intuitive notation we can drop it and equate the change $d/dt x(t)$ w
 
 <p>which simply states that a “super small” change $dx(t)$ in $x(t)$ corresponds to function $f(t, x(t))$ “scaled” by the “super small” time difference $dt$.</p>
 
-<p>Below is an image juxtaposing what we refer to as non-differential equations and a differential equations with respect to time:</p>
+<p>Below is an image juxtaposing what we refer to as non-differential equations and differential equations with respect to time:</p>
 
 <p><img src="/blog/SDE/EqVsDiffEq.png" alt="" class="align=&quot;center&quot;" height="50%" width="100%" /></p>
 
@@ -157,7 +159,7 @@ The hotter the coffee mug, the larger the temperature gradient between coffee mu
 So the larger the gradient the more temperature (thermal energy) is passed off into the environment of the hot coffee mug, ergo the temperature decrease is faster for coffee mugs with high temperatures.
 (To be frank, this is not the most physically correct way of how energy behaves, but this is just for an intuitive visualization.)</p>
 
-<p>The grey lines in in the right plot model the changing temperatures over time of three coffee mugs with different temperatures.
+<p>The grey lines in the right plot model the changing temperatures over time of three coffee mugs with different temperatures.
 We model the thermal energy dissipation through a (ordinary) differential equation and would like to know what the temperature of the three coffee mugs will be at a later point in time.
 Computing the later temperature amounts to “little more” than following the arrows.
 These arrows are computed through the differential equation and tell us what the temperature change $dx(t)$ is for a mug with a specific temperature $x(t)$ at time $t$.</p>
@@ -188,7 +190,7 @@ x(T) &amp;= x(0) + \underbrace{\int_{t=0}^T dx(t)}_{\text{sum up all the changes
 
 <p>It turns out that the integral above (and its respective discrete approximation) is all we need to solve (ordinary) differential equations.
 More importantly it’s all we need to get a basic understanding of stochastic differential equations.
-But before we can proceed to stochastic differential equations, we have to talk above stochasticity over time.</p>
+But before we can proceed to stochastic differential equations, we have to talk about stochasticity over time.</p>
 
 <p>Enter Wiener processes …</p>
 
@@ -228,9 +230,9 @@ Instead we have to treat the position of the particle $x_t$ itself as a random v
 The usage of the Normal distribution $\mathcal{N}(\mu, \sigma)$ is prevalent in a lot of modelling approaches due to the convergence of sequences of random variables and it furthermore has nice theoretical properties.
 For that reason we will model the probability of the random movement $\epsilon$ with a standard normal distribution, namely $\epsilon \sim \mathcal{N}(0,1)$.</p>
 
-<p>Secondly we will chose the “amount of time $dt$” to actually be $\sqrt{dt}$, the reason of which will be clear in an instant.</p>
+<p>Secondly we will choose the “amount of time $dt$” to actually be $\sqrt{dt}$, the reason of which will be clear in an instant.</p>
 
-<p>Thirdly, we want to particle to start at zero, so $x_0 = 0$.</p>
+<p>Thirdly, we want the particle to start at zero, so $x_0 = 0$.</p>
 
 <p>Given these modelling assumptions, we are interested where the particle could turn up at a later point in time, so we want to know what $x_T$ is:
 \(\begin{align}
@@ -316,7 +318,7 @@ The most that we can do is thus to treat $x_T$ as a probability distribution for
 </code></pre></div></div>
 
 <p>We can observe both the sampled mean and the variance (in red) of our 100 Wiener processes match the expected mean and variance (in gray) up to the noise that we introduce through sampling.
-Basically all the paths stay around zero where they start and they spread out according to our analytical computed variance of $\mathbb{V}[x_t] = t$ over time.</p>
+Basically all the paths stay around zero where they start and they spread out according to our analytically computed variance of $\mathbb{V}[x_t] = t$ over time.</p>
 
 <p>Since we chose $\epsilon$ and $”dt”$ smartly, we arrive at quite succinct definitions for the mean and variance of this random variable $x_T$.
 In fact, this specific kind of stochastic process has a specific name.

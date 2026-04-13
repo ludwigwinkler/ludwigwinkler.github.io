@@ -6,19 +6,7 @@ date:   2024-05-01
 excerpt: "The Link between Discrete and Continuous Diffusion"
 image: "/blog/Ehrenfest/OUGif.gif"
 ---
-<head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+{% include mathjax3.html %}
 
 One of the things that kept me from working on stochastic processes in discrete spaces was their somewhat unintuitive definition.
 
@@ -33,7 +21,7 @@ $$
 One problem we have with SDE's is that the Wiener process $W_t$ is non-differentiable and thus there exist few higher order or adaptive solvers for SDE's.
 That means we're constrained to the relatively small step sizes $dt$.
 Small step sizes enable you to model the deterministic drift $\mu(X_t, t)$ accurately.
-The Wiener proces is stochastic and in that sense hardly predictable in any case as its marginal distribution $W_t \sim \mathcal{N}(0, t)$ is known anyway.
+The Wiener process is stochastic and in that sense hardly predictable in any case as its marginal distribution $W_t \sim \mathcal{N}(0, t)$ is known anyway.
 
 Alternatively, one could try to tackle the Fokker-Planck equation (FPE) to circumvent laborsome simulation, but usually solving the FPE is even harder.
 There is actually a nice connection correspondence between sampling SDE's and solving the probability flow via a probability flow in generative diffusion models.
@@ -59,11 +47,11 @@ Said more simply: In case we jump at time $t$, the state at $t$ will be the 'nex
 
 These jumps between states are stochastic and occur at stochastic times (check the x axis in the plot).
 The probability whether we do a jump is determined by the corresponding transition probability $p_{t+\Delta t | t}(y | x)$.
-If we were working with a discrete time Markov chain we would be done know since time would be discretized in $\Delta t$ segments anyway.
+If we were working with a discrete time Markov chain we would be done now since time would be discretized in $\Delta t$ segments anyway.
 But we're dealing with continuous time so the discrete time transition probability doesn't cut it.
 We're interested in the transition **rate**.
 
-The rate of a jump from state $x$ to state $y$ is the infinitissimal change in the transition probability $p_{t+\Delta t | t}(y|x)$ which denotes the probability of jumping from state $x$ to state $y$ at time $t$ for an infinitissimally small $\Delta t$:
+The rate of a jump from state $x$ to state $y$ is the infinitesimal change in the transition probability $p_{t+\Delta t | t}(y|x)$ which denotes the probability of jumping from state $x$ to state $y$ at time $t$ for an infinitesimally small $\Delta t$:
 $$
 \begin{align}
 \lim_{\Delta t \rightarrow 0^+} p_{t + \Delta t | t}(y | x) = r_t(y|x)
@@ -135,7 +123,7 @@ Thus, the birth rate is maximal when $x=0$ for which we have $r(x+1 | x) = \frac
 Similarly, the death rate will be maximal when $x=S$ and minimal when $x=0$.
 The interesting connection arises when we observe the two rates in tandem. 
 At $x=0$ only the birth rate will be non-negative such that we will do an increment step with absolute surety. 
-Equally, at $x=S$, the birth rate will be zero and the we will make a decrement move with the death rate with absolute certainty.
+Equally, at $x=S$, the birth rate will be zero and we will make a decrement move with the death rate with absolute certainty.
 **The result of this is that the Ehrenfest process is a birth-death process which is automatically confined to the state space $x \in \\{0, \ldots, S\\}$.**
 
 As a little thought experiment, one could think of what happens if we simulate such a process for a very long time.
@@ -206,7 +194,7 @@ D(x') &= \sum_{y'\neq x'} (y'-x') (y'-x')^\top r(y'|x') \\
 $$
 
 Thus, in law, the scaled Ehrenfest process converges to a continuous state space stochastic process with the drift $-x$ and the diffusion $2$.
-This just so happens to identical to the Ornstein-Uhlenbeck process, $dX_t = -X_t dt + \sqrt{2} dW_t$.
+This just so happens to be identical to the Ornstein-Uhlenbeck process, $dX_t = -X_t dt + \sqrt{2} dW_t$.
 The OU process is used ubiquitously in variance preserving diffusion processes in generative diffusion models.
 
 We can visualize this quite succinctly (shout out to my co-author Lorenz Richter) and have a look at the dynamics of the scaled Ehrenfest process with increasing state spaces.
@@ -231,7 +219,7 @@ That was the forward process but naturally in generative diffusion modelling we'
 For that we first have to derive the reverse time rates.
 
 If we aim to revert a stochastic process in time, we have to make sure that in fact the forward evolution is exactly the same as the backward evolution.
-Otherwise, if one of the two directions behave differently, there quite literally not the same.
+Otherwise, if one of the two directions behave differently, they're quite literally not the same.
 
 The necessary condition of a time reversal (also prominent in MCMC) is 
 $$
@@ -287,6 +275,6 @@ r^-_t(y|x)
 \end{align}
 $$
 It turns out that the term $$\mathbb{E}_{x_0 \sim p_{0|t}(x_0 | x)} \left[ \nabla_x \log p_{t|0}(x | x_0) \right]$$ is precisely the term that can be extracted from an score based generative diffusion model such as DDPM.
-Thus we can simulate a discrete state space samples with models and quantity obtained form their continuous counterparts.
+Thus we can simulate a discrete state space samples with models and quantity obtained from their continuous counterparts.
 
 For all the remaining extra stuff and math, read our paper here [https://arxiv.org/pdf/2405.03549](https://arxiv.org/pdf/2405.03549).

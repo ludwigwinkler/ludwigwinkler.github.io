@@ -5,19 +5,7 @@ date:   2020-04-10
 excerpt: "Or how to differentiate a function of a stochastic process."
 image: "/blog/ItosLemma/WienerProcess.gif"
 ---
-<head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+{% include mathjax3.html %}
 
 ### Differentiability
 
@@ -31,7 +19,7 @@ $$
 If we let $h$ go towards zero, a function is called differentiable, if the fraction converges towards some constant value.
 
 Let's look at an example of how this might work.
-We'll need an additional mathematical trick called [L'Hopitals rule](https://en.wikipedia.org/wiki/L%27Hôpital%27s_rule) which says that for evaluating the limit of a fraction we can simply derive both nominator and denominator with respect to the same variable and still obtain the valid result.
+We'll need an additional mathematical trick called [L'Hopitals rule](https://en.wikipedia.org/wiki/L%27Hôpital%27s_rule) which says that for evaluating the limit of a fraction we can simply derive both numerator and denominator with respect to the same variable and still obtain the valid result.
 Applying L'Hopitals rule often simplifies the computation of the derivative since we're always working with the limit of a fraction.
 
 Let's try to compute the derivative of the squared function $f(x) = x^2$:
@@ -84,7 +72,7 @@ dW_t = \lim_{\Delta t \rightarrow 0} W_{t + \Delta t} - W_t \quad \sim \mathcal{
 $$
 While $\Delta t$ goes rapidly towards zero, it will actually never be exactly zero.
 Thus, if we were to zoom into the time axis we would realize that the Brownian Motion keeps moving randomly for whatever time resolution we choose.
-In turns out that Brownian Motion actually has [fractal properties](https://en.wikipedia.org/wiki/Fractal) which are probably the trippiest mathematical animations you can experience without doing actual acid.
+It turns out that Brownian Motion actually has [fractal properties](https://en.wikipedia.org/wiki/Fractal) which are probably the trippiest mathematical animations you can experience without doing actual acid.
 
 No matter how far we zoom into the Brownian Motion, we will always encounter a Brownian Motion on a finer time scale since $dx_t$ moves randomly on any time scale we choose.
 Probably the best animation for that is directly from the [Wikipedia page](https://en.wikipedia.org/wiki/Wiener_process) of Brownian Motion:
@@ -150,9 +138,9 @@ $$
 $$
 where $\Delta x = (x - x_0)$ signifies the distance of x to the root point $x_0$.
 By using the second order Taylor expansion we approximate the higher order polynomial $f(x)$ with just its first and second order derivative packed into a polynomial in $\Delta x$.
-The locality of the Taylor expansion around the $x_0$ is essential for the approximation since we use the first order order derivative $f'(x_0)$ and second order derivative $$f''(x_0)$$ explicitly evaluated at $x_0$. 
+The locality of the Taylor expansion around the $x_0$ is essential for the approximation since we use the first order derivative $f'(x_0)$ and second order derivative $$f''(x_0)$$ explicitly evaluated at $x_0$. 
 
-We can visually the individual points of the Taylor expansion around the root point:
+We can visualize the individual points of the Taylor expansion around the root point:
 
 ![](/blog/ItosLemma/Taylor01.png){: .align="center" height="50%" width="100%"}
 
@@ -179,7 +167,7 @@ Now the question can be raised on how this could be applied to stochastic proces
 
 ### Ito's Lemma
 
-Let's assume we a classic SDE with a drift term $\mu(t, X_t)$ and a diffusion term $\sigma(t, X_t)$ which together form:
+Let's assume we have a classic SDE with a drift term $\mu(t, X_t)$ and a diffusion term $\sigma(t, X_t)$ which together form:
 $$
 \begin{align}
 dX_t = \mu(t, X_t) dt + \sigma(t, X_t) dW_t
@@ -194,7 +182,7 @@ $$
 Y_t = f(t, X_t)
 \end{align}
 $$
-We could use relatively easy functions such as as the exponential function $e^{X_t}$ or the quadratic function $X_t^2$ for starters.
+We could use relatively easy functions such as the exponential function $e^{X_t}$ or the quadratic function $X_t^2$ for starters.
 In the financial markets, these functions $f$ quickly get very complex as stock prices are routinely modeled as stochastic differential equations with $f$ capturing complex relationships like a portfolio performance or default probability.
 
 Since we are working with infinitesimal differentials we would like to know how $Y_t$ changes for very small time differentials $dt$.
@@ -207,7 +195,7 @@ $$
 __In order to answer that question, Ito's lemma applies a Taylor expansion to $f(t, X_t)$ with special numerical conditions for the infinitesimal values.__
 There are a few constraints on $f$, though.
 It has to be twice differentiable with respect to $X_t$ and at least once differentiable with respect to $t$.
-If these equations are met we can start deriving!
+If these conditions are met we can start deriving!
 
 The first step is to define the Taylor expansion for $f(t, X_t)$ in it's general form around the root point $(t_0, X_0)$:
 $$
@@ -238,7 +226,7 @@ $$
 \end{align}
 $$
 
-where the left sides simplifies to the differential of the function $f$:
+where the left side simplifies to the differential of the function $f$:
 $$
 \begin{align}
   df(t, X_t) &= \frac{\partial f(t_0, X_0)}{\partial t} dt + \frac{\partial f(t_0, X_0)}{\partial X_t} dX_t + \frac{1}{2} \frac{\partial^2 f(t_0, X_0)}{\partial X_t} dX_t^2
@@ -255,7 +243,7 @@ $$
 \end{align}
 $$
 
-Now comes a pivotal part in the derivation in which examine how $dt$ and $dW_t$ behave when multiplied or squared.
+Now comes a pivotal part in the derivation in which we examine how $dt$ and $dW_t$ behave when multiplied or squared.
 The differential Wiener process can be rewritten as $dW_t = \epsilon \sqrt{dt}$.
 Thus we have the following time-dependent terms appearing in the equation above: $dt^2$, $dt dW_t = \epsilon dt^{1.5}$ and $dW_t^2 = \epsilon^2  dt = dt$ under the mean-square interpretation which states $\mathbb{E}[\epsilon^2] = \mathbb{V}[\epsilon] = 1$ for $\epsilon \sim \mathcal{N}(0,1)$.
 

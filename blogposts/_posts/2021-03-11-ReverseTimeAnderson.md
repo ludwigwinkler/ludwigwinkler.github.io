@@ -6,26 +6,7 @@ excerpt: " 'If I Could Turn Back Time' by Cher (1989)"
 image: "../../blog/blogthumbnails/reverse.png"
 ---
 
-<head>
-<style>
-.MathJax_Display, .MJXc-display, .MathJax_SVG_Display {
-    overflow-x: auto;
-    overflow-y: hidden;
-}
-</style>
-
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             processEscapes: true
-           },
-		   TeX: {extensions:["autoload-all.js"]}
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+{% include mathjax3.html %}
 
 This was my first venture into reverse diffusion and the derivation, although correct, is a bit intricate.
 I'd recommend [this more elegant derivation](https://ludwigwinkler.github.io/blog/SimpleReverseSDE/) which is more accessible.
@@ -63,7 +44,7 @@ $$
 $$
 
 and it basically answers the question how the probability of $x_s$ at a later point in time changes as we change $x_t$ at an earlier point in time.
-The Kolmogorov backward equation is somewhat confounding with respect to time as we're taking the partial derivative with respect to the earlier time step $t$ on which we are also coniditoning.
+The Kolmogorov backward equation is somewhat confounding with respect to time as we're taking the partial derivative with respect to the earlier time step $t$ on which we are also conditioning.
 But we can think of it as asking 'How does the probability of $x_s$ at the later point in time $s$ change, as we slowly evolve the probability distribution backwards through time and condition on $x_t$'.
 
 Taking inspiration from our crude example earlier, the backward equation offers a partial differential equation which we can solve backward in time, which would correspond to evolving the arbitrarily complex distribution backwards to our original Normal distribution. 
@@ -94,7 +75,7 @@ $$
 \end{align}
 $$
 
-The derivative occuring in the backward Kolmogorov equation are
+The derivatives occurring in the backward Kolmogorov equation are
 
 $$
 \begin{align}
@@ -190,7 +171,7 @@ $$
 $$
 the result of which is in the form of a Kolmogorov forward equation, although using the joint probability distribution $p(x_s, x_t)$.
 For the time ordering of $t \leq s$, we can observe that the term $$-\partial_t p(x_s, x_t)$$ describes the change of the probability distribution as we move backward in time.
-In accordance with Leibniz' rule we can marginalize over $x_s$ without interferring with the partial derivative $\partial_t$, to obtain
+In accordance with Leibniz' rule we can marginalize over $x_s$ without interfering with the partial derivative $\partial_t$, to obtain
 $$
 \begin{align}
     -\partial_t p(x_t) 

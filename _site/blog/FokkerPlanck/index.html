@@ -73,33 +73,28 @@
       				<p>Fokker-Planck Equation Via Ito Calculus</p>
       			</header>
       			<div class="image main"><img src="../../blog/blogthumbnails/fokkerplanckito.png" alt=""></div>
-      			<p><head>
-<!-- <script type="text/x-mathjax-config">  -->
-  <!-- MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script> -->
-<!-- uncomment two lines above and remove the html css to svg lines -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    TeX: { equationNumbers: { autoNumber: "all" } },
-    tex2jax: {
-      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      displayMath: [['$$','$$'], ['\[' , '\]'], ['\\[', '\\]']],
-      processEscapes: true
-    },
-    "HTML-CSS": { linebreaks: { automatic: true } },
-    CommonHTML: { linebreaks: { automatic: true } },
-    SVG: { linebreaks: { automatic: true } }
-    });
+      			<p><script>
+MathJax = {
+  tex: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    tags: 'all'
+  },
+  options: {
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+};
 </script>
-<script type="text/javascript" async="" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-</head>
-<p>\(\newcommand{\Efunc}[1]{\mathbb{E}\left[ #1\right]}
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async=""></script>
+
+\[\newcommand{\Efunc}[1]{\mathbb{E}\left[ #1\right]}
 \newcommand{\Vfunc}[1]{\mathbb{V}\left[ #1\right]}
 \newcommand{\KL}[2]{\text{KL}\left[ #1 \ || \ #2 \right]}
 \newcommand{\denom}[1]{\frac{1}{#1}}
 \newcommand{\drift}{\mu(X_t, t)}
-\newcommand{\diff}{\sigma(X_t, t)}\)</p>
+\newcommand{\diff}{\sigma(X_t, t)}\]
 
 <p>A Dutch, a German and a Japanese walk into a bar …</p>
 
@@ -116,7 +111,7 @@ The function \(f(X_t)\) should be twice differentiable in its argument \(X_t\) s
 	df = \partial_x f(X_t) dX_t + \denom{2} \partial_x^2 f(X_t) dX_t^2.
 \end{align}\)</p>
 
-<p>For the infinitissimal values \(dt\), any term with an exponent higher than one will go towards zero at a faster rate.
+<p>For the infinitesimal values \(dt\), any term with an exponent higher than one will go towards zero at a faster rate.
 Thus the terms \(dt^2\), \(dt dW_t = dt^{1.5}\) will evaluate to zero at the limit.
 We can then plug in the dynamics of \(X_t\) to obtain
 \(\begin{align}
@@ -154,7 +149,7 @@ Remember that
 \(\begin{align}
 	\partial_x \left[ u(x) v(x) \right] = \partial_x \left[  u(x) \right] v(x) + u(x) \partial_x \left[ v(x) \right]
 \end{align}\)
-or in a easier form
+or in an easier form
 \(\begin{align}
 	\left( u(x) v(x) \right)' = u'(x) v(x) + u(x) v'(x)
 \end{align}\)

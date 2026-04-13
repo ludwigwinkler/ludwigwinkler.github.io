@@ -73,19 +73,21 @@
       				<p>A Tutorial for Gaussian Processes</p>
       			</header>
       			<div class="image main"><img src="/images/GP_2Obs.png" alt=""></div>
-      			<p><head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+      			<p><script>
+MathJax = {
+  tex: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    processEscapes: true,
+    tags: 'all'
+  },
+  options: {
+    skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+};
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async=""></script>
 
 <h2 id="introduction">Introduction</h2>
 
@@ -95,7 +97,7 @@ Local optimization is considered an easier problem, in which it suffices to find
 Such a local optimum is obviously a suboptimal solution and, while harder to find, global optima are more preferred.</p>
 
 <p>Generally, optimization problems are formulated as finding the optimal solution which minimizes, respectively maximizes, a criterion, which is commonly referred to as the objective function.
-Further constraints on the the set of solutions can be formulated, such that only a subset of solutions are permissible as candidates for the optimum.</p>
+Further constraints on the set of solutions can be formulated, such that only a subset of solutions are permissible as candidates for the optimum.</p>
 
 <p>Optimization is commonly done in an iterative manner where the objective function is evaluated for multiple candidate solutions.
 Due to the iterative nature, it becomes desirable to evaluate this function as few times as possible over the course of the entire optimization, which becomes even more crucial when the evaluation of the objective function itself is costly.
@@ -135,7 +137,7 @@ The theory of the central limit theorem (CLT) makes the Gaussian distribution a 
 \end{align}\]
 
 <p>A useful property of the Gaussian distribution is that its shape is determined by its mean and covariance in the exponential term.
-This allows us to omitt the normalization constant and determine the relevant mean and covariance terms from the exponential term.</p>
+This allows us to omit the normalization constant and determine the relevant mean and covariance terms from the exponential term.</p>
 
 <p>Let $y=f(x)$, where $x \in \mathbb{R}^d$ and $y \in \mathbb{R}$ be the function which we want to estimate with a Gaussian Process.
 Furthermore, let $\mathcal{D} = (X, y) = \{(x_i, y_i)\}_{i=0}^N$
@@ -213,14 +215,14 @@ In order to compute a predictive distribution over $ y_* $ we initially construc
      \end{bmatrix}
 \end{align}\]
 
-<p>and $ k(x,x’) $ is an kernel function $ k: \mathcal{X} \times \mathcal{X} \rightarrow \mathbb{R}$ that measures the similarity between two vectors $ x, x’ \in \mathcal{X}$.
+<p>and $ k(x,x’) $ is a kernel function $ k: \mathcal{X} \times \mathcal{X} \rightarrow \mathbb{R}$ that measures the similarity between two vectors $ x, x’ \in \mathcal{X}$.
 We can observe from \eqref{eq:covariance1} that the covariance between any two observations in the distribution is determined by the similarity through the kernel function $k(x, x’)$, namely</p>
 
 \[\begin{align}
      \mathbb{C}[y, y'] = k(x, x')
 \end{align}\]
 
-<p>An essential component of a GP is the kernel function with which the covariances is computed.
+<p>An essential component of a GP is the kernel function with which the covariance is computed.
 Often the kernels are engineered to incorporate prior knowledge.
 A commonly used kernel is the squared exponential kernel</p>
 
@@ -232,7 +234,7 @@ A commonly used kernel is the squared exponential kernel</p>
 
 <p>Gaussian Processes can be readily extended to multiple dimensions by simply adjusting the kernel to incorporate multiple dimensions.
 The individual variances $\sigma_i$ of the dimensions $\mathbb{R}^d$ in the exponential kernel can be independently adjusted, or optimized with the maximization of the marginal probability of the data.
-The expanded kernel for multidimensional input is defined as followed:</p>
+The expanded kernel for multidimensional input is defined as follows:</p>
 
 \[\begin{align}
      k(x, x'; \ \theta) &amp;= \alpha \exp \left[ - \frac{1}{2} (x-x') \Sigma^{-1} (x-x')     \right], \quad \theta=\{ \alpha, \Sigma \} \\
@@ -249,7 +251,7 @@ $k(X_* , X_* ) \in \mathbb{R}^{N_* \times N_* }$ are the Gramian matrices of the
 <p>Given the joint distribution $ p(y_* , y, X_* , X) $, the aim for modeling the training and test observations with a GP is to derive the posterior distribution $ p( y_*  | y, X_* , X ) $ .
 In order to derive the mean and covariance function of the posterior distribution, the block matrix inversion lemma is used to compute the inverse of the covariance matrix.</p>
 
-<p>For ease of reading and brevity the respective block matrices were replaced by more easily readible variables in the following identity:</p>
+<p>For ease of reading and brevity the respective block matrices were replaced by more easily readable variables in the following identity:</p>
 
 \[\begin{align}
      K^{-1}&amp;= \begin{bmatrix}

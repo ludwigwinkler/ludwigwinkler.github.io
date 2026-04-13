@@ -5,28 +5,7 @@ date:   2024-01-13
 excerpt: "Save yourself a lot of Bayes with a linear function"
 image: "../../blog/blogthumbnails/simple_reverse_sde.png"
 ---
-<head>
-<!-- <script type="text/x-mathjax-config">  -->
-  <!-- MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script> -->
-<!-- uncomment two lines above and remove the html css to svg lines -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    TeX: { equationNumbers: { autoNumber: "all" } },
-    tex2jax: {
-      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      displayMath: [['$$','$$'], ['\[' , '\]'], ['\\[', '\\]']],
-      processEscapes: true
-    },
-    "HTML-CSS": { linebreaks: { automatic: true } },
-    CommonHTML: { linebreaks: { automatic: true } },
-    SVG: { linebreaks: { automatic: true } }
-    });
-</script>
-<script type="text/javascript" async
-  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-</head>
+{% include mathjax3.html %}
 $$
 \newcommand{\Efunc}[1]{\mathbb{E}\left[ #1\right]}
 \newcommand{\Vfunc}[1]{\mathbb{V}\left[ #1\right]}
@@ -68,7 +47,7 @@ But some marbles will move slower and some marbles will move faster and thus the
 After sufficient time they will all be at the bottom of the staircase in another bucket (we built a collection contraption).
 There the probability distribution will be highly concentrated again as all marbles will be found inside the very compact space of the bottom bucket.
 
-So obtaining the FPE is of the harder, but more rewarding task as it gives us the underlying probability distribution over time and space instead of a bunch of trajectories.
+So obtaining the FPE is the harder, but more rewarding task as it gives us the underlying probability distribution over time and space instead of a bunch of trajectories.
 
 
 Now we consider a time reversion $\color{blue}{\tau(t)} = 1 - t$ and are interested in what the change of the probability distribution is under this reversed time index,
@@ -139,5 +118,5 @@ $$
 \end{align}
 $$
 
-In the intuition is quite clear: If we add extra diffusion to our forward process, we will 'diffuse' more and the probability mass will be distributed over a larger, more spread out area.
+The intuition is quite clear: If we add extra diffusion to our forward process, we will 'diffuse' more and the probability mass will be distributed over a larger, more spread out area.
 Therefore, if we want to invert this particular stochastic process, we need to increase the score term dependent on the $$\alpha$$ which pushes the particles back into the high probability region.
