@@ -9,6 +9,9 @@ image: "/blog/DiscreteDiffusion/cover.png"
 {% include mathjax3.html %}
 
 ## Binary Diffusion
+
+This post builds on the discrete-state-space machinery covered in [Continuous Time Markov Chains](https://ludwigwinkler.github.io/blog/ContTimeMarkovChain/) and the connection to continuous diffusion shown in [The Ehrenfest Process](https://ludwigwinkler.github.io/blog/TheEhrenfestProcess/).
+
 Let us have a stochastic process $\{X(t): 0 \leq t \leq 1 \}$.
 The random variable $X(t)$, which we shall abbreviate as $X_t$ can take on only two states with $X_t \in \\{-1, +1\\}^D$.
 
@@ -120,7 +123,7 @@ $$
 \end{align}
 $$
 <!-- </div> -->
-which oddly enough looks like the deterministic part of an Ornstein-Uhlenbeck process $dX_T = - \theta ( X_t - \mu) dt + \sigma dW_t$.
+which oddly enough looks like the deterministic part of an [Ornstein-Uhlenbeck process](https://ludwigwinkler.github.io/blog/SolvingSDEs/) $dX_T = - \theta ( X_t - \mu) dt + \sigma dW_t$.
 
 We can then proceed to solve the ODE for the marginal distribution $p^+_t$ by using the solution of the OU process.
 <!-- <div style="overflow-x: auto;"> -->

@@ -11,7 +11,7 @@ image: "/blog//Adjoint/functional.png"
 For my recent work, we started working on a custom made adjoint method to compute gradients for ODE's with particular constraints.
 Since the [2019 paper](https://arxiv.org/abs/1806.07366) at Neurips I was familiar with the problem that the adjoint method in neural ODE's was trying to solve, yet I hadn't really understood it in depth.
 
-So for the implementation of our recent ideas I really had to dig into the adjoint method in order to implement it from scratch.
+So for the implementation of our recent ideas I really had to dig into the adjoint method in order to implement it from scratch. (See also my [earlier post on the adjoint method](https://ludwigwinkler.github.io/blog/AdjointMethod/) for the original take.)
 Since I'm no Jeff Dean, I quickly found myself googling particular questions regarding the adjoint method.
 Yet, I found most expositions on the adjoint method somewhat clunky and cumbersome to understand.
 For that reason I'm going to add my two cents to this topic with this blog post.

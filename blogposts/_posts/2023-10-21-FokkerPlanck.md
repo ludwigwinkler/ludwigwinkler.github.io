@@ -17,7 +17,9 @@ $$
 
 A Dutch, a German and a Japanese walk into a bar ...
 
-Let us consider the random variable $$X_t$$ that follows an Ito drift-diffusion process of the form
+For an alternative derivation via the Kramers-Moyal expansion, see [Fokker, Planck & Kolmogorov Revisited](https://ludwigwinkler.github.io/blog/Kramers/).
+
+Let us consider the random variable $$X_t$$ that follows an [Ito drift-diffusion process](https://ludwigwinkler.github.io/blog/ItosLemma/) of the form
 $$
 \begin{align}
 	dX_t = \drift dt + \diff dW_t

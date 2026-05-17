@@ -23,7 +23,7 @@ That means we're constrained to the relatively small step sizes $dt$.
 Small step sizes enable you to model the deterministic drift $\mu(X_t, t)$ accurately.
 The Wiener process is stochastic and in that sense hardly predictable in any case as its marginal distribution $W_t \sim \mathcal{N}(0, t)$ is known anyway.
 
-Alternatively, one could try to tackle the Fokker-Planck equation (FPE) to circumvent laborsome simulation, but usually solving the FPE is even harder.
+Alternatively, one could try to tackle the [Fokker-Planck equation (FPE)](https://ludwigwinkler.github.io/blog/FokkerPlanck/) to circumvent laborsome simulation, but usually solving the FPE is even harder.
 There is actually a nice connection correspondence between sampling SDE's and solving the probability flow via a probability flow in generative diffusion models.
 
 Stochastic process in discrete spaces can be categorized into two groups: discrete time and continuous time.
@@ -194,7 +194,7 @@ D(x') &= \sum_{y'\neq x'} (y'-x') (y'-x')^\top r(y'|x') \\
 $$
 
 Thus, in law, the scaled Ehrenfest process converges to a continuous state space stochastic process with the drift $-x$ and the diffusion $2$.
-This just so happens to be identical to the Ornstein-Uhlenbeck process, $dX_t = -X_t dt + \sqrt{2} dW_t$.
+This just so happens to be identical to the [Ornstein-Uhlenbeck process](https://ludwigwinkler.github.io/blog/SolvingSDEs/), $dX_t = -X_t dt + \sqrt{2} dW_t$.
 The OU process is used ubiquitously in variance preserving diffusion processes in generative diffusion models.
 
 We can visualize this quite succinctly (shout out to my co-author Lorenz Richter) and have a look at the dynamics of the scaled Ehrenfest process with increasing state spaces.

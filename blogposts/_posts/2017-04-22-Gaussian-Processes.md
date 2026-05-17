@@ -319,6 +319,8 @@ $$
 \end{align}
 $$
 
+For extensions like noisy observations, hyperparameter learning, and derivative-augmented GPs, see [Gaussian Processes - Extensions](https://ludwigwinkler.github.io/blog/Gaussian-Processes-Extensions/). For using GPs to optimize expensive black-box functions, see [Bayesian Optimization](https://ludwigwinkler.github.io/blog/BayesianOptimization/). For scalable approximations, see [Inducing Points](https://ludwigwinkler.github.io/blog/InducingPoints/) and [GPyTorch](https://ludwigwinkler.github.io/blog/GPyTorch/).
+
 Here is an image of a Gaussian Process:
 
 ![](https://raw.githubusercontent.com/ludwigwinkler/BayesianOptimization/gh-pages/docs/GP_2Obs.png){:height="75%" width="75%"}

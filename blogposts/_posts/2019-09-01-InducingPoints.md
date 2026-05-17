@@ -7,7 +7,7 @@ image: "/blog/InducingPoints/Cover.png"
 ---
 {% include mathjax3.html %}
 
-Gaussian processes (GP) are extremely flexible probabilistic models with a sound theoretical footing.
+[Gaussian processes (GP)](https://ludwigwinkler.github.io/blog/Gaussian-Processes/) are extremely flexible probabilistic models with a sound theoretical footing. See also [GPyTorch](https://ludwigwinkler.github.io/blog/GPyTorch/) for scalable GPU-accelerated GP training.
 In essence, you treat your available data as a giant Normal distribution and infer the covariances between the data points via a kernel.
 Now every data point becomes a dimension of the Normal distribution.
 This is in contrast to how we normally think about Normal distributions and data where each feature has its own dimension in a Normal distribution.

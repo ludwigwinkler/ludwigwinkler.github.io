@@ -14,6 +14,8 @@ Back at NeurIPS 2018 the best paper award was given to the authors of [Neural Or
 The motivation of the paper was the mainly given through the interpretation of the ResNet architectures being interpreted as the Euler discretization of ordinary differential equations (ODE).
 The paper took this insight to its logical extreme and asked the question whether we really have to remain content with just the Euler discretization of an ODE or whether we can go deeper ... or more continuous in our case.
 
+For an extended treatment from both the autograd and Lagrangian perspectives, see also my [later post on the adjoint method](https://ludwigwinkler.github.io/blog/TheAdjointMethod/).
+
 By definition an ODE is defined in its differential form as
 $$
 \begin{align}

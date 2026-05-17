@@ -8,6 +8,8 @@ image: "/images/GP_4Obs_Deriv.png"
 ---
 {% include mathjax3.html %}
 
+This post extends the basics covered in [Gaussian Processes - Basics](https://ludwigwinkler.github.io/blog/Gaussian-Processes/).
+
 ## Noise
 
 In the real world, the observations onto which the Gaussian process is fitted are often influenced and distorted by noise.

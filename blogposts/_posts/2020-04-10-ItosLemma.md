@@ -46,7 +46,7 @@ Unfortunately, for stochastic processes this is not as straight forward and we w
 
 ### Stochastic Processes
 
-In order to keep things simple in the following steps, we will work with the Brownian Motion. \\
+In order to keep things simple in the following steps, we will work with the Brownian Motion (introduced in the [SDE post](https://ludwigwinkler.github.io/blog/SDE/)). \\
 Brownian motion $W_t$ is defined through the following properties:
 
 * $W_0 = 0$

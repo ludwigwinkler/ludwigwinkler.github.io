@@ -32,7 +32,7 @@ $$
 \frac{\partial \ln S(x)}{\partial x} = \frac{1}{S(x)} \frac{\partial S(x)}{\partial x}
 \end{align}
 $$
-But since we are working with stochastic processes, we can't apply regular calculus to derive such a stochastic process but use Ito's lemma instead:
+But since we are working with [stochastic processes](https://ludwigwinkler.github.io/blog/SDE/), we can't apply regular calculus to derive such a stochastic process but use [Ito's lemma](https://ludwigwinkler.github.io/blog/ItosLemma/) instead:
 $$
 \begin{align}
 	d \ln S_t &= \underbrace{\frac{\partial \ln S_t}{\partial t}}_{=0} dt + \frac{\partial \ln S_t}{\partial S_t} dS_t + \frac{1}{2} \frac{\partial^2 \ln S_t}{\partial S_t^2} dS_t^2 \\

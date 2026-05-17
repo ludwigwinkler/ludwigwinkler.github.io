@@ -15,7 +15,7 @@ $$
 \newcommand{\diff}{\sigma(X_t, t)}
 $$
 
-We start out with the Fokker-Planck equation (FPE) which relates the change over time for the probability for a specific value of $x$ with a diffusion term $\sigma(t)$ which is only dependent on the time,
+We start out with the [Fokker-Planck equation (FPE)](https://ludwigwinkler.github.io/blog/FokkerPlanck/) which relates the change over time for the probability for a specific value of $x$ with a diffusion term $\sigma(t)$ which is only dependent on the time,
 $$
 \begin{align}
 	\partial_t \ p(x,t) = & - \partial_x \left[ \drift \ p(x, t) \right] +  \partial_x^2 \left[ \denom{2} \sigma(t)^2 \ p(x, t) \right]  \\
@@ -24,7 +24,7 @@ $$
 $$
 
 The FPE describes the evolution of the entire probability distribution of a stochastic process.
-We can simulate a single particle by defining the stochastic differential equation (SDE),
+We can simulate a single particle by defining the [stochastic differential equation (SDE)](https://ludwigwinkler.github.io/blog/SDE/) — for an alternative, more intricate derivation of the reverse-time process, see [Reverse Time SDEs (Anderson 1982)](https://ludwigwinkler.github.io/blog/ReverseTimeAnderson/),
 $$
 \begin{align}
 dX_t = \underbrace{\mu(X_t, t) dt}_{\text{drift}} + \underbrace{\sigma(t) dW_t}_{\text{diffusion}}

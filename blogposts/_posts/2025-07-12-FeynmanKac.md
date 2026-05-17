@@ -23,7 +23,7 @@ So let's dissect the theory.
 
 ### Ito Derivative
 
-At the core of diffusion model is a stochastic process $X_t$ that evolves according to a stochastic differential equation (SDE). The Ito derivative is a key concept in stochastic calculus that allows us to differentiate functions of stochastic processes.
+At the core of diffusion model is a stochastic process $X_t$ that evolves according to a stochastic differential equation (SDE). The [Ito derivative](https://ludwigwinkler.github.io/blog/ItosLemma/) is a key concept in stochastic calculus that allows us to differentiate functions of stochastic processes.
 
 The SDE in question is typically of the form:
 $$dX_t = \mu(X_t, t) dt + \sigma(X_t, t) dW_t$$
