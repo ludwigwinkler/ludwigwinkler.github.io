@@ -482,6 +482,8 @@ This necessitates how to design the function $w_t$.
 
 ### Tweaking the Diffusion Function $w_t$
 
+For computing likelihoods under continuous-space diffusion models with similar machinery, see [Likelihood Calculations in Diffusion Models](https://ludwigwinkler.github.io/blog/DiffusionLikelihoods/).
+
 The weighting function $w_t$ is defined as
 <div style="overflow-x: auto;">
 $$

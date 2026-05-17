@@ -127,7 +127,7 @@ d\Pi = r \Pi dt
 $$
 which is the compounding interest of the whole portfolio invested with US treasury bonds.
 
-One assumption of Black-Scholes model is that the stock price follows a geometric Brownian motion
+One assumption of Black-Scholes model is that the stock price follows a [geometric Brownian motion](https://ludwigwinkler.github.io/blog/SolvingSDEs/)
 $$
 \begin{align}
 dS_t = \mu S dt + \sigma S dW_t

@@ -10,6 +10,8 @@ image: "/blog/FlowMatching/sample_flow.png"
 
 "Creating noise from data is easy, creating data from noise is generative modelling."
 
+For a derivation of how to compute likelihoods (and convert between flows and diffusion SDEs), see [Likelihood Calculations in Diffusion Models](https://ludwigwinkler.github.io/blog/DiffusionLikelihoods/).
+
 That was the first sentence in the seminal 'Score-Based Generative Modelling Through Stochastic Differential Equations' by Yang Song et al.
 It introduced a rigorous mathematical framework for A) turning data into noise with a predetermined stochastic process and B) training a neural network to revert this process.
 While congruent work had been done by other groups and researchers that paper was the starting point that kicked off generative modelling for me by introducing 'Diffusion Models'.
@@ -19,7 +21,7 @@ They use a forward process which transforms data into noise _over time_.
 During training, we can jump to any time step of this forward process and train the model to make the noisy data slightly less noisy.
 Just as we can turn data into noise by repeatedly adding just a sliver of noise to it, we can equally denoise data (with the right model) repeatedly to recover the original data.
 
-The data samples are transformed into noise samples by a stochastic process which is defined by a stochastic differential equation (SDE),
+The data samples are transformed into noise samples by a stochastic process which is defined by a [stochastic differential equation (SDE)](https://ludwigwinkler.github.io/blog/SDE/),
 <div style="overflow-x: auto;">
 $$
 \begin{align*}
@@ -31,7 +33,7 @@ $$
 
 We can take a sample $x_0 \sim p(x)$ from the data distribution $p(x)$ and if we simulate the SDE long enough, we will end up with a sample $x_1$ that is indistinguishable (in a statistical sense) from a sample $\epsilon \sim p(\epsilon)$ from the noise distribution $p(\epsilon)$.
 
-The reverse process, which transforms noise samples $\epsilon$ into sample from the data distribution $p(x)$, is defined by the reverse SDE,
+The reverse process, which transforms noise samples $\epsilon$ into sample from the data distribution $p(x)$, is defined by the [reverse SDE](https://ludwigwinkler.github.io/blog/SimpleReverseSDE/),
 <div style="overflow-x: auto;">
 $$
 \begin{align*}

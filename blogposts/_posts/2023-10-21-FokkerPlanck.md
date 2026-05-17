@@ -25,7 +25,7 @@ $$
 	dX_t = \drift dt + \diff dW_t
 \end{align}
 $$
-where $$W_t$$ is a Wiener process with $$W_t \sim \mathcal{N}(0, t)$$.
+where $$W_t$$ is a [Wiener process](https://ludwigwinkler.github.io/blog/SDE/) with $$W_t \sim \mathcal{N}(0, t)$$.
 
 We want to study an arbitrary function $$f(X_t)$$ with a compact support, meaning that $$f(X_t)=0, X_t \in \{ -\infty, \infty \}$$.
 Intuitively, this means that for the extreme values of $$\pm \infty$$ the function $$f(X_t)$$ evaluates to zero. 
@@ -143,3 +143,5 @@ $$
 \end{align}
 $$
 which is the Fokker-Planck equation!
+
+For its time-reversed counterpart that lies at the heart of diffusion generative models, see [Simple Reverse-Time SDE Derivation](https://ludwigwinkler.github.io/blog/SimpleReverseSDE/) and the original [Anderson (1982) derivation](https://ludwigwinkler.github.io/blog/ReverseTimeAnderson/).

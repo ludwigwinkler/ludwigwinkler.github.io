@@ -278,3 +278,5 @@ It turns out that the term $$\mathbb{E}_{x_0 \sim p_{0|t}(x_0 | x)} \left[ \nabl
 Thus we can simulate a discrete state space samples with models and quantity obtained from their continuous counterparts.
 
 For all the remaining extra stuff and math, read our paper here [https://arxiv.org/pdf/2405.03549](https://arxiv.org/pdf/2405.03549).
+
+For a more abstract treatment of discrete-state-space diffusion built on the same CTMC scaffolding, see [Discrete Diffusion from First Principles](https://ludwigwinkler.github.io/blog/DiscreteDiffusion/).

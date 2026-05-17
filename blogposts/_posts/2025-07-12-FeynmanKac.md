@@ -23,13 +23,12 @@ So let's dissect the theory.
 
 ### Ito Derivative
 
-At the core of diffusion model is a stochastic process $X_t$ that evolves according to a stochastic differential equation (SDE). The [Ito derivative](https://ludwigwinkler.github.io/blog/ItosLemma/) is a key concept in stochastic calculus that allows us to differentiate functions of stochastic processes.
-
+At the core of diffusion model is a stochastic process $X_t$ that evolves according to a [stochastic differential equation (SDE)](https://ludwigwinkler.github.io/blog/SDE/).
 The SDE in question is typically of the form:
 $$dX_t = \mu(X_t, t) dt + \sigma(X_t, t) dW_t$$
 where $\mu$ is the drift term, $\sigma$ is the diffusion term, and $W_t$ is a Wiener process (or Brownian motion).
 
-What happens to a function $f(X_t, t)$ as it evolves over time? The Ito derivative gives us a way to compute this by extending the classical Taylor expansion to the stochastic process realm:
+What happens to a function $f(X_t, t)$ as it evolves over time? The [Ito derivative](https://ludwigwinkler.github.io/blog/ItosLemma/) gives us a way to compute this by extending the classical Taylor expansion to the stochastic process realm:
 <div style="overflow-x: auto;">
 $$
 \begin{align*}
@@ -105,6 +104,8 @@ df(X_t, t) =&\left\{\frac{\partial f(X_t, t)}{\partial t} + \frac{\partial f(X_t
 </div>
 
 ### Backward Kolmogorov Equation
+
+For a derivation of the Kolmogorov backward equation via the Kramers-Moyal expansion, see [Fokker, Planck & Kolmogorov Revisited](https://ludwigwinkler.github.io/blog/Kramers/); it is also the central object used in [Doob's h-transform](https://ludwigwinkler.github.io/blog/Doob/).
 
 Ito's lemma gives us a way to compute the infinitesimal change in a function of a stochastic process.
 Since our process is stochastic, for any realized $x_t$, if we run the stochastic process again, we will get a different $X_T$ where $T= t + \Delta t$.

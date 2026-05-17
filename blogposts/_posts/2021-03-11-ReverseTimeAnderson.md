@@ -20,7 +20,7 @@ $$
 \end{align}
 $$
 
-with the derivative of Wiener process $W_t$ admits two types of equations, called the forward Kolmogorov or Fokker-Planck equation and the backward Kolmogorov equation.
+with the derivative of [Wiener process](https://ludwigwinkler.github.io/blog/SDE/) $W_t$ admits two types of equations, called the forward Kolmogorov or [Fokker-Planck equation](https://ludwigwinkler.github.io/blog/FokkerPlanck/) and the backward Kolmogorov equation.
 The details of the derivation of the forward and backward Kolmogorov equations via the Kramers-Moyal expansion can be found in [the previous blog post](https://ludwigwinkler.github.io/blog/Kramers/).
 For notational brevity we will use the term $\mu(x_t)$ for the drift and $\sigma(x_t)$ as the diffusion parameter and omit the explicit time dependency.
 

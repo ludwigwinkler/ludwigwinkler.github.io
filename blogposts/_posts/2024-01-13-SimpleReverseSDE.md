@@ -75,6 +75,8 @@ $$
 	= & - \color{blue}{\partial_x} \Bigg[ -\mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t)) + \denom{2} \sigma(\tau(t))^2 \color{blue}{\partial_x} \left[ \ p(x, \tau(t)) \right] \Bigg]
 \end{align}
 $$
+For a generative-modelling application of this same reverse-time machinery, see [Flow Matching](https://ludwigwinkler.github.io/blog/FlowMatching/) and [Diffusion Likelihoods](https://ludwigwinkler.github.io/blog/DiffusionLikelihoods/).
+
 Applying the log derivative identity $\partial_x \log p(x) = \frac{1}{p(x)} \partial_x p(x)$, which rearranged yields $ \partial_x p(x) = p(x) \partial_x \log p(x)$, we obtain
 $$
 \begin{align}
