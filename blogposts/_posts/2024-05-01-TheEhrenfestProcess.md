@@ -195,7 +195,7 @@ $$
 
 Thus, in law, the scaled Ehrenfest process converges to a continuous state space stochastic process with the drift $-x$ and the diffusion $2$.
 This just so happens to be identical to the [Ornstein-Uhlenbeck process](https://ludwigwinkler.github.io/blog/SolvingSDEs/), $dX_t = -X_t dt + \sqrt{2} dW_t$.
-The OU process is used ubiquitously in variance preserving diffusion processes in generative diffusion models.
+The OU process is used ubiquitously in variance preserving diffusion processes in generative diffusion models (see [Simple Reverse-Time SDE Derivation](https://ludwigwinkler.github.io/blog/SimpleReverseSDE/) and [Flow Matching](https://ludwigwinkler.github.io/blog/FlowMatching/)).
 
 We can visualize this quite succinctly (shout out to my co-author Lorenz Richter) and have a look at the dynamics of the scaled Ehrenfest process with increasing state spaces.
 Down below are two Ornstein-Uhlenbeck processes starting from a Gaussian centered at $+1$ and $-1$ and converging towards their equilibrium distribution as time progresses to the right.

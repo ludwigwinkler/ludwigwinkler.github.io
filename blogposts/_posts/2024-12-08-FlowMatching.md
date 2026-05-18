@@ -68,7 +68,7 @@ While we originally started out with the idea of connecting data and noise with 
 As derived in this [blog post](https://ludwigwinkler.github.io/blog/SimpleReverseSDE/), these stochastic processes could also be simulated in a deterministic fashion with the idea of probability flows. -->
 
 But does the connection really have to be stochastic at all?
-The probability flow interpretation of diffusion models suggests that we can also connect data and noise deterministically by setting $\alpha=0$ in the reverse SDE.
+The probability flow interpretation of diffusion models suggests that we can also connect data and noise deterministically by setting $\alpha=0$ in the reverse SDE (see [Likelihood Calculations in Diffusion Models](https://ludwigwinkler.github.io/blog/DiffusionLikelihoods/) for how the deterministic and stochastic formulations relate and how to compute likelihoods through each).
 
 ### Flow Matching Vector Fields
 

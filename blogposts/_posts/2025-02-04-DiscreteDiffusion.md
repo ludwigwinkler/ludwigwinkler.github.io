@@ -20,7 +20,7 @@ The marginal distribution assigns probabilities to two possible states at time $
 In order to keep the notation succinct, we will abbreviate the positive and negative states with a raised index $^+$ and $^-$.
 We can then write $x^+_t$ for a positive state at time $t$ and $x^-_t$ for a negative state with the corresponding marginal probabilities $p^\pm_t(x_t)$.
 
-In a time-reversible Markov Jump Processes with only two states, we have two rates: the forward rate $r_t^+(x^+_t|x^-_t)$ and the backward rate $r_t^-(x^-_t|x^+_t)$.
+In a time-reversible [Markov Jump Process](https://ludwigwinkler.github.io/blog/ContTimeMarkovChain/) with only two states, we have two rates: the forward rate $r_t^+(x^+_t|x^-_t)$ and the backward rate $r_t^-(x^-_t|x^+_t)$.
 The rates $r^+$ and $r^-$ denote the propensity of switching the state going from $x^+_t$ to $x^-_t$ and vice-versa.
 
 Time reversibility implies that any transition is reversible, thus we have
