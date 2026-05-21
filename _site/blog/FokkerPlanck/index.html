@@ -98,11 +98,13 @@ MathJax = {
 
 <p>A Dutch, a German and a Japanese walk into a bar …</p>
 
-<p>Let us consider the random variable \(X_t\) that follows an Ito drift-diffusion process of the form
+<p>For an alternative derivation via the Kramers-Moyal expansion, see <a href="https://ludwigwinkler.github.io/blog/Kramers/">Fokker, Planck &amp; Kolmogorov Revisited</a>.</p>
+
+<p>Let us consider the random variable \(X_t\) that follows an <a href="https://ludwigwinkler.github.io/blog/ItosLemma/">Ito drift-diffusion process</a> of the form
 \(\begin{align}
 	dX_t = \drift dt + \diff dW_t
 \end{align}\)
-where \(W_t\) is a Wiener process with \(W_t \sim \mathcal{N}(0, t)\).</p>
+where \(W_t\) is a <a href="https://ludwigwinkler.github.io/blog/SDE/">Wiener process</a> with \(W_t \sim \mathcal{N}(0, t)\).</p>
 
 <p>We want to study an arbitrary function \(f(X_t)\) with a compact support, meaning that \(f(X_t)=0, X_t \in \{ -\infty, \infty \}\).
 Intuitively, this means that for the extreme values of \(\pm \infty\) the function \(f(X_t)\) evaluates to zero. 
@@ -192,6 +194,8 @@ Since the integrals \(\int f(x) \ldots dx\) is identical on both sides we can eq
 	\partial_t \ p(x,t) = - \partial_x \left[ \mu \ p(x, t) \right] + \denom{2} \partial_x^2 \left[ \sigma^2 \ p(x, t) \right]
 \end{align}\)
 which is the Fokker-Planck equation!</p>
+
+<p>For its time-reversed counterpart that lies at the heart of diffusion generative models, see <a href="https://ludwigwinkler.github.io/blog/SimpleReverseSDE/">Simple Reverse-Time SDE Derivation</a> and the original <a href="https://ludwigwinkler.github.io/blog/ReverseTimeAnderson/">Anderson (1982) derivation</a>.</p>
 </p>
       		</section>
 

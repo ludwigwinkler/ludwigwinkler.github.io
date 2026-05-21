@@ -91,6 +91,8 @@ MathJax = {
 
 <p>“Creating noise from data is easy, creating data from noise is generative modelling.”</p>
 
+<p>For a derivation of how to compute likelihoods (and convert between flows and diffusion SDEs), see <a href="https://ludwigwinkler.github.io/blog/DiffusionLikelihoods/">Likelihood Calculations in Diffusion Models</a>.</p>
+
 <p>That was the first sentence in the seminal ‘Score-Based Generative Modelling Through Stochastic Differential Equations’ by Yang Song et al.
 It introduced a rigorous mathematical framework for A) turning data into noise with a predetermined stochastic process and B) training a neural network to revert this process.
 While congruent work had been done by other groups and researchers that paper was the starting point that kicked off generative modelling for me by introducing ‘Diffusion Models’.</p>
@@ -100,7 +102,7 @@ They use a forward process which transforms data into noise <em>over time</em>.
 During training, we can jump to any time step of this forward process and train the model to make the noisy data slightly less noisy.
 Just as we can turn data into noise by repeatedly adding just a sliver of noise to it, we can equally denoise data (with the right model) repeatedly to recover the original data.</p>
 
-<p>The data samples are transformed into noise samples by a stochastic process which is defined by a stochastic differential equation (SDE),</p>
+<p>The data samples are transformed into noise samples by a stochastic process which is defined by a <a href="https://ludwigwinkler.github.io/blog/SDE/">stochastic differential equation (SDE)</a>,</p>
 <div style="overflow-x: auto;">
 $$
 \begin{align*}
@@ -112,7 +114,7 @@ $$
 
 <p>We can take a sample $x_0 \sim p(x)$ from the data distribution $p(x)$ and if we simulate the SDE long enough, we will end up with a sample $x_1$ that is indistinguishable (in a statistical sense) from a sample $\epsilon \sim p(\epsilon)$ from the noise distribution $p(\epsilon)$.</p>
 
-<p>The reverse process, which transforms noise samples $\epsilon$ into sample from the data distribution $p(x)$, is defined by the reverse SDE,</p>
+<p>The reverse process, which transforms noise samples $\epsilon$ into sample from the data distribution $p(x)$, is defined by the <a href="https://ludwigwinkler.github.io/blog/SimpleReverseSDE/">reverse SDE</a>,</p>
 <div style="overflow-x: auto;">
 $$
 \begin{align*}
@@ -147,7 +149,7 @@ The stochastic process at the heart of diffusion models provides this (stochasti
 As derived in this [blog post](https://ludwigwinkler.github.io/blog/SimpleReverseSDE/), these stochastic processes could also be simulated in a deterministic fashion with the idea of probability flows. -->
 
 <p>But does the connection really have to be stochastic at all?
-The probability flow interpretation of diffusion models suggests that we can also connect data and noise deterministically by setting $\alpha=0$ in the reverse SDE.</p>
+The probability flow interpretation of diffusion models suggests that we can also connect data and noise deterministically by setting $\alpha=0$ in the reverse SDE (see <a href="https://ludwigwinkler.github.io/blog/DiffusionLikelihoods/">Likelihood Calculations in Diffusion Models</a> for how the deterministic and stochastic formulations relate and how to compute likelihoods through each).</p>
 
 <h3 id="flow-matching-vector-fields">Flow Matching Vector Fields</h3>
 

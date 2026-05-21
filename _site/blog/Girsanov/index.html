@@ -97,6 +97,8 @@ MathJax = {
 
 <p>Thus began a chase down the rabbit hole for alternative sampling in stochastic processes. :-)</p>
 
+<p>A natural follow-up is <a href="https://ludwigwinkler.github.io/blog/Doob/">Doob’s h-transform</a>, which uses similar reweighting ideas to condition a stochastic process on a future event.</p>
+
 <h3 id="importance-sampling">Importance Sampling</h3>
 
 <p>The first thing that I noticed was that the term \(\frac{dQ}{dP}\) occurred in a lot of text books that I found on Google.
@@ -180,7 +182,7 @@ A better blue proposal distribution would be:</p>
 
 <h3 id="importance-sampling-for-stochastic-processes">‘Importance Sampling’ for Stochastic Processes</h3>
 
-<p>Let’s assume we have two stochastic processes ${X^p_t}$ and ${X^q_t}$,</p>
+<p>Let’s assume we have two <a href="https://ludwigwinkler.github.io/blog/SDE/">stochastic processes</a> ${X^p_t}$ and ${X^q_t}$,</p>
 <div style="overflow-x: auto;">
 $$
 \begin{align}
@@ -319,7 +321,7 @@ $$
 <div style="overflow-x: auto;">
 $$
 \begin{align}
-\lim_{\Delta t \rightarrow 0^+} \sum_{t_k} (x_{t +\Delta t} - x_t) a_t &amp;= \int a_t dX_t \quad \text{(Ito Integral)} \\
+\lim_{\Delta t \rightarrow 0^+} \sum_{t_k} (x_{t +\Delta t} - x_t) a_t &amp;= \int a_t dX_t \quad \text{([Ito Integral](https://ludwigwinkler.github.io/blog/ItosLemma/))} \\
 \lim_{\Delta t \rightarrow 0^+} \frac{1}{2}\sum_{t_k} a_t^2 \Delta t &amp;= \frac{1}{2} \int a_t^2 dt
 \end{align}
 $$

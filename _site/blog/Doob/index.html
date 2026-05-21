@@ -89,7 +89,7 @@ MathJax = {
 
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async=""></script>
 
-<p>Previously, we saw how Girsanov’s theorem is little else than importance sampling for stochastic processes.</p>
+<p>Previously, we saw how <a href="https://ludwigwinkler.github.io/blog/Girsanov/">Girsanov’s theorem</a> is little else than importance sampling for stochastic processes.</p>
 
 <p>This time I stumbled over <em>Doob’s h-transform</em>.
 On first reading it is an equally strange equation which seemed hard to understand when simply googling for it.
@@ -167,11 +167,13 @@ Naturally, the variance can still increase, but on average, we can’t predict m
 
 <h4 id="commercial-1-the-kolmogorov-backward-equation">Commercial 1: The Kolmogorov Backward Equation</h4>
 
+<p>For a derivation of the Kolmogorov backward equation via the Kramers-Moyal expansion, see <a href="https://ludwigwinkler.github.io/blog/Kramers/">Fokker, Planck &amp; Kolmogorov Revisited</a>.</p>
+
 <p>So how exactly does $p(x_T | x_t)$ change if we change $x_t$?
 What are the dynamics of $p(x_T | x_t)$?
 The probability $p(x_T | x_t)$ is little else than a function that takes in $x_t$ and outputs a scalar value.
 We further know that the change in $x_t$ is driven by the stochastic differential equation above.
-So, it’s time to use Ito’s lemma once again!
+So, it’s time to use <a href="https://ludwigwinkler.github.io/blog/ItosLemma/">Ito’s lemma</a> once again!
 But first we’ll make the following derivation more general by abbreviating $p(x_T, T | x_t, t) = f(x_t, t)$.</p>
 <div style="overflow-x: auto;">
 $$
@@ -421,7 +423,7 @@ $$
 
 <p><img src="/images/Doob.png" alt="Description of the image" style="width: 100%; height: auto;" /></p>
 
-<p>Interestingly, this looks extremely similar to reverse-time diffusion as it’s used in diffusion based generative modelling in machine learning.</p>
+<p>Interestingly, this looks extremely similar to <a href="https://ludwigwinkler.github.io/blog/SimpleReverseSDE/">reverse-time diffusion</a> as it’s used in diffusion based generative modelling in machine learning.</p>
 </p>
       		</section>
 

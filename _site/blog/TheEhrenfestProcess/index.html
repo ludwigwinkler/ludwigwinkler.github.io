@@ -102,7 +102,7 @@ That means we’re constrained to the relatively small step sizes $dt$.
 Small step sizes enable you to model the deterministic drift $\mu(X_t, t)$ accurately.
 The Wiener process is stochastic and in that sense hardly predictable in any case as its marginal distribution $W_t \sim \mathcal{N}(0, t)$ is known anyway.</p>
 
-<p>Alternatively, one could try to tackle the Fokker-Planck equation (FPE) to circumvent laborsome simulation, but usually solving the FPE is even harder.
+<p>Alternatively, one could try to tackle the <a href="https://ludwigwinkler.github.io/blog/FokkerPlanck/">Fokker-Planck equation (FPE)</a> to circumvent laborsome simulation, but usually solving the FPE is even harder.
 There is actually a nice connection correspondence between sampling SDE’s and solving the probability flow via a probability flow in generative diffusion models.</p>
 
 <p>Stochastic process in discrete spaces can be categorized into two groups: discrete time and continuous time.
@@ -249,8 +249,8 @@ D(x') &amp;= \sum_{y'\neq x'} (y'-x') (y'-x')^\top r(y'|x') \\
 \end{align}\)</p>
 
 <p>Thus, in law, the scaled Ehrenfest process converges to a continuous state space stochastic process with the drift $-x$ and the diffusion $2$.
-This just so happens to be identical to the Ornstein-Uhlenbeck process, $dX_t = -X_t dt + \sqrt{2} dW_t$.
-The OU process is used ubiquitously in variance preserving diffusion processes in generative diffusion models.</p>
+This just so happens to be identical to the <a href="https://ludwigwinkler.github.io/blog/SolvingSDEs/">Ornstein-Uhlenbeck process</a>, $dX_t = -X_t dt + \sqrt{2} dW_t$.
+The OU process is used ubiquitously in variance preserving diffusion processes in generative diffusion models (see <a href="https://ludwigwinkler.github.io/blog/SimpleReverseSDE/">Simple Reverse-Time SDE Derivation</a> and <a href="https://ludwigwinkler.github.io/blog/FlowMatching/">Flow Matching</a>).</p>
 
 <p>We can visualize this quite succinctly (shout out to my co-author Lorenz Richter) and have a look at the dynamics of the scaled Ehrenfest process with increasing state spaces.
 Down below are two Ornstein-Uhlenbeck processes starting from a Gaussian centered at $+1$ and $-1$ and converging towards their equilibrium distribution as time progresses to the right.
@@ -320,6 +320,8 @@ It turns out that the term \(\mathbb{E}_{x_0 \sim p_{0|t}(x_0 | x)} \left[ \nabl
 Thus we can simulate a discrete state space samples with models and quantity obtained from their continuous counterparts.</p>
 
 <p>For all the remaining extra stuff and math, read our paper here <a href="https://arxiv.org/pdf/2405.03549">https://arxiv.org/pdf/2405.03549</a>.</p>
+
+<p>For a more abstract treatment of discrete-state-space diffusion built on the same CTMC scaffolding, see <a href="https://ludwigwinkler.github.io/blog/DiscreteDiffusion/">Discrete Diffusion from First Principles</a>.</p>
 </p>
       		</section>
 

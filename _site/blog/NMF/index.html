@@ -338,6 +338,8 @@ def forward_fullmatrix(self):
 All we have to do is to use the already existing codebook $Q$ and the biases $u, i, b$ and let the factorization for $p^* \in \mathbb{R}^{1 \times k}$ converge such that</p>
 
 \[u^*_i \approx \sum_{k=0}^K p^*_k Q_{ki} + u_i + i_i + b\]
+
+<p>For a Bayesian version that quantifies uncertainty over recommendations using the reparameterization trick, see <a href="https://ludwigwinkler.github.io/blog/BayesNMF/">Bayesian Non-Negative Matrix Factorization</a>.</p>
 </p>
       		</section>
 

@@ -111,7 +111,7 @@ How would you even answer the question of how probable your data set is?</p>
 The motivation behind this formulation is that the true latent conditional distribution $p(z|x)$ could be very complicated, but we will choose a simpler variational distribution $q_\phi(z |x)$ that we can conveniently work with.
 It might not be able to represent all the modes and fat tails that could potentially occur in $p(z |x)$ but better than nothing, right?</p>
 
-<p>Information theory gives us the right tools to measure the difference between $q_\phi(z|x)$ and $p(z|x)$ through the Kullback-Leibler divergence:
+<p>Information theory gives us the right tools to measure the difference between $q_\phi(z|x)$ and $p(z|x)$ through the Kullback-Leibler divergence (for a different distance measure between distributions, the Wasserstein distance, see <a href="https://ludwigwinkler.github.io/blog/Sinkhorn/">Sinkhorn Iterations</a>):
 \(\mathbb{KL} \left[ q_\phi(z|x) \ || \ p(z|x) \right]\)
 The state of affairs so far is that we have an easy to work with distribution $q_\phi(z|x)$ with the trainable parameters $\phi$ and that we wish to minimize the divergence to the true latent distribution $p(z|x)$.
 We can also rewrite $p(z|x)$ according to Bayes rule to maybe make the computations a bit more tractable.

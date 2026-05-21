@@ -374,6 +374,8 @@ Given the computation of both the mean and variance of the posterior distributio
      p(y_* | y, X_*, X) &amp;= \mathcal{N} \big( \underbrace{K_{X_* X} {K_{XX}}^{-1} y}_{\mu}, \underbrace{K_{X_* X_*} - K_{X_* X}{K_{X X}}^{-1}K_{X X_*}}_{\Sigma} \big)
 \end{align}\)</p>
 
+<p>For extensions like noisy observations, hyperparameter learning, and derivative-augmented GPs, see <a href="https://ludwigwinkler.github.io/blog/Gaussian-Processes-Extensions/">Gaussian Processes - Extensions</a>. For using GPs to optimize expensive black-box functions, see <a href="https://ludwigwinkler.github.io/blog/BayesianOptimization/">Bayesian Optimization</a>. For scalable approximations, see <a href="https://ludwigwinkler.github.io/blog/InducingPoints/">Inducing Points</a> and <a href="https://ludwigwinkler.github.io/blog/GPyTorch/">GPyTorch</a>.</p>
+
 <p>Here is an image of a Gaussian Process:</p>
 
 <p><img src="https://raw.githubusercontent.com/ludwigwinkler/BayesianOptimization/gh-pages/docs/GP_2Obs.png" alt="" height="75%" width="75%" /></p>

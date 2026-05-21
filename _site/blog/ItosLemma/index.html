@@ -124,7 +124,7 @@ But in order for the function to be differentiable, the limit has to actually co
 
 <h3 id="stochastic-processes">Stochastic Processes</h3>
 
-<p>In order to keep things simple in the following steps, we will work with the Brownian Motion. <br />
+<p>In order to keep things simple in the following steps, we will work with the Brownian Motion (introduced in the <a href="https://ludwigwinkler.github.io/blog/SDE/">SDE post</a>). <br />
 Brownian motion $W_t$ is defined through the following properties:</p>
 
 <ul>
@@ -320,6 +320,8 @@ This allows us to simply drop them from our equation.</p>
 Albeit with a few first and second order derivatives sprinkled in between.</p>
 
 <p>Thus we can model the function $f(t, X_t)$ just like any other drift-diffusion process and can evaluate the distribution of such a process at a later point in time.</p>
+
+<p>This lemma is the foundational tool used throughout the rest of the SDE series: it lets us derive analytical solutions for <a href="https://ludwigwinkler.github.io/blog/SolvingSDEs/">Geometric Brownian Motion and the Ornstein-Uhlenbeck process</a>, the <a href="https://ludwigwinkler.github.io/blog/FokkerPlanck/">Fokker-Planck equation</a> for the time-evolution of the marginal probability, the <a href="https://ludwigwinkler.github.io/blog/BlackScholes/">Black-Scholes equation</a> for option pricing, <a href="https://ludwigwinkler.github.io/blog/Girsanov/">Girsanov’s theorem</a>, <a href="https://ludwigwinkler.github.io/blog/Doob/">Doob’s h-transform</a>, and the <a href="https://ludwigwinkler.github.io/blog/FeynmanKac/">Feynman-Kac formula</a>.</p>
 </p>
       		</section>
 

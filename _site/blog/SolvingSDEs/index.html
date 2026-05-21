@@ -91,6 +91,8 @@ MathJax = {
 
 <h3 id="geometric-brownian-motion">Geometric Brownian Motion</h3>
 
+<p>Geometric Brownian Motion is the dynamics assumption underlying the <a href="https://ludwigwinkler.github.io/blog/BlackScholes/">Black-Scholes equation for option pricing</a>.</p>
+
 <p>Brownian motion can have both positive and negative values as long as its mean is centered around zero and the distribution over time follows the characteristics of the Wiener process.
 Yet certain quantities can only have positive values such as stocks.</p>
 
@@ -110,7 +112,7 @@ The quantity $dS_t/S_t$ has a striking familiarity to
 \(\begin{align}
 \frac{\partial \ln S(x)}{\partial x} = \frac{1}{S(x)} \frac{\partial S(x)}{\partial x}
 \end{align}\)
-But since we are working with stochastic processes, we can’t apply regular calculus to derive such a stochastic process but use Ito’s lemma instead:
+But since we are working with <a href="https://ludwigwinkler.github.io/blog/SDE/">stochastic processes</a>, we can’t apply regular calculus to derive such a stochastic process but use <a href="https://ludwigwinkler.github.io/blog/ItosLemma/">Ito’s lemma</a> instead:
 \(\begin{align}
 	d \ln S_t &amp;= \underbrace{\frac{\partial \ln S_t}{\partial t}}_{=0} dt + \frac{\partial \ln S_t}{\partial S_t} dS_t + \frac{1}{2} \frac{\partial^2 \ln S_t}{\partial S_t^2} dS_t^2 \\
 	&amp;= \frac{dS_t}{S_t} - \frac{1}{2} \frac{1}{S_t^2} (\mu_t S_t + \sigma_t S_t dW_t)^2 \\
@@ -239,6 +241,8 @@ If the momentum is only small, the Wiener process can exert a stronger influence
 
 <p>More importantly, since the Wiener process is the only random influence on the process and is Gaussian, the entire process is a Gaussian process.
 Thus the stationary distribution is a Gaussian distribution as well.</p>
+
+<p>The OU process plays a central role in modern generative diffusion models — the discrete-state <a href="https://ludwigwinkler.github.io/blog/TheEhrenfestProcess/">Ehrenfest process</a> converges to it in the large-state-space limit, and it underlies <a href="https://ludwigwinkler.github.io/blog/SimpleReverseSDE/">variance-preserving diffusion</a> and <a href="https://ludwigwinkler.github.io/blog/DiscreteDiffusion/">discrete diffusion</a> models.</p>
 </p>
       		</section>
 

@@ -206,13 +206,13 @@ d\Pi = r \Pi dt
 \end{align}\)
 which is the compounding interest of the whole portfolio invested with US treasury bonds.</p>
 
-<p>One assumption of Black-Scholes model is that the stock price follows a geometric Brownian motion
+<p>One assumption of Black-Scholes model is that the stock price follows a <a href="https://ludwigwinkler.github.io/blog/SolvingSDEs/">geometric Brownian motion</a>
 \(\begin{align}
 dS_t = \mu S dt + \sigma S dW_t
 \end{align}\)
 such that large stock prices incur larger movements in both drift and diffusion.</p>
 
-<p>We are now interested in the dynamics of $dV(S, t)$ which hinges on the behavior of $S$ captured by the SDE above.</p>
+<p>We are now interested in the dynamics of $dV(S, t)$ which hinges on the behavior of $S$ captured by the <a href="https://ludwigwinkler.github.io/blog/SDE/">SDE</a> above.</p>
 
 <p>Ito’s Lemma, derived and explained in more detail <a href="https://ludwigwinkler.github.io/blog/ItosLemma/">here</a> and <a href="https://ludwigwinkler.github.io/blog/FokkerPlanck/">used for the derivation of the FPE here</a>, gives us a straight forward equation for this:
 \(\begin{align}

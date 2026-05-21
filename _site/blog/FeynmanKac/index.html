@@ -103,13 +103,12 @@ This is essentially particle filtering with extra steps with stochastic PDE theo
 
 <h3 id="ito-derivative">Ito Derivative</h3>
 
-<p>At the core of diffusion model is a stochastic process $X_t$ that evolves according to a stochastic differential equation (SDE). The Ito derivative is a key concept in stochastic calculus that allows us to differentiate functions of stochastic processes.</p>
-
-<p>The SDE in question is typically of the form:
+<p>At the core of diffusion model is a stochastic process $X_t$ that evolves according to a <a href="https://ludwigwinkler.github.io/blog/SDE/">stochastic differential equation (SDE)</a>.
+The SDE in question is typically of the form:
 \(dX_t = \mu(X_t, t) dt + \sigma(X_t, t) dW_t\)
 where $\mu$ is the drift term, $\sigma$ is the diffusion term, and $W_t$ is a Wiener process (or Brownian motion).</p>
 
-<p>What happens to a function $f(X_t, t)$ as it evolves over time? The Ito derivative gives us a way to compute this by extending the classical Taylor expansion to the stochastic process realm:</p>
+<p>What happens to a function $f(X_t, t)$ as it evolves over time? The <a href="https://ludwigwinkler.github.io/blog/ItosLemma/">Ito derivative</a> gives us a way to compute this by extending the classical Taylor expansion to the stochastic process realm:</p>
 <div style="overflow-x: auto;">
 $$
 \begin{align*}
@@ -185,6 +184,8 @@ df(X_t, t) =&amp;\left\{\frac{\partial f(X_t, t)}{\partial t} + \frac{\partial f
 </div>
 
 <h3 id="backward-kolmogorov-equation">Backward Kolmogorov Equation</h3>
+
+<p>For a derivation of the Kolmogorov backward equation via the Kramers-Moyal expansion, see <a href="https://ludwigwinkler.github.io/blog/Kramers/">Fokker, Planck &amp; Kolmogorov Revisited</a>; it is also the central object used in <a href="https://ludwigwinkler.github.io/blog/Doob/">Doob’s h-transform</a>.</p>
 
 <p>Ito’s lemma gives us a way to compute the infinitesimal change in a function of a stochastic process.
 Since our process is stochastic, for any realized $x_t$, if we run the stochastic process again, we will get a different $X_T$ where $T= t + \Delta t$.

@@ -89,7 +89,7 @@ MathJax = {
 
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async=""></script>
 
-<p>Let’s start out this blog post with the one equation that is at the heart of diffusion models, the Fokker-Planck equation,</p>
+<p>Let’s start out this blog post with the one equation that is at the heart of diffusion models, the <a href="https://ludwigwinkler.github.io/blog/FokkerPlanck/">Fokker-Planck equation</a>,</p>
 <div style="overflow-x: auto;">
 $$
 \begin{align}
@@ -100,7 +100,7 @@ $$
 \end{align}
 $$
 </div>
-<p>which describes the evolution of the probability density function of a stochastic process that follows a stochastic differential equation</p>
+<p>which describes the evolution of the probability density function of a stochastic process that follows a <a href="https://ludwigwinkler.github.io/blog/SDE/">stochastic differential equation</a></p>
 <div style="overflow-x: auto;">
 $$
 \begin{align}
@@ -255,7 +255,7 @@ The full code can be found in this little <a href="https://github.com/ludwigwink
 
 <p>A small disclaimer: the tricky part is computing the divergence of the drift vector field $\mathbf{\mu}(x, t)$ efficiently.
 The problem here is that for $D$ dimensions, we have to compute $D$ partial derivatives for each dimension, which can be computationally expensive in higher dimensions.
-To alleviate this problem, Hutchinson’s stochastic trace estimator is commonly used.</p>
+To alleviate this problem, <a href="https://ludwigwinkler.github.io/blog/TraceEstimation/">Hutchinson’s stochastic trace estimator</a> is commonly used.</p>
 
 <p>What does the trace have to do with the divergence?
 Well, essentially the divergence sums over the diagonal elements of the Jacobian matrix $J_\mu \in \mathbb{R}^{D \times D}$ of the drift vector field $\mathbf{\mu}(x, t)$, and $J_{\mu, ij} = \partial_{x_i} \mu_j(x,t)$ by its definition</p>
@@ -327,7 +327,7 @@ Taking a single sample of $\epsilon$ and computing the Jacobian-vector product i
 <h3 id="ito-density-estimators">Ito Density Estimators</h3>
 
 <p>The probability flow log-likelihood estimator is derived through the Fokker-Planck equation.
-Here we will compute the log-likelihood of the observed data given a diffusion model using Ito’s lemma based on the SDE formulation.</p>
+Here we will compute the log-likelihood of the observed data given a diffusion model using <a href="https://ludwigwinkler.github.io/blog/ItosLemma/">Ito’s lemma</a> based on the SDE formulation.</p>
 
 <p>We start out by splitting the Laplace operator $\Delta$ into two divergences,</p>
 <div style="overflow-x: auto;">

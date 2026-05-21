@@ -136,9 +136,9 @@ You know the shape of the landscape, but you have no way to generate points that
 But in practice, the samples these schemes produce are almost never i.i.d. from the target:</p>
 
 <ul>
-  <li><strong>MCMC</strong> produces samples that are serially correlated (each sample depends on the previous one).</li>
+  <li><strong><a href="https://ludwigwinkler.github.io/blog/HMC/">MCMC</a></strong> produces samples that are serially correlated (each sample depends on the previous one).</li>
   <li><strong>Importance sampling</strong> draws from a proposal $q \neq p$, then corrects with weights — but those weights can be wildly uneven.</li>
-  <li><strong>Particle filters</strong> resample with replacement, creating duplicate particles.</li>
+  <li><strong>Particle filters</strong> resample with replacement, creating duplicate particles (see <a href="https://ludwigwinkler.github.io/blog/AISSMC/">Annealed Importance Sampling</a> for a related staged-sampling scheme).</li>
 </ul>
 
 <p>All of these schemes are ways to sample from $p$ even if you can’t sample from $p$ directly. In all these cases, your $N$ raw samples carry <em>less information</em> than $N$ truly independent samples from the OG $p$ would. You need a single number that answers: <strong>“how many i.i.d. samples is my collection of samples I proposed actually worth?”</strong> That number is the ESS.</p>
@@ -900,7 +900,7 @@ The normalized weights $\bar{w}_t^{(i)}$ can then be used as the probabilities f
 
 <p>Now — what does any of this have to do with diffusion models?</p>
 
-<p>For diffusion models, we have the generative <strong>reverse-time SDE</strong>:</p>
+<p>For diffusion models, we have the generative <a href="https://ludwigwinkler.github.io/blog/SimpleReverseSDE/"><strong>reverse-time SDE</strong></a>:</p>
 
 <div style="overflow-x: auto;">
 $$
