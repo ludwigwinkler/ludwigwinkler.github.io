@@ -1,0 +1,2411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Einstein Summation — The Notation That Eats the Matrix Cookbook</title>
+
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" id="MathJax-script" async></script>
+
+<style>
+  :root {
+    --bg:        #0c0e13;
+    --surface:   #161921;
+    --ink:       #d8dae0;
+    --ink-soft:  #8a8d99;
+    --accent:    #e8a44a;
+    --accent-2:  #5b9bd5;
+    --accent-3:  #6fcf97;
+    --line:      #2a2d38;
+    --axis:      #3d4050;
+    --kernel-bg: #e8a44a;
+    --kernel-ink:#0c0e13;
+    --radius: 12px;
+    --measure: 68ch;
+    --font-display: Didot, 'Bodoni MT', 'Noto Serif Display', 'Times New Roman', serif;
+    --font-body:    Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif;
+    --font-mono:    'SF Mono', 'Fira Mono', 'Cascadia Mono', Consolas, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 19px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #progress {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2)); z-index: 100;
+    transition: width 0.1s linear;
+  }
+
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 28px 140px; }
+  .prose { max-width: var(--measure); }
+  .prose p { margin: 0 0 1.15em; }
+
+  header { padding: 100px 0 44px; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.28em;
+    text-transform: uppercase; color: var(--accent); margin: 0 0 20px;
+  }
+  h1 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(2.4rem, 5.5vw, 3.6rem); line-height: 1.08;
+    margin: 0 0 24px; letter-spacing: -0.01em;
+    color: #ffffff;
+  }
+  .promise {
+    font-size: 1.15rem; color: var(--ink-soft); font-style: italic;
+    max-width: var(--measure);
+  }
+
+  .kernel {
+    background: var(--kernel-bg); color: var(--kernel-ink);
+    border-radius: var(--radius); padding: 36px 40px; margin: 52px 0 80px;
+    position: relative; overflow: hidden;
+  }
+  .kernel::before {
+    content: '∑'; position: absolute; right: 28px; top: -8px;
+    font-size: 8rem; opacity: 0.1; font-family: var(--font-display);
+    line-height: 1; pointer-events: none;
+  }
+  .kernel .label {
+    font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.22em;
+    text-transform: uppercase; opacity: 0.55; margin: 0 0 14px;
+  }
+  .kernel .sentence {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 1.4rem; line-height: 1.45; margin: 0;
+  }
+
+  .concept-step { margin: 0 0 96px; scroll-margin-top: 44px; }
+  .step-num {
+    font-family: var(--font-mono); font-size: 0.82rem; font-weight: 600;
+    color: var(--accent); letter-spacing: 0.06em; margin: 0 0 6px;
+  }
+  .concept-step h2 {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(1.6rem, 3.2vw, 2.2rem); line-height: 1.18;
+    margin: 0 0 22px; letter-spacing: -0.01em; color: #ffffff;
+  }
+
+  details.formal {
+    border: 1px solid var(--line); border-radius: 10px;
+    background: var(--surface); margin: 26px 0; max-width: var(--measure);
+  }
+  details.formal summary {
+    cursor: pointer; padding: 14px 20px; font-family: var(--font-body);
+    font-size: 0.92rem; letter-spacing: 0.03em; color: var(--ink-soft);
+    list-style: none; user-select: none;
+  }
+  details.formal summary::before { content: '▸ '; color: var(--accent); }
+  details.formal[open] summary::before { content: '▾ '; }
+  details.formal .formal-body { padding: 0 20px 20px; line-height: 1.65; }
+
+  .widget {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 24px; margin: 30px 0;
+  }
+  .widget-controls {
+    display: flex; flex-wrap: wrap; gap: 18px 28px; margin-bottom: 18px;
+  }
+  .widget-controls label {
+    display: flex; flex-direction: column; gap: 6px;
+    font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink-soft);
+    min-width: 170px;
+  }
+  .widget-controls .val { color: var(--accent); font-weight: 600; }
+  input[type=range] { accent-color: var(--accent); cursor: pointer; }
+  .widget button {
+    font-family: var(--font-mono); font-size: 0.85rem;
+    background: var(--accent); color: var(--kernel-ink); border: none;
+    padding: 8px 18px; border-radius: 8px; cursor: pointer; font-weight: 600;
+  }
+  .widget button:hover { background: #f0b85c; }
+  .widget button:disabled { opacity: 0.35; cursor: default; }
+  .widget button.secondary {
+    background: transparent; color: var(--accent); border: 1px solid var(--accent);
+  }
+  .widget button.secondary:hover { background: rgba(232,164,74,0.1); }
+  .widget-stage {
+    display: block; width: 100%; border-radius: 8px; background: var(--bg);
+  }
+  .readout {
+    margin-top: 14px; font-size: 0.95rem; color: var(--ink-soft);
+    min-height: 1.4em; font-family: var(--font-body);
+  }
+  .caption {
+    font-size: 0.82rem; color: var(--ink-soft); font-style: italic;
+    margin-top: 10px;
+  }
+
+  .grid-table {
+    display: grid; gap: 1px; background: var(--line); border-radius: 8px;
+    overflow: hidden; margin: 16px 0; font-family: var(--font-mono);
+    font-size: 0.88rem;
+  }
+  .grid-table > div {
+    background: var(--surface); padding: 10px 14px; text-align: center;
+  }
+  .grid-table > div.header { background: var(--bg); color: var(--accent); font-weight: 600; }
+
+  .recap {
+    border-top: 2px solid var(--accent); padding-top: 44px; margin-top: 28px;
+  }
+  .recap h2 { font-family: var(--font-display); font-size: 2rem; margin: 0 0 20px; color: #ffffff; }
+
+  mark { background: linear-gradient(transparent 55%, rgba(232,164,74,0.3) 55%); color: inherit; }
+  a { color: var(--accent); }
+  code { font-family: var(--font-mono); font-size: 0.88em; background: var(--surface);
+    padding: 2px 7px; border-radius: 4px; color: var(--accent-2); }
+
+  .eq-highlight {
+    background: rgba(232,164,74,0.08); border-left: 3px solid var(--accent);
+    padding: 16px 20px; border-radius: 0 8px 8px 0; margin: 20px 0;
+    max-width: var(--measure);
+  }
+
+  /* Index color coding used in widgets */
+  .idx-i { color: var(--accent); font-weight: 700; }
+  .idx-j { color: var(--accent-2); font-weight: 700; }
+  .idx-k { color: var(--accent-3); font-weight: 700; }
+
+  @media (max-width: 600px) {
+    body { font-size: 17px; }
+    .wrap { padding: 0 18px 80px; }
+    .kernel { padding: 26px 22px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">A step-by-step explainer</p>
+    <h1>Einstein Notation</h1>
+    <p class="promise">
+      By the end of this page you will be able to read, write, contract,
+      and <em>differentiate</em> any tensor expression — and see why every
+      identity in the Matrix Cookbook is a one-liner.
+    </p>
+  </header>
+
+  <!-- ===================== THE KERNEL ===================== -->
+  <div class="kernel">
+    <p class="label">The whole idea, in one sentence</p>
+    <p class="sentence">
+      If the same index letter shows up twice in a single term,
+      it means "sum over that letter." That's the whole convention.
+      Everything else — contractions, traces, even derivatives — is just
+      asking which letters are shared and which are free.
+    </p>
+  </div>
+
+  <!-- ===================== STEP 1 ===================== -->
+  <section class="concept-step" id="step-1">
+    <p class="step-num">Step 1</p>
+    <h2>Repeated index = sum</h2>
+    <div class="prose">
+      <p>
+        Consider the dot product of two vectors \(\mathbf{a}\) and \(\mathbf{b}\)
+        in \(\mathbb{R}^n\). The "normal" way to write it:
+      </p>
+      <div class="eq-highlight">
+        \[ \mathbf{a} \cdot \mathbf{b} = \sum_{i=1}^{n} a_i \, b_i \]
+      </div>
+      <p>
+        Einstein's observation: the \(\sum_{i}\) is redundant. You can <em>see</em>
+        that \(i\) appears twice — once in \(a_i\) and once in \(b_i\). The
+        only sensible thing to do with a repeated index is sum over it. So just
+        drop the \(\sum\) sign and write:
+      </p>
+      <div class="eq-highlight">
+        \[ a_i \, b_i \quad \text{(means the same thing)} \]
+      </div>
+      <p>
+        That's the <strong>Einstein summation convention</strong>: an index that
+        appears exactly twice in a term is <em>implicitly summed over</em>. No
+        \(\sum\) needed. The widget below lets you pick the dimension and two
+        vectors, and watch the summation unfold term by term.
+      </p>
+    </div>
+
+    <div class="widget" id="w1">
+      <div class="widget-controls">
+        <label>dimension \(n\) = <span class="val" id="w1-nV">3</span>
+          <input type="range" id="w1-n" min="2" max="6" step="1" value="3">
+        </label>
+      </div>
+      <div id="w1-display" style="font-family:var(--font-mono); font-size:1.05rem; line-height:2.2; padding:12px 0;"></div>
+      <div class="readout" id="w1-readout"></div>
+      <p class="caption">Drag the slider to change the dimension and see how
+        \(a_i b_i\) expands into an explicit sum.</p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version</summary>
+      <div class="formal-body prose">
+        <p>
+          <strong>Convention.</strong> In any monomial expression, if an index
+          variable appears exactly twice, a summation over the full range of
+          that index is implied. Such an index is called a <em>dummy index</em>.
+          An index appearing exactly once is a <em>free index</em>; the expression
+          holds for each value of the free index.
+        </p>
+        <p>
+          The convention is well-defined only when each dummy index appears
+          <em>exactly</em> twice. Three or more repetitions are ambiguous and
+          not permitted.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 2 ===================== -->
+  <section class="concept-step" id="step-2">
+    <p class="step-num">Step 2</p>
+    <h2>Free vs. dummy — what determines the shape</h2>
+    <div class="prose">
+      <p>
+        Once you drop the \(\sum\), every expression is just a string of
+        indexed symbols. The indices that appear <em>once</em> are
+        <mark>free</mark> — they label the output's axes. The indices that
+        appear <em>twice</em> are <mark>dummy</mark> — they get summed away
+        and disappear from the result.
+      </p>
+      <p>
+        Quick rule of thumb: <strong>count the free indices → that tells you
+        the tensor rank of the result.</strong>
+      </p>
+      <div class="eq-highlight">
+        \[
+          \underbrace{a_i b_i}_{\text{0 free → scalar}} \qquad
+          \underbrace{A_{ij} b_j}_{\text{1 free }(i)\text{ → vector}} \qquad
+          \underbrace{A_{ik} B_{kj}}_{\text{2 free }(i,j)\text{ → matrix}}
+        \]
+      </div>
+      <p>
+        The widget lets you type any index expression and see the classification
+        instantly.
+      </p>
+    </div>
+
+    <div class="widget" id="w2">
+      <div class="widget-controls" style="flex-direction:column; gap:10px;">
+        <label style="min-width:100%;">
+          <span style="margin-bottom:4px; display:block;">Enter an index expression (e.g. <code>A_ik B_kj</code>)</span>
+          <input type="text" id="w2-input" value="A_ik B_kj"
+            style="font-family:var(--font-mono); font-size:1.05rem; padding:10px 14px;
+            background:var(--bg); color:var(--ink); border:1px solid var(--line);
+            border-radius:8px; width:100%; outline:none;"
+            spellcheck="false" autocomplete="off">
+        </label>
+      </div>
+      <div id="w2-analysis" style="padding:8px 0; font-family:var(--font-mono); font-size:0.95rem; line-height:2;"></div>
+      <div class="readout" id="w2-readout"></div>
+      <p class="caption">Try: <code>a_i b_i</code> (scalar), <code>A_ij x_j</code> (vector),
+        <code>A_ik B_kj</code> (matrix), <code>C_ijk x_j y_k</code> (vector).</p>
+    </div>
+  </section>
+
+  <!-- ===================== STEP 3 ===================== -->
+  <section class="concept-step" id="step-3">
+    <p class="step-num">Step 3</p>
+    <h2>Every matrix operation is an index pattern</h2>
+    <div class="prose">
+      <p>
+        Here's where it gets satisfying. Every operation from linear algebra
+        is just a particular arrangement of shared and free indices. You don't
+        need to memorize "matrix multiplication is rows times columns" — you
+        just need to see which indices are shared:
+      </p>
+    </div>
+
+    <div class="widget" id="w3">
+      <div class="widget-controls">
+        <label>
+          Operation
+          <select id="w3-op" style="font-family:var(--font-mono); font-size:0.95rem;
+            padding:8px 12px; background:var(--bg); color:var(--ink);
+            border:1px solid var(--line); border-radius:8px; cursor:pointer;">
+            <option value="dot">Dot product</option>
+            <option value="matvec">Matrix × vector</option>
+            <option value="matmul" selected>Matrix × matrix</option>
+            <option value="trace">Trace</option>
+            <option value="outer">Outer product</option>
+            <option value="transpose">Transpose</option>
+            <option value="quadratic">Quadratic form</option>
+          </select>
+        </label>
+      </div>
+      <div id="w3-display" style="padding:12px 0;"></div>
+      <div class="readout" id="w3-readout"></div>
+      <p class="caption">Each operation is fully determined by which indices are free and which are summed.</p>
+    </div>
+
+    <details class="formal">
+      <summary>Complete table of common operations</summary>
+      <div class="formal-body prose">
+        <p>Here's the full reference. Every one of these is obtained by just
+        deciding which letters to share:</p>
+        <p>
+        \(\mathbf{a} \cdot \mathbf{b} = a_i b_i\) — dot product<br>
+        \((\mathbf{A}\mathbf{x})_i = A_{ij} x_j\) — matrix-vector product<br>
+        \((\mathbf{AB})_{ij} = A_{ik} B_{kj}\) — matrix-matrix product<br>
+        \(\text{tr}(\mathbf{A}) = A_{ii}\) — trace<br>
+        \((\mathbf{a} \otimes \mathbf{b})_{ij} = a_i b_j\) — outer product (no repeated index!)<br>
+        \((\mathbf{A}^T)_{ij} = A_{ji}\) — transpose (just swap the subscripts)<br>
+        \(\mathbf{x}^T \mathbf{A} \mathbf{x} = x_i A_{ij} x_j\) — quadratic form
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 5 ===================== -->
+  <section class="concept-step" id="step-4">
+    <p class="step-num">Step 4</p>
+    <h2>Contraction = glue two indices, then sum</h2>
+    <div class="prose">
+      <p>
+        <em>Contraction</em> sounds intimidating but it's embarrassingly simple:
+        take two free indices and <strong>declare them to be the same letter</strong>.
+        That letter now appears twice, so it gets summed away. The result has
+        fewer indices (lower rank) than you started with.
+      </p>
+      <p>
+        Matrix trace is the canonical example: \(A_{ij}\) is a matrix (rank 2,
+        two free indices). Set \(j = i\) → \(A_{ii}\) has no free indices left → scalar.
+        That scalar is \(\text{tr}(\mathbf{A})\).
+      </p>
+      <p>
+        Matrix multiplication is a contraction too: start with \(A_{ik}\) and
+        \(B_{\ell j}\), set \(\ell = k\) → \(A_{ik} B_{kj}\), the shared \(k\)
+        gets summed away, leaving a matrix indexed by \((i,j)\).
+      </p>
+      <p>
+        The widget below lets you pick two tensors and choose which pair of
+        indices to contract, showing the result live.
+      </p>
+    </div>
+
+    <div class="widget" id="w4">
+      <div class="widget-controls">
+        <label>Left tensor
+          <select id="w4-left" style="font-family:var(--font-mono); font-size:0.95rem;
+            padding:8px 12px; background:var(--bg); color:var(--ink);
+            border:1px solid var(--line); border-radius:8px; cursor:pointer;">
+            <option value="vec_i">vector a_i</option>
+            <option value="mat_ij" selected>matrix A_ij</option>
+            <option value="tens_ijk">3-tensor T_ijk</option>
+          </select>
+        </label>
+        <label>Right tensor
+          <select id="w4-right" style="font-family:var(--font-mono); font-size:0.95rem;
+            padding:8px 12px; background:var(--bg); color:var(--ink);
+            border:1px solid var(--line); border-radius:8px; cursor:pointer;">
+            <option value="vec_j">vector b_j</option>
+            <option value="mat_jk">matrix B_jk</option>
+          </select>
+        </label>
+        <label>Contract over
+          <select id="w4-contract" style="font-family:var(--font-mono); font-size:0.95rem;
+            padding:8px 12px; background:var(--bg); color:var(--ink);
+            border:1px solid var(--line); border-radius:8px; cursor:pointer;">
+            <option value="j">j (set equal)</option>
+          </select>
+        </label>
+      </div>
+      <div id="w4-display" style="padding:12px 0; font-size:1.05rem; line-height:2.2;"></div>
+      <div class="readout" id="w4-readout"></div>
+      <p class="caption">Contraction always reduces the total number of free indices by 2 (one from each tensor).</p>
+    </div>
+  </section>
+
+  <!-- ===================== STEP 6 ===================== -->
+  <section class="concept-step" id="step-5">
+    <p class="step-num">Step 5</p>
+    <h2>Derivatives: just the product rule on indices</h2>
+    <div class="prose">
+      <p>
+        Here's the payoff. In Einstein notation, taking a derivative with respect
+        to a matrix \(X_{mn}\) is just:
+      </p>
+      <div class="eq-highlight">
+        \[ \frac{\partial\, X_{ij}}{\partial\, X_{mn}} = \delta_{im}\,\delta_{jn} \]
+      </div>
+      <p>
+        where \(\delta_{im}\) is the Kronecker delta (1 if \(i = m\), 0 otherwise).
+        Read it as: "the \((i,j)\) entry of \(X\) only responds to \(X_{mn}\)
+        when \(i=m\) <em>and</em> \(j=n\)." That's obvious — each entry is
+        independent of the others. The \(\delta\)'s just say that precisely.
+      </p>
+      <p>
+        Now, when you differentiate a <em>product</em>, you use the normal product rule:
+      </p>
+      <div class="eq-highlight">
+        \[ \frac{\partial}{\partial X_{mn}}(A_{ik} X_{kj}) = A_{ik}\,\delta_{km}\,\delta_{jn} = A_{im}\,\delta_{jn} \]
+      </div>
+      <p>
+        The \(\delta\)'s simply <em>replace</em> the contracted indices: \(k \to m\)
+        and \(j \to n\). This is the whole trick. The widget shows this
+        substitution happening live for any expression you build.
+      </p>
+    </div>
+
+    <div class="widget" id="w5">
+      <div class="widget-controls">
+        <label>Differentiate
+          <select id="w5-expr" style="font-family:var(--font-mono); font-size:0.95rem;
+            padding:8px 12px; background:var(--bg); color:var(--ink);
+            border:1px solid var(--line); border-radius:8px; cursor:pointer;">
+            <option value="ax">A_ik X_kj  (matrix product AX)</option>
+            <option value="xa">X_ik A_kj  (matrix product XA)</option>
+            <option value="trx">X_ii  (trace of X)</option>
+            <option value="trax">A_ik X_ki  (trace of AX)</option>
+            <option value="quad">x_i A_ij x_j  (quadratic form)</option>
+          </select>
+        </label>
+      </div>
+      <div id="w5-steps" style="padding:12px 0; font-size:1rem; line-height:2.4;"></div>
+      <div class="readout" id="w5-readout"></div>
+      <p class="caption">Watch the Kronecker deltas fire and replace indices. This is the entire mechanism behind every Matrix Cookbook identity.</p>
+    </div>
+
+    <details class="formal">
+      <summary>The Kronecker delta and index substitution</summary>
+      <div class="formal-body prose">
+        <p>
+          The key identity is \(\delta_{im} \, A_{ij\ldots} = A_{mj\ldots}\).
+          Contracting a Kronecker delta with any tensor simply <em>replaces</em>
+          the shared index. This is the analogue of "sifting" — the delta picks
+          out the one term in the sum where the indices match.
+        </p>
+        <p>
+          Because \(\frac{\partial X_{ij}}{\partial X_{mn}} = \delta_{im}\delta_{jn}\),
+          differentiating any expression that is linear in \(X\) amounts to:
+          (1) find where \(X\) sits, (2) replace its indices with the derivative
+          indices via deltas, (3) contract the deltas away. Mechanical and
+          error-free.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 7 ===================== -->
+  <section class="concept-step" id="step-6">
+    <p class="step-num">Step 6</p>
+    <h2>The Matrix Cookbook in one page</h2>
+    <div class="prose">
+      <p>
+        The Matrix Cookbook is a 70-page document full of identities like
+        \(\frac{\partial}{\partial \mathbf{X}} \text{tr}(\mathbf{AX}) = \mathbf{A}^T\).
+        Each one looks like it requires its own clever proof. But in Einstein
+        notation, they're all the same two-line derivation: write it in indices,
+        apply the product rule, collapse the deltas.
+      </p>
+      <p>
+        The widget below lets you pick any classic Matrix Cookbook identity and
+        watch the derivation happen step by step — the exact same mechanical
+        procedure every time.
+      </p>
+    </div>
+
+    <div class="widget" id="w6">
+      <div class="widget-controls">
+        <label>Identity
+          <select id="w6-identity" style="font-family:var(--font-mono); font-size:0.95rem;
+            padding:8px 12px; background:var(--bg); color:var(--ink);
+            border:1px solid var(--line); border-radius:8px; cursor:pointer; min-width:260px;">
+            <option value="trAX">∂/∂X tr(AX) = Aᵀ</option>
+            <option value="trXA">∂/∂X tr(XA) = Aᵀ</option>
+            <option value="trX">∂/∂X tr(X) = I</option>
+            <option value="trXTX">∂/∂X tr(XᵀX) = 2X</option>
+            <option value="trAXB">∂/∂X tr(AXB) = AᵀBᵀ</option>
+            <option value="xAx">∂/∂x (xᵀAx) = (A+Aᵀ)x</option>
+          </select>
+        </label>
+      </div>
+      <div style="display:flex; gap:10px; margin-bottom:12px;">
+        <button id="w6-prev" class="secondary" disabled>← Back</button>
+        <button id="w6-next">Next step →</button>
+        <button id="w6-reset" class="secondary">Reset</button>
+      </div>
+      <div id="w6-steps" style="padding:8px 0; font-size:1rem; line-height:2.6;"></div>
+      <div class="readout" id="w6-readout"></div>
+    </div>
+
+    <details class="formal">
+      <summary>Why this always works</summary>
+      <div class="formal-body prose">
+        <p>
+          Any scalar-valued function of a matrix \(X\) that is built from traces
+          of products can be written as a fully contracted index expression.
+          Differentiating with respect to \(X_{mn}\) inserts
+          \(\delta_{im}\delta_{jn}\) at the position of each \(X_{ij}\). Since
+          the expression was fully contracted (a scalar), after the deltas fire,
+          exactly two free indices \((m, n)\) remain — giving a matrix, which
+          is the gradient \(\frac{\partial f}{\partial X_{mn}}\). Re-reading
+          the surviving index pattern as a matrix operation gives the Matrix
+          Cookbook result.
+        </p>
+        <p>
+          This procedure is completely mechanical. No tricks, no cleverness —
+          just the product rule and delta substitution. It works for
+          <em>every</em> identity in the Cookbook that involves traces of
+          products.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== RECAP ===================== -->
+
+  <!-- ===================== STEP 7 — VECTORS & COVECTORS ===================== -->
+  <section class="concept-step" id="step-7">
+    <p class="step-num">Step 7</p>
+    <h2>Upper vs. lower — vectors and covectors</h2>
+    <div class="prose">
+      <p>
+        So far we've been putting every index downstairs: \(a_i\), \(A_{ij}\).
+        That works in Euclidean space with an orthonormal basis. But the
+        <em>full</em> Einstein convention distinguishes two kinds of index —
+        and the distinction is not formalism for its own sake. Vectors and
+        covectors are <em>geometrically different objects</em>, and the
+        notation tracks that difference so you can't accidentally mix them up.
+      </p>
+      <div class="eq-highlight">
+        \[ v^i \;\;\text{(upper index — a \textbf{vector})} \qquad\qquad w_i \;\;\text{(lower index — a \textbf{covector})} \]
+      </div>
+      <p>
+        The summation rule, properly stated: <strong>you only sum when the same
+        letter appears once upper and once lower.</strong> Two uppers or two
+        lowers can't be contracted without a metric to convert one of them first.
+      </p>
+      <p>
+        A <strong>vector</strong> \(v^i\) (upper index) is a thing with
+        direction and magnitude — a velocity, a displacement, a parameter
+        update. A <strong>covector</strong> \(w_i\) (lower index) is a
+        linear functional that <em>eats</em> vectors and produces numbers —
+        a gradient, a price list, a measurement. The contraction
+        \(w_i v^i\) is the covector evaluated on the vector: a scalar.
+      </p>
+    </div>
+
+    <!-- ════════ 4c: Price / quantity ════════ -->
+    <h3 style="font-family:var(--font-display); color:var(--accent); font-size:1.25rem; margin:52px 0 16px;">
+      7a &thinsp;·&thinsp; Why they transform in opposite directions
+    </h3>
+    <div class="prose">
+      <p>
+        The price–quantity analogy makes the transformation law unforgettable.
+        <strong>Quantities</strong> of goods are a vector \(q^i\) (upper index):
+        "3 apples, 5 bananas." <strong>Prices</strong> per unit are a covector
+        \(p_i\) (lower index): "$1.50/apple, $0.75/banana." The total cost is
+        the contraction:
+      </p>
+      <div class="eq-highlight">
+        \[ \text{cost} = p_i \, q^i = (1.50)(3) + (0.75)(5) = \$8.25 \]
+      </div>
+      <p>
+        Now switch units from "apples" to "dozens of apples." The quantity
+        number <em>shrinks</em> by 12× (you bought 0.25 dozen, not 3).
+        The price <em>grows</em> by 12× ($18/dozen instead of $1.50/each).
+        They scale in <strong>opposite directions</strong> — and the total
+        cost is unchanged. That's what <em>contra</em>variant (upper, scales
+        against the basis change) and <em>co</em>variant (lower, scales with
+        the basis change) mean. The notation makes this mistake-proof:
+        \(p_i + q^i\) (dollars-per-apple + number-of-apples) is
+        syntactically illegal.
+      </p>
+    </div>
+
+    <div class="widget" id="w4c">
+      <div class="widget-controls">
+        <label>apples \(q^1\) = <span class="val" id="w4c-q1V">3</span>
+          <input type="range" id="w4c-q1" min="0" max="12" step="1" value="3">
+        </label>
+        <label>bananas \(q^2\) = <span class="val" id="w4c-q2V">5</span>
+          <input type="range" id="w4c-q2" min="0" max="12" step="1" value="5">
+        </label>
+        <label>apple price \(p_1\) = $<span class="val" id="w4c-p1V">1.50</span>
+          <input type="range" id="w4c-p1" min="0.25" max="5" step="0.25" value="1.5">
+        </label>
+        <label>banana price \(p_2\) = $<span class="val" id="w4c-p2V">0.75</span>
+          <input type="range" id="w4c-p2" min="0.25" max="5" step="0.25" value="0.75">
+        </label>
+      </div>
+      <div style="display:flex; gap:10px; margin-bottom:10px;">
+        <button id="w4c-unitBtn">Switch to dozens</button>
+      </div>
+      <canvas id="w4c-canvas" class="widget-stage" style="height:220px;"></canvas>
+      <div class="readout" id="w4c-readout"></div>
+    </div>
+
+
+    <!-- ════════ 7b: Raising and lowering ════════ -->
+    <h3 style="font-family:var(--font-display); color:var(--accent); font-size:1.25rem; margin:52px 0 16px;">
+      7b &thinsp;·&thinsp; The metric tensor: raising and lowering indices
+    </h3>
+    <div class="prose">
+      <p>
+        The <strong>metric tensor</strong> \(g_{ij}\) is the bridge between
+        vectors and covectors. Its index positions tell you exactly what it
+        does:
+      </p>
+      <p>
+        \(g_{ij}\) has <strong>two lower indices</strong> because it eats
+        <strong>two vectors</strong> (upper index objects) and spits out a
+        scalar — the inner product \(g_{ij}\,v^i w^j = \langle v, w \rangle\).
+        Feed it just one vector to <em>lower</em> its index:
+        \(v_i = g_{ij}\,v^j\). This converts a vector (direction) into a
+        covector (measurement).
+      </p>
+      <p>
+        \(g^{ij}\) has <strong>two upper indices</strong> — it is the inverse
+        of \(g_{ij}\). It eats two covectors or <em>raises</em> a single
+        covector's index: \(v^i = g^{ij}\,v_j\). This converts a measurement
+        back into a direction.
+      </p>
+      <p>
+        <strong>Concrete example: the sphere.</strong> On a sphere of radius
+        \(R\), using coordinates \((\theta, \phi)\) = (latitude, longitude),
+        the metric is:
+      </p>
+      <div class="eq-highlight">
+        \[ g_{ij} = \begin{pmatrix} R^2 & 0 \\ 0 & R^2\cos^2\!\theta \end{pmatrix} \qquad g^{ij} = \begin{pmatrix} 1/R^2 & 0 \\ 0 & 1/(R^2\cos^2\!\theta) \end{pmatrix} \]
+      </div>
+      <p>
+        Why \(\cos^2\!\theta\) in the \(\phi\phi\)-entry? Because longitude
+        lines converge at the poles. One radian of longitude covers \(R\)
+        meters at the equator but nearly zero meters near a pole. The metric
+        encodes this: "how much actual distance does one coordinate step cost?"
+      </p>
+      <p>
+        <strong>Lowering:</strong> suppose you walk at
+        \(v^i = (1, 1)\) — one radian/sec in each coordinate direction. The
+        lowered covector is \(v_i = g_{ij} v^j = (R^2,\; R^2 \cos^2\!\theta)\).
+        At the equator both components are \(R^2\) — the two directions cost
+        the same. Near a pole the \(\phi\)-component shrinks to almost
+        nothing, because one radian of longitude barely moves you.
+      </p>
+      <p>
+        <strong>Raising:</strong> suppose the temperature gradient covector is
+        \(dT_i = (5, 5)\) — the temperature changes at 5 degrees per radian
+        in both coordinates. The raised gradient is
+        \((\nabla T)^i = g^{ij}\,dT_j = (5/R^2, \; 5/(R^2\cos^2\!\theta))\).
+        Near a pole the \(\phi\)-component gets <em>amplified</em>: the
+        longitude circles are so small that even a modest temperature change
+        per radian means a steep change per meter. The steepest-ascent
+        <em>direction</em> tilts toward \(\phi\), even though the
+        <em>measurement</em> was equal in both coordinates.
+      </p>
+    </div>
+
+    <div class="widget" id="w7b">
+      <div class="widget-controls">
+        <label>latitude \(\theta\) = <span class="val" id="w7b-latV">45</span>°
+          <input type="range" id="w7b-lat" min="-85" max="85" step="1" value="45">
+        </label>
+        <label>velocity \(v^\theta\) = <span class="val" id="w7b-vtV">1.00</span>
+          <input type="range" id="w7b-vt" min="-2" max="2" step="0.05" value="1">
+        </label>
+        <label>velocity \(v^\phi\) = <span class="val" id="w7b-vpV">1.00</span>
+          <input type="range" id="w7b-vp" min="-2" max="2" step="0.05" value="1">
+        </label>
+      </div>
+      <canvas id="w7b-canvas" class="widget-stage" style="height:360px;"></canvas>
+      <div class="readout" id="w7b-readout"></div>
+      <p class="caption">Left: lowering — the vector \(v^i\) (gold bars) becomes the covector \(v_i\) (blue bars) via \(g_{ij}\).
+        Right: raising — a fixed covector \(dT_i = (5,5)\) (blue) becomes the gradient vector (green) via \(g^{ij}\).
+        Move latitude toward a pole and watch the \(\phi\)-components diverge.</p>
+    </div>
+
+    <!-- ════════ 4e: The dual space ════════ -->
+    <h3 style="font-family:var(--font-display); color:var(--accent); font-size:1.25rem; margin:52px 0 16px;">
+      7c &thinsp;·&thinsp; What is a dual space, really?
+    </h3>
+    <div class="prose">
+      <p>
+        Before we go to manifolds, we need one definition. You'll see the
+        phrase "cotangent space is the <em>dual</em> of the tangent space"
+        everywhere. What does "dual" actually mean?
+      </p>
+      <p>
+        Start with any vector space \(V\) — say, \(\mathbb{R}^2\). Its
+        <strong>dual space</strong> \(V^*\) is defined as:
+      </p>
+      <div class="eq-highlight">
+        \[ V^* = \{\;\text{all linear functions } \varphi : V \to \mathbb{R}\;\} \]
+      </div>
+      <p>
+        That's it. \(V^*\) is the collection of every possible linear machine
+        that eats a vector and spits out a single number. Each such machine
+        is called a <strong>linear functional</strong>, or equivalently, a
+        <strong>covector</strong>.
+      </p>
+      <p>
+        Why is this a <em>space</em>? Because you can add two linear
+        functionals (apply both, add the results) and scale them, and the
+        result is again a linear functional. So \(V^*\) is itself a vector
+        space — with the same dimension as \(V\).
+      </p>
+      <p>
+        <strong>The key insight:</strong> if \(V\) is \(n\)-dimensional,
+        each linear functional \(\varphi\) is completely determined by \(n\)
+        numbers — the values it assigns to the \(n\) basis vectors:
+        \(\varphi_i = \varphi(\mathbf{e}_i)\). Those numbers are the
+        <em>components</em> of the covector, and they carry a <strong>lower
+        index</strong>.
+      </p>
+      <p>
+        So in coordinates, a covector looks like a list of \(n\) numbers —
+        just like a vector. But its <em>job</em> is different: a vector
+        <em>is a thing</em>, a covector <em>measures things</em>. The action
+        of a covector \(\varphi\) on a vector \(v\) is:
+      </p>
+      <div class="eq-highlight">
+        \[ \varphi(v) = \varphi_i \, v^i \quad \text{(one lower, one upper — Einstein summation!)} \]
+      </div>
+      <p>
+        This is why the summation convention demands one upper and one lower:
+        it's encoding the fact that a covector is eating a vector. The result
+        is a number — a scalar — which is an object with zero indices, exactly
+        as the convention produces.
+      </p>
+      <p>
+        <strong>A basis for \(V^*\):</strong> given a basis
+        \(\{\mathbf{e}_1, \ldots, \mathbf{e}_n\}\) for \(V\), there is a
+        natural <em>dual basis</em> \(\{\mathbf{e}^1, \ldots, \mathbf{e}^n\}\)
+        for \(V^*\), defined by the rule: \(\mathbf{e}^i(\mathbf{e}_j) =
+        \delta^i_j\). Each dual basis vector is the linear functional that
+        returns 1 on its "own" basis vector and 0 on all others. It's the
+        "detector" for the \(i\)-th component.
+      </p>
+    </div>
+
+    <div class="widget" id="w4dual">
+      <div class="widget-controls">
+        <label>covector \(\varphi_1\) = <span class="val" id="w4dual-p1V">1.00</span>
+          <input type="range" id="w4dual-p1" min="-2" max="2" step="0.05" value="1">
+        </label>
+        <label>covector \(\varphi_2\) = <span class="val" id="w4dual-p2V">0.50</span>
+          <input type="range" id="w4dual-p2" min="-2" max="2" step="0.05" value="0.5">
+        </label>
+        <label>vector \(v^1\) = <span class="val" id="w4dual-v1V">1.50</span>
+          <input type="range" id="w4dual-v1" min="-2.5" max="2.5" step="0.05" value="1.5">
+        </label>
+        <label>vector \(v^2\) = <span class="val" id="w4dual-v2V">1.00</span>
+          <input type="range" id="w4dual-v2" min="-2.5" max="2.5" step="0.05" value="1">
+        </label>
+      </div>
+      <canvas id="w4dual-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w4dual-readout"></div>
+      <p class="caption">Left: the vector space \(V\) with the vector (gold arrow) and the covector's level lines
+        (blue). Right: the dual space \(V^*\) with the covector as a point. Both are 2D spaces, but they contain
+        different kinds of objects. The covector's level lines are the sets where \(\varphi(v) = \text{const}\)
+        — and the value of the contraction is which level line the arrow tip lands on.</p>
+    </div>
+
+    <details class="formal">
+      <summary>Why \(V\) and \(V^*\) are not "the same space"</summary>
+      <div class="formal-body prose">
+        <p>
+          In finite dimensions, \(V\) and \(V^*\) have the same dimension and
+          are therefore <em>isomorphic</em> as vector spaces. But there is no
+          <em>canonical</em> (basis-independent) isomorphism between them
+          without extra structure. You need a bilinear form — an inner product,
+          a metric — to identify one with the other.
+        </p>
+        <p>
+          In \(\mathbb{R}^n\) with the standard dot product, the canonical
+          identification \(v^i \leftrightarrow v_i\) via
+          \(v_i = \delta_{ij} v^j\) is so natural that most people never
+          realize \(V\) and \(V^*\) are different. But the moment you change
+          the inner product (a non-trivial metric \(g_{ij}\)), the
+          identification changes, and the distinction becomes visible. This is
+          exactly the story of sections 7b–7d.
+        </p>
+      </div>
+    </details>
+
+    <!-- ════════ 4f: Tangent/cotangent — temperature on Earth ════════ -->
+    <h3 style="font-family:var(--font-display); color:var(--accent); font-size:1.25rem; margin:52px 0 16px;">
+      7d &thinsp;·&thinsp; Temperature on Earth: vectors, covectors, and the spaces they live in
+    </h3>
+    <div class="prose">
+      <p>
+        Let's put it all together with a concrete example. The Earth's
+        surface is a 2-sphere \(S^2\) — a curved 2-dimensional manifold.
+        (Note: the sphere \(S^2\) is the manifold we walk on; <em>SO(3)</em>
+        is the group of rotations that acts <em>on</em> it. They're different
+        objects — more on this in 7e.)
+      </p>
+      <p>
+        At any point \(p\) on the sphere, the <strong>tangent space</strong>
+        \(T_p S^2\) is the flat plane that just touches the surface — all the
+        directions an ant could walk. <strong>Vectors live here.</strong> A
+        vector \(v^i \in T_p S^2\) is a velocity: "I'm walking northeast at
+        3 km/h."
+      </p>
+      <p>
+        Now suppose there's a temperature function \(T\) defined everywhere
+        on the sphere — warm at the equator, cold at the poles. The
+        <strong>differential</strong> \(dT\) at a point is a covector: it's
+        the linear functional that takes a velocity \(v\) and tells you how
+        fast the temperature changes if you walk in that direction:
+      </p>
+      <div class="eq-highlight">
+        \[ dT(v) = \frac{\partial T}{\partial x^i}\,v^i = (\nabla_i T)\,v^i \quad \in \mathbb{R} \]
+      </div>
+      <p>
+        This is a contraction — one lower index (\(\nabla_i T\)) meets one
+        upper index (\(v^i\)) — producing a scalar: the rate of temperature
+        change in °C per hour.
+      </p>
+      <p>
+        <strong>The covector \(dT\) does not point anywhere.</strong> It's
+        not an arrow on the tangent plane — it's a <em>linear functional</em>
+        that lives in the <strong>cotangent space</strong> \(T_p^* S^2\)
+        (the dual of the tangent space). Geometrically, it looks like the
+        temperature contour lines on the tangent plane — the level sets of
+        \(T\). Walking perpendicular to the contours changes the temperature
+        fastest; walking parallel to them doesn't change it at all.
+      </p>
+      <p>
+        To get a <em>direction of steepest ascent</em> — an actual arrow you
+        can follow — you need to raise the index with the metric:
+        \((\nabla T)^i = g^{ij}\,\nabla_j T\). On the sphere with the
+        standard metric, this is just the ordinary gradient vector. But the
+        covector \(dT\) (the measurement machine) exists <em>before</em> you
+        choose a metric; the gradient vector (the arrow) requires one.
+      </p>
+      <div class="eq-highlight">
+        \[
+          \underbrace{v^i \in T_p S^2}_{\text{velocity — "I walk northeast"}}
+          \qquad
+          \underbrace{dT_i \in T_p^* S^2}_{\text{temperature gradient — "how fast does T change?"}}
+          \qquad
+          \underbrace{dT_i\,v^i \in \mathbb{R}}_{\text{contraction — "+2.3 °C/hr"}}
+        \]
+      </div>
+    </div>
+
+    <div class="widget" id="w4e">
+      <div class="widget-controls">
+        <label>latitude = <span class="val" id="w4e-latV">45</span>°
+          <input type="range" id="w4e-lat" min="-80" max="80" step="1" value="45">
+        </label>
+        <label>longitude = <span class="val" id="w4e-lonV">30</span>°
+          <input type="range" id="w4e-lon" min="0" max="360" step="1" value="30">
+        </label>
+        <label>walking direction = <span class="val" id="w4e-vdirV">180</span>°
+          <input type="range" id="w4e-vdir" min="0" max="360" step="1" value="180">
+        </label>
+        <label>walking speed = <span class="val" id="w4e-vspdV">1.00</span>
+          <input type="range" id="w4e-vspd" min="0.1" max="2" step="0.05" value="1">
+        </label>
+      </div>
+      <canvas id="w4e-canvas" class="widget-stage" style="height:460px;"></canvas>
+      <div class="readout" id="w4e-readout"></div>
+      <p class="caption">The sphere is color-coded by temperature (warm red at equator, cold blue at poles).
+        The tangent plane at your location shows: the velocity vector (gold arrow),
+        the temperature contour lines (blue — the covector \(dT\)), and
+        the gradient arrow (green — \(dT\) with its index raised).
+        Walk south from the Arctic and \(dT(v)\) is positive (warming up);
+        walk along a contour line and it's zero.</p>
+    </div>
+
+    <!-- ════════ 4f: SO(3) example ════════ -->
+    <h3 style="font-family:var(--font-display); color:var(--accent); font-size:1.25rem; margin:52px 0 16px;">
+      7e &thinsp;·&thinsp; Concrete example: SO(3) and angular velocity
+    </h3>
+    <div class="prose">
+      <p>
+        SO(3) is the group of all 3D rotation matrices — matrices \(R\)
+        satisfying \(R^T R = I\) and \(\det R = 1\). It's a 3-dimensional
+        curved manifold living inside the 9-dimensional space of all 3×3
+        matrices. You can't parametrize it with 3 numbers without
+        singularities (that's why Euler angles have gimbal lock).
+      </p>
+      <p>
+        <strong>Tangent vectors at the identity:</strong> if you take a
+        curve of rotations \(R(t)\) with \(R(0) = I\), then
+        \(\dot{R}(0) = \Omega\) must be a <strong>skew-symmetric
+        matrix</strong> — that is, \(\Omega^T = -\Omega\). This is because
+        differentiating \(R^T R = I\) at \(t = 0\) gives
+        \(\Omega^T + \Omega = 0\). The space of 3×3 skew-symmetric matrices
+        is 3-dimensional (it's the Lie algebra \(\mathfrak{so}(3)\)), spanned
+        by:
+      </p>
+      <div class="eq-highlight">
+        \[
+          L_1 = \begin{pmatrix}0&0&0\\0&0&-1\\0&1&0\end{pmatrix}\quad
+          L_2 = \begin{pmatrix}0&0&1\\0&0&0\\-1&0&0\end{pmatrix}\quad
+          L_3 = \begin{pmatrix}0&-1&0\\1&0&0\\0&0&0\end{pmatrix}
+        \]
+      </div>
+      <p>
+        Any tangent vector is \(\Omega = \omega^1 L_1 + \omega^2 L_2 +
+        \omega^3 L_3\). The three numbers \((\omega^1, \omega^2, \omega^3)\)
+        are the <strong>angular velocity</strong> — and the upper index tells
+        you it's a vector in \(T_I\,\text{SO}(3)\).
+      </p>
+      <p>
+        <strong>Covectors</strong> at the identity are things that eat
+        angular velocities and output numbers. The canonical example is
+        <strong>angular momentum</strong> in mechanics, or the gradient of a
+        cost function \(f(R)\) on rotations. If you're optimizing over
+        rotations (say, aligning a 3D scan), the gradient
+        \(\partial f / \partial \omega_i\) is a covector — it tells you
+        "how much does the cost change per unit of rotation about each axis."
+        To get an actual direction to rotate (a vector), you need to raise
+        the index with a metric.
+      </p>
+      <p>
+        The natural metric on SO(3) is the <strong>Killing form</strong>:
+        \(\langle \Omega_1, \Omega_2 \rangle = -\tfrac{1}{2}\,\text{tr}(\Omega_1 \Omega_2)\).
+        In the \((\omega^1, \omega^2, \omega^3)\) coordinates, this is just
+        the identity matrix — so at the identity, raising and lowering are
+        trivial. But at other points on SO(3), the metric in a given
+        coordinate chart is non-trivial, and the distinction matters.
+      </p>
+    </div>
+
+    <div class="widget" id="w4f">
+      <div class="widget-controls">
+        <label>\(\omega^1\) (roll) = <span class="val" id="w4f-w1V">0.00</span>
+          <input type="range" id="w4f-w1" min="-1.5" max="1.5" step="0.05" value="0">
+        </label>
+        <label>\(\omega^2\) (pitch) = <span class="val" id="w4f-w2V">0.50</span>
+          <input type="range" id="w4f-w2" min="-1.5" max="1.5" step="0.05" value="0.5">
+        </label>
+        <label>\(\omega^3\) (yaw) = <span class="val" id="w4f-w3V">0.00</span>
+          <input type="range" id="w4f-w3" min="-1.5" max="1.5" step="0.05" value="0">
+        </label>
+      </div>
+      <canvas id="w4f-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w4f-readout"></div>
+      <p class="caption">The angular velocity \(\omega^i\) (upper index — a tangent vector) generates
+        a rotation via the exponential map \(R = e^{\Omega}\). The 3D axes on the left
+        show the rotated frame. The matrices on the right show the skew-symmetric
+        tangent vector \(\Omega\) and the resulting rotation \(R\).</p>
+    </div>
+
+    <details class="formal">
+      <summary>The Lie algebra as tangent space — the general pattern</summary>
+      <div class="formal-body prose">
+        <p>
+          SO(3) is a <em>Lie group</em>, and its tangent space at the identity
+          is the <em>Lie algebra</em> \(\mathfrak{so}(3)\). This pattern
+          generalizes: every Lie group \(G\) has a Lie algebra \(\mathfrak{g}
+          = T_e G\), and the exponential map \(\exp: \mathfrak{g} \to G\)
+          sends tangent vectors to group elements.
+        </p>
+        <p>
+          In Einstein notation, the Killing form metric on \(\mathfrak{so}(3)\)
+          is \(g_{ij} = -\tfrac{1}{2}\text{tr}(L_i L_j) = \delta_{ij}\),
+          so in the \((\omega^1, \omega^2, \omega^3)\) basis, raising and
+          lowering are trivial at the identity. But if you parametrize
+          rotations with Euler angles \((\phi, \theta, \psi)\), the metric in
+          those coordinates is non-diagonal and depends on the angles —
+          lowering an index genuinely changes the components, and that's
+          exactly where gimbal lock and other coordinate pathologies come from.
+        </p>
+      </div>
+    </details>
+
+    <details class="formal">
+      <summary>Why this matters for ML: the natural gradient</summary>
+      <div class="formal-body prose">
+        <p>
+          The loss gradient \(\nabla_i \mathcal{L}\) is naturally a <em>covector</em>
+          (lower index) — it measures how the loss changes per unit of each parameter,
+          like a price list. But to update parameters, you need a <em>vector</em>
+          (upper index) — a direction to step in.
+        </p>
+        <p>
+          In vanilla SGD, you use \(g^{ij} = \delta^{ij}\), so raising the index
+          is invisible: \(\Delta\theta^i = -\eta\,\nabla_i \mathcal{L}\). But
+          parameter space is not Euclidean — reparametrizing the model changes what
+          "one unit" means along each axis. The Fisher information matrix \(F_{ij}\)
+          is the natural Riemannian metric on statistical models. The
+          <strong>natural gradient</strong> raises the index properly:
+        </p>
+        <p>
+          \[\Delta\theta^i = -\eta\,F^{ij}\,\nabla_j \mathcal{L}\]
+        </p>
+        <p>
+          Adam, AdaGrad, and K-FAC are all approximations of this — they approximate
+          \(F^{ij}\) with cheaper-to-compute matrices. The entire field of
+          "adaptive learning rates" is secretly about finding a better metric to
+          raise the gradient's index.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <section class="recap prose">
+    <h2>Putting it together</h2>
+    <p>
+      Einstein notation is the rule that a <em>repeated index means sum</em>.
+      That's it. Once you adopt this rule:
+    </p>
+    <p>
+      Every matrix operation becomes a pattern of shared index letters.
+      Contraction means declaring two indices equal (and summing them away).
+      The derivative of \(X_{ij}\) with respect to \(X_{mn}\) is
+      \(\delta_{im}\delta_{jn}\), and differentiating any expression is just
+      the product rule followed by letting the deltas fire — mechanically
+      replacing indices. The Matrix Cookbook's 70 pages of identities are
+      not 70 separate facts. They are one fact applied over and over.
+    </p>
+    <p>
+      And when you're ready to go deeper: the full convention distinguishes
+      upper indices (vectors, velocities, contravariant) from lower indices
+      (covectors, gradients, covariant). A metric tensor converts between
+      the two. In Euclidean space with an orthonormal basis the distinction
+      is invisible — which is why introductory linear algebra never mentions
+      it. But on curved manifolds, in non-orthogonal coordinates, and in
+      information geometry, the distinction is real — and the notation is
+      already set up for it.
+    </p>
+  </section>
+
+</div>
+
+<script>
+/* =========================================================================
+   SHARED HELPERS
+   ========================================================================= */
+function setupCanvas(canvas, cssW, cssH) {
+  const dpr = window.devicePixelRatio || 1;
+  canvas.style.width = cssW + 'px';
+  canvas.style.maxWidth = '100%';
+  canvas.style.height = cssH + 'px';
+  canvas.width = cssW * dpr;
+  canvas.height = cssH * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  canvas._cssW = cssW; canvas._cssH = cssH;
+  return ctx;
+}
+
+const CSS = getComputedStyle(document.documentElement);
+const COL = {
+  accent: CSS.getPropertyValue('--accent').trim(),
+  accent2: CSS.getPropertyValue('--accent-2').trim(),
+  accent3: CSS.getPropertyValue('--accent-3').trim(),
+  ink: CSS.getPropertyValue('--ink').trim(),
+  inkSoft: CSS.getPropertyValue('--ink-soft').trim(),
+  bg: CSS.getPropertyValue('--bg').trim(),
+};
+
+function retypeset(el) {
+  if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([el]);
+}
+
+/* =========================================================================
+   STEP 1 — Repeated index = sum
+   ========================================================================= */
+(function () {
+  const slider = document.getElementById('w1-n');
+  const valSpan = document.getElementById('w1-nV');
+  const display = document.getElementById('w1-display');
+  const readout = document.getElementById('w1-readout');
+
+  function draw() {
+    const n = parseInt(slider.value);
+    valSpan.textContent = n;
+
+    // Generate random-ish small integer vectors for illustration
+    const a = [], b = [];
+    for (let i = 0; i < n; i++) {
+      a.push(i + 1);
+      b.push(n - i);
+    }
+
+    let einsteinStr = `\\(a_i b_i\\)`;
+    let expandedTerms = [];
+    let total = 0;
+    for (let i = 0; i < n; i++) {
+      expandedTerms.push(`a_{${i+1}} b_{${i+1}}`);
+      total += a[i] * b[i];
+    }
+    let numericTerms = [];
+    for (let i = 0; i < n; i++) {
+      numericTerms.push(`(${a[i]})(${b[i]})`);
+    }
+
+    let html = '';
+    html += `<div style="color:${COL.inkSoft}; margin-bottom:8px;">`;
+    html += `\\(\\mathbf{a} = (${a.join(', ')})\\), \\(\\mathbf{b} = (${b.join(', ')})\\)`;
+    html += `</div>`;
+    html += `<div style="margin-bottom:6px;">`;
+    html += `<span style="color:${COL.accent}">Einstein:</span> &nbsp; ${einsteinStr}`;
+    html += `</div>`;
+    html += `<div style="margin-bottom:6px;">`;
+    html += `<span style="color:${COL.accent2}">Expands to:</span> &nbsp; \\(${expandedTerms.join(' + ')}\\)`;
+    html += `</div>`;
+    html += `<div>`;
+    html += `<span style="color:${COL.accent3}">Numbers:</span> &nbsp; \\(${numericTerms.join(' + ')} = ${total}\\)`;
+    html += `</div>`;
+
+    display.innerHTML = html;
+    readout.innerHTML = `The repeated index \\(i\\) was summed from 1 to ${n}, producing a scalar.`;
+    retypeset(display);
+    retypeset(readout);
+  }
+  slider.addEventListener('input', draw);
+  draw();
+})();
+
+/* =========================================================================
+   STEP 2 — Free vs dummy index analyzer
+   ========================================================================= */
+(function () {
+  const input = document.getElementById('w2-input');
+  const analysis = document.getElementById('w2-analysis');
+  const readout = document.getElementById('w2-readout');
+
+  function analyze() {
+    const expr = input.value.trim();
+    if (!expr) {
+      analysis.innerHTML = '<span style="color:var(--ink-soft)">Type an expression above.</span>';
+      readout.textContent = '';
+      return;
+    }
+
+    // Parse: find all lowercase letters that appear as subscripts (after _)
+    const indexCounts = {};
+    const parts = expr.split(/\s+/);
+    const tensorParts = [];
+
+    for (const part of parts) {
+      const match = part.match(/^([A-Za-z]+)_([a-z]+)$/);
+      if (match) {
+        const name = match[1];
+        const indices = match[2].split('');
+        tensorParts.push({ name, indices });
+        for (const idx of indices) {
+          indexCounts[idx] = (indexCounts[idx] || 0) + 1;
+        }
+      }
+    }
+
+    if (tensorParts.length === 0) {
+      analysis.innerHTML = '<span style="color:var(--ink-soft)">Could not parse. Use format like <code>A_ij B_jk</code></span>';
+      readout.textContent = '';
+      return;
+    }
+
+    const free = [], dummy = [], invalid = [];
+    for (const [idx, count] of Object.entries(indexCounts)) {
+      if (count === 1) free.push(idx);
+      else if (count === 2) dummy.push(idx);
+      else invalid.push(idx);
+    }
+    free.sort(); dummy.sort();
+
+    // Build colored expression
+    let coloredExpr = '';
+    for (let t = 0; t < tensorParts.length; t++) {
+      if (t > 0) coloredExpr += '\\;';
+      const tp = tensorParts[t];
+      coloredExpr += tp.name + '_{';
+      for (const idx of tp.indices) {
+        if (dummy.includes(idx)) {
+          coloredExpr += `\\color{#5b9bd5}{${idx}}`;
+        } else if (free.includes(idx)) {
+          coloredExpr += `\\color{#e8a44a}{${idx}}`;
+        } else {
+          coloredExpr += `\\color{#e85a5a}{${idx}}`;
+        }
+      }
+      coloredExpr += '}';
+    }
+
+    const rankNames = ['scalar', 'vector', 'matrix', 'rank-3 tensor', 'rank-4 tensor', 'rank-5 tensor'];
+    const rankName = rankNames[free.length] || `rank-${free.length} tensor`;
+
+    let html = '';
+    html += `<div style="font-size:1.2rem; margin-bottom:14px;">\\(${coloredExpr}\\)</div>`;
+    html += `<div><span style="color:${COL.accent}">Free indices</span> (appear once): `;
+    html += free.length ? free.map(x => `\\(\\color{#e8a44a}{${x}}\\)`).join(', ') : 'none';
+    html += `</div>`;
+    html += `<div><span style="color:${COL.accent2}">Dummy indices</span> (appear twice, summed): `;
+    html += dummy.length ? dummy.map(x => `\\(\\color{#5b9bd5}{${x}}\\)`).join(', ') : 'none';
+    html += `</div>`;
+    if (invalid.length) {
+      html += `<div style="color:#e85a5a;">⚠ Index ${invalid.join(', ')} appears ${indexCounts[invalid[0]]} times — not valid Einstein notation.</div>`;
+    }
+
+    analysis.innerHTML = html;
+    readout.innerHTML = `Result is a <strong>${rankName}</strong> (${free.length} free index${free.length !== 1 ? 'es' : ''}).`;
+    retypeset(analysis);
+    retypeset(readout);
+  }
+
+  input.addEventListener('input', analyze);
+  analyze();
+})();
+
+/* =========================================================================
+   STEP 3 — Operation selector
+   ========================================================================= */
+(function () {
+  const sel = document.getElementById('w3-op');
+  const display = document.getElementById('w3-display');
+  const readout = document.getElementById('w3-readout');
+
+  const ops = {
+    dot: {
+      matrixNotation: '\\mathbf{a} \\cdot \\mathbf{b}',
+      einstein: 'a_i \\, b_i',
+      freeList: 'none',
+      dummyList: 'i',
+      result: 'scalar',
+      explain: 'Both vectors share the same index i, so it gets summed away. Nothing free → scalar.'
+    },
+    matvec: {
+      matrixNotation: '(\\mathbf{A}\\mathbf{x})_i',
+      einstein: 'A_{ij} \\, x_j',
+      freeList: 'i',
+      dummyList: 'j',
+      result: 'vector',
+      explain: 'j is shared between A and x (summed away). i survives as the free index → vector.'
+    },
+    matmul: {
+      matrixNotation: '(\\mathbf{A}\\mathbf{B})_{ij}',
+      einstein: 'A_{ik} \\, B_{kj}',
+      freeList: 'i, j',
+      dummyList: 'k',
+      result: 'matrix',
+      explain: 'k is the shared (contracted) index. i and j survive → matrix.'
+    },
+    trace: {
+      matrixNotation: '\\text{tr}(\\mathbf{A})',
+      einstein: 'A_{ii}',
+      freeList: 'none',
+      dummyList: 'i',
+      result: 'scalar',
+      explain: 'Setting both indices of A equal and summing — that\'s the definition of trace.'
+    },
+    outer: {
+      matrixNotation: '(\\mathbf{a} \\otimes \\mathbf{b})_{ij}',
+      einstein: 'a_i \\, b_j',
+      freeList: 'i, j',
+      dummyList: 'none',
+      result: 'matrix',
+      explain: 'No shared index! Both i and j are free → the result is a matrix (outer product).'
+    },
+    transpose: {
+      matrixNotation: '(\\mathbf{A}^T)_{ij}',
+      einstein: 'A_{ji}',
+      freeList: 'i, j',
+      dummyList: 'none',
+      result: 'matrix',
+      explain: 'Transpose is just swapping the order of subscripts. No summation involved.'
+    },
+    quadratic: {
+      matrixNotation: '\\mathbf{x}^T \\mathbf{A} \\mathbf{x}',
+      einstein: 'x_i \\, A_{ij} \\, x_j',
+      freeList: 'none',
+      dummyList: 'i, j',
+      result: 'scalar',
+      explain: 'Both i and j appear twice (each shared between x and A), so both are summed → scalar.'
+    }
+  };
+
+  function draw() {
+    const op = ops[sel.value];
+    let html = '';
+    html += `<div style="font-size:1.15rem; margin:12px 0 18px; line-height:2.4;">`;
+    html += `<div><span style="color:${COL.inkSoft}; font-family:var(--font-mono); font-size:0.82rem;">STANDARD</span> &nbsp; \\(${op.matrixNotation}\\)</div>`;
+    html += `<div><span style="color:${COL.accent}; font-family:var(--font-mono); font-size:0.82rem;">EINSTEIN</span> &nbsp; \\(${op.einstein}\\)</div>`;
+    html += `</div>`;
+    html += `<div style="font-size:0.95rem; line-height:1.8; border-top:1px solid var(--line); padding-top:14px;">`;
+    html += `<div><strong>Free:</strong> ${op.freeList} &nbsp;→&nbsp; <strong>Result:</strong> ${op.result}</div>`;
+    html += `<div><strong>Dummy (summed):</strong> ${op.dummyList}</div>`;
+    html += `</div>`;
+
+    display.innerHTML = html;
+    readout.textContent = op.explain;
+    retypeset(display);
+  }
+
+  sel.addEventListener('change', draw);
+  draw();
+})();
+
+/* =========================================================================
+   STEP 5 — Contraction explorer (was step 4)
+   ========================================================================= */
+(function () {
+  const leftSel = document.getElementById('w4-left');
+  const rightSel = document.getElementById('w4-right');
+  const contractSel = document.getElementById('w4-contract');
+  const display = document.getElementById('w4-display');
+  const readout = document.getElementById('w4-readout');
+
+  const tensors = {
+    'vec_i':  { name: 'a', indices: ['i'], label: 'vector a_i' },
+    'mat_ij': { name: 'A', indices: ['i','j'], label: 'matrix A_{ij}' },
+    'tens_ijk': { name: 'T', indices: ['i','j','k'], label: '3-tensor T_{ijk}' },
+    'vec_j':  { name: 'b', indices: ['j'], label: 'vector b_j' },
+    'mat_jk': { name: 'B', indices: ['j','k'], label: 'matrix B_{jk}' },
+  };
+
+  function updateContractOptions() {
+    const L = tensors[leftSel.value];
+    const R = tensors[rightSel.value];
+    const shared = L.indices.filter(x => R.indices.includes(x));
+    contractSel.innerHTML = '';
+    if (shared.length === 0) {
+      contractSel.innerHTML = '<option value="none">no shared index</option>';
+    } else {
+      for (const idx of shared) {
+        const opt = document.createElement('option');
+        opt.value = idx;
+        opt.textContent = `${idx} (contract)`;
+        contractSel.appendChild(opt);
+      }
+    }
+    draw();
+  }
+
+  function draw() {
+    const L = tensors[leftSel.value];
+    const R = tensors[rightSel.value];
+    const cIdx = contractSel.value;
+
+    let leftExpr = `${L.name}_{${L.indices.join('')}}`;
+    let rightExpr = `${R.name}_{${R.indices.join('')}}`;
+    let product = `${L.name}_{${L.indices.join('')}} \\, ${R.name}_{${R.indices.join('')}}`;
+
+    // Find all indices and their counts
+    const allIndices = [...L.indices, ...R.indices];
+    const counts = {};
+    allIndices.forEach(x => counts[x] = (counts[x]||0)+1);
+
+    // After contraction
+    let free, dummy;
+    if (cIdx === 'none') {
+      free = [...new Set(allIndices)].filter(x => counts[x] === 1);
+      dummy = [];
+    } else {
+      // The contracted index becomes dummy; others based on their count
+      dummy = [cIdx];
+      free = [...new Set(allIndices)].filter(x => x !== cIdx && counts[x] === 1);
+    }
+
+    const rankNames = ['scalar', 'vector', 'matrix', 'rank-3 tensor'];
+    const rankName = rankNames[free.length] || `rank-${free.length}`;
+
+    let html = '';
+    html += `<div style="margin-bottom:12px;">`;
+    html += `<span style="color:${COL.inkSoft}; font-family:var(--font-mono); font-size:0.82rem;">PRODUCT</span> &nbsp; \\(${product}\\)`;
+    html += `</div>`;
+
+    if (cIdx !== 'none') {
+      html += `<div style="margin-bottom:8px;">`;
+      html += `<span style="color:${COL.accent2}; font-family:var(--font-mono); font-size:0.82rem;">CONTRACT</span> &nbsp; Sum over \\(${cIdx}\\) (appears twice → dummy)`;
+      html += `</div>`;
+      html += `<div style="margin-bottom:8px;">`;
+      html += `<span style="color:${COL.accent}; font-family:var(--font-mono); font-size:0.82rem;">RESULT</span> &nbsp; Free indices: ${free.length ? free.map(x => `\\(${x}\\)`).join(', ') : 'none'} → <strong>${rankName}</strong>`;
+      html += `</div>`;
+    } else {
+      html += `<div style="color:${COL.inkSoft};">No shared indices — this is an outer product (no contraction). All indices are free → rank ${allIndices.length}.</div>`;
+    }
+
+    display.innerHTML = html;
+    readout.innerHTML = cIdx !== 'none'
+      ? `Contraction over \\(${cIdx}\\) reduced the rank by 2 (one from each tensor).`
+      : 'Without a shared index, no contraction occurs.';
+    retypeset(display);
+    retypeset(readout);
+  }
+
+  leftSel.addEventListener('change', updateContractOptions);
+  rightSel.addEventListener('change', updateContractOptions);
+  contractSel.addEventListener('change', draw);
+  updateContractOptions();
+})();
+
+/* =========================================================================
+   STEP 6 — Derivative stepper (was step 5)
+   ========================================================================= */
+(function () {
+  const sel = document.getElementById('w5-expr');
+  const stepsDiv = document.getElementById('w5-steps');
+  const readout = document.getElementById('w5-readout');
+
+  const derivations = {
+    ax: {
+      wrt: 'X_{mn}',
+      steps: [
+        { label: 'Start', tex: '\\frac{\\partial}{\\partial X_{mn}}\\bigl(A_{ik}\\,X_{kj}\\bigr)' },
+        { label: 'Product rule (A is constant)', tex: 'A_{ik}\\;\\frac{\\partial X_{kj}}{\\partial X_{mn}}' },
+        { label: 'Apply δ rule', tex: 'A_{ik}\\;\\delta_{km}\\,\\delta_{jn}' },
+        { label: 'δ fires: k→m', tex: 'A_{im}\\;\\delta_{jn}' },
+        { label: 'Result', tex: 'A_{im}\\,\\delta_{jn}', note: 'This is (AX)\'s gradient w.r.t. X: the (m,n) entry of the result picks up A_{im} when j=n.' },
+      ]
+    },
+    xa: {
+      wrt: 'X_{mn}',
+      steps: [
+        { label: 'Start', tex: '\\frac{\\partial}{\\partial X_{mn}}\\bigl(X_{ik}\\,A_{kj}\\bigr)' },
+        { label: 'Product rule', tex: '\\frac{\\partial X_{ik}}{\\partial X_{mn}}\\;A_{kj}' },
+        { label: 'Apply δ rule', tex: '\\delta_{im}\\,\\delta_{kn}\\;A_{kj}' },
+        { label: 'δ fires: k→n', tex: '\\delta_{im}\\;A_{nj}' },
+        { label: 'Result', tex: '\\delta_{im}\\,A_{nj}', note: 'Free indices are (m,i) and (n,j) paired — this reconstructs the gradient.' },
+      ]
+    },
+    trx: {
+      wrt: 'X_{mn}',
+      steps: [
+        { label: 'Write trace in indices', tex: '\\frac{\\partial}{\\partial X_{mn}}\\bigl(X_{ii}\\bigr)' },
+        { label: 'Apply δ rule', tex: '\\delta_{im}\\,\\delta_{in}' },
+        { label: 'Both deltas fire together', tex: '\\delta_{mn}' },
+        { label: 'Result', tex: '\\delta_{mn} = I_{mn}', note: '∂tr(X)/∂X = I. The identity matrix!' },
+      ]
+    },
+    trax: {
+      wrt: 'X_{mn}',
+      steps: [
+        { label: 'Write tr(AX) in indices', tex: '\\frac{\\partial}{\\partial X_{mn}}\\bigl(A_{ik}\\,X_{ki}\\bigr)' },
+        { label: 'Product rule (A is constant)', tex: 'A_{ik}\\;\\frac{\\partial X_{ki}}{\\partial X_{mn}}' },
+        { label: 'Apply δ rule', tex: 'A_{ik}\\;\\delta_{km}\\,\\delta_{in}' },
+        { label: 'δ fires: k→m, i→n', tex: 'A_{nm}' },
+        { label: 'Result', tex: 'A_{nm} = (A^T)_{mn}', note: '∂tr(AX)/∂X = Aᵀ. The transpose appears because the indices end up swapped!' },
+      ]
+    },
+    quad: {
+      wrt: 'x_m',
+      steps: [
+        { label: 'Write xᵀAx in indices', tex: '\\frac{\\partial}{\\partial x_{m}}\\bigl(x_i\\,A_{ij}\\,x_j\\bigr)' },
+        { label: 'Product rule (x appears twice!)', tex: '\\delta_{im}\\,A_{ij}\\,x_j \\;+\\; x_i\\,A_{ij}\\,\\delta_{jm}' },
+        { label: 'δ fires in first term: i→m', tex: 'A_{mj}\\,x_j \\;+\\; x_i\\,A_{ij}\\,\\delta_{jm}' },
+        { label: 'δ fires in second term: j→m', tex: 'A_{mj}\\,x_j \\;+\\; x_i\\,A_{im}' },
+        { label: 'Rename dummy i→j in second term', tex: 'A_{mj}\\,x_j \\;+\\; A_{jm}^{}\\,x_j' },
+        { label: 'Factor out x_j', tex: '(A_{mj} + A_{jm})\\,x_j' },
+        { label: 'Result', tex: '\\bigl((A + A^T)\\,x\\bigr)_m', note: '∂(xᵀAx)/∂x = (A + Aᵀ)x. If A is symmetric, this simplifies to 2Ax.' },
+      ]
+    }
+  };
+
+  function draw() {
+    const d = derivations[sel.value];
+    let html = '';
+    for (let i = 0; i < d.steps.length; i++) {
+      const s = d.steps[i];
+      const isLast = i === d.steps.length - 1;
+      html += `<div style="display:flex; gap:16px; align-items:baseline; margin-bottom:8px;`;
+      if (isLast) html += ` color: ${COL.accent};`;
+      html += `">`;
+      html += `<span style="font-family:var(--font-mono); font-size:0.78rem; color:${isLast ? COL.accent : COL.inkSoft}; min-width:190px; flex-shrink:0;">${s.label}</span>`;
+      html += `<span>\\(\\displaystyle ${s.tex}\\)</span>`;
+      html += `</div>`;
+      if (s.note) {
+        html += `<div style="margin: 4px 0 8px 206px; font-size:0.88rem; color:${COL.accent}; font-style:italic;">${s.note}</div>`;
+      }
+      if (!isLast) {
+        html += `<div style="margin: 2px 0 2px 90px; color:${COL.inkSoft}; font-size:0.85rem;">↓</div>`;
+      }
+    }
+
+    stepsDiv.innerHTML = html;
+    readout.innerHTML = `Differentiating w.r.t. \\(${d.wrt}\\): each step is purely mechanical.`;
+    retypeset(stepsDiv);
+    retypeset(readout);
+  }
+
+  sel.addEventListener('change', draw);
+  draw();
+})();
+
+/* =========================================================================
+   STEP 7 — Matrix Cookbook step-through (was step 6)
+   ========================================================================= */
+(function () {
+  const sel = document.getElementById('w6-identity');
+  const prevBtn = document.getElementById('w6-prev');
+  const nextBtn = document.getElementById('w6-next');
+  const resetBtn = document.getElementById('w6-reset');
+  const stepsDiv = document.getElementById('w6-steps');
+  const readout = document.getElementById('w6-readout');
+
+  const identities = {
+    trAX: {
+      title: '\\frac{\\partial}{\\partial X}\\text{tr}(AX) = A^T',
+      steps: [
+        { text: 'Start with the claim: we want \\(\\frac{\\partial}{\\partial X_{mn}} \\text{tr}(\\mathbf{A}\\mathbf{X})\\).', tex: '\\frac{\\partial}{\\partial X_{mn}} \\text{tr}(AX)' },
+        { text: 'Write tr(AX) in Einstein notation. Trace = set output indices equal:', tex: '\\text{tr}(AX) = A_{ik}X_{ki}' },
+        { text: 'Differentiate. A is constant, so only X contributes:', tex: '\\frac{\\partial}{\\partial X_{mn}}(A_{ik}X_{ki}) = A_{ik}\\,\\delta_{km}\\,\\delta_{in}' },
+        { text: 'The Kronecker deltas fire: \\(k \\to m\\) and \\(i \\to n\\):', tex: 'A_{ik}\\,\\delta_{km}\\,\\delta_{in} = A_{nm}' },
+        { text: 'Recognize the result: \\(A_{nm} = (A^T)_{mn}\\). Done.', tex: '\\boxed{\\frac{\\partial}{\\partial X_{mn}} \\text{tr}(AX) = A_{nm} = (A^T)_{mn}}' },
+      ]
+    },
+    trXA: {
+      title: '\\frac{\\partial}{\\partial X}\\text{tr}(XA) = A^T',
+      steps: [
+        { text: 'We want \\(\\frac{\\partial}{\\partial X_{mn}} \\text{tr}(\\mathbf{X}\\mathbf{A})\\).', tex: '\\frac{\\partial}{\\partial X_{mn}} \\text{tr}(XA)' },
+        { text: 'In indices: tr(XA) = X_{ik}A_{ki} (trace sets both output indices equal).', tex: '\\text{tr}(XA) = X_{ik}A_{ki}' },
+        { text: 'Differentiate w.r.t. X_{mn}:', tex: '\\delta_{im}\\,\\delta_{kn}\\,A_{ki}' },
+        { text: 'Deltas fire: i→m, k→n:', tex: 'A_{nm}' },
+        { text: 'Same answer! tr(XA) = tr(AX) so this is expected.', tex: '\\boxed{(A^T)_{mn}}' },
+      ]
+    },
+    trX: {
+      title: '\\frac{\\partial}{\\partial X}\\text{tr}(X) = I',
+      steps: [
+        { text: 'We want \\(\\frac{\\partial}{\\partial X_{mn}} \\text{tr}(X)\\).', tex: '\\frac{\\partial}{\\partial X_{mn}} \\text{tr}(X)' },
+        { text: 'In indices: tr(X) = X_{ii}.', tex: '\\text{tr}(X) = X_{ii}' },
+        { text: 'Differentiate:', tex: '\\frac{\\partial X_{ii}}{\\partial X_{mn}} = \\delta_{im}\\,\\delta_{in}' },
+        { text: 'Both deltas share the free variable — they combine to:', tex: '\\delta_{mn}' },
+        { text: 'This is the identity matrix.', tex: '\\boxed{\\frac{\\partial}{\\partial X_{mn}} \\text{tr}(X) = \\delta_{mn} = I_{mn}}' },
+      ]
+    },
+    trXTX: {
+      title: '\\frac{\\partial}{\\partial X}\\text{tr}(X^TX) = 2X',
+      steps: [
+        { text: 'We want \\(\\frac{\\partial}{\\partial X_{mn}} \\text{tr}(X^TX)\\).', tex: '\\frac{\\partial}{\\partial X_{mn}} \\text{tr}(X^TX)' },
+        { text: 'In indices: \\((X^T)_{ij} = X_{ji}\\), so \\((X^TX)_{ij} = X_{ki}X_{kj}\\). Trace: set i=j.', tex: '\\text{tr}(X^TX) = X_{ki}X_{ki}' },
+        { text: 'Product rule — X appears twice! Differentiate each copy:', tex: '\\delta_{km}\\delta_{in}X_{ki} + X_{ki}\\delta_{km}\\delta_{in}' },
+        { text: 'Both terms are identical. First term: k→m, i→n gives X_{mn}. Same for second.', tex: 'X_{mn} + X_{mn} = 2X_{mn}' },
+        { text: 'Done.', tex: '\\boxed{\\frac{\\partial}{\\partial X_{mn}} \\text{tr}(X^TX) = 2X_{mn}}' },
+      ]
+    },
+    trAXB: {
+      title: '\\frac{\\partial}{\\partial X}\\text{tr}(AXB) = A^T B^T',
+      steps: [
+        { text: 'We want \\(\\frac{\\partial}{\\partial X_{mn}} \\text{tr}(AXB)\\).', tex: '\\frac{\\partial}{\\partial X_{mn}} \\text{tr}(AXB)' },
+        { text: 'In indices: \\((AXB)_{ij} = A_{ik}X_{kl}B_{lj}\\). Trace: set i=j.', tex: '\\text{tr}(AXB) = A_{ik}X_{kl}B_{li}' },
+        { text: 'Differentiate (only X varies):', tex: 'A_{ik}\\,\\delta_{km}\\,\\delta_{ln}\\,B_{li}' },
+        { text: 'Deltas fire: k→m, l→n:', tex: 'A_{im}\\,B_{ni}' },
+        { text: 'Rewrite: \\(A_{im} = (A^T)_{mi}\\) and \\(B_{ni} = (B^T)_{in}\\). Contract over i:', tex: '\\boxed{(A^T B^T)_{mn}}' },
+      ]
+    },
+    xAx: {
+      title: '\\frac{\\partial}{\\partial \\mathbf{x}}(\\mathbf{x}^T A \\mathbf{x}) = (A+A^T)\\mathbf{x}',
+      steps: [
+        { text: 'We want \\(\\frac{\\partial}{\\partial x_m}(x_i A_{ij} x_j)\\).', tex: '\\frac{\\partial}{\\partial x_m}(x_i A_{ij} x_j)' },
+        { text: 'Product rule — x appears in two places:', tex: '\\delta_{im}\\,A_{ij}\\,x_j \\;+\\; x_i\\,A_{ij}\\,\\delta_{jm}' },
+        { text: 'First term: delta fires i→m:', tex: 'A_{mj}\\,x_j \\;+\\; x_i\\,A_{im}' },
+        { text: 'Second term: rename dummy i→j for clarity:', tex: 'A_{mj}\\,x_j \\;+\\; A_{jm}\\,x_j' },
+        { text: 'Factor:', tex: '\\boxed{(A_{mj} + A_{jm})x_j = \\bigl((A + A^T)x\\bigr)_m}' },
+      ]
+    }
+  };
+
+  let currentId = sel.value;
+  let step = 0;
+
+  function render() {
+    const id = identities[currentId];
+    const html = [];
+    for (let i = 0; i <= step; i++) {
+      const s = id.steps[i];
+      const isCurrent = (i === step);
+      const isLast = (i === id.steps.length - 1);
+      html.push(`<div style="margin-bottom:18px; padding:12px 16px; border-radius:8px; ${isCurrent ? 'background:rgba(232,164,74,0.08); border-left:3px solid var(--accent);' : 'opacity:0.7;'}">`);
+      html.push(`<div style="font-size:0.88rem; color:${isCurrent ? COL.accent : COL.inkSoft}; margin-bottom:6px; font-family:var(--font-mono);">Step ${i+1}/${id.steps.length}</div>`);
+      html.push(`<div style="font-size:0.95rem; margin-bottom:8px;">${s.text}</div>`);
+      html.push(`<div style="font-size:1.1rem; ${isLast && isCurrent ? 'color:'+COL.accent+';' : ''}">\\[${s.tex}\\]</div>`);
+      html.push(`</div>`);
+    }
+    stepsDiv.innerHTML = html.join('');
+    prevBtn.disabled = step === 0;
+    nextBtn.disabled = step === id.steps.length - 1;
+    readout.innerHTML = step === id.steps.length - 1
+      ? `<span style="color:var(--accent);">Derivation complete. The same mechanical procedure works for every identity.</span>`
+      : `Step ${step+1} of ${id.steps.length}`;
+    retypeset(stepsDiv);
+    retypeset(readout);
+  }
+
+  sel.addEventListener('change', () => { currentId = sel.value; step = 0; render(); });
+  nextBtn.addEventListener('click', () => { const id = identities[currentId]; if (step < id.steps.length - 1) { step++; render(); } });
+  prevBtn.addEventListener('click', () => { if (step > 0) { step--; render(); } });
+  resetBtn.addEventListener('click', () => { step = 0; render(); });
+  render();
+})();
+
+/* =========================================================================
+   STEP 7a — Price / Quantity analogy
+   ========================================================================= */
+(function(){
+  var canvas=document.getElementById('w4c-canvas');
+  var ctx=setupCanvas(canvas,740,220);
+  var q1Sl=document.getElementById('w4c-q1');
+  var q2Sl=document.getElementById('w4c-q2');
+  var p1Sl=document.getElementById('w4c-p1');
+  var p2Sl=document.getElementById('w4c-p2');
+  var btn=document.getElementById('w4c-unitBtn');
+  var readout=document.getElementById('w4c-readout');
+  var W3=canvas._cssW,H3=canvas._cssH;
+  var dozens=false;
+  function draw(){
+    var q1R=parseInt(q1Sl.value),q2R=parseInt(q2Sl.value);
+    var p1R=parseFloat(p1Sl.value),p2R=parseFloat(p2Sl.value);
+    var f=dozens?12:1;
+    var q1=q1R/f,q2=q2R/f,p1=p1R*f,p2=p2R*f;
+    var total=p1*q1+p2*q2;
+    document.getElementById('w4c-q1V').textContent=q1R;
+    document.getElementById('w4c-q2V').textContent=q2R;
+    document.getElementById('w4c-p1V').textContent=p1R.toFixed(2);
+    document.getElementById('w4c-p2V').textContent=p2R.toFixed(2);
+    btn.textContent=dozens?'Switch to singles':'Switch to dozens';
+    ctx.clearRect(0,0,W3,H3);
+    var mono=CSS.getPropertyValue('--font-mono').trim();
+    var body=CSS.getPropertyValue('--font-body').trim();
+    var disp=CSS.getPropertyValue('--font-display').trim();
+    var cw=W3/3;
+    ctx.font='12px '+mono;ctx.fillStyle=COL.accent;ctx.fillText('VECTOR q\u2071 (quantities)',20,24);
+    ctx.strokeStyle=COL.accent;ctx.globalAlpha=0.3;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(20,32);ctx.lineTo(cw-20,32);ctx.stroke();ctx.globalAlpha=1;
+    ctx.font='18px '+body;ctx.fillStyle=COL.ink;
+    ctx.fillText('\uD83C\uDF4E '+(dozens?q1.toFixed(2)+'dz':q1+' apples'),20,60);
+    ctx.fillText('\uD83C\uDF4C '+(dozens?q2.toFixed(2)+'dz':q2+' bananas'),20,90);
+    if(dozens){ctx.font='11px '+mono;ctx.fillStyle=COL.accent;ctx.fillText('\u00F712',cw-50,60);ctx.fillText('\u00F712',cw-50,90);}
+    var c2=cw+10;ctx.font='12px '+mono;ctx.fillStyle=COL.accent2;ctx.fillText('COVECTOR p\u1d62 (prices)',c2,24);
+    ctx.strokeStyle=COL.accent2;ctx.globalAlpha=0.3;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(c2,32);ctx.lineTo(c2+cw-30,32);ctx.stroke();ctx.globalAlpha=1;
+    ctx.font='18px '+body;ctx.fillStyle=COL.ink;
+    ctx.fillText('$'+p1.toFixed(2)+(dozens?'/dz':'/ea'),c2,60);
+    ctx.fillText('$'+p2.toFixed(2)+(dozens?'/dz':'/ea'),c2,90);
+    if(dozens){ctx.font='11px '+mono;ctx.fillStyle=COL.accent2;ctx.fillText('\u00D712',c2+cw-70,60);ctx.fillText('\u00D712',c2+cw-70,90);}
+    var c3=2*cw+20;ctx.font='12px '+mono;ctx.fillStyle=COL.accent3;ctx.fillText('CONTRACTION p\u1d62q\u2071',c3,24);
+    ctx.strokeStyle=COL.accent3;ctx.globalAlpha=0.3;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(c3,32);ctx.lineTo(c3+cw-40,32);ctx.stroke();ctx.globalAlpha=1;
+    var t1=p1*q1,t2=p2*q2;
+    ctx.font='15px '+body;ctx.fillStyle=COL.ink;
+    ctx.fillText('$'+p1.toFixed(2)+' \u00D7 '+q1.toFixed(dozens?2:0)+' = $'+t1.toFixed(2),c3,60);
+    ctx.fillText('$'+p2.toFixed(2)+' \u00D7 '+q2.toFixed(dozens?2:0)+' = $'+t2.toFixed(2),c3,90);
+    ctx.strokeStyle=COL.accent3;ctx.lineWidth=1.5;ctx.globalAlpha=1;ctx.beginPath();ctx.moveTo(c3,100);ctx.lineTo(c3+170,100);ctx.stroke();
+    ctx.font='bold 22px '+disp;ctx.fillStyle=COL.accent3;ctx.fillText('= $'+total.toFixed(2),c3,128);
+    if(dozens){ctx.font='12px '+mono;ctx.fillStyle=COL.accent3;ctx.fillText('\u2713 Invariant!',c3,152);}
+    readout.innerHTML=dozens
+      ?'Quantities \u00F712, prices \u00D712, total unchanged: \\(p_i q^i = \\$'+total.toFixed(2)+'\\). The contraction is basis-independent.'
+      :'\\(p_i q^i = '+p1R.toFixed(2)+'\\times'+q1R+' + '+p2R.toFixed(2)+'\\times'+q2R+' = \\$'+total.toFixed(2)+'\\).';
+    retypeset(readout);
+  }
+  btn.addEventListener('click',function(){dozens=!dozens;draw();});
+  [q1Sl,q2Sl,p1Sl,p2Sl].forEach(function(s){s.addEventListener('input',function(){dozens=false;draw();});});
+  draw();
+})();
+
+/* =========================================================================
+
+/* =========================================================================
+   STEP 7b — Raising and lowering on the sphere
+   ========================================================================= */
+(function(){
+  var canvas=document.getElementById('w7b-canvas');
+  var ctx=setupCanvas(canvas,740,360);
+  var latSl=document.getElementById('w7b-lat');
+  var vtSl=document.getElementById('w7b-vt');
+  var vpSl=document.getElementById('w7b-vp');
+  var readout=document.getElementById('w7b-readout');
+  var W=canvas._cssW,H=canvas._cssH;
+  var R=6.371;
+
+  function draw(){
+    var latDeg=parseFloat(latSl.value);
+    var vt=parseFloat(vtSl.value),vp=parseFloat(vpSl.value);
+    document.getElementById('w7b-latV').textContent=Math.round(latDeg);
+    document.getElementById('w7b-vtV').textContent=vt.toFixed(2);
+    document.getElementById('w7b-vpV').textContent=vp.toFixed(2);
+    ctx.clearRect(0,0,W,H);
+    var mono=CSS.getPropertyValue('--font-mono').trim();
+    var disp=CSS.getPropertyValue('--font-display').trim();
+    var latR=latDeg*Math.PI/180;
+    var cosLat=Math.cos(latR);
+    var cos2Lat=cosLat*cosLat;
+    var R2=R*R;
+    var g_tt=R2, g_pp=R2*cos2Lat;
+    var gi_tt=1/R2, gi_pp=(cos2Lat>0.001)?1/(R2*cos2Lat):999;
+    var v_low_t=g_tt*vt, v_low_p=g_pp*vp;
+    var dT_t=5, dT_p=5;
+    var grad_t=gi_tt*dT_t, grad_p=(cos2Lat>0.001)?gi_pp*dT_p:0;
+
+    var barTop=76, barH=190, barW=48;
+    var lx=30, rx=W*0.52+10;
+
+    function drawBar(x,val,maxVal,color,label){
+      var h=Math.min(barH,Math.abs(val)/maxVal*barH);
+      var y0=barTop+barH;
+      ctx.fillStyle=color;ctx.globalAlpha=0.6;
+      if(val>=0){ctx.fillRect(x,y0-h,barW,h);}
+      else{ctx.fillRect(x,y0,barW,h);}
+      ctx.globalAlpha=1;ctx.strokeStyle=color;ctx.lineWidth=2;
+      if(val>=0){ctx.strokeRect(x,y0-h,barW,h);}
+      else{ctx.strokeRect(x,y0,barW,h);}
+      ctx.font='12px '+mono;ctx.fillStyle=color;
+      var vy=val>=0?y0-h-8:y0+h+14;
+      ctx.fillText(val.toFixed(2),x+2,vy);
+      ctx.font='11px '+mono;ctx.fillStyle=COL.inkSoft;
+      ctx.fillText(label,x,barTop+barH+26);
+    }
+
+    // Zero line
+    ctx.strokeStyle=COL.inkSoft;ctx.lineWidth=1;ctx.globalAlpha=0.25;
+    ctx.beginPath();ctx.moveTo(lx-10,barTop+barH);ctx.lineTo(W-20,barTop+barH);ctx.stroke();
+    ctx.globalAlpha=1;
+
+    var maxL=Math.max(Math.abs(v_low_t),Math.abs(v_low_p),Math.abs(vt),Math.abs(vp),0.5)*1.15;
+    var maxR2=Math.max(Math.abs(dT_t),Math.abs(dT_p),Math.abs(grad_t),Math.abs(grad_p),0.5)*1.15;
+
+    // LEFT: Lowering
+    ctx.font='13px '+mono;ctx.fillStyle=COL.ink;
+    ctx.fillText('LOWERING: v\u1d62 = g\u1d62\u2c7c v\u02b2',lx,28);
+    ctx.font='11px '+mono;ctx.fillStyle=COL.inkSoft;
+    ctx.fillText('vector (gold) \u2192 covector (blue)',lx,44);
+
+    drawBar(lx,vt,maxL,COL.accent,'v\u03B8');
+    drawBar(lx+barW+14,vp,maxL,COL.accent,'v\u03C6');
+    ctx.font='18px '+disp;ctx.fillStyle=COL.inkSoft;
+    ctx.fillText('\u2192',lx+2*barW+22,barTop+barH/2+6);
+    drawBar(lx+2*barW+46,v_low_t,maxL,COL.accent2,'v\u03B8');
+    drawBar(lx+3*barW+60,v_low_p,maxL,COL.accent2,'v\u03C6');
+
+    // Divider
+    var dx=W*0.49;
+    ctx.strokeStyle=COL.inkSoft;ctx.lineWidth=1;ctx.globalAlpha=0.15;
+    ctx.beginPath();ctx.moveTo(dx,20);ctx.lineTo(dx,H-20);ctx.stroke();ctx.globalAlpha=1;
+
+    // RIGHT: Raising
+    ctx.font='13px '+mono;ctx.fillStyle=COL.ink;
+    ctx.fillText('RAISING: (\u2207T)\u2071 = g\u2071\u02b2 dT\u2c7c',rx,28);
+    ctx.font='11px '+mono;ctx.fillStyle=COL.inkSoft;
+    ctx.fillText('covector (blue) \u2192 vector (green)',rx,44);
+
+    drawBar(rx,dT_t,maxR2,COL.accent2,'dT\u03B8');
+    drawBar(rx+barW+14,dT_p,maxR2,COL.accent2,'dT\u03C6');
+    ctx.font='18px '+disp;ctx.fillStyle=COL.inkSoft;
+    ctx.fillText('\u2192',rx+2*barW+22,barTop+barH/2+6);
+    drawBar(rx+2*barW+46,grad_t,maxR2,COL.accent3,'\u2207T\u03B8');
+    drawBar(rx+3*barW+60,grad_p,maxR2,COL.accent3,'\u2207T\u03C6');
+
+    // Metric info
+    ctx.font='11px '+mono;ctx.fillStyle=COL.inkSoft;
+    var my=H-16;
+    ctx.fillText('\u03B8='+Math.round(latDeg)+'\u00B0  cos\u00B2\u03B8='+cos2Lat.toFixed(3)+'  g\u03B8\u03B8='+g_tt.toFixed(1)+'  g\u03C6\u03C6='+g_pp.toFixed(1),lx,my);
+
+    var nearPole=Math.abs(latDeg)>70;
+    if(nearPole){
+      readout.innerHTML='Near the pole: \\(g_{\\phi\\phi} = R^2\\cos^2\\!\\theta \\approx '+g_pp.toFixed(1)+'\\) is tiny, so lowering crushes \\(v^\\phi\\). Raising does the opposite: \\(g^{\\phi\\phi}\\) amplifies \\(dT_\\phi\\), because a small \\(\\phi\\)-step covers very little ground near the pole.';
+    } else if(Math.abs(latDeg)<10){
+      readout.innerHTML='Near the equator: \\(\\cos^2\\!\\theta \\approx 1\\), so the metric is nearly \\(R^2 I\\). Raising and lowering just scale by \\(R^2\\) in both directions equally.';
+    } else {
+      readout.innerHTML='At \\(\\theta = '+Math.round(latDeg)+'°\\): \\(g_{\\phi\\phi} = '+g_pp.toFixed(1)+'\\). Lowering shrinks the \\(\\phi\\)-component by \\(\\cos^2\\!\\theta\\); raising amplifies it by \\(1/\\cos^2\\!\\theta\\). The \\(\\theta\\)-direction is unaffected.';
+    }
+    retypeset(readout);
+  }
+  [latSl,vtSl,vpSl].forEach(function(s){s.addEventListener('input',draw);});draw();
+})();
+
+/* =========================================================================
+   STEP 7c — Dual space visualization
+   ========================================================================= */
+(function(){
+  var canvas=document.getElementById('w4dual-canvas');
+  var ctx=setupCanvas(canvas,740,420);
+  var p1Sl=document.getElementById('w4dual-p1');
+  var p2Sl=document.getElementById('w4dual-p2');
+  var v1Sl=document.getElementById('w4dual-v1');
+  var v2Sl=document.getElementById('w4dual-v2');
+  var readout=document.getElementById('w4dual-readout');
+  var W=canvas._cssW,H=canvas._cssH;
+
+  function arw(x0,y0,x1,y1,color,w){
+    var dx=x1-x0,dy=y1-y0,len=Math.sqrt(dx*dx+dy*dy);
+    if(len<2)return;var ux=dx/len,uy=dy/len,hl=Math.min(12,len*0.22);
+    ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=w;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x1-hl*ux+4*uy,y1-hl*uy-4*ux);
+    ctx.lineTo(x1-hl*ux-4*uy,y1-hl*uy+4*ux);ctx.closePath();ctx.fill();
+  }
+
+  function draw(){
+    var ph1=parseFloat(p1Sl.value),ph2=parseFloat(p2Sl.value);
+    var v1=parseFloat(v1Sl.value),v2=parseFloat(v2Sl.value);
+    document.getElementById('w4dual-p1V').textContent=ph1.toFixed(2);
+    document.getElementById('w4dual-p2V').textContent=ph2.toFixed(2);
+    document.getElementById('w4dual-v1V').textContent=v1.toFixed(2);
+    document.getElementById('w4dual-v2V').textContent=v2.toFixed(2);
+    ctx.clearRect(0,0,W,H);
+
+    var contraction=ph1*v1+ph2*v2;
+    var mono=CSS.getPropertyValue('--font-mono').trim();
+    var disp=CSS.getPropertyValue('--font-display').trim();
+
+    // ---- LEFT PANEL: V (the vector space) ----
+    var Lcx=W*0.22,Lcy=H*0.5,Lsc=55;
+
+    // Panel label
+    ctx.font='14px '+mono;ctx.fillStyle=COL.ink;
+    ctx.fillText('V (vector space)',Lcx-50,22);
+
+    // Grid
+    ctx.strokeStyle=COL.inkSoft;ctx.globalAlpha=0.08;ctx.lineWidth=1;
+    for(var k=-5;k<=5;k++){ctx.beginPath();ctx.moveTo(Lcx+k*Lsc,Lcy-5*Lsc);ctx.lineTo(Lcx+k*Lsc,Lcy+5*Lsc);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(Lcx-5*Lsc,Lcy-k*Lsc);ctx.lineTo(Lcx+5*Lsc,Lcy-k*Lsc);ctx.stroke();}
+    ctx.globalAlpha=1;
+    // Axes
+    ctx.strokeStyle=COL.inkSoft;ctx.lineWidth=1;ctx.globalAlpha=0.25;
+    ctx.beginPath();ctx.moveTo(Lcx-5*Lsc,Lcy);ctx.lineTo(Lcx+5*Lsc,Lcy);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(Lcx,Lcy+5*Lsc);ctx.lineTo(Lcx,Lcy-5*Lsc);ctx.stroke();
+    ctx.globalAlpha=1;
+
+    // Covector level lines: phi_1*x + phi_2*y = c for various c
+    var phNorm=Math.sqrt(ph1*ph1+ph2*ph2);
+    if(phNorm>0.01){
+      var nx=ph1/phNorm,ny=ph2/phNorm;
+      var lx=-ny,ly=nx; // line direction (perpendicular to normal)
+      var spacing=1/phNorm; // distance between level lines in math coords
+      var numLines=Math.ceil(5/spacing)+1;
+      for(var c=-numLines;c<=numLines;c++){
+        var ox=Lcx+c*spacing*nx*Lsc;
+        var oy=Lcy-c*spacing*ny*Lsc;
+        var isZero=(c===0);
+        ctx.strokeStyle=COL.accent2;
+        ctx.lineWidth=isZero?2:1.5;
+        ctx.globalAlpha=isZero?0.7:Math.max(0.06,0.35-Math.abs(c)*0.025);
+        ctx.beginPath();
+        ctx.moveTo(ox-lx*300,oy+ly*300);
+        ctx.lineTo(ox+lx*300,oy-ly*300);
+        ctx.stroke();
+        // Label a few level lines
+        if(Math.abs(c)<=3&&Math.abs(c)%1===0){
+          ctx.globalAlpha=Math.max(0.3,0.7-Math.abs(c)*0.12);
+          ctx.font='10px '+mono;ctx.fillStyle=COL.accent2;
+          ctx.fillText(c.toString(),ox+lx*120+3,oy-ly*120);
+        }
+      }
+      ctx.globalAlpha=1;
+    }
+
+    // Draw vector
+    arw(Lcx,Lcy,Lcx+v1*Lsc,Lcy-v2*Lsc,COL.accent,3);
+    ctx.font='13px '+mono;ctx.fillStyle=COL.accent;
+    ctx.fillText('v',Lcx+v1*Lsc+8,Lcy-v2*Lsc-8);
+
+    // Highlight: which level line does the arrow tip land on?
+    // The value is phi_1*v1 + phi_2*v2 = contraction
+    if(phNorm>0.01){
+      // Draw the level line through the tip brighter
+      var tipMathX=v1,tipMathY=v2;
+      var tipLevel=ph1*v1+ph2*v2;
+      var tnx=ph1/phNorm,tny=ph2/phNorm;
+      var tlx=-tny,tly=tnx;
+      var tox=Lcx+tipLevel/phNorm*tnx*Lsc;
+      var toy=Lcy-tipLevel/phNorm*tny*Lsc;
+      ctx.strokeStyle=COL.accent;ctx.lineWidth=2;ctx.globalAlpha=0.5;ctx.setLineDash([5,4]);
+      ctx.beginPath();ctx.moveTo(tox-tlx*200,toy+tly*200);ctx.lineTo(tox+tlx*200,toy-tly*200);ctx.stroke();
+      ctx.setLineDash([]);ctx.globalAlpha=1;
+    }
+
+    // Dot at vector tip
+    ctx.fillStyle=COL.accent;
+    ctx.beginPath();ctx.arc(Lcx+v1*Lsc,Lcy-v2*Lsc,4,0,Math.PI*2);ctx.fill();
+
+    // ---- DIVIDER ----
+    var divX=W*0.44;
+    ctx.strokeStyle=COL.inkSoft;ctx.lineWidth=1;ctx.globalAlpha=0.2;
+    ctx.beginPath();ctx.moveTo(divX,40);ctx.lineTo(divX,H-20);ctx.stroke();
+    ctx.globalAlpha=1;
+
+    // ---- RIGHT PANEL: V* (the dual space) ----
+    var Rcx=W*0.65,Rcy=H*0.5,Rsc=55;
+
+    ctx.font='14px '+mono;ctx.fillStyle=COL.ink;
+    ctx.fillText('V* (dual space)',Rcx-48,22);
+
+    // Grid
+    ctx.strokeStyle=COL.inkSoft;ctx.globalAlpha=0.08;ctx.lineWidth=1;
+    for(var k2=-5;k2<=5;k2++){ctx.beginPath();ctx.moveTo(Rcx+k2*Rsc,Rcy-5*Rsc);ctx.lineTo(Rcx+k2*Rsc,Rcy+5*Rsc);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(Rcx-5*Rsc,Rcy-k2*Rsc);ctx.lineTo(Rcx+5*Rsc,Rcy-k2*Rsc);ctx.stroke();}
+    ctx.globalAlpha=1;
+    // Axes
+    ctx.strokeStyle=COL.inkSoft;ctx.lineWidth=1;ctx.globalAlpha=0.25;
+    ctx.beginPath();ctx.moveTo(Rcx-5*Rsc,Rcy);ctx.lineTo(Rcx+5*Rsc,Rcy);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(Rcx,Rcy+5*Rsc);ctx.lineTo(Rcx,Rcy-5*Rsc);ctx.stroke();
+    ctx.globalAlpha=1;
+
+    // Axis labels
+    ctx.font='11px '+mono;ctx.fillStyle=COL.inkSoft;
+    ctx.fillText('\u03C6\u2081',Rcx+5*Rsc-20,Rcy+16);
+    ctx.fillText('\u03C6\u2082',Rcx+8,Rcy-5*Rsc+14);
+
+    // Draw dual basis vectors
+    arw(Rcx,Rcy,Rcx+Rsc,Rcy,'#666',1.5);
+    arw(Rcx,Rcy,Rcx,Rcy-Rsc,'#666',1.5);
+    ctx.font='11px '+mono;ctx.fillStyle='#888';
+    ctx.fillText('e\u00B9',Rcx+Rsc+4,Rcy+14);
+    ctx.fillText('e\u00B2',Rcx+6,Rcy-Rsc-4);
+
+    // Draw covector as a POINT in V*
+    var phPx=Rcx+ph1*Rsc,phPy=Rcy-ph2*Rsc;
+    ctx.fillStyle=COL.accent2;
+    ctx.beginPath();ctx.arc(phPx,phPy,7,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle='rgba(91,155,213,0.3)';ctx.lineWidth=12;
+    ctx.beginPath();ctx.arc(phPx,phPy,7,0,Math.PI*2);ctx.stroke();
+    ctx.font='13px '+mono;ctx.fillStyle=COL.accent2;
+    ctx.fillText('\u03C6 = ('+ph1.toFixed(2)+', '+ph2.toFixed(2)+')',phPx+14,phPy-10);
+    ctx.font='11px '+mono;ctx.fillStyle=COL.inkSoft;
+    ctx.fillText('a point in V*',phPx+14,phPy+8);
+
+    // ---- CONTRACTION RESULT ----
+    ctx.font='13px '+mono;ctx.fillStyle=COL.inkSoft;
+    ctx.fillText('Contraction:',divX-52,H-50);
+    ctx.font='bold 22px '+disp;ctx.fillStyle=COL.accent;
+    ctx.fillText('\u03C6(v) = '+contraction.toFixed(2),divX-52,H-24);
+
+    readout.innerHTML='The covector \\(\\varphi = ('+ph1.toFixed(2)+',\\,'+ph2.toFixed(2)+')\\) eats the vector \\(v = ('+v1.toFixed(2)+',\\,'+v2.toFixed(2)+')\\) and outputs \\(\\varphi_i v^i = '+contraction.toFixed(2)+'\\). On the left, this is the level line the arrow tip lands on. On the right, the covector is just a point in the dual space \\(V^*\\).';
+    retypeset(readout);
+  }
+  [p1Sl,p2Sl,v1Sl,v2Sl].forEach(function(s){s.addEventListener('input',draw);});draw();
+})();
+/* =========================================================================
+   STEP 4f — Temperature on Earth: tangent/cotangent visualization
+   ========================================================================= */
+(function(){
+  var canvas=document.getElementById('w4e-canvas');
+  var ctx=setupCanvas(canvas,740,460);
+  var latSl=document.getElementById('w4e-lat');
+  var lonSl=document.getElementById('w4e-lon');
+  var vdirSl=document.getElementById('w4e-vdir');
+  var vspdSl=document.getElementById('w4e-vspd');
+  var readout=document.getElementById('w4e-readout');
+  var W=canvas._cssW,H=canvas._cssH;
+
+  // Temperature model: warm equator, cold poles, slight longitude variation
+  function tempAt(latDeg,lonDeg){
+    var lat=latDeg*Math.PI/180;
+    return 28*Math.cos(lat)*Math.cos(lat) - 10 + 4*Math.sin(lonDeg*Math.PI/180*2);
+  }
+  // Temperature gradient in spherical coords (dT/dlat, dT/dlon) in deg/radian
+  function tempGrad(latDeg,lonDeg){
+    var lat=latDeg*Math.PI/180;
+    var dTdlat = -28*Math.sin(2*lat) ; // d/dlat of 28*cos^2(lat)
+    var dTdlon = 4*Math.cos(lonDeg*Math.PI/180*2)*(2*Math.PI/180); // chain rule
+    return {dlat:dTdlat, dlon:dTdlon};
+  }
+
+  // Color map: temperature to color
+  function tempColor(t){
+    // Range roughly -15 to 32
+    var frac=(t+15)/47;
+    frac=Math.max(0,Math.min(1,frac));
+    // Blue (cold) -> White -> Red (hot)
+    var r,g,b;
+    if(frac<0.5){
+      var s=frac*2;
+      r=Math.round(60+s*195);
+      g=Math.round(80+s*175);
+      b=Math.round(220-s*20);
+    } else {
+      var s=(frac-0.5)*2;
+      r=Math.round(255);
+      g=Math.round(255-s*170);
+      b=Math.round(200-s*170);
+    }
+    return 'rgb('+r+','+g+','+b+')';
+  }
+
+  // 3D projection
+  var camDist=4.8, fov=280;
+  function proj(x,y,z){
+    var ca=Math.cos(0.35),sa=Math.sin(0.35);
+    var cb=Math.cos(-0.5),sb=Math.sin(-0.5);
+    var x1=x*cb-z*sb, z1=x*sb+z*cb;
+    var y1=y*ca-z1*sa, z2=y*sa+z1*ca;
+    var scale=fov/(camDist+z2);
+    return {px:W*0.36+x1*scale, py:H*0.48-y1*scale, z:z2, s:scale};
+  }
+
+  function arw3d(x0,y0,z0,x1,y1,z1,color,w){
+    var p0=proj(x0,y0,z0),p1=proj(x1,y1,z1);
+    var dx=p1.px-p0.px,dy=p1.py-p0.py,len=Math.sqrt(dx*dx+dy*dy);
+    if(len<2)return;
+    var ux=dx/len,uy=dy/len,hl=Math.min(12,len*0.22);
+    ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=w;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(p0.px,p0.py);ctx.lineTo(p1.px,p1.py);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(p1.px,p1.py);
+    ctx.lineTo(p1.px-hl*ux+4*uy,p1.py-hl*uy-4*ux);
+    ctx.lineTo(p1.px-hl*ux-4*uy,p1.py-hl*uy+4*ux);ctx.closePath();ctx.fill();
+  }
+
+  function draw(){
+    var latDeg=parseFloat(latSl.value);
+    var lonDeg=parseFloat(lonSl.value);
+    var vdir=parseFloat(vdirSl.value)*Math.PI/180;
+    var vspd=parseFloat(vspdSl.value);
+    document.getElementById('w4e-latV').textContent=Math.round(latDeg);
+    document.getElementById('w4e-lonV').textContent=Math.round(lonDeg);
+    document.getElementById('w4e-vdirV').textContent=Math.round(parseFloat(vdirSl.value));
+    document.getElementById('w4e-vspdV').textContent=vspd.toFixed(2);
+    ctx.clearRect(0,0,W,H);
+    var mono=CSS.getPropertyValue('--font-mono').trim();
+    var disp=CSS.getPropertyValue('--font-display').trim();
+
+    var R=1.35;
+    var latR=latDeg*Math.PI/180, lonR=lonDeg*Math.PI/180;
+
+    // Draw sphere with temperature coloring
+    var step=6;
+    for(var la=-90;la<90;la+=step){
+      for(var lo=0;lo<360;lo+=step){
+        var t=tempAt(la+step/2,lo+step/2);
+        var corners=[];
+        var laArr=[la,la+step],loArr=[lo,lo+step];
+        for(var ci=0;ci<2;ci++)for(var cj=0;cj<2;cj++){
+          var cla=laArr[ci]*Math.PI/180,clo=loArr[cj]*Math.PI/180;
+          corners.push(proj(R*Math.cos(cla)*Math.cos(clo),R*Math.sin(cla),R*Math.cos(cla)*Math.sin(clo)));
+        }
+        // Simple back-face culling: average z
+        var avgZ=(corners[0].z+corners[1].z+corners[2].z+corners[3].z)/4;
+        if(avgZ>-0.5){
+          ctx.fillStyle=tempColor(t);
+          ctx.globalAlpha=0.65;
+          ctx.beginPath();
+          ctx.moveTo(corners[0].px,corners[0].py);
+          ctx.lineTo(corners[1].px,corners[1].py);
+          ctx.lineTo(corners[3].px,corners[3].py);
+          ctx.lineTo(corners[2].px,corners[2].py);
+          ctx.closePath();ctx.fill();
+        }
+      }
+    }
+    ctx.globalAlpha=1;
+
+    // Latitude/longitude grid lines
+    ctx.strokeStyle='rgba(255,255,255,0.12)';ctx.lineWidth=0.7;
+    for(var gla=-60;gla<=60;gla+=30){
+      var glaR=gla*Math.PI/180;ctx.beginPath();
+      for(var glo=0;glo<=360;glo+=3){
+        var gloR=glo*Math.PI/180;
+        var p=proj(R*Math.cos(glaR)*Math.cos(gloR),R*Math.sin(glaR),R*Math.cos(glaR)*Math.sin(gloR));
+        glo===0?ctx.moveTo(p.px,p.py):ctx.lineTo(p.px,p.py);
+      }ctx.stroke();
+    }
+    for(var glo2=0;glo2<360;glo2+=30){
+      var gloR2=glo2*Math.PI/180;ctx.beginPath();
+      for(var gla2=-90;gla2<=90;gla2+=3){
+        var glaR2=gla2*Math.PI/180;
+        var p=proj(R*Math.cos(glaR2)*Math.cos(gloR2),R*Math.sin(glaR2),R*Math.cos(glaR2)*Math.sin(gloR2));
+        gla2===-90?ctx.moveTo(p.px,p.py):ctx.lineTo(p.px,p.py);
+      }ctx.stroke();
+    }
+
+    // Point on sphere
+    var px=R*Math.cos(latR)*Math.cos(lonR);
+    var py=R*Math.sin(latR);
+    var pz=R*Math.cos(latR)*Math.sin(lonR);
+    var pp=proj(px,py,pz);
+
+    // Tangent basis vectors at point
+    var elx=-Math.sin(latR)*Math.cos(lonR),ely=Math.cos(latR),elz=-Math.sin(latR)*Math.sin(lonR); // e_lat (north)
+    var eox=-Math.sin(lonR),eoy=0,eoz=Math.cos(lonR); // e_lon (east)
+
+    // Tangent plane quad
+    var plS=0.6;
+    ctx.fillStyle='rgba(91,155,213,0.08)';ctx.strokeStyle='rgba(91,155,213,0.25)';ctx.lineWidth=1;
+    ctx.beginPath();
+    var crnrs=[[plS,plS],[plS,-plS],[-plS,-plS],[-plS,plS]];
+    crnrs.forEach(function(c,i){
+      var cp=proj(px+c[0]*elx+c[1]*eox,py+c[0]*ely+c[1]*eoy,pz+c[0]*elz+c[1]*eoz);
+      i===0?ctx.moveTo(cp.px,cp.py):ctx.lineTo(cp.px,cp.py);
+    });
+    ctx.closePath();ctx.fill();ctx.stroke();
+
+    // Temperature contour lines (the covector!) on the tangent plane
+    var grad=tempGrad(latDeg,lonDeg);
+    // grad.dlat, grad.dlon are the covector components in (lat,lon) coords
+    // Normal direction of contours: along gradient
+    var gNorm=Math.sqrt(grad.dlat*grad.dlat+grad.dlon*grad.dlon);
+    if(gNorm>0.01){
+      var gnLat=grad.dlat/gNorm,gnLon=grad.dlon/gNorm;
+      // Contour line direction (perp to gradient)
+      var gcLat=-gnLon,gcLon=gnLat;
+      var lineLen=0.4;
+      ctx.strokeStyle=COL.accent2;ctx.lineWidth=1.5;
+      for(var ck=-4;ck<=4;ck++){
+        var off=ck*0.08;
+        var bx=px+off*(gnLat*elx+gnLon*eox);
+        var by=py+off*(gnLat*ely+gnLon*eoy);
+        var bz=pz+off*(gnLat*elz+gnLon*eoz);
+        var lp1=proj(bx-lineLen*(gcLat*elx+gcLon*eox),by-lineLen*(gcLat*ely+gcLon*eoy),bz-lineLen*(gcLat*elz+gcLon*eoz));
+        var lp2=proj(bx+lineLen*(gcLat*elx+gcLon*eox),by+lineLen*(gcLat*ely+gcLon*eoy),bz+lineLen*(gcLat*elz+gcLon*eoz));
+        ctx.globalAlpha=Math.max(0.1,0.55-Math.abs(ck)*0.08);
+        ctx.beginPath();ctx.moveTo(lp1.px,lp1.py);ctx.lineTo(lp2.px,lp2.py);ctx.stroke();
+      }
+      ctx.globalAlpha=1;
+
+      // Gradient arrow (raised index — green) = direction of steepest ascent
+      var gradScale=0.012;
+      var gax=gradScale*gNorm*(gnLat*elx+gnLon*eox);
+      var gay=gradScale*gNorm*(gnLat*ely+gnLon*eoy);
+      var gaz=gradScale*gNorm*(gnLat*elz+gnLon*eoz);
+      arw3d(px,py,pz,px+gax,py+gay,pz+gaz,COL.accent3,2.5);
+      var gEndP=proj(px+gax*1.1,py+gay*1.1,pz+gaz*1.1);
+      ctx.font='11px '+mono;ctx.fillStyle=COL.accent3;
+      ctx.fillText('\u2207T (raised)',gEndP.px+6,gEndP.py-4);
+    }
+
+    // Velocity vector (gold)
+    var vLat=Math.cos(vdir),vLon=Math.sin(vdir);
+    var vScale=0.35*vspd;
+    var vvx=vScale*(vLat*elx+vLon*eox);
+    var vvy=vScale*(vLat*ely+vLon*eoy);
+    var vvz=vScale*(vLat*elz+vLon*eoz);
+    arw3d(px,py,pz,px+vvx,py+vvy,pz+vvz,COL.accent,3);
+    var vEndP=proj(px+vvx*1.1,py+vvy*1.1,pz+vvz*1.1);
+    ctx.font='12px '+mono;ctx.fillStyle=COL.accent;
+    ctx.fillText('v (velocity)',vEndP.px+6,vEndP.py+14);
+
+    // Point dot (on top)
+    ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(pp.px,pp.py,5,0,Math.PI*2);ctx.fill();
+    ctx.font='12px '+mono;ctx.fillStyle='#fff';ctx.fillText('p',pp.px+8,pp.py-8);
+
+    // Compute contraction: dT(v) = (dT/dlat)*v_lat + (dT/dlon)*v_lon
+    // v components in (lat,lon): v_lat = vspd*cos(vdir), v_lon = vspd*sin(vdir)
+    var vCompLat=vspd*Math.cos(vdir);
+    var vCompLon=vspd*Math.sin(vdir);
+    var contraction=grad.dlat*vCompLat+grad.dlon*vCompLon;
+    var localTemp=tempAt(latDeg,lonDeg);
+
+    // ---- RIGHT PANEL: info ----
+    var ix=W*0.68,iy=20;
+    ctx.font='13px '+mono;ctx.fillStyle='#fff';
+    ctx.fillText('At point p:',ix,iy);
+    ctx.font='12px '+mono;ctx.fillStyle=COL.inkSoft;
+    ctx.fillText('lat '+Math.round(latDeg)+'\u00B0, lon '+Math.round(lonDeg)+'\u00B0',ix,iy+18);
+
+    // Temperature
+    ctx.font='13px '+mono;ctx.fillStyle=tempColor(localTemp);
+    ctx.fillText('T = '+localTemp.toFixed(1)+' \u00B0C',ix,iy+44);
+
+    // Tangent space
+    ctx.font='13px '+mono;ctx.fillStyle=COL.accent;
+    ctx.fillText('T\u209aS\u00B2 (tangent space):',ix,iy+74);
+    ctx.font='12px '+mono;ctx.fillStyle=COL.inkSoft;
+    ctx.fillText('v\u2071 = ('+vCompLat.toFixed(2)+', '+vCompLon.toFixed(2)+')',ix,iy+92);
+    ctx.fillText('basis: (e_lat, e_lon)',ix,iy+110);
+
+    // Cotangent space
+    ctx.font='13px '+mono;ctx.fillStyle=COL.accent2;
+    ctx.fillText('T*\u209aS\u00B2 (cotangent space):',ix,iy+140);
+    ctx.font='12px '+mono;ctx.fillStyle=COL.inkSoft;
+    ctx.fillText('dT\u1d62 = ('+grad.dlat.toFixed(2)+', '+grad.dlon.toFixed(2)+')',ix,iy+158);
+    ctx.fillText('(contour lines on plane)',ix,iy+176);
+
+    // Contraction
+    ctx.font='13px '+mono;ctx.fillStyle=COL.accent;
+    ctx.fillText('Contraction dT\u1d62 v\u2071:',ix,iy+210);
+    ctx.font='bold 20px '+disp;
+    var contrColor=contraction>0.5?'#ff6b6b':contraction<-0.5?'#5b9bd5':COL.ink;
+    ctx.fillStyle=contrColor;
+    ctx.fillText((contraction>=0?'+':'')+contraction.toFixed(2)+' \u00B0C/unit',ix,iy+238);
+
+    ctx.font='11px '+mono;ctx.fillStyle=COL.inkSoft;
+    if(contraction>0.5) ctx.fillText('warming up \u2191',ix,iy+256);
+    else if(contraction<-0.5) ctx.fillText('cooling down \u2193',ix,iy+256);
+    else ctx.fillText('~along a contour line',ix,iy+256);
+
+    // Gradient arrow
+    ctx.font='13px '+mono;ctx.fillStyle=COL.accent3;
+    ctx.fillText('Gradient (\u2207T)\u2071 = g\u2071\u02b2 dT\u2c7c:',ix,iy+288);
+    ctx.font='12px '+mono;ctx.fillStyle=COL.inkSoft;
+    ctx.fillText('steepest ascent direction',ix,iy+306);
+    ctx.fillText('(needs metric to compute)',ix,iy+322);
+
+    // Legend
+    var ly=H-60;
+    ctx.fillStyle=COL.accent;ctx.fillRect(ix,ly,16,3);ctx.font='11px '+mono;
+    ctx.fillText(' velocity v\u2071 (vector)',ix+22,ly+5);
+    ctx.fillStyle=COL.accent2;ctx.fillRect(ix,ly+18,16,3);
+    ctx.fillText(' dT\u1d62 contours (covector)',ix+22,ly+23);
+    ctx.fillStyle=COL.accent3;ctx.fillRect(ix,ly+36,16,3);
+    ctx.fillText(' \u2207T raised (vector)',ix+22,ly+41);
+
+    readout.innerHTML=contraction>0.5
+      ?'Walking in this direction warms you up: \\(dT_i\\,v^i = '+contraction.toFixed(2)+'\\) \u00B0C/unit. The velocity vector cuts across the contour lines toward warmer regions.'
+      :contraction<-0.5
+      ?'Walking in this direction cools you down: \\(dT_i\\,v^i = '+contraction.toFixed(2)+'\\) \u00B0C/unit. You are crossing contour lines toward colder regions.'
+      :'You are walking roughly along a contour line: \\(dT_i\\,v^i \\approx 0\\). Temperature barely changes because you are not crossing the covector level lines.';
+    retypeset(readout);
+  }
+  [latSl,lonSl,vdirSl,vspdSl].forEach(function(s){s.addEventListener('input',draw);});draw();
+})();
+
+/* =========================================================================
+   STEP 4g — SO(3): angular velocity as tangent vector
+   ========================================================================= */
+(function(){
+  var canvas=document.getElementById('w4f-canvas');
+  var ctx=setupCanvas(canvas,740,420);
+  var w1Sl=document.getElementById('w4f-w1');
+  var w2Sl=document.getElementById('w4f-w2');
+  var w3Sl=document.getElementById('w4f-w3');
+  var readout=document.getElementById('w4f-readout');
+  var W=canvas._cssW,H=canvas._cssH;
+
+  // Rodrigues rotation: R = I + sin(t) K + (1-cos(t)) K^2 where K is skew-sym
+  function rodrigues(w1,w2,w3){
+    var theta=Math.sqrt(w1*w1+w2*w2+w3*w3);
+    if(theta<1e-8)return[[1,0,0],[0,1,0],[0,0,1]];
+    var k1=w1/theta,k2=w2/theta,k3=w3/theta;
+    var ct=Math.cos(theta),st=Math.sin(theta),vt=1-ct;
+    return[
+      [ct+k1*k1*vt,     k1*k2*vt-k3*st, k1*k3*vt+k2*st],
+      [k2*k1*vt+k3*st,  ct+k2*k2*vt,     k2*k3*vt-k1*st],
+      [k3*k1*vt-k2*st,  k3*k2*vt+k1*st,  ct+k3*k3*vt]
+    ];
+  }
+
+  function draw(){
+    var w1=parseFloat(w1Sl.value),w2=parseFloat(w2Sl.value),w3=parseFloat(w3Sl.value);
+    document.getElementById('w4f-w1V').textContent=w1.toFixed(2);
+    document.getElementById('w4f-w2V').textContent=w2.toFixed(2);
+    document.getElementById('w4f-w3V').textContent=w3.toFixed(2);
+    ctx.clearRect(0,0,W,H);
+
+    var R=rodrigues(w1,w2,w3);
+
+    // 3D projection for the axes visualization
+    var cx=W*0.25,cy=H*0.5,sc=80;
+    var ca=Math.cos(0.4),sa=Math.sin(0.4),cb=Math.cos(-0.5),sb=Math.sin(-0.5);
+    function p3(x,y,z){
+      var x1=x*cb-z*sb,z1=x*sb+z*cb;
+      var y1=y*ca-z1*sa;
+      return{px:cx+x1*sc,py:cy-y1*sc};
+    }
+
+    // Draw original axes (faint)
+    var axes=[[1,0,0],[0,1,0],[0,0,1]];
+    var axisColors=['#e85a5a','#6fcf97','#5b9bd5'];
+    var axisLabels=['x','y','z'];
+    ctx.globalAlpha=0.2;
+    for(var i=0;i<3;i++){
+      var a=axes[i];var e=p3(a[0]*1.4,a[1]*1.4,a[2]*1.4);var o=p3(0,0,0);
+      ctx.strokeStyle=axisColors[i];ctx.lineWidth=1.5;ctx.setLineDash([4,4]);
+      ctx.beginPath();ctx.moveTo(o.px,o.py);ctx.lineTo(e.px,e.py);ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    ctx.globalAlpha=1;
+
+    // Draw rotated axes
+    for(var i2=0;i2<3;i2++){
+      var a2=axes[i2];
+      var rx=R[0][0]*a2[0]+R[0][1]*a2[1]+R[0][2]*a2[2];
+      var ry=R[1][0]*a2[0]+R[1][1]*a2[1]+R[1][2]*a2[2];
+      var rz=R[2][0]*a2[0]+R[2][1]*a2[1]+R[2][2]*a2[2];
+      var e2=p3(rx*1.4,ry*1.4,rz*1.4);var o2=p3(0,0,0);
+      ctx.strokeStyle=axisColors[i2];ctx.lineWidth=3;ctx.lineCap='round';
+      ctx.beginPath();ctx.moveTo(o2.px,o2.py);ctx.lineTo(e2.px,e2.py);ctx.stroke();
+      // Arrowhead
+      var dx=e2.px-o2.px,dy=e2.py-o2.py,len=Math.sqrt(dx*dx+dy*dy);
+      if(len>10){var ux=dx/len,uy=dy/len;ctx.fillStyle=axisColors[i2];
+        ctx.beginPath();ctx.moveTo(e2.px,e2.py);ctx.lineTo(e2.px-10*ux+5*uy,e2.py-10*uy-5*ux);
+        ctx.lineTo(e2.px-10*ux-5*uy,e2.py-10*uy+5*ux);ctx.closePath();ctx.fill();}
+      ctx.font='bold 14px '+CSS.getPropertyValue('--font-mono').trim();
+      ctx.fillStyle=axisColors[i2];ctx.fillText(axisLabels[i2]+"'",e2.px+8,e2.py-6);
+    }
+
+    // Draw angular velocity vector
+    var theta=Math.sqrt(w1*w1+w2*w2+w3*w3);
+    if(theta>0.02){
+      var wEnd=p3(w1*0.8,w2*0.8,w3*0.8);var o3=p3(0,0,0);
+      ctx.strokeStyle=COL.accent;ctx.fillStyle=COL.accent;ctx.lineWidth=2.5;
+      ctx.beginPath();ctx.moveTo(o3.px,o3.py);ctx.lineTo(wEnd.px,wEnd.py);ctx.stroke();
+      var dxw=wEnd.px-o3.px,dyw=wEnd.py-o3.py,lenw=Math.sqrt(dxw*dxw+dyw*dyw);
+      if(lenw>8){var uxw=dxw/lenw,uyw=dyw/lenw;
+        ctx.beginPath();ctx.moveTo(wEnd.px,wEnd.py);ctx.lineTo(wEnd.px-9*uxw+4*uyw,wEnd.py-9*uyw-4*uxw);
+        ctx.lineTo(wEnd.px-9*uxw-4*uyw,wEnd.py-9*uyw+4*uxw);ctx.closePath();ctx.fill();}
+      ctx.font='13px '+CSS.getPropertyValue('--font-mono').trim();ctx.fillStyle=COL.accent;
+      ctx.fillText('\u03C9',wEnd.px+8,wEnd.py-6);
+    }
+
+    // Labels
+    ctx.font='12px '+CSS.getPropertyValue('--font-mono').trim();ctx.fillStyle=COL.inkSoft;
+    ctx.fillText('Original (dashed)',cx-60,H-20);
+    ctx.fillText('Rotated (solid)',cx+50,H-20);
+
+    // Right panel: matrices
+    var mx=W*0.52,my=26;
+    var mono=CSS.getPropertyValue('--font-mono').trim();
+
+    // Skew-symmetric matrix
+    ctx.font='13px '+mono;ctx.fillStyle=COL.accent;
+    ctx.fillText('Tangent vector \u03A9 \u2208 so(3):',mx,my);
+    ctx.font='15px '+mono;ctx.fillStyle=COL.ink;
+    var fmt=function(v){var s=v.toFixed(2);return v>=0?' '+s:s;};
+    ctx.fillText('['+fmt(0)   +' '+fmt(-w3) +' '+fmt(w2) +']',mx,my+24);
+    ctx.fillText('['+fmt(w3)  +' '+fmt(0)   +' '+fmt(-w1)+']',mx,my+44);
+    ctx.fillText('['+fmt(-w2) +' '+fmt(w1)  +' '+fmt(0)  +']',mx,my+64);
+    ctx.font='11px '+mono;ctx.fillStyle=COL.inkSoft;
+    ctx.fillText('\u03A9\u1D40 = \u2212\u03A9 (skew-symmetric)',mx,my+84);
+
+    // Rotation matrix
+    ctx.font='13px '+mono;ctx.fillStyle=COL.accent3;
+    ctx.fillText('Rotation R = exp(\u03A9):',mx,my+116);
+    ctx.font='15px '+mono;ctx.fillStyle=COL.ink;
+    ctx.fillText('['+fmt(R[0][0])+' '+fmt(R[0][1])+' '+fmt(R[0][2])+']',mx,my+140);
+    ctx.fillText('['+fmt(R[1][0])+' '+fmt(R[1][1])+' '+fmt(R[1][2])+']',mx,my+160);
+    ctx.fillText('['+fmt(R[2][0])+' '+fmt(R[2][1])+' '+fmt(R[2][2])+']',mx,my+180);
+    ctx.font='11px '+mono;ctx.fillStyle=COL.inkSoft;
+    ctx.fillText('R\u1D40R = I, det R = 1',mx,my+200);
+
+    // Angular velocity vector components
+    ctx.font='13px '+mono;ctx.fillStyle=COL.accent;
+    ctx.fillText('Angular velocity (upper index):',mx,my+232);
+    ctx.font='15px '+mono;
+    ctx.fillText('\u03C9\u2071 = ('+w1.toFixed(2)+', '+w2.toFixed(2)+', '+w3.toFixed(2)+')',mx,my+254);
+    ctx.font='11px '+mono;ctx.fillStyle=COL.inkSoft;
+    ctx.fillText('|\u03C9| = '+theta.toFixed(3)+' rad',mx,my+274);
+
+    // Killing metric note
+    ctx.font='13px '+mono;ctx.fillStyle=COL.accent2;
+    ctx.fillText('Killing metric:',mx,my+304);
+    ctx.font='12px '+mono;ctx.fillStyle=COL.inkSoft;
+    ctx.fillText('g\u1d62\u2c7c = \u2212\u00BD tr(L\u1d62 L\u2c7c) = \u03B4\u1d62\u2c7c',mx,my+324);
+    ctx.fillText('\u2192 raising/lowering trivial at I',mx,my+342);
+
+    readout.innerHTML=theta<0.02
+      ?'All sliders at zero: \\(\\Omega = 0\\), so \\(R = I\\) (no rotation). The tangent space at \\(I\\) is the space of skew-symmetric matrices.'
+      :'Rotation by \\(|\\omega| = '+theta.toFixed(3)+'\\) rad about axis \\(('+w1.toFixed(2)+','+w2.toFixed(2)+','+w3.toFixed(2)+')\\). The skew-symmetric \\(\\Omega\\) is a tangent vector in \\(\\mathfrak{so}(3) = T_I\\,\\text{SO}(3)\\).';
+    retypeset(readout);
+  }
+  [w1Sl,w2Sl,w3Sl].forEach(function(s){s.addEventListener('input',draw);});draw();
+})();
+
+/* =========================================================================
+   READING PROGRESS BAR
+   ========================================================================= */
+(function () {
+  const bar = document.getElementById('progress');
+  function update() {
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%';
+  }
+  window.addEventListener('scroll', update, {passive:true});
+  window.addEventListener('resize', update);
+  update();
+})();
+</script>
+</body>
+</html>

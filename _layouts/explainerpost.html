@@ -1,0 +1,77 @@
+{% assign standalone_html = false %}
+{% if content contains '<!DOCTYPE html>' %}
+  {% assign standalone_html = true %}
+{% endif %}
+{% if content contains '<html' %}
+  {% assign standalone_html = true %}
+{% endif %}
+{% if standalone_html %}
+{{ content }}
+{% else %}
+<!DOCTYPE HTML>
+<!--
+	Massively by HTML5 UP
+	html5up.net | @ajlkn
+  Jekyll integration by somiibo.com
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+    {% include head.html %}
+    <link rel="stylesheet" href="{{ "/assets/css/syntax.css" | relative_url }}">
+	</head>
+	<body class="is-loading">
+
+		<!-- Wrapper -->
+			<div id="wrapper" class="fade-in">
+
+				<!-- Header -->
+        <header id="header">
+          <a href="{{ "/" | absolute_url }}" class="logo">{{site.title}}</a>
+        </header>
+
+				<!-- Nav -->
+					<nav id="nav">
+
+            {% include nav.html %}
+
+						<ul class="icons">
+              <li><a href="https://twitter.com/{{site.twitter}}" class="icon fa-twitter" rel="nofollow"><span class="label">Twitter</span></a></li>
+              <li><a href="https://github.com/{{site.github}}" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+				<div id="main">
+          <section class="post" style="color: #000;">
+					<header class="major" style="color: #000;">
+						<span class="date" style="color: #000;">{{page.date | date_to_string}}</span>
+						<h1 style="color: #000;">{{page.title}}</h1>
+						<p style="color: #000;">{{page.excerpt}}</p>
+					</header>
+					{% if page.image %}
+					<div class="image main"><img src="{{page.image}}" alt=""></div>
+					{% endif %}
+					{{content}}
+				</section>
+
+					<!-- Footer -->
+						<footer>
+              <ul class="actions">
+                <li><a href="{{ "/explainers/" | absolute_url }}" class="button">All Explainers</a></li>
+              </ul>
+						</footer>
+					</div>
+
+				<!-- Footer -->
+        <!-- {% include foot.html %} -->
+
+			</div>
+
+      <!-- Scripts -->
+		<!-- {% include scripts-main.html %} -->
+			<!-- {% include tracking.html %} -->
+
+	</body>
+</html>
+{% endif %}

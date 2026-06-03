@@ -1,0 +1,1706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How LLMs Are Trained — The RL Revolution</title>
+
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js" id="MathJax-script" async></script>
+
+<style>
+  :root {
+    --bg:        #0c0e14;
+    --surface:   #151821;
+    --surface-2: #1c2030;
+    --ink:       #d4d8e8;
+    --ink-soft:  #8890a8;
+    --accent:    #6c8cff;
+    --accent-2:  #ff6c8c;
+    --accent-3:  #5ce6b8;
+    --accent-4:  #ffb86c;
+    --line:      #262a3a;
+    --axis:      #3a3f55;
+    --kernel-bg: linear-gradient(135deg, #1a1f35 0%, #0f1220 100%);
+    --radius: 16px;
+    --measure: 70ch;
+    --font-display: 'Palatino Linotype', Palatino, Georgia, serif;
+    --font-body:    Georgia, 'Times New Roman', serif;
+    --font-mono:    'SF Mono', 'Fira Mono', Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--font-body); font-size: 19px; line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+  #progress {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    z-index: 100; transition: width 0.1s linear;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 28px 140px; }
+  .prose { max-width: var(--measure); }
+  .prose p { margin: 0 0 1.15em; }
+  header { padding: 100px 0 40px; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.28em;
+    text-transform: uppercase; color: var(--accent); margin: 0 0 20px;
+  }
+  h1 {
+    font-family: var(--font-display); font-weight: 800;
+    font-size: clamp(2.4rem, 5.5vw, 3.6rem); line-height: 1.08;
+    margin: 0 0 24px; letter-spacing: -0.025em;
+    background: linear-gradient(135deg, #fff 0%, #8890a8 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .promise {
+    font-size: 1.15rem; color: var(--ink-soft); font-style: italic;
+    max-width: var(--measure); line-height: 1.6;
+  }
+  .kernel {
+    background: var(--kernel-bg); border: 1px solid #2a3050;
+    border-radius: var(--radius); padding: 38px 42px; margin: 52px 0 80px;
+    position: relative; overflow: hidden;
+  }
+  .kernel::before {
+    content: ''; position: absolute; top: -1px; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
+  }
+  .kernel .label {
+    font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--accent); margin: 0 0 16px;
+  }
+  .kernel .sentence {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 1.35rem; line-height: 1.45; margin: 0; color: #e8ecf8;
+  }
+  .concept-step { margin: 0 0 96px; scroll-margin-top: 40px; }
+  .step-num {
+    font-family: var(--font-mono); font-size: 0.78rem; font-weight: 600;
+    color: var(--accent); letter-spacing: 0.08em; margin: 0 0 8px;
+  }
+  .concept-step h2 {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(1.6rem, 3.2vw, 2.2rem); line-height: 1.15;
+    margin: 0 0 22px; letter-spacing: -0.015em; color: #e0e4f0;
+  }
+  details.formal {
+    border: 1px solid var(--line); border-radius: 12px;
+    background: var(--surface); margin: 26px 0; max-width: var(--measure);
+  }
+  details.formal summary {
+    cursor: pointer; padding: 14px 18px; font-family: var(--font-body);
+    font-size: 0.92rem; letter-spacing: 0.03em; color: var(--ink-soft);
+    list-style: none; user-select: none;
+  }
+  details.formal summary::before { content: '▸ '; color: var(--accent); }
+  details.formal[open] summary::before { content: '▾ '; }
+  details.formal .formal-body { padding: 0 18px 18px; font-size: 0.95rem; }
+  .widget {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 24px; margin: 30px 0;
+  }
+  .widget-controls {
+    display: flex; flex-wrap: wrap; gap: 20px 30px; margin-bottom: 18px;
+  }
+  .widget-controls label {
+    display: flex; flex-direction: column; gap: 7px;
+    font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-soft);
+    min-width: 170px;
+  }
+  .widget-controls .val { color: var(--accent); font-weight: 600; }
+  input[type=range] { accent-color: var(--accent); cursor: pointer; background: var(--surface-2); border-radius: 4px; }
+  .widget button {
+    font-family: var(--font-mono); font-size: 0.85rem;
+    background: var(--accent); color: var(--bg); border: none;
+    padding: 9px 18px; border-radius: 8px; cursor: pointer;
+    font-weight: 600; transition: background 0.15s;
+  }
+  .widget button:hover { background: #8ca8ff; }
+  .widget button:disabled { opacity: 0.35; cursor: default; }
+  .widget button.secondary { background: var(--surface-2); color: var(--ink-soft); border: 1px solid var(--line); }
+  .widget button.secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .widget-stage { display: block; width: 100%; border-radius: 10px; background: var(--bg); }
+  .readout { margin-top: 14px; font-size: 0.92rem; color: var(--ink-soft); min-height: 1.4em; font-family: var(--font-mono); }
+  .caption { font-size: 0.82rem; color: var(--ink-soft); font-style: italic; margin-top: 10px; }
+  .recap { border-top: 1px solid var(--line); padding-top: 48px; margin-top: 32px; }
+  .recap h2 { font-family: var(--font-display); font-size: 2rem; margin: 0 0 20px; color: #e0e4f0; }
+  mark { background: linear-gradient(transparent 55%, rgba(108,140,255,0.25) 55%); color: inherit; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .timeline-item {
+    padding: 14px 0 14px 28px; border-left: 2px solid var(--line);
+    position: relative; cursor: pointer; transition: border-color 0.2s;
+  }
+  .timeline-item:hover { border-color: var(--accent); }
+  .timeline-item::before {
+    content: ''; position: absolute; left: -6px; top: 20px;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--surface-2); border: 2px solid var(--line); transition: all 0.2s;
+  }
+  .timeline-item:hover::before { background: var(--accent); border-color: var(--accent); }
+  .timeline-item.active { border-color: var(--accent); }
+  .timeline-item.active::before { background: var(--accent); border-color: var(--accent); }
+  .tl-year { font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent); letter-spacing: 0.05em; }
+  .tl-title { font-weight: 600; color: #e0e4f0; font-size: 1.02rem; margin: 2px 0; }
+  .tl-desc { font-size: 0.88rem; color: var(--ink-soft); }
+  .pill {
+    display: inline-block; padding: 3px 10px; border-radius: 20px;
+    font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600;
+    letter-spacing: 0.04em; margin-right: 6px;
+  }
+  .pill-blue { background: rgba(108,140,255,0.15); color: var(--accent); }
+  .pill-pink { background: rgba(255,108,140,0.15); color: var(--accent-2); }
+  .pill-green { background: rgba(92,230,184,0.15); color: var(--accent-3); }
+  .pill-orange { background: rgba(255,184,108,0.15); color: var(--accent-4); }
+  .btn-group { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .btn-group button { font-size: 0.8rem; padding: 7px 14px; }
+  .btn-group button.active { background: var(--accent); color: var(--bg); }
+  @media (max-width: 600px) {
+    body { font-size: 17px; }
+    .wrap { padding: 0 18px 80px; }
+    .kernel { padding: 26px 22px; }
+    .widget { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">A comprehensive interactive explainer</p>
+    <h1>Training LLMs: From Pretraining to the Reinforcement Learning Revolution</h1>
+    <p class="promise">
+      A deep dive into how modern language models are built — from raw text ingestion
+      through supervised fine-tuning to the RL breakthroughs that produced reasoning
+      models like o1, R1, and Claude. With interactive visualizations of every key idea.
+    </p>
+  </header>
+
+  <div class="kernel">
+    <p class="label">The whole idea, in one sentence</p>
+    <p class="sentence">
+      LLM training is a three-act play: first the model learns the statistical structure of language (pretraining),
+      then it learns to follow instructions (SFT), and finally <mark>reinforcement learning reshapes its
+      behavior toward goals that pure imitation can never capture</mark> — helpfulness, reasoning depth,
+      safety, and alignment with human judgment.
+    </p>
+  </div>
+
+  <!-- ===================== STEP 1 ===================== -->
+  <section class="concept-step" id="step-1">
+    <p class="step-num">Step 1</p>
+    <h2>The Three Stages of LLM Training</h2>
+    <div class="prose">
+      <p>
+        Every frontier LLM goes through roughly the same three-stage pipeline. <strong>Stage 1: Pretraining</strong>
+        consumes trillions of tokens and teaches the model the statistical structure of language — syntax,
+        facts, reasoning patterns — by predicting the next token. The loss is simple:
+      </p>
+      <p>\[ \mathcal{L}_{\text{PT}} = -\sum_{t} \log p_\theta(x_t \mid x_{<t}) \]</p>
+      <p>
+        This produces a powerful but <em>undirected</em> model — it can continue any text, but it doesn't
+        know it's supposed to be helpful. <strong>Stage 2: Supervised Fine-Tuning (SFT)</strong> takes
+        curated (instruction, response) pairs and trains the model to follow instructions. It's straightforward
+        cross-entropy on human-written demonstrations.
+      </p>
+      <p>
+        But SFT has a ceiling: the model can only be as good as the demonstrations. It imitates, it doesn't
+        optimize. <strong>Stage 3: Reinforcement Learning</strong> breaks through that ceiling. Instead
+        of copying human outputs, the model generates its own responses and receives a <em>reward signal</em>
+        telling it how good they are. It then adjusts its policy to produce more of the high-reward
+        behavior — including behavior no human ever wrote down.
+      </p>
+    </div>
+    <div class="widget" id="w1">
+      <div class="btn-group" id="w1-stages">
+        <button class="active" data-stage="0">Pretraining</button>
+        <button data-stage="1">SFT</button>
+        <button data-stage="2">RL Post-Training</button>
+      </div>
+      <canvas id="w1-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w1-readout"></div>
+      <p class="caption">Click each stage to see how the model's capability distribution shifts.</p>
+    </div>
+    <details class="formal">
+      <summary>The formal framing</summary>
+      <div class="formal-body prose">
+        <p>
+          Pretraining maximizes \(\mathbb{E}_{x \sim \mathcal{D}}[\log p_\theta(x)]\) over a corpus \(\mathcal{D}\).
+          SFT maximizes \(\mathbb{E}_{(q,a) \sim \mathcal{D}_{\text{sft}}}[\log p_\theta(a \mid q)]\)
+          over curated demonstrations. RL maximizes \(\mathbb{E}_{q \sim \mathcal{D}, y \sim \pi_\theta(\cdot \mid q)}[R(q, y)] - \beta \, \text{KL}[\pi_\theta \| \pi_{\text{ref}}]\),
+          where \(R\) is a reward function and the KL term prevents the policy from drifting too far from the SFT checkpoint.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 2: ENVIRONMENT CONSTRUCTION ===================== -->
+  <section class="concept-step" id="step-2">
+    <p class="step-num">Step 2</p>
+    <h2>The RL Environment for Language: Mapping the MDP</h2>
+    <div class="prose">
+      <p>
+        Before we can apply RL, we need to define the <em>environment</em> — the formal setup that tells us
+        what the "agent" is, what "actions" it can take, and where the "reward" comes from. In classic RL
+        (think Atari or robotics), the environment is a game or a physics simulator. For LLMs,
+        <mark>the environment is the act of generating text itself</mark>.
+      </p>
+      <p>
+        Here's how the standard Markov Decision Process (MDP) maps onto language generation:
+      </p>
+      <p>
+        <strong>State \(s_t\)</strong> = the prompt concatenated with all tokens generated so far: \(s_t = [x, y_1, y_2, \ldots, y_{t-1}]\).
+        Each new token extends the state. The initial state \(s_0 = x\) is just the prompt.
+      </p>
+      <p>
+        <strong>Action \(a_t\)</strong> = the next token \(y_t\) chosen from the vocabulary \(\mathcal{V}\).
+        The action space is enormous — typically 32K–128K discrete choices at every step. This is orders of magnitude
+        larger than Atari (18 actions) or Go (361 positions).
+      </p>
+      <p>
+        <strong>Policy \(\pi_\theta(a_t | s_t)\)</strong> = the LLM itself. Its softmax output over the vocabulary
+        <em>is</em> the policy — the probability distribution over next tokens given the current state.
+      </p>
+      <p>
+        <strong>Transition</strong> = deterministic. Taking action \(a_t = y_t\) from state \(s_t\) always produces
+        state \(s_{t+1} = [s_t, y_t]\). There's no stochastic environment dynamics — the only randomness comes from
+        the policy's own sampling.
+      </p>
+      <p>
+        <strong>Reward \(r\)</strong> = typically <em>sparse</em>, delivered only at the end of the episode
+        (when the model finishes generating). The reward model or verifier scores the complete response.
+        This creates a severe <strong>credit assignment problem</strong>: which of the 500 tokens in the response
+        was responsible for the high (or low) reward? This is fundamentally harder than Atari, where reward
+        comes every few frames.
+      </p>
+      <p>
+        <strong>Episode</strong> = one complete generation. The model starts with prompt \(x\), generates tokens
+        until it produces an end-of-sequence token (or hits a length limit), and receives a reward for the full response.
+      </p>
+      <p>
+        <strong>Constructing the prompt distribution</strong> is itself a design choice — the "environment design"
+        of LLM RL. DeepSeek R1 used tens of thousands of math and code problems. Anthropic samples from real user
+        conversations. The prompt distribution shapes <em>what</em> the model learns to be good at, just like
+        choosing training levels in a game.
+      </p>
+    </div>
+    <div class="widget" id="w2">
+      <div class="btn-group" id="w2-mode">
+        <button class="active" data-mode="mdp">MDP Mapping</button>
+        <button data-mode="episode">Episode Walkthrough</button>
+      </div>
+      <canvas id="w2-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w2-readout">The LLM is the policy; text generation is the episode; the reward comes at the end.</div>
+      <p class="caption">Toggle between the MDP abstraction and a concrete episode walkthrough.</p>
+    </div>
+    <details class="formal">
+      <summary>Why sparse rewards make credit assignment hard</summary>
+      <div class="formal-body prose">
+        <p>
+          In the bandit formulation (reward at end only), the policy gradient for a complete response
+          \(y = (y_1, \ldots, y_T)\) is:
+          \[ \nabla_\theta J = \mathbb{E}\left[R(x, y) \sum_{t=1}^T \nabla_\theta \log \pi_\theta(y_t | s_t)\right] \]
+          A single scalar \(R\) multiplies the gradient contribution of <em>every</em> token equally. Token 3 (which
+          set up the right approach) and token 487 (which was just filler) get the same credit. This is why
+          <strong>advantage estimation</strong> and <strong>process reward models</strong> matter — they try to
+          distribute credit more precisely.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 3: REWARD MODEL DESIGN ===================== -->
+  <section class="concept-step" id="step-3">
+    <p class="step-num">Step 3</p>
+    <h2>Reward Models: Teaching a Critic to Score</h2>
+    <div class="prose">
+      <p>
+        The reward model (RM) is the <mark>compass that tells RL which direction is "better"</mark>.
+        Get it right, and your model improves. Get it wrong, and RL will ruthlessly exploit every flaw.
+        Reward model design is arguably the single most consequential engineering decision in the RLHF pipeline.
+      </p>
+      <p>
+        <strong>Architecture.</strong> An RM is typically the same transformer architecture as the LLM itself
+        (often initialized from the SFT checkpoint), but with the language-modeling head replaced by a single
+        linear layer that outputs a scalar score: \(r_\phi(x, y) \in \mathbb{R}\). The model reads the full
+        (prompt, response) pair and produces one number representing quality.
+      </p>
+      <p>
+        <strong>Training data.</strong> Human annotators are shown a prompt and two (or more) responses.
+        They rank them by preference. These pairwise comparisons form the training set. InstructGPT used
+        ~33K comparison pairs. Modern RMs use hundreds of thousands.
+      </p>
+      <p>
+        <strong>Training objective.</strong> The Bradley-Terry model assumes human preferences follow a logistic
+        model over reward differences:
+      </p>
+      <p>\[ \mathcal{L}_{\text{RM}} = -\mathbb{E}_{(x, y_w, y_l)}\left[\log \sigma\bigl(r_\phi(x, y_w) - r_\phi(x, y_l)\bigr)\right] \]</p>
+      <p>
+        This is just binary cross-entropy: push the preferred response's score higher than the rejected one's.
+        The gap between scores approximates how much better one response is.
+      </p>
+      <p>
+        <strong>Outcome vs. Process Reward Models.</strong> An <em>outcome reward model</em> (ORM) scores the
+        final response as a whole. A <em>process reward model</em> (PRM) scores each intermediate reasoning step.
+        PRMs were explored heavily in 2023–2024 (OpenAI's "Let's Verify Step by Step"), but DeepSeek R1
+        found that PRMs didn't justify their overhead at scale — outcome rewards with GRPO were more efficient.
+        This remains an active debate.
+      </p>
+      <p>
+        <strong>Failure modes — Goodhart's Law.</strong> "When a measure becomes a target, it ceases to be a
+        good measure." The RM is a proxy for human judgment. When RL optimizes too aggressively against it,
+        the policy finds responses that score highly <em>according to the RM</em> but look worse
+        <em>to actual humans</em>. This is <strong>reward hacking</strong> (or reward overoptimization). Common
+        hacks include: generating excessively long responses (RMs tend to prefer longer text), repeating
+        confident-sounding phrases, or producing plausible-looking but incorrect reasoning chains. The KL
+        penalty exists precisely to limit this.
+      </p>
+    </div>
+    <div class="widget" id="w3">
+      <div class="widget-controls">
+        <label>RM training pairs = <span class="val" id="w3-pairsV">5000</span>
+          <input type="range" id="w3-pairs" min="500" max="50000" step="500" value="5000">
+        </label>
+        <label>Annotator agreement = <span class="val" id="w3-agreeV">0.75</span>
+          <input type="range" id="w3-agree" min="0.5" max="0.98" step="0.01" value="0.75">
+        </label>
+      </div>
+      <canvas id="w3-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w3-readout"></div>
+      <p class="caption">More pairs and higher agreement both improve RM accuracy, but there's a ceiling —
+        and beyond it, the RM's proxy nature means more data doesn't help.</p>
+    </div>
+    <details class="formal">
+      <summary>Reward overoptimization — the scaling law</summary>
+      <div class="formal-body prose">
+        <p>
+          Gao et al. (2022) found that the relationship between RL optimization pressure and true reward follows:
+          \[ R_{\text{true}}(d) = \alpha \sqrt{d} - \beta\, d \]
+          where \(d = \text{KL}[\pi \| \pi_{\text{ref}}]\). The first term (\(\sqrt{d}\)) captures genuine improvement —
+          the RM is partially correct. The second term (\(-d\)) captures overoptimization — the further you push,
+          the more you exploit RM errors. The optimum is at \(d^* = \frac{\alpha^2}{4\beta^2}\). Push past this
+          point and true quality <em>decreases</em> even as RM score continues to rise. This is why the KL penalty
+          coefficient \(\beta\) must be carefully tuned — it controls how far you travel along this curve.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 4: RLHF + PPO ===================== -->
+  <section class="concept-step" id="step-4">
+    <p class="step-num">Step 4</p>
+    <h2>From REINFORCE to PPO: The Policy Gradient Engine</h2>
+    <div class="prose">
+      <p>
+        With the environment defined and the reward model trained, we need an algorithm to actually update
+        the policy. The foundation is <mark>the policy gradient theorem</mark> — the idea that you can
+        compute the gradient of expected reward with respect to the policy parameters, even though the
+        reward is non-differentiable.
+      </p>
+      <p>
+        <strong>REINFORCE (Williams, 1992)</strong> is the simplest policy gradient algorithm. The gradient
+        of expected reward is:
+      </p>
+      <p>
+        \[ \nabla_\theta J = \mathbb{E}_{y \sim \pi_\theta}\!\left[R(y) \cdot \nabla_\theta \log \pi_\theta(y | x)\right] \]
+      </p>
+      <p>
+        Intuitively: sample a response, compute its reward, and if the reward is high, increase the probability
+        of that response (push the log-prob gradient in the positive direction). If the reward is low, decrease it.
+        The reward acts as a <em>multiplier</em> on the gradient.
+      </p>
+      <p>
+        The problem: REINFORCE has <strong>extremely high variance</strong>. One lucky sample with a high reward
+        can send the gradient wildly off course. The fix is to subtract a <strong>baseline</strong> \(b\) — a running
+        estimate of average reward — so the gradient becomes:
+      </p>
+      <p>\[ \nabla_\theta J = \mathbb{E}\!\left[(R(y) - b) \cdot \nabla_\theta \log \pi_\theta(y | x)\right] \]</p>
+      <p>
+        The quantity \(A(y) = R(y) - b\) is the <strong>advantage</strong> — how much better this response
+        was compared to average. Positive advantage → reinforce. Negative → suppress.
+      </p>
+      <p>
+        <strong>PPO (Schulman, 2017)</strong> built on REINFORCE with two key innovations. First, it uses a
+        <em>learned value function</em> \(V_\psi(s)\) (the "critic") for a much better baseline, computing
+        advantage via Generalized Advantage Estimation (GAE). Second, it uses a <strong>clipped objective</strong>
+        that prevents catastrophically large policy updates — the "proximal" in PPO. Let
+        \(\rho_t = \frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_\text{old}}(a_t|s_t)}\) be the probability ratio. PPO maximizes:
+      </p>
+      <p>\[ L^{\text{CLIP}} = \mathbb{E}_t\!\left[\min\!\left(\rho_t \hat{A}_t,\; \text{clip}(\rho_t, 1{-}\epsilon, 1{+}\epsilon)\,\hat{A}_t\right)\right] \]</p>
+      <p>
+        If the policy changes too much (ratio far from 1), the clip kicks in and stops the update.
+        This keeps training stable. PPO was the algorithm behind ChatGPT, Claude (early versions), and most
+        2022–2023 era RLHF systems.
+      </p>
+      <p>
+        The cost: PPO requires <strong>four models in memory simultaneously</strong>: (1) the policy \(\pi_\theta\),
+        (2) the reference policy \(\pi_\text{ref}\) for KL, (3) the reward model \(r_\phi\), and (4) the
+        value/critic model \(V_\psi\). For a 70B-parameter LLM, that's ~280B parameters of GPU memory. This
+        engineering burden is what motivated the search for simpler alternatives.
+      </p>
+    </div>
+    <div class="widget" id="w4">
+      <div class="widget-controls">
+        <label>KL penalty β = <span class="val" id="w4-betaV">0.10</span>
+          <input type="range" id="w4-beta" min="0" max="0.5" step="0.01" value="0.1">
+        </label>
+        <label>Reward model quality = <span class="val" id="w4-rmV">0.80</span>
+          <input type="range" id="w4-rm" min="0.3" max="1" step="0.01" value="0.8">
+        </label>
+      </div>
+      <canvas id="w4-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w4-readout"></div>
+      <p class="caption">Low β lets the policy chase reward — but a weak reward model causes reward hacking.
+        High β keeps the policy safe but limits improvement. Find the balance.</p>
+    </div>
+    <details class="formal">
+      <summary>GAE and the bias-variance tradeoff in advantage estimation</summary>
+      <div class="formal-body prose">
+        <p>
+          Generalized Advantage Estimation computes \(\hat{A}_t = \sum_{l=0}^{\infty}(\gamma\lambda)^l \delta_{t+l}\)
+          where \(\delta_t = r_t + \gamma V(s_{t+1}) - V(s_t)\). The parameter \(\lambda \in [0,1]\) trades bias
+          for variance: \(\lambda = 0\) gives a one-step TD estimate (low variance, high bias if \(V\) is wrong);
+          \(\lambda = 1\) gives the full Monte Carlo return (unbiased but high variance). In LLM RLHF, rewards are
+          sparse (end-of-episode only), so \(\delta_t = -V(s_t)\) for all intermediate steps and
+          \(\delta_T = R - V(s_T)\) at the end. This makes \(V\) especially important — a bad value function means
+          bad advantages, which means learning noise instead of signal.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 5: DPO ===================== -->
+  <section class="concept-step" id="step-5">
+    <p class="step-num">Step 5</p>
+    <h2>DPO: Cutting Out the Middleman (2023)</h2>
+    <div class="prose">
+      <p>
+        In May 2023, Rafailov et al. at Stanford dropped a bombshell: <mark>you don't actually need a
+        separate reward model or PPO at all</mark>. The core insight of Direct Preference Optimization (DPO)
+        is that the constrained reward-maximization problem in RLHF has a closed-form solution. If you
+        substitute that solution back into the Bradley-Terry loss, you get a simple classification-style
+        objective you can optimize directly on preference pairs:
+      </p>
+      <p>\[ \mathcal{L}_{\text{DPO}} = -\mathbb{E}_{(x,y_w,y_l)}\!\left[\log \sigma\!\left(\beta \log \frac{\pi_\theta(y_w|x)}{\pi_{\text{ref}}(y_w|x)} - \beta \log \frac{\pi_\theta(y_l|x)}{\pi_{\text{ref}}(y_l|x)}\right)\right] \]</p>
+      <p>
+        DPO eliminates the reward model, eliminates PPO, eliminates online generation — it's just supervised
+        learning on preference pairs. This was a genuine step function: suddenly any lab could do alignment
+        without the engineering complexity of PPO. Models like Zephyr, Tulu, and many open-source LLMs
+        adopted DPO almost overnight.
+      </p>
+      <p>
+        The trade-off? DPO is an <em>offline</em> method — it only learns from a fixed dataset of preferences.
+        It doesn't explore, it doesn't discover new behaviors. For simple alignment tasks (tone, helpfulness),
+        this is often fine. For complex reasoning? PPO and its descendants still win, because exploration matters.
+        A 2024 benchmark study confirmed that PPO outperformed DPO on challenging code-generation tasks, while
+        DPO matched it on summarization and dialogue.
+      </p>
+    </div>
+    <div class="widget" id="w5">
+      <div class="widget-controls">
+        <label>β (temperature) = <span class="val" id="w5-betaV">0.10</span>
+          <input type="range" id="w5-beta" min="0.01" max="0.5" step="0.01" value="0.1">
+        </label>
+      </div>
+      <canvas id="w5-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w5-readout"></div>
+      <p class="caption">Watch how DPO reshapes log-probability ratios. High β means conservative updates;
+        low β means aggressive preference enforcement (risk of overfitting).</p>
+    </div>
+    <details class="formal">
+      <summary>The full DPO derivation — from RLHF objective to binary classifier</summary>
+      <div class="formal-body prose">
+        <p><strong>1. The RLHF objective.</strong> Standard RLHF seeks a policy \(\pi\) that maximizes expected reward while staying close to a reference policy \(\pi_{\text{ref}}\):</p>
+        <p>\[ \max_\pi \; \mathbb{E}_{x \sim \mathcal{D},\, y \sim \pi(\cdot|x)}\bigl[r(x, y)\bigr] - \beta \, \text{KL}\bigl[\pi(\cdot|x) \,\|\, \pi_{\text{ref}}(\cdot|x)\bigr] \]</p>
+
+        <p><strong>2. Deriving the closed-form optimal policy.</strong> We need to find the distribution \(\pi^*(\cdot|x)\) that maximizes the objective in step 1. Expanding the KL divergence, our objective for a fixed prompt \(x\) becomes:</p>
+        <p>\[ \max_{\pi} \sum_{y} \pi(y|x)\, r(x,y) - \beta \sum_{y} \pi(y|x) \log \frac{\pi(y|x)}{\pi_{\text{ref}}(y|x)} \]</p>
+        <p>subject to the constraint that \(\pi(\cdot|x)\) is a valid probability distribution: \(\sum_y \pi(y|x) = 1\) and \(\pi(y|x) \geq 0\).</p>
+
+        <p>This is a constrained optimization over a probability simplex. We form the <strong>Lagrangian</strong>, introducing a multiplier \(\lambda\) for the normalization constraint:</p>
+        <p>\[ \mathcal{L}(\pi, \lambda) = \sum_{y} \pi(y|x)\, r(x,y) - \beta \sum_{y} \pi(y|x) \log \frac{\pi(y|x)}{\pi_{\text{ref}}(y|x)} + \lambda\!\left(1 - \sum_{y} \pi(y|x)\right) \]</p>
+
+        <p>Take the <strong>functional derivative</strong> with respect to \(\pi(y|x)\) for a specific \(y\), and set it to zero:</p>
+        <p>\[ \frac{\partial \mathcal{L}}{\partial \pi(y|x)} = r(x,y) - \beta\!\left(\log \frac{\pi(y|x)}{\pi_{\text{ref}}(y|x)} + 1\right) - \lambda = 0 \]</p>
+        <p>(The \(+1\) comes from differentiating \(\pi \log \pi\): \(\frac{d}{d\pi}[\pi \log \pi] = \log \pi + 1\).)</p>
+
+        <p><strong>Solve for \(\pi(y|x)\).</strong> Rearranging the stationarity condition:</p>
+        <p>\[ \log \frac{\pi(y|x)}{\pi_{\text{ref}}(y|x)} = \frac{1}{\beta}\bigl(r(x,y) - \lambda - \beta\bigr) \]</p>
+        <p>Exponentiate both sides:</p>
+        <p>\[ \frac{\pi(y|x)}{\pi_{\text{ref}}(y|x)} = \exp\!\left(\frac{r(x,y)}{\beta}\right) \cdot \underbrace{\exp\!\left(\frac{-\lambda - \beta}{\beta}\right)}_{\text{constant in } y} \]</p>
+        <p>Therefore:</p>
+        <p>\[ \pi(y|x) = \pi_{\text{ref}}(y|x) \cdot \exp\!\left(\frac{r(x,y)}{\beta}\right) \cdot C(x) \]</p>
+        <p>where \(C(x) = \exp\!\bigl(\frac{-\lambda - \beta}{\beta}\bigr)\) absorbs everything that doesn't depend on \(y\).</p>
+
+        <p><strong>Enforce normalization.</strong> Since \(\sum_y \pi(y|x) = 1\), we can solve for \(C(x)\):</p>
+        <p>\[ 1 = C(x) \sum_{y} \pi_{\text{ref}}(y|x)\, \exp\!\left(\frac{r(x,y)}{\beta}\right) \quad\Longrightarrow\quad C(x) = \frac{1}{Z(x)} \]</p>
+        <p>where we define the <strong>partition function</strong>:</p>
+        <p>\[ Z(x) \triangleq \sum_{y} \pi_{\text{ref}}(y|x)\, \exp\!\left(\frac{r(x,y)}{\beta}\right) \]</p>
+
+        <p>This gives us the <strong>optimal policy</strong> — a Gibbs (Boltzmann) distribution tilted from the reference by exponentiated reward:</p>
+        <p>\[ \boxed{\pi^*(y \mid x) = \frac{1}{Z(x)}\, \pi_{\text{ref}}(y \mid x)\, \exp\!\left(\frac{1}{\beta}\, r(x, y)\right)} \]</p>
+        <p><em>Intuition:</em> every response gets a "boost" proportional to \(\exp(r/\beta)\) relative to the reference policy. High-reward responses get exponentially up-weighted; low-reward responses get suppressed. The temperature \(\beta\) controls how aggressively: as \(\beta \to 0\), the policy collapses to the single best response; as \(\beta \to \infty\), the policy stays at \(\pi_{\text{ref}}\). The partition function \(Z(x)\) is intractable — it sums over all possible responses — but DPO will eliminate it in step 4.</p>
+
+        <p><strong>3. Reparameterize reward.</strong> Take the log and solve for \(r\):</p>
+        <p>\[ r(x, y) = \beta \log \frac{\pi^*(y|x)}{\pi_{\text{ref}}(y|x)} + \underbrace{\beta \log Z(x)}_{\text{depends only on } x} \]</p>
+
+        <p><strong>4. Substitute into Bradley-Terry.</strong> The reward model loss uses \(p(y_w \succ y_l) = \sigma(r(x, y_w) - r(x, y_l))\). When we compute the reward <em>difference</em>:</p>
+        <p>\[ r(x, y_w) - r(x, y_l) = \beta \log \frac{\pi^*(y_w|x)}{\pi_{\text{ref}}(y_w|x)} + \underbrace{\beta \log Z(x) - \beta \log Z(x)}_{= \; 0 \text{ (cancels!)}} - \beta \log \frac{\pi^*(y_l|x)}{\pi_{\text{ref}}(y_l|x)} \]</p>
+        <p>The intractable partition function \(Z(x)\) <strong>cancels</strong> — this is the crux of DPO.</p>
+
+        <p><strong>5. The DPO loss.</strong> Replace \(\pi^*\) with our trainable \(\pi_\theta\):</p>
+        <p>\[ \boxed{\mathcal{L}_{\text{DPO}}(\theta) = -\mathbb{E}_{(x, y_w, y_l)}\left[\log \sigma\!\left(\beta \log \frac{\pi_\theta(y_w|x)}{\pi_{\text{ref}}(y_w|x)} - \beta \log \frac{\pi_\theta(y_l|x)}{\pi_{\text{ref}}(y_l|x)}\right)\right]} \]</p>
+        <p>This is binary cross-entropy. The sigmoid argument is the "implicit reward margin."</p>
+
+        <p><strong>6. Gradient intuition.</strong></p>
+        <p>\[ \nabla_\theta \mathcal{L}_{\text{DPO}} = -\beta\, \mathbb{E}\!\left[\underbrace{\sigma(\hat{r}_l - \hat{r}_w)}_{\text{how wrong the model is}}\Big[\nabla_\theta \log \pi_\theta(y_w|x) - \nabla_\theta \log \pi_\theta(y_l|x)\Big]\right] \]</p>
+        <p>where \(\hat{r}_y = \beta \log \frac{\pi_\theta(y|x)}{\pi_{\text{ref}}(y|x)}\). The weighting \(\sigma(\hat{r}_l - \hat{r}_w)\) is large when the model currently ranks the loser above the winner — a built-in hard-example mining.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 6: GRPO ===================== -->
+  <section class="concept-step" id="step-6">
+    <p class="step-num">Step 6</p>
+    <h2>GRPO and DeepSeek R1: The Reasoning Revolution (Jan 2025)</h2>
+    <div class="prose">
+      <p>
+        January 2025 was a watershed. DeepSeek released R1 — an open-weight reasoning model that matched
+        OpenAI's o1 on math, code, and STEM benchmarks — at a fraction of the cost. The secret was
+        <mark>Group Relative Policy Optimization (GRPO)</mark>, and a radical training philosophy: skip SFT entirely,
+        apply RL directly to the base model.
+      </p>
+      <p>
+        GRPO's key innovation is eliminating the critic (value) model that PPO requires. Recall from Step 4
+        that PPO needs a separate neural network — often as large as the policy itself — to estimate the
+        "value" of each state. This doubles your memory and compute. GRPO replaces the critic with a
+        beautifully simple idea:
+      </p>
+      <p>
+        For each prompt, sample a <em>group</em> of \(G\) responses. Score them all with the reward function.
+        Compute the advantage of each response as its reward relative to the group mean:
+      </p>
+      <p>\[ A_i = \frac{r_i - \text{mean}(\{r_j\})}{\text{std}(\{r_j\})} \]</p>
+      <p>
+        No critic model. No value function estimation. The group itself serves as the baseline — a
+        Monte Carlo estimate of the expected reward, which is exactly the variance-reducing baseline we
+        discussed in REINFORCE. This cut training costs dramatically and, combined with rule-based verifiable
+        rewards, enabled what DeepSeek called <strong>Reinforcement Learning with Verifiable Rewards (RLVR)</strong>.
+      </p>
+      <p>
+        The most stunning result: DeepSeek-R1-Zero, trained with <em>pure RL from the base model</em> (no SFT),
+        spontaneously developed chain-of-thought reasoning, self-verification, and reflection — behaviors
+        that were never explicitly taught. The RL environment (Step 2) incentivized them because they lead to
+        correct answers, and the reward model (Step 3) — in this case a simple correctness checker — reinforced them.
+      </p>
+    </div>
+    <div class="widget" id="w6">
+      <div class="widget-controls">
+        <label>Group size G = <span class="val" id="w6-gV">8</span>
+          <input type="range" id="w6-g" min="2" max="32" step="1" value="8">
+        </label>
+        <label>Reward signal noise = <span class="val" id="w6-noiseV">0.20</span>
+          <input type="range" id="w6-noise" min="0" max="0.8" step="0.02" value="0.2">
+        </label>
+      </div>
+      <div style="margin-bottom: 12px;">
+        <button id="w6-sample" style="margin-right: 8px;">Sample Group</button>
+        <button id="w6-reset" class="secondary">Reset</button>
+      </div>
+      <canvas id="w6-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w6-readout"></div>
+      <p class="caption">Sample groups of responses. Green bars = positive advantage (reinforced),
+        red bars = negative advantage (suppressed). Larger groups give more stable baselines.</p>
+    </div>
+
+    <div class="prose" style="margin-top: 36px;">
+      <p>
+        To build deeper intuition, let's visualize GRPO in a 2D response quality space. Imagine two axes
+        measuring different quality dimensions of a response — say, reasoning depth and factual correctness.
+        Each sampled response is a point in this space, and its reward is a function of where it lands.
+      </p>
+      <p>
+        <strong>Plot 1</strong> shows the raw sampling step: the policy generates \(G\) responses,
+        each landing somewhere in quality space. The reward function assigns a scalar score to each.
+        <strong>Plot 2</strong> shows the normalization step: we compute the group mean \(\bar{r}\) and
+        standard deviation \(\sigma\), then draw advantage vectors. Each vector's direction shows
+        which way that response "pulls" the policy gradient, and its length encodes the normalized
+        advantage magnitude \(A_i = (r_i - \bar{r})/\sigma\).
+      </p>
+    </div>
+
+    <div class="widget" id="w6b">
+      <div style="margin-bottom: 12px;">
+        <button id="w6b-resample" style="margin-right: 8px;">Resample Group</button>
+        <button id="w6b-reset2d" class="secondary">Reset</button>
+        <span style="margin-left: 16px; font-size: 0.82rem; color: var(--ink-soft);">
+          Group size controlled by slider above
+        </span>
+      </div>
+      <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 280px;">
+          <div style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent); margin-bottom: 8px; letter-spacing: 0.05em;">
+            PLOT 1 — SAMPLING: Raw rewards in quality space
+          </div>
+          <canvas id="w6b-canvas1" class="widget-stage" style="aspect-ratio: 1; height: auto;"></canvas>
+        </div>
+        <div style="flex: 1; min-width: 280px;">
+          <div style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent-2); margin-bottom: 8px; letter-spacing: 0.05em;">
+            PLOT 2 — NORMALIZATION: Advantage vectors from group mean
+          </div>
+          <canvas id="w6b-canvas2" class="widget-stage" style="aspect-ratio: 1; height: auto;"></canvas>
+        </div>
+      </div>
+      <div class="readout" id="w6b-readout"></div>
+      <p class="caption">Each dot is one sampled response. Left: raw rewards (brighter = higher).
+        Right: advantage vectors from the group mean — green vectors are reinforced, red are suppressed.
+        The normalization ensures the gradient is zero-centered regardless of the absolute reward scale.</p>
+    </div>
+    <details class="formal">
+      <summary>GRPO vs PPO — memory and compute comparison</summary>
+      <div class="formal-body prose">
+        <p>
+          PPO's advantages are computed via GAE from a learned value function: 4 models in memory
+          (policy, reference, reward model, critic). GRPO drops the critic entirely — 3 models max,
+          and with RLVR (rule-based rewards) it's just 2: policy + reference.
+        </p>
+        <p>
+          The policy gradient under GRPO:
+          \[ \nabla_\theta J \approx \frac{1}{G}\sum_{i=1}^G A_i \nabla_\theta \log \pi_\theta(y_i | x) \]
+          with PPO-style clipping on probability ratios. DeepSeek used \(\epsilon = 10\) (vs. PPO's typical 0.2),
+          KL coefficient 0.001, \(G = 16\) responses per prompt, max length 32,768 tokens.
+        </p>
+        <p>
+          <strong>Dr. GRPO (2025)</strong> fixed a length bias in GRPO where longer incorrect responses
+          received disproportionate gradient signal. The fix is simple — normalize per-token rather than
+          per-sequence — and achieves state-of-the-art results in just 27 hours on 8×A100 GPUs.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 7: RLVR ===================== -->
+  <section class="concept-step" id="step-7">
+    <p class="step-num">Step 7</p>
+    <h2>RLVR: From Human Judgment to Verifiable Ground Truth</h2>
+    <div class="prose">
+      <p>
+        The most consequential shift in RL for LLMs is the move from <em>human preference labels</em> to
+        <mark>verifiable rewards</mark>. Traditional RLHF asks humans "which response do you prefer?" This is
+        expensive, noisy, subjective, and hard to scale. RLVR asks: "is the answer correct?"
+      </p>
+      <p>
+        For math, you check the final answer against ground truth. For code, you run unit tests. For logic
+        puzzles, you verify the solution. These are <strong>rule-based reward functions</strong> — cheap,
+        deterministic, infinitely scalable. DeepSeek R1 used only two reward signals: an accuracy reward
+        (is the final answer correct?) and a format reward (did the model use the right \(\langle\text{think}\rangle\)
+        /\(\langle\text{answer}\rangle\) structure?).
+      </p>
+      <p>
+        This is a fundamentally different kind of reward model design (Step 3). Instead of training a neural
+        network to predict human preferences, you write a <em>program</em> — a verifier — that checks
+        correctness deterministically. The environment (Step 2) consists of problems with known answers.
+        The reward is binary: 1 if correct, 0 if not.
+      </p>
+      <p>
+        This decouples scaling from human labor. You can do millions of RL rollouts without paying a single
+        annotator. The limiting factor becomes compute, not human bandwidth.
+      </p>
+      <p>
+        A fascinating open question from NeurIPS 2025 (Best Paper Runner-up): does RLVR actually teach the
+        model <em>new</em> reasoning, or does it just surface reasoning abilities already latent from pretraining?
+        The evidence suggests it's largely the latter — RLVR acts as a "self-distillation" that concentrates
+        probability mass on correct reasoning paths. But even that is enormously valuable.
+      </p>
+    </div>
+    <div class="widget" id="w7">
+      <div class="widget-controls">
+        <label>Verifier accuracy = <span class="val" id="w7-accV">0.95</span>
+          <input type="range" id="w7-acc" min="0.5" max="1.0" step="0.01" value="0.95">
+        </label>
+        <label>Training steps = <span class="val" id="w7-stepsV">50</span>
+          <input type="range" id="w7-steps" min="10" max="200" step="5" value="50">
+        </label>
+      </div>
+      <canvas id="w7-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w7-readout"></div>
+      <p class="caption">Compare RLHF (noisy human rewards) vs RLVR (precise verifiable rewards).
+        As verifier accuracy approaches 1.0, RLVR converges faster with less variance.</p>
+    </div>
+    <details class="formal">
+      <summary>The reward hacking problem — even with verifiers</summary>
+      <div class="formal-body prose">
+        <p>
+          Even verifiable rewards aren't immune to gaming. A model might output "The answer is 42" without
+          reasoning (correct but useless), or find formatting tricks that game the verifier. The DeepSeek R1
+          paper found that process reward models (PRMs), which score intermediate reasoning steps, didn't help
+          much compared to outcome-based rewards at scale. However, more recent work (DeepSeekMath-V2, 2025)
+          suggests "explanation scoring" may become more important as models strengthen.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 7B: RLAIF ===================== -->
+  <section class="concept-step" id="step-7b">
+    <p class="step-num">Interlude</p>
+    <h2>RLAIF: When the AI Grades Itself</h2>
+    <div class="prose">
+      <p>
+        Between RLHF and RLVR sits another important paradigm: <mark>Reinforcement Learning from AI Feedback
+        (RLAIF)</mark>, pioneered by Anthropic's Constitutional AI (2022). The idea: instead of paying humans
+        to rank model outputs, use <em>another LLM</em> to provide the preference signal, guided by a
+        written set of principles (the "constitution").
+      </p>
+      <p>
+        The training loop becomes self-referential: the model generates a response, a stronger (or same) model
+        critiques it according to the constitution ("Is this response helpful? Is it harmful?"), and the critique
+        derives preference labels. These labels train a reward model (Step 3), which feeds into PPO (Step 4) —
+        just like RLHF, but with no human in the loop for the preference labeling step.
+      </p>
+      <p>
+        RLAIF scales alignment <em>without</em> human bottlenecks, while handling the subjective, open-ended
+        tasks (tone, safety, nuance) where RLVR's rule-based verifiers don't apply. Google's 2023 study
+        showed RLAIF can match RLHF quality on summarization and dialogue tasks.
+      </p>
+      <p>
+        <strong>A note on "RLAIVR":</strong> this isn't an established acronym. You may be thinking of a combination
+        of <strong>RLAIF</strong> (AI feedback for subjective tasks) and <strong>RLVR</strong> (verifiable rewards
+        for objective tasks). In practice, frontier labs use both simultaneously — RLVR for math/code/reasoning
+        where ground truth exists, and RLAIF for helpfulness, safety, and style where it doesn't. The two are
+        complementary, and modern pipelines blend them across different RL stages.
+      </p>
+    </div>
+    <div class="widget" id="w7b">
+      <div class="btn-group" id="w7b-mode">
+        <button class="active" data-mode="spectrum">Reward Signal Spectrum</button>
+        <button data-mode="pipeline">Pipeline View</button>
+      </div>
+      <canvas id="w7b-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w7b-readout">Click to compare how different reward sources fit different tasks.</div>
+    </div>
+  </section>
+
+  <!-- ===================== STEP 8: SCALING ===================== -->
+  <section class="concept-step" id="step-8">
+    <p class="step-num">Step 8</p>
+    <h2>Scaling RL Training: The Engineering Challenge</h2>
+    <div class="prose">
+      <p>
+        RL training at scale is fundamentally harder to engineer than pretraining. In pretraining, you have
+        one model doing one thing (forward + backward pass on data). <mark>RL training requires orchestrating
+        multiple interleaved workloads</mark>: generating rollouts (inference), computing rewards, and
+        updating the policy (training) — plus a reference model for KL computation, and optionally a
+        reward model or critic.
+      </p>
+      <p>
+        The key bottleneck is <strong>rollout generation</strong>. Recall from Step 2 that each RL "episode"
+        is a complete response generation — autoregressive, token by token. For each training step,
+        the policy must generate many complete responses (e.g., DeepSeek sampled 16 per prompt, with up to 32K tokens each).
+        This is inherently sequential and memory-bound.
+      </p>
+      <p>
+        Modern frameworks attack this with several strategies:
+      </p>
+      <p>
+        <strong>Colocated model offloading</strong> — the policy model serves double duty for both training
+        and generation. During rollout, training weights are offloaded to CPU; during training, inference
+        state is freed. Meta's LlamaRL (2025) achieved a 10.7× speedup on 405B-parameter models using this approach.
+      </p>
+      <p>
+        <strong>Asynchronous off-policy training</strong> — don't wait for rollouts to finish before starting
+        the next gradient update. Use slightly stale rollout data (off-policy) and compensate with importance
+        sampling corrections. This keeps GPUs busy instead of idle.
+      </p>
+      <p>
+        <strong>Disaggregated infrastructure</strong> — separate the GPU clusters for inference and training,
+        connected by high-speed networking. Each can be independently scaled and optimized.
+      </p>
+      <p>
+        <strong>Selective rollout (GRESO, 2025)</strong> — don't generate rollouts for prompts where the
+        model already gets the answer right consistently. Focus compute on the "learning frontier" where the
+        model is uncertain. This achieves 2.4× speedup in rollout time.
+      </p>
+    </div>
+    <div class="widget" id="w8">
+      <div class="widget-controls">
+        <label>GPU count = <span class="val" id="w8-gpuV">64</span>
+          <input type="range" id="w8-gpu" min="8" max="512" step="8" value="64">
+        </label>
+        <label>Async overlap % = <span class="val" id="w8-asyncV">50</span>
+          <input type="range" id="w8-async" min="0" max="90" step="5" value="50">
+        </label>
+      </div>
+      <canvas id="w8-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w8-readout"></div>
+      <p class="caption">Sync training (0% overlap) wastes GPUs during rollout. Async training
+        overlaps inference and gradient computation for near-linear scaling.</p>
+    </div>
+  </section>
+
+  <!-- ===================== STEP 9: TIMELINE ===================== -->
+  <section class="concept-step" id="step-9">
+    <p class="step-num">Step 9</p>
+    <h2>The Timeline: Five Years of Breakthroughs</h2>
+    <div class="prose">
+      <p>
+        The RL-for-LLMs landscape has evolved at breathtaking speed. Here are the step-function moments
+        that reshaped the field. Click each to see its impact.
+      </p>
+    </div>
+    <div class="widget" id="w9">
+      <div id="w9-timeline">
+        <div class="timeline-item active" data-idx="0">
+          <div class="tl-year">2020</div>
+          <div class="tl-title"><span class="pill pill-blue">RLHF</span> Learning to Summarize from Human Feedback</div>
+          <div class="tl-desc">OpenAI applies RLHF to text summarization, proving PPO + human preferences beats supervised learning.</div>
+        </div>
+        <div class="timeline-item" data-idx="1">
+          <div class="tl-year">2022</div>
+          <div class="tl-title"><span class="pill pill-blue">RLHF</span> InstructGPT / ChatGPT</div>
+          <div class="tl-desc">Ouyang et al. scale RLHF to instruction following. ChatGPT launches in Nov 2022, putting RLHF on the global stage.</div>
+        </div>
+        <div class="timeline-item" data-idx="2">
+          <div class="tl-year">2022</div>
+          <div class="tl-title"><span class="pill pill-green">RLAIF</span> Constitutional AI (Anthropic)</div>
+          <div class="tl-desc">RLAIF: replace human labelers with AI-generated feedback guided by a constitution. Scales alignment without human bottleneck.</div>
+        </div>
+        <div class="timeline-item" data-idx="3">
+          <div class="tl-year">May 2023</div>
+          <div class="tl-title"><span class="pill pill-pink">DPO</span> Direct Preference Optimization (Stanford)</div>
+          <div class="tl-desc">Eliminates the reward model and PPO entirely. Alignment via a simple classification loss. Massive open-source adoption.</div>
+        </div>
+        <div class="timeline-item" data-idx="4">
+          <div class="tl-year">2024</div>
+          <div class="tl-title"><span class="pill pill-pink">GRPO</span> DeepSeekMath introduces GRPO</div>
+          <div class="tl-desc">Group Relative Policy Optimization drops the critic model, using group-normalized rewards. Dramatically reduces memory vs PPO.</div>
+        </div>
+        <div class="timeline-item" data-idx="5">
+          <div class="tl-year">Sep 2024</div>
+          <div class="tl-title"><span class="pill pill-orange">REASONING</span> OpenAI o1</div>
+          <div class="tl-desc">First "reasoning model" — uses RL to learn extended chain-of-thought and test-time compute scaling. Sets new SOTA on math/code/science.</div>
+        </div>
+        <div class="timeline-item" data-idx="6">
+          <div class="tl-year">Jan 2025</div>
+          <div class="tl-title"><span class="pill pill-orange">RLVR</span> DeepSeek R1</div>
+          <div class="tl-desc">Open-weight reasoning model matching o1. Pure RL from base model (R1-Zero) shows emergent reasoning. GRPO + RLVR at massive scale.</div>
+        </div>
+        <div class="timeline-item" data-idx="7">
+          <div class="tl-year">2025</div>
+          <div class="tl-title"><span class="pill pill-green">VARIANTS</span> Dr. GRPO, REINFORCE++, DAPO</div>
+          <div class="tl-desc">Community refines GRPO: Dr. GRPO fixes length bias, REINFORCE++ adds robustness, DAPO improves advantage estimation.</div>
+        </div>
+        <div class="timeline-item" data-idx="8">
+          <div class="tl-year">Apr 2025</div>
+          <div class="tl-title"><span class="pill pill-orange">REASONING</span> OpenAI o3/o4-mini</div>
+          <div class="tl-desc">Next-gen reasoning models with tool use (code execution, web search). RL for agentic capabilities, not just math.</div>
+        </div>
+        <div class="timeline-item" data-idx="9">
+          <div class="tl-year">May 2025</div>
+          <div class="tl-title"><span class="pill pill-blue">INFRA</span> LlamaRL (Meta)</div>
+          <div class="tl-desc">Distributed async RL framework achieving 10.7× speedup for 405B models. Single-controller architecture on native PyTorch.</div>
+        </div>
+        <div class="timeline-item" data-idx="10">
+          <div class="tl-year">2025</div>
+          <div class="tl-title"><span class="pill pill-pink">DEBATE</span> NeurIPS Best Paper Runner-up</div>
+          <div class="tl-desc">"Does RLVR Really Incentivize Reasoning Beyond the Base Model?" — RL mostly surfaces latent capabilities rather than creating new ones.</div>
+        </div>
+      </div>
+      <div style="margin-top: 16px;">
+        <canvas id="w9-canvas" class="widget-stage"></canvas>
+      </div>
+      <div class="readout" id="w9-readout">Click a milestone to see its impact on the field's capability frontier.</div>
+    </div>
+  </section>
+
+  <!-- ===================== RECAP ===================== -->
+  <section class="recap prose">
+    <h2>Putting It Together</h2>
+    <p>
+      The story of RL for LLMs is a story of progressive simplification and scaling — in both algorithms and
+      infrastructure. <strong>Environment construction</strong> (Step 2) maps language generation to an MDP with
+      enormous action spaces and sparse rewards. <strong>Reward models</strong> (Step 3) provide the compass, but
+      their proxy nature means Goodhart's Law is always lurking.
+    </p>
+    <p>
+      <strong>RLHF with PPO</strong> (Step 4) proved the concept but was expensive — four models in memory, human
+      annotators in the loop. <strong>DPO</strong> (Step 5) simplified the algorithm to a single loss function
+      but sacrificed exploration. <strong>GRPO</strong> (Step 6) kept online RL's exploration while cutting the
+      critic model, halving memory requirements. <strong>RLVR</strong> (Step 7) replaced human rewards with
+      verifiable ones — decoupling scaling from human labor. <strong>RLAIF</strong> handles the subjective tasks
+      where verifiers don't apply.
+    </p>
+    <p>
+      On the engineering side (Step 8), async training, disaggregated inference, and selective rollout are making
+      RL at 400B+ parameter scale practical. The direction is clear: RL is no longer a niche post-training step.
+      It is becoming <strong>the primary driver of capability gains</strong> in frontier LLMs.
+    </p>
+  </section>
+
+</div>
+
+<script>
+/* =========================================================================
+   SHARED CANVAS HELPERS
+   ========================================================================= */
+function setupCanvas(canvas, cssW, cssH) {
+  const dpr = window.devicePixelRatio || 1;
+  canvas.style.width = cssW + 'px';
+  canvas.style.maxWidth = '100%';
+  canvas.style.height = cssH + 'px';
+  canvas.width = cssW * dpr;
+  canvas.height = cssH * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  canvas._cssW = cssW; canvas._cssH = cssH;
+  return ctx;
+}
+function getCSS(name) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+/* =========================================================================
+   STEP 1 — Three-stage pipeline visualization
+   ========================================================================= */
+(function() {
+  const canvas = document.getElementById('w1-canvas');
+  const ctx = setupCanvas(canvas, 820, 320);
+  const W = 820, H = 320;
+  let stage = 0;
+  const stageData = [
+    { label: 'After Pretraining', desc: 'The model has broad knowledge but is undirected. It can continue text but doesn\'t know it should be helpful.',
+      dist: function(x) { return 0.6 * Math.exp(-0.5*((x-0.35)/0.22)**2) + 0.4 * Math.exp(-0.5*((x-0.65)/0.18)**2); },
+      color: '#6c8cff', helpfulness: 0.3, reasoning: 0.4, safety: 0.2 },
+    { label: 'After SFT', desc: 'Instruction tuning shifts the distribution toward helpful behavior, but it\'s bounded by demonstration quality.',
+      dist: function(x) { return 0.8 * Math.exp(-0.5*((x-0.6)/0.15)**2) + 0.2 * Math.exp(-0.5*((x-0.35)/0.12)**2); },
+      color: '#5ce6b8', helpfulness: 0.7, reasoning: 0.55, safety: 0.6 },
+    { label: 'After RL', desc: 'RL pushes the policy beyond what demonstrations can achieve — exploring novel behaviors that maximize reward.',
+      dist: function(x) { return Math.exp(-0.5*((x-0.78)/0.1)**2); },
+      color: '#ff6c8c', helpfulness: 0.92, reasoning: 0.88, safety: 0.85 }
+  ];
+  function draw() {
+    const s = stageData[stage]; ctx.clearRect(0, 0, W, H);
+    ctx.strokeStyle = getCSS('--axis'); ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(60, H-50); ctx.lineTo(W-30, H-50); ctx.moveTo(60, H-50); ctx.lineTo(60, 20); ctx.stroke();
+    ctx.fillStyle = getCSS('--ink-soft'); ctx.font = '13px Georgia'; ctx.textAlign = 'center';
+    ctx.fillText('Response Quality →', W/2, H-10);
+    for (let k = 0; k < stage; k++) {
+      const sd = stageData[k]; ctx.strokeStyle = sd.color + '40'; ctx.lineWidth = 1.5; ctx.setLineDash([4,4]);
+      ctx.beginPath(); for (let px=0; px<=W-90; px++) { const x=px/(W-90), y=sd.dist(x), cy=H-50-y*(H-80); px===0?ctx.moveTo(60+px,cy):ctx.lineTo(60+px,cy); } ctx.stroke(); ctx.setLineDash([]);
+    }
+    ctx.strokeStyle = s.color; ctx.lineWidth = 3; ctx.beginPath();
+    for (let px=0; px<=W-90; px++) { const x=px/(W-90), y=s.dist(x), cy=H-50-y*(H-80); px===0?ctx.moveTo(60+px,cy):ctx.lineTo(60+px,cy); } ctx.stroke();
+    ctx.fillStyle = s.color + '18'; ctx.beginPath(); ctx.moveTo(60,H-50);
+    for (let px=0; px<=W-90; px++) { const x=px/(W-90), y=s.dist(x); ctx.lineTo(60+px,H-50-y*(H-80)); } ctx.lineTo(W-30,H-50); ctx.closePath(); ctx.fill();
+    const bx=W-190,bw=120,bh=12,gap=28;
+    const metrics=[{label:'Helpfulness',val:s.helpfulness,color:'#6c8cff'},{label:'Reasoning',val:s.reasoning,color:'#ffb86c'},{label:'Safety',val:s.safety,color:'#5ce6b8'}];
+    ctx.fillStyle='#e0e4f0'; ctx.font='bold 14px Georgia'; ctx.textAlign='left'; ctx.fillText(s.label,bx-10,38);
+    metrics.forEach(function(m,i){const by=55+i*gap; ctx.fillStyle=getCSS('--ink-soft'); ctx.font='12px "SF Mono",Consolas,monospace'; ctx.fillText(m.label,bx-10,by+9); ctx.fillStyle=getCSS('--surface-2'); ctx.fillRect(bx-10,by+14,bw,bh); ctx.fillStyle=m.color; ctx.fillRect(bx-10,by+14,bw*m.val,bh);});
+    document.getElementById('w1-readout').textContent = s.desc;
+  }
+  document.querySelectorAll('#w1-stages button').forEach(function(btn){ btn.addEventListener('click', function(){ stage=parseInt(this.dataset.stage); document.querySelectorAll('#w1-stages button').forEach(function(b){b.classList.remove('active');}); this.classList.add('active'); draw(); }); });
+  draw();
+})();
+
+/* =========================================================================
+   STEP 2 — MDP mapping / Episode walkthrough
+   ========================================================================= */
+(function() {
+  const canvas = document.getElementById('w2-canvas');
+  const ctx = setupCanvas(canvas, 820, 320);
+  const W = 820, H = 320;
+  let mode = 'mdp';
+
+  function drawMDP() {
+    ctx.clearRect(0, 0, W, H);
+    const concepts = [
+      {label:'State s_t', desc:'Prompt + tokens so far', x:60, y:40, w:150, h:55, color:'#6c8cff'},
+      {label:'Action a_t', desc:'Next token from vocab (32K–128K)', x:260, y:40, w:180, h:55, color:'#ff6c8c'},
+      {label:'Policy π_θ', desc:'The LLM itself (softmax)', x:490, y:40, w:150, h:55, color:'#5ce6b8'},
+      {label:'Transition', desc:'Deterministic: s_{t+1} = [s_t, a_t]', x:60, y:130, w:180, h:55, color:'#ffb86c'},
+      {label:'Reward r', desc:'Sparse — end of episode only', x:290, y:130, w:170, h:55, color:'#ff6c8c'},
+      {label:'Episode', desc:'One complete response generation', x:510, y:130, w:160, h:55, color:'#6c8cff'},
+    ];
+    concepts.forEach(function(c){
+      ctx.fillStyle = c.color + '15'; ctx.strokeStyle = c.color; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.roundRect(c.x,c.y,c.w,c.h,8); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#e0e4f0'; ctx.font = 'bold 13px "SF Mono",Consolas,monospace'; ctx.textAlign = 'center';
+      ctx.fillText(c.label, c.x+c.w/2, c.y+22);
+      ctx.fillStyle = getCSS('--ink-soft'); ctx.font = '11px Georgia';
+      ctx.fillText(c.desc, c.x+c.w/2, c.y+42);
+    });
+    // Key difference callout
+    ctx.fillStyle = '#ffb86c20'; ctx.strokeStyle = '#ffb86c'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.roundRect(60, 220, W-120, 80, 10); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#ffb86c'; ctx.font = 'bold 12px "SF Mono",Consolas,monospace'; ctx.textAlign = 'left';
+    ctx.fillText('Key differences from classic RL:', 80, 245);
+    ctx.fillStyle = getCSS('--ink'); ctx.font = '12px Georgia';
+    ctx.fillText('• Action space: 32K–128K tokens (vs 18 in Atari)    • Sparse reward: only at episode end (vs every frame)', 80, 268);
+    ctx.fillText('• Deterministic transitions    • Episodes: 100–32K steps    • Credit assignment: which token caused the reward?', 80, 288);
+  }
+
+  function drawEpisode() {
+    ctx.clearRect(0, 0, W, H);
+    const tokens = ['What','is','2','+','2','?','▸','The','sum','of','2','and','2','is','4','.','⏎'];
+    const types =  ['p','p','p','p','p','p','s','g','g','g','g','g','g','g','g','g','e'];
+    const ox = 30, oy = 60, tw = 44, th = 32, gap = 3;
+    ctx.fillStyle = '#e0e4f0'; ctx.font = 'bold 14px Georgia'; ctx.textAlign = 'left';
+    ctx.fillText('Episode: generating a response to "What is 2+2?"', ox, 35);
+    // Legend
+    ctx.font = '11px "SF Mono",Consolas,monospace';
+    ctx.fillStyle = '#6c8cff'; ctx.fillText('■ Prompt tokens (state s₀)', ox, H-15);
+    ctx.fillStyle = '#5ce6b8'; ctx.fillText('■ Generated tokens (actions)', ox+200, H-15);
+    ctx.fillStyle = '#ff6c8c'; ctx.fillText('★ Reward: r=1 (correct!)', ox+430, H-15);
+
+    tokens.forEach(function(t, i) {
+      const x = ox + i * (tw + gap);
+      const y = oy;
+      const color = types[i]==='p' ? '#6c8cff' : types[i]==='e' ? '#ff6c8c' : '#5ce6b8';
+      ctx.fillStyle = color + '20'; ctx.strokeStyle = color; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.roundRect(x, y, tw, th, 5); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#e0e4f0'; ctx.font = '11px "SF Mono",Consolas,monospace'; ctx.textAlign = 'center';
+      ctx.fillText(t, x+tw/2, y+21);
+      // State arrow
+      if (i > 0 && i < tokens.length) {
+        ctx.strokeStyle = getCSS('--axis'); ctx.lineWidth = 0.5;
+        ctx.beginPath(); ctx.moveTo(x-gap/2, y+th+5); ctx.lineTo(x-gap/2, y+th+15); ctx.stroke();
+      }
+    });
+    // State labels
+    ctx.fillStyle = getCSS('--ink-soft'); ctx.font = '10px "SF Mono",Consolas,monospace'; ctx.textAlign = 'center';
+    for (let i = 0; i <= 16; i += 4) {
+      ctx.fillText('s_'+i, ox + i*(tw+gap) + tw/2, oy+th+28);
+    }
+    // Reward at end
+    const lastX = ox + 16*(tw+gap);
+    ctx.fillStyle = '#ff6c8c'; ctx.font = 'bold 16px Georgia'; ctx.textAlign = 'center';
+    ctx.fillText('r = 1', lastX + tw/2, oy - 10);
+    // Credit assignment arrow
+    ctx.strokeStyle = '#ff6c8c40'; ctx.lineWidth = 1; ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.moveTo(lastX+tw/2, oy-5); ctx.lineTo(ox+6.5*(tw+gap)+tw/2, oy-5); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = getCSS('--ink-soft'); ctx.font = '11px Georgia'; ctx.textAlign = 'center';
+    ctx.fillText('Credit assignment problem: this single reward must be distributed across all generated tokens', W/2, oy+th+55);
+    // Process vs outcome reward
+    ctx.fillStyle = '#ffb86c20'; ctx.strokeStyle = '#ffb86c'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.roundRect(60, 185, W-120, 80, 10); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#ffb86c'; ctx.font = 'bold 12px "SF Mono",Consolas,monospace'; ctx.textAlign = 'left';
+    ctx.fillText('Two reward strategies:', 80, 208);
+    ctx.fillStyle = getCSS('--ink'); ctx.font = '12px Georgia';
+    ctx.fillText('Outcome RM (ORM): score the final answer only → r=1 if "4", r=0 otherwise', 80, 230);
+    ctx.fillText('Process RM (PRM): score each reasoning step → r₁=0.9, r₂=0.8, ... finer credit assignment', 80, 250);
+  }
+
+  function draw() { if (mode==='mdp') drawMDP(); else drawEpisode(); }
+  document.querySelectorAll('#w2-mode button').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      mode = this.dataset.mode;
+      document.querySelectorAll('#w2-mode button').forEach(function(b){b.classList.remove('active');});
+      this.classList.add('active'); draw();
+      document.getElementById('w2-readout').textContent = mode==='mdp' ?
+        'The LLM is the policy; text generation is the episode; the reward comes at the end.' :
+        'Each token is an action. The state grows with each token. Reward arrives only at the end.';
+    });
+  });
+  draw();
+})();
+
+/* =========================================================================
+   STEP 3 — Reward model accuracy vs training data
+   ========================================================================= */
+(function() {
+  const canvas = document.getElementById('w3-canvas');
+  const ctx = setupCanvas(canvas, 820, 280);
+  const W = 820, H = 280;
+  const pairsSlider = document.getElementById('w3-pairs');
+  const agreeSlider = document.getElementById('w3-agree');
+
+  function draw() {
+    const pairs = parseInt(pairsSlider.value);
+    const agree = parseFloat(agreeSlider.value);
+    ctx.clearRect(0, 0, W, H);
+    const ox=70, oy=H-45, aw=W-110, ah=H-80;
+    ctx.strokeStyle = getCSS('--axis'); ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(ox,oy); ctx.lineTo(ox+aw,oy); ctx.moveTo(ox,oy); ctx.lineTo(ox,oy-ah); ctx.stroke();
+    ctx.fillStyle = getCSS('--ink-soft'); ctx.font = '12px Georgia'; ctx.textAlign = 'center';
+    ctx.fillText('RL Optimization Pressure (KL from reference) →', W/2, H-8);
+    ctx.save(); ctx.translate(18, H/2-10); ctx.rotate(-Math.PI/2); ctx.fillText('Reward', 0, 0); ctx.restore();
+    // Overoptimization curves
+    const alpha = 0.3 + (pairs/50000)*0.4 + agree*0.3;
+    const beta_ovr = 0.05 + (1-agree)*0.15 + (1-pairs/50000)*0.05;
+    // True reward curve: alpha*sqrt(d) - beta*d
+    ctx.strokeStyle = '#5ce6b8'; ctx.lineWidth = 2.5; ctx.beginPath();
+    for (let px=0; px<=aw; px++) {
+      const d = (px/aw)*4; const r = alpha*Math.sqrt(d) - beta_ovr*d;
+      const py = oy - (r/1.2)*ah;
+      px===0 ? ctx.moveTo(ox+px, Math.max(oy-ah,Math.min(oy,py))) : ctx.lineTo(ox+px, Math.max(oy-ah,Math.min(oy,py)));
+    } ctx.stroke();
+    // RM score (keeps going up)
+    ctx.strokeStyle = '#ffb86c'; ctx.lineWidth = 2; ctx.setLineDash([4,3]); ctx.beginPath();
+    for (let px=0; px<=aw; px++) {
+      const d = (px/aw)*4; const r = alpha*Math.sqrt(d) + beta_ovr*0.3*d;
+      const py = oy - (r/1.2)*ah;
+      px===0 ? ctx.moveTo(ox+px, Math.max(oy-ah,Math.min(oy,py))) : ctx.lineTo(ox+px, Math.max(oy-ah,Math.min(oy,py)));
+    } ctx.stroke(); ctx.setLineDash([]);
+    // Optimal point
+    const dStar = (alpha/(2*beta_ovr))**2;
+    const optX = ox + (dStar/4)*aw;
+    const optR = alpha*Math.sqrt(dStar) - beta_ovr*dStar;
+    const optY = oy - (optR/1.2)*ah;
+    if (optX > ox && optX < ox+aw) {
+      ctx.fillStyle='#5ce6b8'; ctx.beginPath(); ctx.arc(optX, optY, 6, 0, Math.PI*2); ctx.fill();
+      ctx.strokeStyle='#5ce6b840'; ctx.lineWidth=1; ctx.setLineDash([3,3]);
+      ctx.beginPath(); ctx.moveTo(optX,optY); ctx.lineTo(optX,oy); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle='#5ce6b8'; ctx.font='11px "SF Mono",Consolas,monospace'; ctx.textAlign='center';
+      ctx.fillText('optimal KL', optX, oy+14);
+    }
+    // Legend
+    ctx.font='12px "SF Mono",Consolas,monospace'; ctx.textAlign='left';
+    ctx.fillStyle='#5ce6b8'; ctx.fillText('── True quality', ox+10, 25);
+    ctx.fillStyle='#ffb86c'; ctx.fillText('╌╌ RM score (proxy)', ox+10, 42);
+    ctx.fillStyle='#ff6c8c'; ctx.fillText('← Goodhart zone (reward hacking)', ox+aw-250, 25);
+
+    document.getElementById('w3-pairsV').textContent = pairs;
+    document.getElementById('w3-agreeV').textContent = agree.toFixed(2);
+    document.getElementById('w3-readout').textContent =
+      'α=' + alpha.toFixed(2) + ', β=' + beta_ovr.toFixed(3) +
+      ' — Optimal KL ≈ ' + dStar.toFixed(1) + '. Beyond this point, true quality drops even as RM score rises.';
+  }
+  pairsSlider.addEventListener('input', draw);
+  agreeSlider.addEventListener('input', draw);
+  draw();
+})();
+
+/* =========================================================================
+   STEP 4 — RLHF: KL penalty vs reward hacking
+   ========================================================================= */
+(function() {
+  const canvas = document.getElementById('w4-canvas');
+  const ctx = setupCanvas(canvas, 820, 300);
+  const W = 820, H = 300;
+  const beta = document.getElementById('w4-beta');
+  const rm = document.getElementById('w4-rm');
+  function draw() {
+    const b = parseFloat(beta.value), q = parseFloat(rm.value);
+    ctx.clearRect(0, 0, W, H);
+    ctx.strokeStyle = getCSS('--axis'); ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(60,H-40); ctx.lineTo(W-20,H-40); ctx.moveTo(60,H-40); ctx.lineTo(60,15); ctx.stroke();
+    ctx.fillStyle = getCSS('--ink-soft'); ctx.font = '12px Georgia'; ctx.textAlign = 'center';
+    ctx.fillText('Training Steps →', W/2, H-8);
+    const steps = 200;
+    const trueQuality = [], rmScore = [];
+    for (let i=0; i<=steps; i++) {
+      const t = i/steps;
+      const learnRate = (1-b*2)*3;
+      const rawGain = (1-Math.exp(-learnRate*t*4))*(1-b);
+      const hacking = q<0.9 ? (1-q)*1.5*t*t : 0;
+      const klDrag = b*0.5;
+      trueQuality.push(Math.max(0,Math.min(1,0.3+rawGain*0.6-hacking*0.5-klDrag*0.3)));
+      rmScore.push(Math.max(0,Math.min(1,0.3+rawGain*0.7+hacking*0.4)));
+    }
+    function plotLine(data,color,lw){ctx.strokeStyle=color;ctx.lineWidth=lw;ctx.beginPath();for(let i=0;i<=steps;i++){const px=60+(i/steps)*(W-80),py=H-40-data[i]*(H-65);i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);}ctx.stroke();}
+    plotLine(rmScore,'#ffb86c',2); plotLine(trueQuality,'#6c8cff',2.5);
+    ctx.font='13px "SF Mono",Consolas,monospace';
+    ctx.fillStyle='#6c8cff'; ctx.fillText('● True quality', W-200, 35);
+    ctx.fillStyle='#ffb86c'; ctx.fillText('● RM score', W-200, 55);
+    document.getElementById('w4-betaV').textContent = b.toFixed(2);
+    document.getElementById('w4-rmV').textContent = q.toFixed(2);
+    const hackingGap = rmScore[steps]-trueQuality[steps];
+    document.getElementById('w4-readout').textContent = hackingGap>0.15 ? '⚠ Reward hacking — RM score rises but true quality drops!' : b>0.35 ? 'Very conservative — KL penalty limits improvement.' : 'Good balance — true quality tracks reward model score.';
+  }
+  beta.addEventListener('input',draw); rm.addEventListener('input',draw); draw();
+})();
+
+/* =========================================================================
+   STEP 5 — DPO: implicit reward visualization
+   ========================================================================= */
+(function() {
+  const canvas = document.getElementById('w5-canvas');
+  const ctx = setupCanvas(canvas, 820, 280);
+  const W = 820, H = 280;
+  const betaSlider = document.getElementById('w5-beta');
+  function sigmoid(z){return 1/(1+Math.exp(-z));}
+  function draw() {
+    const beta = parseFloat(betaSlider.value); ctx.clearRect(0,0,W,H);
+    const ox=80, oy=H-45, aw=W-110, ah=H-80;
+    ctx.strokeStyle = getCSS('--axis'); ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(ox,oy); ctx.lineTo(ox+aw,oy); ctx.moveTo(ox,oy); ctx.lineTo(ox,oy-ah); ctx.stroke();
+    ctx.fillStyle = getCSS('--ink-soft'); ctx.font = '12px Georgia'; ctx.textAlign = 'center';
+    ctx.fillText('log π_θ(y_w|x) − log π_θ(y_l|x)  (implicit reward margin)', W/2, H-6);
+    const xMin=-5, xMax=5;
+    ctx.strokeStyle = '#ff6c8c'; ctx.lineWidth = 2.5; ctx.beginPath();
+    for (let px=0; px<=aw; px++) { const x=xMin+(px/aw)*(xMax-xMin); const loss=-Math.log(sigmoid(beta*x)+1e-10); const py=oy-Math.min(loss/4,1)*ah; px===0?ctx.moveTo(ox+px,py):ctx.lineTo(ox+px,py); } ctx.stroke();
+    ctx.fillStyle='#ff6c8c12'; ctx.beginPath(); ctx.moveTo(ox,oy);
+    for (let px=0; px<=aw; px++) { const x=xMin+(px/aw)*(xMax-xMin); const loss=-Math.log(sigmoid(beta*x)+1e-10); ctx.lineTo(ox+px,oy-Math.min(loss/4,1)*ah); } ctx.lineTo(ox+aw,oy); ctx.closePath(); ctx.fill();
+    const zeroX=ox+(0-xMin)/(xMax-xMin)*aw; ctx.strokeStyle=getCSS('--ink-soft')+'40'; ctx.lineWidth=1; ctx.setLineDash([4,4]); ctx.beginPath(); ctx.moveTo(zeroX,oy); ctx.lineTo(zeroX,oy-ah); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle='#5ce6b8'; ctx.font='12px "SF Mono",Consolas,monospace'; ctx.textAlign='center'; ctx.fillText('← model prefers loser', ox+aw*0.25, oy-ah+15);
+    ctx.fillStyle='#ff6c8c'; ctx.fillText('model prefers winner →', ox+aw*0.75, oy-ah+15);
+    document.getElementById('w5-betaV').textContent = beta.toFixed(2);
+    const msg = beta<0.08?'Very aggressive — risk of overfitting to preference data':beta>0.35?'Very conservative — preference signal barely moves the policy':'Balanced — preference signal shapes policy without overwhelming it';
+    document.getElementById('w5-readout').textContent = 'β = '+beta.toFixed(2)+' — '+msg;
+  }
+  betaSlider.addEventListener('input',draw); draw();
+})();
+
+/* =========================================================================
+   STEP 6 — GRPO: group sampling visualization
+   ========================================================================= */
+(function() {
+  const canvas = document.getElementById('w6-canvas');
+  const ctx = setupCanvas(canvas, 820, 300);
+  const W = 820, H = 300;
+  const gSlider = document.getElementById('w6-g');
+  const noiseSlider = document.getElementById('w6-noise');
+  let groups = [], iteration = 0;
+  function sampleGroup() {
+    const G=parseInt(gSlider.value), noise=parseFloat(noiseSlider.value), group=[];
+    for(let i=0;i<G;i++){const q=Math.random(); group.push({quality:q,reward:Math.max(0,Math.min(1,q+(Math.random()-0.5)*noise))});}
+    const mean=group.reduce(function(s,g){return s+g.reward;},0)/G;
+    const std=Math.sqrt(group.reduce(function(s,g){return s+(g.reward-mean)**2;},0)/G)||0.01;
+    group.forEach(function(g){g.advantage=(g.reward-mean)/std;}); groups.push(group); if(groups.length>8)groups.shift(); iteration++; draw();
+  }
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+    if(!groups.length){ctx.fillStyle=getCSS('--ink-soft');ctx.font='16px Georgia';ctx.textAlign='center';ctx.fillText('Click "Sample Group" to generate a group of responses',W/2,H/2);return;}
+    const group=groups[groups.length-1], G=group.length;
+    const barW=Math.min(50,(W-120)/G-8), ox=70, oy=H/2+20;
+    ctx.strokeStyle=getCSS('--axis');ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(ox-10,oy);ctx.lineTo(W-20,oy);ctx.stroke();
+    ctx.fillStyle=getCSS('--ink-soft');ctx.font='11px "SF Mono",Consolas,monospace';ctx.textAlign='right';ctx.fillText('+Advantage',ox-15,35);ctx.fillText('−Advantage',ox-15,H-15);
+    const maxAdv=Math.max(2,Math.max.apply(null,group.map(function(g){return Math.abs(g.advantage);})));
+    const scale=(H/2-40)/maxAdv;
+    group.forEach(function(g,i){
+      const x=ox+i*((W-100)/G)+((W-100)/G-barW)/2, barH=Math.abs(g.advantage)*scale, isPos=g.advantage>=0;
+      ctx.fillStyle=isPos?'#5ce6b820':'#ff6c8c20'; ctx.strokeStyle=isPos?'#5ce6b8':'#ff6c8c'; ctx.lineWidth=2;
+      if(isPos){ctx.fillRect(x,oy-barH,barW,barH);ctx.strokeRect(x,oy-barH,barW,barH);}else{ctx.fillRect(x,oy,barW,barH);ctx.strokeRect(x,oy,barW,barH);}
+      ctx.fillStyle=getCSS('--ink-soft');ctx.font='10px "SF Mono",Consolas,monospace';ctx.textAlign='center';
+      ctx.fillText('r='+g.reward.toFixed(2),x+barW/2,isPos?oy-barH-6:oy+barH+14);
+      ctx.fillText('y'+(i+1),x+barW/2,H-4);
+    });
+    const mean=group.reduce(function(s,g){return s+g.reward;},0)/G;
+    ctx.fillStyle='#ffb86c';ctx.font='12px "SF Mono",Consolas,monospace';ctx.textAlign='left';ctx.fillText('group mean = '+mean.toFixed(3),W-200,30);
+    document.getElementById('w6-gV').textContent=parseInt(gSlider.value);document.getElementById('w6-noiseV').textContent=parseFloat(noiseSlider.value).toFixed(2);
+    const posCount=group.filter(function(g){return g.advantage>0;}).length;
+    document.getElementById('w6-readout').textContent='Iteration '+iteration+': '+posCount+'/'+G+' responses reinforced, '+(G-posCount)+'/'+G+' suppressed';
+  }
+  document.getElementById('w6-sample').addEventListener('click',sampleGroup);
+  document.getElementById('w6-reset').addEventListener('click',function(){groups=[];iteration=0;draw();});
+  gSlider.addEventListener('input',draw); noiseSlider.addEventListener('input',draw); draw();
+})();
+
+/* =========================================================================
+   STEP 6B — GRPO 2D vector visualization
+   ========================================================================= */
+(function() {
+  const c1 = document.getElementById('w6b-canvas1');
+  const c2 = document.getElementById('w6b-canvas2');
+  const S = 380; // square canvas
+  const ctx1 = setupCanvas(c1, S, S);
+  const ctx2 = setupCanvas(c2, S, S);
+  const gSlider = document.getElementById('w6-g'); // share with w6
+  let samples = [];
+
+  // Reward function: higher toward top-right
+  function rewardFn(x, y) {
+    return 0.4*x + 0.4*y + 0.2*Math.sqrt(x*y);
+  }
+
+  function generate() {
+    const G = parseInt(gSlider.value);
+    samples = [];
+    // Sample from a 2D gaussian centered around (0.45, 0.45) — the current policy's distribution
+    for (let i = 0; i < G; i++) {
+      // Box-Muller
+      const u1 = Math.random(), u2 = Math.random();
+      const z0 = Math.sqrt(-2*Math.log(u1+1e-10))*Math.cos(2*Math.PI*u2);
+      const z1 = Math.sqrt(-2*Math.log(u1+1e-10))*Math.sin(2*Math.PI*u2);
+      const px = Math.max(0.02, Math.min(0.98, 0.45 + z0*0.18));
+      const py = Math.max(0.02, Math.min(0.98, 0.45 + z1*0.18));
+      const r = rewardFn(px, py);
+      samples.push({x: px, y: py, r: r});
+    }
+    // Compute advantages
+    const rewards = samples.map(function(s){return s.r;});
+    const mean = rewards.reduce(function(a,b){return a+b;},0)/rewards.length;
+    const std = Math.sqrt(rewards.reduce(function(a,b){return a+(b-mean)**2;},0)/rewards.length) || 0.01;
+    samples.forEach(function(s){ s.advantage = (s.r - mean)/std; });
+    samples._mean = mean;
+    samples._std = std;
+    // Compute mean position in 2D
+    samples._mx = samples.reduce(function(a,s){return a+s.x;},0)/samples.length;
+    samples._my = samples.reduce(function(a,s){return a+s.y;},0)/samples.length;
+    draw();
+  }
+
+  function toCanvasX(v) { return 45 + v * (S - 65); }
+  function toCanvasY(v) { return S - 40 - v * (S - 60); }
+
+  function drawAxes(ctx) {
+    ctx.strokeStyle = getCSS('--axis'); ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(45, S-40); ctx.lineTo(S-10, S-40);
+    ctx.moveTo(45, S-40); ctx.lineTo(45, 15);
+    ctx.stroke();
+    ctx.fillStyle = getCSS('--ink-soft'); ctx.font = '11px Georgia'; ctx.textAlign = 'center';
+    ctx.fillText('Reasoning depth →', S/2, S-8);
+    ctx.save(); ctx.translate(14, S/2-10); ctx.rotate(-Math.PI/2);
+    ctx.fillText('Factual correctness →', 0, 0);
+    ctx.restore();
+    // Grid lines
+    ctx.strokeStyle = getCSS('--line'); ctx.lineWidth = 0.5;
+    for (let v = 0.2; v <= 0.8; v += 0.2) {
+      ctx.beginPath(); ctx.moveTo(toCanvasX(v), S-40); ctx.lineTo(toCanvasX(v), 15); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(45, toCanvasY(v)); ctx.lineTo(S-10, toCanvasY(v)); ctx.stroke();
+    }
+  }
+
+  function drawRewardHeatmap(ctx) {
+    // Light heatmap showing reward landscape
+    for (let px = 45; px < S-10; px += 6) {
+      for (let py = 15; py < S-40; py += 6) {
+        const vx = (px - 45) / (S - 55);
+        const vy = 1 - (py - 15) / (S - 55);
+        const r = rewardFn(vx, vy);
+        const alpha = r * 0.12;
+        ctx.fillStyle = 'rgba(108,140,255,' + alpha + ')';
+        ctx.fillRect(px, py, 6, 6);
+      }
+    }
+  }
+
+  function drawPlot1() {
+    ctx1.clearRect(0, 0, S, S);
+    drawRewardHeatmap(ctx1);
+    drawAxes(ctx1);
+
+    if (!samples.length) {
+      ctx1.fillStyle = getCSS('--ink-soft'); ctx1.font = '14px Georgia'; ctx1.textAlign = 'center';
+      ctx1.fillText('Click "Resample Group"', S/2, S/2);
+      return;
+    }
+
+    // Policy distribution indicator (dashed ellipse)
+    ctx1.strokeStyle = getCSS('--ink-soft'); ctx1.lineWidth = 1; ctx1.setLineDash([4,4]);
+    ctx1.beginPath();
+    ctx1.ellipse(toCanvasX(0.45), toCanvasY(0.45), 60, 60, 0, 0, Math.PI*2);
+    ctx1.stroke(); ctx1.setLineDash([]);
+    ctx1.fillStyle = getCSS('--ink-soft'); ctx1.font = '10px "SF Mono",Consolas,monospace'; ctx1.textAlign = 'left';
+    ctx1.fillText('π_θ distribution', toCanvasX(0.45)+65, toCanvasY(0.45)-5);
+
+    // Draw samples
+    samples.forEach(function(s, i) {
+      const cx = toCanvasX(s.x), cy = toCanvasY(s.y);
+      // Color by reward: low reward = dim, high reward = bright
+      const brightness = 0.3 + s.r * 0.7;
+      const r8 = Math.round(108 + (255-108)*brightness);
+      const g8 = Math.round(140 + (255-140)*brightness);
+      const b8 = 255;
+
+      // Glow
+      ctx1.fillStyle = 'rgba('+r8+','+g8+','+b8+',0.15)';
+      ctx1.beginPath(); ctx1.arc(cx, cy, 14, 0, Math.PI*2); ctx1.fill();
+
+      // Point
+      ctx1.fillStyle = 'rgb('+r8+','+g8+','+b8+')';
+      ctx1.beginPath(); ctx1.arc(cx, cy, 6, 0, Math.PI*2); ctx1.fill();
+
+      // Reward label
+      ctx1.fillStyle = '#e0e4f0'; ctx1.font = '9px "SF Mono",Consolas,monospace'; ctx1.textAlign = 'center';
+      ctx1.fillText('r='+s.r.toFixed(2), cx, cy - 12);
+
+      // Index
+      ctx1.fillStyle = '#0c0e14'; ctx1.font = 'bold 8px "SF Mono",Consolas,monospace';
+      ctx1.fillText(''+(i+1), cx, cy + 3);
+    });
+
+    // Legend
+    ctx1.fillStyle = '#e0e4f0'; ctx1.font = '11px "SF Mono",Consolas,monospace'; ctx1.textAlign = 'left';
+    ctx1.fillText('G='+samples.length+' samples', 50, S-48);
+    ctx1.fillStyle = getCSS('--ink-soft'); ctx1.font = '10px Georgia';
+    ctx1.fillText('Brighter = higher reward', 50+100, S-48);
+  }
+
+  function drawPlot2() {
+    ctx2.clearRect(0, 0, S, S);
+    drawAxes(ctx2);
+
+    if (!samples.length) {
+      ctx2.fillStyle = getCSS('--ink-soft'); ctx2.font = '14px Georgia'; ctx2.textAlign = 'center';
+      ctx2.fillText('Click "Resample Group"', S/2, S/2);
+      return;
+    }
+
+    const mx = toCanvasX(samples._mx), my = toCanvasY(samples._my);
+
+    // Draw mean crosshair
+    ctx2.strokeStyle = '#ffb86c'; ctx2.lineWidth = 1.5; ctx2.setLineDash([3,3]);
+    ctx2.beginPath(); ctx2.moveTo(mx-18, my); ctx2.lineTo(mx+18, my); ctx2.stroke();
+    ctx2.beginPath(); ctx2.moveTo(mx, my-18); ctx2.lineTo(mx, my+18); ctx2.stroke();
+    ctx2.setLineDash([]);
+    // Mean point
+    ctx2.fillStyle = '#ffb86c';
+    ctx2.beginPath(); ctx2.arc(mx, my, 5, 0, Math.PI*2); ctx2.fill();
+    ctx2.font = '10px "SF Mono",Consolas,monospace'; ctx2.textAlign = 'left';
+    ctx2.fillText('μ (group mean)', mx+10, my-10);
+
+    // Draw advantage vectors from mean to each point
+    const maxAbsAdv = Math.max.apply(null, samples.map(function(s){return Math.abs(s.advantage);}));
+
+    samples.forEach(function(s, i) {
+      const cx = toCanvasX(s.x), cy = toCanvasY(s.y);
+      const isPos = s.advantage >= 0;
+      const color = isPos ? '#5ce6b8' : '#ff6c8c';
+      const alpha = 0.4 + 0.6 * Math.abs(s.advantage) / (maxAbsAdv + 0.01);
+
+      // Vector line from mean to point
+      ctx2.strokeStyle = color;
+      ctx2.lineWidth = 1.5 + 1.5 * Math.abs(s.advantage) / (maxAbsAdv + 0.01);
+      ctx2.beginPath(); ctx2.moveTo(mx, my); ctx2.lineTo(cx, cy); ctx2.stroke();
+
+      // Arrowhead
+      const dx = cx - mx, dy = cy - my;
+      const len = Math.sqrt(dx*dx + dy*dy);
+      if (len > 12) {
+        const ux = dx/len, uy = dy/len;
+        const ax = cx - ux*10, ay = cy - uy*10;
+        const px1 = ax - uy*4, py1 = ay + ux*4;
+        const px2 = ax + uy*4, py2 = ay - ux*4;
+        ctx2.fillStyle = color;
+        ctx2.beginPath(); ctx2.moveTo(cx, cy); ctx2.lineTo(px1, py1); ctx2.lineTo(px2, py2); ctx2.closePath(); ctx2.fill();
+      }
+
+      // Point
+      ctx2.fillStyle = color;
+      ctx2.beginPath(); ctx2.arc(cx, cy, 5, 0, Math.PI*2); ctx2.fill();
+
+      // Advantage label
+      ctx2.fillStyle = color; ctx2.font = 'bold 10px "SF Mono",Consolas,monospace'; ctx2.textAlign = 'center';
+      const sign = s.advantage >= 0 ? '+' : '';
+      ctx2.fillText('A=' + sign + s.advantage.toFixed(2), cx, cy - 10);
+
+      // Index
+      ctx2.fillStyle = '#0c0e14'; ctx2.font = 'bold 7px "SF Mono",Consolas,monospace';
+      ctx2.fillText(''+(i+1), cx, cy+3);
+    });
+
+    // Stats box
+    ctx2.fillStyle = getCSS('--surface-2');
+    ctx2.beginPath(); ctx2.roundRect(S-165, S-85, 155, 40, 6); ctx2.fill();
+    ctx2.fillStyle = '#e0e4f0'; ctx2.font = '10px "SF Mono",Consolas,monospace'; ctx2.textAlign = 'left';
+    ctx2.fillText('μ_r = '+samples._mean.toFixed(3), S-158, S-68);
+    ctx2.fillText('σ_r = '+samples._std.toFixed(3), S-158, S-54);
+
+    // Legend
+    ctx2.font = '10px "SF Mono",Consolas,monospace'; ctx2.textAlign = 'left';
+    ctx2.fillStyle = '#5ce6b8'; ctx2.fillText('→ Reinforce (A>0)', 50, S-60);
+    ctx2.fillStyle = '#ff6c8c'; ctx2.fillText('→ Suppress (A<0)', 50, S-46);
+  }
+
+  function draw() {
+    drawPlot1();
+    drawPlot2();
+    if (samples.length) {
+      const posCount = samples.filter(function(s){return s.advantage>0;}).length;
+      document.getElementById('w6b-readout').textContent =
+        'G='+samples.length+' | μ_r='+samples._mean.toFixed(3)+' | σ_r='+samples._std.toFixed(3)+
+        ' | '+posCount+' reinforced, '+(samples.length-posCount)+' suppressed'+
+        ' | Advantages sum to ≈'+samples.reduce(function(a,s){return a+s.advantage;},0).toFixed(2)+' (zero-centered)';
+    } else {
+      document.getElementById('w6b-readout').textContent = 'Click "Resample Group" to generate samples in 2D quality space.';
+    }
+  }
+
+  document.getElementById('w6b-resample').addEventListener('click', generate);
+  document.getElementById('w6b-reset2d').addEventListener('click', function(){ samples=[]; draw(); });
+  gSlider.addEventListener('input', function(){ if(samples.length) generate(); });
+  draw();
+})();
+
+/* =========================================================================
+   STEP 7 — RLHF vs RLVR convergence comparison
+   ========================================================================= */
+(function() {
+  const canvas = document.getElementById('w7-canvas');
+  const ctx = setupCanvas(canvas, 820, 280);
+  const W = 820, H = 280;
+  const accSlider = document.getElementById('w7-acc');
+  const stepsSlider = document.getElementById('w7-steps');
+  function seededRandom(seed){let s=seed;return function(){s=(s*16807+0)%2147483647;return s/2147483647;};}
+  function draw() {
+    const vAcc=parseFloat(accSlider.value), nSteps=parseInt(stepsSlider.value); ctx.clearRect(0,0,W,H);
+    const ox=65,oy=H-45,aw=W-95,ah=H-75;
+    ctx.strokeStyle=getCSS('--axis');ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(ox+aw,oy);ctx.moveTo(ox,oy);ctx.lineTo(ox,oy-ah);ctx.stroke();
+    ctx.fillStyle=getCSS('--ink-soft');ctx.font='12px Georgia';ctx.textAlign='center';ctx.fillText('Training Steps',W/2,H-8);
+    const rlhfRng=seededRandom(42), rlvrRng=seededRandom(7);
+    function genCurve(rng,noiseScale,learnRate){const pts=[];let val=0.3;for(let i=0;i<nSteps;i++){val=Math.max(0.1,Math.min(0.95,val+learnRate*(1-val)+(rng()-0.5)*noiseScale));pts.push(val);}return pts;}
+    const rlhf=genCurve(rlhfRng,0.08,0.02), rlvr=genCurve(rlvrRng,0.08*(1-vAcc)/0.5,0.035*vAcc);
+    function plotCurve(pts,color,lw){ctx.strokeStyle=color;ctx.lineWidth=lw;ctx.beginPath();for(let i=0;i<pts.length;i++){const px=ox+(i/(pts.length-1))*aw,py=oy-(pts[i]-0.1)/0.9*ah;i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);}ctx.stroke();}
+    plotCurve(rlhf,'#ffb86c',2); plotCurve(rlvr,'#5ce6b8',2.5);
+    ctx.font='13px "SF Mono",Consolas,monospace'; ctx.fillStyle='#ffb86c';ctx.textAlign='left';ctx.fillText('● RLHF (human preferences)',ox+10,28);
+    ctx.fillStyle='#5ce6b8';ctx.fillText('● RLVR (verifiable rewards)',ox+10,48);
+    document.getElementById('w7-accV').textContent=vAcc.toFixed(2);document.getElementById('w7-stepsV').textContent=nSteps;
+    const rlhfF=rlhf[rlhf.length-1],rlvrF=rlvr[rlvr.length-1],delta=((rlvrF-rlhfF)/rlhfF*100).toFixed(1);
+    document.getElementById('w7-readout').textContent='RLVR final: '+rlvrF.toFixed(3)+' | RLHF final: '+rlhfF.toFixed(3)+' | Δ = '+(delta>0?'+':'')+delta+'%';
+  }
+  accSlider.addEventListener('input',draw);stepsSlider.addEventListener('input',draw);draw();
+})();
+
+/* =========================================================================
+   STEP 7B — RLAIF: Reward signal spectrum
+   ========================================================================= */
+(function() {
+  const canvas = document.getElementById('w7b-canvas');
+  const ctx = setupCanvas(canvas, 820, 280);
+  const W = 820, H = 280;
+  let mode = 'spectrum';
+  const methods = [
+    {name:'RLHF',subj:0.95,obj:0.3,scale:0.2,color:'#6c8cff',tasks:'Tone, style, helpfulness, open-ended QA'},
+    {name:'RLAIF',subj:0.85,obj:0.4,scale:0.75,color:'#ffb86c',tasks:'Safety, ethics, general alignment, dialogue'},
+    {name:'RLVR',subj:0.1,obj:0.95,scale:0.95,color:'#5ce6b8',tasks:'Math, code, logic, formal proofs, structured output'},
+  ];
+  function drawSpectrum() {
+    ctx.clearRect(0,0,W,H); const ox=160,aw=W-200,barH=32,gap=72;
+    ctx.fillStyle='#e0e4f0';ctx.font='bold 14px Georgia';ctx.textAlign='left';ctx.fillText('Reward Signal Comparison',ox,28);
+    ctx.fillStyle=getCSS('--ink-soft');ctx.font='11px "SF Mono",Consolas,monospace';ctx.textAlign='center';ctx.fillText('Subjective ←→ Objective',ox+aw/2,50);
+    methods.forEach(function(m,i){
+      const y=65+i*gap;
+      ctx.fillStyle=m.color;ctx.font='bold 15px "SF Mono",Consolas,monospace';ctx.textAlign='right';ctx.fillText(m.name,ox-15,y+10);
+      var grad=ctx.createLinearGradient(ox,0,ox+aw,0);grad.addColorStop(0,'#ff6c8c30');grad.addColorStop(1,'#5ce6b830');
+      ctx.fillStyle=grad;ctx.beginPath();ctx.roundRect(ox,y-5,aw,barH,6);ctx.fill();
+      var markerX=ox+m.obj*aw; ctx.fillStyle=m.color;ctx.beginPath();ctx.arc(markerX,y+barH/2-5,10,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle=getCSS('--ink-soft');ctx.font='11px "SF Mono",Consolas,monospace';ctx.textAlign='right';ctx.fillText('Scale:',ox-15,y+barH+12);
+      ctx.fillStyle=getCSS('--surface-2');ctx.beginPath();ctx.roundRect(ox,y+barH+2,aw*0.4,10,3);ctx.fill();
+      ctx.fillStyle=m.color+'60';ctx.beginPath();ctx.roundRect(ox,y+barH+2,aw*0.4*m.scale,10,3);ctx.fill();
+      ctx.fillStyle=getCSS('--ink-soft');ctx.font='11px Georgia';ctx.textAlign='left';ctx.fillText(m.tasks,ox+aw*0.4+15,y+barH+12);
+    });
+    ctx.fillStyle='#ff6c8c';ctx.font='11px "SF Mono",Consolas,monospace';ctx.textAlign='left';ctx.fillText('Subjective',ox,H-10);
+    ctx.fillStyle='#5ce6b8';ctx.textAlign='right';ctx.fillText('Objective',ox+aw,H-10);
+  }
+  function drawPipeline() {
+    ctx.clearRect(0,0,W,H);
+    var boxes=[{label:'Pretraining',x:30,w:110,color:getCSS('--axis'),desc:'Next-token pred.'},{label:'SFT',x:163,w:70,color:'#6c8cff',desc:'Instruction tuning'},{label:'RLHF/RLAIF',x:256,w:120,color:'#ffb86c',desc:'Preference align'},{label:'RLVR',x:399,w:80,color:'#5ce6b8',desc:'Reasoning via verifiers'},{label:'Final RL',x:502,w:90,color:'#ff6c8c',desc:'Safety + helpfulness'}];
+    var y=80,h=60;
+    ctx.fillStyle='#e0e4f0';ctx.font='bold 14px Georgia';ctx.textAlign='left';ctx.fillText('Modern Training Pipeline (multiple RL stages)',30,40);
+    ctx.fillStyle=getCSS('--ink-soft');ctx.font='12px Georgia';ctx.fillText('RLAIF and RLVR are used in different stages, for different purposes',30,60);
+    boxes.forEach(function(b,i){
+      ctx.fillStyle=b.color+'20';ctx.strokeStyle=b.color;ctx.lineWidth=1.5;ctx.beginPath();ctx.roundRect(b.x,y,b.w,h,8);ctx.fill();ctx.stroke();
+      ctx.fillStyle='#e0e4f0';ctx.font='bold 11px "SF Mono",Consolas,monospace';ctx.textAlign='center';ctx.fillText(b.label,b.x+b.w/2,y+25);
+      ctx.fillStyle=getCSS('--ink-soft');ctx.font='10px Georgia';ctx.fillText(b.desc,b.x+b.w/2,y+42);
+      if(i<boxes.length-1){var next=boxes[i+1];ctx.strokeStyle=getCSS('--ink-soft');ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(b.x+b.w+3,y+h/2);ctx.lineTo(next.x-3,y+h/2);ctx.stroke();ctx.fillStyle=getCSS('--ink-soft');ctx.beginPath();ctx.moveTo(next.x-3,y+h/2);ctx.lineTo(next.x-10,y+h/2-4);ctx.lineTo(next.x-10,y+h/2+4);ctx.closePath();ctx.fill();}
+    });
+    ctx.strokeStyle='#ffb86c80';ctx.lineWidth=1;ctx.setLineDash([4,3]);ctx.beginPath();ctx.moveTo(256,y+h+10);ctx.lineTo(256,y+h+25);ctx.lineTo(479,y+h+25);ctx.lineTo(479,y+h+10);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle=getCSS('--ink-soft');ctx.font='11px Georgia';ctx.textAlign='center';ctx.fillText('RLAIF + RLVR complement each other across stages',370,y+h+42);
+    ctx.fillStyle=getCSS('--ink-soft');ctx.font='11px "SF Mono",Consolas,monospace';ctx.textAlign='left';
+    ctx.fillText('RLAIF → subjective quality (safety, tone)',30,H-35);ctx.fillText('RLVR  → objective quality (math, code, logic)',30,H-15);
+  }
+  function draw(){if(mode==='spectrum')drawSpectrum();else drawPipeline();}
+  document.querySelectorAll('#w7b-mode button').forEach(function(btn){btn.addEventListener('click',function(){
+    mode=this.dataset.mode;document.querySelectorAll('#w7b-mode button').forEach(function(b){b.classList.remove('active');});this.classList.add('active');draw();
+    document.getElementById('w7b-readout').textContent=mode==='spectrum'?'Each method sits on a spectrum from subjective to objective reward signals.':'Modern pipelines use multiple RL stages with different reward sources for different goals.';
+  });});
+  draw();
+})();
+
+/* =========================================================================
+   STEP 8 — Scaling: sync vs async GPU utilization
+   ========================================================================= */
+(function() {
+  const canvas = document.getElementById('w8-canvas');
+  const ctx = setupCanvas(canvas, 820, 300);
+  const W = 820, H = 300;
+  const gpuSlider = document.getElementById('w8-gpu');
+  const asyncSlider = document.getElementById('w8-async');
+  function draw() {
+    const nGPU=parseInt(gpuSlider.value), asyncPct=parseInt(asyncSlider.value); ctx.clearRect(0,0,W,H);
+    const ox=70,oy=H-50,aw=W-100,ah=H-90;
+    ctx.strokeStyle=getCSS('--axis');ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(ox+aw,oy);ctx.moveTo(ox,oy);ctx.lineTo(ox,30);ctx.stroke();
+    ctx.fillStyle=getCSS('--ink-soft');ctx.font='12px Georgia';ctx.textAlign='center';ctx.fillText('GPU Count',W/2,H-10);
+    ctx.save();ctx.translate(18,H/2-10);ctx.rotate(-Math.PI/2);ctx.fillText('Throughput (samples/sec)',0,0);ctx.restore();
+    const maxGPU=512,baseTPUT=10;
+    function syncTPUT(g){return baseTPUT*g*0.85*(0.4+0.6*0.7);}
+    function asyncTPUT(g,overlap){return baseTPUT*g*0.95*(1-(1-overlap/100)*0.4);}
+    function linearTPUT(g){return baseTPUT*g;}
+    function plotFn(fn,color,lw,dash){ctx.strokeStyle=color;ctx.lineWidth=lw;if(dash)ctx.setLineDash(dash);ctx.beginPath();const maxT=linearTPUT(maxGPU);for(let px=0;px<=aw;px++){const g=8+(px/aw)*(maxGPU-8),t=fn(g),py=oy-(t/maxT)*ah;px===0?ctx.moveTo(ox+px,py):ctx.lineTo(ox+px,py);}ctx.stroke();ctx.setLineDash([]);}
+    plotFn(linearTPUT,getCSS('--axis'),1,[4,4]); plotFn(syncTPUT,'#ff6c8c',2,null); plotFn(function(g){return asyncTPUT(g,asyncPct);},'#5ce6b8',2.5,null);
+    const curX=ox+((nGPU-8)/(maxGPU-8))*aw;
+    [{y:oy-(syncTPUT(nGPU)/linearTPUT(maxGPU))*ah,c:'#ff6c8c'},{y:oy-(asyncTPUT(nGPU,asyncPct)/linearTPUT(maxGPU))*ah,c:'#5ce6b8'}].forEach(function(m){ctx.fillStyle=m.c;ctx.beginPath();ctx.arc(curX,m.y,5,0,Math.PI*2);ctx.fill();});
+    ctx.strokeStyle=getCSS('--ink-soft')+'30';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(curX,oy);ctx.lineTo(curX,30);ctx.stroke();ctx.setLineDash([]);
+    ctx.font='12px "SF Mono",Consolas,monospace';ctx.textAlign='left';
+    ctx.fillStyle=getCSS('--axis');ctx.fillText('— — Perfect linear',W-200,45);
+    ctx.fillStyle='#ff6c8c';ctx.fillText('—— Sync RL',W-200,63);
+    ctx.fillStyle='#5ce6b8';ctx.fillText('—— Async RL ('+asyncPct+'% overlap)',W-200,81);
+    document.getElementById('w8-gpuV').textContent=nGPU;document.getElementById('w8-asyncV').textContent=asyncPct;
+    const speedup=(asyncTPUT(nGPU,asyncPct)/syncTPUT(nGPU)).toFixed(1), eff=((asyncTPUT(nGPU,asyncPct)/linearTPUT(nGPU))*100).toFixed(0);
+    document.getElementById('w8-readout').textContent=nGPU+' GPUs: async achieves '+speedup+'× over sync | '+eff+'% scaling efficiency';
+  }
+  gpuSlider.addEventListener('input',draw);asyncSlider.addEventListener('input',draw);draw();
+})();
+
+/* =========================================================================
+   STEP 9 — Timeline impact visualization
+   ========================================================================= */
+(function() {
+  const canvas = document.getElementById('w9-canvas');
+  const ctx = setupCanvas(canvas, 820, 200);
+  const W = 820, H = 200;
+  const impacts = [
+    {algo:0.3,scale:0.1,open:0.1},{algo:0.5,scale:0.3,open:0.15},{algo:0.55,scale:0.25,open:0.2},
+    {algo:0.7,scale:0.35,open:0.8},{algo:0.8,scale:0.5,open:0.7},{algo:0.85,scale:0.6,open:0.15},
+    {algo:0.9,scale:0.75,open:0.95},{algo:0.92,scale:0.7,open:0.9},{algo:0.88,scale:0.8,open:0.2},
+    {algo:0.7,scale:0.95,open:0.85},{algo:0.6,scale:0.5,open:0.9}
+  ];
+  let activeIdx = 0;
+  function draw() {
+    const imp = impacts[activeIdx]; ctx.clearRect(0,0,W,H);
+    const metrics=[{label:'Algorithmic Innovation',val:imp.algo,color:'#6c8cff'},{label:'Scale / Infrastructure',val:imp.scale,color:'#ffb86c'},{label:'Open-Source Impact',val:imp.open,color:'#5ce6b8'}];
+    const barH=28,gap=50,ox=220,maxW=W-260;
+    metrics.forEach(function(m,i){
+      const y=30+i*gap;
+      ctx.fillStyle=getCSS('--ink-soft');ctx.font='13px "SF Mono",Consolas,monospace';ctx.textAlign='right';ctx.fillText(m.label,ox-15,y+barH/2+5);
+      ctx.fillStyle=getCSS('--surface-2');ctx.beginPath();ctx.roundRect(ox,y,maxW,barH,6);ctx.fill();
+      ctx.fillStyle=m.color+'30';ctx.beginPath();ctx.roundRect(ox,y,maxW*m.val,barH,6);ctx.fill();
+      ctx.strokeStyle=m.color;ctx.lineWidth=1.5;ctx.beginPath();ctx.roundRect(ox,y,maxW*m.val,barH,6);ctx.stroke();
+      ctx.fillStyle=m.color;ctx.font='bold 13px "SF Mono",Consolas,monospace';ctx.textAlign='left';ctx.fillText((m.val*100).toFixed(0)+'%',ox+maxW*m.val+10,y+barH/2+5);
+    });
+  }
+  document.querySelectorAll('#w9-timeline .timeline-item').forEach(function(item){
+    item.addEventListener('click',function(){
+      activeIdx=parseInt(this.dataset.idx);
+      document.querySelectorAll('#w9-timeline .timeline-item').forEach(function(t){t.classList.remove('active');});
+      this.classList.add('active'); draw();
+      document.getElementById('w9-readout').textContent=this.querySelector('.tl-title').textContent;
+    });
+  });
+  draw();
+})();
+
+/* =========================================================================
+   READING PROGRESS BAR
+   ========================================================================= */
+(function(){
+  var bar=document.getElementById('progress');
+  function update(){var h=document.documentElement;var max=h.scrollHeight-h.clientHeight;bar.style.width=(max>0?(h.scrollTop/max)*100:0)+'%';}
+  window.addEventListener('scroll',update,{passive:true});window.addEventListener('resize',update);update();
+})();
+
+/* =========================================================================
+   MATHJAX: re-typeset inside <details> when opened
+   ========================================================================= */
+document.querySelectorAll('details.formal').forEach(function(d) {
+  d.addEventListener('toggle', function() {
+    if (this.open && window.MathJax && MathJax.typesetPromise) {
+      MathJax.typesetPromise([this.querySelector('.formal-body')]);
+    }
+  });
+});
+</script>
+</body>
+</html>

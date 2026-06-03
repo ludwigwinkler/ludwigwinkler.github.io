@@ -1,3 +1,7 @@
+
+
+
+
 <!DOCTYPE HTML>
 <!--
 	Massively by HTML5 UP
@@ -51,7 +55,7 @@
 </ul>
 <!-- <ul class="links">
   <li class=""><a href="http://localhost:4000/">Home</a></li>
-  <li class=" active "><a href="http://localhost:4000/blog/">Machine Learning & Math</a></li>
+  <li class=""><a href="http://localhost:4000/blog/">Machine Learning & Math</a></li>
   <li class=""><a href="http://localhost:4000/readinglist/">Reading List</a></li>
   <li class=""><a href="http://localhost:4000/photography/">Photography</a></li>
   <li class=""><a href="http://localhost:4000/about/">About</a></li>
@@ -66,14 +70,14 @@
 
 				<!-- Main -->
 				<div id="main">
-          <section class="post">
-    				<header class="major">
-      				<span class="date">18 May 2026</span>
-      				<h1>Quantum Physics</h1>
-      				<p>TBD</p>
-      			</header>
-      			<div class="image main"><img src="" alt=""></div>
-      			<p><script>
+          <section class="post" style="color: #000;">
+					<header class="major" style="color: #000;">
+						<span class="date" style="color: #000;">18 May 2026</span>
+						<h1 style="color: #000;">Quantum Physics</h1>
+						<p style="color: #000;">TBD</p>
+					</header>
+					
+					<script>
 MathJax = {
   tex: {
     inlineMath: [['$','$'], ['\\(','\\)']],
@@ -86,8 +90,8 @@ MathJax = {
   }
 };
 </script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
 
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async=""></script>
 
 <div id="qp-atoms-wave" style="width:100%;max-width:760px;margin:1.5em auto;border:1px solid #ddd;border-radius:8px;background:#ffffff;color:#222;font-family:sans-serif;">
   <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:1px solid #eee;">
@@ -100,7 +104,7 @@ MathJax = {
   <canvas id="qp-canvas" width="760" height="380" style="width:100%;height:auto;display:block;background:#ffffff;"></canvas>
   <div style="padding:6px 12px;font-size:0.85em;color:#556;">
     <span id="qp-stage-label">Stage 1 — classical particles</span>
-    <input id="qp-scrub" type="range" min="0" max="1000" value="0" style="width:100%;margin-top:6px;" />
+    <input id="qp-scrub" type="range" min="0" max="1000" value="0" style="width:100%;margin-top:6px;">
   </div>
 </div>
 
@@ -115,7 +119,7 @@ MathJax = {
   const scrub = document.getElementById('qp-scrub');
   const label = document.getElementById('qp-stage-label');
 
-  let t = 0;              // 0..1 progress
+  let t = 0;
   let playing = false;
   let raf = null;
   let lastTs = 0;
@@ -129,7 +133,6 @@ MathJax = {
   function smooth(u){ return u<0?0:u>1?1:u*u*(3-2*u); }
 
   function stageInfo(p){
-    // p in [0,1]; three stages: 0-0.33 particles, 0.33-0.66 zoom, 0.66-1 wave
     if (p < 0.33) return { name:'Stage 1 — classical particles', s:0, local:p/0.33 };
     if (p < 0.66) return { name:'Stage 2 — zooming in', s:1, local:(p-0.33)/0.33 };
     return { name:'Stage 3 — wave functions', s:2, local:(p-0.66)/0.34 };
@@ -141,20 +144,17 @@ MathJax = {
   }
 
   function drawAtom(cx, cy, r, color, ringAlpha){
-    // electron cloud / ring
     if (ringAlpha > 0){
       ctx.strokeStyle = `rgba(60,70,90,${0.45*ringAlpha})`;
       ctx.lineWidth = 1;
       ctx.beginPath(); ctx.ellipse(cx, cy, r*2.2, r*0.9, 0, 0, Math.PI*2); ctx.stroke();
       ctx.beginPath(); ctx.ellipse(cx, cy, r*2.2, r*0.9, Math.PI/3, 0, Math.PI*2); ctx.stroke();
-      // electron dot
       const ang = performance.now()*0.003;
       const ex = cx + Math.cos(ang)*r*2.2;
       const ey = cy + Math.sin(ang)*r*0.9;
       ctx.fillStyle = `rgba(30,50,90,${ringAlpha})`;
       ctx.beginPath(); ctx.arc(ex, ey, 2.5, 0, Math.PI*2); ctx.fill();
     }
-    // nucleus
     const grad = ctx.createRadialGradient(cx,cy,1,cx,cy,r);
     grad.addColorStop(0, color);
     grad.addColorStop(0.6, color);
@@ -164,16 +164,13 @@ MathJax = {
   }
 
   function drawWavePacket(cx, cy, amp, sigma, k, color, envAlpha, oscAlpha){
-    // envAlpha drives the probability cloud / envelope; oscAlpha drives the visible oscillations.
     const span = 220;
-    // baseline axis (fades in with envelope)
     if (envAlpha > 0){
       ctx.strokeStyle = `rgba(0,0,0,${0.2*envAlpha})`;
       ctx.lineWidth = 1;
       ctx.beginPath(); ctx.moveTo(cx-span, cy); ctx.lineTo(cx+span, cy); ctx.stroke();
     }
 
-    // |psi|^2 cloud (probability density) — appears first
     if (envAlpha > 0){
       ctx.fillStyle = hexToRgba(color, 0.22*envAlpha);
       ctx.beginPath();
@@ -188,7 +185,6 @@ MathJax = {
       ctx.fill();
     }
 
-    // Real part oscillation — comes in later, amplitude ramps with oscAlpha
     if (oscAlpha > 0){
       const phase = performance.now()*0.004;
       ctx.lineWidth = 2;
@@ -211,52 +207,34 @@ MathJax = {
     return `rgba(${r},${g},${b},${a})`;
   }
 
-  function drawZoomFrame(alpha){
-    ctx.strokeStyle = `rgba(0,0,0,${0.35*alpha})`;
-    ctx.setLineDash([6,4]);
-    ctx.lineWidth = 1;
-    ctx.strokeRect(W*0.15, H*0.25, W*0.7, H*0.55);
-    ctx.setLineDash([]);
-  }
-
   function render(){
     drawBackground();
     const info = stageInfo(t);
     label.textContent = info.name;
 
-    // Compute interpolated parameters
-    // Stage 0: small atoms at original positions, no rings yet
-    // Stage 1: zoom in -> atoms grow, ring appears
-    // Stage 2: staggered morph — atom expands & dissolves, |ψ|² cloud emerges first, then oscillations
-    let atomR, ringA, atomFade, envA, oscA, zoomA;
+    let atomR, ringA, atomFade, envA, oscA;
     if (info.s === 0){
       atomR = lerp(6, 14, smooth(info.local));
       ringA = lerp(0, 0.4, smooth(info.local));
       atomFade = 1;
-      envA = 0; oscA = 0;
-      zoomA = lerp(0, 0.6, smooth(info.local));
+      envA = 0;
+      oscA = 0;
     } else if (info.s === 1){
       atomR = lerp(14, 48, smooth(info.local));
       ringA = lerp(0.4, 0.9, smooth(info.local));
       atomFade = 1;
-      envA = 0; oscA = 0;
-      zoomA = lerp(0.6, 1.0, smooth(info.local));
+      envA = 0;
+      oscA = 0;
     } else {
       const u = info.local;
-      // atom expands a touch further, then softens
       atomR = lerp(48, 70, smooth(u));
       ringA = lerp(0.9, 0.0, smooth(Math.min(1, u*1.4)));
-      // atom fades out across roughly the first 65% of the stage
       atomFade = 1 - smooth(Math.min(1, u/0.65));
-      // envelope/cloud comes in early (overlaps with atom dissolving)
       envA = smooth(Math.min(1, u/0.55));
-      // oscillations come in later, after the cloud is mostly there
       oscA = smooth(Math.max(0, (u-0.45)/0.55));
-      zoomA = lerp(1.0, 0.25, smooth(u));
     }
 
-    atoms.forEach((a,i) => {
-      // Soft-glow expansion underneath atom while it's dissolving (helps bridge into the cloud)
+    atoms.forEach((a) => {
       if (atomFade > 0 && info.s === 2){
         const glowR = atomR * (1 + 1.2*(1-atomFade));
         const g = ctx.createRadialGradient(a.x0, a.y0, 1, a.x0, a.y0, glowR);
@@ -266,22 +244,16 @@ MathJax = {
         ctx.beginPath(); ctx.arc(a.x0, a.y0, glowR, 0, Math.PI*2); ctx.fill();
       }
 
-      // Atom representation fades out
       if (atomFade > 0){
         ctx.globalAlpha = atomFade;
         drawAtom(a.x0, a.y0, atomR, a.color, ringA*atomFade);
         ctx.globalAlpha = 1;
       }
 
-      // Wave packet — envelope first, oscillations later
       if (envA > 0 || oscA > 0){
-        const amp = 70;
-        const sigma = 60;
-        const k = 0.12;
-        drawWavePacket(a.x0, a.y0, amp, sigma, k, a.color, envA, oscA);
+        drawWavePacket(a.x0, a.y0, 70, 60, 0.12, a.color, envA, oscA);
       }
 
-      // Labels (crossfade between "Atom" and "ψ(x)")
       ctx.font = '12px sans-serif';
       const labelY = a.y0 + Math.max(atomR, 60) + 22;
       if (atomFade > 0){
@@ -294,7 +266,6 @@ MathJax = {
       }
     });
 
-    // Header text
     ctx.fillStyle = 'rgba(60,70,90,0.9)';
     ctx.font = '13px sans-serif';
     ctx.fillText('Two atoms → zoom in → quantum wave functions', 16, 24);
@@ -307,7 +278,7 @@ MathJax = {
     const dt = (ts - lastTs)/1000;
     lastTs = ts;
     if (playing){
-      t += dt * 0.18; // ~5.5s full sweep
+      t += dt * 0.18;
       if (t >= 1){ t = 1; playing = false; playBtn.textContent = 'Play'; }
     }
     render();
@@ -331,40 +302,12 @@ MathJax = {
   raf = requestAnimationFrame(tick);
 })();
 </script>
-
-</p>
-      		</section>
-
-          <!-- <div class="comments-wrapper">
-          <div id="disqus_thread"></div> -->
-          <!-- <script>
-              /**
-               *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
-               *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables
-               */
-
-              var disqus_config = function () {
-                  this.page.url = '/blog/QuantumPhysics/';  /*Replace PAGE_URL with your page's canonical URL variable*/
-                  this.page.identifier = '/blog/QuantumPhysics/'; /*Replace PAGE_IDENTIFIER with your page's unique identifier variable*/
-              };
-
-              (function() {  /* dont endit below this line */
-                  var d = document, s = d.createElement('script');
-
-                  s.src = 'https://default.disqus.com/embed.js';
-
-                  s.setAttribute('data-timestamp', +new Date());
-                  (d.head || d.body).appendChild(s);
-              })();
-          </script> -->
-          <!-- <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript> -->
-        <!-- </div>/.comments-wrapper -->
-
+				</section>
 
 					<!-- Footer -->
 						<footer>
               <ul class="actions">
-                <li><a href="http://localhost:4000/blog/" class="button">My Blog</a></li>
+                <li><a href="http://localhost:4000/explainers/" class="button">All Explainers</a></li>
               </ul>
 						</footer>
 					</div>
@@ -428,7 +371,7 @@ MathJax = {
 			</div>
 
       <!-- Scripts -->
-  		<!-- <!-- DYN -->
+		<!-- <!-- DYN -->
 <script src="http://localhost:4000/assets/js/jquery.min.js"></script>
 <script src="http://localhost:4000/assets/js/jquery.scrollex.min.js"></script>
 <script src="http://localhost:4000/assets/js/jquery.scrolly.min.js"></script>

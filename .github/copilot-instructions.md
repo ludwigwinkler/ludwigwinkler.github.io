@@ -5,12 +5,17 @@ This is a Jekyll-based static site, primarily for technical blogging and documen
 
 ## Key Directories & Files
 - `blogposts/_posts/`: Main content, Markdown blog posts with embedded math/code
+- `explainers/_posts/`: Explainer posts, including interactive HTML explainers
 - `.github/copilot-instructions.md`: This file, for agent guidance
 - `_layouts/`, `_includes/`: Jekyll HTML templates and partials
 - `assets/`, `images/`: Static resources
 
 ## Authoring & Editing Patterns
 - Posts use extended Markdown, with MathJax blocks for equations and `<div style="overflow-x: auto;">` for wide math/code
+- Explainers in `explainers/_posts/` support two formats:
+- Fragment explainers: use front matter plus HTML/Markdown content only, without `<!DOCTYPE html>`, `<html>`, `<head>`, or `<body>`; these render inside the shared `explainerpost` layout.
+- Standalone interactive explainers: use front matter followed by a complete HTML document when the page needs its own CSS/JS shell; the layout detects full HTML documents and renders them raw.
+- Do not mix the two patterns in one file. Either provide fragment content for the shared layout or provide a full standalone HTML document.
 - Python code is often shown for ML examples; use `torch` for softmax/logsumexp demos
 - When editing Markdown, preserve MathJax formatting and code block styles
 - Use line comments `// ...existing code...` when editing files to avoid repeating unchanged content

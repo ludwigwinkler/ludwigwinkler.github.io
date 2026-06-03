@@ -129,249 +129,250 @@ The product $p(x) q(x)$ represents the unnormalized joint distribution and there
 
 <h2 id="reward-tilted-sde">Reward Tilted SDE</h2>
 
-<p>We consider the product of the original distribution $q_t(x)$ and an exponential of a reward function $r_t(x)$, scaled by a factor $\beta_t$:</p>
+<p>We consider the product of the original distribution $q_t(x)$ and an exponential reward tilt $\exp(\beta_t r(x))$:</p>
 <div style="overflow-x: auto;">
 $$
-p_t(x) = \frac{1}{Z} \ q_t(x) \ \exp( \ \beta_t \ r(x))
+p_t(x) = \frac{1}{Z_t} \ q_t(x) \ \exp(\beta_t \ r(x))
 $$
 </div>
 
-<p><strong>The big question is: what is the Fokker Planck equation of $p_t(x)$ from which we can easily read off the SDE if the process evolves according to the original process dynamics of $q_t(x)$?</strong>
-Said differently, what’s the probability of a sample $x$ under the tilted $p_t$ if it evolves according to the stochastic differential equation of $q_t$?</p>
+<p><strong>The central question is: what SDE does $p_t$ obey if the underlying particles evolve according to $q_t$’s dynamics?</strong></p>
 
-<p>So we need</p>
+<p>The key observation is that $\exp(\beta_t r(x))$ is a <em>static</em> multiplicative tilt — it does not diffuse; only the temperature $\beta_t$ changes with time. This asymmetry is what produces the reward-gradient and reward-Laplacian terms in the weights.</p>
+
+<p>The entire derivation follows one recipe: <em>write the time-derivative of $\log p_t$, recognize which pieces reassemble into the Fokker-Planck transport operator on $p_t$, and collect everything left over into a reweighting function $g_t$.</em></p>
+
+<h3 id="the-key-log-space-identity">The key log-space identity</h3>
+
+<p>For any density $p$ obeying a Fokker-Planck PDE $\partial_t p = -\nabla \cdot [p\,v] + \frac{\sigma^2}{2}\Delta p$, dividing through by $p$ gives the log-space form:</p>
+
+<div style="overflow-x: auto;">
+$$
+\partial_t \log p = \underbrace{-\nabla \cdot v - \langle\nabla\log p,\, v\rangle}_{\text{continuity}} + \underbrace{\frac{\sigma^2}{2}\Delta\log p + \frac{\sigma^2}{2}\|\nabla\log p\|^2}_{\text{diffusion}} \tag{$\star$}
+$$
+</div>
+
+<p>This uses the chain-rule identity $\Delta p / p = \Delta\log p + |\nabla\log p|^2$, which follows from $\nabla\log p = \nabla p / p$.</p>
+
+<p>Read <strong>forward</strong>, $(\star)$ turns a Fokker-Planck PDE into log-derivative terms. Read <strong>backward</strong>, a collection of log-derivative terms in exactly this shape collapses back into a transport operator. The derivation uses it both ways.</p>
+
+<h3 id="log-derivative-identities">Log-derivative identities</h3>
+
+<p>Before diving in, recall the three identities we will use repeatedly:</p>
+
 <div style="overflow-x: auto;">
 $$
 \begin{align*}
-\partial_t p_t(x) &amp;= - \nabla \cdot [\mu \ p_t] + \frac{\sigma_p^2}{2} \Delta p_t \\
-% &amp;= - \nabla \mu \cdot p_t - \mu \cdot \nabla p_t + \frac{\sigma_p^2}{2} \nabla \cdot [ \nabla p_t] \\
+\partial_t \log p_t = \frac{1}{p_t} \partial_t p_t \quad &amp;\rightarrow \quad \partial_t p_t = p_t \ \partial_t \log p_t \\
+\nabla \log p_t = \frac{1}{p_t} \nabla p_t \quad &amp;\rightarrow \quad \nabla p_t = p_t \ \nabla \log p_t \\
+\Delta p_t &amp;= p_t \Delta \log p_t + p_t \|\nabla \log p_t\|^2
 \end{align*}
 $$
 </div>
 
-<p>where $\mu$ and $\sigma_p^2$ are the drift and diffusion of the SDE that generates $q_t$.</p>
+<p>Applying $(\star)$ to $q_t$ with drift $\mu_q$ and diffusion $\sigma_q^2$ gives the log-FPE of $q_t$:</p>
 
-<p>In order to obtain the FPE for the tilted distribution $p_t(x)$, we will exploit the FPE in log space, which offers some nice algebraic advantages.
-To realize that we seek to obtain the log FPE, namely not $\partial_t p_t(x)$, but</p>
 <div style="overflow-x: auto;">
 $$
-\partial_t \log p_t(x) =  \partial_t\log q_t(x) + \partial_t \beta_t \ r(x) - \partial_t \log Z
+\partial_t \log q_t = - \nabla \cdot \mu_q - \mu_q \cdot \nabla \log q_t + \frac{\sigma_q^2}{2} \Delta \log q_t + \frac{\sigma_q^2}{2} \|\nabla \log q_t\|^2
 $$
 </div>
 
-<h3 id="fpe-in-log-space">FPE in log space</h3>
+<h3 id="step-1--differentiate-the-log-tilted-density">Step 1 — Differentiate the log tilted density</h3>
 
-<p>Let us first recall the log-derivative trick which we will use extensively in the following calculations. For any function (or distribution) $q_t(x)$, we have the following identities:</p>
+<p>From $\log p_t = \log q_t + \beta_t r(x) - \log Z_t$:</p>
+
 <div style="overflow-x: auto;">
 $$
-\begin{align*}
-\partial_t \log p_t = \frac{1}{p_t} \partial_t p_t \quad \rightarrow \quad \partial_t p_t &amp;= p_t \ \partial_t \log p_t \\
-\nabla \log p_t = \frac{1}{p_t} \nabla p_t \quad \rightarrow \quad \nabla p_t &amp;= p_t \ \nabla \log p_t \\
-\Delta p_t = \nabla \cdot \nabla p_t \quad \rightarrow \quad \Delta p_t &amp;= \nabla \cdot [p_t \nabla \log p_t]  \\
-&amp;= p_t \Delta \log p_t + \underbrace{\nabla p_t}_{=p_t \nabla \log p_t} \cdot \nabla \log p_t  \\
-&amp;= p_t \Delta \log p_t + p_t ||\nabla \log p_t||^2
-\end{align*}
+\partial_t \log p_t = \partial_t \log q_t + \dot{\beta}_t \ r(x) - \partial_t \log Z_t
 $$
 </div>
 
-<p>This allows us to substitute all the gradient calculations in the FPE of our original process $q_t$ with the log derivatives,</p>
+<p>The normalizer derivative is itself an expectation. Since $\partial_t!\left(q_t e^{\beta_t r}\right) = q_t e^{\beta_t r}!\left[\partial_t \log q_t + \dot{\beta}_t r\right]$, we get:</p>
+
+<div style="overflow-x: auto;">
+$$
+\partial_t \log Z_t = \int p_t\big[\partial_t\log q_t + \dot{\beta}_t r\big]\,dx = \mathbb{E}_{p_t}\!\big[\partial_t\log q_t + \dot{\beta}_t r\big]
+$$
+</div>
+
+<p>Substituting back:</p>
+
+<div style="overflow-x: auto;">
+$$
+\partial_t \log p_t = \big(\partial_t\log q_t + \dot{\beta}_t r\big) - \mathbb{E}_{p_t}\!\big[\partial_t\log q_t + \dot{\beta}_t r\big] \tag{1}
+$$
+</div>
+
+<p>The subtracted expectation will become $-\mathbb{E}_{p_t}[g_t]$, keeping the Fokker-Planck equation normalized. From here on, everything that is not transport becomes $g_t$, with its mean subtracted automatically.</p>
+
+<h3 id="step-2--express-partial_t-log-q_t-in-terms-of-p_t">Step 2 — Express $\partial_t \log q_t$ in terms of $p_t$</h3>
+
+<p>Since $Z_t$ is constant in $x$, the spatial derivatives of $\log q_t$ and $\log p_t$ differ only by the reward gradient:</p>
+
+<div style="overflow-x: auto;">
+$$
+\nabla \log q_t = \nabla \log p_t - \beta_t \nabla r(x) \qquad \text{and} \qquad \Delta \log q_t = \Delta \log p_t - \beta_t \Delta r(x)
+$$
+</div>
+
+<p>Substituting into the log-FPE of $q_t$ and expanding the squared norm:</p>
 
 <div style="overflow-x: auto;">
 $$
 \begin{align*}
-\partial_t q_t(x) &amp;= - \nabla \cdot [\mu \ q_t] + \frac{\sigma_q^2}{2} \Delta q_t \\
-&amp;= - \nabla \mu_q \cdot q_t - \mu_q \cdot \nabla q_t + \frac{\sigma_q^2}{2} \nabla \cdot [ \nabla q_t] \\
-&amp; \downarrow \quad \text{transform into log space} \\
-q_t \ \partial_t \log q_t 
-&amp;= - \nabla \mu_q \cdot q_t - \mu_q \cdot q_t \ \nabla \log q_t + \frac{\sigma_q^2}{2} q_t \ \left( \Delta \log q_t + ||\nabla \log q_t||^2 \right) \\ 
-&amp; \downarrow \quad \text{divide by} \ q_t \\
 \partial_t \log q_t 
-&amp;= - \nabla \mu_q - \mu_q \cdot \nabla \log q_t + \frac{\sigma_q^2}{2} \Delta \log q_t + \frac{\sigma_q^2}{2} ||\nabla \log q_t||^2
+&amp;= - \nabla \cdot \mu_q - \mu_q \cdot {\color{red}\nabla \log q_t} + \frac{\sigma_q^2}{2} {\color{blue}\Delta \log q_t} + \frac{\sigma_q^2}{2} {\color{green}\|\nabla \log q_t\|^2} \\[4pt]
+&amp;= - \nabla \cdot \mu_q - \mu_q \cdot {\color{red}(\nabla \log p_t - \beta_t \nabla r)} + \frac{\sigma_q^2}{2} {\color{blue}(\Delta \log p_t - \beta_t \Delta r)} + \frac{\sigma_q^2}{2} {\color{green}\|\nabla \log p_t - \beta_t \nabla r\|^2} \\[4pt]
+&amp;= \underbrace{- \nabla \cdot \mu_q - \mu_q \cdot {\color{red}\nabla \log p_t} + \frac{\sigma_q^2}{2} {\color{blue}\Delta \log p_t} + \frac{\sigma_q^2}{2} {\color{green}\|\nabla \log p_t\|^2}}_{\text{log-FPE of }p_t\text{ via }(\star)}
++ \underbrace{{\color{red}\mu_q \cdot \beta_t \nabla r} - \frac{\sigma_q^2}{2} {\color{blue}\beta_t \Delta r} - \frac{\sigma_q^2}{2} \beta_t^2 \big({\color{green}2 \nabla\log p_t \cdot \nabla r + \|\nabla r\|^2}\big)}_{\text{leftover}}
 \end{align*}
 $$
 </div>
 
-<p>The term $\partial_t \log q_t$ is log transformed Fokker Planck equation and governs the evolution of the original distribution $q_t$ in log space.</p>
+<p>The first four terms are exactly the log-FPE of $p_t$ (via $(\star)$ read backward); the remaining terms are the reward-induced leftover.</p>
 
-<p>How $q_t$ (or $\log q_t$) evolves over time is determined by the drift $\mu_q$ and the diffusion $\sigma_q^2$ of the original process.
-We’re able to model that with the FPE of the original process $q_t$, but here we’re actually interested in the dynamics of $p_t$.
-So the question is whether we can somehow massage the term</p>
+<h3 id="step-3--read-off-gx-transport-unchanged-reward-goes-into-weights">Step 3 — Read off $g(x)$: transport unchanged, reward goes into weights</h3>
+
+<p>Substituting into (1) and multiplying through by $p_t$, the underbraced transport block reassembles into $-\nabla\cdot[\mu_q p_t] + \frac{\sigma_q^2}{2}\Delta p_t$. Everything else becomes $g(x)$:</p>
+
 <div style="overflow-x: auto;">
 $$
-\partial_t \log p_t(x) =  \partial_t\log q_t(x) + \partial_t \beta_t \ r(x) - \partial_t \log Z
-$$
-</div>
-<p>into the form of the FPE from which we can then read off the drift and diffusion of the SDE the tilted process $p_t$.</p>
-
-<p>In fact, we can express the change $\log q_t$ in terms of the sought-after process $p_t$ by rearranging the terms,</p>
-<div style="overflow-x: auto;">
-$$
-\log q_t = \log p_t - \beta_t \ r(x) + \log Z
+\partial_t p_t = - \nabla \cdot [\mu_q \ p_t] + \frac{\sigma_q^2}{2} \Delta p_t + p_t \Big(g(x) - \mathbb{E}_{p_t}\big[g(x)\big]\Big)
 $$
 </div>
 
-<p>The derivatives of $\log q_t$ are</p>
 <div style="overflow-x: auto;">
 $$
-\nabla \log q_t = \nabla \log p_t - \beta_t \nabla r(x) \quad \text{and} \quad \Delta \log q_t = \Delta \log p_t - \beta_t \Delta r(x)
+g(x) = \mu_q \cdot \beta_t \nabla r - \frac{\sigma_q^2}{2} \beta_t \Delta r - \frac{\sigma_q^2}{2} \beta_t^2 \big(2 \nabla\log p_t \cdot \nabla r + \|\nabla r\|^2\big) + \dot{\beta}_t \ r(x) \tag{2}
 $$
 </div>
 
-<p>Substituting these into the log FPE of $q_t$ gives us</p>
+<p>One of the key properties of the Fokker-Planck equation is that it conserves probability: $\int \partial_t p_t\, dx = 0$. This forces $\partial_t \log Z_t = \mathbb{E}_{p_t}[g(x)]$, which is exactly the centering term in (1) — a reassuring consistency check.</p>
+
+<p>This already says something important: <strong>you can sample from the reward-tilted target without changing the drift at all</strong> — just run the base SDE and accumulate these weights. The catch is that pushing the entire reward signal into the weights makes them high-variance.</p>
+
+<h3 id="step-4--trading-weight-for-drift">Step 4 — Trading weight for drift</h3>
+
+<p>To reduce weight variance, we move part of the correction into the drift. Add a free drift term $a \nabla r$ to the SDE and compensate exactly in the weights. Splitting the transport operator:</p>
+
 <div style="overflow-x: auto;">
 $$
-\begin{align*}
-\partial_t \log q_t 
-&amp;= - \nabla \mu_q - \mu_q \cdot {\color{red}\nabla \log q_t} + \frac{\sigma_q^2}{2} {\color{blue}\Delta \log q_t} + \frac{\sigma_q^2}{2} {\color{green}||\nabla \log q_t||^2} \\
-&amp;= - \nabla \mu_q - \mu_q \cdot {\color{red}(\nabla \log p_t - \beta_t \nabla r(x))} + \frac{\sigma_q^2}{2} {\color{blue}(\Delta \log p_t - \beta_t \Delta r(x))} + \frac{\sigma_q^2}{2} {\color{green}||\nabla \log p_t - \beta_t \nabla r(x)||^2} \\
-&amp;= \underbrace{- \nabla \mu_q - \mu_q \cdot {\color{red}\nabla \log p_t} + \frac{\sigma_q^2}{2} {\color{blue}\Delta \log p_t} + \frac{\sigma_q^2}{2} {\color{green}||\nabla \log p_t||^2}}_{\text{log FPE of} \ p_t}
-+ {\color{red} \mu_q \cdot \beta_t \nabla r(x)} - \frac{\sigma_q^2}{2} {\color{blue}\beta_t \Delta r(x)} - \frac{\sigma_q^2}{2} \beta_t^2 ({\color{green} 2 \nabla\log p_t \cdot \nabla r(x) +||\nabla r(x)||^2)}
-\end{align*}
+-\nabla \cdot [p_t \mu_q] = -\nabla \cdot [p_t(\mu_q + a\nabla r)] + \nabla \cdot [p_t\, a\nabla r]
 $$
 </div>
 
-<p>And what do we spy with our little eyes?
-The first four terms are actually the log FPE of $p_t$ itself!</p>
+<p>The added-back divergence converts to a weight via $\nabla \cdot [p_t\, a\nabla r] = p_t\big[a\Delta r + a\langle\nabla\log p_t, \nabla r\rangle\big]$. So the modified SDE and updated weight are:</p>
 
-<p>We we plug in $\partial_t \log q_t$ into $\partial_t \log p_t(x)$, we get</p>
 <div style="overflow-x: auto;">
 $$
-\begin{align*}
-\partial_t \log p_t(x)
-&amp;=  \partial_t\log q_t(x) + \partial_t \beta_t \ r(x) - \partial_t \log Z \\
-&amp;= \overbrace{\underbrace{- \nabla \mu_q - \mu_q \cdot {\color{red}\nabla \log p_t} + \frac{\sigma_q^2}{2} {\color{blue}\Delta \log p_t} + \frac{\sigma_q^2}{2} {\color{green}||\nabla \log p_t||^2}}_{\text{log FPE of} \ p_t}
-+ {\color{red} \mu_q \cdot \beta_t \nabla r(x)} - \frac{\sigma_q^2}{2} {\color{blue}\beta_t \Delta r(x)} - \frac{\sigma_q^2}{2} \beta_t^2 ({\color{green} 2 \nabla\log p_t \cdot \nabla r(x) +||\nabla r(x)||^2)}}^{\partial_t \log q_t} + \partial_t \beta_t \ r(x) - \partial_t \log Z 
-\end{align*}
+dx_t = (\mu_q + a\nabla r)\,dt + \sigma_q\, dW_t, \qquad g \mathrel{+}= a\Delta r + a\langle\nabla\log p_t,\nabla r\rangle
 $$
 </div>
 
-<p>In order to go back to the non-log FPE, we just have to multiply both sides by $p_t$ and apply the log derivative identities from above in reverse,</p>
+<p>The scalar $a$ is a free knob — it controls how much of the reward correction lives in the drift versus the weights. Both choices produce the same marginals $p_t$.</p>
+
+<h3 id="step-5--specialize-to-the-reverse-time-sde-and-pick-a">Step 5 — Specialize to the reverse-time SDE and pick $a$</h3>
+
+<p>For a diffusion model, the reverse-time SDE has drift $v_t = -f_t + \sigma_t^2 \nabla\log q_t$, where $f_t$ is the forward SDE drift. Inserting this and choosing:</p>
+
 <div style="overflow-x: auto;">
 $$
-\begin{align*}
-p_t \partial_t \log p_t(x)
-&amp;=  p_t \left( \partial_t\log q_t(x) + \partial_t \beta_t \ r(x) - \partial_t \log Z \right) \\
-\partial_t p_t &amp;= - \nabla \mu_q \cdot p_t - \mu_q \cdot p_t \nabla \log p_t + \frac{\sigma_q^2}{2} p_t \left( \Delta \log p_t + ||\nabla \log p_t||^2 \right)
-+ p_t \left(\mu_q \cdot \beta_t \nabla r(x) - \frac{\sigma_q^2}{2} \beta_t \Delta r(x) - \frac{\sigma_q^2}{2} \beta_t^2 (2 \nabla\log p_t \cdot \nabla r(x) +||\nabla r(x)||^2) + \partial_t \beta_t \ r(x) - \partial_t \log Z \right) \\
-\partial_t p_t &amp;= - \nabla \mu_q \cdot p_t - \mu_q \cdot \nabla p_t + \frac{\sigma_q^2}{2} \left(  p_t \nabla \cdot [ \nabla \log p_t] + p_t \nabla \log p_t \cdot \nabla \log p_t \right)
-+ p_t \left(\ldots \right) \\
-\partial_t p_t &amp;= - \nabla \cdot [ \mu \ p_t ] + \frac{\sigma_q^2}{2} \left( p_t \nabla \cdot [ \nabla \log p_t] + \nabla p_t  \cdot \nabla \log p_t \right)
-+ p_t \left(\ldots \right) \\
-\partial_t p_t &amp;= - \nabla \cdot [ \mu \ p_t ] + \frac{\sigma_q^2}{2} \nabla \cdot [ \underbrace{p_t \nabla \log p_t}_{\nabla p_t}]
-+ p_t \left(\ldots \right) \\
-\partial_t p_t &amp;= - \nabla \cdot [ \mu \ p_t ] + \frac{\sigma_q^2}{2} \Delta p_t
-+ p_t \Big(\underbrace{\mu_q \cdot \beta_t \nabla r(x) - \frac{\sigma_q^2}{2} \beta_t \Delta r(x) - \frac{\sigma_q^2}{2} \beta_t^2 (2 \nabla\log p_t \cdot \nabla r(x) +||\nabla r(x)||^2) + \partial_t \beta_t \ r(x)}_{g(x) } - \partial_t \log Z \Big) \\
-\end{align*}
+a = \frac{\beta_t \sigma_t^2}{2}
 $$
 </div>
 
-<p>The last thing is how we actually compute $\partial_t \log Z$.
-We can compute $\partial_t \log Z$ by differentiating the definition of $Z$.
-For notational simplicity, let us define $\tilde{p} = \int q_t \exp(\beta_t r(x)) dx$</p>
+<p>produces two key cancellations.</p>
+
+<p><strong>First</strong>, inside the weight inner product, $v_t - \sigma_t^2\nabla\log q_t = -f_t$, so the cross terms simplify immediately.</p>
+
+<p><strong>Second — and this is the payoff — the reward Laplacian cancels entirely:</strong></p>
+
 <div style="overflow-x: auto;">
 $$
-\begin{align*}
-\partial_t \log Z &amp;= \partial_t \log \int q_t(x) \exp(\beta_t r(x)) dx \\
-&amp;= \frac{1}{Z} \ \partial_t \int q_t(x) \exp(\beta_t r(x)) dx \\
-&amp;= \frac{1}{Z} \int \partial_t \ \tilde{p}_t \ dx \\
-&amp;= \frac{1}{Z} \int \tilde{p} \ \partial_t \log \tilde{p}_t \ dx \\
-&amp;= \int p_t \ \partial_t \log \tilde{p}_t \ dx \\
-&amp;= \int p_t \ \left[  \partial_t \ \log q_t + \partial_t \beta_t \ r(x) \ \right] dx \\
-\end{align*}
+\underbrace{a\,\Delta r}_{\text{from Step 4}} - \underbrace{\frac{\beta_t \sigma_t^2}{2}\Delta r}_{\text{from }(2)} = 0
 $$
 </div>
 
-<p>It should immediately be obvious that the term $\partial_t \log q_t + \partial_t \beta_t \ r(x)$ is the same term into which we’ve inserted the log derivatives.
-So we expand the $\log q_t$ in the same way as we did above, and then multiply it with the $p_t$ in the integral, we get</p>
-<div style="overflow-x: auto;">
-$$
-\begin{align*}
-\partial_t \log Z_t 
-&amp;= \int  - \nabla \cdot [ \mu \ p_t ] + \frac{\sigma_q^2}{2} \Delta p_t + p_t g(x) \ dx \\
-&amp;= \int  \partial_t p_t + p_t g(x) \ dx \\
-&amp;= \underbrace{\int  \partial_t p_t dx}_{=0} + \int p_t g(x) \ dx \\
-&amp;= \mathbb{E}_{p_t} \left[ g(x) \right]
-\end{align*}
-$$
-</div>
-<p>which is literally just repeating the same steps that we did above to transform the log FPE to the FPE.</p>
+<p>$\Delta r$ is computationally expensive (estimating the divergence of a gradient requires either a trace estimator or a full Hessian), and this choice of $a$ eliminates it. The remaining $\beta_t^2|\nabla r|^2$ cross-terms cancel pairwise using $\nabla\log p_t = \nabla\log q_t + \beta_t\nabla r$. The final result is:</p>
 
-<p>One of the key properties of the Fokker-Planck equation is that it conserves probability, meaning that the total probability integrates to 1 for all time $t$.
-So if we integrate all the outflows and inflows of probability across the entire state space, they should balance out to zero, ensuring that the total probability remains constant.
-If at any time step $t$, the change in probability $\partial_t$ over the entire space $x$ would not be zero, it would imply that probability is either being created or destroyed, which violates the fundamental principle of probability conservation.
-So if from one $t$ to the next $t+dt$, all the changes in probability across the state space would be $-0.1$, it would imply that the total probability has decreased by 0.1 which would render our distribution $p_t$ invalid as it would no longer integrate to 1.</p>
-
-<p>But in fact, we can show this analytically by integrating the FPE of $p_t$ over the entire state space.
-For the left hand side, we have</p>
 <div style="overflow-x: auto;">
 $$
-\int \partial_t p_t dx = \partial_t \int p_t dx = \partial_t 1 = 0
-$$
-</div>
-<p>where we’ve used Leibniz rule where we can interchange differentiation and integration for different variables.
-For the right hand side of the FPE, we have</p>
-<div style="overflow-x: auto;">
-$$
-\begin{align*}
-&amp;\int - \nabla \cdot [ \mu \ p_t ] + \frac{\sigma_q^2}{2} \Delta p_t \ dx \\
-= &amp; \int - \nabla \cdot [ \mu \ p_t ] + \frac{\sigma_q^2}{2} \Delta p_t \ dx \\
-= &amp; \int - \nabla \mu \ p_t - \nabla p_t \mu + \frac{\sigma_q^2}{2} \nabla^2 p_t  \ dx \\
-\end{align*}
+\boxed{dx_t = \Big(-f_t(x_t) + \sigma_t^2\nabla\log q_t(x_t) + \frac{\beta_t \sigma_t^2}{2}\nabla r(x_t)\Big)dt + \sigma_t\, dW_t} \tag{3}
 $$
 </div>
 
-<p>Using integration by parts,</p>
 <div style="overflow-x: auto;">
 $$
-\begin{align*}
-\int f \ \nabla g \ dx = [f \ g]^{\infty}_{-\infty} - \int g \ \nabla f \ dx
-\end{align*}
-$$
-</div>
-<p>we can exploit that fact that for any reasonable probability distribution $p_t$, the probability density at the boundaries of the state space should be zero, meaning that $\lim_{x \to \infty} p_t(x) = 0$ and $\lim_{x \to -\infty} p_t(x) = 0$.</p>
-
-<p>Thus we have,</p>
-<div style="overflow-x: auto;">
-$$
-\begin{align*}
-&amp; \int - \nabla \mu \ p_t - \nabla p_t \mu + \frac{\sigma_q^2}{2} \nabla^2 p_t  \ dx \\
-= &amp; \int - \nabla \mu \ p_t - [ p_t \ \mu ]^{\infty}_{-\infty} + p_t \nabla \mu + \frac{\sigma_q^2}{2} \nabla^2 p_t \ dx \\
-= &amp; \int \frac{\sigma_q^2}{2} \nabla \ [p_t \nabla \log p_t ] \ dx \\
-= &amp; \frac{\sigma_q^2}{2} \int  \nabla \ [p_t \nabla \log p_t ] \ dx \\
-= &amp; \frac{\sigma_q^2}{2} [p_t \nabla \log p_t ]^{\infty}_{-\infty} \\
-= &amp; \frac{\sigma_q^2}{2} \ 0
-\end{align*}
-$$
-</div>
-<p>where we’ve used the fact integration and derivatives cancel each other out while preserving the boundary evaluation conditions of $p_t$ at $\pm \infty$.</p>
-
-<p>We can also play the integration by parts game one more time and show that</p>
-<div style="overflow-x: auto;">
-$$
-\begin{align*}
-&amp; \frac{\sigma_q^2}{2} \int  \nabla \ [p_t \nabla \log p_t ] \ dx \\
-= &amp; \frac{\sigma_q^2}{2} \int  \nabla p_t \cdot \nabla \log p_t + p_t \nabla^2 \log p_t \ dx \\
-= &amp; \frac{\sigma_q^2}{2} \int  [p_t \nabla \log p_t]^\infty_{-\infty} - p_t \nabla^2 \log p_t + p_t \nabla^2 \log p_t \ dx \\
-= &amp; \frac{\sigma_q^2}{2} \ 0
-\end{align*}
+\boxed{dw_t = \left[\dot{\beta}_t\, r(x_t) + \left\langle \beta_t\nabla r(x_t),\; \frac{\sigma_t^2}{2}\nabla\log q_t(x_t) - f_t(x_t)\right\rangle \right]dt} \tag{4}
 $$
 </div>
 
-<p>All of this let’s us rewrite the FPE of our tilted distribution $p_t$ as</p>
+<p><strong>How to read this result.</strong> The drift (3) is exactly what you would write down heuristically — the base denoising drift plus a classifier-guidance-style push $\frac{\beta_t\sigma_t^2}{2}\nabla r$ up the reward gradient. The weight (4) is the exact correction that makes this heuristic drift consistent with the tilted marginals $p_t$.</p>
+
+<p>The two weight terms have transparent interpretations:</p>
+<ul>
+  <li>$\dot{\beta}_t\, r$ — annealing bookkeeping: particles in high-reward regions get up-weighted in proportion to how fast you ramp up $\beta_t$.</li>
+  <li>$\langle\beta_t\nabla r,\; \frac{\sigma_t^2}{2}\nabla\log q_t - f_t\rangle$ — a weight that grows when the reward gradient <strong>aligns with the model’s natural vector field</strong>. A particle drifting in a direction that also increases reward is doing exactly what the tilted target wants and earns weight; a particle whose reward-improving direction fights the model’s natural flow is penalized.</li>
+</ul>
+
+<h2 id="time-dependent-reward-rx-t">Time-Dependent Reward $r(x, t)$</h2>
+
+<p>Now suppose the reward has explicit time dependence $r = r(x, t)$, so the tilt is $\exp(\beta_t\, r(x,t))$:</p>
+
 <div style="overflow-x: auto;">
 $$
-\begin{align*}
-\partial_t p_t &amp;= - \nabla \cdot [ \mu \ p_t ] + \frac{\sigma_q^2}{2} \Delta p_t
-+ p_t \Big(g(x) - \mathbb{E}_{p_t} \left[ g(x) \right] \Big)
-\end{align*}
+p_t(x) = \frac{q_t(x)\,\exp(\beta_t\, r(x,t))}{Z_t}
 $$
 </div>
 
-<p>Is it in fact quite interesting that the change of probability equation that we’ve derived consists of two different parts: the original FP equation of $p_t$ and an additional term that captures the effect of the reward tilt on the probability distribution.</p>
+<p><strong>The headline:</strong> every spatial manipulation in the derivation above is evaluated at a fixed time slice, so Steps 2 and 4 are word-for-word unchanged. The only difference is that the time derivative of the tilt exponent picks up an extra term by the product rule:</p>
 
-<p>The first term consists only of the original drift $\mu_q$ and diffusion $\sigma_q^2$ of the original process $q_t$, which implies that we can model the original SDE as is.
-It is only the second term that introduces the effect of the reward tilt, modifying the probability distribution according to the function $g(x)$.
-Every term in the second part $g(x)$ contains in fact the reward function $r(x)$, whether it be $r(x)$ directly or its gradients $\nabla r(x)$ and $\Delta r(x)$, which means that the reward function is the only source of change in the probability distribution $p_t$.</p>
+<div style="overflow-x: auto;">
+$$
+\partial_t\big[\beta_t\, r(x,t)\big] = \dot{\beta}_t\, r(x,t) + \beta_t\,\partial_t r(x,t)
+$$
+</div>
+
+<p>where $\partial_t r(x,t)$ is the <strong>partial time derivative at fixed $x$</strong> — not the material derivative along a trajectory. This single extra term propagates, spatially inert, all the way through to the final weight. The modified equations are:</p>
+
+<div style="overflow-x: auto;">
+$$
+dx_t = \Big(-f_t(x_t) + \sigma_t^2\nabla\log q_t(x_t) + \frac{\beta_t \sigma_t^2}{2}\nabla r(x_t,t)\Big)dt + \sigma_t\, dW_t \tag{3'}
+$$
+</div>
+
+<div style="overflow-x: auto;">
+$$
+dw_t = \left[\dot{\beta}_t\, r(x_t,t) + \beta_t\,\partial_t r(x_t,t) + \left\langle \beta_t\nabla r(x_t,t),\; \frac{\sigma_t^2}{2}\nabla\log q_t(x_t) - f_t(x_t)\right\rangle \right]dt \tag{4'}
+$$
+</div>
+
+<p>Setting $\partial_t r \equiv 0$ recovers the static case (3)–(4) exactly.</p>
+
+<h3 id="a-unifying-view">A unifying view</h3>
+
+<p>Define the full tilt exponent $\rho(x,t) := \beta_t\, r(x,t)$. Then:</p>
+<ul>
+  <li>spatially: $\nabla\rho = \beta_t\nabla r$ and $\Delta\rho = \beta_t\Delta r$</li>
+  <li>temporally: $\partial_t\rho = \dot{\beta}_t\, r + \beta_t\,\partial_t r$</li>
+</ul>
+
+<p>The two schedule terms in (4’) are simply $\partial_t\rho$, so the weight collapses to:</p>
+
+<div style="overflow-x: auto;">
+$$
+dw_t = \left[\partial_t\rho(x_t,t) + \left\langle \nabla\rho(x_t,t),\; \frac{\sigma_t^2}{2}\nabla\log q_t(x_t) - f_t(x_t)\right\rangle \right]dt
+$$
+</div>
+
+<p>This is structurally the same formula as the static case with $\beta_t r(x)$ promoted to $\rho(x,t)$.</p>
+
+<h3 id="implementation-note">Implementation note</h3>
+
+<p>The new term requires $\partial_t r(x_t, t)$ — the partial derivative holding position fixed. This is <em>not</em> the total/material derivative $\frac{d}{dt}r(x_t,t) = \partial_t r + \langle\nabla r, \dot{x}_t\rangle$; the convective part $\langle\nabla r, \cdot\rangle$ is already accounted for in the guidance drift and weight inner product. Double-counting it would over-correct.</p>
+
+<p>In practice: if $r$ is a closed-form function of $(x,t)$, differentiate analytically w.r.t. $t$ only. If $r$ is available only at discrete snapshots $r(\cdot, t_k)$, use the finite difference $\big(r(x_t, t_{k+1}) - r(x_t, t_k)\big)/\Delta t$ evaluated at the fixed sample location $x_t$.</p>
 
 <h2 id="the-feynman-kac-equation">The Feynman-Kac Equation</h2>
 
@@ -456,7 +457,7 @@ $$
 $$
 \begin{align*}\partial_t p_t &amp;= - \nabla \cdot [ \mu \ p_t ] + \frac{\sigma_q^2}{2} \Delta p_t
 + p_t \Big(g(x) - \mathbb{E}_{p_t} \left[ g(x) \right] \Big) \\
-g(x,t) = &amp; \mu_q \cdot \beta_t \nabla r(x) - \frac{\sigma_q^2}{2} \beta_t \Delta r(x) - \frac{\sigma_q^2}{2} \beta_t^2 (2 \nabla\log p_t \cdot \nabla r(x) +||\nabla r(x)||^2) + \partial_t \beta_t \ r(x) \\
+g(x,t) = &amp; \mu_q \cdot \beta_t \nabla r(x) - \frac{\sigma_q^2}{2} \beta_t \Delta r(x) - \frac{\sigma_q^2}{2} \beta_t^2 (2 \nabla\log p_t \cdot \nabla r(x) +||\nabla r(x)||^2) + \dot{\beta}_t \ r(x) \\
 -\partial_t u(x,t) &amp;= \mu(x,t) \nabla u(x,t) + \frac{1}{2}\sigma^2(x,t) \nabla^2 u(x,t) + g(x,t) u(x,t)
 \end{align*}
 $$
