@@ -1,0 +1,2177 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Density Functional Theory — a step-by-step explainer</title>
+
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  /* =====================================================================
+     AESTHETIC: "phosphor monograph" — a quantum text rendered on a dark
+     oscilloscope screen. Deep indigo ink, luminous amber density clouds,
+     electric-teal potentials. High-contrast Cormorant display + Source Serif.
+     ===================================================================== */
+  :root {
+    --bg:        #0d0f16;   /* deep indigo-black                       */
+    --bg-2:      #11141d;   /* subtle vignette companion               */
+    --surface:   #141824;   /* widgets / cards                         */
+    --surface-2: #1a1f2e;   /* lifted panels                           */
+    --ink:       #ece7da;   /* warm paper-white body                   */
+    --ink-soft:  #9aa1b2;   /* cool secondary                          */
+    --ink-faint: #5f6678;
+    --accent:    #f2b25c;   /* phosphor amber — the DENSITY cloud      */
+    --accent-2:  #5fd2d6;   /* electric teal — POTENTIALS / orbitals   */
+    --accent-3:  #e0729f;   /* magenta — the exchange–correlation bit  */
+    --line:      #262c3b;   /* hairlines                               */
+    --axis:      #3b4254;   /* plot axes                               */
+    --kernel-bg: #161b29;
+    --radius: 16px;
+    --measure: 68ch;
+    --font-display: 'Cormorant Garamond', Georgia, serif;
+    --font-body:    'Source Serif 4', Georgia, serif;
+    --font-mono:    'JetBrains Mono', ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background:
+      radial-gradient(1200px 700px at 78% -8%, #1a2034 0%, rgba(26,32,52,0) 60%),
+      radial-gradient(900px 600px at 8% 12%, #15182a 0%, rgba(21,24,42,0) 55%),
+      var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 19px;
+    line-height: 1.72;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection { background: rgba(242,178,92,0.28); }
+
+  #progress {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-3));
+    z-index: 100; transition: width 0.1s linear;
+    box-shadow: 0 0 12px rgba(242,178,92,0.6);
+  }
+
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 26px 140px; }
+  .prose { max-width: var(--measure); }
+  .prose p { margin: 0 0 1.15em; }
+  .prose em { color: var(--ink); font-style: italic; }
+
+  /* ---- HEADER ---- */
+  header { padding: 104px 0 30px; position: relative; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.34em;
+    text-transform: uppercase; color: var(--accent); margin: 0 0 26px;
+  }
+  h1 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(3rem, 8vw, 5.4rem); line-height: 0.98;
+    margin: 0 0 26px; letter-spacing: 0.005em; color: #fbf7ee;
+  }
+  h1 .sub { display:block; font-style: italic; font-weight: 500;
+    font-size: clamp(1.4rem,3.4vw,2.1rem); color: var(--accent-2);
+    letter-spacing: 0; margin-top: 6px; }
+  .promise {
+    font-size: 1.2rem; color: var(--ink-soft); font-style: italic;
+    max-width: 60ch; line-height: 1.55;
+  }
+  .byline { font-family: var(--font-mono); font-size:0.72rem; letter-spacing:0.18em;
+    text-transform:uppercase; color: var(--ink-faint); margin-top: 30px; }
+
+  /* ---- KERNEL ---- */
+  .kernel {
+    position: relative; background:
+      linear-gradient(180deg, var(--surface-2), var(--kernel-bg));
+    border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 40px 44px; margin: 52px 0 84px;
+    box-shadow: 0 0 0 1px rgba(242,178,92,0.06), 0 30px 80px -40px rgba(0,0,0,0.8);
+  }
+  .kernel::before {
+    content:''; position:absolute; left:0; top:22px; bottom:22px; width:3px;
+    background: linear-gradient(var(--accent), var(--accent-3));
+    border-radius: 3px; box-shadow: 0 0 14px rgba(242,178,92,0.5);
+  }
+  .kernel .label {
+    font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.28em;
+    text-transform: uppercase; color: var(--accent); margin: 0 0 16px;
+  }
+  .kernel .sentence {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 1.72rem; line-height: 1.36; margin: 0; color: #f7f2e6;
+  }
+
+  /* ---- STEPS ---- */
+  .concept-step { margin: 0 0 96px; scroll-margin-top: 40px; }
+  .step-num {
+    font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500;
+    color: var(--accent-2); letter-spacing: 0.22em; text-transform: uppercase;
+    margin: 0 0 10px;
+  }
+  .concept-step h2 {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(2rem, 4.4vw, 2.9rem); line-height: 1.08;
+    margin: 0 0 22px; letter-spacing: 0.01em; color: #f6f1e6;
+  }
+
+  /* ---- FORMAL COLLAPSIBLE ---- */
+  details.formal {
+    border: 1px solid var(--line); border-radius: 12px;
+    background: rgba(20,24,36,0.6); margin: 26px 0; max-width: var(--measure);
+  }
+  details.formal summary {
+    cursor: pointer; padding: 15px 20px; font-family: var(--font-mono);
+    font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--ink-soft); list-style: none; user-select: none;
+  }
+  details.formal summary::-webkit-details-marker { display:none; }
+  details.formal summary::before { content: '▸ '; color: var(--accent); }
+  details.formal[open] summary::before { content: '▾ '; }
+  details.formal .formal-body { padding: 2px 20px 20px; font-size: 0.97rem; }
+  details.formal .formal-body p { margin: 0 0 0.9em; }
+
+  /* ---- WIDGET ---- */
+  .widget {
+    background: linear-gradient(180deg, var(--surface), #10131c);
+    border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 24px; margin: 30px 0;
+    box-shadow: 0 24px 60px -44px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.02);
+  }
+  .widget-controls {
+    display: flex; flex-wrap: wrap; gap: 18px 30px; margin-bottom: 20px;
+  }
+  .widget-controls label {
+    display: flex; flex-direction: column; gap: 8px;
+    font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.06em;
+    color: var(--ink-soft); min-width: 170px; text-transform: uppercase;
+  }
+  .widget-controls .val { color: var(--accent); font-weight: 500; letter-spacing: 0; }
+  input[type=range] {
+    accent-color: var(--accent); cursor: pointer; width: 100%;
+    background: transparent;
+  }
+  .widget button {
+    font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.06em;
+    background: var(--surface-2); color: var(--ink); border: 1px solid var(--line);
+    padding: 10px 16px; border-radius: 9px; cursor: pointer; transition: all 0.15s;
+  }
+  .widget button:hover:not(:disabled) {
+    background: var(--accent); color: #1a1206; border-color: var(--accent);
+    box-shadow: 0 0 18px -4px rgba(242,178,92,0.6);
+  }
+  .widget button:disabled { opacity: 0.32; cursor: default; }
+  .widget .mode-btn.is-active {
+    background: var(--accent); color: #1a1206; border-color: var(--accent);
+    box-shadow: 0 0 18px -6px rgba(242,178,92,0.5);
+  }
+  .widget-stage {
+    display: block; width: 100%; border-radius: 10px;
+    background: #0a0c12;
+  }
+  .readout {
+    margin-top: 16px; font-size: 0.98rem; color: var(--ink-soft);
+    min-height: 1.4em;
+  }
+  .readout b { color: var(--accent); font-weight: 600; }
+  .reveal-bar {
+    display: flex; align-items: center; gap: 16px; margin-top: 16px;
+    flex-wrap: wrap;
+  }
+  .reveal-caption {
+    flex: 1; min-width: 200px; font-size: 0.95rem;
+    color: var(--ink); font-style: italic;
+  }
+  .caption {
+    font-size: 0.84rem; color: var(--ink-faint); font-style: italic;
+    margin-top: 10px; font-family: var(--font-body);
+  }
+  .stat-row { display:flex; gap: 26px; flex-wrap: wrap; margin-top: 14px;
+    font-family: var(--font-mono); font-size: 0.82rem; }
+  .stat-row .k { color: var(--ink-faint); text-transform: uppercase; letter-spacing:0.1em; font-size:0.68rem; display:block; }
+  .stat-row .v { color: var(--accent); font-size: 1.15rem; }
+  .stat-row .v.teal { color: var(--accent-2); }
+  .stat-row .v.mag { color: var(--accent-3); }
+
+  /* ---- RECAP / where ---- */
+  .recap {
+    border-top: 1px solid var(--line); padding-top: 48px; margin-top: 24px;
+  }
+  .recap h2 { font-family: var(--font-display); font-weight:600; font-size: 2.4rem; margin: 0 0 20px; color:#f6f1e6; }
+  .where h2 { font-family: var(--font-display); font-weight:600; font-size: 2rem; margin: 56px 0 18px; color:#f6f1e6; }
+  .where .card { background: rgba(20,24,36,0.5); border:1px solid var(--line);
+    border-radius: 12px; padding: 18px 22px; margin: 14px 0; max-width: var(--measure); }
+  .where .card h3 { font-family: var(--font-mono); font-size:0.78rem; letter-spacing:0.14em;
+    text-transform:uppercase; color: var(--accent-2); margin:0 0 8px; }
+  .where .card p { margin:0; font-size:0.98rem; color: var(--ink-soft); }
+
+  mark { background: linear-gradient(transparent 58%, rgba(242,178,92,0.28) 58%); color: inherit; padding: 0 1px; }
+  a { color: var(--accent); }
+  .mjx-container { color: var(--ink); }
+
+  @media (max-width: 620px) {
+    body { font-size: 17px; }
+    .wrap { padding: 0 18px 90px; }
+    .kernel { padding: 28px 26px; }
+    .kernel .sentence { font-size: 1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<div class="wrap">
+
+  <!-- ===================== HEADER ===================== -->
+  <header>
+    <p class="eyebrow">A step-by-step explainer</p>
+    <h1>Density Functional Theory<span class="sub">how to fake a billion-dimensional problem with a 3-D cloud</span></h1>
+    <p class="promise">
+      By the end you'll understand why chemists and physicists can throw away the
+      impossibly complicated many-electron wavefunction and keep only a single
+      density cloud — and exactly which clever trick makes that legal, accurate,
+      and computable.
+    </p>
+    <p class="byline">For someone fluent in optimization, sufficient statistics, and fixed-point iteration.</p>
+  </header>
+
+  <!-- ===================== KERNEL ===================== -->
+  <div class="kernel">
+    <p class="label">The whole idea, in one sentence</p>
+    <p class="sentence">
+      Stripped of all the formality, DFT is just the claim that
+      <mark>the lowest-energy state of a swarm of interacting electrons is
+      completely pinned down by where the electrons sit on average — a single
+      cloud \(n(\mathbf r)\) in ordinary 3-D space</mark> — so you can forget the
+      monstrous many-particle wavefunction and optimize over that cloud instead.
+    </p>
+  </div>
+
+  <!-- ===================== PRIMER ===================== -->
+  <section class="concept-step" id="step-primer">
+    <p class="step-num">Primer · the wavefunction and its shadow</p>
+    <h2>First, what a wavefunction actually is</h2>
+    <div class="prose">
+      <p>
+        Classically a particle has a definite position. Quantum mechanics replaces that
+        with a <em>wavefunction</em> \(\psi(x)\): a <mark>complex-valued amplitude attached to
+        every point in space</mark>. It is not a probability — it is an amplitude, free to be
+        negative or complex, and that is precisely what lets quantum things interfere.
+      </p>
+      <p>
+        You never observe \(\psi\) itself. What you observe are particles, and the
+        <em>Born rule</em> is the bridge: the probability of finding the particle near \(x\)
+        is the squared magnitude of the amplitude,
+        \[ p(x) = |\psi(x)|^2, \qquad \int |\psi(x)|^2\,dx = 1. \]
+        So out of the amplitude field falls an ordinary probability density — non-negative and
+        normalized. The wavefunction is the primitive object; the probability distribution is
+        its <em>shadow</em>, obtained by squaring. Squaring is lossy: it discards the phase,
+        which is information the amplitude was carrying. Hold onto that idea — the whole page is
+        about what a distribution forgets and how to get it back.
+      </p>
+      <p>
+        One last move turns this into the subject at hand. For a single particle \(\psi\) lives
+        over ordinary 3-D space. For \(N\) particles it does <em>not</em> split into \(N\)
+        separate clouds — it is one amplitude \(\Psi(\mathbf r_1,\ldots,\mathbf r_N)\) over the
+        \(3N\)-dimensional <em>configuration space</em>, and \(|\Psi|^2\) is the joint
+        distribution of all \(N\) positions at once. That single fact — one giant joint instead
+        of \(N\) little clouds — is the source of every difficulty the rest of this page exists
+        to dodge.
+      </p>
+    </div>
+
+    <div class="widget" id="wq">
+      <div class="widget-controls">
+        <label>momentum &nbsp;k = <span class="val" id="wq-kV">2.5</span>
+          <input type="range" id="wq-k" min="0" max="6" step="0.1" value="2.5">
+        </label>
+        <label>cloud width &nbsp;σ = <span class="val" id="wq-sV">1.10</span>
+          <input type="range" id="wq-s" min="0.5" max="2.0" step="0.05" value="1.1">
+        </label>
+        <label style="justify-content:flex-end;">&nbsp;
+          <span style="display:flex; gap:10px;">
+            <button id="wq-measure">Measure particle ×40</button>
+            <button id="wq-reset">Reset</button>
+          </span>
+        </label>
+      </div>
+      <canvas id="wq-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="wq-readout"></div>
+      <p class="caption"><b>Top:</b> the complex amplitude \(\psi(x)\) — its real (teal) and imaginary
+        (magenta) parts oscillating inside a Gaussian envelope. <b>Bottom:</b> the Born-rule density
+        \(|\psi(x)|^2\) (amber), with measured particle positions piling into a histogram that converges
+        to it. Slide the momentum \(k\): the amplitude rewinds, yet the probability cloud never moves —
+        the phase is storing information that squaring throws away.</p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version</summary>
+      <div class="formal-body prose">
+        <p>A pure state is a unit vector \(|\psi\rangle\) in a Hilbert space (here
+        \(L^2(\mathbb R^3)\)); the position-space wavefunction is the component
+        \(\psi(x)=\langle x|\psi\rangle\). Observables are Hermitian operators, and a position
+        measurement returns \(x\) with density \(|\langle x|\psi\rangle|^2\) — the Born rule — so
+        normalization is just \(\langle\psi|\psi\rangle=1\). The wavepacket above is
+        \(\psi(x)\propto e^{-(x-x_0)^2/4\sigma^2}\,e^{ikx}\): the factor \(e^{ikx}\) sets the mean
+        momentum \(\langle\hat p\rangle=k\) but leaves \(|\psi|^2\) untouched, the cleanest example
+        of phase information invisible to the density.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 1 ===================== -->
+  <section class="concept-step" id="step-1">
+    <p class="step-num">Step 1 · the wall</p>
+    <h2>The honest answer is uncomputable</h2>
+    <div class="prose">
+      <p>
+        Everything about a molecule's ground state is contained in one object: the
+        many-electron wavefunction \(\Psi(\mathbf r_1, \mathbf r_2, \ldots, \mathbf r_N)\),
+        the solution of the time-independent Schrödinger equation \(\hat H \Psi = E\Psi\).
+        The catch is its <em>shape</em>. With \(N\) electrons, \(\Psi\) is a function of
+        \(3N\) coordinates at once.
+      </p>
+      <p>
+        That is the same monster you know from probabilistic ML: an explicit joint
+        distribution over \(3N\) continuous variables. If you tried to tabulate it on a
+        grid with \(g\) points per axis, you'd need \(g^{3N}\) numbers. This is the
+        <mark>exponential wall</mark>. Slide \(N\) upward and watch it crash through the
+        number of atoms in the observable universe — for a single caffeine molecule.
+      </p>
+      <p>
+        Why exponential, when "\(3N\) coordinates" sounds merely linear? Because a function is a
+        <em>rule that must return a value at every point of its domain</em>, and discretizing each
+        axis into \(g\) points turns that domain into a product grid. One electron lives on \(g^3\)
+        cells. For two, the pair \((\mathbf r_1,\mathbf r_2)\) ranges over \(g^3\times g^3\), since for
+        <em>each</em> position of the first the second can independently sit anywhere. Every further
+        electron multiplies the count by another \(g^3\):
+        \[ \underbrace{g^3\times g^3\times\cdots\times g^3}_{N}=g^{3N}. \]
+        The number of arguments grows linearly (\(3N\)); the domain they span grows multiplicatively.
+        That repeated multiplication <em>is</em> the exponential — the curse of dimensionality, nothing more.
+      </p>
+      <p>
+        You could escape it if \(\Psi\) factorized, \(\Psi=\prod_i \phi_i(\mathbf r_i)\): then \(N\)
+        separate clouds — \(N g^3\) numbers, linear in \(N\) — would rebuild the whole thing. It does
+        not. Coulomb repulsion and Pauli antisymmetry entangle the coordinates, so the amplitude at a
+        joint configuration is genuinely its own number, not deducible from the single-particle pieces.
+        The gap between \(N g^3\) (independent) and \(g^{3N}\) (correlated) is exactly where the
+        interaction lives — the same reason a full joint table over \(D\) variables costs \(g^D\) while
+        an independent model costs only \(D g\).
+      </p>
+    </div>
+
+    <div class="widget" id="we">
+      <div class="widget-controls">
+        <label style="min-width:auto;">build the configuration space
+          <span style="display:flex; gap:10px; margin-top:2px;">
+            <button id="we-add">＋ Add electron</button>
+            <button id="we-rm">－ Remove</button>
+            <button id="we-spin">⏸ Pause</button>
+          </span>
+        </label>
+        <label>grid points / axis &nbsp;g = <span class="val" id="we-gV">3</span>
+          <input type="range" id="we-g" min="2" max="4" step="1" value="3">
+        </label>
+      </div>
+      <canvas id="we-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="we-readout"></div>
+      <p class="caption">Each spinning cube is one electron's grid of \(g^3\) possible cells. The joint
+        configuration space is their <em>product</em>: every electron you add multiplies the cell count
+        by another \(g^3\) (amber tape), so \(N\) electrons need \(g^{3N}\) numbers — while \(N\)
+        independent clouds would need only \(N g^3\) (teal). Watch the two diverge as you add electrons.</p>
+    </div>
+
+    <div class="widget" id="w1">
+      <div class="widget-controls">
+        <label>electrons &nbsp;N = <span class="val" id="w1-NV">8</span>
+          <input type="range" id="w1-N" min="1" max="40" step="1" value="8">
+        </label>
+        <label>grid points / axis &nbsp;g = <span class="val" id="w1-gV">10</span>
+          <input type="range" id="w1-g" min="4" max="20" step="1" value="10">
+        </label>
+      </div>
+      <canvas id="w1-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w1-readout"></div>
+      <p class="caption">The amber bar is the full wavefunction \(g^{3N}\); the teal bar is the
+        density \(g^{3}\). The dashed line is \(10^{80}\), roughly every atom in the visible universe.</p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version</summary>
+      <div class="formal-body prose">
+        <p>In Hartree atomic units the electronic Hamiltonian is
+        \[ \hat H = -\tfrac12\sum_i \nabla_i^2 + \sum_i v_{\text{ext}}(\mathbf r_i) + \sum_{i<j}\frac{1}{|\mathbf r_i-\mathbf r_j|}, \]
+        with \(v_{\text{ext}}\) the potential from the nuclei. The pair term couples every
+        electron to every other, so \(\Psi\) does not factorize and the cost of an exact
+        treatment grows exponentially in \(N\) — Kohn's "exponential wall."</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== SCALING DEEP DIVE ===================== -->
+  <section class="concept-step" id="step-scaling">
+    <p class="step-num">Deep dive · classical point vs quantum cloud</p>
+    <h2>Why the Schrödinger equation scales exponentially</h2>
+    <div class="prose">
+      <p>
+        Start classically. Five electrons, each a coloured marble sitting in one cell of a single
+        \(g\times g\times g\) room. The state is just <em>where each marble is</em>: five positions,
+        \(15\) numbers — one point in configuration space. Nothing here grows badly; add a marble,
+        add three numbers.
+      </p>
+      <p>
+        Quantum mechanics makes each marble <em>delocalize</em>. A quantum electron is no longer at
+        one cell but in a superposition over all \(g^3\) of them at once, and the wavefunction must
+        carry an amplitude for every joint arrangement. Turn the first marble quantum and the number
+        of arrangements is multiplied by \(g^3\) — one copy of the whole configuration for each place
+        that marble could be. Turn the second quantum and you multiply by \(g^3\) again. After all
+        five,
+        \[ \underbrace{g^3\times g^3\times g^3\times g^3\times g^3}_{5}=g^{15}. \]
+        Each electron you promote from <em>point</em> to <em>cloud</em> costs another factor of \(g^3\).
+        That, and nothing more exotic, is the exponential.
+      </p>
+      <p>
+        Here is the punchline for the equation itself. Solving \(\hat H\Psi=E\Psi\) means finding the
+        unknown \(\Psi\), and \(\Psi\) is a list of one amplitude per configuration — a vector with
+        \(g^{3N}\) entries. So \(\hat H\) is a \(g^{3N}\times g^{3N}\) matrix and "solving Schrödinger"
+        is finding the lowest eigenvector of a matrix <em>exponentially large in the number of
+        electrons</em>. The equation is linear and innocent; it scales exponentially purely because
+        its unknown lives on the configuration space. Classical mechanics tracks one point in that
+        space and stays linear; quantum mechanics tracks a function over all of it and explodes.
+        (The escape, two sections on, is to stop tracking the function and keep only its
+        one-electron marginal.)
+      </p>
+    </div>
+
+    <div class="widget" id="wx2">
+      <div class="widget-controls">
+        <label style="min-width:auto;">flat board · delocalize one by one
+          <span style="display:flex; gap:10px; margin-top:2px;">
+            <button id="wx2-next">Make next electron quantum →</button>
+            <button id="wx2-reset">Reset</button>
+          </span>
+        </label>
+        <label>board size &nbsp;g = <span class="val" id="wx2-gV">4</span>
+          <input type="range" id="wx2-g" min="3" max="6" step="1" value="4">
+        </label>
+      </div>
+      <canvas id="wx2-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="wx2-readout"></div>
+      <p class="caption">A flat \(g\times g\) board, so you can see every cell. Each coloured electron starts
+        classical — one dot in one square. Click to delocalize it and its colour starts twinkling, in its own
+        slot, across <em>every</em> square at once. The tape multiplies by \(g^2\) for each electron you
+        delocalize. (This is the flattened toy: each electron has \(g^2\) cells here versus \(g^3\) in real
+        3-D space — same multiplication, smaller exponent. The 3-D room below shows the true \(g^3\) version.)</p>
+    </div>
+
+    <div class="widget" id="wx">
+      <div class="widget-controls">
+        <label style="min-width:auto;">delocalize the electrons one by one
+          <span style="display:flex; gap:10px; margin-top:2px;">
+            <button id="wx-next">Make next electron quantum →</button>
+            <button id="wx-reset">Reset</button>
+            <button id="wx-spin">⏸ Pause</button>
+          </span>
+        </label>
+        <label>grid points / axis &nbsp;g = <span class="val" id="wx-gV">3</span>
+          <input type="range" id="wx-g" min="2" max="4" step="1" value="3">
+        </label>
+      </div>
+      <canvas id="wx-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="wx-readout"></div>
+      <p class="caption">Each coloured marble is one electron. Classical marbles sit still in a single
+        cell. Click to make the next one <em>quantum</em>: it stops being a point and starts twinkling
+        stochastically across every cell of the room — it is now everywhere at once. The tape below
+        multiplies by \(g^3\) for each electron you delocalize, in that electron's colour, building up
+        to \(g^{3N}\) — while the classical description stays at \(15\) numbers.</p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version</summary>
+      <div class="formal-body prose">
+        <p>Discretize the single-particle space to \(M=g^3\) sites. A distinguishable-particle basis
+        state is a choice of site for each electron, giving \(M^N=g^{3N}\) basis states; the
+        Hamiltonian is a matrix of that dimension and the ground state is its lowest eigenvector.
+        Antisymmetry for identical fermions trims this to the dimension of the wedge product,
+        \(\binom{M}{N}\) occupied-orbital choices, but for any fixed filling fraction that is
+        <em>still</em> exponential in \(N\) (by Stirling, \(\binom{M}{N}\) grows exponentially). No
+        relabeling rescues you: the eigenproblem's size is exponential in the particle number, which
+        is exactly the content of "the many-body Schrödinger equation is intractable."</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== GROUNDWORK ===================== -->
+  <section class="concept-step" id="step-foundations">
+    <p class="step-num">Groundwork · a state <em>is</em> a probability distribution</p>
+    <h2>What kind of object are we actually holding?</h2>
+    <div class="prose">
+      <p>
+        Before we throw most of \(\Psi\) away, it pays to be precise about what it is —
+        because the whole method is a statement about distributions, marginals and
+        correlation, three things you already know cold.
+      </p>
+      <p>
+        The wavefunction itself is not the observable thing; the <em>Born rule</em> is what
+        connects it to reality. It says the modulus squared
+        \[ p(\mathbf r_1,\ldots,\mathbf r_N)=|\Psi(\mathbf r_1,\ldots,\mathbf r_N)|^2 \]
+        is a genuine, normalized joint probability density over the \(3N\)-dimensional
+        <em>configuration space</em> — the probability of simultaneously finding electron 1
+        near \(\mathbf r_1\), electron 2 near \(\mathbf r_2\), and so on, with
+        \(\int p \,d\mathbf r_1\cdots d\mathbf r_N = 1\). So operationally a quantum state
+        is exactly a normalized joint distribution over \(\mathbb R^{3N}\). Every reflex you
+        have about joints, marginals and conditionals transfers verbatim.
+      </p>
+      <p>
+        With that in hand the "electron density" stops being mysterious — it is simply the
+        <mark>one-particle marginal of that joint</mark>, scaled by \(N\). Because identical
+        electrons are indistinguishable each one contributes the same marginal, so
+        \[ n(\mathbf r)=N\!\int p(\mathbf r,\mathbf r_2,\ldots,\mathbf r_N)\,d\mathbf r_2\cdots d\mathbf r_N,
+        \qquad \int n(\mathbf r)\,d\mathbf r = N. \]
+        Read it as a slogan: <em>density is to wavefunction as marginal is to joint</em>. The
+        density is nothing but the first moment of the configuration-space distribution — the
+        expected number of electrons per unit volume.
+      </p>
+      <p>
+        Now the catch, and it is the entire subject in one observation. A marginal is lossy.
+        If the electrons were statistically independent the joint would factorize,
+        \(p=\prod_i p_1(\mathbf r_i)\), and the single density would let you rebuild everything.
+        They are not independent: Coulomb repulsion pushes them apart, and Pauli antisymmetry
+        forbids two identical fermions from sitting in the same place. Both effects make the
+        joint <em>refuse</em> to factorize. The leftover,
+        \(p(\mathbf r_1,\mathbf r_2)-p_1(\mathbf r_1)\,p_1(\mathbf r_2)\), is precisely
+        <mark>statistical correlation</mark>, and the conditional \(p(\mathbf r_2\mid\mathbf r_1)\)
+        displays it directly: pin one electron down and the others dig a hole around it — the
+        <em>exchange–correlation hole</em>. That hole is the structure the bare density cannot see.
+      </p>
+      <p>
+        There is a sharper way to see that dependence, one you'll recognize from autoregressive
+        models. Any joint factorizes by the chain rule into a chain of conditionals,
+        \[ p(\mathbf r_1,\ldots,\mathbf r_N)=p(\mathbf r_1)\,p(\mathbf r_2\mid\mathbf r_1)\cdots
+        p(\mathbf r_N\mid\mathbf r_1,\ldots,\mathbf r_{N-1}), \]
+        which is literally a recipe for drawing a configuration: place electron 1 from its
+        marginal, then electron 2 from its law <em>given</em> where 1 landed, and so on. You may
+        sample electron 1 freely, but that choice reshapes the distribution every later electron is
+        drawn from. The density is only the first factor; all the dependence hides in the conditionals.
+      </p>
+      <p>
+        Equivalently, write the two-electron joint as the independent guess times a correction:
+        \[ p(\mathbf r_1,\mathbf r_2)=\underbrace{p_1(\mathbf r_1)\,p_1(\mathbf r_2)}_{\text{product of marginals}}\;
+        g(\mathbf r_1,\mathbf r_2), \]
+        where the <mark>pair-correlation factor \(g\)</mark> is a genuine function over the joint
+        plane — the grid the marginals cannot reconstruct. Independence is \(g\equiv 1\); the
+        deviation \(c=p-p_1p_2=p_1p_2\,(g-1)\) is the <em>covariance density</em>, the
+        function-valued generalization of covariance, and \(\log g\) is the pointwise mutual
+        information (its average is \(I(\mathbf r_1;\mathbf r_2)\)). The three buttons on the widget
+        below are exactly these objects: the true joint \(p\), the independent product \(p_1p_2\),
+        and their difference \(c\).
+      </p>
+      <p>
+        So we appear stuck on a tradeoff: the density is cheap but lossy, and the very
+        correlation we discard <em>is</em> the difficulty of the problem. The astonishing
+        rescue — the content of the next sections — is that for the <em>ground state</em> the
+        density secretly retains enough to recover all of it, and that the lost correlation can
+        be quarantined into a single, comparatively small correction. Keep the widget below in
+        mind throughout: it shows how much lives in the joint that the marginal alone never reveals.
+      </p>
+    </div>
+
+    <div class="widget" id="wf">
+      <div class="widget-controls" id="wf-modes">
+        <button class="mode-btn is-active" id="wf-true" data-mode="true">True joint &nbsp;p(x₁,x₂)</button>
+        <button class="mode-btn" id="wf-indep" data-mode="indep">If independent &nbsp;p₁(x₁)·p₁(x₂)</button>
+        <button class="mode-btn" id="wf-diff" data-mode="diff">Difference = correlation</button>
+      </div>
+      <canvas id="wf-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="wf-readout"></div>
+      <p class="caption">Drag the teal probe to place electron 1 at \(x_1=a\). <b>Top:</b> the selected
+        2-D field over \((x_1,x_2)\). <b>Bottom, sharing the \(x_2\) axis:</b> the conditional law of
+        electron 2 given that placement (solid amber) against the plain one-electron density (dashed grey).
+        The dip carved into the solid curve right under the probe is the exchange–correlation hole — pure
+        correlation, completely invisible to the density on its own. The <b>difference</b> button shows the
+        covariance density \(c=p-p_1p_2\) directly.</p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version</summary>
+      <div class="formal-body prose">
+        <p>The object that captures pair statistics is the <em>pair density</em>, the
+        second-order reduced quantity
+        \[ n_2(\mathbf r,\mathbf r')=N(N-1)\!\int |\Psi|^2\, d\mathbf r_3\cdots d\mathbf r_N , \]
+        the (unnormalized) joint probability of finding one electron at \(\mathbf r\) and another
+        at \(\mathbf r'\). Independence would mean it factorizes,
+        \(n_2(\mathbf r,\mathbf r')=n(\mathbf r)\,n(\mathbf r')\). It does not, and the deviation
+        defines the exchange–correlation hole \(n_{\text{xc}}\):
+        \[ n_2(\mathbf r,\mathbf r')=n(\mathbf r)\big[\,n(\mathbf r')+n_{\text{xc}}(\mathbf r,\mathbf r')\,\big]. \]
+        The hole obeys a sum rule that makes the picture exact:
+        \(\int n_{\text{xc}}(\mathbf r,\mathbf r')\,d\mathbf r' = -1\) — exactly one electron's worth
+        of density is excluded from the neighbourhood of any reference electron. All of the hard
+        physics DFT must eventually approximate is this single deviation from independence.</p>
+        <p>The same content in the three equivalent forms used above: the pair-correlation factor is
+        \(g=n_2/(n\,n')\) (so \(g\equiv1\) is independence); the connected correlation
+        \(n_2-n\,n'=n\,n_{\text{xc}}\) is the covariance density, whose first moment
+        \(\iint \mathbf r\cdot\mathbf r'\,(n_2-nn')\) is the ordinary covariance; and the sum rule
+        \(\int n_{\text{xc}}\,d\mathbf r'=-1\) is just the statement that conditioning preserves the
+        marginal — the conditional law \(p(\mathbf r'\!\mid\mathbf r)=n(\mathbf r')\,g(\mathbf r,\mathbf r')\)
+        still integrates to one electron once you account for the reference electron removed.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 2 ===================== -->
+  <section class="concept-step" id="step-2">
+    <p class="step-num">Step 2 · the escape</p>
+    <h2>Collapse the joint into a marginal</h2>
+    <div class="prose">
+      <p>
+        Here is the move. Instead of carrying the full joint \(|\Psi|^2\), integrate out all
+        but one electron — exactly a marginalization — and keep only the <em>density</em>:
+        the expected number of electrons at each point of ordinary space,
+        \[ n(\mathbf r) = N\!\int |\Psi(\mathbf r, \mathbf r_2,\ldots,\mathbf r_N)|^2\, d\mathbf r_2\cdots d\mathbf r_N . \]
+        A function of \(3N\) variables becomes a function of \(3\). The dimensionality just
+        evaporated.
+      </p>
+      <p>
+        Below is the smallest non-trivial case: two electrons living on a line. The joint
+        \(|\Psi(x_1,x_2)|^2\) is already a 2-D heatmap — note the dark valley along the
+        diagonal where \(x_1=x_2\), the <em>exchange hole</em>: identical electrons avoid each
+        other. Press the button to integrate out electron 2 and watch the 2-D joint collapse
+        into the 1-D density curve.
+      </p>
+    </div>
+
+    <div class="widget" id="w2">
+      <canvas id="w2-canvas" class="widget-stage"></canvas>
+      <div class="reveal-bar">
+        <button id="w2-back" disabled>&larr; Back</button>
+        <span class="reveal-caption" id="w2-caption"></span>
+        <button id="w2-next">Integrate out electron 2 &rarr;</button>
+      </div>
+      <p class="caption">The heatmap is the full two-electron state (2 coordinates). The amber
+        curve along the bottom is everything DFT keeps (1 coordinate).</p>
+    </div>
+  </section>
+
+  <!-- ===================== STEP 3 ===================== -->
+  <section class="concept-step" id="step-3">
+    <p class="step-num">Step 3 · why it's allowed</p>
+    <h2>The density is a sufficient statistic</h2>
+    <div class="prose">
+      <p>
+        Collapsing to the density looks reckless — surely we threw information away? The
+        Hohenberg–Kohn theorem says we did not. The ground-state density \(n(\mathbf r)\)
+        <em>uniquely determines</em> the external potential \(v_{\text{ext}}\) that produced it.
+        And the potential fixes the Hamiltonian, which fixes \(\Psi\), which fixes
+        <em>every</em> observable. So the chain
+        \[ n(\mathbf r)\;\longleftrightarrow\; v_{\text{ext}}\;\longrightarrow\; \hat H\;\longrightarrow\;\Psi\;\longrightarrow\;\text{everything} \]
+        is one-to-one. In your language: <mark>the density is a lossless sufficient statistic
+        for the entire ground state.</mark> Nothing was lost — it was just re-coded into 3-D.
+      </p>
+      <p>
+        Reshape the potential below (the teal curve) and watch the ground-state density (the
+        amber cloud) respond. The map is invertible: no two distinct potentials ever yield the
+        same density, so reading the density backwards recovers the potential.
+      </p>
+    </div>
+
+    <div class="widget" id="w3">
+      <div class="widget-controls">
+        <label>curvature &nbsp;k = <span class="val" id="w3-kV">1.00</span>
+          <input type="range" id="w3-k" min="0.05" max="2.0" step="0.01" value="1.0">
+        </label>
+        <label>tilt &nbsp;t = <span class="val" id="w3-tV">0.00</span>
+          <input type="range" id="w3-t" min="-0.6" max="0.6" step="0.01" value="0">
+        </label>
+        <label>central bump &nbsp;b = <span class="val" id="w3-bV">0.0</span>
+          <input type="range" id="w3-b" min="0" max="6" step="0.05" value="0">
+        </label>
+      </div>
+      <canvas id="w3-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w3-readout"></div>
+      <p class="caption">Teal = the potential you sculpt, \(v_{\text{ext}}(x)\). Amber = the ground-state
+        density it forces, \(n(x)=|\psi_0(x)|^2\), solved live by imaginary-time relaxation.</p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version</summary>
+      <div class="formal-body prose">
+        <p>Suppose two potentials \(v_1, v_2\) (differing by more than a constant) gave the same
+        ground-state density \(n\), with ground states \(\Psi_1,\Psi_2\) and energies \(E_1,E_2\).
+        The variational principle gives \(E_1 < \langle\Psi_2|\hat H_1|\Psi_2\rangle = E_2 + \int (v_1-v_2)\,n\),
+        and symmetrically \(E_2 < E_1 + \int (v_2-v_1)\,n\). Adding yields \(E_1+E_2 < E_1+E_2\), a
+        contradiction. Hence \(n \mapsto v_{\text{ext}}\) is injective (Hohenberg–Kohn I, 1964).</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 4 ===================== -->
+  <section class="concept-step" id="step-4">
+    <p class="step-num">Step 4 · the optimization</p>
+    <h2>Turn physics into a variational problem</h2>
+    <div class="prose">
+      <p>
+        Because every observable is a functional of the density, so is the energy:
+        \(E[n]\). And the second Hohenberg–Kohn theorem hands you a loss to minimize — the
+        true ground-state density is the one that makes \(E[n]\) smallest, and that minimum
+        <em>is</em> the ground-state energy:
+        \[ E_0 = \min_{n}\; E[n], \qquad E[n] = \underbrace{T[n] + V_{ee}[n]}_{\text{universal }F[n]} + \int v_{\text{ext}}(\mathbf r)\,n(\mathbf r)\,d\mathbf r . \]
+        A quantum eigenvalue problem became a constrained optimization over a 3-D function.
+      </p>
+      <p>
+        Feel it for a single electron in a well. Drag the width \(s\) of a trial density cloud.
+        A skinny cloud is cheap in potential energy but expensive in kinetic energy (sharp
+        curvature); a fat cloud is the reverse. The energy is a tug-of-war, and it bottoms out
+        at exactly the true ground state.
+      </p>
+    </div>
+
+    <div class="widget" id="w4">
+      <div class="widget-controls">
+        <label>trial cloud width &nbsp;s = <span class="val" id="w4-sV">0.71</span>
+          <input type="range" id="w4-s" min="0.35" max="1.7" step="0.005" value="0.71">
+        </label>
+      </div>
+      <canvas id="w4-canvas" class="widget-stage"></canvas>
+      <div class="stat-row">
+        <div><span class="k">kinetic T[n]</span><span class="v teal" id="w4-T">—</span></div>
+        <div><span class="k">potential ∫v n</span><span class="v" id="w4-V">—</span></div>
+        <div><span class="k">total E[n]</span><span class="v mag" id="w4-E">—</span></div>
+      </div>
+      <p class="caption">Left: the trial density (amber) sitting in the well (teal). Right: the energy
+        \(E[s]\) traced live; the hollow marker is the true minimum. Drag \(s\) to find it.</p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version</summary>
+      <div class="formal-body prose">
+        <p>For a single occupied orbital the kinetic functional is exact and local — the von
+        Weizsäcker form \(T[n]=\tfrac12\int |\nabla\sqrt{n}|^2\,d\mathbf r\). The demo uses
+        \(v(x)=\tfrac12 x^2\), whose exact ground-state density is \(n\propto e^{-x^2}\)
+        (width \(s=1/\sqrt2\approx0.707\)), giving \(E_0=\tfrac12\). The catch for <em>many</em>
+        interacting electrons: nobody knows an accurate explicit \(T[n]\). That gap is what
+        Step 5 repairs.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 5 ===================== -->
+  <section class="concept-step" id="step-5">
+    <p class="step-num">Step 5 · the Kohn–Sham trick</p>
+    <h2>Quarantine the hard part</h2>
+    <div class="prose">
+      <p>
+        Step 4 hid a landmine: for interacting electrons we have no accurate formula for the
+        kinetic energy \(T[n]\) in terms of the density alone. Kohn and Sham's escape is a
+        reparameterization you'll recognize. Invent a <em>fictitious</em> system of
+        <em>non-interacting</em> electrons, tuned to have the <em>exact same density</em> as
+        the real one. Non-interacting electrons live in single-particle orbitals \(\psi_i\),
+        so their kinetic energy \(T_s\) is computable exactly.
+      </p>
+      <p>
+        Now split the energy into pieces you can compute — the non-interacting kinetic energy,
+        the external potential, and the classical electrostatic (Hartree) self-repulsion of the
+        cloud — and sweep <em>everything you can't</em> into a single correction term, the
+        <mark>exchange–correlation functional \(E_{xc}[n]\)</mark>. Press through the budget
+        below: the hard physics ends up quarantined in one small sliver, which is why even a
+        crude guess for \(E_{xc}\) gives excellent total energies.
+      </p>
+      <p>
+        It is worth naming what \(E_{xc}\) is in probabilistic terms, because it closes the loop with
+        the correlation from the Groundwork section. The Hartree term is the <em>independent</em>
+        energy: it feeds the product of marginals \(n(\mathbf r)n(\mathbf r')\) into the Coulomb
+        repulsion, as if the density were a charge cloud interacting with itself. \(E_{xc}\) is the bill
+        for everything that approximation got wrong — and it is the <em>same covariance density</em>
+        \(c=p-p_1p_2\), only now contracted against the Coulomb kernel \(1/r\) instead of against
+        \(\mathbf r_1\mathbf r_2\). Where ordinary covariance asks how the positions co-vary,
+        \(E_{xc}\) asks how much Coulomb energy that co-variation saves: each electron carves a hole
+        holding exactly one electron's worth of missing density, and \(E_{xc}\) is the favourable
+        interaction of the electron with its own hole.
+      </p>
+    </div>
+
+    <div class="widget" id="w5">
+      <canvas id="w5-canvas" class="widget-stage"></canvas>
+      <div class="reveal-bar">
+        <button id="w5-back" disabled>&larr; Back</button>
+        <span class="reveal-caption" id="w5-caption"></span>
+        <button id="w5-next">Split off \(T_s\) &rarr;</button>
+      </div>
+      <p class="caption">Schematic energy budget for a small molecule. Three terms are known
+        exactly; the magenta sliver \(E_{xc}\) is the only thing we must approximate.</p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version</summary>
+      <div class="formal-body prose">
+        <p>The Kohn–Sham decomposition is
+        \[ E[n] = T_s[n] + \int v_{\text{ext}}\,n + \tfrac12\!\iint\frac{n(\mathbf r)n(\mathbf r')}{|\mathbf r-\mathbf r'|}\,d\mathbf r\,d\mathbf r' + E_{xc}[n], \]
+        which <em>defines</em> \(E_{xc}\) as everything left over: the kinetic correction
+        \(T[n]-T_s[n]\) plus the non-classical part of the interaction. The whole approach is exact —
+        the only approximation in practice is the choice of \(E_{xc}\). Standard rungs of "Jacob's
+        ladder": LDA \(\big(E_{xc}=\int n\,\epsilon_{xc}(n)\big)\), GGA (adds \(\nabla n\), e.g. PBE),
+        meta-GGA, and hybrids that mix in exact exchange (e.g. B3LYP).</p>
+        <p>The probabilistic reading is exact. The potential part of \(E_{xc}\) is the connected
+        correlation contracted with the Coulomb kernel,
+        \[ V_{ee}-E_H=\tfrac12\!\iint\frac{n_2(\mathbf r,\mathbf r')-n(\mathbf r)n(\mathbf r')}{|\mathbf r-\mathbf r'|}
+        =\tfrac12\!\iint\frac{n(\mathbf r)\,n_{\text{xc}}(\mathbf r,\mathbf r')}{|\mathbf r-\mathbf r'|}, \]
+        the very same numerator \(n_2-n\,n'\) whose \(\mathbf r_1\mathbf r_2\) moment is the covariance —
+        identical correlation, different kernel. <em>Exchange</em> is the part of the hole forced by
+        antisymmetry (the Fermi hole, present even at zero interaction in the Kohn–Sham determinant);
+        <em>correlation</em> is the remainder switched on by real repulsion (the Coulomb hole). The
+        kinetic correction \(T-T_s\) folds in via the adiabatic connection, which replaces
+        \(n_{\text{xc}}\) by a coupling-constant-averaged hole \(\bar n_{\text{xc}}\); after that
+        substitution the identity above for the full \(E_{xc}\) is exact.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 6 ===================== -->
+  <section class="concept-step" id="step-6">
+    <p class="step-num">Step 6 · the algorithm</p>
+    <h2>Solve it by chasing a fixed point</h2>
+    <div class="prose">
+      <p>
+        Minimizing the Kohn–Sham energy gives single-particle equations — one effective
+        Schrödinger equation per orbital,
+        \[ \Big[-\tfrac12\nabla^2 + v_{\text{eff}}(\mathbf r)\Big]\psi_i = \varepsilon_i\,\psi_i,
+        \qquad v_{\text{eff}} = v_{\text{ext}} + v_{H}[n] + v_{xc}[n]. \]
+        The many-body interaction has become a <em>mean field</em>: each electron simply moves
+        in the averaged potential created by the whole density. This is exactly mean-field
+        variational inference wearing a lab coat.
+      </p>
+      <p>
+        But \(v_{\text{eff}}\) is built from \(n\), and \(n\) is built from the \(\psi_i\), which
+        come from \(v_{\text{eff}}\). It's a fixed-point problem, solved by iteration: guess a
+        density, build the potential, solve for orbitals, get a new density, mix, repeat until
+        nothing changes — the <em>self-consistent field</em> (SCF) loop. Step through a genuine
+        4-electron calculation below and watch the density and potential settle, with the
+        convergence error collapsing.
+      </p>
+    </div>
+
+    <div class="widget" id="w6">
+      <canvas id="w6-canvas" class="widget-stage"></canvas>
+      <div class="reveal-bar">
+        <button id="w6-prev" disabled>&larr; Prev</button>
+        <span class="reveal-caption" id="w6-caption"></span>
+        <button id="w6-next">Next iteration &rarr;</button>
+      </div>
+      <div class="stat-row">
+        <div><span class="k">iteration</span><span class="v teal" id="w6-it">0</span></div>
+        <div><span class="k">‖Δn‖ (self-consistency error)</span><span class="v mag" id="w6-err">—</span></div>
+      </div>
+      <p class="caption">Top: effective potential \(v_{\text{eff}}\) (teal) with occupied orbital
+        energies as dashed levels. Bottom: the electron density \(n(x)\) (amber). A real SCF loop:
+        external trap + Hartree repulsion + LDA exchange.</p>
+    </div>
+  </section>
+
+  <!-- ===================== RECAP ===================== -->
+  <section class="recap prose">
+    <h2>Putting it back together</h2>
+    <p>
+      The kernel was: the ground state is fixed by a 3-D density cloud, so optimize over the
+      cloud. Every step was that sentence acquiring rigor. We hit the <em>exponential wall</em>
+      (Step 1), escaped by <em>marginalizing</em> the joint down to the density (Step 2), and
+      learned from Hohenberg–Kohn that this density is a <em>lossless sufficient statistic</em>
+      (Step 3). That let us recast the physics as a <em>variational</em> minimization of a
+      density functional (Step 4). The one hard term — the interacting kinetic energy — we
+      dodged by Kohn and Sham's <em>reparameterization</em>: a fake non-interacting system with
+      the same density, with all the genuinely hard physics <em>quarantined</em> into a small
+      \(E_{xc}\) (Step 5). And we solved the resulting mean-field equations by <em>fixed-point
+      iteration</em>, the SCF loop (Step 6).
+    </p>
+    <p>
+      In one breath: <mark>sufficient statistic, reparameterize the intractable term, dump the
+      residual into one small correction you approximate, then iterate to a fixed point.</mark>
+      A physicist would call it DFT; you've been doing the same dance for years.
+    </p>
+  </section>
+
+  <section class="where prose">
+    <h2>Where this shows up</h2>
+    <div class="card">
+      <h3>Materials & drug discovery</h3>
+      <p>DFT is the workhorse of computational chemistry and condensed-matter physics —
+      predicting reaction energies, band structures, catalysts, and battery materials at a cost
+      that scales like \(N^3\) instead of exponentially. It earned Walter Kohn the 1998 Nobel
+      Prize in Chemistry.</p>
+    </div>
+    <div class="card">
+      <h3>The exchange–correlation functional is a learning problem</h3>
+      <p>The one unknown, \(E_{xc}[n]\), is exactly an inductive bias to be designed — or learned.
+      Hand-crafted functionals (LDA, PBE, B3LYP) are giving way to neural functionals trained on
+      reference data (e.g. DeepMind's DM21), turning the last gap in DFT into a supervised
+      regression problem.</p>
+    </div>
+    <div class="card">
+      <h3>The same pattern, everywhere</h3>
+      <p>Replace an intractable joint with a sufficient statistic, reparameterize the hard term
+      through a tractable auxiliary model, and iterate a mean field to self-consistency: that
+      recipe recurs in variational inference, EM, amortized inference, and mean-field game
+      theory. DFT is one especially successful instance.</p>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* =========================================================================
+   SHARED CANVAS HELPERS
+   ========================================================================= */
+function setupCanvas(canvas, cssW, cssH) {
+  const dpr = window.devicePixelRatio || 1;
+  canvas.style.width = cssW + 'px';
+  canvas.style.maxWidth = '100%';
+  canvas.style.height = cssH + 'px';
+  canvas.width = cssW * dpr;
+  canvas.height = cssH * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  canvas._cssW = cssW; canvas._cssH = cssH;
+  return ctx;
+}
+function makeView(canvas, b) {
+  const w = canvas._cssW, h = canvas._cssH;
+  return {
+    ...b, w, h,
+    x: mx => (mx - b.xmin) / (b.xmax - b.xmin) * w,
+    y: my => h - (my - b.ymin) / (b.ymax - b.ymin) * h
+  };
+}
+const CSS = getComputedStyle(document.documentElement);
+const COL = {
+  accent:  CSS.getPropertyValue('--accent').trim()  || '#f2b25c',
+  accent2: CSS.getPropertyValue('--accent-2').trim() || '#5fd2d6',
+  accent3: CSS.getPropertyValue('--accent-3').trim() || '#e0729f',
+  axis:    CSS.getPropertyValue('--axis').trim()     || '#3b4254',
+  ink:     CSS.getPropertyValue('--ink').trim()      || '#ece7da',
+  inkSoft: CSS.getPropertyValue('--ink-soft').trim() || '#9aa1b2',
+  inkFaint:CSS.getPropertyValue('--ink-faint').trim()|| '#5f6678'
+};
+function typeset(el){ if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([el]); }
+
+/* =========================================================================
+   NUMERICS (validated): 1D finite-difference Schrödinger, imaginary time,
+   Jacobi eigensolver, self-consistent Kohn-Sham loop.
+   ========================================================================= */
+function applyH(psi, v, h){
+  const N = psi.length, out = new Array(N), c = 1/(h*h);
+  for (let i=0;i<N;i++){
+    let lap = -2*psi[i];
+    if (i>0) lap += psi[i-1];
+    if (i<N-1) lap += psi[i+1];
+    out[i] = -0.5*c*lap + v[i]*psi[i];
+  }
+  return out;
+}
+function dnorm(psi,h){ let s=0; for(const p of psi) s+=p*p; return Math.sqrt(s*h); }
+function dnormalize(psi,h){ const n=dnorm(psi,h); if(n>0) for(let i=0;i<psi.length;i++) psi[i]/=n; return psi; }
+function rayleigh(psi,v,h){ const Hp=applyH(psi,v,h); let s=0; for(let i=0;i<psi.length;i++) s+=psi[i]*Hp[i]; return s*h; }
+function safeTau(v,h){ let mx=0; for(const vv of v) mx=Math.max(mx,Math.abs(vv)); return 0.4/(2/(h*h)+mx); }
+function imagStep(psi, v, h, steps){
+  const tau = safeTau(v,h);
+  for (let s=0;s<steps;s++){
+    const Hp = applyH(psi,v,h);
+    for (let i=0;i<psi.length;i++) psi[i] -= tau*Hp[i];
+    dnormalize(psi,h);
+  }
+  return psi;
+}
+function jacobi(Ain, sweeps){
+  const n=Ain.length, A=Ain.map(r=>r.slice());
+  const V=Array.from({length:n},(_,i)=>Array.from({length:n},(_,j)=>i===j?1:0));
+  for(let s=0;s<sweeps;s++){
+    let off=0; for(let p=0;p<n;p++) for(let q=p+1;q<n;q++) off+=A[p][q]*A[p][q];
+    if(Math.sqrt(off)<1e-9) break;
+    for(let p=0;p<n;p++) for(let q=p+1;q<n;q++){
+      if(Math.abs(A[p][q])<1e-14) continue;
+      const phi=0.5*Math.atan2(2*A[p][q], A[q][q]-A[p][p]);
+      const c=Math.cos(phi), sn=Math.sin(phi);
+      for(let k=0;k<n;k++){ const akp=A[k][p],akq=A[k][q]; A[k][p]=c*akp-sn*akq; A[k][q]=sn*akp+c*akq; }
+      for(let k=0;k<n;k++){ const apk=A[p][k],aqk=A[q][k]; A[p][k]=c*apk-sn*aqk; A[q][k]=sn*apk+c*aqk; }
+      for(let k=0;k<n;k++){ const vkp=V[k][p],vkq=V[k][q]; V[k][p]=c*vkp-sn*vkq; V[k][q]=sn*vkp+c*vkq; }
+    }
+  }
+  const vals=A.map((r,i)=>r[i]);
+  const idx=vals.map((_,i)=>i).sort((a,b)=>vals[a]-vals[b]);
+  return { vals: idx.map(i=>vals[i]), vecs: idx.map(i=>V.map(row=>row[i])) };
+}
+function buildHmat(v,h){
+  const N=v.length, c=1/(h*h), H=Array.from({length:N},()=>new Array(N).fill(0));
+  for(let i=0;i<N;i++){ H[i][i]=c+v[i]; if(i>0)H[i][i-1]=-0.5*c; if(i<N-1)H[i][i+1]=-0.5*c; }
+  return H;
+}
+
+/* =========================================================================
+   PRIMER — single-particle wavefunction: complex amplitude (Re/Im) on top,
+   Born-rule density |psi|^2 below with a measurement sampler. Sliding k
+   rewinds the phase while |psi|^2 stays fixed (phase is lost on squaring).
+   ========================================================================= */
+(function(){
+  const canvas=document.getElementById('wq-canvas');
+  if(!canvas) return;
+  const W=760,H=440; const ctx=setupCanvas(canvas,W,H);
+  const ox=64, plotW=W-ox-28;
+  const topY=22, topH=150, mid=topY+topH/2;
+  const botTop=topY+topH+56, botH=150, botBase=botTop+botH;
+  const XL=6, x0=0;
+  const G=240, xs=[]; for(let i=0;i<G;i++) xs.push(-XL+2*XL*i/(G-1));
+  const xpix=x=>ox+(x+XL)/(2*XL)*plotW;
+
+  const kin=document.getElementById('wq-k'), sin=document.getElementById('wq-s');
+  let samples=[]; const NB=48, binW=2*XL/NB;
+
+  function gaussSample(sig){ // Box-Muller, mean x0
+    let u1=Math.random()||1e-9, u2=Math.random();
+    return x0+sig*Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);
+  }
+  function densAt(x,sig){ return Math.exp(-(x-x0)*(x-x0)/(2*sig*sig)); }
+
+  function draw(){
+    const k=+kin.value, sig=+sin.value;
+    document.getElementById('wq-kV').textContent=k.toFixed(1);
+    document.getElementById('wq-sV').textContent=sig.toFixed(2);
+    ctx.clearRect(0,0,W,H);
+
+    /* ---- top: complex amplitude ---- */
+    const env=x=>Math.exp(-(x-x0)*(x-x0)/(4*sig*sig)); // peak 1
+    const ampScale=topH*0.42;
+    // zero axis
+    ctx.strokeStyle=COL.axis; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(ox,mid); ctx.lineTo(ox+plotW,mid); ctx.stroke();
+    // envelope (faint amber, both signs)
+    ctx.strokeStyle='rgba(242,178,92,0.4)'; ctx.setLineDash([4,4]); ctx.lineWidth=1.2;
+    for(const s of [1,-1]){ ctx.beginPath();
+      for(let i=0;i<G;i++){ const px=xpix(xs[i]), py=mid-s*env(xs[i])*ampScale; i?ctx.lineTo(px,py):ctx.moveTo(px,py);} ctx.stroke(); }
+    ctx.setLineDash([]);
+    // Re (teal), Im (magenta)
+    function curve(fn,col){ ctx.strokeStyle=col; ctx.lineWidth=2; ctx.shadowColor=col; ctx.shadowBlur=6; ctx.beginPath();
+      for(let i=0;i<G;i++){ const px=xpix(xs[i]), py=mid-fn(xs[i])*ampScale; i?ctx.lineTo(px,py):ctx.moveTo(px,py);} ctx.stroke(); ctx.shadowBlur=0; }
+    curve(x=>env(x)*Math.cos(k*x), COL.accent2);
+    curve(x=>env(x)*Math.sin(k*x), COL.accent3);
+    ctx.font="12px 'JetBrains Mono', monospace"; ctx.textAlign='left';
+    ctx.fillStyle=COL.accent2; ctx.fillText('Re ψ(x)', ox+4, topY+12);
+    ctx.fillStyle=COL.accent3; ctx.fillText('Im ψ(x)', ox+78, topY+12);
+    ctx.fillStyle=COL.inkSoft; ctx.textAlign='right'; ctx.fillText('amplitude (can be negative / complex)', ox+plotW, topY+12);
+
+    /* ---- bottom: |psi|^2 density + sample histogram ---- */
+    let Zc=0; for(let i=0;i<G;i++) Zc+=densAt(xs[i],sig)*(2*XL/(G-1));
+    const peak=1/Zc; const yScale=botH*0.86/peak;
+    const yb=v=>botBase-v*yScale;
+    // baseline
+    ctx.strokeStyle=COL.axis; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(ox,botBase); ctx.lineTo(ox+plotW,botBase); ctx.stroke();
+    // histogram
+    if(samples.length){
+      const counts=new Array(NB).fill(0);
+      samples.forEach(s=>{ const b=Math.floor((s+XL)/(2*XL)*NB); if(b>=0&&b<NB) counts[b]++; });
+      ctx.fillStyle='rgba(242,178,92,0.22)'; ctx.strokeStyle='rgba(242,178,92,0.45)'; ctx.lineWidth=1;
+      for(let b=0;b<NB;b++){ if(!counts[b])continue; const dens=counts[b]/(samples.length*binW);
+        const x1=xpix(-XL+b*binW), x2=xpix(-XL+(b+1)*binW); const yt=yb(dens);
+        ctx.fillRect(x1,yt,x2-x1,botBase-yt); ctx.strokeRect(x1,yt,x2-x1,botBase-yt); }
+    }
+    // analytic |psi|^2 (solid amber, glow)
+    ctx.strokeStyle=COL.accent; ctx.lineWidth=2.6; ctx.shadowColor=COL.accent; ctx.shadowBlur=10; ctx.beginPath();
+    for(let i=0;i<G;i++){ const px=xpix(xs[i]), py=yb(densAt(xs[i],sig)*peak); i?ctx.lineTo(px,py):ctx.moveTo(px,py);} ctx.stroke(); ctx.shadowBlur=0;
+    ctx.fillStyle=COL.accent; ctx.font="13px 'JetBrains Mono', monospace"; ctx.textAlign='left';
+    ctx.fillText('|ψ(x)|²  — the probability density (Born rule)', ox+4, botTop+14);
+    ctx.fillStyle=COL.inkSoft; ctx.textAlign='center'; ctx.fillText('x  (position)', ox+plotW/2, botBase+22);
+
+    const out=document.getElementById('wq-readout');
+    if(out){ out.innerHTML='Measured particles: <b>'+samples.length+'</b>. The histogram is converging to '+
+      '<b>|ψ|²</b> — that is all the Born rule says. Notice that sliding <b>k</b> rewinds the amplitude above '+
+      'while the cloud below stays put: the phase carries momentum that squaring discards.'; }
+  }
+
+  kin.addEventListener('input',draw);
+  sin.addEventListener('input',()=>{ samples=[]; draw(); }); // new width = new density
+  const mb=document.getElementById('wq-measure'), rb=document.getElementById('wq-reset');
+  if(mb) mb.addEventListener('click',()=>{ const sig=+sin.value; for(let n=0;n<40;n++) samples.push(gaussSample(sig)); draw(); });
+  if(rb) rb.addEventListener('click',()=>{ samples=[]; draw(); });
+  draw();
+})();
+
+/* =========================================================================
+   STEP 1 (builder) — faked-3D rotating g×g×g lattice cubes; add electrons
+   to watch the joint cell count multiply by g^3 each time. Vanilla canvas.
+   ========================================================================= */
+(function(){
+  const canvas=document.getElementById('we-canvas');
+  if(!canvas) return;
+  const W=760,H=430; const ctx=setupCanvas(canvas,W,H);
+  const sx0=18, sy0=10, sw=724, sh=246;          // 3D scene rect
+  const ty0=284;                                  // tape strip top
+  let N=2, g=3, yaw=0.6, pitch=-0.42, spinning=true, raf=0;
+
+  // unit cube corners + edges
+  const signs=[]; for(let xi=0;xi<2;xi++)for(let yi=0;yi<2;yi++)for(let zi=0;zi<2;zi++) signs.push([xi?1:-1,yi?1:-1,zi?1:-1]);
+  const edges=[]; for(let i=0;i<8;i++) for(const bit of [1,2,4]){ if(!(i&bit)) edges.push([i,i|bit]); }
+
+  function rot(x,y,z){
+    const cy=Math.cos(yaw),sy=Math.sin(yaw); let X=x*cy+z*sy, Z=-x*sy+z*cy, Y=y;
+    const cx=Math.cos(pitch),sx=Math.sin(pitch); const Y2=Y*cx-Z*sx, Z2=Y*sx+Z*cx;
+    return [X,Y2,Z2];
+  }
+  function proj(x,y,z){ const cam=4.4; const r=rot(x,y,z); const s=cam/(cam-r[2]); return [r[0]*s, r[1]*s, r[2]]; }
+
+  function geometry(){
+    const half=0.6, spacing=1.85;
+    const pts=[], corners=[];
+    for(let i=0;i<N;i++){
+      const cxw=(i-(N-1)/2)*spacing;
+      for(let a=0;a<g;a++)for(let b=0;b<g;b++)for(let c=0;c<g;c++){
+        const lx=(g===1?0:-1+2*a/(g-1))*half, ly=(g===1?0:-1+2*b/(g-1))*half, lz=(g===1?0:-1+2*c/(g-1))*half;
+        const p=proj(cxw+lx, ly, lz); pts.push(p);
+      }
+      const cc=signs.map(s=>proj(cxw+s[0]*half, s[1]*half, s[2]*half));
+      corners.push(cc);
+    }
+    return {pts, corners};
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    const {pts,corners}=geometry();
+    // bounding box over everything for auto-fit
+    let mnx=1e9,mxx=-1e9,mny=1e9,mxy=-1e9,mnz=1e9,mxz=-1e9;
+    const scan=p=>{ if(p[0]<mnx)mnx=p[0]; if(p[0]>mxx)mxx=p[0]; if(p[1]<mny)mny=p[1]; if(p[1]>mxy)mxy=p[1]; if(p[2]<mnz)mnz=p[2]; if(p[2]>mxz)mxz=p[2]; };
+    pts.forEach(scan); corners.forEach(cc=>cc.forEach(scan));
+    const bw=Math.max(1e-3,mxx-mnx), bh=Math.max(1e-3,mxy-mny);
+    const scale=Math.min(sw/bw, sh/bh)*0.92;
+    const midX=(mnx+mxx)/2, midY=(mny+mxy)/2;
+    const Tx=x=>sx0+sw/2+(x-midX)*scale, Ty=y=>sy0+sh/2-(y-midY)*scale;
+
+    // cube wireframes (faint teal)
+    ctx.strokeStyle='rgba(95,210,214,0.35)'; ctx.lineWidth=1;
+    corners.forEach(cc=>{ edges.forEach(([a,b])=>{ ctx.beginPath(); ctx.moveTo(Tx(cc[a][0]),Ty(cc[a][1])); ctx.lineTo(Tx(cc[b][0]),Ty(cc[b][1])); ctx.stroke(); }); });
+
+    // lattice points (amber), far first
+    const order=pts.map((p,i)=>i).sort((i,j)=>pts[i][2]-pts[j][2]);
+    const zr=Math.max(1e-3,mxz-mnz);
+    order.forEach(i=>{ const p=pts[i]; const t=(p[2]-mnz)/zr; const rad=1.5+2.0*t;
+      ctx.globalAlpha=0.35+0.6*t; ctx.fillStyle=COL.accent; ctx.shadowColor=COL.accent; ctx.shadowBlur=6*t;
+      ctx.beginPath(); ctx.arc(Tx(p[0]),Ty(p[1]),rad,0,2*Math.PI); ctx.fill(); });
+    ctx.globalAlpha=1; ctx.shadowBlur=0;
+
+    // scene title
+    ctx.fillStyle=COL.inkSoft; ctx.font="13px 'JetBrains Mono', monospace"; ctx.textAlign='center';
+    ctx.fillText('configuration space  =  product of '+N+' single-electron grids  ( '+N+' × g³ points drawn )', W/2, sy0+14);
+
+    /* ---- tape: g³ × g³ × … = g^{3N}  vs  N·g³ ---- */
+    const gc=g*g*g;
+    const tiles=N, tw=52, gap=26;
+    const totalW=tiles*tw+(tiles-1)*gap+150;
+    let x=Math.max(20,(W-totalW)/2); const yT=ty0+30;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    for(let i=0;i<tiles;i++){
+      ctx.fillStyle='rgba(242,178,92,0.14)'; ctx.strokeStyle=COL.accent; ctx.lineWidth=1.3;
+      roundRect(ctx,x,yT-18,tw,36,8); ctx.fill(); ctx.stroke();
+      ctx.fillStyle=COL.accent; ctx.font="13px 'JetBrains Mono', monospace";
+      ctx.fillText('g³='+gc, x+tw/2, yT);
+      x+=tw;
+      if(i<tiles-1){ ctx.fillStyle=COL.inkSoft; ctx.font="15px 'JetBrains Mono', monospace"; ctx.fillText('×', x+gap/2, yT); x+=gap; }
+    }
+    const log10=N*Math.log10(gc);
+    let jointStr; if(log10<15){ jointStr=Math.round(Math.pow(gc,N)).toLocaleString(); }
+      else { const e=Math.floor(log10), m=Math.pow(10,log10-e); jointStr=m.toFixed(2)+'×10'+sup(e); }
+    ctx.fillStyle=COL.inkSoft; ctx.font="15px 'JetBrains Mono', monospace"; ctx.fillText('=', x+gap/2, yT); x+=gap;
+    ctx.fillStyle=COL.accent; ctx.font="15px 'JetBrains Mono', monospace"; ctx.textAlign='left';
+    ctx.fillText('g'+sup(3*N)+' = '+jointStr+' cells', x, yT);
+    // independent comparison
+    ctx.fillStyle=COL.accent2; ctx.font="13px 'JetBrains Mono', monospace"; ctx.textAlign='center';
+    ctx.fillText('if independent  →  N · g³ = '+(N*gc).toLocaleString()+' cells  (grows by addition, not multiplication)', W/2, ty0+78);
+    ctx.textBaseline='alphabetic';
+
+    const out=document.getElementById('we-readout');
+    if(out){
+      const e2=Math.floor(log10), m2=Math.pow(10,log10-e2);
+      const jl = log10<9 ? Math.round(Math.pow(gc,N)).toString() : m2.toFixed(2)+'\\times 10^{'+e2+'}';
+      const need=Math.ceil(80/Math.log10(gc));
+      out.innerHTML='\\(N='+N+'\\) electrons at \\(g='+g+'\\): each electron contributes \\(g^3='+gc+
+        '\\) cells, so the joint space is \\(g^{3N}='+g+'^{'+(3*N)+'}='+jl+'\\) cells — against just \\(Ng^3='+
+        (N*gc)+'\\) if the electrons were independent. '+
+        (log10<80
+          ? 'At this \\(g\\) you would only cross the \\(10^{80}\\) atoms in the visible universe near \\(N\\approx'+need+'\\) electrons — which is exactly why the bars below explode.'
+          : 'That already dwarfs the \\(10^{80}\\) atoms in the visible universe.');
+      typeset(out);
+    }
+  }
+  function sup(n){ const m={'-':'⁻','0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'}; return String(n).split('').map(c=>m[c]||c).join(''); }
+  function roundRect(c,x,y,w,h,r){ c.beginPath(); c.moveTo(x+r,y); c.arcTo(x+w,y,x+w,y+h,r); c.arcTo(x+w,y+h,x,y+h,r); c.arcTo(x,y+h,x,y,r); c.arcTo(x,y,x+w,y,r); c.closePath(); }
+
+  function frame(){ if(spinning) yaw+=0.006; draw(); raf=requestAnimationFrame(frame); }
+
+  document.getElementById('we-add').addEventListener('click',()=>{ if(N<8){N++; draw();} });
+  document.getElementById('we-rm').addEventListener('click',()=>{ if(N>1){N--; draw();} });
+  const gin=document.getElementById('we-g');
+  gin.addEventListener('input',()=>{ g=+gin.value; document.getElementById('we-gV').textContent=g; draw(); });
+  const sb=document.getElementById('we-spin');
+  sb.addEventListener('click',()=>{ spinning=!spinning; sb.textContent=spinning?'⏸ Pause':'▶ Spin'; });
+
+  frame();
+})();
+
+/* =========================================================================
+   STEP 1 — exponential wall (live calculator + log bars)
+   ========================================================================= */
+(function(){
+  const canvas=document.getElementById('w1-canvas');
+  const ctx=setupCanvas(canvas,760,260);
+  const Nin=document.getElementById('w1-N'), gin=document.getElementById('w1-g');
+  const W=760,H=260, padL=150, padR=40, top=34, baseY=210;
+  const CAP=180; // cap log10 for bar height scaling
+
+  function fmtPow(exp){
+    if(exp<6) return Math.round(Math.pow(10,exp)).toLocaleString();
+    return '10^{'+exp.toFixed(0)+'}';
+  }
+  function draw(){
+    const N=+Nin.value, g=+gin.value;
+    document.getElementById('w1-NV').textContent=N;
+    document.getElementById('w1-gV').textContent=g;
+    const logWF = 3*N*Math.log10(g);   // log10(g^{3N})
+    const logD  = 3*Math.log10(g);     // log10(g^3)
+    ctx.clearRect(0,0,W,H);
+
+    const barTop=top, barBot=baseY, barH=barBot-barTop;
+    const yFor = L => barBot - Math.min(L,CAP)/CAP*barH;
+
+    // universe reference line at 10^80
+    const yU=yFor(80);
+    ctx.strokeStyle=COL.inkFaint; ctx.setLineDash([5,5]); ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(padL-10,yU); ctx.lineTo(W-padR,yU); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle=COL.inkFaint; ctx.font="12px 'JetBrains Mono', monospace"; ctx.textAlign='left';
+    ctx.fillText('10^80  atoms in the universe', W-padR-220, yU-8);
+
+    // bars
+    const bw=120, x1=padL+40, x2=padL+260;
+    function bar(x,L,color,label,sub){
+      const y=yFor(L);
+      const grad=ctx.createLinearGradient(0,y,0,barBot);
+      grad.addColorStop(0,color); grad.addColorStop(1,color+'22');
+      ctx.fillStyle=grad;
+      ctx.shadowColor=color; ctx.shadowBlur=18;
+      ctx.fillRect(x,y,bw,barBot-y);
+      ctx.shadowBlur=0;
+      ctx.fillStyle=COL.ink; ctx.font="13px 'JetBrains Mono', monospace"; ctx.textAlign='center';
+      ctx.fillText(label,x+bw/2,barBot+22);
+      ctx.fillStyle=color; ctx.font="12px 'JetBrains Mono', monospace";
+      ctx.fillText(sub,x+bw/2,y-10);
+      if(L>CAP){ ctx.fillStyle=color; ctx.font="16px serif"; ctx.fillText('↑',x+bw/2,barTop-2); }
+    }
+    bar(x1,logWF,COL.accent,'wavefunction','10^'+logWF.toFixed(0).padStart(1));
+    bar(x2,logD ,COL.accent2,'density','10^'+logD.toFixed(1));
+
+    // axis label
+    ctx.save(); ctx.translate(padL-58,(barTop+barBot)/2); ctx.rotate(-Math.PI/2);
+    ctx.fillStyle=COL.inkSoft; ctx.font="12px 'JetBrains Mono', monospace"; ctx.textAlign='center';
+    ctx.fillText('orders of magnitude  (log scale, capped at 10^'+CAP+')',0,0); ctx.restore();
+
+    const out=document.getElementById('w1-readout');
+    out.innerHTML = `Wavefunction needs \\( g^{3N}=${g}^{${3*N}} \\approx ${fmtPow(logWF)} \\) numbers; `
+      + `the density needs only \\( g^{3}=${g}^{3}=${Math.round(Math.pow(g,3)).toLocaleString()} \\). `
+      + `<b>That ratio is the entire reason DFT exists.</b>`;
+    typeset(out);
+  }
+  Nin.addEventListener('input',draw); gin.addEventListener('input',draw); draw();
+})();
+
+/* =========================================================================
+   GROUNDWORK — joint vs product-of-marginals vs correlation; draggable
+   conditional probe p(x2 | x1=a). Two electrons on a line (same system as
+   Step 2) so the exchange-correlation hole is made literal.
+   ========================================================================= */
+(function(){
+  const canvas=document.getElementById('wf-canvas');
+  if(!canvas) return;
+  const W=760,H=500;
+  const ctx=setupCanvas(canvas,W,H);
+  const HM=300, ox=132, oy=14;                 // heatmap box
+  const panelTop=oy+HM+44, panelH=104, base=panelTop+panelH; // 1-D conditional panel
+  const L=5, G=120, dx=2*L/(G-1);
+  const xs=[]; for(let i=0;i<G;i++) xs.push(-L+2*L*i/(G-1));
+
+  // two HO orbitals, normalized on the grid
+  const e=x=>Math.exp(-x*x/2);
+  let n0=0,n1=0; const f0=xs.map(e), f1=xs.map(x=>x*e(x));
+  xs.forEach((x,i)=>{ n0+=f0[i]*f0[i]*dx; n1+=f1[i]*f1[i]*dx; });
+  const a0=1/Math.sqrt(n0), a1=1/Math.sqrt(n1);
+  const P0=f0.map(v=>v*a0), P1=f1.map(v=>v*a1);
+
+  // antisymmetric 2-electron joint  p(x1,x2)=|Psi|^2, normalized to 1
+  const joint=[]; let Z=0;
+  for(let i=0;i<G;i++){ joint.push(new Array(G)); for(let j=0;j<G;j++){
+    const psi=(P0[i]*P1[j]-P1[i]*P0[j])/Math.SQRT2; const v=psi*psi; joint[i][j]=v; Z+=v*dx*dx; } }
+  for(let i=0;i<G;i++) for(let j=0;j<G;j++) joint[i][j]/=Z;
+
+  // one-particle marginal  m1(x)=∫p dx2  (integrates to 1)
+  const m1=new Array(G).fill(0);
+  for(let i=0;i<G;i++){ let s=0; for(let j=0;j<G;j++) s+=joint[i][j]*dx; m1[i]=s; }
+  // independent model  p1(x1)p1(x2)
+  const indep=[]; for(let i=0;i<G;i++){ indep.push(new Array(G)); for(let j=0;j<G;j++) indep[i][j]=m1[i]*m1[j]; }
+  // difference (correlation), sums to 0
+  const diff=[]; let dabs=0; for(let i=0;i<G;i++){ diff.push(new Array(G)); for(let j=0;j<G;j++){ const d=joint[i][j]-indep[i][j]; diff[i][j]=d; if(Math.abs(d)>dabs)dabs=Math.abs(d);} }
+  let jmax=0; for(let i=0;i<G;i++) for(let j=0;j<G;j++){ if(joint[i][j]>jmax)jmax=joint[i][j]; if(indep[i][j]>jmax)jmax=indep[i][j]; }
+
+  function heatColor(t){
+    const r=Math.round(13+t*(242-13)+Math.max(0,t-0.7)*40);
+    const g=Math.round(15+t*(178-15)+Math.max(0,t-0.7)*60);
+    const b=Math.round(22+t*(92-22));
+    return `rgb(${Math.min(255,r)},${Math.min(255,g)},${Math.min(255,b)})`;
+  }
+  function divColor(s){ // s in [-1,1]: + -> amber, - -> teal (depletion)
+    if(s>=0){ const t=Math.pow(s,0.6); return `rgb(${Math.round(13+t*229)},${Math.round(15+t*163)},${Math.round(22+t*70)})`; }
+    const t=Math.pow(-s,0.6); return `rgb(${Math.round(13+t*82)},${Math.round(15+t*195)},${Math.round(22+t*192)})`;
+  }
+
+  let mode='true', a=-1.3, dragging=false;
+  const xpix=i=>ox + i/(G-1)*HM;
+  const aPix=()=>ox + (a+L)/(2*L)*HM;
+  const aIdx=()=>Math.max(1,Math.min(G-2,Math.round((a+L)/(2*L)*(G-1))));
+
+  function drawHeatmap(){
+    const cell=HM/G;
+    for(let i=0;i<G;i++) for(let j=0;j<G;j++){
+      let col;
+      if(mode==='diff'){ col=divColor(diff[i][j]/dabs); }
+      else { const fld=(mode==='indep'?indep:joint); col=heatColor(Math.pow(fld[i][j]/jmax,0.6)); }
+      ctx.fillStyle=col;
+      ctx.fillRect(ox+i*cell, oy+(G-1-j)*cell, cell+1, cell+1);
+    }
+    // frame, diagonal x1=x2, axis labels
+    ctx.strokeStyle=COL.axis; ctx.lineWidth=1; ctx.strokeRect(ox,oy,HM,HM);
+    ctx.strokeStyle='rgba(224,114,159,0.5)'; ctx.setLineDash([4,4]); ctx.lineWidth=1.2;
+    ctx.beginPath(); ctx.moveTo(ox,oy+HM); ctx.lineTo(ox+HM,oy); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle=COL.inkSoft; ctx.font="13px 'JetBrains Mono', monospace";
+    ctx.textAlign='center'; ctx.fillText('x₁  (electron 1)', ox+HM/2, oy+HM+18);
+    ctx.save(); ctx.translate(ox-48,oy+HM/2); ctx.rotate(-Math.PI/2);
+    ctx.textAlign='center'; ctx.fillText('x₂  (electron 2)',0,0); ctx.restore();
+    ctx.fillStyle=COL.accent3; ctx.font="italic 12px 'Source Serif 4', serif"; ctx.textAlign='left';
+    ctx.fillText('x₁ = x₂', ox+HM*0.40, oy+HM*0.40);
+  }
+  function drawProbe(){
+    const px=aPix();
+    ctx.strokeStyle=COL.accent2; ctx.lineWidth=2; ctx.shadowColor=COL.accent2; ctx.shadowBlur=8;
+    ctx.beginPath(); ctx.moveTo(px,oy); ctx.lineTo(px,base); ctx.stroke(); ctx.shadowBlur=0;
+    // handle
+    ctx.fillStyle=COL.accent2; ctx.beginPath(); ctx.arc(px,oy-2,4,0,2*Math.PI); ctx.fill();
+    ctx.font="12px 'JetBrains Mono', monospace"; ctx.textAlign= px>ox+HM-70?'right':'left';
+    ctx.fillText('x₁ = a = '+a.toFixed(2), px+(px>ox+HM-70?-8:8), oy+12);
+  }
+  function drawPanel(){
+    const ai=aIdx();
+    // conditional p(x2 | x1=a), normalized over x2
+    const cond=new Array(G); let cs=0; for(let j=0;j<G;j++) cs+=joint[ai][j]*dx;
+    for(let j=0;j<G;j++) cond[j]=joint[ai][j]/(cs||1);
+    let yMax=0; for(let j=0;j<G;j++){ if(cond[j]>yMax)yMax=cond[j]; if(m1[j]>yMax)yMax=m1[j]; }
+    const yp=v=>base-(v/yMax)*panelH*0.9;
+    // baseline + x2=a guide
+    ctx.strokeStyle=COL.axis; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(ox,base); ctx.lineTo(ox+HM,base); ctx.stroke();
+    ctx.strokeStyle='rgba(95,210,214,0.35)'; ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.moveTo(aPix(),panelTop); ctx.lineTo(aPix(),base); ctx.stroke(); ctx.setLineDash([]);
+    // shade the hole (where conditional < density) in teal
+    ctx.fillStyle='rgba(95,210,214,0.18)';
+    ctx.beginPath(); let started=false;
+    for(let j=0;j<G;j++){ const px=xpix(j); const yc=yp(cond[j]), ym=yp(m1[j]);
+      if(cond[j]<m1[j]){ if(!started){ctx.moveTo(px,ym);started=true;} ctx.lineTo(px,ym);} }
+    if(started){ for(let j=G-1;j>=0;j--){ if(cond[j]<m1[j]) ctx.lineTo(xpix(j),yp(cond[j])); } ctx.closePath(); ctx.fill(); }
+    // density (dashed grey)
+    ctx.strokeStyle=COL.inkSoft; ctx.lineWidth=1.6; ctx.setLineDash([5,4]); ctx.beginPath();
+    for(let j=0;j<G;j++){ const px=xpix(j),py=yp(m1[j]); j?ctx.lineTo(px,py):ctx.moveTo(px,py);} ctx.stroke(); ctx.setLineDash([]);
+    // conditional (solid amber, glow)
+    ctx.strokeStyle=COL.accent; ctx.lineWidth=2.4; ctx.shadowColor=COL.accent; ctx.shadowBlur=9; ctx.beginPath();
+    for(let j=0;j<G;j++){ const px=xpix(j),py=yp(cond[j]); j?ctx.lineTo(px,py):ctx.moveTo(px,py);} ctx.stroke(); ctx.shadowBlur=0;
+    // legend
+    ctx.font="12px 'JetBrains Mono', monospace"; ctx.textAlign='left';
+    ctx.fillStyle=COL.accent; ctx.fillText('p(x₂ | x₁=a)', ox+6, panelTop+14);
+    ctx.fillStyle=COL.inkSoft; ctx.fillText('n(x₂) — density alone', ox+6, panelTop+30);
+    // quantitative readout: prob electron 2 lands within ±0.5 of electron 1
+    const w=0.5; let pt=0,pi=0;
+    for(let j=0;j<G;j++){ if(Math.abs(xs[j]-a)<w){ pt+=cond[j]*dx; pi+=m1[j]*dx; } }
+    const out=document.getElementById('wf-readout');
+    if(out){
+      const supp = pi>1e-6 ? (1-pt/pi)*100 : 0;
+      out.innerHTML = 'With electron 1 fixed at <b>a = '+a.toFixed(2)+'</b>, the chance of finding '+
+        'electron 2 within ±0.5 of it is <b>'+(pt*100).toFixed(1)+'%</b> — versus <b>'+(pi*100).toFixed(1)+
+        '%</b> if they were independent. That <b>'+supp.toFixed(0)+'% suppression</b> is the correlation hole; '+
+        'the single density n(x) carries none of it.';
+    }
+  }
+  function redraw(){
+    ctx.clearRect(0,0,W,H);
+    drawHeatmap(); drawPanel(); drawProbe();
+  }
+
+  // mode buttons
+  const btns=[['wf-true','true'],['wf-indep','indep'],['wf-diff','diff']]
+    .map(([id,m])=>({el:document.getElementById(id),m}));
+  btns.forEach(b=>{ if(b.el) b.el.addEventListener('click',()=>{
+    mode=b.m; btns.forEach(o=>o.el&&o.el.classList.toggle('is-active',o.m===mode)); redraw(); }); });
+
+  // drag the probe
+  function setFromClient(clientX){
+    const rect=canvas.getBoundingClientRect();
+    const cssX=(clientX-rect.left)*(W/rect.width);
+    a=Math.max(-L+0.3, Math.min(L-0.3, (cssX-ox)/HM*(2*L)-L));
+    redraw();
+  }
+  canvas.addEventListener('mousedown',ev=>{ dragging=true; setFromClient(ev.clientX); });
+  window.addEventListener('mousemove',ev=>{ if(dragging) setFromClient(ev.clientX); });
+  window.addEventListener('mouseup',()=>{ dragging=false; });
+  canvas.addEventListener('touchstart',ev=>{ dragging=true; setFromClient(ev.touches[0].clientX); ev.preventDefault(); },{passive:false});
+  canvas.addEventListener('touchmove',ev=>{ if(dragging){ setFromClient(ev.touches[0].clientX); ev.preventDefault(); } },{passive:false});
+  canvas.addEventListener('touchend',()=>{ dragging=false; });
+
+  redraw();
+})();
+
+/* =========================================================================
+   SCALING (2D) — flat g×g chessboard. 5 coloured electrons; click to
+   delocalize each from a single square into a stochastic twinkle across all
+   squares (in its own slot). Configuration count multiplies by g^2 each time.
+   ========================================================================= */
+(function(){
+  const canvas=document.getElementById('wx2-canvas');
+  if(!canvas) return;
+  const W=760,H=470; const ctx=setupCanvas(canvas,W,H);
+  const BS=300, bx=(W-BS)/2, by=18, ty0=336;
+  const COLORS=['#f2b25c','#5fd2d6','#e0729f','#8ddf9a','#9aa8ff'], NM=5;
+  const SLOT=[[-0.24,-0.24],[0.24,-0.24],[0,0],[-0.24,0.24],[0.24,0.24]];
+  let g=4, kQ=0, frame=0, classCell=[], twinkle=[];
+
+  function sup(n){ const m={'-':'⁻','0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'}; return String(n).split('').map(c=>m[c]||c).join(''); }
+  function roundRect(c,x,y,w,h,r){ c.beginPath(); c.moveTo(x+r,y); c.arcTo(x+w,y,x+w,y+h,r); c.arcTo(x+w,y+h,x,y+h,r); c.arcTo(x,y+h,x,y,r); c.arcTo(x,y,x+w,y,r); c.closePath(); }
+  function hexA(hex,a){ const n=parseInt(hex.slice(1),16); return 'rgba('+((n>>16)&255)+','+((n>>8)&255)+','+(n&255)+','+a+')'; }
+
+  function rebuild(){ const M=g*g; classCell=[]; for(let m=0;m<NM;m++) classCell.push(Math.floor(m*(M-1)/(NM-1)));
+    twinkle=Array.from({length:NM},()=>new Float32Array(M)); if(kQ>NM)kQ=NM; }
+  function reTwinkle(){ const M=g*g; for(let m=0;m<kQ;m++){ const tw=twinkle[m]; for(let i=0;i<M;i++){ const r=Math.random(); tw[i]=r*r*r; } } }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    const cell=BS/g, M=g*g;
+    // chessboard
+    for(let b=0;b<g;b++)for(let a=0;a<g;a++){
+      const x=bx+a*cell, y=by+b*cell;
+      ctx.fillStyle=((a+b)&1)? 'rgba(154,168,200,0.10)':'rgba(154,168,200,0.035)';
+      ctx.fillRect(x,y,cell,cell);
+      ctx.strokeStyle='rgba(154,168,200,0.22)'; ctx.lineWidth=1; ctx.strokeRect(x+0.5,y+0.5,cell,cell);
+    }
+    // quantum electrons: twinkle in their slot across every square
+    for(let m=0;m<kQ;m++){ const tw=twinkle[m], col=COLORS[m], off=SLOT[m];
+      for(let b=0;b<g;b++)for(let a=0;a<g;a++){ const i=b*g+a, br=tw[i];
+        const cx=bx+(a+0.5)*cell+off[0]*cell, cy=by+(b+0.5)*cell+off[1]*cell;
+        ctx.globalAlpha=0.14+0.8*br; ctx.fillStyle=hexA(col,1);
+        if(br>0.4){ ctx.shadowColor=col; ctx.shadowBlur=8; } else ctx.shadowBlur=0;
+        ctx.beginPath(); ctx.arc(cx,cy,cell*0.11,0,2*Math.PI); ctx.fill();
+      }
+    }
+    ctx.globalAlpha=1; ctx.shadowBlur=0;
+    // classical electrons: one steady dot in one square
+    for(let m=kQ;m<NM;m++){ const ci=classCell[m], a=ci%g, b=Math.floor(ci/g);
+      const cx=bx+(a+0.5)*cell, cy=by+(b+0.5)*cell;
+      ctx.fillStyle=COLORS[m]; ctx.shadowColor=COLORS[m]; ctx.shadowBlur=12;
+      ctx.beginPath(); ctx.arc(cx,cy,cell*0.28,0,2*Math.PI); ctx.fill(); ctx.shadowBlur=0;
+      ctx.strokeStyle='rgba(255,255,255,0.55)'; ctx.lineWidth=1.5; ctx.stroke();
+    }
+    // status
+    ctx.fillStyle=COL.inkSoft; ctx.font="13px 'JetBrains Mono', monospace"; ctx.textAlign='center';
+    ctx.fillText(kQ===0?'all 5 electrons classical — one configuration on the board'
+      :(kQ<NM? kQ+' of 5 electrons quantum — each smeared over every square at once'
+             : 'all 5 electrons quantum — an amplitude for every joint arrangement'), W/2, by+BS+18);
+
+    // tape
+    const yT=ty0+30; ctx.textBaseline='middle';
+    ctx.fillStyle=COL.inkSoft; ctx.font="13px 'JetBrains Mono', monospace"; ctx.textAlign='center';
+    ctx.fillText('configurations:', 110, yT);
+    let x=190;
+    if(kQ===0){ ctx.fillStyle=COL.ink; ctx.font="15px 'JetBrains Mono', monospace"; ctx.textAlign='left'; ctx.fillText('1', x, yT); }
+    else {
+      const tw=42, gap=20; ctx.textAlign='center';
+      for(let m=0;m<kQ;m++){ ctx.fillStyle=hexA(COLORS[m],0.16); ctx.strokeStyle=COLORS[m]; ctx.lineWidth=1.3;
+        roundRect(ctx,x,yT-15,tw,30,7); ctx.fill(); ctx.stroke();
+        ctx.fillStyle=COLORS[m]; ctx.font="13px 'JetBrains Mono', monospace"; ctx.fillText('g²', x+tw/2, yT); x+=tw;
+        if(m<kQ-1){ ctx.fillStyle=COL.inkSoft; ctx.font="14px 'JetBrains Mono', monospace"; ctx.fillText('×', x+gap/2, yT); x+=gap; }
+      }
+      const val=Math.round(Math.pow(M,kQ)).toLocaleString();
+      ctx.fillStyle=COL.inkSoft; ctx.font="15px 'JetBrains Mono', monospace"; ctx.fillText('=', x+gap/2, yT); x+=gap;
+      ctx.fillStyle=COL.ink; ctx.textAlign='left'; ctx.font="15px 'JetBrains Mono', monospace";
+      ctx.fillText('g'+sup(2*kQ)+' = '+val, x, yT);
+    }
+    ctx.fillStyle=COL.inkSoft; ctx.textAlign='center'; ctx.font="13px 'JetBrains Mono', monospace";
+    ctx.fillText('classical description (unchanged):  5 positions = 10 numbers', W/2, ty0+72);
+    ctx.textBaseline='alphabetic';
+
+    const out=document.getElementById('wx2-readout');
+    if(out){ out.innerHTML = kQ===0
+      ? 'Classical: one configuration on the board — \\(5\\) positions, \\(10\\) numbers.'
+      : 'With \\('+kQ+'\\) of 5 electrons quantum, \\(\\Psi\\) needs an amplitude for \\(g^{2\\cdot'+kQ+'}='+g+'^{'+(2*kQ)+'}='+Math.round(Math.pow(M,kQ)).toLocaleString()+'\\) joint arrangements on this flat board — while the classical state is still \\(10\\) numbers. (In real 3-D it would be \\(g^{3\\cdot'+kQ+'}\\).)';
+      typeset(out); }
+  }
+
+  function loop(){ frame++; if(frame%6===0) reTwinkle(); draw(); requestAnimationFrame(loop); }
+  document.getElementById('wx2-next').addEventListener('click',()=>{ if(kQ<NM){ kQ++; reTwinkle(); draw(); } });
+  document.getElementById('wx2-reset').addEventListener('click',()=>{ kQ=0; draw(); });
+  const gin=document.getElementById('wx2-g');
+  gin.addEventListener('input',()=>{ g=+gin.value; document.getElementById('wx2-gV').textContent=g; rebuild(); reTwinkle(); draw(); });
+  rebuild(); loop();
+})();
+
+/* =========================================================================
+   SCALING — 5 coloured marbles in one g×g×g room. Classical = fixed points.
+   Click to delocalize each into a stochastic twinkling cloud over all cells;
+   the configuration count multiplies by g^3 per delocalized electron.
+   ========================================================================= */
+(function(){
+  const canvas=document.getElementById('wx-canvas');
+  if(!canvas) return;
+  const W=760,H=470; const ctx=setupCanvas(canvas,W,H);
+  const sx0=18, sy0=8, sw=724, sh=292;            // 3D room rect
+  const ty0=322;                                   // tape strip
+  const COLORS=['#f2b25c','#5fd2d6','#e0729f','#8ddf9a','#9aa8ff']; // 5 distinct electrons
+  const NM=5;
+  let g=3, kQ=0, yaw=0.7, pitch=-0.40, spinning=true, frame=0;
+  let cells=[], classicalCell=[], twinkle=[];     // geometry + per-marble brightness
+
+  function sup(n){ const m={'-':'⁻','0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'}; return String(n).split('').map(c=>m[c]||c).join(''); }
+  function roundRect(c,x,y,w,h,r){ c.beginPath(); c.moveTo(x+r,y); c.arcTo(x+w,y,x+w,y+h,r); c.arcTo(x+w,y+h,x,y+h,r); c.arcTo(x,y+h,x,y,r); c.arcTo(x,y,x+w,y,r); c.closePath(); }
+  function rot(x,y,z){ const cy=Math.cos(yaw),sy=Math.sin(yaw); let X=x*cy+z*sy, Z=-x*sy+z*cy, Y=y;
+    const cx=Math.cos(pitch),sx=Math.sin(pitch); return [X, Y*cx-Z*sx, Y*sx+Z*cx]; }
+  function proj(x,y,z){ const cam=4.6, r=rot(x,y,z), s=cam/(cam-r[2]); return [r[0]*s, r[1]*s, r[2]]; }
+
+  function rebuild(){
+    const M=g*g*g; cells=[];
+    for(let a=0;a<g;a++)for(let b=0;b<g;b++)for(let c=0;c<g;c++){
+      const f=t=>(g===1?0:-1+2*t/(g-1))*0.92;
+      cells.push([f(a),f(b),f(c)]);
+    }
+    classicalCell=[]; for(let m=0;m<NM;m++) classicalCell.push(Math.floor(m*(M-1)/(NM-1)));
+    twinkle=Array.from({length:NM},()=>new Float32Array(M));
+    if(kQ>NM) kQ=NM;
+  }
+  function reTwinkle(){ const M=cells.length; for(let m=0;m<kQ;m++){ const tw=twinkle[m]; for(let i=0;i<M;i++){ const r=Math.random(); tw[i]=r*r*r; } } }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    const M=cells.length;
+    // project + auto-fit
+    const P=cells.map(c=>proj(c[0],c[1],c[2]));
+    let mnx=1e9,mxx=-1e9,mny=1e9,mxy=-1e9,mnz=1e9,mxz=-1e9;
+    P.forEach(p=>{ if(p[0]<mnx)mnx=p[0]; if(p[0]>mxx)mxx=p[0]; if(p[1]<mny)mny=p[1]; if(p[1]>mxy)mxy=p[1]; if(p[2]<mnz)mnz=p[2]; if(p[2]>mxz)mxz=p[2]; });
+    const scale=Math.min(sw/Math.max(1e-3,mxx-mnx), sh/Math.max(1e-3,mxy-mny))*0.9;
+    const midX=(mnx+mxx)/2, midY=(mny+mxy)/2, zr=Math.max(1e-3,mxz-mnz);
+    const Tx=x=>sx0+sw/2+(x-midX)*scale, Ty=y=>sy0+sh/2-(y-midY)*scale;
+
+    // collect drawables (depth-sorted)
+    const items=[];
+    for(let i=0;i<M;i++){ const p=P[i], t=(p[2]-mnz)/zr;
+      items.push({z:p[2], X:Tx(p[0]), Y:Ty(p[1]), r:1.4+1.3*t, col:'rgba(120,140,165,', a:0.18+0.18*t}); // faint room grid
+    }
+    // quantum clouds: twinkle every cell in each delocalized electron's colour
+    for(let m=0;m<kQ;m++){ const tw=twinkle[m], col=COLORS[m];
+      for(let i=0;i<M;i++){ const p=P[i], t=(p[2]-mnz)/zr; const b=tw[i];
+        items.push({z:p[2]+0.001, X:Tx(p[0]), Y:Ty(p[1]), r:(2.0+2.2*t)*(0.5+b), col:hexA(col), a:(0.10+0.85*b)*(0.55+0.45*t), glow:b>0.35?col:null});
+      }
+    }
+    // classical marbles: steady bright spheres at their fixed cell
+    for(let m=kQ;m<NM;m++){ const ci=classicalCell[m], p=P[ci], t=(p[2]-mnz)/zr;
+      items.push({z:p[2]+0.002, X:Tx(p[0]), Y:Ty(p[1]), r:6.5+2.5*t, col:hexA(COLORS[m]), a:1, glow:COLORS[m], ring:true});
+    }
+    items.sort((u,v)=>u.z-v.z);
+    items.forEach(it=>{ ctx.globalAlpha=it.a; ctx.fillStyle=it.col+'1)';
+      if(it.glow){ ctx.shadowColor=it.glow; ctx.shadowBlur=12; } else ctx.shadowBlur=0;
+      ctx.beginPath(); ctx.arc(it.X,it.Y,it.r,0,2*Math.PI); ctx.fill();
+      if(it.ring){ ctx.shadowBlur=0; ctx.globalAlpha=0.9; ctx.lineWidth=1.5; ctx.strokeStyle='rgba(255,255,255,0.5)'; ctx.stroke(); }
+    });
+    ctx.globalAlpha=1; ctx.shadowBlur=0;
+
+    // status
+    ctx.fillStyle=COL.inkSoft; ctx.font="13px 'JetBrains Mono', monospace"; ctx.textAlign='center';
+    ctx.fillText(kQ===0?'all 5 electrons classical — one configuration'
+      :(kQ<NM? kQ+' of 5 electrons quantum — smeared over every cell at once'
+             : 'all 5 electrons quantum — a value at every joint configuration'), W/2, sy0+14);
+
+    drawTape();
+    const out=document.getElementById('wx-readout');
+    if(out){
+      const log10=kQ*3*Math.log10(g); let val;
+      if(log10<12){ val=Math.round(Math.pow(g, 3*kQ)).toLocaleString(); }
+      else { const e=Math.floor(log10), mm=Math.pow(10,log10-e); val=mm.toFixed(2)+'\\times 10^{'+e+'}'; }
+      out.innerHTML = kQ===0
+        ? 'Everything is classical: the state is one configuration — \\(5\\) positions, \\(15\\) numbers. The Schrödinger matrix has dimension \\(1\\) here because nothing is delocalized yet.'
+        : 'With \\('+kQ+'\\) of 5 electrons quantum, \\(\\Psi\\) must store an amplitude for \\(g^{3\\cdot'+kQ+'}='+g+'^{'+(3*kQ)+'}='+val+'\\) joint configurations — so \\(\\hat H\\) is a matrix of that dimension. The classical description is still just \\(15\\) numbers.'
+          + (kQ===NM? ' This is the wall: the eigenproblem is exponentially large in the electron count.' : '');
+      typeset(out);
+    }
+  }
+
+  function drawTape(){
+    const gc=g*g*g, yT=ty0+34;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillStyle=COL.inkSoft; ctx.font="13px 'JetBrains Mono', monospace";
+    ctx.fillText('configurations to store:', 120, yT); 
+    let x=212;
+    if(kQ===0){
+      ctx.fillStyle=COL.ink; ctx.font="15px 'JetBrains Mono', monospace"; ctx.textAlign='left';
+      ctx.fillText('1', x, yT);
+    } else {
+      const tw=44, gap=22; ctx.textAlign='center';
+      for(let m=0;m<kQ;m++){
+        ctx.fillStyle=hexA(COLORS[m])+'0.16)'; ctx.strokeStyle=COLORS[m]; ctx.lineWidth=1.3;
+        roundRect(ctx,x,yT-16,tw,32,7); ctx.fill(); ctx.stroke();
+        ctx.fillStyle=COLORS[m]; ctx.font="13px 'JetBrains Mono', monospace"; ctx.fillText('g³', x+tw/2, yT);
+        x+=tw;
+        if(m<kQ-1){ ctx.fillStyle=COL.inkSoft; ctx.font="14px 'JetBrains Mono', monospace"; ctx.fillText('×', x+gap/2, yT); x+=gap; }
+      }
+      const log10=kQ*Math.log10(gc); let val;
+      if(log10<12){ val=Math.round(Math.pow(gc,kQ)).toLocaleString(); }
+      else { const e=Math.floor(log10), mm=Math.pow(10,log10-e); val=mm.toFixed(2)+'×10'+sup(e); }
+      ctx.fillStyle=COL.inkSoft; ctx.font="15px 'JetBrains Mono', monospace"; ctx.fillText('=', x+gap/2, yT); x+=gap;
+      ctx.fillStyle=COL.ink; ctx.textAlign='left'; ctx.font="15px 'JetBrains Mono', monospace";
+      ctx.fillText('g'+sup(3*kQ)+' = '+val, x, yT);
+    }
+    // classical baseline line
+    ctx.fillStyle=COL.inkSoft; ctx.textAlign='center'; ctx.font="13px 'JetBrains Mono', monospace";
+    ctx.fillText('classical description (unchanged):  5 positions = 15 numbers', W/2, ty0+78);
+    ctx.textBaseline='alphabetic';
+  }
+  function hexA(hex){ const n=parseInt(hex.slice(1),16); const r=(n>>16)&255,gg=(n>>8)&255,b=n&255; return 'rgba('+r+','+gg+','+b+','; }
+
+  function loop(){ frame++; if(spinning) yaw+=0.005; if(frame%6===0) reTwinkle(); draw(); requestAnimationFrame(loop); }
+
+  document.getElementById('wx-next').addEventListener('click',()=>{ if(kQ<NM){ kQ++; reTwinkle(); draw(); } });
+  document.getElementById('wx-reset').addEventListener('click',()=>{ kQ=0; draw(); });
+  const gin=document.getElementById('wx-g');
+  gin.addEventListener('input',()=>{ g=+gin.value; document.getElementById('wx-gV').textContent=g; rebuild(); reTwinkle(); draw(); });
+  const sb=document.getElementById('wx-spin');
+  sb.addEventListener('click',()=>{ spinning=!spinning; sb.textContent=spinning?'⏸ Pause':'▶ Spin'; });
+
+  rebuild(); loop();
+})();
+
+/* =========================================================================
+   STEP 2 — marginalization (staged reveal): joint heatmap -> 1D density
+   ========================================================================= */
+(function(){
+  const canvas=document.getElementById('w2-canvas');
+  const ctx=setupCanvas(canvas,760,470);
+  const W=760,H=470;
+  // heatmap occupies a square; density strip along the bottom
+  const HM=320, ox=110, oy=20; // heatmap box: [ox,oy] size HM x HM
+  const dStripTop=oy+HM+18, dStripH=70;
+  const L=5; // domain [-L,L] mapped to box
+  const G=120; // sample grid for heatmap
+
+  // two HO orbitals (normalized on grid)
+  function phi0(x){ return Math.exp(-x*x/2); }
+  function phi1(x){ return x*Math.exp(-x*x/2); }
+  // precompute normalization
+  const xs=[]; for(let i=0;i<G;i++) xs.push(-L + 2*L*i/(G-1));
+  const dx=2*L/(G-1);
+  let n0=0,n1=0; xs.forEach(x=>{n0+=phi0(x)*phi0(x)*dx; n1+=phi1(x)*phi1(x)*dx;});
+  const a0=1/Math.sqrt(n0), a1=1/Math.sqrt(n1);
+  function p0(x){return a0*phi0(x);} function p1(x){return a1*phi1(x);}
+  // joint |Psi|^2 for antisym 2-electron state
+  function joint(x1,x2){ const v=(p0(x1)*p1(x2)-p1(x1)*p0(x2)); return 0.5*v*v; }
+  // marginal density n(x1) = p0^2 + p1^2  (integrates to 2)
+  function dens(x){ return p0(x)*p0(x)+p1(x)*p1(x); }
+
+  // precompute joint field + max
+  const field=[]; let jmax=0;
+  for(let i=0;i<G;i++){ field.push([]); for(let j=0;j<G;j++){ const val=joint(xs[i],xs[j]); field[i].push(val); if(val>jmax)jmax=val; } }
+  let dmax=0; xs.forEach(x=>{ dmax=Math.max(dmax,dens(x)); });
+
+  // amber colormap on dark
+  function heatColor(t){ // t in [0,1]
+    // dark -> amber -> white-ish
+    const r=Math.round(13 + t*(242-13) + Math.max(0,t-0.7)*40);
+    const g=Math.round(15 + t*(178-15) + Math.max(0,t-0.7)*60);
+    const b=Math.round(22 + t*(92-22));
+    return `rgb(${Math.min(255,r)},${Math.min(255,g)},${Math.min(255,b)})`;
+  }
+
+  function drawHeatmap(dim){
+    const cell=HM/G;
+    for(let i=0;i<G;i++) for(let j=0;j<G;j++){
+      const t=Math.pow(field[i][j]/jmax,0.6);
+      ctx.fillStyle=heatColor(dim? t*0.45 : t);
+      const px=ox + i*cell, py=oy + (G-1-j)*cell;
+      ctx.fillRect(px,py,cell+1,cell+1);
+    }
+    // frame + axes labels
+    ctx.strokeStyle=COL.axis; ctx.lineWidth=1; ctx.strokeRect(ox,oy,HM,HM);
+    ctx.fillStyle=COL.inkSoft; ctx.font="13px 'JetBrains Mono', monospace";
+    ctx.textAlign='center'; if(!dim) ctx.fillText('x₁  (electron 1)', ox+HM/2, oy+HM+16);
+  }
+  function drawDiagLabel(){
+    ctx.strokeStyle='rgba(95,210,214,0.5)'; ctx.lineWidth=1.2; ctx.setLineDash([4,4]);
+    ctx.beginPath(); ctx.moveTo(ox,oy+HM); ctx.lineTo(ox+HM,oy); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle=COL.accent2; ctx.font="italic 12px 'Source Serif 4', serif"; ctx.textAlign='left';
+    ctx.fillText('exchange hole: x₁ = x₂', ox+HM*0.40, oy+HM*0.40);
+  }
+  function drawArrows(prog){
+    // arrows pointing down: integrating out x2
+    ctx.strokeStyle=COL.accent; ctx.fillStyle=COL.accent; ctx.lineWidth=1.4;
+    const nA=9;
+    for(let k=0;k<nA;k++){
+      const px=ox + (k+0.5)/nA*HM;
+      const y0=oy+8, y1=oy+HM+10;
+      const ye=y0+(y1-y0)*Math.min(1,prog*1.2);
+      ctx.beginPath(); ctx.moveTo(px,y0); ctx.lineTo(px,ye); ctx.stroke();
+      if(prog>0.6){ ctx.beginPath(); ctx.moveTo(px-4,ye-7); ctx.lineTo(px,ye); ctx.lineTo(px+4,ye-7); ctx.fill(); }
+    }
+    ctx.fillStyle=COL.accent; ctx.font="italic 13px 'Source Serif 4', serif"; ctx.textAlign='right';
+    ctx.fillText('∫ … dx₂', ox+HM-6, oy+HM-10);
+  }
+  function drawDensity(prog){
+    // density strip below
+    const x0=ox, x1=ox+HM, base=dStripTop+dStripH;
+    ctx.strokeStyle=COL.axis; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(x0,base); ctx.lineTo(x1,base); ctx.stroke();
+    // fill under curve
+    ctx.beginPath();
+    ctx.moveTo(x0,base);
+    for(let i=0;i<G;i++){
+      const px=ox + i/(G-1)*HM;
+      const py=base - (dens(xs[i])/dmax)*dStripH*prog;
+      ctx.lineTo(px,py);
+    }
+    ctx.lineTo(x1,base); ctx.closePath();
+    const grad=ctx.createLinearGradient(0,dStripTop,0,base);
+    grad.addColorStop(0,'rgba(242,178,92,0.55)'); grad.addColorStop(1,'rgba(242,178,92,0.05)');
+    ctx.fillStyle=grad; ctx.fill();
+    // curve
+    ctx.strokeStyle=COL.accent; ctx.lineWidth=2.4; ctx.shadowColor=COL.accent; ctx.shadowBlur=10;
+    ctx.beginPath();
+    for(let i=0;i<G;i++){
+      const px=ox + i/(G-1)*HM;
+      const py=base - (dens(xs[i])/dmax)*dStripH*prog;
+      i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);
+    }
+    ctx.stroke(); ctx.shadowBlur=0;
+    ctx.fillStyle=COL.accent; ctx.font="13px 'JetBrains Mono', monospace"; ctx.textAlign='left';
+    ctx.fillText('n(x₁)  — the density (1-D)', x0, base+22);
+  }
+  // x2 axis label (vertical)
+  function drawY(){
+    ctx.save(); ctx.translate(ox-46,oy+HM/2); ctx.rotate(-Math.PI/2);
+    ctx.fillStyle=COL.inkSoft; ctx.font="13px 'JetBrains Mono', monospace"; ctx.textAlign='center';
+    ctx.fillText('x₂  (electron 2)',0,0); ctx.restore();
+  }
+
+  const stages=[
+    { next:'Integrate out electron 2 &rarr;',
+      caption:'The full two-electron state |Ψ(x₁,x₂)|² — a 2-D object for just two electrons. Note the dark diagonal valley.',
+      render:()=>{ drawHeatmap(false); drawY(); drawDiagLabel(); } },
+    { next:'Collapse to the density &rarr;',
+      caption:'Summing the heatmap down each column ∫…dx₂ — accumulating how much electron sits at each x₁.',
+      render:(p)=>{ drawHeatmap(false); drawY(); drawArrows(p); } },
+    { next:null,
+      caption:'What remains is n(x₁): a 1-D curve. A function of 3N coordinates has become a function of 3.',
+      render:(p)=>{ drawHeatmap(true); drawY(); drawDensity(p); } }
+  ];
+
+  let stage=0, anim=null;
+  const back=document.getElementById('w2-back'), next=document.getElementById('w2-next'), cap=document.getElementById('w2-caption');
+  function render(prog){
+    ctx.clearRect(0,0,W,H);
+    stages[stage].render(prog===undefined?1:prog);
+    cap.innerHTML=stages[stage].caption;
+    back.disabled=stage===0;
+    if(stages[stage].next){ next.style.display=''; next.innerHTML=stages[stage].next; }
+    else next.style.display='none';
+  }
+  function animateIn(){
+    if(anim) cancelAnimationFrame(anim);
+    let t=0; const step=()=>{ t+=0.045; render(Math.min(1,t)); if(t<1) anim=requestAnimationFrame(step); };
+    step();
+  }
+  next.addEventListener('click',()=>{ if(stage<stages.length-1){ stage++; animateIn(); }});
+  back.addEventListener('click',()=>{ if(stage>0){ stage--; render(1); }});
+  render(1);
+})();
+
+/* =========================================================================
+   STEP 3 — Hohenberg-Kohn bijection: sculpt potential -> live ground density
+   ========================================================================= */
+(function(){
+  const canvas=document.getElementById('w3-canvas');
+  const ctx=setupCanvas(canvas,760,300);
+  const N=121, Ld=16, h=Ld/(N-1);
+  const xg=Array.from({length:N},(_,i)=>-Ld/2+i*h);
+  const view=makeView(canvas,{xmin:-Ld/2,xmax:Ld/2,ymin:0,ymax:1});
+  const kin=document.getElementById('w3-k'), tin=document.getElementById('w3-t'), bin=document.getElementById('w3-b');
+  // persistent wavefunction (warm-started)
+  let psi=xg.map(x=>Math.exp(-x*x/4)); dnormalize(psi,h);
+
+  function potential(){
+    const k=+kin.value, t=+tin.value, b=+bin.value;
+    return xg.map(x=>0.5*k*x*x + t*x*Math.abs(x)*0.4 + b*Math.exp(-x*x/1.2));
+  }
+  function draw(){
+    const v=potential();
+    imagStep(psi,v,h,90); // warm-started relaxation -> ground state
+    const dens=psi.map(p=>p*p);
+    // scale potential & density into view for display
+    let vmin=Math.min(...v), vmax=Math.max(...v);
+    let dmax=Math.max(...dens);
+    ctx.clearRect(0,0,view.w,view.h);
+    // axis
+    ctx.strokeStyle=COL.axis; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(0,view.h-26); ctx.lineTo(view.w,view.h-26); ctx.stroke();
+
+    const baseY=view.h-26, topPad=18;
+    const vY = vv => baseY - (vv-vmin)/((vmax-vmin)||1)*(baseY-topPad)*0.95;
+    const dY = dd => baseY - (dd/(dmax||1))*(baseY-topPad)*0.85;
+    const X  = i => i/(N-1)*view.w;
+
+    // density fill (amber, glowing)
+    ctx.beginPath(); ctx.moveTo(0,baseY);
+    for(let i=0;i<N;i++) ctx.lineTo(X(i),dY(dens[i]));
+    ctx.lineTo(view.w,baseY); ctx.closePath();
+    const grad=ctx.createLinearGradient(0,topPad,0,baseY);
+    grad.addColorStop(0,'rgba(242,178,92,0.5)'); grad.addColorStop(1,'rgba(242,178,92,0.04)');
+    ctx.fillStyle=grad; ctx.fill();
+    ctx.strokeStyle=COL.accent; ctx.lineWidth=2.4; ctx.shadowColor=COL.accent; ctx.shadowBlur=10;
+    ctx.beginPath(); for(let i=0;i<N;i++){ const px=X(i),py=dY(dens[i]); i===0?ctx.moveTo(px,py):ctx.lineTo(px,py); } ctx.stroke();
+    ctx.shadowBlur=0;
+
+    // potential (teal)
+    ctx.strokeStyle=COL.accent2; ctx.lineWidth=2.2;
+    ctx.beginPath(); for(let i=0;i<N;i++){ const px=X(i),py=vY(v[i]); i===0?ctx.moveTo(px,py):ctx.lineTo(px,py); } ctx.stroke();
+
+    // legend
+    ctx.font="12px 'JetBrains Mono', monospace"; ctx.textAlign='left';
+    ctx.fillStyle=COL.accent2; ctx.fillText('— v_ext(x)  potential',14,18);
+    ctx.fillStyle=COL.accent;  ctx.fillText('— n(x)  density',14,34);
+
+    document.getElementById('w3-kV').textContent=(+kin.value).toFixed(2);
+    document.getElementById('w3-tV').textContent=(+tin.value).toFixed(2);
+    document.getElementById('w3-bV').textContent=(+bin.value).toFixed(1);
+    const out=document.getElementById('w3-readout');
+    out.innerHTML='Change the potential and the density changes with it — <b>distinct potentials give distinct densities</b>, so the density alone identifies the system.';
+  }
+  [kin,tin,bin].forEach(el=>el.addEventListener('input',draw));
+  // extra relaxation passes so it looks converged on load
+  for(let k=0;k<40;k++) imagStep(psi,potential(),h,40);
+  draw();
+})();
+
+/* =========================================================================
+   STEP 4 — variational principle: trial density width vs energy
+   ========================================================================= */
+(function(){
+  const canvas=document.getElementById('w4-canvas');
+  const ctx=setupCanvas(canvas,760,300);
+  const sin=document.getElementById('w4-s');
+  // domain
+  const N=401, Ld=20, h=Ld/(N-1);
+  const xg=Array.from({length:N},(_,i)=>-Ld/2+i*h);
+  const v=xg.map(x=>0.5*x*x);
+  function energy(s){
+    const n=xg.map(x=>Math.exp(-x*x/(2*s*s)));
+    let Z=0; for(const nn of n) Z+=nn; Z*=h; for(let i=0;i<N;i++) n[i]/=Z;
+    const sq=n.map(Math.sqrt);
+    let T=0; for(let i=1;i<N-1;i++){ const d=(sq[i+1]-sq[i-1])/(2*h); T+=d*d; } T*=0.5*h;
+    let V=0; for(let i=0;i<N;i++) V+=v[i]*n[i]; V*=h;
+    return {T,V,E:T+V,n};
+  }
+  // precompute energy curve
+  const sArr=[], eArr=[]; let emin=1e9, smin=0;
+  for(let s=0.35;s<=1.7;s+=0.005){ const E=energy(s).E; sArr.push(s); eArr.push(E); if(E<emin){emin=E;smin=s;} }
+  const emax=Math.max(...eArr);
+
+  // layout: left density plot, right energy curve
+  const split=420;
+  function draw(){
+    const s=+sin.value; const r=energy(s);
+    ctx.clearRect(0,0,760,300);
+
+    // ---- left: density in well ----
+    const Lx0=20,Lx1=split-30, top=24, base=250;
+    ctx.strokeStyle=COL.axis; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(Lx0,base); ctx.lineTo(Lx1,base); ctx.stroke();
+    const xView=x=>Lx0+(x+5)/10*(Lx1-Lx0);  // show x in [-5,5]
+    // well (teal)
+    const vmax=0.5*25;
+    ctx.strokeStyle=COL.accent2; ctx.lineWidth=2;
+    ctx.beginPath();
+    for(let x=-5;x<=5;x+=0.05){ const py=base-(0.5*x*x)/vmax*(base-top)*0.92; const px=xView(x); x===-5?ctx.moveTo(px,py):ctx.lineTo(px,py); }
+    ctx.stroke();
+    // density (amber) scaled
+    let dmax=0; r.n.forEach((nn,i)=>{ if(Math.abs(xg[i])<=5) dmax=Math.max(dmax,nn); });
+    ctx.beginPath(); ctx.moveTo(xView(-5),base);
+    for(let i=0;i<N;i++){ if(xg[i]<-5||xg[i]>5)continue; const px=xView(xg[i]); const py=base-(r.n[i]/dmax)*(base-top)*0.55; ctx.lineTo(px,py); }
+    ctx.lineTo(xView(5),base); ctx.closePath();
+    const grad=ctx.createLinearGradient(0,top,0,base);
+    grad.addColorStop(0,'rgba(242,178,92,0.5)'); grad.addColorStop(1,'rgba(242,178,92,0.04)');
+    ctx.fillStyle=grad; ctx.fill();
+    ctx.strokeStyle=COL.accent; ctx.lineWidth=2.4; ctx.shadowColor=COL.accent; ctx.shadowBlur=8;
+    ctx.beginPath(); let first=true;
+    for(let i=0;i<N;i++){ if(xg[i]<-5||xg[i]>5)continue; const px=xView(xg[i]); const py=base-(r.n[i]/dmax)*(base-top)*0.55; if(first){ctx.moveTo(px,py);first=false;}else ctx.lineTo(px,py); }
+    ctx.stroke(); ctx.shadowBlur=0;
+    ctx.fillStyle=COL.inkSoft; ctx.font="12px 'JetBrains Mono', monospace"; ctx.textAlign='center';
+    ctx.fillText('trial density in the well', (Lx0+Lx1)/2, base+22);
+
+    // ---- right: energy curve E(s) ----
+    const Rx0=split+10, Rx1=748, rtop=30, rbase=248;
+    ctx.strokeStyle=COL.axis; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(Rx0,rbase); ctx.lineTo(Rx1,rbase); ctx.moveTo(Rx0,rtop); ctx.lineTo(Rx0,rbase); ctx.stroke();
+    const sX=ss=>Rx0+(ss-0.35)/(1.7-0.35)*(Rx1-Rx0);
+    const eY=ee=>rbase-(ee-emin*0.96)/((emax-emin*0.96))*(rbase-rtop);
+    // curve
+    ctx.strokeStyle=COL.accent3; ctx.lineWidth=2.4;
+    ctx.beginPath(); sArr.forEach((ss,i)=>{ const px=sX(ss),py=eY(eArr[i]); i===0?ctx.moveTo(px,py):ctx.lineTo(px,py); }); ctx.stroke();
+    // true minimum marker (hollow)
+    ctx.strokeStyle=COL.ink; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.arc(sX(smin),eY(emin),5,0,Math.PI*2); ctx.stroke();
+    // current point
+    ctx.fillStyle=COL.accent; ctx.shadowColor=COL.accent; ctx.shadowBlur=12;
+    ctx.beginPath(); ctx.arc(sX(s),eY(r.E),6,0,Math.PI*2); ctx.fill(); ctx.shadowBlur=0;
+    ctx.fillStyle=COL.inkSoft; ctx.font="12px 'JetBrains Mono', monospace"; ctx.textAlign='center';
+    ctx.fillText('E[n] vs width s', (Rx0+Rx1)/2, rbase+22);
+    ctx.textAlign='left'; ctx.fillStyle=COL.inkFaint; ctx.fillText('s→', Rx1-26, rbase-6);
+
+    document.getElementById('w4-sV').textContent=s.toFixed(2);
+    document.getElementById('w4-T').textContent=r.T.toFixed(3);
+    document.getElementById('w4-V').textContent=r.V.toFixed(3);
+    document.getElementById('w4-E').textContent=r.E.toFixed(3);
+  }
+  sin.addEventListener('input',draw); draw();
+})();
+
+/* =========================================================================
+   STEP 5 — Kohn-Sham energy budget (staged reveal of a stacked bar)
+   ========================================================================= */
+(function(){
+  const canvas=document.getElementById('w5-canvas');
+  const ctx=setupCanvas(canvas,760,260);
+  const W=760,H=260;
+  // schematic fractions of |total energy| for a small molecule
+  const parts=[
+    { name:'T_s  (non-interacting kinetic)', frac:0.42, col:COL.accent2, known:true },
+    { name:'∫ v_ext n  (external)',          frac:0.34, col:'#7c8bd0', known:true },
+    { name:'E_H  (Hartree, classical)',      frac:0.18, col:COL.accent,  known:true },
+    { name:'E_xc  (exchange–correlation)',   frac:0.06, col:COL.accent3, known:false }
+  ];
+  const barX=70, barW=620, barY=70, barH=70;
+
+  function drawBar(revealed, highlightXc){
+    ctx.clearRect(0,0,W,H);
+    // title
+    ctx.fillStyle=COL.inkSoft; ctx.font="13px 'JetBrains Mono', monospace"; ctx.textAlign='left';
+    ctx.fillText('E[n]  =  the exact ground-state energy', barX, barY-22);
+    // outline of full bar
+    ctx.strokeStyle=COL.axis; ctx.lineWidth=1.2; ctx.strokeRect(barX,barY,barW,barH);
+
+    let cx=barX;
+    parts.forEach((p,i)=>{
+      const w=p.frac*barW;
+      if(i<revealed){
+        const isXc=!p.known;
+        ctx.fillStyle=p.col + (isXc&&highlightXc? 'ff':'cc');
+        if(isXc){ ctx.shadowColor=p.col; ctx.shadowBlur=highlightXc?22:8; }
+        ctx.fillRect(cx,barY,w,barH);
+        ctx.shadowBlur=0;
+        // label below with leader
+        ctx.fillStyle=p.col; ctx.font="11px 'JetBrains Mono', monospace"; ctx.textAlign='center';
+        const ly=barY+barH+ (i%2===0?20:38);
+        ctx.fillText(p.name, cx+w/2, ly);
+        ctx.strokeStyle=p.col; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(cx+w/2,barY+barH); ctx.lineTo(cx+w/2,ly-12); ctx.stroke();
+        // "exact" / "approx" tag inside
+        ctx.fillStyle='rgba(13,15,22,0.85)'; ctx.font="10px 'JetBrains Mono', monospace"; ctx.textAlign='center';
+        if(w>54) ctx.fillText(p.known?'exact':'approx', cx+w/2, barY+barH/2+3);
+      } else {
+        // unrevealed region: faint hatch
+        ctx.fillStyle='rgba(154,161,178,0.10)';
+        ctx.fillRect(cx,barY,w,barH);
+      }
+      cx+=w;
+    });
+  }
+
+  const stages=[
+    { next:'Split off \\(T_s\\) &rarr;',
+      caption:'We cannot write the interacting kinetic + interaction energy in terms of n. So we carve E[n] into computable pieces.',
+      reveal:0 },
+    { next:'Add the external term &rarr;',
+      caption:'T_s: the kinetic energy of the fake non-interacting electrons in their orbitals — computed exactly.',
+      reveal:1 },
+    { next:'Add the Hartree term &rarr;',
+      caption:'∫ v_ext n: the electrons sitting in the nuclear potential — a trivial exact integral.',
+      reveal:2 },
+    { next:'Reveal what remains &rarr;',
+      caption:'E_H: the classical electrostatic self-repulsion of the charge cloud — also exact.',
+      reveal:3 },
+    { next:null,
+      caption:'Everything genuinely hard is now quarantined in E_xc — a thin sliver. A crude approximation here still gives an excellent total.',
+      reveal:4, highlight:true }
+  ];
+  let stage=0;
+  const back=document.getElementById('w5-back'), next=document.getElementById('w5-next'), cap=document.getElementById('w5-caption');
+  function render(){
+    drawBar(stages[stage].reveal, !!stages[stage].highlight);
+    cap.innerHTML=stages[stage].caption;
+    back.disabled=stage===0;
+    if(stages[stage].next){ next.style.display=''; next.innerHTML=stages[stage].next; typeset(next); }
+    else next.style.display='none';
+  }
+  next.addEventListener('click',()=>{ if(stage<stages.length-1){stage++;render();}});
+  back.addEventListener('click',()=>{ if(stage>0){stage--;render();}});
+  render();
+})();
+
+/* =========================================================================
+   STEP 6 — self-consistent field loop (step scrubber over a real KS calc)
+   ========================================================================= */
+(function(){
+  const canvas=document.getElementById('w6-canvas');
+  const ctx=setupCanvas(canvas,760,360);
+  const N=61, Ld=16, h=Ld/(N-1);
+  const xg=Array.from({length:N},(_,i)=>-Ld/2+i*h);
+  const vext=xg.map(x=>0.5*0.25*x*x);
+  const Nelec=4, soft=0.7;
+
+  function hartree(n){ const vH=new Array(N).fill(0);
+    for(let i=0;i<N;i++){ let s=0; for(let j=0;j<N;j++){ const d=xg[i]-xg[j]; s+=n[j]/Math.sqrt(d*d+soft*soft); } vH[i]=s*h; } return vH; }
+  function ldaX(n){ return n.map(nn=>-0.74*Math.cbrt(Math.max(nn,0))); }
+  function densityFrom(vecs,occ){ const n=new Array(N).fill(0);
+    occ.forEach((o,k)=>{ if(o<=0)return; const psi=vecs[k]; let s=0; for(const p of psi)s+=p*p; const nm=Math.sqrt(s*h);
+      for(let i=0;i<N;i++) n[i]+=o*(psi[i]/nm)*(psi[i]/nm); }); return n; }
+
+  // precompute SCF history
+  const occ=[]; { let rem=Nelec; for(let k=0;k<6;k++){ const o=Math.min(2,rem); occ.push(o); rem-=o; if(rem<=0)break; } }
+  const hist=[]; { let n=xg.map(()=>Nelec/Ld); const mix=0.4, iters=15;
+    for(let it=0;it<iters;it++){
+      const vH=hartree(n), vx=ldaX(n);
+      const veff=vext.map((ve,i)=>ve+vH[i]+vx[i]);
+      const {vals,vecs}=jacobi(buildHmat(veff,h),60);
+      let nnew=densityFrom(vecs,occ);
+      let tot=0; for(const nn of nnew) tot+=nn; tot*=h; for(let i=0;i<N;i++) nnew[i]*=Nelec/tot;
+      const nmix=n.map((nn,i)=>(1-mix)*nn+mix*nnew[i]);
+      let err=0; for(let i=0;i<N;i++) err+=(nmix[i]-n[i])**2; err=Math.sqrt(err*h);
+      hist.push({ it:it+1, err, eps:vals.slice(0,occ.length), veff:veff.slice(), n:nmix.slice() });
+      n=nmix;
+    }
+  }
+  const errMax=Math.max(...hist.map(s=>s.err));
+
+  // layout: top potential+levels, bottom density, right loop diagram
+  const Lx0=20, Lx1=520;
+  function X(i){ return Lx0 + i/(N-1)*(Lx1-Lx0); }
+  function drawState(k){
+    const st=hist[k];
+    ctx.clearRect(0,0,760,360);
+    // ---- top: v_eff + levels ----
+    const t0=18,t1=160; const vAll=st.veff;
+    let vmin=Math.min(...vAll), vmax=Math.max(...vAll);
+    const vY=vv=>t1-(vv-vmin)/((vmax-vmin)||1)*(t1-t0)*0.9;
+    ctx.strokeStyle=COL.axis; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(Lx0,t1); ctx.lineTo(Lx1,t1); ctx.stroke();
+    // orbital energy levels (dashed)
+    ctx.setLineDash([5,4]); ctx.lineWidth=1.2;
+    st.eps.forEach((e,oi)=>{ const y=vY(e); ctx.strokeStyle='rgba(224,114,159,0.8)';
+      ctx.beginPath(); ctx.moveTo(Lx0,y); ctx.lineTo(Lx1,y); ctx.stroke();
+      ctx.fillStyle=COL.accent3; ctx.font="10px 'JetBrains Mono', monospace"; ctx.textAlign='left';
+      ctx.fillText('ε'+(oi+1)+'='+e.toFixed(2), Lx1-86, y-4); });
+    ctx.setLineDash([]);
+    // veff curve
+    ctx.strokeStyle=COL.accent2; ctx.lineWidth=2.2;
+    ctx.beginPath(); for(let i=0;i<N;i++){ const px=X(i),py=vY(vAll[i]); i===0?ctx.moveTo(px,py):ctx.lineTo(px,py); } ctx.stroke();
+    ctx.fillStyle=COL.accent2; ctx.font="12px 'JetBrains Mono', monospace"; ctx.textAlign='left';
+    ctx.fillText('— v_eff(x)  &  orbital levels', Lx0, 14);
+
+    // ---- bottom: density ----
+    const b0=210,b1=330; let dmax=Math.max(...st.n);
+    ctx.strokeStyle=COL.axis; ctx.beginPath(); ctx.moveTo(Lx0,b1); ctx.lineTo(Lx1,b1); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(Lx0,b1);
+    for(let i=0;i<N;i++){ ctx.lineTo(X(i), b1-(st.n[i]/dmax)*(b1-b0)*0.9); } ctx.lineTo(Lx1,b1); ctx.closePath();
+    const grad=ctx.createLinearGradient(0,b0,0,b1);
+    grad.addColorStop(0,'rgba(242,178,92,0.5)'); grad.addColorStop(1,'rgba(242,178,92,0.04)');
+    ctx.fillStyle=grad; ctx.fill();
+    ctx.strokeStyle=COL.accent; ctx.lineWidth=2.4; ctx.shadowColor=COL.accent; ctx.shadowBlur=8;
+    ctx.beginPath(); for(let i=0;i<N;i++){ const px=X(i),py=b1-(st.n[i]/dmax)*(b1-b0)*0.9; i===0?ctx.moveTo(px,py):ctx.lineTo(px,py); } ctx.stroke(); ctx.shadowBlur=0;
+    ctx.fillStyle=COL.accent; ctx.font="12px 'JetBrains Mono', monospace"; ctx.textAlign='left';
+    ctx.fillText('— n(x)  density (4 electrons)', Lx0, 196);
+
+    // ---- right: loop diagram + convergence ----
+    const rx=560, ry=30;
+    const loop=[ 'guess  n', 'build v_eff[n]', 'solve KS  → ψ', 'new n = Σ|ψ|²', 'mix & repeat' ];
+    const phase=Math.min(loop.length-1, k%loop.length);
+    ctx.font="11px 'JetBrains Mono', monospace"; ctx.textAlign='left';
+    loop.forEach((s,i)=>{ const active=i===phase;
+      ctx.fillStyle=active?COL.accent:COL.inkFaint;
+      ctx.fillText((active?'▶ ':'   ')+s, rx, ry+i*26);
+      if(i<loop.length-1){ ctx.strokeStyle=COL.line; ctx.beginPath(); ctx.moveTo(rx+6,ry+i*26+6); ctx.lineTo(rx+6,ry+(i+1)*26-12); ctx.stroke(); }
+    });
+    // convergence sparkline
+    const sx0=560, sy0=190, sw=180, sh=120;
+    ctx.strokeStyle=COL.axis; ctx.beginPath(); ctx.moveTo(sx0,sy0); ctx.lineTo(sx0,sy0+sh); ctx.lineTo(sx0+sw,sy0+sh); ctx.stroke();
+    ctx.fillStyle=COL.inkFaint; ctx.font="10px 'JetBrains Mono', monospace";
+    ctx.fillText('log ‖Δn‖', sx0, sy0-6);
+    const logE=e=>Math.log10(e+1e-9);
+    const lo=logE(hist[hist.length-1].err)-0.5, hi=logE(errMax)+0.2;
+    const eX=i=>sx0+ i/(hist.length-1)*sw;
+    const eY=e=>sy0+sh-(logE(e)-lo)/((hi-lo)||1)*sh;
+    ctx.strokeStyle=COL.accent3; ctx.lineWidth=2;
+    ctx.beginPath(); hist.forEach((s,i)=>{ const px=eX(i),py=eY(s.err); i===0?ctx.moveTo(px,py):ctx.lineTo(px,py); }); ctx.stroke();
+    // marker at current
+    ctx.fillStyle=COL.accent; ctx.beginPath(); ctx.arc(eX(k),eY(st.err),4,0,Math.PI*2); ctx.fill();
+
+    document.getElementById('w6-it').textContent=st.it;
+    document.getElementById('w6-err').textContent=st.err.toExponential(1);
+  }
+
+  let k=0;
+  const prev=document.getElementById('w6-prev'), next=document.getElementById('w6-next'), cap=document.getElementById('w6-caption');
+  function captionFor(k){
+    if(k===0) return 'Iteration 1: starting from a flat guess density. The potential and orbitals are far from settled.';
+    if(k===hist.length-1) return 'Converged: the density that built v_eff is the same one v_eff produces. The fixed point is reached.';
+    if(k<4) return 'Early iterations: the density sloshes as the mean field rearranges. Watch ‖Δn‖ fall.';
+    return 'The loop is homing in: each pass changes the density less than the last.';
+  }
+  function show(i){
+    k=Math.max(0,Math.min(hist.length-1,i));
+    drawState(k);
+    cap.textContent=captionFor(k);
+    prev.disabled=k===0; next.disabled=k===hist.length-1;
+    next.innerHTML = k===hist.length-1 ? 'Converged' : 'Next iteration &rarr;';
+  }
+  prev.addEventListener('click',()=>show(k-1));
+  next.addEventListener('click',()=>show(k+1));
+  show(0);
+})();
+
+/* =========================================================================
+   READING PROGRESS BAR
+   ========================================================================= */
+(function(){
+  const bar=document.getElementById('progress');
+  function update(){ const h=document.documentElement; const max=h.scrollHeight-h.clientHeight;
+    bar.style.width=(max>0?(h.scrollTop/max)*100:0)+'%'; }
+  window.addEventListener('scroll',update,{passive:true});
+  window.addEventListener('resize',update); update();
+})();
+</script>
+</body>
+</html>
+
