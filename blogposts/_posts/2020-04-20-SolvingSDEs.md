@@ -9,6 +9,8 @@ image: "/blog/SolvingSDEs/GeomBM.png"
 
 ### Geometric Brownian Motion
 
+Geometric Brownian Motion is the dynamics assumption underlying the [Black-Scholes equation for option pricing](https://ludwigwinkler.github.io/blog/BlackScholes/).
+
 Brownian motion can have both positive and negative values as long as its mean is centered around zero and the distribution over time follows the characteristics of the Wiener process.
 Yet certain quantities can only have positive values such as stocks.
 
@@ -32,7 +34,7 @@ $$
 \frac{\partial \ln S(x)}{\partial x} = \frac{1}{S(x)} \frac{\partial S(x)}{\partial x}
 \end{align}
 $$
-But since we are working with stochastic processes, we can't apply regular calculus to derive such a stochastic process but use Ito's lemma instead:
+But since we are working with [stochastic processes](https://ludwigwinkler.github.io/blog/SDE/), we can't apply regular calculus to derive such a stochastic process but use [Ito's lemma](https://ludwigwinkler.github.io/blog/ItosLemma/) instead:
 $$
 \begin{align}
 	d \ln S_t &= \underbrace{\frac{\partial \ln S_t}{\partial t}}_{=0} dt + \frac{\partial \ln S_t}{\partial S_t} dS_t + \frac{1}{2} \frac{\partial^2 \ln S_t}{\partial S_t^2} dS_t^2 \\
@@ -193,3 +195,5 @@ If the momentum is only small, the Wiener process can exert a stronger influence
 
 More importantly, since the Wiener process is the only random influence on the process and is Gaussian, the entire process is a Gaussian process.
 Thus the stationary distribution is a Gaussian distribution as well.
+
+The OU process plays a central role in modern generative diffusion models — the discrete-state [Ehrenfest process](https://ludwigwinkler.github.io/blog/TheEhrenfestProcess/) converges to it in the large-state-space limit, and it underlies [variance-preserving diffusion](https://ludwigwinkler.github.io/blog/SimpleReverseSDE/) and [discrete diffusion](https://ludwigwinkler.github.io/blog/DiscreteDiffusion/) models.

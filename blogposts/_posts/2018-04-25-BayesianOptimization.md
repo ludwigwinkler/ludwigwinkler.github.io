@@ -47,7 +47,7 @@ The utility function $\mathcal{U}$ should balance the exploration of the set of 
 
 ## Bayesian Optimization with Gaussian Processes
 
-In Bayesian optimization a Gaussian process is used to compute a probability distribution over the past evaluations $x_{1:n}$, which guides a subsequent sampling process.
+In Bayesian optimization a [Gaussian process](https://ludwigwinkler.github.io/blog/Gaussian-Processes/) is used to compute a probability distribution over the past evaluations $x_{1:n}$, which guides a subsequent sampling process.
 The sampling process uses an acquisition function $\Lambda(x \ | \ x_{1:n})$, which is a utility function on the posterior distribution computed by the Gaussian process.
 The acquisition function balances both the exploration as well as the exploitation of the unknown objective function $\mathcal{F}(x)$.
 The next evaluation is chosen such that it maximizes the acquisition function, i.e.

@@ -9,6 +9,9 @@ image: "/blog/DiscreteDiffusion/cover.png"
 {% include mathjax3.html %}
 
 ## Binary Diffusion
+
+This post builds on the discrete-state-space machinery covered in [Continuous Time Markov Chains](https://ludwigwinkler.github.io/blog/ContTimeMarkovChain/) and the connection to continuous diffusion shown in [The Ehrenfest Process](https://ludwigwinkler.github.io/blog/TheEhrenfestProcess/).
+
 Let us have a stochastic process $\{X(t): 0 \leq t \leq 1 \}$.
 The random variable $X(t)$, which we shall abbreviate as $X_t$ can take on only two states with $X_t \in \\{-1, +1\\}^D$.
 
@@ -17,7 +20,7 @@ The marginal distribution assigns probabilities to two possible states at time $
 In order to keep the notation succinct, we will abbreviate the positive and negative states with a raised index $^+$ and $^-$.
 We can then write $x^+_t$ for a positive state at time $t$ and $x^-_t$ for a negative state with the corresponding marginal probabilities $p^\pm_t(x_t)$.
 
-In a time-reversible Markov Jump Processes with only two states, we have two rates: the forward rate $r_t^+(x^+_t|x^-_t)$ and the backward rate $r_t^-(x^-_t|x^+_t)$.
+In a time-reversible [Markov Jump Process](https://ludwigwinkler.github.io/blog/ContTimeMarkovChain/) with only two states, we have two rates: the forward rate $r_t^+(x^+_t|x^-_t)$ and the backward rate $r_t^-(x^-_t|x^+_t)$.
 The rates $r^+$ and $r^-$ denote the propensity of switching the state going from $x^+_t$ to $x^-_t$ and vice-versa.
 
 Time reversibility implies that any transition is reversible, thus we have
@@ -120,7 +123,7 @@ $$
 \end{align}
 $$
 <!-- </div> -->
-which oddly enough looks like the deterministic part of an Ornstein-Uhlenbeck process $dX_T = - \theta ( X_t - \mu) dt + \sigma dW_t$.
+which oddly enough looks like the deterministic part of an [Ornstein-Uhlenbeck process](https://ludwigwinkler.github.io/blog/SolvingSDEs/) $dX_T = - \theta ( X_t - \mu) dt + \sigma dW_t$.
 
 We can then proceed to solve the ODE for the marginal distribution $p^+_t$ by using the solution of the OU process.
 <!-- <div style="overflow-x: auto;"> -->
@@ -478,6 +481,8 @@ For large $t$, the diffusion rate $\beta_t$ will be concurrently large, while $\
 This necessitates how to design the function $w_t$.
 
 ### Tweaking the Diffusion Function $w_t$
+
+For computing likelihoods under continuous-space diffusion models with similar machinery, see [Likelihood Calculations in Diffusion Models](https://ludwigwinkler.github.io/blog/DiffusionLikelihoods/).
 
 The weighting function $w_t$ is defined as
 <div style="overflow-x: auto;">

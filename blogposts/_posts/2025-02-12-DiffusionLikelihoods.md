@@ -9,7 +9,7 @@ image: "/blog/ItoDensityEstimator.png"
 ---
 {% include mathjax3.html %}
 
-Let's start out this blog post with the one equation that is at the heart of diffusion models, the Fokker-Planck equation,
+Let's start out this blog post with the one equation that is at the heart of diffusion models, the [Fokker-Planck equation](https://ludwigwinkler.github.io/blog/FokkerPlanck/),
 <div style="overflow-x: auto;">
 $$
 \begin{align}
@@ -20,7 +20,7 @@ $$
 \end{align}
 $$
 </div>
-which describes the evolution of the probability density function of a stochastic process that follows a stochastic differential equation
+which describes the evolution of the probability density function of a stochastic process that follows a [stochastic differential equation](https://ludwigwinkler.github.io/blog/SDE/)
 <div style="overflow-x: auto;">
 $$
 \begin{align}
@@ -176,7 +176,7 @@ def divergence(f, t, x):
 
 A small disclaimer: the tricky part is computing the divergence of the drift vector field $\mathbf{\mu}(x, t)$ efficiently.
 The problem here is that for $D$ dimensions, we have to compute $D$ partial derivatives for each dimension, which can be computationally expensive in higher dimensions.
-To alleviate this problem, Hutchinson's stochastic trace estimator is commonly used.
+To alleviate this problem, [Hutchinson's stochastic trace estimator](https://ludwigwinkler.github.io/blog/TraceEstimation/) is commonly used.
 
 What does the trace have to do with the divergence?
 Well, essentially the divergence sums over the diagonal elements of the Jacobian matrix $J_\mu \in \mathbb{R}^{D \times D}$ of the drift vector field $\mathbf{\mu}(x, t)$, and $J_{\mu, ij} = \partial_{x_i} \mu_j(x,t)$ by its definition 
@@ -250,7 +250,7 @@ And plotting the corresponding data likelihood for a series of points in the bas
 ### Ito Density Estimators
 
 The probability flow log-likelihood estimator is derived through the Fokker-Planck equation.
-Here we will compute the log-likelihood of the observed data given a diffusion model using Ito's lemma based on the SDE formulation.
+Here we will compute the log-likelihood of the observed data given a diffusion model using [Ito's lemma](https://ludwigwinkler.github.io/blog/ItosLemma/) based on the SDE formulation.
 
 We start out by splitting the Laplace operator $\Delta$ into two divergences,
 <div style="overflow-x: auto;">

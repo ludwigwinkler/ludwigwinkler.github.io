@@ -116,6 +116,8 @@ $$
 
 ### Trace Estimation with Stein's Lemma
 
+For a direct application of Hutchinson's trace estimator to the divergence of a vector field — used to compute log-likelihoods of diffusion models via the probability-flow ODE — see [Likelihood Calculations in Diffusion Models](https://ludwigwinkler.github.io/blog/DiffusionLikelihoods/).
+
 By choosing a perturbation $\epsilon \sim p(0, \sigma_\epsilon^2)$ with zero mean and a small variance $\sigma_\epsilon^2$ we can define a perturbed data point $x' \sim p(x,\sigma_\epsilon^2)$ via $x' = x + \epsilon$.
 This transforms Stein's lemma into
 $$

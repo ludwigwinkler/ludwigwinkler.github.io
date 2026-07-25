@@ -173,7 +173,7 @@ This allows us to construct the following algorithm to sample the multi-dimensio
 In practice, we could combine step 2 and step 3 into a single categorical distribution but this is fiddly and splitting it into two sampling looks cleaner. 
 Just-in-time compilation should in theory remove any inefficiencies anyway.
 Up first on our to do list is to be able to sample from an exponential distribution.
-This can be achieved readily with the reparameterization trick for the exponential distribution described earlier,
+This can be achieved readily with the [reparameterization trick](https://ludwigwinkler.github.io/blog/Reparam/) for the exponential distribution described earlier,
 
 ```
 import jax

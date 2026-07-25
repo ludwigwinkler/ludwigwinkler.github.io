@@ -46,7 +46,7 @@ Unfortunately, for stochastic processes this is not as straight forward and we w
 
 ### Stochastic Processes
 
-In order to keep things simple in the following steps, we will work with the Brownian Motion. \\
+In order to keep things simple in the following steps, we will work with the Brownian Motion (introduced in the [SDE post](https://ludwigwinkler.github.io/blog/SDE/)). \\
 Brownian motion $W_t$ is defined through the following properties:
 
 * $W_0 = 0$
@@ -268,3 +268,5 @@ So ultimately, it turns out that the derivative of the function $f(t, X)$ with a
 Albeit with a few first and second order derivatives sprinkled in between.
 
 Thus we can model the function $f(t, X_t)$ just like any other drift-diffusion process and can evaluate the distribution of such a process at a later point in time.
+
+This lemma is the foundational tool used throughout the rest of the SDE series: it lets us derive analytical solutions for [Geometric Brownian Motion and the Ornstein-Uhlenbeck process](https://ludwigwinkler.github.io/blog/SolvingSDEs/), the [Fokker-Planck equation](https://ludwigwinkler.github.io/blog/FokkerPlanck/) for the time-evolution of the marginal probability, the [Black-Scholes equation](https://ludwigwinkler.github.io/blog/BlackScholes/) for option pricing, [Girsanov's theorem](https://ludwigwinkler.github.io/blog/Girsanov/), [Doob's h-transform](https://ludwigwinkler.github.io/blog/Doob/), and the [Feynman-Kac formula](https://ludwigwinkler.github.io/blog/FeynmanKac/).
