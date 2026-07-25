@@ -2,7 +2,7 @@
 layout: photogallery
 title:  "Korea and Switzerland"
 category: photography
-date:   2026-04-11
+date:   2026-07-26
 excerpt: "Of Peninsulas and Mountains"
 image: "/photo_gallery/korea_switzerland26/06.jpg"
 ---
