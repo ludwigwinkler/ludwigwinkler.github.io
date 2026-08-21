@@ -1,0 +1,1640 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>From F=ma to the Lagrangian — a whirlwind tour</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+  :root {
+    --bg: #161c26;
+    --bg-2: #1f2735;
+    --bg-3: #2a3344;
+    --ink: #ebe2cd;
+    --ink-soft: #b6b0a0;
+    --ink-dim: #7e8696;
+    --rule: #3a4456;
+    --brass: #d4a755;
+    --brass-deep: #b08833;
+    --teal: #5fb0a3;
+    --terra: #cd6f5e;
+    --plum: #a574a8;
+    --sky: #6f9fc4;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); }
+  body {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 19px;
+    line-height: 1.65;
+    padding: 56px 24px 96px;
+  }
+  .wrap { max-width: 740px; margin: 0 auto; }
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-style: italic;
+    font-size: 50px;
+    line-height: 1.05;
+    margin: 0 0 8px;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  h1 .sub {
+    display: block;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 19px;
+    color: var(--brass);
+    margin-top: 14px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 32px;
+    margin: 64px 0 6px;
+    letter-spacing: -0.005em;
+    color: var(--brass);
+  }
+  h2 .step {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--bg);
+    background: var(--brass);
+    padding: 3px 10px;
+    border-radius: 12px;
+    margin-right: 14px;
+    vertical-align: middle;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  h3 { font-weight: 600; font-size: 21px; margin: 28px 0 6px; color: var(--ink); }
+  p { margin: 0 0 16px; }
+  em { font-style: italic; color: var(--ink); }
+  strong { font-weight: 600; color: var(--ink); }
+  a { color: var(--brass); }
+  .lede {
+    font-size: 22px;
+    font-style: italic;
+    color: var(--ink-soft);
+    margin: 16px 0 36px;
+    line-height: 1.5;
+    font-family: 'Cormorant Garamond', serif;
+  }
+  .kernel {
+    background: linear-gradient(135deg, var(--bg-2), var(--bg-3));
+    border-left: 4px solid var(--brass);
+    padding: 24px 28px;
+    margin: 40px 0 48px;
+    border-radius: 0 6px 6px 0;
+  }
+  .kernel .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--brass);
+    margin-bottom: 10px;
+  }
+  .kernel .text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    line-height: 1.45;
+    font-style: italic;
+    color: var(--ink);
+  }
+  .widget {
+    margin: 24px 0 16px;
+    background: var(--bg-2);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 16px 18px 14px;
+  }
+  .widget-titlewrap {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed var(--rule);
+  }
+  .widget-title {
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+  .wt-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--bg);
+    background: var(--brass);
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 10px;
+    letter-spacing: 0.05em;
+  }
+  .wt-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-dim);
+    margin-left: auto;
+    letter-spacing: 0.04em;
+  }
+  canvas { display: block; max-width: 100%; height: auto; background: var(--bg); border-radius: 4px; }
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+    align-items: center;
+    margin-top: 12px;
+    font-size: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink-soft);
+  }
+  .controls label { display: inline-flex; align-items: center; gap: 8px; }
+  .controls input[type=range] { width: 130px; accent-color: var(--brass); }
+  button {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    background: var(--brass);
+    color: var(--bg);
+    border: none;
+    padding: 6px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background .15s, opacity .15s;
+  }
+  button:hover { background: #e0b768; }
+  button.ghost { background: transparent; color: var(--ink); border: 1px solid var(--rule); }
+  button.ghost:hover { background: var(--bg-3); border-color: var(--brass); }
+  button:disabled { opacity: .35; cursor: default; }
+  select {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 4px 6px;
+    background: var(--bg-3);
+    color: var(--ink);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+  }
+  .stage-caption {
+    margin-top: 10px;
+    font-size: 14px;
+    color: var(--ink-soft);
+    font-style: italic;
+    min-height: 1.4em;
+    font-family: 'Crimson Pro', serif;
+  }
+  .readout {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--brass);
+    background: var(--bg);
+    padding: 3px 9px;
+    border-radius: 3px;
+    border: 1px solid var(--rule);
+  }
+  .formal {
+    margin: 16px 0 24px;
+    border-left: 2px solid var(--brass-deep);
+    padding: 0 0 0 16px;
+  }
+  .formal summary {
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--brass);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 4px 0;
+  }
+  .formal[open] summary { margin-bottom: 8px; }
+  .formal-body { font-size: 17px; color: var(--ink-soft); }
+  .formal-body em, .formal-body strong { color: var(--ink); }
+  .recap {
+    background: var(--bg-2);
+    border-radius: 6px;
+    padding: 28px 32px;
+    margin: 64px 0 24px;
+    border: 1px solid var(--rule);
+  }
+  hr.divider { border: none; border-top: 1px solid var(--rule); margin: 56px 0; }
+  .footer {
+    font-size: 14px;
+    color: var(--ink-dim);
+    text-align: center;
+    margin-top: 64px;
+    font-style: italic;
+    font-family: 'Cormorant Garamond', serif;
+  }
+  .legend {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink-dim);
+    margin-right: 14px;
+  }
+  .swatch { width: 14px; height: 3px; display: inline-block; border-radius: 2px; }
+  ::selection { background: var(--brass); color: var(--bg); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<h1>From F=ma to the Lagrangian<span class="sub">a whirlwind tour through least action</span></h1>
+
+<p class="lede">There are two ways to describe a falling apple. Newton tells you, at every instant, what force pulls it down. Lagrange tells you, from the moment it leaves the branch to the moment it hits the ground, which path among all conceivable paths it actually takes. These sound like different physics. They aren't.</p>
+
+<div class="kernel">
+  <div class="label">The kernel</div>
+  <div class="text">F=ma is a local rule: at each instant, force fixes acceleration. The Lagrangian framework is a global rule: of all possible trajectories from start to end, nature picks the one whose <em>action</em> is stationary. Calculus of variations turns the global statement back into a local one — and the local one it produces is exactly F=ma.</div>
+</div>
+
+<p>Newton (1687) wrote mechanics as a recipe: tell me where a body is now, how fast it's moving, and what forces act on it, and I will tell you what happens next. This is mechanics as <em>local prediction</em>. Step forward in time, recompute the force, step again.</p>
+
+<p>Eighty years later, building on work by Maupertuis and Euler, Joseph-Louis Lagrange (1788, <em>Mécanique Analytique</em>) reframed the entire subject. Instead of asking "what happens next?" he asked "out of all the imaginable trajectories that connect where the particle starts to where it ends up, what is special about the real one?" His answer — a single function called the Lagrangian whose integral over the trajectory is minimized — turned out to give precisely Newton's equations back, but in a form that is coordinate-free, handles constraints effortlessly, and generalizes (without modification) to electromagnetism, relativity, and quantum field theory.</p>
+
+<p>This page walks the bridge between the two views in five steps. By the end you should understand: what the action is, why it is \(\int(T-V)\,dt\) and not \(\int(T+V)\,dt\), what "calculus of variations" actually does, and why setting the variation of the action to zero is the same physical statement as F=ma.</p>
+
+</div>
+
+<hr class="divider">
+
+<!-- =============================================================
+     STEP 1 — NEWTON: LOCAL RULES
+     ============================================================= -->
+<div class="wrap">
+
+<h2><span class="step">Step 1</span>Newton's view — local rules</h2>
+
+<p>Newton's law of motion is local in the strongest possible sense. At every point along a trajectory, the force on a particle determines its acceleration:</p>
+\[ F(q) = m\,\ddot q. \]
+<p>Read this as a recipe. Given position \(q(t)\) and velocity \(\dot q(t)\) right now, compute the force, divide by mass to get \(\ddot q\), advance a tiny step \(\Delta t\) forward in time, and repeat. The trajectory is built one infinitesimal step at a time. There is no notion of "future" — only of "next instant."</p>
+
+<p>For a conservative force you can write \(F(q) = -V'(q)\), where \(V\) is the potential energy. The equation of motion becomes \(m\ddot q = -V'(q)\). The widget below integrates this for a particle in a double-well potential \(V(q) = (q^2-1)^2\) — two stable basins at \(q=\pm 1\) separated by a barrier. Drag the initial conditions; watch the trajectory build forward in time.</p>
+
+<div class="widget" id="w1">
+  <div class="widget-titlewrap">
+    <span class="wt-num">Widget 1</span>
+    <span class="widget-title">A particle in a double-well, integrated step by step by F=ma</span>
+    <span class="wt-sub">live · drag x₀ and v₀ · velocity-Verlet</span>
+  </div>
+  <canvas id="w1c" width="860" height="560"></canvas>
+  <div class="controls">
+    <button id="w1go">⏸ pause</button>
+    <button class="ghost" id="w1reset">↺ reset trail</button>
+    <label>x₀ <input id="w1x0" type="range" min="-1.6" max="1.6" value="-1.2" step="0.02"> <span class="readout" id="w1x0v">-1.20</span></label>
+    <label>v₀ <input id="w1v0" type="range" min="-2.0" max="2.0" value="0.0" step="0.02"> <span class="readout" id="w1v0v">0.00</span></label>
+    <span class="readout" id="w1E">E = 0.040 (conserved)</span>
+  </div>
+  <div class="stage-caption">Left: position over time. Right: phase portrait — every state of the system is a point (q, q̇), and the trajectory is a curve. Energy is conserved to bounded error because velocity-Verlet is symplectic.</div>
+</div>
+
+<details class="formal"><summary>The formal version</summary>
+<div class="formal-body">
+<p>Velocity-Verlet integration of \(m\ddot q = -V'(q)\) advances by</p>
+\[ q_{n+1} = q_n + v_n\,\Delta t + \tfrac{1}{2}a_n\,\Delta t^2, \qquad v_{n+1} = v_n + \tfrac{1}{2}(a_n + a_{n+1})\,\Delta t, \]
+<p>with \(a_n = -V'(q_n)/m\). This scheme is <em>symplectic</em>: it exactly preserves a slightly modified Hamiltonian (the so-called shadow Hamiltonian) to all orders, so the true energy oscillates within bounded error rather than drifting. The double-well \(V(q) = (q^2-1)^2\) has minima at \(q=\pm 1\) (energy 0) and a barrier at \(q=0\) (energy 1). If \(E < 1\) the particle is trapped in one well; if \(E > 1\) it traverses freely between them. The phase portrait shows the orbit closed (periodic, single-well) or figure-eight (cross-well), entirely from local steps.</p>
+</div>
+</details>
+
+</div>
+
+<hr class="divider">
+
+<!-- =============================================================
+     STEP 2 — A GLOBAL QUESTION
+     ============================================================= -->
+<div class="wrap">
+
+<h2><span class="step">Step 2</span>A different question — many paths, one truth</h2>
+
+<p>Newton's framing is initial-value: you tell me where the particle starts and how fast, and I'll predict where it goes. Lagrange's framing is <em>boundary-value</em>: you tell me where the particle starts <em>and where it ends up</em>, and I'll tell you which trajectory it took to get there.</p>
+
+<p>This is a strange question at first. Of course many curves can connect two points in space-time. Imagine throwing a ball from your hand at \(t=0\) so that it lands in a friend's hand at \(t=T\). You could draw infinitely many curves on a position-time diagram between those two endpoints — the actual parabola the ball follows is only one of them. What singles out the real one?</p>
+
+<p>The widget below shows five candidate trajectories for a ball thrown straight up under gravity (\(V(q) = q\), starting at \(q=0\), required to return to \(q=0\) at \(t=2\)). One of them is the trajectory that Newton's law would actually produce. The others are mathematical fictions. Click each one; we'll compute a number called the <em>action</em> for it. Pay attention to which path's action is smallest.</p>
+
+<div class="widget" id="w2">
+  <div class="widget-titlewrap">
+    <span class="wt-num">Widget 2</span>
+    <span class="widget-title">Five candidate paths between fixed endpoints — which is real?</span>
+    <span class="wt-sub">click a path · compare actions</span>
+  </div>
+  <canvas id="w2c" width="860" height="420"></canvas>
+  <div class="controls">
+    <span style="color: var(--ink-soft);">Select path →</span>
+    <button data-p="0">flat</button>
+    <button data-p="1">triangle</button>
+    <button data-p="2">parabola ↑</button>
+    <button data-p="3">parabola ↑↑</button>
+    <button data-p="4">sinusoid</button>
+    <button class="ghost" id="w2reveal">reveal real path</button>
+  </div>
+  <div class="stage-caption" id="w2cap">Each path connects (t=0, q=0) to (t=2, q=0) — a ball that leaves the ground and returns. Click a path to compute its action S = ∫(T−V)dt.</div>
+</div>
+
+<details class="formal"><summary>The formal version</summary>
+<div class="formal-body">
+<p>Each candidate trajectory \(q(t)\) is a function satisfying the boundary conditions \(q(0) = q_A\) and \(q(T) = q_B\). The space of such functions is infinite-dimensional — you can perturb any candidate in any way, anywhere in the interval, and you have a new candidate. The question "which one is real?" is therefore a question about a function on this infinite-dimensional space. The answer requires extending calculus from "find the minimum of a function of \(x\)" to "find the minimum of a function of a <em>function</em>". That extension is the calculus of variations, developed by Euler and Lagrange in the 1750s.</p>
+</div>
+</details>
+
+</div>
+
+<hr class="divider">
+
+<!-- =============================================================
+     STEP 3 — THE ACTION
+     ============================================================= -->
+<div class="wrap">
+
+<h2><span class="step">Step 3</span>Each path has a number — the action</h2>
+
+<p>Here is the magic ingredient. For each candidate path \(q(t)\), define a number called the <em>action</em>:</p>
+\[ S[q] = \int_0^T L(q, \dot q)\,dt, \qquad L(q, \dot q) = T_\text{kin} - V = \tfrac{1}{2}m\dot q^2 - V(q). \]
+<p>The integrand \(L\) is the <em>Lagrangian</em>: kinetic energy minus potential energy. The square brackets in \(S[q]\) emphasize that \(S\) takes an entire <em>function</em> as input — the whole curve from \(t=0\) to \(t=T\) — and returns a single number.</p>
+
+<p>Why \(T - V\) and not \(T + V\) (which would be total energy, a much more obvious quantity)? Short answer: because \(T - V\) is the combination whose minimization gives Newton's law. We'll prove that in step 5. For now, take it as a guess — Lagrange's guess — and check what kind of behavior it rewards.</p>
+
+<p>A path through a region of high potential energy and low speed contributes a large <em>negative</em> term to the integrand. A path that moves fast (high \(T\)) but stays where \(V\) is small contributes a large positive term. So small action prefers paths that are <em>slow where \(V\) is small</em> and <em>fast where \(V\) is large</em>. That is: spend your time in the low-potential regions and get through the high-potential regions quickly. That already smells like how a ball falls.</p>
+
+<p>The widget below lets you build a path with three draggable control points and watch the action evolve in real time. Notice how \(T(t)\), \(V(t)\), and \(L(t) = T - V\) all change as you bend the path. The shaded area under \(L(t)\) is the action.</p>
+
+<div class="widget" id="w3">
+  <div class="widget-titlewrap">
+    <span class="wt-num">Widget 3</span>
+    <span class="widget-title">Building the action by integrating L = T − V along a path</span>
+    <span class="wt-sub">drag the three black dots · watch S update</span>
+  </div>
+  <canvas id="w3c" width="860" height="500"></canvas>
+  <div class="controls">
+    <button class="ghost" id="w3true">snap to true path</button>
+    <button class="ghost" id="w3flat">snap to flat</button>
+    <span class="legend"><span class="swatch" style="background:var(--terra)"></span>T (kinetic)</span>
+    <span class="legend"><span class="swatch" style="background:var(--teal)"></span>V (potential)</span>
+    <span class="legend"><span class="swatch" style="background:var(--brass)"></span>L = T − V</span>
+    <span class="readout" id="w3S">S = 0.000</span>
+  </div>
+  <div class="stage-caption">Drag the dots to reshape the path. The bottom panel shows the Lagrangian L(t) along the path you've drawn; the shaded area is the action S. The "snap to true path" button puts the path on the analytic Newton trajectory q(t) = ½t(2−t).</div>
+</div>
+
+</div>
+
+<hr class="divider">
+
+<!-- =============================================================
+     STEP 4 — CALCULUS OF VARIATIONS
+     ============================================================= -->
+<div class="wrap">
+
+<h2><span class="step">Step 4</span>Calculus of variations — find where bending doesn't help</h2>
+
+<p>To find the minimum of an ordinary function \(f(x)\), you set its derivative to zero: \(f'(x) = 0\). That equation picks out the points where a tiny shift \(x \to x + \epsilon\) doesn't change \(f\) to first order in \(\epsilon\). "Stationary" means: in <em>any</em> direction, the function is flat to first order.</p>
+
+<p>The action \(S[q]\) is a function on an infinite-dimensional space of curves. The analogous derivative-zero condition is: at the right path \(q^*(t)\), perturbing it by any small bump \(\epsilon\eta(t)\) (with \(\eta(0) = \eta(T) = 0\), so the endpoints stay fixed) should not change \(S\) to first order in \(\epsilon\):</p>
+\[ \frac{d}{d\epsilon}\bigg|_{\epsilon=0} S[q^* + \epsilon\eta] = 0 \qquad \text{for every admissible } \eta. \]
+<p>This is the <em>principle of stationary action</em>. It is the entire content of Lagrangian mechanics. Everything else is consequences.</p>
+
+<h3>The Taylor analogy — the first variation is a directional derivative</h3>
+
+<p>If that condition felt mysterious, here is the reassurance: it is the same first-order Taylor expansion you already know, just lifted into an infinite-dimensional space. In ordinary calculus, expand a function of one variable around a point \(x_0\):</p>
+\[ f(x_0 + \epsilon h) = f(x_0) + \epsilon\, f'(x_0)\, h + \tfrac{1}{2}\epsilon^2 f''(x_0)\, h^2 + O(\epsilon^3). \]
+<p>The first-order coefficient \(f'(x_0)\,h\) is the <em>directional derivative</em> of \(f\) at \(x_0\) in the direction \(h\). Setting it to zero for every \(h\) gives \(f'(x_0) = 0\), the critical-point condition.</p>
+
+<p>The same machinery applies to the action, but the "point" is a function \(q^*(t)\) and the "direction" is itself a function \(\eta(t)\):</p>
+\[ S[q^* + \epsilon \eta] \;=\; S[q^*] \;+\; \epsilon\,\underbrace{\delta S[q^*;\eta]}_{\text{first variation}} \;+\; \tfrac{1}{2}\epsilon^2\,\underbrace{\delta^2 S[q^*;\eta]}_{\text{second variation}} \;+\; O(\epsilon^3). \]
+<p>The first variation \(\delta S\) is the directional derivative of \(S\) at \(q^*\) along the direction \(\eta\) — the literal Taylor coefficient. Stationary action means this coefficient vanishes for every admissible \(\eta\). First variation ↔ gradient; second variation ↔ Hessian; \(\delta S = 0\) ↔ critical point. The vocabulary changes only because "direction" is now a function with infinitely many independent components, which is why a single scalar condition (\(f' = 0\)) gets replaced by a differential equation (the Euler–Lagrange equation gives one constraint per \(t\)).</p>
+
+<p>The widget below is this Taylor expansion drawn live. Pick a perturbation shape \(\eta(t)\) and slide its amplitude \(a\). The right panel plots</p>
+\[ S(a) \;=\; S[q^*] \;+\; a\,\delta S[q^*;\eta] \;+\; \tfrac{1}{2}a^2\,\delta^2 S[q^*;\eta] \;+\; \cdots \]
+<p>At the true path \(q^*\) the first variation vanishes, killing the linear term — that is what flatness at \(a=0\) looks like as a picture. What remains is the quadratic term \(\tfrac{1}{2}a^2\,\delta^2 S\); its sign tells you whether the stationary point is a local minimum, maximum, or saddle. Try switching between \(\sin(\pi t/T)\), \(\sin(2\pi t/T)\), and \(\sin(3\pi t/T)\) — each direction \(\eta\) has its own \(\delta^2 S\), and so each parabola opens at its own width. That is exactly how the eigenvalues of an ordinary Hessian decompose into curvatures along different perturbation directions.</p>
+
+<div class="widget" id="w4">
+  <div class="widget-titlewrap">
+    <span class="wt-num">Widget 4</span>
+    <span class="widget-title">Perturbing the true path — the action is stationary at a=0</span>
+    <span class="wt-sub">live · drag amplitude · watch the parabola</span>
+  </div>
+  <canvas id="w4c" width="860" height="420"></canvas>
+  <div class="controls">
+    <label>perturbation amplitude a <input id="w4a" type="range" min="-1.2" max="1.2" value="0" step="0.01"> <span class="readout" id="w4av">+0.00</span></label>
+    <label>shape
+      <select id="w4shape">
+        <option value="sin1">sin(πt/T) — one bump</option>
+        <option value="sin2">sin(2πt/T) — two bumps</option>
+        <option value="sin3">sin(3πt/T) — three bumps</option>
+      </select>
+    </label>
+    <span class="readout" id="w4S">S = -0.3333</span>
+  </div>
+  <div class="stage-caption">Left: the true path (dashed) and the perturbed path q*(t) + a·η(t). Right: S(a) — a parabola, stationary at a=0 for any choice of η that vanishes at the endpoints. That is what "δS = 0" means in pictures.</div>
+</div>
+
+<details class="formal"><summary>The formal version</summary>
+<div class="formal-body">
+<p>Expand:</p>
+\[ S[q^* + \epsilon\eta] = \int_0^T L(q^* + \epsilon\eta,\, \dot q^* + \epsilon\dot\eta)\,dt
+= S[q^*] + \epsilon\!\int_0^T \!\!\left(\frac{\partial L}{\partial q}\eta + \frac{\partial L}{\partial \dot q}\dot\eta\right)dt + O(\epsilon^2). \]
+<p>The first-order term is the <em>first variation</em> \(\delta S\). Integrate the second part by parts, using \(\eta(0)=\eta(T)=0\) to kill the boundary term:</p>
+\[ \int_0^T \frac{\partial L}{\partial \dot q}\dot\eta\,dt = \underbrace{\left[\frac{\partial L}{\partial \dot q}\eta\right]_0^T}_{=\,0} - \int_0^T \frac{d}{dt}\!\left(\frac{\partial L}{\partial \dot q}\right)\eta\,dt. \]
+<p>So</p>
+\[ \delta S = \int_0^T \left(\frac{\partial L}{\partial q} - \frac{d}{dt}\frac{\partial L}{\partial \dot q}\right)\eta(t)\,dt. \]
+<p>Stationarity demands this vanish for <em>every</em> admissible \(\eta\). The only way an integral against an arbitrary test function can always be zero is if the bracketed expression itself is zero at every \(t\):</p>
+\[ \boxed{\;\frac{d}{dt}\frac{\partial L}{\partial \dot q} - \frac{\partial L}{\partial q} = 0\;} \qquad \text{(Euler–Lagrange equation)}. \]
+<p>The widget's parabola is the second-order term \(\tfrac{1}{2}a^2 \int(\delta^2 S/\delta q^2)\eta^2\,dt\); the first-order term has been forced to zero by the choice of \(q^*\).</p>
+</div>
+</details>
+
+</div>
+
+<hr class="divider">
+
+<!-- =============================================================
+     STEP 5 — EULER-LAGRANGE = F=ma
+     ============================================================= -->
+<div class="wrap">
+
+<h2><span class="step">Step 5</span>Euler–Lagrange is F=ma — watch a path become Newton's</h2>
+
+<p>Plug \(L = \tfrac{1}{2}m\dot q^2 - V(q)\) into the Euler–Lagrange equation from the previous "formal version" box. The pieces fall out immediately:</p>
+\[ \frac{\partial L}{\partial \dot q} = m\dot q \quad \text{(this is momentum)}, \qquad \frac{\partial L}{\partial q} = -V'(q) \quad \text{(this is the force)}. \]
+<p>So the Euler–Lagrange equation reads</p>
+\[ \frac{d}{dt}(m\dot q) - (-V'(q)) = 0 \quad \Longleftrightarrow \quad m\ddot q = -V'(q) = F. \]
+<p>That is Newton's second law. The minus sign in \(L = T - V\), which we asked you to take on faith in step 3, is exactly the sign needed to make \(\partial L/\partial q = -V' = F\) (force points downhill in potential). Try it with \(L = T + V\) and you get \(m\ddot q = +V'(q)\) — force pointing uphill, nonsense.</p>
+
+<p>Now for the most direct possible demonstration: stop deriving and start computing. Discretize a path between \((t=0, q=0)\) and \((t=2, q=0)\) into a chain of 22 beads. Treat the action \(S\) as an ordinary function of the 20 interior bead positions. Run gradient descent: at each step, nudge every bead in the direction that lowers \(S\). Watch the path evolve.</p>
+
+<div class="widget" id="w5">
+  <div class="widget-titlewrap">
+    <span class="wt-num">Widget 5</span>
+    <span class="widget-title">Gradient descent on the action — a random path morphs into Newton's trajectory</span>
+    <span class="wt-sub">live · watch S minimize · max|∇S| → 0</span>
+  </div>
+  <canvas id="w5c" width="860" height="440"></canvas>
+  <div class="controls">
+    <button id="w5go">⏸ pause</button>
+    <button class="ghost" id="w5rand">↺ new random path</button>
+    <label>step size η <input id="w5eta" type="range" min="0.001" max="0.015" value="0.006" step="0.0005"> <span class="readout" id="w5etav">0.0060</span></label>
+    <span class="readout" id="w5stat">iter 0  S = 0.000  max|∇S| = 0.000</span>
+  </div>
+  <div class="stage-caption">The dashed curve is the analytic Newton trajectory q(t) = ½t(2−t). The solid curve is the chain of beads. Gradient descent on S makes the bead chain converge onto the dashed curve — because gradient descent on the action is, by construction, the Euler-Lagrange equation, which is F=ma.</div>
+</div>
+
+<details class="formal"><summary>The formal version</summary>
+<div class="formal-body">
+<p>Discretize: \(q(t)\) at times \(t_i = i\,\Delta t\), with \(i=0,\dots,N+1\) and \(q_0, q_{N+1}\) fixed at the endpoints. Approximate the action by a midpoint rule:</p>
+\[ S \approx \sum_{i=0}^{N} \Delta t\!\left[\tfrac{1}{2}m\!\left(\frac{q_{i+1}-q_i}{\Delta t}\right)^{\!2} - V\!\left(\tfrac{q_i+q_{i+1}}{2}\right)\right]. \]
+<p>For an interior bead, take the partial derivative:</p>
+\[ \frac{\partial S}{\partial q_i} = -m\,\frac{q_{i+1} - 2q_i + q_{i-1}}{\Delta t} - \Delta t \cdot V'(q_i) + O(\Delta t^3). \]
+<p>The first term is the centered finite-difference approximation of \(-m\ddot q\,\Delta t\). So setting \(\partial S/\partial q_i = 0\) is, to leading order, exactly</p>
+\[ m\ddot q + V'(q) = 0, \]
+<p>the Newton equation. Gradient descent \(q_i \leftarrow q_i - \eta\,\partial S/\partial q_i\) therefore drives the bead chain toward the unique critical point of \(S\) — the Newton trajectory — as you watch.</p>
+</div>
+</details>
+
+</div>
+
+<hr class="divider">
+
+<!-- =============================================================
+     RECAP
+     ============================================================= -->
+<div class="wrap">
+
+<div class="recap">
+<h2 style="margin-top:0;color:var(--ink)"><span class="step">Recap</span>The bridge in five planks</h2>
+<ol>
+  <li><strong>Newton's law is local.</strong> Tell me the state now; I'll integrate forward. F = ma.</li>
+  <li><strong>Lagrange's question is global.</strong> Of all paths from A to B, which is real?</li>
+  <li><strong>Every path gets a number — the action</strong> \(S[q] = \int(T-V)\,dt\).</li>
+  <li><strong>Stationary action picks the real path.</strong> Perturb the right path in any way; \(S\) doesn't change to first order. That is the principle of stationary action; the calculus of variations is the machinery for solving it.</li>
+  <li><strong>The Euler–Lagrange equation is F=ma.</strong> With \(L = T - V\) the abstract condition \(\delta S = 0\) collapses, line by line, to \(m\ddot q = -V'(q)\) — Newton's law back again, this time as a global theorem.</li>
+</ol>
+<p>The two views are mathematically equivalent; they answer the same question with different vocabulary. But the Lagrangian formulation has practical superpowers that Newton's doesn't.</p>
+</div>
+
+<h3 style="margin-top:48px">Where this shows up</h3>
+
+<p><strong>Coordinate freedom.</strong> Newton's law \(F = m\ddot q\) is written in inertial Cartesian coordinates. Try it in polar \((r,\theta)\) and you have to remember centrifugal and Coriolis terms by hand. The Lagrangian doesn't care: just write \(L = T - V\) in any coordinates you like (\(T = \tfrac{1}{2}m(\dot r^2 + r^2\dot\theta^2)\) in polar) and the Euler–Lagrange equation gives the correct equations of motion, centrifugal and Coriolis terms generated automatically.</p>
+
+<p><strong>Constraints.</strong> A bead on a wire, a pendulum on a rigid rod, a particle confined to a sphere — Newton requires solving for the unknown constraint force at every instant. Lagrangian mechanics simply uses the constraint to reduce the number of coordinates and writes \(L\) in those. The constraint force never appears in the equations.</p>
+
+<p><strong>Symmetries → conservation laws.</strong> Emmy Noether (1918) showed: every continuous symmetry of the Lagrangian gives a conserved quantity. Translation symmetry of \(L\) ↔ conservation of momentum. Time-translation symmetry ↔ conservation of energy. Rotational symmetry ↔ conservation of angular momentum. This is the deepest statement in classical mechanics, and it lives natively in the Lagrangian language.</p>
+
+<p><strong>Beyond particles.</strong> Field theories — electromagnetism, general relativity, the Standard Model of particle physics — are all formulated as principles of stationary action for some Lagrangian density \(\mathcal{L}(\phi, \partial_\mu\phi)\). The variational principle, dressed for whatever the theory is, is the spine of theoretical physics. Newton's \(F = ma\) does not generalize to fields. Lagrange's \(\delta S = 0\) does, without changing a symbol.</p>
+
+<div class="footer">An interactive bridge from Newton (1687) to Lagrange (1788) — local mechanics, global mechanics, and the calculus of variations that connects them.</div>
+
+</div>
+
+<!-- =============================================================
+     SCRIPTS
+     ============================================================= -->
+<script>
+// =================================================
+// Shared helpers
+// =================================================
+function lerp(a, b, t) { return a + (b - a) * t; }
+
+// =================================================
+// WIDGET 1 — Newton in a double well (velocity-Verlet)
+// =================================================
+(function() {
+  const cv = document.getElementById('w1c');
+  const ctx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  const goBtn = document.getElementById('w1go');
+  const resetBtn = document.getElementById('w1reset');
+  const x0El = document.getElementById('w1x0');
+  const v0El = document.getElementById('w1v0');
+  const x0vEl = document.getElementById('w1x0v');
+  const v0vEl = document.getElementById('w1v0v');
+  const EEl = document.getElementById('w1E');
+
+  let running = true;
+  let x, v;
+  // V(q) = (q^2 - 1)^2 ; V'(q) = 4q(q^2 - 1)
+  const Vof = (q) => (q*q - 1)*(q*q - 1);
+  const dV = (q) => 4*q*(q*q - 1);
+  const m = 1;
+  const dt = 0.015;
+
+  // history (bounded)
+  const tHist = [];
+  const qHist = [];
+  const phHist = [];
+  const MAXH = 1600;
+  let t_sim = 0;
+
+  function reset() {
+    x = +x0El.value; v = +v0El.value;
+    t_sim = 0;
+    tHist.length = 0; qHist.length = 0; phHist.length = 0;
+  }
+
+  // Layout: top = the actual potential well with a rolling ball;
+  //         bottom = position vs time | phase portrait
+  const padT = 24, padB = 36, padL = 50, padMid = 24, padInner = 18;
+  const wellH = 200;
+  const bottomH = H - padT - wellH - padInner - padB;
+  const wellY = padT;
+  const bottomY = padT + wellH + padInner;
+  const wellW = W - padL - 16;
+  const panelW = (W - padL - padMid - 16) / 2;
+  const L1x = padL;
+  const L2x = padL + panelW + padMid;
+
+  // Well-panel coordinates
+  // q range: -1.8 to 1.8 (well basins at ±1, barrier at 0)
+  // V range: -0.4 to 2.6
+  const wqLo = -1.8, wqHi = 1.8;
+  const wVLo = -0.4, wVHi = 2.6;
+  function wqx(q) { return L1x + (q - wqLo) / (wqHi - wqLo) * wellW; }
+  function wVy(v) { return wellY + (1 - (v - wVLo) / (wVHi - wVLo)) * wellH; }
+
+  function frame() {
+    // physics
+    if (running) {
+      for (let s = 0; s < 4; s++) {
+        const a = -dV(x) / m;
+        const xn = x + v*dt + 0.5*a*dt*dt;
+        const an = -dV(xn) / m;
+        const vn = v + 0.5*(a + an)*dt;
+        x = xn; v = vn;
+        t_sim += dt;
+        tHist.push(t_sim); qHist.push(x); phHist.push({q: x, p: v});
+        if (tHist.length > MAXH) { tHist.shift(); qHist.shift(); phHist.shift(); }
+      }
+    }
+    const E = 0.5 * v*v + Vof(x);
+    EEl.textContent = `E = ${E.toFixed(3)}  (conserved)`;
+
+    // draw
+    ctx.fillStyle = '#161c26';
+    ctx.fillRect(0, 0, W, H);
+
+    // ===== TOP: the actual well with a rolling ball =====
+    // axis frame
+    ctx.strokeStyle = '#3a4456';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(L1x, wellY); ctx.lineTo(L1x, wellY + wellH); ctx.lineTo(L1x + wellW, wellY + wellH);
+    ctx.stroke();
+    // forbidden region above E (subtle wash)
+    const Eline = wVy(E);
+    if (Eline > wellY) {
+      ctx.fillStyle = 'rgba(126,134,150,0.06)';
+      ctx.fillRect(L1x, wellY, wellW, Math.min(wellH, Eline - wellY));
+    }
+    // V=0 line (well-floor reference)
+    ctx.strokeStyle = '#2a3344';
+    ctx.beginPath();
+    const v0y = wVy(0);
+    ctx.moveTo(L1x, v0y); ctx.lineTo(L1x + wellW, v0y);
+    ctx.stroke();
+    // basin marks at q=±1 (V=0) and barrier top at q=0 (V=1)
+    ctx.fillStyle = 'rgba(95,176,163,0.5)';
+    for (const qq of [-1, 1]) {
+      const mx = wqx(qq), my = wVy(Vof(qq));
+      ctx.beginPath(); ctx.arc(mx, my, 2.5, 0, Math.PI*2); ctx.fill();
+    }
+    // V(q) filled region (the well shape — solid, not transparent, so the ball reads as on top)
+    ctx.fillStyle = 'rgba(58,68,86,0.55)';
+    ctx.beginPath();
+    ctx.moveTo(L1x, wellY + wellH);
+    for (let i = 0; i <= 240; i++) {
+      const q = wqLo + (i / 240) * (wqHi - wqLo);
+      ctx.lineTo(wqx(q), wVy(Vof(q)));
+    }
+    ctx.lineTo(L1x + wellW, wellY + wellH);
+    ctx.closePath();
+    ctx.fill();
+    // V(q) outline
+    ctx.strokeStyle = '#5fb0a3';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let i = 0; i <= 240; i++) {
+      const q = wqLo + (i / 240) * (wqHi - wqLo);
+      const xx = wqx(q), yy = wVy(Vof(q));
+      if (i === 0) ctx.moveTo(xx, yy); else ctx.lineTo(xx, yy);
+    }
+    ctx.stroke();
+    // total-energy line — dashed horizontal, the ceiling the particle never crosses
+    ctx.strokeStyle = '#cd6f5e';
+    ctx.lineWidth = 1.4;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(L1x, Eline); ctx.lineTo(L1x + wellW, Eline);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#cd6f5e';
+    ctx.font = '11px JetBrains Mono';
+    ctx.textAlign = 'right';
+    ctx.fillText(`E = ${E.toFixed(2)}`, L1x + wellW - 6, Eline - 5);
+    // KE gauge: vertical line from current V(q) up to E
+    const ballX = wqx(x);
+    const Vy = wVy(Vof(x));
+    ctx.strokeStyle = 'rgba(212,167,85,0.55)';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(ballX, Vy); ctx.lineTo(ballX, Eline);
+    ctx.stroke();
+    // the ball — sits at (q, V(q)) on the curve
+    ctx.fillStyle = '#d4a755';
+    ctx.beginPath(); ctx.arc(ballX, Vy, 8, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle = '#161c26';
+    ctx.lineWidth = 2; ctx.stroke();
+    // velocity arrow on the ball (horizontal, since v is in the q-direction)
+    if (Math.abs(v) > 0.05) {
+      const arrowLen = Math.max(-50, Math.min(50, v * 18));
+      ctx.strokeStyle = '#d4a755';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(ballX, Vy);
+      ctx.lineTo(ballX + arrowLen, Vy);
+      ctx.stroke();
+      // arrowhead
+      const sgn = arrowLen >= 0 ? 1 : -1;
+      ctx.beginPath();
+      ctx.moveTo(ballX + arrowLen, Vy);
+      ctx.lineTo(ballX + arrowLen - 6*sgn, Vy - 4);
+      ctx.lineTo(ballX + arrowLen - 6*sgn, Vy + 4);
+      ctx.closePath();
+      ctx.fillStyle = '#d4a755';
+      ctx.fill();
+    }
+    // labels
+    ctx.fillStyle = '#7e8696';
+    ctx.font = '11px JetBrains Mono';
+    ctx.textAlign = 'left';
+    ctx.fillText('the well V(q) = (q² − 1)²  —  ball sits at (q, V(q))', L1x + 6, wellY + 14);
+    // q-axis tick marks
+    ctx.textAlign = 'center';
+    for (const qq of [-1.5, -1, 0, 1, 1.5]) {
+      const xx = wqx(qq);
+      ctx.fillText(qq.toString(), xx, wellY + wellH + 14);
+      ctx.strokeStyle = '#2a3344';
+      ctx.beginPath();
+      ctx.moveTo(xx, wellY + wellH); ctx.lineTo(xx, wellY + wellH + 3);
+      ctx.stroke();
+    }
+
+    // ===== BOTTOM-LEFT: position vs time =====
+    ctx.strokeStyle = '#3a4456';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(L1x, bottomY); ctx.lineTo(L1x, bottomY + bottomH); ctx.lineTo(L1x + panelW, bottomY + bottomH);
+    ctx.stroke();
+    // 0 line
+    const midY = bottomY + bottomH/2;
+    ctx.strokeStyle = '#2a3344';
+    ctx.beginPath();
+    ctx.moveTo(L1x, midY); ctx.lineTo(L1x + panelW, midY);
+    ctx.stroke();
+    // labels
+    ctx.fillStyle = '#7e8696';
+    ctx.font = '11px JetBrains Mono';
+    ctx.textAlign = 'left';
+    ctx.fillText('q(t)', L1x + 6, bottomY + 14);
+    ctx.textAlign = 'right';
+    ctx.fillText('t →', L1x + panelW - 4, bottomY + bottomH + 18);
+    ctx.textAlign = 'right';
+    ctx.fillText('+2', L1x - 6, bottomY + 12);
+    ctx.fillText('0', L1x - 6, midY + 4);
+    ctx.fillText('-2', L1x - 6, bottomY + bottomH);
+
+    // time-window trajectory
+    const Twin = 12;
+    const tmin = Math.max(0, t_sim - Twin);
+    ctx.strokeStyle = '#d4a755';
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    for (let i = 0; i < tHist.length; i++) {
+      if (tHist[i] < tmin) continue;
+      const xx = L1x + ((tHist[i] - tmin) / Twin) * panelW;
+      const yy = bottomY + (1 - (qHist[i] + 2)/4) * bottomH;
+      if (i === 0 || tHist[i-1] < tmin) ctx.moveTo(xx, yy);
+      else ctx.lineTo(xx, yy);
+    }
+    ctx.stroke();
+    // current point
+    const curX = L1x + ((t_sim - tmin) / Twin) * panelW;
+    const curY = bottomY + (1 - (x + 2)/4) * bottomH;
+    ctx.fillStyle = '#d4a755';
+    ctx.beginPath();
+    ctx.arc(curX, curY, 4, 0, Math.PI*2);
+    ctx.fill();
+
+    // ===== BOTTOM-RIGHT: phase portrait =====
+    ctx.strokeStyle = '#3a4456';
+    ctx.beginPath();
+    ctx.moveTo(L2x, bottomY); ctx.lineTo(L2x, bottomY + bottomH); ctx.lineTo(L2x + panelW, bottomY + bottomH);
+    ctx.stroke();
+    // cross-hairs at origin
+    const cx2 = L2x + panelW/2;
+    const cy2 = bottomY + bottomH/2;
+    ctx.strokeStyle = '#2a3344';
+    ctx.beginPath();
+    ctx.moveTo(L2x, cy2); ctx.lineTo(L2x + panelW, cy2);
+    ctx.moveTo(cx2, bottomY); ctx.lineTo(cx2, bottomY + bottomH);
+    ctx.stroke();
+    ctx.fillStyle = '#7e8696';
+    ctx.font = '11px JetBrains Mono';
+    ctx.textAlign = 'left';
+    ctx.fillText('phase portrait (q, q̇)', L2x + 6, bottomY + 14);
+    ctx.textAlign = 'right';
+    ctx.fillText('q →', L2x + panelW - 4, bottomY + bottomH + 18);
+    ctx.save(); ctx.translate(L2x + 8, bottomY + bottomH/2); ctx.rotate(-Math.PI/2);
+    ctx.textAlign = 'center';
+    ctx.fillText('q̇', 0, 0); ctx.restore();
+    // basin marks at q=±1
+    ctx.fillStyle = '#5fb0a3';
+    for (const qq of [-1, 1]) {
+      const xx = cx2 + qq/2 * panelW/2;
+      ctx.beginPath(); ctx.arc(xx, cy2, 3, 0, Math.PI*2); ctx.fill();
+    }
+    // trajectory in phase space
+    ctx.strokeStyle = 'rgba(212,167,85,0.85)';
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    let started = false;
+    for (let i = 0; i < phHist.length; i++) {
+      const xx = cx2 + phHist[i].q / 2 * panelW/2;
+      const yy = cy2 - phHist[i].p / 2.5 * bottomH/2;
+      if (!started) { ctx.moveTo(xx, yy); started = true; }
+      else ctx.lineTo(xx, yy);
+    }
+    ctx.stroke();
+    // current point in phase
+    const pX = cx2 + x/2 * panelW/2;
+    const pY = cy2 - v/2.5 * bottomH/2;
+    ctx.fillStyle = '#d4a755';
+    ctx.beginPath();
+    ctx.arc(pX, pY, 4.5, 0, Math.PI*2);
+    ctx.fill();
+    // velocity vector at current position
+    ctx.strokeStyle = '#cd6f5e';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(pX, pY);
+    ctx.lineTo(pX, pY - v * 18);
+    ctx.stroke();
+
+    requestAnimationFrame(frame);
+  }
+
+  goBtn.addEventListener('click', () => {
+    running = !running;
+    goBtn.textContent = running ? '⏸ pause' : '▶ play';
+  });
+  resetBtn.addEventListener('click', reset);
+  x0El.addEventListener('input', () => { x0vEl.textContent = (+x0El.value).toFixed(2); reset(); });
+  v0El.addEventListener('input', () => { v0vEl.textContent = (+v0El.value).toFixed(2); reset(); });
+
+  reset();
+  requestAnimationFrame(frame);
+})();
+
+// =================================================
+// WIDGET 2 — Many candidate paths (gravity, V(q)=q)
+// =================================================
+(function() {
+  const cv = document.getElementById('w2c');
+  const ctx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  const capEl = document.getElementById('w2cap');
+  const revealBtn = document.getElementById('w2reveal');
+
+  const T = 2;
+  // true Newton path under V(q)=q, m=1, q(0)=q(T)=0:
+  //  m q̈ = -V'(q) = -1   ⇒   q(t) = ½ t (T - t)
+  // for T=2: q(t) = ½ t (2-t)
+  const truePath = (t) => 0.5 * t * (T - t);
+
+  // candidate path functions
+  const paths = [
+    { name: 'flat',          q: (t) => 0 },
+    { name: 'triangle',      q: (t) => (t < 1 ? 0.5*t : 0.5*(2-t)) },
+    { name: 'parabola ↑',    q: (t) => 0.5 * t * (2-t) },    // this IS the true path
+    { name: 'parabola ↑↑',   q: (t) => 1.0 * t * (2-t) },    // 2× too tall
+    { name: 'sinusoid',      q: (t) => 0.5 * Math.sin(Math.PI * t / T) }
+  ];
+  // Pre-compute actions: S = ∫(½v² - q) dt
+  function computeAction(qFn) {
+    const N = 800;
+    const dt = T / N;
+    let S = 0;
+    for (let i = 0; i < N; i++) {
+      const ta = i * dt, tb = (i+1) * dt;
+      const qa = qFn(ta), qb = qFn(tb);
+      const v = (qb - qa) / dt;
+      const qmid = 0.5 * (qa + qb);
+      const Tk = 0.5 * v * v;
+      const Vp = qmid;
+      S += (Tk - Vp) * dt;
+    }
+    return S;
+  }
+  const actions = paths.map(p => computeAction(p.q));
+  const trueIdx = 2; // parabola ↑ is the Newton path
+  let selected = 0;
+  let revealed = false;
+
+  // layout
+  const padT = 24, padB = 40, padL = 50, padR = 32;
+  const plotW = W - padL - padR;
+  const plotH = H - padT - padB;
+  // q range: -0.2 .. 0.8
+  const qLo = -0.2, qHi = 0.85;
+  function tx(t) { return padL + (t / T) * plotW; }
+  function qy(q) { return padT + (1 - (q - qLo) / (qHi - qLo)) * plotH; }
+
+  function drawPathCurve(qFn, color, lw, dash) {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = lw;
+    if (dash) ctx.setLineDash(dash); else ctx.setLineDash([]);
+    ctx.beginPath();
+    const N = 200;
+    for (let i = 0; i <= N; i++) {
+      const t = (i / N) * T;
+      const x = tx(t), y = qy(qFn(t));
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  function frame() {
+    ctx.fillStyle = '#161c26';
+    ctx.fillRect(0, 0, W, H);
+
+    // grid + axes
+    ctx.strokeStyle = '#3a4456';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(padL, padT); ctx.lineTo(padL, padT + plotH); ctx.lineTo(padL + plotW, padT + plotH);
+    ctx.stroke();
+    // q=0 reference
+    ctx.strokeStyle = '#2a3344';
+    ctx.beginPath();
+    const y0 = qy(0); ctx.moveTo(padL, y0); ctx.lineTo(padL + plotW, y0);
+    ctx.stroke();
+
+    // endpoints
+    ctx.fillStyle = '#5fb0a3';
+    ctx.beginPath(); ctx.arc(tx(0), qy(0), 7, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(tx(T), qy(0), 7, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#7e8696';
+    ctx.font = '11px JetBrains Mono';
+    ctx.textAlign = 'center';
+    ctx.fillText('A (start)', tx(0), qy(0) + 22);
+    ctx.fillText('B (end)', tx(T), qy(0) + 22);
+    ctx.textAlign = 'left';
+    ctx.fillText('q (height)', padL + 4, padT + 12);
+    ctx.textAlign = 'right';
+    ctx.fillText('t →', padL + plotW - 4, padT + plotH + 18);
+
+    // potential gradient backdrop (V(q)=q so higher = more V)
+    const grad = ctx.createLinearGradient(0, padT, 0, padT + plotH);
+    grad.addColorStop(0, 'rgba(205,111,94,0.22)');
+    grad.addColorStop(1, 'rgba(205,111,94,0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(padL, padT, plotW, plotH);
+    // V label
+    ctx.fillStyle = 'rgba(205,111,94,0.7)';
+    ctx.font = '10px JetBrains Mono';
+    ctx.textAlign = 'right';
+    ctx.fillText('high V', padL + plotW - 4, padT + 12);
+    ctx.fillText('low V', padL + plotW - 4, padT + plotH - 4);
+
+    // draw all paths (non-selected dim)
+    for (let i = 0; i < paths.length; i++) {
+      if (i === selected) continue;
+      const c = (i === trueIdx && revealed) ? '#5fb0a3' : 'rgba(126,134,150,0.55)';
+      drawPathCurve(paths[i].q, c, 1.2, (i === trueIdx && revealed) ? null : [3, 3]);
+    }
+    // selected path on top
+    drawPathCurve(paths[selected].q, '#d4a755', 2.5, null);
+
+    // action panel — small box top-right
+    const boxW = 240, boxH = 130;
+    const bx = padL + plotW - boxW - 12, by = padT + 28;
+    ctx.fillStyle = 'rgba(31,39,53,0.85)';
+    ctx.strokeStyle = '#3a4456';
+    ctx.fillRect(bx, by, boxW, boxH);
+    ctx.strokeRect(bx, by, boxW, boxH);
+    ctx.fillStyle = '#d4a755';
+    ctx.font = '11px JetBrains Mono';
+    ctx.textAlign = 'left';
+    ctx.fillText('action of each path', bx + 10, by + 16);
+    // list with bar lengths
+    const minA = Math.min(...actions), maxA = Math.max(...actions);
+    const span = Math.max(0.01, maxA - minA);
+    for (let i = 0; i < paths.length; i++) {
+      const ry = by + 30 + i * 18;
+      const isSel = i === selected;
+      const isTrue = i === trueIdx && revealed;
+      ctx.fillStyle = isSel ? '#d4a755' : isTrue ? '#5fb0a3' : '#b6b0a0';
+      ctx.font = isSel ? '12px JetBrains Mono' : '11px JetBrains Mono';
+      ctx.textAlign = 'left';
+      ctx.fillText(paths[i].name, bx + 10, ry);
+      ctx.textAlign = 'right';
+      ctx.fillText(actions[i].toFixed(3), bx + boxW - 10, ry);
+      // bar (normalized to 0..1 across the action range)
+      const fRel = (actions[i] - minA) / span;
+      ctx.fillStyle = isSel ? 'rgba(212,167,85,0.4)' : isTrue ? 'rgba(95,176,163,0.4)' : 'rgba(126,134,150,0.25)';
+      ctx.fillRect(bx + 80, ry - 8, fRel * 70, 10);
+    }
+
+    requestAnimationFrame(frame);
+  }
+
+  document.querySelectorAll('#w2 button[data-p]').forEach(b => {
+    b.addEventListener('click', () => {
+      selected = +b.dataset.p;
+      const isTrue = selected === trueIdx;
+      capEl.textContent = `Selected: ${paths[selected].name}. Action S = ${actions[selected].toFixed(4)}.` +
+        (revealed ? (isTrue ? ' ← This is the real Newton trajectory.' : ' (not the real path.)') : '');
+    });
+  });
+  revealBtn.addEventListener('click', () => {
+    revealed = true;
+    capEl.textContent = `Revealed: the parabola q(t) = ½t(2−t) is the real Newton trajectory — and it has the smallest action (most negative S).`;
+  });
+
+  requestAnimationFrame(frame);
+})();
+
+// =================================================
+// WIDGET 3 — Action of an editable path (drag control points)
+// =================================================
+(function() {
+  const cv = document.getElementById('w3c');
+  const ctx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  const trueBtn = document.getElementById('w3true');
+  const flatBtn = document.getElementById('w3flat');
+  const SEl = document.getElementById('w3S');
+
+  const T = 2;
+  // Control points: 3 interior at t = 0.5, 1.0, 1.5; endpoints fixed at q=0
+  const ctrlT = [0.5, 1.0, 1.5];
+  let ctrlQ = [0.25, 0.5, 0.25]; // initial guess close to the true path
+
+  // build the q(t) sampler as a smooth cubic spline through the 5 points
+  // (endpoints + 3 control points)
+  function buildSpline() {
+    const xs = [0, ...ctrlT, T];
+    const ys = [0, ...ctrlQ, 0];
+    const n = xs.length;
+    // natural cubic spline
+    const h = new Array(n-1);
+    for (let i = 0; i < n-1; i++) h[i] = xs[i+1] - xs[i];
+    const alpha = new Array(n).fill(0);
+    for (let i = 1; i < n-1; i++) alpha[i] = (3/h[i])*(ys[i+1]-ys[i]) - (3/h[i-1])*(ys[i]-ys[i-1]);
+    const l = new Array(n), mu = new Array(n), z = new Array(n);
+    l[0] = 1; mu[0] = 0; z[0] = 0;
+    for (let i = 1; i < n-1; i++) {
+      l[i] = 2*(xs[i+1]-xs[i-1]) - h[i-1]*mu[i-1];
+      mu[i] = h[i]/l[i];
+      z[i] = (alpha[i] - h[i-1]*z[i-1])/l[i];
+    }
+    l[n-1] = 1; z[n-1] = 0;
+    const c = new Array(n).fill(0), b = new Array(n-1).fill(0), d = new Array(n-1).fill(0), a = new Array(n-1).fill(0);
+    for (let j = n-2; j >= 0; j--) {
+      c[j] = z[j] - mu[j]*c[j+1];
+      b[j] = (ys[j+1]-ys[j])/h[j] - h[j]*(c[j+1]+2*c[j])/3;
+      d[j] = (c[j+1]-c[j])/(3*h[j]);
+      a[j] = ys[j];
+    }
+    return function(t) {
+      // find interval
+      let j = 0;
+      while (j < n-2 && t > xs[j+1]) j++;
+      const dx = t - xs[j];
+      return a[j] + b[j]*dx + c[j]*dx*dx + d[j]*dx*dx*dx;
+    };
+  }
+  function qDeriv(qFn, t) {
+    const eps = 1e-3;
+    const ta = Math.max(0, t - eps), tb = Math.min(T, t + eps);
+    return (qFn(tb) - qFn(ta)) / (tb - ta);
+  }
+
+  // Layout: top panel = path (t, q); bottom panel = L(t), T(t), V(t)
+  const padT = 22, padMid = 18, padB = 40, padL = 50, padR = 24;
+  const upperH = 220, lowerH = 200;
+  const plotW = W - padL - padR;
+  const upperY = padT;
+  const lowerY = padT + upperH + padMid;
+  // q range
+  const qLo = -0.2, qHi = 1.0;
+  function tx(t) { return padL + (t / T) * plotW; }
+  function qy(q, y0, h) { return y0 + (1 - (q - qLo) / (qHi - qLo)) * h; }
+  // for the lower panel, y range = -0.5 .. 0.8
+  const lLo = -0.6, lHi = 0.8;
+  function ly(v, y0, h) { return y0 + (1 - (v - lLo) / (lHi - lLo)) * h; }
+
+  // dragging state
+  let dragIdx = -1;
+  function pxToTQ(px, py) {
+    const t = (px - padL) / plotW * T;
+    const q = qLo + (1 - (py - upperY) / upperH) * (qHi - qLo);
+    return { t, q };
+  }
+  function hitTest(px, py) {
+    for (let i = 0; i < ctrlT.length; i++) {
+      const cx = tx(ctrlT[i]);
+      const cy = qy(ctrlQ[i], upperY, upperH);
+      const d = Math.hypot(px - cx, py - cy);
+      if (d < 12) return i;
+    }
+    return -1;
+  }
+  cv.addEventListener('mousedown', e => {
+    const r = cv.getBoundingClientRect();
+    const sx = cv.width / r.width, sy = cv.height / r.height;
+    const px = (e.clientX - r.left) * sx, py = (e.clientY - r.top) * sy;
+    dragIdx = hitTest(px, py);
+  });
+  cv.addEventListener('mousemove', e => {
+    if (dragIdx < 0) return;
+    const r = cv.getBoundingClientRect();
+    const sx = cv.width / r.width, sy = cv.height / r.height;
+    const px = (e.clientX - r.left) * sx, py = (e.clientY - r.top) * sy;
+    const { q } = pxToTQ(px, py);
+    ctrlQ[dragIdx] = Math.min(qHi - 0.05, Math.max(qLo + 0.05, q));
+  });
+  window.addEventListener('mouseup', () => { dragIdx = -1; });
+
+  trueBtn.addEventListener('click', () => {
+    ctrlQ = ctrlT.map(t => 0.5 * t * (T - t));
+  });
+  flatBtn.addEventListener('click', () => { ctrlQ = [0, 0, 0]; });
+
+  function frame() {
+    const qFn = buildSpline();
+    // sample everything
+    const N = 240;
+    const ts = new Array(N+1), qs = new Array(N+1), vs = new Array(N+1);
+    const Ts = new Array(N+1), Vs = new Array(N+1), Ls = new Array(N+1);
+    for (let i = 0; i <= N; i++) {
+      ts[i] = (i / N) * T;
+      qs[i] = qFn(ts[i]);
+      vs[i] = qDeriv(qFn, ts[i]);
+      Ts[i] = 0.5 * vs[i] * vs[i];
+      Vs[i] = qs[i]; // V(q) = q
+      Ls[i] = Ts[i] - Vs[i];
+    }
+    // action: trapezoidal
+    let S = 0;
+    for (let i = 0; i < N; i++) S += 0.5 * (Ls[i] + Ls[i+1]) * (ts[i+1] - ts[i]);
+    SEl.textContent = `S = ${S.toFixed(3)}`;
+
+    // draw bg
+    ctx.fillStyle = '#161c26';
+    ctx.fillRect(0, 0, W, H);
+
+    // ---- upper panel: path ----
+    ctx.strokeStyle = '#3a4456';
+    ctx.beginPath();
+    ctx.moveTo(padL, upperY); ctx.lineTo(padL, upperY + upperH); ctx.lineTo(padL + plotW, upperY + upperH);
+    ctx.stroke();
+    // potential gradient
+    const grad = ctx.createLinearGradient(0, upperY, 0, upperY + upperH);
+    grad.addColorStop(0, 'rgba(205,111,94,0.22)');
+    grad.addColorStop(1, 'rgba(205,111,94,0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(padL, upperY, plotW, upperH);
+    // q=0 line
+    ctx.strokeStyle = '#2a3344';
+    ctx.beginPath();
+    const y0 = qy(0, upperY, upperH);
+    ctx.moveTo(padL, y0); ctx.lineTo(padL + plotW, y0);
+    ctx.stroke();
+    // labels
+    ctx.fillStyle = '#7e8696';
+    ctx.font = '11px JetBrains Mono';
+    ctx.textAlign = 'left';
+    ctx.fillText('q(t) — your path', padL + 6, upperY + 14);
+    ctx.textAlign = 'right';
+    ctx.fillText('V(q) = q (gravity)', padL + plotW - 6, upperY + 14);
+    // path curve
+    ctx.strokeStyle = '#d4a755';
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    for (let i = 0; i <= N; i++) {
+      const x = tx(ts[i]), y = qy(qs[i], upperY, upperH);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    // endpoints
+    ctx.fillStyle = '#5fb0a3';
+    ctx.beginPath(); ctx.arc(tx(0), qy(0, upperY, upperH), 6, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(tx(T), qy(0, upperY, upperH), 6, 0, Math.PI*2); ctx.fill();
+    // control points
+    for (let i = 0; i < ctrlT.length; i++) {
+      const cx = tx(ctrlT[i]);
+      const cy = qy(ctrlQ[i], upperY, upperH);
+      ctx.fillStyle = dragIdx === i ? '#d4a755' : '#ebe2cd';
+      ctx.strokeStyle = '#161c26';
+      ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(cx, cy, 7, 0, Math.PI*2);
+      ctx.fill(); ctx.stroke();
+    }
+
+    // ---- lower panel: T(t), V(t), L(t) and shaded action ----
+    ctx.strokeStyle = '#3a4456';
+    ctx.beginPath();
+    ctx.moveTo(padL, lowerY); ctx.lineTo(padL, lowerY + lowerH); ctx.lineTo(padL + plotW, lowerY + lowerH);
+    ctx.stroke();
+    // zero line
+    const zeroY = ly(0, lowerY, lowerH);
+    ctx.strokeStyle = '#2a3344';
+    ctx.beginPath();
+    ctx.moveTo(padL, zeroY); ctx.lineTo(padL + plotW, zeroY);
+    ctx.stroke();
+    ctx.fillStyle = '#7e8696';
+    ctx.font = '11px JetBrains Mono';
+    ctx.textAlign = 'left';
+    ctx.fillText('along your path: T(t), V(t), L(t) = T − V — shaded area = S', padL + 6, lowerY + 14);
+
+    // L shaded
+    ctx.fillStyle = 'rgba(212,167,85,0.18)';
+    ctx.beginPath();
+    ctx.moveTo(tx(0), zeroY);
+    for (let i = 0; i <= N; i++) {
+      ctx.lineTo(tx(ts[i]), ly(Ls[i], lowerY, lowerH));
+    }
+    ctx.lineTo(tx(T), zeroY);
+    ctx.closePath();
+    ctx.fill();
+    // T curve
+    ctx.strokeStyle = '#cd6f5e';
+    ctx.lineWidth = 1.4;
+    ctx.beginPath();
+    for (let i = 0; i <= N; i++) {
+      const x = tx(ts[i]), y = ly(Ts[i], lowerY, lowerH);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    // V curve
+    ctx.strokeStyle = '#5fb0a3';
+    ctx.beginPath();
+    for (let i = 0; i <= N; i++) {
+      const x = tx(ts[i]), y = ly(Vs[i], lowerY, lowerH);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    // L curve
+    ctx.strokeStyle = '#d4a755';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let i = 0; i <= N; i++) {
+      const x = tx(ts[i]), y = ly(Ls[i], lowerY, lowerH);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+// =================================================
+// WIDGET 4 — Variation of the action (parabolic minimum)
+// =================================================
+(function() {
+  const cv = document.getElementById('w4c');
+  const ctx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  const aEl = document.getElementById('w4a');
+  const avEl = document.getElementById('w4av');
+  const shapeEl = document.getElementById('w4shape');
+  const SEl = document.getElementById('w4S');
+
+  const T = 2;
+  // True path under V(q)=q, m=1, q(0)=q(T)=0  ⇒  q*(t) = ½ t(T-t)
+  const qstar = (t) => 0.5 * t * (T - t);
+  // perturbation shapes (sin(kπt/T))
+  const shapes = {
+    sin1: t => Math.sin(Math.PI * t / T),
+    sin2: t => Math.sin(2 * Math.PI * t / T),
+    sin3: t => Math.sin(3 * Math.PI * t / T),
+  };
+
+  function computeAction(qFn) {
+    const N = 600;
+    const dt = T / N;
+    let S = 0;
+    for (let i = 0; i < N; i++) {
+      const ta = i * dt, tb = (i+1)*dt;
+      const v = (qFn(tb) - qFn(ta)) / dt;
+      const qmid = 0.5*(qFn(ta) + qFn(tb));
+      S += (0.5*v*v - qmid) * dt;
+    }
+    return S;
+  }
+  // Pre-sample S(a) for the currently selected shape
+  let SaPoints = []; // array of {a, S}
+  function sampleSa() {
+    const eta = shapes[shapeEl.value];
+    SaPoints = [];
+    const NA = 81;
+    for (let i = 0; i < NA; i++) {
+      const a = -1.2 + (i / (NA-1)) * 2.4;
+      const qPert = (t) => qstar(t) + a * eta(t);
+      SaPoints.push({ a, S: computeAction(qPert) });
+    }
+  }
+  sampleSa();
+
+  // layout: two panels
+  const padT = 24, padB = 36, padL = 50, padMid = 28, padR = 28;
+  const panelW = (W - padL - padR - padMid) / 2;
+  const panelH = H - padT - padB;
+  const L1x = padL, L2x = padL + panelW + padMid;
+
+  // path panel ranges
+  const qLo = -0.7, qHi = 1.0;
+  function tx(t) { return L1x + (t/T) * panelW; }
+  function qy(q) { return padT + (1 - (q - qLo)/(qHi - qLo)) * panelH; }
+  // S(a) panel ranges
+  const aLo = -1.3, aHi = 1.3;
+  // compute S range across samples
+  function aPx(a) { return L2x + (a - aLo) / (aHi - aLo) * panelW; }
+
+  function frame() {
+    const a = +aEl.value;
+    avEl.textContent = (a >= 0 ? '+' : '') + a.toFixed(2);
+    const eta = shapes[shapeEl.value];
+    const qPert = (t) => qstar(t) + a * eta(t);
+    const Snow = computeAction(qPert);
+    SEl.textContent = `S = ${Snow.toFixed(4)}`;
+
+    // bg
+    ctx.fillStyle = '#161c26';
+    ctx.fillRect(0, 0, W, H);
+
+    // ----- panel 1: paths -----
+    ctx.strokeStyle = '#3a4456';
+    ctx.beginPath();
+    ctx.moveTo(L1x, padT); ctx.lineTo(L1x, padT + panelH); ctx.lineTo(L1x + panelW, padT + panelH);
+    ctx.stroke();
+    // potential backdrop
+    const grad = ctx.createLinearGradient(0, padT, 0, padT + panelH);
+    grad.addColorStop(0, 'rgba(205,111,94,0.22)');
+    grad.addColorStop(1, 'rgba(205,111,94,0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(L1x, padT, panelW, panelH);
+    // 0 line
+    ctx.strokeStyle = '#2a3344';
+    const y0 = qy(0);
+    ctx.beginPath();
+    ctx.moveTo(L1x, y0); ctx.lineTo(L1x + panelW, y0);
+    ctx.stroke();
+    // labels
+    ctx.fillStyle = '#7e8696';
+    ctx.font = '11px JetBrains Mono';
+    ctx.textAlign = 'left';
+    ctx.fillText('paths: q*(t) and q*(t) + a·η(t)', L1x + 6, padT + 14);
+
+    // true path (dashed)
+    ctx.strokeStyle = 'rgba(95,176,163,0.85)';
+    ctx.lineWidth = 1.6;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    for (let i = 0; i <= 200; i++) {
+      const t = (i/200) * T;
+      const x = tx(t), y = qy(qstar(t));
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // perturbed path
+    ctx.strokeStyle = '#d4a755';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    for (let i = 0; i <= 200; i++) {
+      const t = (i/200) * T;
+      const x = tx(t), y = qy(qPert(t));
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    // endpoints
+    ctx.fillStyle = '#5fb0a3';
+    ctx.beginPath(); ctx.arc(tx(0), qy(0), 5, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(tx(T), qy(0), 5, 0, Math.PI*2); ctx.fill();
+    // legend
+    ctx.fillStyle = 'rgba(95,176,163,0.85)';
+    ctx.fillText('-- true path q*(t)', L1x + 6, padT + 32);
+    ctx.fillStyle = '#d4a755';
+    ctx.fillText('— perturbed q*(t) + a·η(t)', L1x + 6, padT + 48);
+
+    // ----- panel 2: S(a) parabola -----
+    ctx.strokeStyle = '#3a4456';
+    ctx.beginPath();
+    ctx.moveTo(L2x, padT); ctx.lineTo(L2x, padT + panelH); ctx.lineTo(L2x + panelW, padT + panelH);
+    ctx.stroke();
+    // determine S range
+    let sMin = SaPoints[0].S, sMax = SaPoints[0].S;
+    for (const p of SaPoints) { if (p.S < sMin) sMin = p.S; if (p.S > sMax) sMax = p.S; }
+    const sPad = (sMax - sMin) * 0.1;
+    const sLo = sMin - sPad, sHi = sMax + sPad;
+    function syPx(s) { return padT + (1 - (s - sLo)/(sHi - sLo)) * panelH; }
+    // a=0 vertical
+    ctx.strokeStyle = '#2a3344';
+    ctx.beginPath();
+    const xA0 = aPx(0);
+    ctx.moveTo(xA0, padT); ctx.lineTo(xA0, padT + panelH);
+    ctx.stroke();
+    // axis labels
+    ctx.fillStyle = '#7e8696';
+    ctx.font = '11px JetBrains Mono';
+    ctx.textAlign = 'left';
+    ctx.fillText('S(a) — action as function of amplitude', L2x + 6, padT + 14);
+    ctx.textAlign = 'right';
+    ctx.fillText('a →', L2x + panelW - 4, padT + panelH + 18);
+    ctx.textAlign = 'center';
+    ctx.fillText('a=0', xA0, padT + panelH + 18);
+    // parabola
+    ctx.strokeStyle = '#a574a8';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let i = 0; i < SaPoints.length; i++) {
+      const p = SaPoints[i];
+      const x = aPx(p.a), y = syPx(p.S);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    // mark minimum (true path: a=0)
+    ctx.fillStyle = '#5fb0a3';
+    ctx.beginPath();
+    ctx.arc(xA0, syPx(SaPoints[Math.floor(SaPoints.length/2)].S), 5, 0, Math.PI*2);
+    ctx.fill();
+    // current "you are here" marker
+    ctx.fillStyle = '#d4a755';
+    ctx.beginPath();
+    ctx.arc(aPx(a), syPx(Snow), 7, 0, Math.PI*2);
+    ctx.fill();
+    // dashed line down to a axis
+    ctx.strokeStyle = 'rgba(212,167,85,0.6)';
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(aPx(a), syPx(Snow));
+    ctx.lineTo(aPx(a), padT + panelH);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // tangent at a=0 — show flat line (slope = 0)
+    ctx.strokeStyle = 'rgba(95,176,163,0.7)';
+    ctx.lineWidth = 1.4;
+    ctx.setLineDash([4, 3]);
+    const ySMin = syPx(SaPoints[Math.floor(SaPoints.length/2)].S);
+    ctx.beginPath();
+    ctx.moveTo(xA0 - 80, ySMin); ctx.lineTo(xA0 + 80, ySMin);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(95,176,163,0.9)';
+    ctx.textAlign = 'left';
+    ctx.fillText('tangent at a=0 is flat → dS/da = 0', xA0 + 10, ySMin - 6);
+
+    requestAnimationFrame(frame);
+  }
+  shapeEl.addEventListener('change', sampleSa);
+  requestAnimationFrame(frame);
+})();
+
+// =================================================
+// WIDGET 5 — Gradient descent on the action
+// =================================================
+(function() {
+  const cv = document.getElementById('w5c');
+  const ctx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  const goBtn = document.getElementById('w5go');
+  const randBtn = document.getElementById('w5rand');
+  const etaEl = document.getElementById('w5eta');
+  const etavEl = document.getElementById('w5etav');
+  const statEl = document.getElementById('w5stat');
+
+  const T = 2;
+  const N = 20; // interior beads
+  const dt = T / (N + 1);
+  // V(q) = q ; V'(q) = 1
+  const Vprime = (q) => 1;
+  const m = 1;
+  // q array length N+2 (with endpoints)
+  let q = new Array(N + 2).fill(0);
+  let iter = 0;
+  let running = true;
+
+  function randomInit() {
+    q[0] = 0; q[N+1] = 0;
+    // random wiggly interior
+    for (let i = 1; i <= N; i++) {
+      q[i] = (Math.random() - 0.5) * 0.6 + 0.3 * Math.sin(Math.PI * i / (N+1));
+    }
+    iter = 0;
+  }
+  randomInit();
+
+  function computeAction() {
+    let S = 0;
+    for (let i = 0; i <= N; i++) {
+      const v = (q[i+1] - q[i]) / dt;
+      const qmid = 0.5 * (q[i] + q[i+1]);
+      S += (0.5 * m * v * v - qmid) * dt;
+    }
+    return S;
+  }
+  function computeGradient() {
+    const g = new Array(N + 2).fill(0);
+    for (let i = 1; i <= N; i++) {
+      // dS/dq_i = -m*(q_{i+1} - 2q_i + q_{i-1})/dt - dt * V'(q_i)
+      // (we use midpoint contributions for V; their average is V'(q_i) to leading order)
+      g[i] = -m * (q[i+1] - 2*q[i] + q[i-1]) / dt - dt * Vprime(q[i]);
+    }
+    return g;
+  }
+
+  function step() {
+    const eta = +etaEl.value;
+    const g = computeGradient();
+    for (let i = 1; i <= N; i++) {
+      q[i] -= eta * g[i];
+    }
+    iter++;
+  }
+
+  // layout: full canvas
+  const padT = 26, padB = 40, padL = 50, padR = 28;
+  const plotW = W - padL - padR;
+  const plotH = H - padT - padB;
+  const qLo = -0.5, qHi = 0.9;
+  function tx(t) { return padL + (t / T) * plotW; }
+  function qy(qv) { return padT + (1 - (qv - qLo)/(qHi - qLo)) * plotH; }
+
+  function frame() {
+    if (running) {
+      for (let s = 0; s < 6; s++) step();
+    }
+    const S = computeAction();
+    const g = computeGradient();
+    let gmax = 0;
+    for (let i = 1; i <= N; i++) if (Math.abs(g[i]) > gmax) gmax = Math.abs(g[i]);
+    statEl.textContent = `iter ${iter}  S = ${S.toFixed(4)}  max|∇S| = ${gmax.toFixed(4)}`;
+
+    // bg
+    ctx.fillStyle = '#161c26';
+    ctx.fillRect(0, 0, W, H);
+    // axes
+    ctx.strokeStyle = '#3a4456';
+    ctx.beginPath();
+    ctx.moveTo(padL, padT); ctx.lineTo(padL, padT + plotH); ctx.lineTo(padL + plotW, padT + plotH);
+    ctx.stroke();
+    // q=0 line
+    ctx.strokeStyle = '#2a3344';
+    const y0 = qy(0);
+    ctx.beginPath();
+    ctx.moveTo(padL, y0); ctx.lineTo(padL + plotW, y0);
+    ctx.stroke();
+    // potential backdrop
+    const grad = ctx.createLinearGradient(0, padT, 0, padT + plotH);
+    grad.addColorStop(0, 'rgba(205,111,94,0.22)');
+    grad.addColorStop(1, 'rgba(205,111,94,0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(padL, padT, plotW, plotH);
+
+    // labels
+    ctx.fillStyle = '#7e8696';
+    ctx.font = '11px JetBrains Mono';
+    ctx.textAlign = 'left';
+    ctx.fillText('q(t) — bead chain (solid) vs Newton\'s parabola (dashed)', padL + 6, padT + 14);
+    ctx.textAlign = 'right';
+    ctx.fillText('t →', padL + plotW - 4, padT + plotH + 18);
+
+    // analytic true path
+    ctx.strokeStyle = 'rgba(95,176,163,0.85)';
+    ctx.lineWidth = 1.6;
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    for (let i = 0; i <= 200; i++) {
+      const t = (i / 200) * T;
+      const qv = 0.5 * t * (T - t);
+      const x = tx(t), y = qy(qv);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // bead chain
+    ctx.strokeStyle = '#d4a755';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let i = 0; i <= N+1; i++) {
+      const x = tx(i * dt), y = qy(q[i]);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+    // gradient arrows (small vertical arrows at each bead)
+    for (let i = 1; i <= N; i++) {
+      const x = tx(i * dt), y = qy(q[i]);
+      const arrowLen = Math.max(-30, Math.min(30, -g[i] * 25));
+      ctx.strokeStyle = 'rgba(205,111,94,0.65)';
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      ctx.moveTo(x, y); ctx.lineTo(x, y - arrowLen);
+      ctx.stroke();
+    }
+    // beads
+    for (let i = 0; i <= N+1; i++) {
+      const x = tx(i * dt), y = qy(q[i]);
+      ctx.fillStyle = (i === 0 || i === N+1) ? '#5fb0a3' : '#d4a755';
+      ctx.beginPath(); ctx.arc(x, y, (i === 0 || i === N+1) ? 5 : 3.5, 0, Math.PI*2);
+      ctx.fill();
+    }
+    // legend
+    ctx.fillStyle = 'rgba(95,176,163,0.9)';
+    ctx.font = '11px JetBrains Mono';
+    ctx.textAlign = 'left';
+    ctx.fillText('-- analytic Newton path q(t) = ½t(2−t)', padL + 6, padT + 32);
+    ctx.fillStyle = '#d4a755';
+    ctx.fillText('— bead chain, descending on S', padL + 6, padT + 48);
+    ctx.fillStyle = 'rgba(205,111,94,0.85)';
+    ctx.fillText('▲ negative gradient (descent direction)', padL + 6, padT + 64);
+
+    requestAnimationFrame(frame);
+  }
+
+  goBtn.addEventListener('click', () => {
+    running = !running;
+    goBtn.textContent = running ? '⏸ pause' : '▶ resume';
+  });
+  randBtn.addEventListener('click', randomInit);
+  etaEl.addEventListener('input', () => { etavEl.textContent = (+etaEl.value).toFixed(4); });
+
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

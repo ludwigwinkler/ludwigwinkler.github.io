@@ -1,0 +1,1827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A* and How Your GPS Routes You</title>
+
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" async></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,700;1,400&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg:        #ede4d3;
+    --paper:     #f6efe0;
+    --surface:   #fbf6ea;
+    --ink:       #1a2a3a;
+    --ink-soft:  #4a5a6c;
+    --accent:    #c44a2a;          /* terracotta — the path */
+    --accent-2:  #2a6f74;          /* teal — explored */
+    --accent-3:  #a07a2c;          /* mustard — frontier */
+    --line:      #c9bea5;
+    --axis:      #a89e85;
+    --wall:      #38322a;
+    --kernel-bg: #1a2a3a;
+    --radius: 12px;
+    --measure: 68ch;
+    --font-display: 'Spectral', Georgia, serif;
+    --font-body:    'Spectral', Georgia, serif;
+    --font-ui:      'Space Grotesk', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, #f3ead8 0%, var(--bg) 60%);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 19px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  #progress {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+    background: var(--accent); z-index: 100; transition: width 0.1s linear;
+  }
+  .wrap { max-width: 840px; margin: 0 auto; padding: 0 24px 120px; }
+  .prose { max-width: var(--measure); }
+  .prose p { margin: 0 0 1.1em; }
+
+  header { padding: 90px 0 28px; }
+  .eyebrow {
+    font-family: var(--font-ui); font-size: 0.74rem; letter-spacing: 0.28em;
+    text-transform: uppercase; color: var(--accent); margin: 0 0 18px;
+  }
+  h1 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(2.6rem, 6vw, 4rem); line-height: 1.05;
+    margin: 0 0 22px; letter-spacing: -0.02em;
+  }
+  h1 em { font-style: italic; color: var(--accent); font-weight: 500; }
+  .promise {
+    font-size: 1.18rem; color: var(--ink-soft); font-style: italic;
+    max-width: var(--measure);
+  }
+
+  .kernel {
+    background: var(--kernel-bg); color: var(--paper);
+    border-radius: var(--radius); padding: 34px 38px; margin: 44px 0 72px;
+    position: relative; overflow: hidden;
+  }
+  .kernel::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      repeating-linear-gradient(90deg, transparent 0 39px, rgba(255,255,255,0.04) 39px 40px),
+      repeating-linear-gradient(0deg,  transparent 0 39px, rgba(255,255,255,0.04) 39px 40px);
+    pointer-events: none;
+  }
+  .kernel .label {
+    font-family: var(--font-ui); font-size: 0.72rem; letter-spacing: 0.24em;
+    text-transform: uppercase; opacity: 0.65; margin: 0 0 14px;
+    position: relative;
+  }
+  .kernel .sentence {
+    font-family: var(--font-display); font-weight: 500; font-style: italic;
+    font-size: 1.42rem; line-height: 1.45; margin: 0; position: relative;
+  }
+  .kernel mark { background: linear-gradient(transparent 55%, rgba(196,74,42,0.55) 55%); color: inherit; padding: 0 2px; }
+
+  .concept-step { margin: 0 0 78px; scroll-margin-top: 40px; }
+  .step-num {
+    font-family: var(--font-ui); font-size: 0.72rem; font-weight: 600;
+    color: var(--accent); letter-spacing: 0.22em; text-transform: uppercase;
+    margin: 0 0 8px;
+  }
+  .concept-step h2 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(1.7rem, 3.4vw, 2.2rem); line-height: 1.18;
+    margin: 0 0 18px; letter-spacing: -0.015em;
+  }
+
+  details.formal {
+    border: 1px solid var(--line); border-radius: 10px;
+    background: var(--surface); margin: 24px 0; max-width: var(--measure);
+  }
+  details.formal summary {
+    cursor: pointer; padding: 13px 18px; font-family: var(--font-ui);
+    font-size: 0.85rem; letter-spacing: 0.08em; color: var(--ink-soft);
+    list-style: none; user-select: none; text-transform: uppercase;
+  }
+  details.formal summary::before { content: '▸ '; color: var(--accent); }
+  details.formal[open] summary::before { content: '▾ '; }
+  details.formal .formal-body { padding: 0 18px 18px; }
+
+  .widget {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 22px; margin: 28px 0;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.02), 0 8px 24px -16px rgba(26,42,58,0.18);
+  }
+  .widget-titlewrap {
+    display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
+    margin: 0 0 14px; padding-bottom: 12px; border-bottom: 1px dashed var(--line);
+  }
+  .widget-title {
+    font-family: var(--font-display); font-weight: 700; font-size: 1.02rem;
+    color: var(--ink); margin: 0;
+  }
+  .widget-tag {
+    font-family: var(--font-ui); font-size: 0.7rem; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--accent-2);
+    background: rgba(42,111,116,0.1); padding: 3px 9px; border-radius: 4px;
+  }
+  .widget-controls {
+    display: flex; flex-wrap: wrap; gap: 18px 28px; margin: 12px 0 16px;
+    align-items: center;
+  }
+  .widget-controls label {
+    display: flex; flex-direction: column; gap: 6px;
+    font-family: var(--font-ui); font-size: 0.82rem; color: var(--ink-soft);
+    min-width: 180px;
+  }
+  .widget-controls .val { color: var(--accent); font-weight: 600; }
+  input[type=range] { accent-color: var(--accent); cursor: pointer; }
+  .widget button {
+    font-family: var(--font-ui); font-size: 0.85rem; font-weight: 500;
+    background: var(--ink); color: var(--paper); border: none;
+    padding: 8px 16px; border-radius: 6px; cursor: pointer;
+    letter-spacing: 0.04em; transition: background 0.15s;
+  }
+  .widget button:hover { background: var(--accent); }
+  .widget button:disabled { opacity: 0.3; cursor: default; background: var(--ink-soft); }
+  .widget button.ghost {
+    background: transparent; color: var(--ink); border: 1px solid var(--line);
+  }
+  .widget button.ghost:hover { background: var(--bg); color: var(--accent); }
+  .widget-stage {
+    display: block; width: 100%; border-radius: 8px; background: var(--paper);
+    border: 1px solid var(--line);
+  }
+  .reveal-bar {
+    display: flex; align-items: center; gap: 14px; margin-top: 14px;
+    flex-wrap: wrap;
+  }
+  .reveal-caption {
+    flex: 1; min-width: 200px; font-size: 0.9rem;
+    color: var(--ink-soft); font-style: italic;
+  }
+  .caption {
+    font-size: 0.85rem; color: var(--ink-soft); font-style: italic;
+    margin-top: 10px;
+  }
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 16px; margin-top: 12px;
+    font-family: var(--font-ui); font-size: 0.78rem; color: var(--ink-soft);
+  }
+  .legend span { display: flex; align-items: center; gap: 6px; }
+  .legend i {
+    display: inline-block; width: 14px; height: 14px; border-radius: 3px;
+    border: 1px solid rgba(0,0,0,0.1);
+  }
+  .stats {
+    display: flex; gap: 24px; margin: 12px 0 4px; flex-wrap: wrap;
+    font-family: var(--font-ui); font-size: 0.85rem;
+  }
+  .stat-block {
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .stat-block .lbl {
+    font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .stat-block .val {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: 1.3rem; color: var(--accent);
+  }
+  .stat-block.alt .val { color: var(--accent-2); }
+  .stat-block.alt2 .val { color: var(--accent-3); }
+
+  .recap {
+    border-top: 2px solid var(--ink); padding-top: 36px; margin-top: 24px;
+  }
+  .recap h2 { font-family: var(--font-display); font-size: 1.9rem; margin: 0 0 18px; }
+
+  pre.code {
+    font-family: ui-monospace, 'JetBrains Mono', Menlo, monospace;
+    font-size: 0.82rem; line-height: 1.7;
+    background: var(--paper); border: 1px solid var(--line);
+    border-radius: 8px; padding: 14px 16px; overflow-x: auto;
+    color: var(--ink); margin: 0; flex: 1; min-width: 260px;
+  }
+  pre.code .c { color: var(--ink-soft); font-style: italic; }
+  pre.code .k { color: var(--accent-2); font-weight: 600; }
+  pre.code [data-line] { display: block; padding: 0 8px; margin: 0 -8px;
+    border-left: 3px solid transparent; transition: background 0.15s, border-color 0.15s; }
+  pre.code [data-line].hl {
+    background: rgba(196,74,42,0.10);
+    border-left-color: var(--accent);
+  }
+  .walkthrough {
+    display: flex; gap: 18px; flex-wrap: wrap; align-items: stretch;
+  }
+  .walkthrough canvas { flex: 1.4; min-width: 320px; }
+
+  mark { background: linear-gradient(transparent 60%, rgba(196,74,42,0.28) 60%); color: inherit; }
+  a { color: var(--accent); }
+  code { font-family: ui-monospace, 'JetBrains Mono', Menlo, monospace; font-size: 0.92em; }
+
+  @media (max-width: 600px) {
+    body { font-size: 17px; }
+    .wrap { padding: 0 16px 80px; }
+    .kernel { padding: 24px 22px; }
+    .widget { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">A step-by-step explainer</p>
+    <h1>How your GPS finds the <em>fastest route</em></h1>
+    <p class="promise">
+      From scanning a flooded map outward to A*'s clever guess, and finally
+      to the trick that lets a phone route across a continent in milliseconds.
+    </p>
+  </header>
+
+  <div class="kernel">
+    <p class="label">The whole idea, in one sentence</p>
+    <p class="sentence">
+      Finding the shortest route is just <mark>spreading water out from where you are</mark>
+      &mdash; A* makes the water spread <mark>toward the destination</mark> instead of in every
+      direction at once, and graph partitioning <mark>pre-computes the highways</mark> so the
+      water can jump across regions in a single step.
+    </p>
+  </div>
+
+  <!-- ===================== STEP 1 ===================== -->
+  <section class="concept-step" id="step-1">
+    <p class="step-num">Step 1 · the setup</p>
+    <h2>A road network is a graph</h2>
+    <div class="prose">
+      <p>
+        Strip away the prettier rendering and a map is a <em>graph</em>: dots
+        (intersections, called <em>nodes</em>) connected by lines (roads,
+        called <em>edges</em>). Each edge carries a number &mdash; the time or
+        distance to travel it.
+      </p>
+      <p>
+        The question your phone has to answer is simple to state:
+        <em>among all paths from A to B in this graph, which one has the
+        smallest total cost?</em> The widget below is a tiny city. Click any
+        cell to drop a wall (a closed road, a river, a building), or shift-click
+        to move the start or goal. There are usually many viable routes;
+        only one is shortest.
+      </p>
+    </div>
+
+    <div class="widget" id="w1">
+      <div class="widget-titlewrap">
+        <h3 class="widget-title">A 25&times;15 grid &mdash; intersections and roads</h3>
+        <span class="widget-tag">interactive · click to wall</span>
+      </div>
+      <canvas id="w1-canvas" class="widget-stage"></canvas>
+      <div class="reveal-bar">
+        <button id="w1-clear" class="ghost">Clear walls</button>
+        <button id="w1-moveA">Move A</button>
+        <button id="w1-moveB">Move B</button>
+        <span class="reveal-caption" id="w1-caption">
+          Click an empty cell to wall it. Shift-click to move <strong>A</strong>; alt-click to move <strong>B</strong>.
+        </span>
+      </div>
+      <div class="legend">
+        <span><i style="background:var(--accent)"></i> start</span>
+        <span><i style="background:var(--accent-2)"></i> goal</span>
+        <span><i style="background:var(--wall)"></i> wall</span>
+        <span><i style="background:var(--paper);border-color:var(--line)"></i> open road</span>
+      </div>
+      <p class="caption">A grid is the cleanest case &mdash; real road graphs have
+        the same shape, just with irregularly placed nodes and varied edge
+        costs.</p>
+    </div>
+  </section>
+
+  <!-- ===================== STEP 2 ===================== -->
+  <section class="concept-step" id="step-2">
+    <p class="step-num">Step 2 · brute force, but smart</p>
+    <h2>Dijkstra: a flood, expanding outward in cost</h2>
+    <div class="prose">
+      <p>
+        Imagine pouring water at the start. It rushes into every neighboring
+        cell at unit cost, then into each of <em>their</em> neighbors at cost
+        2, then 3, and so on. As long as the water always reaches a cell by
+        its cheapest possible route first, the moment it splashes onto the
+        goal you've found the shortest path.
+      </p>
+      <p>
+        This is <strong>Dijkstra's algorithm</strong>. The crucial trick is the
+        order: always expand from the cheapest-so-far cell on the boundary of
+        the flood. Press play and watch the flood swell outward in
+        equal-cost rings.
+      </p>
+    </div>
+
+    <div class="widget" id="w2">
+      <div class="widget-titlewrap">
+        <h3 class="widget-title">Dijkstra floods in every direction</h3>
+        <span class="widget-tag">staged · drag scrubber or play</span>
+      </div>
+      <canvas id="w2-canvas" class="widget-stage"></canvas>
+      <div class="widget-controls">
+        <label>step &nbsp;<span class="val" id="w2-stepV">0</span> / <span id="w2-stepMax">?</span>
+          <input type="range" id="w2-step" min="0" max="100" step="1" value="0">
+        </label>
+      </div>
+      <div class="reveal-bar">
+        <button id="w2-play">▶ Play</button>
+        <button id="w2-reset" class="ghost">Reset</button>
+        <span class="reveal-caption" id="w2-caption">
+          The flood hasn't started. Press play to release it.
+        </span>
+      </div>
+      <div class="stats">
+        <div class="stat-block alt"><span class="lbl">cells explored</span><span class="val" id="w2-explored">0</span></div>
+        <div class="stat-block"><span class="lbl">path cost found</span><span class="val" id="w2-pcost">—</span></div>
+      </div>
+      <p class="caption">Notice: the flood reaches walls in every direction, even
+        the ones pointing <em>away</em> from the goal. That's wasted work.</p>
+    </div>
+
+    <div class="prose">
+      <p>
+        Zoomed out, the flood is intuitive. Zoomed in, it's just a tiny
+        bookkeeping loop on a graph. The widget below lays the pseudocode
+        beside a six-city map and walks through them in lockstep &mdash; each
+        click executes one operation, highlights the line that ran, and
+        updates the running state on the right.
+      </p>
+    </div>
+
+    <div class="widget" id="w-walk">
+      <div class="widget-titlewrap">
+        <h3 class="widget-title">Dijkstra, line by line, on a 6-city graph</h3>
+        <span class="widget-tag">staged · next / back</span>
+      </div>
+      <div class="walkthrough">
+<pre class="code" id="walk-code"><span class="c"># Dijkstra(graph G, source s)</span>
+<span data-line="1">g[s] = 0;  g[v] = &#8734; for v &#8800; s</span>
+<span data-line="2">PQ = { (s, 0) }</span>
+<span data-line="3"><span class="k">while</span> PQ is not empty:</span>
+<span data-line="4">    (u, key) = PQ.pop_min()</span>
+<span data-line="5">    <span class="k">if</span> u is settled: <span class="k">continue</span></span>
+<span data-line="6">    mark u as settled</span>
+<span data-line="7">    <span class="k">for</span> each edge (u, v) with weight w:</span>
+<span data-line="8">        <span class="k">if</span> g[u] + w &lt; g[v]:</span>
+<span data-line="9">            g[v] = g[u] + w</span>
+<span data-line="10">            PQ.push( (v, g[v]) )</span></pre>
+        <canvas id="walk-canvas" class="widget-stage"></canvas>
+      </div>
+      <div class="reveal-bar">
+        <button id="walk-back" disabled>&larr; Back</button>
+        <button id="walk-next">Initialize &rarr;</button>
+        <button id="walk-reset" class="ghost">Reset</button>
+        <span class="reveal-caption" id="walk-caption">
+          Press <strong>Initialize</strong> to set <em>g</em>-values and seed the priority queue.
+        </span>
+      </div>
+      <div class="legend">
+        <span><i style="background:var(--accent)"></i> current node</span>
+        <span><i style="background:#2a6f7455"></i> settled</span>
+        <span><i style="background:#a07a2c66"></i> in priority queue</span>
+        <span><i style="background:var(--accent);height:3px;border-radius:0"></i> relaxing edge</span>
+      </div>
+      <p class="caption">The shortest path from <strong>A</strong> to <strong>F</strong> turns out to be
+        <code>A → D → E → F</code> with cost 6. Watch the algorithm discover it
+        without ever guessing.</p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version</summary>
+      <div class="formal-body prose">
+        <p>
+          Let \(G=(V,E)\) be a graph with non-negative edge weights
+          \(w:E\to\mathbb{R}_{\ge 0}\). Write \(d(s,v)\) for the true
+          shortest-path cost from the source \(s\) to a node \(v\). Dijkstra
+          maintains an upper bound \(g(v) \ge d(s,v)\) for every \(v\),
+          initialized as
+        </p>
+        <p style="text-align:center;">
+          \( g(s)=0, \quad g(v)=\infty \text{ for } v\ne s. \)
+        </p>
+        <p>
+          A min-priority queue holds every <em>unsettled</em> node keyed by its
+          current \(g\). Repeat: pop the node \(u\) with smallest \(g(u)\),
+          mark it <em>settled</em>, and <em>relax</em> each outgoing edge
+          \((u,v)\):
+        </p>
+        <p style="text-align:center;">
+          \[ g(v) \;\leftarrow\; \min\!\big(g(v),\; g(u) + w(u,v)\big). \]
+        </p>
+        <p>
+          <strong>Why first-pop equals shortest.</strong> Claim: when \(u\) is
+          popped, \(g(u) = d(s,u)\). Suppose not, and let \(P\) be a strictly
+          cheaper true path \(s = v_0 \to v_1 \to \cdots \to v_k = u\). Walk
+          along \(P\) until you find the first node \(v_i\) that is still
+          unsettled. Its predecessor \(v_{i-1}\) is settled (or is \(s\)
+          itself), so when \(v_{i-1}\) was settled its edges were relaxed, and
+          therefore
+        </p>
+        <p style="text-align:center;">
+          \( g(v_i) \;\le\; d(s, v_i) \;\le\; d(s,u) \;<\; g(u). \)
+        </p>
+        <p>
+          But then the priority queue would have popped \(v_i\) before \(u\)
+          &mdash; contradiction. So \(g(u)=d(s,u)\). This is why edge weights
+          must be non-negative: the proof needs \(d(s,v_i) \le d(s,u)\), which
+          requires that extending the path can only <em>increase</em> cost.
+        </p>
+        <p>
+          <strong>Cost.</strong> With a binary-heap priority queue, each of
+          \(|V|\) extractions is \(O(\log V)\) and each of \(|E|\) relaxations
+          may decrease a key in \(O(\log V)\), so total runtime is
+          \(O((V+E)\log V)\). A Fibonacci heap brings this to
+          \(O(E + V\log V)\).
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 3 ===================== -->
+  <section class="concept-step" id="step-3">
+    <p class="step-num">Step 3 · the A* trick</p>
+    <h2>Bias the flood toward the destination</h2>
+    <div class="prose">
+      <p>
+        Dijkstra is unbiased &mdash; it has no idea where the goal is, so it
+        explores everywhere equally. But <em>we</em> know roughly where the goal
+        is: even with walls in the way, the straight-line distance to the goal
+        is a reasonable hint.
+      </p>
+      <p>
+        Where does the formula come from? Dijkstra sorts the frontier by
+        \(g(n)\), the cheapest known cost to reach \(n\). What we'd <em>really</em>
+        like to sort by is the cheapest cost of any full path through \(n\) to
+        the goal &mdash; call that quantity \(f^*(n)\):
+      </p>
+      <p style="text-align:center;">
+        \[ f^*(n) \;=\; g^*(n) \;+\; h^*(n), \]
+      </p>
+      <p>
+        where \(g^*(n)\) is the true cheapest cost from the start to \(n\) and
+        \(h^*(n)\) is the true cheapest cost from \(n\) onward to the goal. We
+        can't compute \(f^*\) without already knowing the answer, so we
+        approximate: use the best \(g\) we've found so far in place of \(g^*\),
+        and a cheap estimate \(h(n)\) in place of \(h^*(n)\). That gives the
+        A* priority
+      </p>
+      <p style="text-align:center; margin: 1em 0;">
+        \[ f(n) \;=\; \underbrace{g(n)}_{\text{cost so far (known)}} \;+\; \underbrace{h(n)}_{\text{guess to goal}}. \]
+      </p>
+      <p>
+        For a grid that allows 8-directional moves, a natural \(h\) is the
+        <em>octile</em> distance &mdash; the length of the unobstructed shortest
+        path if every wall were removed:
+      </p>
+      <p style="text-align:center;">
+        \[ h(n) \;=\; \max(\Delta x, \Delta y) \;+\; (\sqrt{2}-1)\,\min(\Delta x, \Delta y), \]
+      </p>
+      <p>
+        with \(\Delta x = |n_x - g_x|\) and \(\Delta y = |n_y - g_y|\). It's the
+        cheapest geometric way to combine \(\min(\Delta x,\Delta y)\) diagonal
+        steps of cost \(\sqrt 2\) with the remaining axis-aligned steps of cost
+        \(1\). When \(h \equiv 0\), the formula collapses to \(f = g\) and A*
+        becomes Dijkstra exactly. So A* is Dijkstra with an extra term &mdash;
+        nothing more.
+      </p>
+      <p>
+        Side by side, on the same map: Dijkstra explores nearly everything; A*
+        explores a narrow corridor.
+      </p>
+    </div>
+
+    <div class="widget" id="w3">
+      <div class="widget-titlewrap">
+        <h3 class="widget-title">Dijkstra vs A* on the same map</h3>
+        <span class="widget-tag">staged · play to race</span>
+      </div>
+      <canvas id="w3-canvas" class="widget-stage"></canvas>
+      <div class="widget-controls">
+        <label>step &nbsp;<span class="val" id="w3-stepV">0</span>
+          <input type="range" id="w3-step" min="0" max="100" step="1" value="0">
+        </label>
+      </div>
+      <div class="reveal-bar">
+        <button id="w3-play">▶ Play both</button>
+        <button id="w3-reset" class="ghost">Reset</button>
+        <span class="reveal-caption" id="w3-caption">
+          Two algorithms on identical maps. Watch the search shapes diverge.
+        </span>
+      </div>
+      <div class="stats">
+        <div class="stat-block alt"><span class="lbl">Dijkstra explored</span><span class="val" id="w3-dexp">0</span></div>
+        <div class="stat-block alt"><span class="lbl">A* explored</span><span class="val" id="w3-aexp">0</span></div>
+        <div class="stat-block"><span class="lbl">both find cost</span><span class="val" id="w3-cost">—</span></div>
+      </div>
+      <p class="caption">Both algorithms find the <em>same</em> optimal path.
+        A* just does it touching a fraction of the cells.</p>
+    </div>
+
+    <details class="formal">
+      <summary>A* as Dijkstra on a reweighted graph</summary>
+      <div class="formal-body prose">
+        <p>
+          The cleanest way to see why A* still works is to reinterpret it.
+          Treat \(h\) as a <em>potential</em> on the graph (think of it as a
+          height assigned to each node) and define a new edge weight
+        </p>
+        <p style="text-align:center;">
+          \[ \tilde w(u,v) \;=\; w(u,v) \;-\; h(u) \;+\; h(v). \]
+        </p>
+        <p>
+          Then for any path \(s \to v\), the reweighted total telescopes:
+        </p>
+        <p style="text-align:center;">
+          \[ \sum \tilde w \;=\; \Big(\sum w\Big) \;-\; h(s) \;+\; h(v), \]
+        </p>
+        <p>
+          which differs from the original cost by a constant for fixed
+          endpoints. So <em>shortest paths in the reweighted graph are
+          identical to shortest paths in the original</em>. And:
+        </p>
+        <p style="text-align:center;">
+          \[ f(v) \;=\; g(v) + h(v) \;=\; \tilde g(v) + h(s), \]
+        </p>
+        <p>
+          where \(\tilde g\) is the reweighted-graph cost-so-far. Sorting the
+          frontier by \(f\) is the same as sorting by \(\tilde g\) (up to the
+          constant \(h(s)\)). So <strong>A* is literally Dijkstra running on a
+          reweighted graph.</strong> The catch: Dijkstra's correctness proof
+          needs \(\tilde w \ge 0\), i.e.
+        </p>
+        <p style="text-align:center;">
+          \[ h(u) \;\le\; w(u,v) + h(v) \quad \text{for every edge.} \]
+        </p>
+        <p>
+          That is exactly the <em>consistency</em> condition on \(h\).
+          Consistency is just the triangle inequality on the estimate, and it
+          is what makes the reduction to Dijkstra valid.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 4 ===================== -->
+  <section class="concept-step" id="step-4">
+    <p class="step-num">Step 4 · why the guess must be honest</p>
+    <h2>The heuristic must never overestimate</h2>
+    <div class="prose">
+      <p>
+        A* only finds the truly shortest path if its hint \(h(n)\) never
+        <em>overestimates</em> the real remaining distance. Such a hint is
+        called <strong>admissible</strong>. Straight-line distance is
+        admissible: no path can be shorter than a straight line.
+      </p>
+      <p>
+        Why does it matter? When A* pops a cell off its frontier, it's
+        committing &mdash; saying "no other path I haven't yet explored could
+        possibly be cheaper." That commitment is only safe if every
+        un-explored cell's optimistic estimate \(g + h\) is still at least as
+        large as the path I'm committing to. Inflate the estimates and you
+        commit too early to a path that turns out worse.
+      </p>
+      <p>
+        Try it. The slider scales the heuristic by a weight \(w\). At
+        \(w = 1\) the search is correct. As \(w\) grows, the search gets
+        <em>faster</em> (fewer cells explored) but the path it finds gets
+        <em>longer</em> &mdash; you've traded optimality for speed.
+      </p>
+    </div>
+
+    <div class="widget" id="w4">
+      <div class="widget-titlewrap">
+        <h3 class="widget-title">Weighted A* &mdash; trading optimality for speed</h3>
+        <span class="widget-tag">live · drag w</span>
+      </div>
+      <canvas id="w4-canvas" class="widget-stage"></canvas>
+      <div class="widget-controls">
+        <label>heuristic weight &nbsp;w = <span class="val" id="w4-wV">1.0</span>
+          <input type="range" id="w4-w" min="0" max="3" step="0.1" value="1.0">
+        </label>
+      </div>
+      <div class="stats">
+        <div class="stat-block alt"><span class="lbl">cells explored</span><span class="val" id="w4-exp">0</span></div>
+        <div class="stat-block"><span class="lbl">path cost</span><span class="val" id="w4-cost">—</span></div>
+        <div class="stat-block alt2"><span class="lbl">% above optimum</span><span class="val" id="w4-pct">0%</span></div>
+      </div>
+      <p class="caption">At \(w=0\) you have pure Dijkstra (ignore the goal).
+        At \(w=1\) honest A* &mdash; provably optimal. Beyond that, "greedy"
+        A* speeds along, sometimes through detours.</p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version: optimality proof</summary>
+      <div class="formal-body prose">
+        <p>
+          <strong>Admissibility.</strong> \( h(n) \le h^*(n) \) for every node
+          \(n\), where \(h^*(n)\) is the true cheapest remaining cost from
+          \(n\) to the goal. (Equivalent: \(h\) never overestimates.)
+        </p>
+        <p>
+          <strong>Claim.</strong> When A* pops the goal, the value
+          \(g(\text{goal})\) it commits to equals the true optimum
+          \(C^* = d(s, \text{goal})\).
+        </p>
+        <p>
+          <strong>Proof.</strong> Suppose A* is about to pop the goal with
+          \(g(\text{goal}) > C^*\). Let \(P^*\) be a true optimal path
+          \(s = v_0 \to \cdots \to v_k = \text{goal}\), and let \(v_i\) be the
+          first node on \(P^*\) still on the open list. Since the prefix
+          \(s\to v_i\) was relaxed via \(v_{i-1}\) (or \(v_i = s\)),
+        </p>
+        <p style="text-align:center;">
+          \( g(v_i) \;=\; g^*(v_i). \)
+        </p>
+        <p>
+          By admissibility \(h(v_i) \le h^*(v_i)\), so
+        </p>
+        <p style="text-align:center;">
+          \[ f(v_i) \;=\; g(v_i) + h(v_i)
+                  \;\le\; g^*(v_i) + h^*(v_i)
+                  \;=\; C^*
+                  \;<\; g(\text{goal})
+                  \;=\; f(\text{goal}). \]
+        </p>
+        <p>
+          But the priority queue pops the smallest \(f\) first, so it would
+          pop \(v_i\) (or another open node) before the goal &mdash;
+          contradicting our assumption. Therefore \(g(\text{goal}) = C^*\). \(\square\)
+        </p>
+        <p>
+          <strong>Where the proof breaks with \(w>1\) (weighted A*).</strong>
+          Inflating \(h\) by a factor \(w>1\) means
+          \(f(v_i) \le g^*(v_i) + w\cdot h^*(v_i)\), which can now exceed
+          \(C^*\). The inequality \(f(v_i) < f(\text{goal})\) no longer holds,
+          so A* may commit to a suboptimal goal &mdash; though one can show the
+          returned cost is at most \(w \cdot C^*\), bounding how bad the
+          detour can be.
+        </p>
+        <p>
+          <strong>Consistency</strong> (a stronger property),
+          \(h(u) \le w(u,v) + h(v)\), additionally guarantees no node is ever
+          re-expanded &mdash; see the reweighting view in the previous step.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 5 ===================== -->
+  <section class="concept-step" id="step-5">
+    <p class="step-num">Step 5 · the production trick</p>
+    <h2>Graph partitioning: skip whole regions at once</h2>
+    <div class="prose">
+      <p>
+        A* is great on a city, but a real road graph has tens of millions of
+        nodes &mdash; the entire street network of Europe is around 18 million
+        intersections. Even a focused A* search would touch enormous numbers of
+        them. Phones can't afford that.
+      </p>
+      <p>
+        The fix is to do most of the work <em>before any query arrives</em>.
+        Cut the graph into regions (say, 256 of them &mdash; one per
+        neighborhood, county, or land tile). Within each region, identify the
+        few cells on its boundary &mdash; the only points where a path can
+        cross into a neighboring region. Then pre-compute and store the
+        shortest distance between <em>every pair</em> of boundary nodes,
+        across the whole world.
+      </p>
+      <p>
+        Now a query from <em>A</em> to <em>B</em> in different regions becomes
+        three small searches: from <em>A</em> to its region's boundary, a
+        single lookup hop across regions through the precomputed shortcuts,
+        and from <em>B</em>'s region boundary back to <em>B</em>. The middle
+        step &mdash; potentially crossing a continent &mdash; is just a table
+        lookup.
+      </p>
+      <p>
+        Below, a small map split into four colored regions. Watch the
+        unpartitioned A* search sprawl across all four. Then switch on
+        partitioning: the search stays inside its own region, jumps to the
+        target region through the precomputed shortcut edges (drawn as
+        dashed lines), and finishes locally.
+      </p>
+    </div>
+
+    <div class="widget" id="w5">
+      <div class="widget-titlewrap">
+        <h3 class="widget-title">Plain A* vs A* with precomputed shortcuts</h3>
+        <span class="widget-tag">toggle · compare modes</span>
+      </div>
+      <canvas id="w5-canvas" class="widget-stage"></canvas>
+      <div class="reveal-bar">
+        <button id="w5-mode">Switch to partitioned</button>
+        <button id="w5-reset" class="ghost">New start/goal</button>
+        <span class="reveal-caption" id="w5-caption">
+          Plain A* search across the whole 40&times;25 map.
+        </span>
+      </div>
+      <div class="stats">
+        <div class="stat-block alt"><span class="lbl">cells explored</span><span class="val" id="w5-exp">0</span></div>
+        <div class="stat-block"><span class="lbl">path cost</span><span class="val" id="w5-cost">—</span></div>
+        <div class="stat-block alt2"><span class="lbl">speedup</span><span class="val" id="w5-spd">1×</span></div>
+      </div>
+      <div class="legend">
+        <span><i style="background:rgba(196,74,42,0.55)"></i> path</span>
+        <span><i style="background:rgba(42,111,116,0.32)"></i> explored</span>
+        <span><i style="background:rgba(160,122,44,0.7);border-style:dashed"></i> boundary shortcut</span>
+      </div>
+      <p class="caption">In real systems &mdash; <em>contraction hierarchies</em>,
+        <em>customizable route planning</em>, <em>transit node routing</em>
+        &mdash; this idea is taken much further: shortcuts are computed at
+        many scales, like local roads, regional highways, and continental
+        motorways. The result is sub-millisecond routing across a continent.</p>
+    </div>
+  </section>
+
+  <!-- ===================== RECAP ===================== -->
+  <section class="recap prose">
+    <h2>Putting it together</h2>
+    <p>
+      <strong>Dijkstra</strong> is a flood. It eventually finds the shortest
+      path but doesn't know which direction to favor, so it inflates outward
+      in every direction.
+    </p>
+    <p>
+      <strong>A*</strong> is the same flood, but each frontier cell gets
+      pushed by a hint &mdash; the straight-line distance left. As long as the
+      hint never lies in the optimistic direction (never overestimates), the
+      flood still finds the optimal path, just by spreading toward the goal
+      instead of away from it.
+    </p>
+    <p>
+      <strong>Graph partitioning</strong> moves the work off the critical
+      path: rather than searching the whole continent at query time, you
+      pre-compute the inter-region distances once and reduce a transcontinental
+      search to "local search · table lookup · local search." That's the
+      reason your phone routes you across Europe in 50 milliseconds &mdash;
+      not because it searched the whole network, but because someone already
+      did, years ago.
+    </p>
+    <p>
+      So when you tap "Directions," what runs underneath is exactly the
+      kernel: water spreading from your location, pulled toward the
+      destination, leaping across pre-built highways in the graph.
+    </p>
+  </section>
+
+</div>
+
+<script>
+/* ====================================================================
+   SHARED HELPERS
+   ==================================================================== */
+const RENDER_SCALE = Math.max((window.devicePixelRatio || 1) * 2.5, 3);
+function setupCanvas(canvas, cssW, cssH) {
+  canvas.style.width = cssW + 'px';
+  canvas.style.maxWidth = '100%';
+  canvas.style.height = cssH + 'px';
+  canvas.width  = Math.round(cssW * RENDER_SCALE);
+  canvas.height = Math.round(cssH * RENDER_SCALE);
+  const ctx = canvas.getContext('2d');
+  ctx.scale(RENDER_SCALE, RENDER_SCALE);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  canvas._cssW = cssW; canvas._cssH = cssH;
+  return ctx;
+}
+const css = getComputedStyle(document.documentElement);
+const COL = {
+  accent:  css.getPropertyValue('--accent').trim(),
+  accent2: css.getPropertyValue('--accent-2').trim(),
+  accent3: css.getPropertyValue('--accent-3').trim(),
+  ink:     css.getPropertyValue('--ink').trim(),
+  inkSoft: css.getPropertyValue('--ink-soft').trim(),
+  line:    css.getPropertyValue('--line').trim(),
+  paper:   css.getPropertyValue('--paper').trim(),
+  wall:    css.getPropertyValue('--wall').trim(),
+  bg:      css.getPropertyValue('--bg').trim(),
+};
+
+/* Simple min-heap priority queue */
+class PQ {
+  constructor() { this.a = []; }
+  push(item, key) {
+    this.a.push({item, key});
+    let i = this.a.length - 1;
+    while (i > 0) {
+      const p = (i-1) >> 1;
+      if (this.a[p].key <= this.a[i].key) break;
+      [this.a[p], this.a[i]] = [this.a[i], this.a[p]]; i = p;
+    }
+  }
+  pop() {
+    const top = this.a[0];
+    const last = this.a.pop();
+    if (this.a.length) {
+      this.a[0] = last;
+      let i = 0, n = this.a.length;
+      while (true) {
+        const l = 2*i+1, r = 2*i+2; let s = i;
+        if (l < n && this.a[l].key < this.a[s].key) s = l;
+        if (r < n && this.a[r].key < this.a[s].key) s = r;
+        if (s === i) break;
+        [this.a[s], this.a[i]] = [this.a[i], this.a[s]]; i = s;
+      }
+    }
+    return top;
+  }
+  get size() { return this.a.length; }
+}
+
+/* Run a pathfinder, recording the order in which cells are settled.
+   mode: 'dijkstra' uses h=0; 'astar' uses octile distance; weight scales h. */
+function runSearch(grid, start, goal, mode, weight = 1) {
+  const W = grid[0].length, H = grid.length;
+  const g = Array.from({length: H}, () => new Array(W).fill(Infinity));
+  const parent = Array.from({length: H}, () => new Array(W).fill(null));
+  const settledOrder = [];
+  const settledMap = Array.from({length: H}, () => new Array(W).fill(false));
+  const h = (x, y) => {
+    if (mode === 'dijkstra') return 0;
+    const dx = Math.abs(x - goal[0]), dy = Math.abs(y - goal[1]);
+    return (Math.max(dx,dy) + (Math.SQRT2 - 1)*Math.min(dx,dy)) * weight;
+  };
+  g[start[1]][start[0]] = 0;
+  const pq = new PQ();
+  pq.push([start[0], start[1]], h(start[0], start[1]));
+  // 8-direction movement
+  const dirs = [[1,0,1],[-1,0,1],[0,1,1],[0,-1,1],
+                [1,1,Math.SQRT2],[-1,1,Math.SQRT2],
+                [1,-1,Math.SQRT2],[-1,-1,Math.SQRT2]];
+  let found = false;
+  while (pq.size) {
+    const {item:[x,y]} = pq.pop();
+    if (settledMap[y][x]) continue;
+    settledMap[y][x] = true;
+    settledOrder.push([x,y]);
+    if (x === goal[0] && y === goal[1]) { found = true; break; }
+    for (const [dx,dy,c] of dirs) {
+      const nx = x+dx, ny = y+dy;
+      if (nx<0||ny<0||nx>=W||ny>=H) continue;
+      if (grid[ny][nx] === 1) continue;
+      // prevent corner-cutting through walls
+      if (dx !== 0 && dy !== 0) {
+        if (grid[y][nx] === 1 || grid[ny][x] === 1) continue;
+      }
+      const ng = g[y][x] + c;
+      if (ng < g[ny][nx]) {
+        g[ny][nx] = ng;
+        parent[ny][nx] = [x,y];
+        pq.push([nx,ny], ng + h(nx,ny));
+      }
+    }
+  }
+  // reconstruct
+  const path = [];
+  if (found) {
+    let cur = goal;
+    while (cur) { path.push(cur); cur = parent[cur[1]][cur[0]]; }
+    path.reverse();
+  }
+  return { settledOrder, path, cost: found ? g[goal[1]][goal[0]] : Infinity };
+}
+
+/* draw grid utility */
+function drawGrid(ctx, grid, cellW, cellH, ox = 0, oy = 0) {
+  const W = grid[0].length, H = grid.length;
+  // paper background already set; draw walls + grid lines
+  ctx.strokeStyle = COL.line; ctx.lineWidth = 0.5;
+  for (let y = 0; y < H; y++) {
+    for (let x = 0; x < W; x++) {
+      const px = ox + x*cellW, py = oy + y*cellH;
+      if (grid[y][x] === 1) {
+        ctx.fillStyle = COL.wall;
+        ctx.fillRect(px, py, cellW, cellH);
+      }
+      ctx.strokeRect(px, py, cellW, cellH);
+    }
+  }
+}
+
+/* ====================================================================
+   STEP 1 — Editable grid
+   ==================================================================== */
+(function () {
+  const cw = 28, ch = 28;
+  const W = 25, H = 15;
+  const cssW = W*cw, cssH = H*ch;
+  const canvas = document.getElementById('w1-canvas');
+  const ctx = setupCanvas(canvas, cssW, cssH);
+  let grid = Array.from({length: H}, () => new Array(W).fill(0));
+  // a few starter walls
+  const walls = [[8,3],[8,4],[8,5],[8,6],[8,7],[8,8],[8,9],[8,10],
+                 [14,5],[15,5],[16,5],[17,5],[18,5],[18,6],[18,7],[18,8],[18,9],[18,10],[18,11],
+                 [3,10],[4,10],[5,10],[6,10]];
+  walls.forEach(([x,y]) => grid[y][x] = 1);
+  let start = [2, 2], goal = [22, 12];
+  let pending = null; // 'start' | 'goal' | null — next click sets that endpoint
+
+  function render() {
+    ctx.clearRect(0, 0, cssW, cssH);
+    drawGrid(ctx, grid, cw, ch);
+    // start
+    ctx.fillStyle = COL.accent;
+    ctx.beginPath();
+    ctx.arc(start[0]*cw + cw/2, start[1]*ch + ch/2, cw*0.35, 0, Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle = COL.paper;
+    ctx.font = `bold ${Math.floor(cw*0.5)}px ${css.getPropertyValue('--font-ui')}`;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('A', start[0]*cw + cw/2, start[1]*ch + ch/2 + 1);
+    // goal
+    ctx.fillStyle = COL.accent2;
+    ctx.beginPath();
+    ctx.arc(goal[0]*cw + cw/2, goal[1]*ch + ch/2, cw*0.35, 0, Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle = COL.paper;
+    ctx.fillText('B', goal[0]*cw + cw/2, goal[1]*ch + ch/2 + 1);
+  }
+
+  const captionEl = document.getElementById('w1-caption');
+  const defaultCaption = 'Click an empty cell to wall it. Shift-click to move <strong>A</strong>; alt-click to move <strong>B</strong>.';
+
+  canvas.addEventListener('click', (e) => {
+    const r = canvas.getBoundingClientRect();
+    const x = Math.floor((e.clientX - r.left) / (r.width / W));
+    const y = Math.floor((e.clientY - r.top) / (r.height / H));
+    if (x<0||y<0||x>=W||y>=H) return;
+
+    // Decide intent: explicit pending button, modifier key, or default = wall toggle
+    let intent = pending;
+    if (!intent && e.shiftKey) intent = 'start';
+    if (!intent && (e.altKey || e.metaKey)) intent = 'goal';
+
+    if (intent) {
+      if (grid[y][x] === 1) return;            // can't place on a wall
+      if (intent === 'start' && (x===goal[0] && y===goal[1])) return;
+      if (intent === 'goal'  && (x===start[0] && y===start[1])) return;
+      if (intent === 'start') start = [x, y];
+      else                    goal  = [x, y];
+      pending = null;
+      captionEl.innerHTML = defaultCaption;
+    } else {
+      if ((x===start[0]&&y===start[1]) || (x===goal[0]&&y===goal[1])) return;
+      grid[y][x] = 1 - grid[y][x];
+    }
+    render();
+  });
+  document.getElementById('w1-clear').addEventListener('click', () => {
+    grid = Array.from({length: H}, () => new Array(W).fill(0));
+    render();
+  });
+  document.getElementById('w1-moveA').addEventListener('click', () => {
+    pending = 'start';
+    captionEl.innerHTML = 'Click any open cell to place <strong>A</strong>.';
+  });
+  document.getElementById('w1-moveB').addEventListener('click', () => {
+    pending = 'goal';
+    captionEl.innerHTML = 'Click any open cell to place <strong>B</strong>.';
+  });
+  render();
+})();
+
+/* ====================================================================
+   STEP 2 — Dijkstra flood, staged
+   ==================================================================== */
+function buildMapForStep2() {
+  const W = 25, H = 15;
+  const grid = Array.from({length: H}, () => new Array(W).fill(0));
+  // wall pattern with one zigzag corridor
+  const walls = [
+    // vertical wall with a gap
+    ...Array.from({length: 8}, (_,i) => [10, 2+i]),
+    ...Array.from({length: 4}, (_,i) => [10, 11+i]),
+    // horizontal wall
+    ...Array.from({length: 9}, (_,i) => [11+i, 6]),
+    // small obstacle
+    ...Array.from({length: 4}, (_,i) => [4, 8+i]),
+    ...Array.from({length: 5}, (_,i) => [16+i, 10]),
+  ];
+  walls.forEach(([x,y]) => { if (y<H && x<W) grid[y][x] = 1; });
+  return { grid, start: [2, 2], goal: [22, 12], W, H };
+}
+
+(function () {
+  const cw = 28, ch = 28;
+  const {grid, start, goal, W, H} = buildMapForStep2();
+  const cssW = W*cw, cssH = H*ch;
+  const canvas = document.getElementById('w2-canvas');
+  const ctx = setupCanvas(canvas, cssW, cssH);
+
+  const result = runSearch(grid, start, goal, 'dijkstra');
+  const order = result.settledOrder;
+  const path = result.path;
+  const maxStep = order.length;
+
+  const slider = document.getElementById('w2-step');
+  slider.max = maxStep;
+  document.getElementById('w2-stepMax').textContent = maxStep;
+  const stepV = document.getElementById('w2-stepV');
+  const exploredOut = document.getElementById('w2-explored');
+  const costOut = document.getElementById('w2-pcost');
+  const captionEl = document.getElementById('w2-caption');
+
+  function render(step) {
+    ctx.clearRect(0, 0, cssW, cssH);
+    drawGrid(ctx, grid, cw, ch);
+    // explored cells with cost gradient
+    for (let i = 0; i < step; i++) {
+      const [x,y] = order[i];
+      const t = i / maxStep;
+      ctx.fillStyle = `rgba(42,111,116,${0.15 + 0.45*t})`;
+      ctx.fillRect(x*cw+1, y*ch+1, cw-2, ch-2);
+    }
+    // frontier ring: cells touched between step-12 and step
+    const ringStart = Math.max(0, step - 6);
+    for (let i = ringStart; i < step; i++) {
+      const [x,y] = order[i];
+      ctx.fillStyle = `rgba(160,122,44,${0.6 - (step-i-1)*0.08})`;
+      ctx.fillRect(x*cw+1, y*ch+1, cw-2, ch-2);
+    }
+    // if goal reached, draw path
+    let pathDrawn = false;
+    if (step >= maxStep && path.length) {
+      ctx.strokeStyle = COL.accent; ctx.lineWidth = 3.4;
+      ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      ctx.beginPath();
+      path.forEach(([x,y], i) => {
+        const px = x*cw + cw/2, py = y*ch + ch/2;
+        i === 0 ? ctx.moveTo(px,py) : ctx.lineTo(px,py);
+      });
+      ctx.stroke();
+      pathDrawn = true;
+    }
+    // start + goal markers
+    ctx.fillStyle = COL.accent;
+    ctx.beginPath(); ctx.arc(start[0]*cw+cw/2, start[1]*ch+ch/2, cw*0.32, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = COL.accent2;
+    ctx.beginPath(); ctx.arc(goal[0]*cw+cw/2, goal[1]*ch+ch/2, cw*0.32, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = COL.paper;
+    ctx.font = `bold ${Math.floor(cw*0.45)}px ${css.getPropertyValue('--font-ui')}`;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('A', start[0]*cw+cw/2, start[1]*ch+ch/2+1);
+    ctx.fillText('B', goal[0]*cw+cw/2, goal[1]*ch+ch/2+1);
+
+    stepV.textContent = step;
+    exploredOut.textContent = step;
+    costOut.textContent = pathDrawn ? result.cost.toFixed(2) : '—';
+    if (step === 0) captionEl.textContent = 'The flood hasn’t started. Press play to release it.';
+    else if (pathDrawn) captionEl.textContent = `Flood reached the goal after ${maxStep} cell expansions. Path traced in red.`;
+    else captionEl.textContent = `Flood has touched ${step} cells, spreading outward equally in all directions.`;
+  }
+
+  let playing = false, anim = null;
+  document.getElementById('w2-play').addEventListener('click', () => {
+    if (playing) { playing = false; document.getElementById('w2-play').textContent = '▶ Play'; return; }
+    playing = true; document.getElementById('w2-play').textContent = '⏸ Pause';
+    let s = parseInt(slider.value);
+    if (s >= maxStep) s = 0;
+    function tick() {
+      if (!playing) return;
+      s = Math.min(maxStep, s + Math.max(1, Math.floor(maxStep/120)));
+      slider.value = s; render(s);
+      if (s >= maxStep) { playing = false; document.getElementById('w2-play').textContent = '▶ Play'; return; }
+      anim = requestAnimationFrame(tick);
+    }
+    tick();
+  });
+  document.getElementById('w2-reset').addEventListener('click', () => {
+    playing = false; if (anim) cancelAnimationFrame(anim);
+    document.getElementById('w2-play').textContent = '▶ Play';
+    slider.value = 0; render(0);
+  });
+  slider.addEventListener('input', () => { playing = false; document.getElementById('w2-play').textContent = '▶ Play'; render(parseInt(slider.value)); });
+  render(0);
+})();
+
+/* ====================================================================
+   STEP 2b — DIJKSTRA WALKTHROUGH on a tiny labeled graph.
+   Each stage executes one operation, highlights matching pseudocode lines,
+   and shows g-values + the priority queue contents.
+   ==================================================================== */
+(function () {
+  const canvas = document.getElementById('walk-canvas');
+  const cssW = 460, cssH = 320;
+  const ctx = setupCanvas(canvas, cssW, cssH);
+
+  // Graph: 6 cities. Positions are in CSS-pixel coordinates inside the canvas.
+  const nodes = {
+    A: { x: 60,  y: 160, label: 'A' },
+    B: { x: 175, y:  60, label: 'B' },
+    C: { x: 325, y:  60, label: 'C' },
+    D: { x: 145, y: 250, label: 'D' },
+    E: { x: 280, y: 250, label: 'E' },
+    F: { x: 400, y: 160, label: 'F' },
+  };
+  const edges = [
+    ['A','B',4], ['A','D',2],
+    ['B','C',3], ['B','E',1],
+    ['C','F',5],
+    ['D','E',2],
+    ['E','F',2],
+  ];
+
+  // Each stage = a frozen snapshot of (g, settled set, PQ contents,
+  // currentNode, activeEdges, highlighted source lines, caption).
+  // Sequence corresponds to Dijkstra runs from A. Hand-traced:
+  //   pop A → relax A→B (4), A→D (2)
+  //   pop D → relax D→E (4)
+  //   pop B → relax B→C (7), B→E (5, no improve)
+  //   pop E → relax E→F (6)
+  //   pop F → goal, stop.
+  const INF = '∞';
+  const stages = [
+    { lines: [],          caption: 'Press Next to run line 1: initialize g-values.',
+      g: {}, pq: [], settled: [], current: null, edges: [] },
+    { lines: [1],         caption: 'Line 1: g[A] = 0, all others = ∞.',
+      g: {A:0,B:INF,C:INF,D:INF,E:INF,F:INF}, pq: [], settled: [], current: null, edges: [] },
+    { lines: [2],         caption: 'Line 2: seed PQ with (A, 0).',
+      g: {A:0,B:INF,C:INF,D:INF,E:INF,F:INF}, pq: [['A',0]], settled: [], current: null, edges: [] },
+    { lines: [3,4],       caption: 'Lines 3–4: PQ not empty, pop the smallest — that’s A with key 0.',
+      g: {A:0,B:INF,C:INF,D:INF,E:INF,F:INF}, pq: [], settled: [], current: 'A', edges: [] },
+    { lines: [5,6],       caption: 'Lines 5–6: A is not yet settled — mark it settled.',
+      g: {A:0,B:INF,C:INF,D:INF,E:INF,F:INF}, pq: [], settled: ['A'], current: 'A', edges: [] },
+    { lines: [7,8,9,10],  caption: 'Lines 7–10: relax A’s edges. g[B] ← 0+4 = 4, push (B,4). g[D] ← 0+2 = 2, push (D,2).',
+      g: {A:0,B:4,C:INF,D:2,E:INF,F:INF}, pq: [['D',2],['B',4]], settled: ['A'], current: 'A', edges: [['A','B'],['A','D']] },
+
+    { lines: [3,4],       caption: 'Back to line 4: pop the smallest in PQ — that’s D with key 2.',
+      g: {A:0,B:4,C:INF,D:2,E:INF,F:INF}, pq: [['B',4]], settled: ['A'], current: 'D', edges: [] },
+    { lines: [5,6],       caption: 'Settle D.',
+      g: {A:0,B:4,C:INF,D:2,E:INF,F:INF}, pq: [['B',4]], settled: ['A','D'], current: 'D', edges: [] },
+    { lines: [7,8,9,10],  caption: 'Relax D’s edges. D→A already settled — skip. D→E: g[E] ← 2+2 = 4, push (E,4).',
+      g: {A:0,B:4,C:INF,D:2,E:4,F:INF}, pq: [['B',4],['E',4]], settled: ['A','D'], current: 'D', edges: [['D','E']] },
+
+    { lines: [3,4],       caption: 'Pop the smallest — B and E both have key 4. Tie broken by insertion order: pop B.',
+      g: {A:0,B:4,C:INF,D:2,E:4,F:INF}, pq: [['E',4]], settled: ['A','D'], current: 'B', edges: [] },
+    { lines: [5,6],       caption: 'Settle B.',
+      g: {A:0,B:4,C:INF,D:2,E:4,F:INF}, pq: [['E',4]], settled: ['A','D','B'], current: 'B', edges: [] },
+    { lines: [7,8,9,10],  caption: 'Relax B’s edges. B→C: g[C] ← 4+3 = 7, push (C,7). B→E: 4+1 = 5 ≥ g[E]=4 — no improvement, don’t push.',
+      g: {A:0,B:4,C:7,D:2,E:4,F:INF}, pq: [['E',4],['C',7]], settled: ['A','D','B'], current: 'B', edges: [['B','C'],['B','E']] },
+
+    { lines: [3,4],       caption: 'Pop E with key 4.',
+      g: {A:0,B:4,C:7,D:2,E:4,F:INF}, pq: [['C',7]], settled: ['A','D','B'], current: 'E', edges: [] },
+    { lines: [5,6],       caption: 'Settle E.',
+      g: {A:0,B:4,C:7,D:2,E:4,F:INF}, pq: [['C',7]], settled: ['A','D','B','E'], current: 'E', edges: [] },
+    { lines: [7,8,9,10],  caption: 'Relax E’s edges. E→F: g[F] ← 4+2 = 6, push (F,6). (E→B, E→D already settled.)',
+      g: {A:0,B:4,C:7,D:2,E:4,F:6}, pq: [['F',6],['C',7]], settled: ['A','D','B','E'], current: 'E', edges: [['E','F']] },
+
+    { lines: [3,4],       caption: 'Pop F with key 6.',
+      g: {A:0,B:4,C:7,D:2,E:4,F:6}, pq: [['C',7]], settled: ['A','D','B','E'], current: 'F', edges: [] },
+    { lines: [5,6],       caption: 'Settle F. F is the goal — we can stop. g[F] = 6 is the true shortest cost from A.',
+      g: {A:0,B:4,C:7,D:2,E:4,F:6}, pq: [['C',7]], settled: ['A','D','B','E','F'], current: 'F', edges: [],
+      done: true },
+  ];
+
+  let stage = 0;
+  const codeBlock = document.getElementById('walk-code');
+  const backBtn   = document.getElementById('walk-back');
+  const nextBtn   = document.getElementById('walk-next');
+  const resetBtn  = document.getElementById('walk-reset');
+  const captionEl = document.getElementById('walk-caption');
+
+  // Pre-build path edges for the "done" visual: A → D → E → F
+  const shortestPath = [['A','D'], ['D','E'], ['E','F']];
+
+  function neighbors(n) {
+    const r = [];
+    edges.forEach(([a,b,w]) => {
+      if (a === n) r.push([b,w]);
+      else if (b === n) r.push([a,w]);
+    });
+    return r;
+  }
+
+  function render() {
+    const st = stages[stage];
+    ctx.clearRect(0, 0, cssW, cssH);
+
+    const settledSet = new Set(st.settled);
+    const pqSet = new Set(st.pq.map(p => p[0]));
+    const relaxSet = new Set(st.edges.map(([a,b]) => a < b ? a+'|'+b : b+'|'+a));
+    const pathSet = (st.done) ? new Set(shortestPath.map(([a,b]) => a < b ? a+'|'+b : b+'|'+a)) : null;
+
+    // --- edges
+    edges.forEach(([a,b,w]) => {
+      const na = nodes[a], nb = nodes[b];
+      const key = a < b ? a+'|'+b : b+'|'+a;
+      const isRelax = relaxSet.has(key);
+      const isPath = pathSet && pathSet.has(key);
+      ctx.strokeStyle = isPath ? COL.accent : (isRelax ? COL.accent : COL.line);
+      ctx.lineWidth = isPath ? 4 : (isRelax ? 3 : 1.4);
+      ctx.beginPath();
+      ctx.moveTo(na.x, na.y); ctx.lineTo(nb.x, nb.y);
+      ctx.stroke();
+
+      // weight label (offset slightly perpendicular to the edge)
+      const mx = (na.x + nb.x) / 2, my = (na.y + nb.y) / 2;
+      const dx = nb.x - na.x, dy = nb.y - na.y;
+      const len = Math.hypot(dx, dy);
+      const ox = -dy / len * 12, oy = dx / len * 12;
+      ctx.fillStyle = COL.paper;
+      ctx.beginPath();
+      ctx.arc(mx + ox, my + oy, 10, 0, Math.PI*2);
+      ctx.fill();
+      ctx.fillStyle = COL.inkSoft;
+      ctx.font = `600 12px ${css.getPropertyValue('--font-ui')}`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(String(w), mx + ox, my + oy + 1);
+    });
+
+    // --- nodes
+    Object.entries(nodes).forEach(([id, n]) => {
+      const isSettled = settledSet.has(id);
+      const isCurrent = st.current === id;
+      const inPQ = pqSet.has(id);
+      let fill = COL.paper, stroke = COL.line, lw = 1.6;
+      if (isSettled) { fill = '#2a6f7433'; stroke = COL.accent2; lw = 2; }
+      if (inPQ && !isSettled) { fill = '#a07a2c33'; stroke = COL.accent3; lw = 2; }
+      if (isCurrent) { fill = COL.accent; stroke = COL.accent; lw = 2.4; }
+
+      ctx.fillStyle = fill;
+      ctx.strokeStyle = stroke;
+      ctx.lineWidth = lw;
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, 20, 0, Math.PI*2);
+      ctx.fill(); ctx.stroke();
+
+      // node letter
+      ctx.fillStyle = isCurrent ? COL.paper : COL.ink;
+      ctx.font = `700 16px ${css.getPropertyValue('--font-display')}`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(n.label, n.x, n.y + 1);
+
+      // g-value badge above the node
+      const gv = (st.g && st.g[id] !== undefined) ? st.g[id] : null;
+      if (gv !== null) {
+        const txt = `g=${gv}`;
+        ctx.font = `600 11px ${css.getPropertyValue('--font-ui')}`;
+        const w = ctx.measureText(txt).width + 10;
+        const bx = n.x - w/2, by = n.y - 38;
+        ctx.fillStyle = COL.surface;
+        ctx.strokeStyle = COL.line; ctx.lineWidth = 1;
+        ctx.beginPath();
+        if (ctx.roundRect) { ctx.roundRect(bx, by, w, 16, 4); }
+        else { ctx.rect(bx, by, w, 16); }
+        ctx.fill(); ctx.stroke();
+        ctx.fillStyle = COL.ink;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(txt, n.x, by + 8.5);
+      }
+    });
+
+    // --- PQ panel (top-right corner)
+    const pqX = cssW - 110, pqY = 14, pqW = 96, lineH = 18;
+    const pqLines = st.pq.slice().sort((a,b) => a[1]-b[1]);
+    const pqH = 28 + Math.max(1, pqLines.length) * lineH;
+    ctx.fillStyle = COL.surface;
+    ctx.strokeStyle = COL.line; ctx.lineWidth = 1;
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(pqX, pqY, pqW, pqH, 6);
+    else ctx.rect(pqX, pqY, pqW, pqH);
+    ctx.fill(); ctx.stroke();
+    ctx.fillStyle = COL.inkSoft;
+    ctx.font = `600 10px ${css.getPropertyValue('--font-ui')}`;
+    ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+    ctx.fillText('PRIORITY QUEUE', pqX + 8, pqY + 6);
+    ctx.font = `500 12px ui-monospace, Menlo, monospace`;
+    ctx.fillStyle = COL.ink;
+    if (pqLines.length === 0) {
+      ctx.fillStyle = COL.inkSoft;
+      ctx.fillText('(empty)', pqX + 8, pqY + 24);
+    } else {
+      pqLines.forEach(([id, key], i) => {
+        ctx.fillStyle = COL.ink;
+        ctx.fillText(`(${id}, ${key})`, pqX + 8, pqY + 24 + i*lineH);
+      });
+    }
+
+    // --- highlight source lines
+    if (codeBlock) {
+      const hot = new Set(st.lines);
+      codeBlock.querySelectorAll('[data-line]').forEach(el => {
+        el.classList.toggle('hl', hot.has(parseInt(el.dataset.line)));
+      });
+    }
+
+    captionEl.textContent = st.caption;
+    backBtn.disabled = stage === 0;
+    nextBtn.disabled = stage === stages.length - 1;
+    // Make Next button label informative
+    if (stage === 0)                          nextBtn.textContent = 'Initialize →';
+    else if (stage === stages.length - 1)     nextBtn.textContent = '✓ Done';
+    else if (stages[stage+1].lines[0] === 4)  nextBtn.textContent = 'Pop next →';
+    else if (stages[stage+1].lines[0] === 5)  nextBtn.textContent = 'Settle →';
+    else if (stages[stage+1].lines[0] === 7)  nextBtn.textContent = 'Relax edges →';
+    else                                      nextBtn.textContent = 'Next →';
+  }
+  nextBtn.addEventListener('click',  () => { if (stage < stages.length-1) { stage++; render(); } });
+  backBtn.addEventListener('click',  () => { if (stage > 0)               { stage--; render(); } });
+  resetBtn.addEventListener('click', () => { stage = 0; render(); });
+  render();
+})();
+
+/* ====================================================================
+   STEP 3 — Dijkstra vs A* side by side
+   ==================================================================== */
+(function () {
+  const cw = 16, ch = 16;
+  const W = 25, H = 15;
+  // shared map (slightly different layout)
+  const grid = Array.from({length: H}, () => new Array(W).fill(0));
+  const walls = [
+    ...Array.from({length: 8}, (_,i) => [10, 2+i]),
+    ...Array.from({length: 4}, (_,i) => [10, 11+i]),
+    ...Array.from({length: 9}, (_,i) => [11+i, 6]),
+    ...Array.from({length: 4}, (_,i) => [4, 8+i]),
+    ...Array.from({length: 5}, (_,i) => [16+i, 10]),
+  ];
+  walls.forEach(([x,y]) => { if (y<H && x<W) grid[y][x] = 1; });
+  const start = [2, 2], goal = [22, 12];
+
+  const dij = runSearch(grid, start, goal, 'dijkstra');
+  const ast = runSearch(grid, start, goal, 'astar', 1.0);
+  const maxStep = Math.max(dij.settledOrder.length, ast.settledOrder.length);
+
+  const gap = 24;
+  const panelW = W * cw;
+  const cssW = panelW * 2 + gap;
+  const cssH = H * ch + 28;
+  const canvas = document.getElementById('w3-canvas');
+  const ctx = setupCanvas(canvas, cssW, cssH);
+
+  const slider = document.getElementById('w3-step');
+  slider.max = maxStep;
+  const stepV = document.getElementById('w3-stepV');
+  const dexp = document.getElementById('w3-dexp');
+  const aexp = document.getElementById('w3-aexp');
+  const costOut = document.getElementById('w3-cost');
+  const captionEl = document.getElementById('w3-caption');
+
+  function drawPanel(result, ox, oy, step, label) {
+    // header label
+    ctx.fillStyle = COL.ink;
+    ctx.font = `600 12px ${css.getPropertyValue('--font-ui')}`;
+    ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+    ctx.fillText(label, ox, oy - 22);
+
+    // draw grid + walls
+    ctx.strokeStyle = COL.line; ctx.lineWidth = 0.4;
+    for (let y = 0; y < H; y++) {
+      for (let x = 0; x < W; x++) {
+        const px = ox + x*cw, py = oy + y*ch;
+        if (grid[y][x] === 1) {
+          ctx.fillStyle = COL.wall;
+          ctx.fillRect(px, py, cw, ch);
+        }
+        ctx.strokeRect(px, py, cw, ch);
+      }
+    }
+    const ord = result.settledOrder;
+    const upto = Math.min(step, ord.length);
+    for (let i = 0; i < upto; i++) {
+      const [x,y] = ord[i];
+      ctx.fillStyle = `rgba(42,111,116,${0.18 + 0.32*(i/Math.max(1,ord.length))})`;
+      ctx.fillRect(ox + x*cw+0.5, oy + y*ch+0.5, cw-1, ch-1);
+    }
+    if (step >= ord.length && result.path.length) {
+      ctx.strokeStyle = COL.accent; ctx.lineWidth = 2.2;
+      ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      ctx.beginPath();
+      result.path.forEach(([x,y], i) => {
+        const px = ox + x*cw + cw/2, py = oy + y*ch + ch/2;
+        i === 0 ? ctx.moveTo(px,py) : ctx.lineTo(px,py);
+      });
+      ctx.stroke();
+    }
+    // start/goal
+    ctx.fillStyle = COL.accent;
+    ctx.beginPath(); ctx.arc(ox + start[0]*cw+cw/2, oy + start[1]*ch+ch/2, cw*0.35, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = COL.accent2;
+    ctx.beginPath(); ctx.arc(ox + goal[0]*cw+cw/2, oy + goal[1]*ch+ch/2, cw*0.35, 0, Math.PI*2); ctx.fill();
+  }
+
+  function render(step) {
+    ctx.clearRect(0, 0, cssW, cssH);
+    drawPanel(dij, 0, 28, step, 'DIJKSTRA');
+    drawPanel(ast, panelW + gap, 28, step, 'A*');
+    stepV.textContent = step;
+    const dCount = Math.min(step, dij.settledOrder.length);
+    const aCount = Math.min(step, ast.settledOrder.length);
+    dexp.textContent = dCount;
+    aexp.textContent = aCount;
+    const bothDone = step >= maxStep;
+    costOut.textContent = bothDone ? dij.cost.toFixed(2) : '—';
+    if (step === 0) captionEl.textContent = 'Both algorithms ready. Press play.';
+    else if (bothDone) captionEl.textContent = `A* finished in ${ast.settledOrder.length} expansions — Dijkstra needed ${dij.settledOrder.length}. Same path, ${(dij.settledOrder.length / ast.settledOrder.length).toFixed(1)}× fewer cells.`;
+    else captionEl.textContent = `Dijkstra is flooding in every direction; A* is reaching toward the goal.`;
+  }
+
+  let playing = false, anim = null;
+  document.getElementById('w3-play').addEventListener('click', () => {
+    if (playing) { playing = false; document.getElementById('w3-play').textContent = '▶ Play both'; return; }
+    playing = true; document.getElementById('w3-play').textContent = '⏸ Pause';
+    let s = parseInt(slider.value);
+    if (s >= maxStep) s = 0;
+    function tick() {
+      if (!playing) return;
+      s = Math.min(maxStep, s + Math.max(1, Math.floor(maxStep/140)));
+      slider.value = s; render(s);
+      if (s >= maxStep) { playing = false; document.getElementById('w3-play').textContent = '▶ Play both'; return; }
+      anim = requestAnimationFrame(tick);
+    }
+    tick();
+  });
+  document.getElementById('w3-reset').addEventListener('click', () => {
+    playing = false; if (anim) cancelAnimationFrame(anim);
+    document.getElementById('w3-play').textContent = '▶ Play both';
+    slider.value = 0; render(0);
+  });
+  slider.addEventListener('input', () => { playing = false; document.getElementById('w3-play').textContent = '▶ Play both'; render(parseInt(slider.value)); });
+  render(0);
+
+  // sanity check (hand-computed): the optimal path on this map should be ~24.something
+  // Dijkstra and A* should both produce identical costs.
+  console.assert(Math.abs(dij.cost - ast.cost) < 1e-9, 'Dijkstra and A* must agree on cost');
+})();
+
+/* ====================================================================
+   STEP 4 — Weighted A*
+   ==================================================================== */
+(function () {
+  const cw = 28, ch = 28;
+  const W = 25, H = 15;
+  const grid = Array.from({length: H}, () => new Array(W).fill(0));
+  // map with an obvious shortcut and a tempting detour
+  const walls = [
+    ...Array.from({length: 7}, (_,i) => [9, 1+i]),     // upper wall
+    ...Array.from({length: 6}, (_,i) => [9, 9+i]),     // lower wall (gap at row 8)
+    ...Array.from({length: 6}, (_,i) => [15, i]),      // right upper wall
+    ...Array.from({length: 4}, (_,i) => [15, 8+i]),    // right lower wall (gap at row 6,7)
+    ...Array.from({length: 3}, (_,i) => [5, 5+i]),
+  ];
+  walls.forEach(([x,y]) => { if (y<H && x<W) grid[y][x] = 1; });
+  const start = [2, 7], goal = [22, 7];
+
+  // compute optimum once
+  const optimal = runSearch(grid, start, goal, 'astar', 1.0);
+  const optCost = optimal.cost;
+
+  const cssW = W*cw, cssH = H*ch;
+  const canvas = document.getElementById('w4-canvas');
+  const ctx = setupCanvas(canvas, cssW, cssH);
+
+  const wSlider = document.getElementById('w4-w');
+  const wV = document.getElementById('w4-wV');
+  const expOut = document.getElementById('w4-exp');
+  const costOut = document.getElementById('w4-cost');
+  const pctOut = document.getElementById('w4-pct');
+
+  function render() {
+    const w = parseFloat(wSlider.value);
+    const r = runSearch(grid, start, goal, 'astar', w);
+    ctx.clearRect(0, 0, cssW, cssH);
+    drawGrid(ctx, grid, cw, ch);
+    r.settledOrder.forEach(([x,y], i) => {
+      ctx.fillStyle = `rgba(42,111,116,${0.18 + 0.4*(i/r.settledOrder.length)})`;
+      ctx.fillRect(x*cw+1, y*ch+1, cw-2, ch-2);
+    });
+    if (r.path.length) {
+      ctx.strokeStyle = COL.accent; ctx.lineWidth = 3.4;
+      ctx.lineCap='round'; ctx.lineJoin='round';
+      ctx.beginPath();
+      r.path.forEach(([x,y], i) => {
+        const px = x*cw+cw/2, py = y*ch+ch/2;
+        i === 0 ? ctx.moveTo(px,py) : ctx.lineTo(px,py);
+      });
+      ctx.stroke();
+    }
+    ctx.fillStyle = COL.accent;
+    ctx.beginPath(); ctx.arc(start[0]*cw+cw/2, start[1]*ch+ch/2, cw*0.32, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = COL.accent2;
+    ctx.beginPath(); ctx.arc(goal[0]*cw+cw/2, goal[1]*ch+ch/2, cw*0.32, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = COL.paper;
+    ctx.font = `bold ${Math.floor(cw*0.45)}px ${css.getPropertyValue('--font-ui')}`;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('A', start[0]*cw+cw/2, start[1]*ch+ch/2+1);
+    ctx.fillText('B', goal[0]*cw+cw/2, goal[1]*ch+ch/2+1);
+
+    wV.textContent = w.toFixed(1);
+    expOut.textContent = r.settledOrder.length;
+    costOut.textContent = isFinite(r.cost) ? r.cost.toFixed(2) : '—';
+    const pct = isFinite(r.cost) ? ((r.cost - optCost) / optCost) * 100 : 0;
+    pctOut.textContent = pct < 0.05 ? '0%' : `+${pct.toFixed(1)}%`;
+  }
+  wSlider.addEventListener('input', render);
+  render();
+})();
+
+/* ====================================================================
+   STEP 5 — Graph partitioning
+   Plain A* over a large grid vs partitioned A* with precomputed
+   boundary-to-boundary shortcuts.
+   ==================================================================== */
+(function () {
+  const cw = 16, ch = 16;
+  const W = 40, H = 25;
+  const grid = Array.from({length: H}, () => new Array(W).fill(0));
+  // Sparse walls so most cells are open; the point is region structure.
+  function seedWalls() {
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) grid[y][x] = 0;
+    // boundaries between regions: a few walls perforated by gates
+    // (regions split at x=20, y=12)
+    const gatesX = [4, 10, 16, 24, 30, 36];
+    const gatesY = [3, 8, 16, 21];
+    for (let y = 0; y < H; y++) if (!gatesY.includes(y)) grid[y][20] = 1;
+    for (let x = 0; x < W; x++) if (!gatesX.includes(x)) grid[12][x] = 1;
+    // sprinkle some interior walls for texture
+    const obstacles = [
+      [5,5,3,2],[14,3,2,4],[26,5,3,3],[33,9,2,2],
+      [4,16,4,2],[14,18,2,3],[25,15,3,2],[31,19,3,2]
+    ];
+    obstacles.forEach(([x,y,w,h]) => {
+      for (let dy=0;dy<h;dy++) for (let dx=0;dx<w;dx++)
+        if (y+dy < H && x+dx < W && (x+dx !== 20) && (y+dy !== 12)) grid[y+dy][x+dx] = 1;
+    });
+  }
+  seedWalls();
+
+  function regionOf(x, y) {
+    return (y < 12 ? 0 : 2) + (x < 20 ? 0 : 1);
+  }
+  const regionColors = [
+    'rgba(196,74,42,0.06)', 'rgba(42,111,116,0.06)',
+    'rgba(160,122,44,0.07)', 'rgba(58,90,120,0.06)'
+  ];
+
+  // Boundary nodes: open cells adjacent to a different-region open cell
+  const boundaries = [];
+  for (let y = 0; y < H; y++) {
+    for (let x = 0; x < W; x++) {
+      if (grid[y][x] === 1) continue;
+      const r = regionOf(x,y);
+      const neigh = [[1,0],[-1,0],[0,1],[0,-1]];
+      for (const [dx,dy] of neigh) {
+        const nx=x+dx, ny=y+dy;
+        if (nx<0||ny<0||nx>=W||ny>=H) continue;
+        if (grid[ny][nx] === 1) continue;
+        if (regionOf(nx,ny) !== r) { boundaries.push([x,y,r]); break; }
+      }
+    }
+  }
+  // dedupe
+  const bset = new Map();
+  boundaries.forEach(([x,y,r]) => bset.set(`${x},${y}`, [x,y,r]));
+  const bnodes = [...bset.values()];
+
+  // pick two endpoints in different regions
+  let start = [3, 3], goal = [36, 22];
+  function randomEndpoints() {
+    const open = [];
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (grid[y][x]===0) open.push([x,y]);
+    while (true) {
+      const s = open[Math.floor(open.length * Math.random())];
+      const g = open[Math.floor(open.length * Math.random())];
+      if (regionOf(s[0],s[1]) !== regionOf(g[0],g[1]) &&
+          Math.abs(s[0]-g[0]) + Math.abs(s[1]-g[1]) > 25) {
+        return [s, g];
+      }
+    }
+  }
+
+  const cssW = W*cw, cssH = H*ch;
+  const canvas = document.getElementById('w5-canvas');
+  const ctx = setupCanvas(canvas, cssW, cssH);
+
+  let mode = 'plain'; // or 'partitioned'
+  const modeBtn = document.getElementById('w5-mode');
+  const expOut = document.getElementById('w5-exp');
+  const costOut = document.getElementById('w5-cost');
+  const spdOut = document.getElementById('w5-spd');
+  const captionEl = document.getElementById('w5-caption');
+
+  function render() {
+    ctx.clearRect(0, 0, cssW, cssH);
+    // region tints
+    for (let y = 0; y < H; y++) {
+      for (let x = 0; x < W; x++) {
+        ctx.fillStyle = regionColors[regionOf(x,y)];
+        ctx.fillRect(x*cw, y*ch, cw, ch);
+      }
+    }
+    // walls + grid
+    ctx.strokeStyle = COL.line; ctx.lineWidth = 0.4;
+    for (let y = 0; y < H; y++) {
+      for (let x = 0; x < W; x++) {
+        const px = x*cw, py = y*ch;
+        if (grid[y][x] === 1) {
+          ctx.fillStyle = COL.wall;
+          ctx.fillRect(px, py, cw, ch);
+        }
+        ctx.strokeRect(px, py, cw, ch);
+      }
+    }
+
+    // Plain A* (reference, always computed for stats)
+    const plain = runSearch(grid, start, goal, 'astar', 1.0);
+
+    let explored = plain.settledOrder.length;
+    let path = plain.path;
+    let cost = plain.cost;
+
+    if (mode === 'plain') {
+      // visualize plain
+      plain.settledOrder.forEach(([x,y]) => {
+        ctx.fillStyle = 'rgba(42,111,116,0.30)';
+        ctx.fillRect(x*cw+0.5, y*ch+0.5, cw-1, ch-1);
+      });
+    } else {
+      // partitioned: search from start within its region and adjacent
+      // boundaries; then jump to goal-region boundaries via precomputed
+      // shortcuts; then search to goal within goal region.
+      const sR = regionOf(start[0], start[1]);
+      const gR = regionOf(goal[0], goal[1]);
+
+      // local search start → all boundary nodes in start region
+      // approximated as A* runs to each, but to make it visual we run one
+      // Dijkstra from start restricted to start-region cells.
+      function localSearch(src, regionId) {
+        const g = Array.from({length: H}, () => new Array(W).fill(Infinity));
+        const parent = Array.from({length: H}, () => new Array(W).fill(null));
+        const settled = Array.from({length: H}, () => new Array(W).fill(false));
+        const ord = [];
+        g[src[1]][src[0]] = 0;
+        const pq = new PQ(); pq.push([src[0],src[1]], 0);
+        const dirs = [[1,0,1],[-1,0,1],[0,1,1],[0,-1,1],
+                      [1,1,Math.SQRT2],[-1,1,Math.SQRT2],
+                      [1,-1,Math.SQRT2],[-1,-1,Math.SQRT2]];
+        while (pq.size) {
+          const {item:[x,y]} = pq.pop();
+          if (settled[y][x]) continue;
+          settled[y][x] = true; ord.push([x,y]);
+          for (const [dx,dy,c] of dirs) {
+            const nx=x+dx, ny=y+dy;
+            if (nx<0||ny<0||nx>=W||ny>=H) continue;
+            if (grid[ny][nx] === 1) continue;
+            if (dx!==0 && dy!==0 && (grid[y][nx]===1 || grid[ny][x]===1)) continue;
+            // restrict to region or its boundary
+            if (regionOf(nx,ny) !== regionId) continue;
+            const ng = g[y][x] + c;
+            if (ng < g[ny][nx]) { g[ny][nx] = ng; parent[ny][nx] = [x,y]; pq.push([nx,ny], ng); }
+          }
+        }
+        return { g, parent, ord };
+      }
+
+      const fromStart = localSearch(start, sR);
+      const toGoal    = localSearch(goal,  gR);
+
+      // boundary nodes per region
+      const sBnd = bnodes.filter(([x,y,r]) => r === sR && isFinite(fromStart.g[y][x]));
+      const gBnd = bnodes.filter(([x,y,r]) => r === gR && isFinite(toGoal.g[y][x]));
+
+      // precomputed shortcut: best total when crossing through some boundary
+      // pair (bs, bg). For demo, approximate inter-boundary cost by octile.
+      // (In the real system, this is the actual precomputed shortest path.)
+      function octile(a, b) {
+        const dx = Math.abs(a[0]-b[0]), dy = Math.abs(a[1]-b[1]);
+        return Math.max(dx,dy) + (Math.SQRT2-1)*Math.min(dx,dy);
+      }
+      // because actual shortest path may differ from octile, run a one-shot
+      // A* between boundary endpoints in the FULL graph for the best pair.
+      let best = Infinity, bestPair = null;
+      for (const bs of sBnd) {
+        for (const bg of gBnd) {
+          const approx = fromStart.g[bs[1]][bs[0]] + octile(bs, bg) + toGoal.g[bg[1]][bg[0]];
+          if (approx < best) { best = approx; bestPair = [bs, bg]; }
+        }
+      }
+      // refine: replace octile midsection with true A* cost
+      if (bestPair) {
+        const [bs, bg] = bestPair;
+        const mid = runSearch(grid, [bs[0],bs[1]], [bg[0],bg[1]], 'astar', 1.0);
+        cost = fromStart.g[bs[1]][bs[0]] + mid.cost + toGoal.g[bg[1]][bg[0]];
+
+        // visualize explored = local from start + mid + local to goal
+        const localExplored = fromStart.ord.length + toGoal.ord.length + mid.settledOrder.length;
+        explored = localExplored;
+
+        fromStart.ord.forEach(([x,y]) => {
+          ctx.fillStyle = 'rgba(42,111,116,0.30)';
+          ctx.fillRect(x*cw+0.5, y*ch+0.5, cw-1, ch-1);
+        });
+        toGoal.ord.forEach(([x,y]) => {
+          ctx.fillStyle = 'rgba(42,111,116,0.30)';
+          ctx.fillRect(x*cw+0.5, y*ch+0.5, cw-1, ch-1);
+        });
+        mid.settledOrder.forEach(([x,y]) => {
+          ctx.fillStyle = 'rgba(160,122,44,0.22)';
+          ctx.fillRect(x*cw+0.5, y*ch+0.5, cw-1, ch-1);
+        });
+
+        // dashed shortcut line bs → bg
+        ctx.strokeStyle = COL.accent3; ctx.lineWidth = 1.8;
+        ctx.setLineDash([5, 4]);
+        ctx.beginPath();
+        ctx.moveTo(bs[0]*cw+cw/2, bs[1]*ch+ch/2);
+        ctx.lineTo(bg[0]*cw+cw/2, bg[1]*ch+ch/2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // mark boundary nodes
+        ctx.fillStyle = COL.accent3;
+        [bs, bg].forEach(([x,y]) => {
+          ctx.beginPath();
+          ctx.arc(x*cw+cw/2, y*ch+ch/2, 4, 0, Math.PI*2);
+          ctx.fill();
+        });
+
+        // reconstruct path: start → bs (via fromStart parent), bs → bg (mid.path), bg → goal (reverse of toGoal parent)
+        function reconstruct(parent, from, to) {
+          const p = []; let cur = to;
+          while (cur) { p.push(cur); if (cur[0]===from[0]&&cur[1]===from[1]) break; cur = parent[cur[1]][cur[0]]; }
+          p.reverse(); return p;
+        }
+        const p1 = reconstruct(fromStart.parent, start, bs);
+        const p2 = mid.path.slice(1);
+        const p3 = reconstruct(toGoal.parent, goal, bg).reverse().slice(1);
+        path = [...p1, ...p2, ...p3];
+      }
+    }
+
+    // path
+    if (path && path.length) {
+      ctx.strokeStyle = COL.accent; ctx.lineWidth = 2.6;
+      ctx.lineCap='round'; ctx.lineJoin='round';
+      ctx.beginPath();
+      path.forEach(([x,y], i) => {
+        const px = x*cw+cw/2, py = y*ch+ch/2;
+        i === 0 ? ctx.moveTo(px,py) : ctx.lineTo(px,py);
+      });
+      ctx.stroke();
+    }
+    // endpoints
+    ctx.fillStyle = COL.accent;
+    ctx.beginPath(); ctx.arc(start[0]*cw+cw/2, start[1]*ch+ch/2, cw*0.42, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = COL.accent2;
+    ctx.beginPath(); ctx.arc(goal[0]*cw+cw/2, goal[1]*ch+ch/2, cw*0.42, 0, Math.PI*2); ctx.fill();
+
+    expOut.textContent = explored;
+    costOut.textContent = isFinite(cost) ? cost.toFixed(1) : '—';
+    spdOut.textContent = (plain.settledOrder.length / Math.max(1, explored)).toFixed(1) + '×';
+    captionEl.textContent = mode === 'plain'
+      ? `Plain A* explored ${plain.settledOrder.length} cells across all four regions.`
+      : `Partitioned: search stays inside the start and goal regions, jumping across via a precomputed boundary shortcut (dashed). ${(plain.settledOrder.length / Math.max(1,explored)).toFixed(1)}× speedup over plain A*.`;
+  }
+
+  modeBtn.addEventListener('click', () => {
+    mode = mode === 'plain' ? 'partitioned' : 'plain';
+    modeBtn.textContent = mode === 'plain' ? 'Switch to partitioned' : 'Switch to plain';
+    render();
+  });
+  document.getElementById('w5-reset').addEventListener('click', () => {
+    [start, goal] = randomEndpoints();
+    render();
+  });
+  render();
+})();
+
+/* ====================================================================
+   READING PROGRESS BAR
+   ==================================================================== */
+(function () {
+  const bar = document.getElementById('progress');
+  function update() {
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%';
+  }
+  window.addEventListener('scroll', update, {passive:true});
+  window.addEventListener('resize', update);
+  update();
+})();
+</script>
+</body>
+</html>

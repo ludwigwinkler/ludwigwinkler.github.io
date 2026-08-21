@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How Bounds Are Computed</title>
+
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg:        #e8edf1;   /* cool blueprint paper                    */
+    --surface:   #ffffff;   /* cards / widgets                         */
+    --ink:       #16212c;   /* deep slate ink                          */
+    --ink-soft:  #54616e;   /* secondary text                          */
+    --upper:     #cf4327;   /* UPPER bounds / ceilings  (red)          */
+    --lower:     #2f6db2;   /* LOWER bounds / floors    (blue)         */
+    --true:      #1f8a5b;   /* the TRUE value being squeezed (green)   */
+    --gold:      #c1861a;   /* highlight / slack                       */
+    --accent:    #cf4327;   /* primary accent = upper                  */
+    --line:      #cfd8df;   /* hairlines                               */
+    --axis:      #9fabb6;   /* plot axes                               */
+    --kernel-bg: #16212c;
+    --radius: 14px;
+    --measure: 68ch;
+    --font-display: 'Space Grotesk', system-ui, sans-serif;
+    --font-body:    'Spectral', Georgia, serif;
+    --font-mono:    'JetBrains Mono', ui-monospace, Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 19px;
+    line-height: 1.72;
+    -webkit-font-smoothing: antialiased;
+    background-color: var(--bg);
+    /* faint graph-paper grid */
+    background-image:
+      linear-gradient(rgba(22,33,44,0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(22,33,44,0.045) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
+  #progress {
+    position: fixed; top: 0; left: 0; height: 4px; width: 0%;
+    background: var(--accent); z-index: 100; transition: width 0.1s linear;
+  }
+
+  .wrap { max-width: 830px; margin: 0 auto; padding: 0 24px 120px; }
+  .prose { max-width: var(--measure); }
+  .prose p { margin: 0 0 1.1em; }
+
+  header { padding: 92px 0 30px; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.24em;
+    text-transform: uppercase; color: var(--accent); margin: 0 0 20px;
+  }
+  h1 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(2.6rem, 6.4vw, 4.2rem); line-height: 1.02;
+    margin: 0 0 24px; letter-spacing: -0.03em;
+  }
+  h1 .u { color: var(--upper); }
+  h1 .l { color: var(--lower); }
+  .promise {
+    font-size: 1.24rem; color: var(--ink-soft); font-style: italic;
+    max-width: var(--measure);
+  }
+
+  .kernel {
+    background: var(--kernel-bg); color: #eef2f5;
+    border-radius: var(--radius); padding: 34px 40px; margin: 46px 0 76px;
+    box-shadow: 0 18px 40px -24px rgba(22,33,44,0.55);
+  }
+  .kernel .label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase;
+    opacity: 0.55; margin: 0 0 16px;
+  }
+  .kernel .sentence {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 1.5rem; line-height: 1.42; margin: 0; letter-spacing: -0.01em;
+  }
+  .kernel .up { color: #f0866f; font-weight: 700; }
+  .kernel .lo { color: #7fb2e6; font-weight: 700; }
+
+  .concept-step { margin: 0 0 90px; scroll-margin-top: 40px; }
+  .step-num {
+    font-family: var(--font-mono); font-size: 0.78rem; font-weight: 500;
+    color: var(--accent); letter-spacing: 0.14em; text-transform: uppercase;
+    margin: 0 0 10px;
+  }
+  .concept-step h2 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(1.7rem, 3.6vw, 2.35rem); line-height: 1.12;
+    margin: 0 0 20px; letter-spacing: -0.02em;
+  }
+
+  details.formal {
+    border: 1px solid var(--line); border-radius: 10px;
+    background: var(--surface); margin: 24px 0; max-width: var(--measure);
+  }
+  details.formal summary {
+    cursor: pointer; padding: 14px 18px; font-family: var(--font-mono);
+    font-size: 0.82rem; letter-spacing: 0.04em; color: var(--ink-soft);
+    list-style: none; user-select: none;
+  }
+  details.formal summary::before { content: '+ '; color: var(--accent); font-weight: 700; }
+  details.formal[open] summary::before { content: '\2212 '; }
+  details.formal .formal-body { padding: 0 18px 6px; }
+
+  .widget {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 20px 22px 22px; margin: 30px 0;
+    box-shadow: 0 12px 30px -26px rgba(22,33,44,0.5);
+  }
+  .widget-titlewrap { margin-bottom: 16px; }
+  .widget-title {
+    font-family: var(--font-display); font-weight: 500; font-size: 1.04rem;
+    color: var(--ink); letter-spacing: -0.01em;
+  }
+  .widget-tag {
+    display: inline-block; margin-left: 10px; vertical-align: middle;
+    font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.09em;
+    text-transform: uppercase; color: var(--ink-soft);
+    background: var(--bg); border: 1px solid var(--line);
+    padding: 3px 9px; border-radius: 999px;
+  }
+  .widget-controls {
+    display: flex; flex-wrap: wrap; gap: 18px 30px; margin-bottom: 16px;
+  }
+  .widget-controls label {
+    display: flex; flex-direction: column; gap: 7px;
+    font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-soft);
+    min-width: 200px;
+  }
+  .widget-controls .val { color: var(--accent); font-weight: 500; }
+  input[type=range] { accent-color: var(--accent); cursor: pointer; width: 100%; }
+  .widget button {
+    font-family: var(--font-mono); font-size: 0.82rem;
+    background: var(--ink); color: var(--bg); border: none;
+    padding: 9px 16px; border-radius: 8px; cursor: pointer; letter-spacing: 0.02em;
+  }
+  .widget button:hover { background: var(--accent); }
+  .widget button:disabled { opacity: 0.32; cursor: default; }
+  .widget-stage {
+    display: block; width: 100%; border-radius: 8px; background: #fbfcfd;
+  }
+  .readout {
+    margin-top: 14px; font-family: var(--font-mono); font-size: 0.86rem;
+    color: var(--ink-soft); min-height: 1.4em; line-height: 1.7;
+  }
+  .readout b { color: var(--ink); font-weight: 500; }
+  .reveal-bar {
+    display: flex; align-items: center; gap: 16px; margin-top: 14px; flex-wrap: wrap;
+  }
+  .reveal-caption {
+    flex: 1; min-width: 220px; font-size: 0.92rem;
+    color: var(--ink-soft); font-style: italic; font-family: var(--font-body);
+  }
+  .caption {
+    font-size: 0.86rem; color: var(--ink-soft); font-style: italic;
+    margin-top: 10px; font-family: var(--font-body);
+  }
+
+  .legend { display:flex; gap:20px; flex-wrap:wrap; font-family:var(--font-mono);
+            font-size:0.74rem; color:var(--ink-soft); margin-top:12px; }
+  .legend span { display:inline-flex; align-items:center; gap:7px; }
+  .swatch { width:14px; height:14px; border-radius:3px; display:inline-block; }
+
+  .recap {
+    border-top: 2px solid var(--ink); padding-top: 40px; margin-top: 24px;
+  }
+  .recap h2 { font-family: var(--font-display); font-weight:700; font-size: 2rem; margin: 0 0 18px; letter-spacing:-0.02em; }
+
+  mark { background: linear-gradient(transparent 58%, #ffe08a 58%); color: inherit; padding: 0 1px; }
+  .up-ink { color: var(--upper); font-weight: 600; }
+  .lo-ink { color: var(--lower); font-weight: 600; }
+  .tr-ink { color: var(--true); font-weight: 600; }
+  a { color: var(--accent); }
+  .prose code { font-family: var(--font-mono); font-size: 0.82em; background: var(--bg);
+                padding: 1px 5px; border-radius: 4px; }
+
+  @media (max-width: 600px) {
+    body { font-size: 17px; }
+    .wrap { padding: 0 16px 80px; }
+    .kernel { padding: 26px 22px; }
+    .kernel .sentence { font-size: 1.28rem; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<div class="wrap">
+
+  <!-- ===================== HEADER ===================== -->
+  <header>
+    <p class="eyebrow">A step-by-step explainer</p>
+    <h1>How <span class="l">bounds</span> are <span class="u">computed</span></h1>
+    <p class="promise">
+      A bound is a promise: <em>the number you care about is at least this, and
+      at most that.</em> By the end you will know the single move behind every
+      bound in mathematics — and see it computed four different ways, ending
+      with the one that trains modern AI.
+    </p>
+  </header>
+
+  <!-- ===================== THE KERNEL ===================== -->
+  <div class="kernel">
+    <p class="label">The whole idea, in one sentence</p>
+    <p class="sentence">
+      Computing a bound is just swapping the hard thing for a simpler thing you
+      <em>can</em> compute — making every piece a little
+      <span class="up">bigger</span> for an upper bound, or a little
+      <span class="lo">smaller</span> for a lower one — so that even though you
+      lose the exact answer, the <mark>guarantee survives</mark>.
+    </p>
+  </div>
+
+  <!-- ===================== STEP 1 ===================== -->
+  <section class="concept-step" id="step-1">
+    <p class="step-num">Step 1 · what a bound even is</p>
+    <h2>A bound is a fence, not the exact answer</h2>
+    <div class="prose">
+      <p>
+        Some numbers are hard to pin down exactly. Take \(\pi\) — the ratio of a
+        circle's circumference to its diameter. You cannot write it out; its
+        digits never end. But you do not always need the exact value. Very
+        often it is enough to say: <em>whatever \(\pi\) is, it is bigger than
+        this and smaller than that.</em> Those two numbers are a
+        <span class="lo-ink">lower</span> and an
+        <span class="up-ink">upper</span> bound, and together they build a fence
+        the true value is trapped inside.
+      </p>
+      <p>
+        The beautiful part is that you can <em>compute</em> such a fence for a
+        number you cannot compute directly — and then squeeze it as tight as you
+        like. Archimedes did exactly this over two thousand years ago. Draw a
+        many-sided polygon <span class="lo-ink">inside</span> the circle: its
+        perimeter is a bit <em>short</em> of the circle, so it gives a lower
+        bound. Draw one <span class="up-ink">around</span> the circle: its
+        perimeter <em>overshoots</em>, giving an upper bound. Add more sides and
+        both close in on the truth.
+      </p>
+      <p>
+        Drag the slider. You are not looking up \(\pi\) — you are
+        <em>manufacturing</em> a guarantee about it, and watching the guarantee
+        get sharper.
+      </p>
+    </div>
+
+    <div class="widget" id="w1">
+      <div class="widget-titlewrap">
+        <span class="widget-title">Squeezing &pi; between two polygons</span>
+        <span class="widget-tag">live &middot; drag the number of sides</span>
+      </div>
+      <div class="widget-controls">
+        <label>polygon sides &nbsp;n = <span class="val" id="w1-nV">6</span>
+          <input type="range" id="w1-n" min="3" max="60" step="1" value="6">
+        </label>
+      </div>
+      <canvas id="w1-canvas" class="widget-stage"></canvas>
+      <div class="legend">
+        <span><i class="swatch" style="background:var(--lower)"></i>inscribed &rarr; lower bound</span>
+        <span><i class="swatch" style="background:var(--upper)"></i>circumscribed &rarr; upper bound</span>
+        <span><i class="swatch" style="background:var(--true)"></i>the true &pi;</span>
+      </div>
+      <div class="readout" id="w1-readout"></div>
+      <p class="caption">The blue floor and red ceiling always trap the green
+        value. More sides &rarr; a narrower fence. The bound is real at every
+        step — only its <em>tightness</em> improves.</p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version</summary>
+      <div class="formal-body prose">
+        <p>
+          A unit circle has circumference \(2\pi\). A regular \(n\)-gon inscribed
+          in it has \(n\) sides each of length \(2\sin(\pi/n)\), so half its
+          perimeter is \(n\sin(\pi/n)\). The circumscribed \(n\)-gon has sides
+          \(2\tan(\pi/n)\), giving half-perimeter \(n\tan(\pi/n)\). Because the
+          inscribed polygon sits inside the circle and the circle inside the
+          circumscribed polygon,
+        </p>
+        \[ n\sin\!\left(\tfrac{\pi}{n}\right) \;<\; \pi \;<\; n\tan\!\left(\tfrac{\pi}{n}\right). \]
+        <p>
+          At \(n=6\) this reads \(3 < \pi < 3.4641\). As \(n\to\infty\) both sides
+          tend to \(\pi\) (since \(\sin x, \tan x \to x\)), so the fence closes
+          exactly. That is the anatomy of every bound: a computable
+          under-estimate, a computable over-estimate, and a guarantee that the
+          target lives between them.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 2 ===================== -->
+  <section class="concept-step" id="step-2">
+    <p class="step-num">Step 2 · the one move</p>
+    <h2>The whole trick: make each piece bigger</h2>
+    <div class="prose">
+      <p>
+        Here is the move that powers almost every upper bound you will ever meet.
+        Suppose you want to bound a sum but the terms are awkward. Replace
+        <em>each term</em> by something larger and easier. If every new piece is
+        at least as big as the old one, the new total must be at least as big as
+        the old total. So the messy sum is \(\le\) the tidy sum — a guaranteed
+        upper bound. (Flip every inequality and the same move gives a lower
+        bound.)
+      </p>
+      <p>
+        Let us try it on \(\displaystyle\sum_{k=1}^{n}\frac{1}{k^2}
+        = 1 + \tfrac14 + \tfrac19 + \cdots\). The crudest possible replacement:
+        every term is at most the <em>biggest</em> term, which is the first one,
+        \(1\). Round every bar up to that height. The sum is now trapped under
+        \(n\cdot 1 = n\).
+      </p>
+      <p>
+        Press the button and watch it happen. The rounded bars sit above the
+        true bars <em>everywhere</em> — so their total is a real, honest upper
+        bound. It is also, frankly, terrible: as \(n\) grows it races off to
+        infinity while the true sum barely moves. <strong>That gap is the
+        lesson.</strong> The move is always valid; the <em>art</em> is choosing a
+        replacement that is both easy <em>and</em> tight. Step 3 makes the
+        clever choice.
+      </p>
+    </div>
+
+    <div class="widget" id="w2">
+      <div class="widget-titlewrap">
+        <span class="widget-title">Rounding every term up to the tallest</span>
+        <span class="widget-tag">staged &middot; drag n</span>
+      </div>
+      <div class="widget-controls">
+        <label>number of terms &nbsp;n = <span class="val" id="w2-nV">6</span>
+          <input type="range" id="w2-n" min="2" max="12" step="1" value="6">
+        </label>
+      </div>
+      <canvas id="w2-canvas" class="widget-stage"></canvas>
+      <div class="reveal-bar">
+        <button id="w2-back" disabled>&larr; Back</button>
+        <span class="reveal-caption" id="w2-caption"></span>
+        <button id="w2-next">Round every term up &rarr;</button>
+      </div>
+      <div class="readout" id="w2-readout"></div>
+      <p class="caption">Green = the true terms \(1/k^2\). Red = each one rounded
+        up to the tallest. Red covers green everywhere, so
+        <span class="up-ink">crude total</span> \(\ge\)
+        <span class="tr-ink">true total</span> — valid, but loose.</p>
+    </div>
+  </section>
+
+  <!-- ===================== STEP 3 ===================== -->
+  <section class="concept-step" id="step-3">
+    <p class="step-num">Step 3 · example one — a clever algebraic swap</p>
+    <h2>A replacement that telescopes: \(\sum 1/k^2 < 2\)</h2>
+    <div class="prose">
+      <p>
+        Same sum, smarter swap. For \(k\ge 2\), compare \(1/k^2\) with
+        \(\dfrac{1}{k(k-1)}\). Since \(k(k-1) < k^2\), the second fraction is
+        <em>larger</em> — so it is a legal upper replacement. Why bother? Because
+        it splits into a difference:
+      </p>
+      \[ \frac{1}{k(k-1)} = \frac{1}{k-1} - \frac{1}{k}. \]
+      <p>
+        Now picture each replacement as a <strong>segment on a number line</strong>,
+        stretching from \(1/k\) up to \(1/(k-1)\). Its length is exactly that
+        difference. Line them up: the segment for \(k=2\) is \([\tfrac12, 1]\),
+        for \(k=3\) it is \([\tfrac13,\tfrac12]\), and so on. Each one starts
+        where the last ended — they <em>tile</em> the interval from \(1/n\) all
+        the way to \(1\) with no gaps and no overlaps. The endpoints cancel in a
+        chain (this cancelling is called <em>telescoping</em>), and the total
+        length is simply the whole span: \(1 - \tfrac{1}{n}\).
+      </p>
+      <p>
+        Build the picture stage by stage. The blue segments are the tiling; the
+        green shows each true term \(1/k^2\) nestled inside its segment. Since
+        every green fits inside its blue, the true sum is at most the total blue
+        length, which is under \(1\). Add back the one term we set aside
+        (\(k=1\), worth \(1\)) and the entire infinite sum is fenced under
+        <strong>2</strong>.
+      </p>
+
+      <div class="legend" style="margin: 4px 0 0;">
+        <span><i class="swatch" style="background:var(--lower)"></i>segment \(=1/(k{-}1)-1/k\) (the swap)</span>
+        <span><i class="swatch" style="background:var(--true)"></i>true term \(1/k^2\) (fits inside)</span>
+        <span><i class="swatch" style="background:var(--gold)"></i>slack we throw away</span>
+      </div>
+    </div>
+
+    <div class="widget" id="w3">
+      <div class="widget-titlewrap">
+        <span class="widget-title">Telescoping as a tiling of the number line</span>
+        <span class="widget-tag">staged &middot; drag n</span>
+      </div>
+      <div class="widget-controls">
+        <label>number of terms &nbsp;n = <span class="val" id="w3-nV">6</span>
+          <input type="range" id="w3-n" min="2" max="20" step="1" value="6">
+        </label>
+      </div>
+      <canvas id="w3-canvas" class="widget-stage"></canvas>
+      <div class="reveal-bar">
+        <button id="w3-back" disabled>&larr; Back</button>
+        <span class="reveal-caption" id="w3-caption"></span>
+        <button id="w3-next">Lay down the tiling &rarr;</button>
+      </div>
+      <div class="readout" id="w3-readout"></div>
+      <p class="caption">The segments tile \([1/n,\,1]\), so they total
+        \(1-1/n<1\). Every true term hides inside one, so the tail sum is
+        \(<1\); with the \(k{=}1\) term the whole sum is \(<2\).</p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version</summary>
+      <div class="formal-body prose">
+        <p>For \(k \ge 2\), \(\dfrac{1}{k^2} < \dfrac{1}{k(k-1)} = \dfrac1{k-1}-\dfrac1k\). Summing from \(2\) to \(n\), the middle terms cancel:</p>
+        \[ \sum_{k=2}^{n}\frac{1}{k^2} < \sum_{k=2}^{n}\left(\frac1{k-1}-\frac1k\right) = 1 - \frac1n. \]
+        <p>Adding the \(k=1\) term gives \(\displaystyle\sum_{k=1}^{n}\frac1{k^2} < 2 - \frac1n < 2\) for every \(n\). The true limit is \(\pi^2/6 \approx 1.6449\) — comfortably under the fence of \(2\), and far tighter than Step 2's crude bound of \(n\).</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 4 ===================== -->
+  <section class="concept-step" id="step-4">
+    <p class="step-num">Step 4 · example two — swap a sum for an area</p>
+    <h2>When the terms follow a curve, bound them by its area</h2>
+    <div class="prose">
+      <p>
+        Sometimes the cleverest replacement is not another sum — it is an
+        <em>integral</em>. The harmonic sum \(H_n = 1 + \tfrac12 + \tfrac13 +
+        \cdots + \tfrac1n\) has no tidy closed form, but its terms trace the
+        curve \(y = 1/x\). So draw each term as a rectangle of width \(1\) and
+        height \(1/k\). The sum becomes a staircase of area \(H_n\), and we can
+        trap that staircase between two copies of the smooth area under the curve
+        — which we <em>can</em> compute, because \(\int 1/x\,dx = \ln x\).
+      </p>
+      <p>
+        The direction is the whole game, so go slowly. Because \(1/x\) is
+        <em>decreasing</em>, sliding each rectangle one step to the right drops
+        it <em>under</em> the curve; sliding it left lifts it <em>above</em>.
+        That single fact hands you both fences:
+      </p>
+      <ul class="prose">
+        <li>Line the bars up so each sits <span class="up-ink">above</span> the
+          curve (height \(1/k\) on \([k,k+1]\)). Their area \(H_n\) exceeds the
+          area under the curve from \(1\) to \(n{+}1\): so
+          \(H_n > \ln(n{+}1)\) — a <span class="lo-ink">lower</span> fence.</li>
+        <li>Line them up to sit <span class="lo-ink">below</span> the curve
+          instead. Now their area \(H_n - 1\) is less than the area from \(1\) to
+          \(n\): so \(H_n < 1 + \ln n\) — an <span class="up-ink">upper</span>
+          fence.</li>
+      </ul>
+      <p>
+        Step through the stages and read the fence off the picture. The same
+        curve, approached from above and from below, sandwiches a sum that has no
+        formula of its own.
+      </p>
+    </div>
+
+    <div class="widget" id="w4">
+      <div class="widget-titlewrap">
+        <span class="widget-title">Trapping the harmonic sum under a curve</span>
+        <span class="widget-tag">staged &middot; drag n</span>
+      </div>
+      <div class="widget-controls">
+        <label>number of terms &nbsp;n = <span class="val" id="w4-nV">8</span>
+          <input type="range" id="w4-n" min="2" max="30" step="1" value="8">
+        </label>
+      </div>
+      <canvas id="w4-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w4-readout"></div>
+      <p class="caption">Rectangles = the sum \(H_n\); the shaded region = the
+        computable area \(\int 1/x\,dx = \ln\). Above the curve gives the
+        <span class="lo-ink">lower</span> fence, below it the
+        <span class="up-ink">upper</span>.</p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version</summary>
+      <div class="formal-body prose">
+        <p>For decreasing \(f(x)=1/x\), on each unit interval the left endpoint is the max and the right endpoint the min. Comparing rectangle areas to \(\int f\):</p>
+        \[ \ln(n+1)=\int_1^{n+1}\!\frac{dx}{x} \;\le\; \sum_{k=1}^{n}\frac1k \;\le\; 1+\int_1^{n}\!\frac{dx}{x}=1+\ln n. \]
+        <p>Check at \(n=10\): \(\ln 11 \approx 2.398 \le H_{10} \approx 2.929 \le 1+\ln 10 \approx 3.303\). The fence has width \(1+\ln n-\ln(n+1)\to 1\), which is why \(H_n \approx \ln n + \gamma\) with \(\gamma\approx 0.577\) (the Euler–Mascheroni constant) sitting inside forever.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 5 ===================== -->
+  <section class="concept-step" id="step-5">
+    <p class="step-num">Step 5 · example three — bounding a probability</p>
+    <h2>The same move, in a new world: Markov's inequality</h2>
+    <div class="prose">
+      <p>
+        The move is not just for sums. Here is a question about chance:
+        <em>if a non-negative quantity has average value \(\mu\), how much of it
+        can pile up far out at value \(a\) or beyond?</em> Intuition says: not
+        much, because anything sitting way out there is expensive — it drags the
+        average up. Let us turn that intuition into a computed bound with the
+        exact same replace-and-keep-direction move.
+      </p>
+      <p>
+        Replace the quantity \(X\) with a cruder stand-in: the step function that
+        is \(a\) whenever \(X \ge a\), and \(0\) otherwise. Since \(X\) is
+        non-negative, \(X\) is <em>always at least</em> this stand-in. Taking
+        averages (which preserves \(\ge\)) gives
+        \(\mu = \mathbb{E}[X] \ge a\cdot\mathbb{P}(X\ge a)\), and dividing by
+        \(a\):
+      </p>
+      \[ \mathbb{P}(X \ge a) \;\le\; \frac{\mathbb{E}[X]}{a}. \]
+      <p>
+        That is <strong>Markov's inequality</strong>. Now feel <em>why</em> it
+        cannot be beaten. In the widget the average is held fixed at a budget of
+        \(\mu = 1\). You slide where a lump of probability mass sits; to keep the
+        average fixed, pushing the lump out to distance \(x\) means you can only
+        afford a fraction \(1/x\) of it there (the rest falls back to \(0\)).
+      </p>
+      <p>
+        Try to make the tail \(\mathbb{P}(X\ge a)\) as large as you can. You will
+        discover you cannot lift it past the dashed ceiling \(\mu/a\) — and it
+        <em>touches</em> that ceiling only when the lump sits exactly at \(a\).
+        Push farther out and the budget forces the lump to shrink; pull it in and
+        it stops counting. The bound is tight, and the widget lets you bump into
+        the reason.
+      </p>
+    </div>
+
+    <div class="widget" id="w5">
+      <div class="widget-titlewrap">
+        <span class="widget-title">Fixed average budget vs. the Markov ceiling</span>
+        <span class="widget-tag">reshape &middot; drag the mass &amp; threshold</span>
+      </div>
+      <div class="widget-controls">
+        <label>threshold &nbsp;a = <span class="val" id="w5-aV">2.0</span>
+          <input type="range" id="w5-a" min="1.2" max="6" step="0.1" value="2">
+        </label>
+        <label>where the lump sits &nbsp;x = <span class="val" id="w5-xV">2.00</span>
+          <input type="range" id="w5-x" min="1" max="6" step="0.05" value="2">
+        </label>
+      </div>
+      <canvas id="w5-canvas" class="widget-stage"></canvas>
+      <div class="legend">
+        <span><i class="swatch" style="background:var(--ink-soft)"></i>mass parked at 0</span>
+        <span><i class="swatch" style="background:var(--upper)"></i>mass out at x</span>
+        <span><i class="swatch" style="background:var(--lower)"></i>tail \(\mathbb P(X\ge a)\)</span>
+      </div>
+      <div class="readout" id="w5-readout"></div>
+      <p class="caption">The average is pinned at \(\mu = 1.00\) no matter where
+        you drag. The <span class="lo-ink">tail bar</span> can rise to the dashed
+        ceiling \(\mu/a\) but never above it — touching only at \(x=a\).</p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version</summary>
+      <div class="formal-body prose">
+        <p>For \(X \ge 0\) and \(a>0\), the indicator inequality \(X \ge a\,\mathbf{1}\{X\ge a\}\) holds pointwise (if \(X\ge a\) both sides are \(\ge a\); otherwise the right side is \(0\le X\)). Taking expectations, which respects \(\ge\):</p>
+        \[ \mathbb{E}[X] \;\ge\; a\,\mathbb{E}[\mathbf{1}\{X\ge a\}] \;=\; a\,\mathbb{P}(X\ge a). \]
+        <p>Hence \(\mathbb{P}(X\ge a)\le \mathbb{E}[X]/a\). Equality needs \(X\ge a\,\mathbf1\{X\ge a\}\) to be tight: all mass at \(0\) or exactly \(a\). The two-point law with mass \(\mu/a\) at \(a\) and \(1-\mu/a\) at \(0\) has mean \(\mu\) and tail exactly \(\mu/a\) — the widget's extremal state.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 6 ===================== -->
+  <section class="concept-step" id="step-6">
+    <p class="step-num">Step 6 · example four — bounding an intractable integral</p>
+    <h2>The ELBO: a lower bound that trains modern AI</h2>
+    <div class="prose">
+      <p>
+        Here is a bound worth a whole field. In a probabilistic model you have
+        things you can see (data \(x\)) and hidden things you cannot (latent
+        variables \(z\) — a cause, a cluster label, a compressed code). To score
+        how well the model explains the data you want the
+        <em>evidence</em> \(p(x)\): the probability of the data with every
+        possible hidden \(z\) summed out.
+      </p>
+      \[ p(x) = \int p(x,z)\,dz. \]
+      <p>
+        That integral is the wall. For any interesting model it ranges over a
+        huge or continuous space of hidden values and cannot be computed. This is
+        exactly the situation from Step 1 — a number you cannot evaluate directly
+        — so we do the same thing: <strong>build a computable fence.</strong> The
+        ELBO is the floor.
+      </p>
+
+      <h3 style="font-family:var(--font-display);font-weight:500;font-size:1.15rem;margin:1.4em 0 0.4em;">Bring in a guess, then use one inequality</h3>
+      <p>
+        Invent any distribution \(q(z)\) over the hidden variable — your
+        <em>guess</em> at where \(z\) probably is. Multiply and divide by it, which
+        turns the integral into an <em>average</em> over your own guess:
+      </p>
+      \[ \log p(x) = \log \int q(z)\,\frac{p(x,z)}{q(z)}\,dz
+                   = \log \, \mathbb{E}_{q}\!\left[\frac{p(x,z)}{q(z)}\right]. \]
+      <p>
+        Now the one new tool. The logarithm is <em>concave</em> — it bends
+        downward, so any chord joining two points on the curve lies
+        <em>below</em> it. A quick consequence, called
+        <strong>Jensen's inequality</strong>: taking the log of an average is at
+        least the average of the logs, \(\log \mathbb{E}[Y] \ge \mathbb{E}[\log Y]\).
+        The curvature only ever helps you in this one direction — which is
+        precisely what makes it a bound. Apply it:
+      </p>
+      \[ \log p(x) \;\ge\; \mathbb{E}_{q}\!\left[\log \frac{p(x,z)}{q(z)}\right]
+        \;=\; \underbrace{\mathbb{E}_{q}\!\big[\log p(x,z)\big] - \mathbb{E}_{q}\!\big[\log q(z)\big]}_{\textstyle \text{the ELBO}}. \]
+      <p>
+        Look at what happened: the intractable integral became an
+        <em>expectation under \(q\)</em>, a distribution <em>we chose</em> to be
+        easy. Every piece on the right is computable. That is the whole trick — the
+        same replace-in-a-known-direction move as telescoping and Markov, now
+        powered by the concavity of the log. The name says it: the
+        <strong>E</strong>vidence <strong>L</strong>ower <strong>BO</strong>und.
+      </p>
+
+      <h3 style="font-family:var(--font-display);font-weight:500;font-size:1.15rem;margin:1.4em 0 0.4em;">How loose is the fence? Exactly KL</h3>
+      <p>
+        A bound is only as good as its slack, so measure it. The gap between the
+        true evidence and the ELBO turns out to be an exact, familiar quantity —
+        the <em>Kullback–Leibler divergence</em> from your guess \(q\) to the true
+        posterior \(p(z\mid x)\), a measure of how different two distributions are
+        (always \(\ge 0\), and \(0\) only when they match):
+      </p>
+      \[ \log p(x) - \text{ELBO}(q) \;=\; \mathrm{KL}\big(q(z)\,\big\|\,p(z\mid x)\big) \;\ge\; 0. \]
+      <p>
+        So — just like Markov's ceiling in Step 5 — the bound is
+        <mark>tight exactly when your guess is right</mark>: when \(q\) equals the
+        true posterior, the slack vanishes and the ELBO <em>equals</em> the
+        evidence. And it hands you a free algorithm: since \(\log p(x)\) is a fixed
+        ceiling, <em>raising the ELBO can only mean shrinking the KL</em> —
+        pushing your guess toward the truth. Maximizing a computable lower bound
+        quietly does inference for you.
+      </p>
+      <p>
+        Feel it below. The model is fully worked out (Gaussian prior, one noisy
+        observation \(x=2\)), so the true posterior — the green target — is known.
+        Drag your guess \(q\) (blue). Watch the ELBO climb toward the fixed
+        evidence ceiling, the gold KL-gap close, and the bound snap tight the
+        instant blue lands on green.
+      </p>
+    </div>
+
+    <div class="widget" id="w6">
+      <div class="widget-titlewrap">
+        <span class="widget-title">Chasing the evidence with a guessed posterior</span>
+        <span class="widget-tag">live &middot; drag the guess q</span>
+      </div>
+      <div class="widget-controls">
+        <label>guess mean &nbsp;m = <span class="val" id="w6-mV">0.00</span>
+          <input type="range" id="w6-m" min="-3" max="3" step="0.05" value="0">
+        </label>
+        <label>guess width &nbsp;s = <span class="val" id="w6-sV">1.00</span>
+          <input type="range" id="w6-s" min="0.25" max="3" step="0.01" value="1">
+        </label>
+        <label style="min-width:auto;justify-content:flex-end;">
+          <span style="visibility:hidden;">.</span>
+          <span style="display:flex;gap:8px;">
+            <button id="w6-snap">Snap q to posterior</button>
+            <button id="w6-reset">Reset</button>
+          </span>
+        </label>
+      </div>
+      <canvas id="w6-canvas" class="widget-stage"></canvas>
+      <div class="legend">
+        <span><i class="swatch" style="background:var(--true)"></i>true posterior \(p(z\mid x)\) &mdash; the target</span>
+        <span><i class="swatch" style="background:var(--lower)"></i>your guess \(q(z)\)</span>
+        <span><i class="swatch" style="background:var(--gold)"></i>KL gap = the bound's slack</span>
+      </div>
+      <div class="readout" id="w6-readout"></div>
+      <p class="caption">The <span class="up-ink">evidence</span> is a fixed
+        ceiling. The <span class="lo-ink">ELBO</span> sits below it by exactly
+        \(\mathrm{KL}(q\,\|\,\text{posterior})\) — and touches it only when the
+        blue guess matches the green posterior.</p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version</summary>
+      <div class="formal-body prose">
+        <p>Starting from \(\log p(x)=\log\mathbb{E}_q[p(x,z)/q(z)]\) and adding-and-subtracting \(\log q\), the gap is</p>
+        \[ \log p(x) - \text{ELBO}(q) = \mathbb{E}_q\!\left[\log\frac{q(z)}{p(z\mid x)}\right] = \mathrm{KL}(q\,\|\,p(z\mid x)) \ge 0, \]
+        <p>using \(p(x,z)=p(z\mid x)\,p(x)\). The widget's model is \(z\sim\mathcal N(0,1)\), \(x\mid z\sim\mathcal N(z,1)\), \(x=2\), giving evidence \(p(x)=\mathcal N(2;0,2)\) so \(\log p(x)=-2.2655\), and posterior \(p(z\mid x)=\mathcal N(1,\tfrac12)\). At the default guess \(q=\mathcal N(0,1)\), \(\mathrm{KL}=1.1534\) and \(\text{ELBO}=-3.4189\); snapping to \(q=\mathcal N(1,\tfrac12)\) drives \(\mathrm{KL}\to 0\) and the ELBO up to the evidence. This is precisely the objective a variational autoencoder maximizes, with \(q\) produced by an <em>encoder</em> network and \(p(x,z)\) by a <em>decoder</em>.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== RECAP ===================== -->
+  <section class="recap prose">
+    <h2>Putting it together</h2>
+    <p>
+      Four pictures, one move. To fence a value you cannot compute, you replace
+      its parts with parts you <em>can</em> — each one nudged
+      <span class="up-ink">up</span> for a ceiling or
+      <span class="lo-ink">down</span> for a floor — and the inequality carries
+      the guarantee through.
+    </p>
+    <ul>
+      <li><strong>&pi;.</strong> Swap the circle for polygons you can measure;
+        inside gives a floor, outside a ceiling.</li>
+      <li><strong>The crude bound.</strong> Swap every term for the biggest one:
+        always valid, usually loose. The move works; the choice matters.</li>
+      <li><strong>Telescoping.</strong> Swap \(1/k^2\) for \(1/(k(k{-}1))\) — a
+        touch bigger, but it collapses to \(1-1/n\), fencing the sum under 2.</li>
+      <li><strong>Integral comparison.</strong> Swap the staircase for the area
+        under \(1/x\); approached from above and below it sandwiches \(H_n\).</li>
+      <li><strong>Markov.</strong> Swap \(X\) for a step function beneath it;
+        averaging turns \(X \ge a\,\mathbf1\{X\ge a\}\) into a tail bound.</li>
+      <li><strong>ELBO.</strong> Swap the intractable evidence \(\log p(x)\) for an
+        expectation under a guess \(q\); the concavity of the log (Jensen) makes
+        it a lower bound, and the slack is exactly
+        \(\mathrm{KL}(q\,\|\,p(z\mid x))\) — zero when the guess is the true
+        posterior.</li>
+    </ul>
+    <p>
+      So the kernel holds all the way down: <em>a bound is the hard thing with
+      each piece traded for a simpler piece in a known direction.</em> Finding a
+      bound is never about being exact — it is about being
+      <span class="tr-ink">honestly, computably wrong in a direction you
+      control.</span>
+    </p>
+    <p style="color:var(--ink-soft); font-style:italic;">
+      Where it shows up: error bars on every measurement, the \(O(\cdot)\) that
+      caps an algorithm's running time, confidence intervals, convergence proofs,
+      the ELBO that trains variational autoencoders and powers modern Bayesian
+      inference, and every "at most / at least" guarantee an engineer signs their
+      name to.
+    </p>
+  </section>
+
+</div>
+
+<script>
+/* =========================================================================
+   SHARED CANVAS HELPERS
+   ========================================================================= */
+const RENDER_SCALE = Math.max((window.devicePixelRatio || 1) * 2.5, 3);
+function setupCanvas(canvas, cssW, cssH) {
+  canvas.style.width = cssW + 'px';
+  canvas.style.maxWidth = '100%';
+  canvas.style.height = cssH + 'px';
+  canvas.width  = Math.round(cssW * RENDER_SCALE);
+  canvas.height = Math.round(cssH * RENDER_SCALE);
+  const ctx = canvas.getContext('2d');
+  ctx.scale(RENDER_SCALE, RENDER_SCALE);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  canvas._cssW = cssW; canvas._cssH = cssH;
+  return ctx;
+}
+function makeView(canvas, b) {
+  const w = canvas._cssW, h = canvas._cssH;
+  return {
+    ...b, w, h,
+    x: mx => (mx - b.xmin) / (b.xmax - b.xmin) * w,
+    y: my => h - (my - b.ymin) / (b.ymax - b.ymin) * h
+  };
+}
+const CSS = getComputedStyle(document.documentElement);
+const COL = {
+  ink:   CSS.getPropertyValue('--ink').trim(),
+  soft:  CSS.getPropertyValue('--ink-soft').trim(),
+  upper: CSS.getPropertyValue('--upper').trim(),
+  lower: CSS.getPropertyValue('--lower').trim(),
+  tru:   CSS.getPropertyValue('--true').trim(),
+  gold:  CSS.getPropertyValue('--gold').trim(),
+  line:  CSS.getPropertyValue('--line').trim(),
+  axis:  CSS.getPropertyValue('--axis').trim(),
+  bg:    CSS.getPropertyValue('--bg').trim()
+};
+const MONO = '600 13px "JetBrains Mono", ui-monospace, monospace';
+const MONOb = 'bold 15px "JetBrains Mono", ui-monospace, monospace';
+function hex(c, aa) { return c + aa; } // c is #rrggbb, aa two-digit alpha
+
+/* =========================================================================
+   STEP 1 — Archimedes' polygon squeeze on pi
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('w1-canvas');
+  const ctx = setupCanvas(canvas, 760, 360);
+  const W = canvas._cssW, H = canvas._cssH;
+  const nEl = document.getElementById('w1-n');
+  const out = document.getElementById('w1-readout');
+  const cx = 200, cy = 180, R = 130;
+
+  function poly(n, radius, offset) {
+    const pts = [];
+    for (let i = 0; i < n; i++) {
+      const a = -Math.PI/2 + offset + i * 2*Math.PI/n;
+      pts.push([cx + radius*Math.cos(a), cy + radius*Math.sin(a)]);
+    }
+    return pts;
+  }
+  function stroke(pts, color, wdt, fill) {
+    ctx.beginPath();
+    pts.forEach((p,i)=> i? ctx.lineTo(p[0],p[1]) : ctx.moveTo(p[0],p[1]));
+    ctx.closePath();
+    if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+    ctx.strokeStyle = color; ctx.lineWidth = wdt; ctx.stroke();
+  }
+
+  function draw() {
+    const n = parseInt(nEl.value);
+    document.getElementById('w1-nV').textContent = n;
+    const lo = n * Math.sin(Math.PI/n);
+    const hi = n * Math.tan(Math.PI/n);
+    ctx.clearRect(0,0,W,H);
+
+    // circumscribed (upper) filled faint, then inscribed
+    const Rc = R / Math.cos(Math.PI/n);
+    stroke(poly(n, Rc, Math.PI/n), COL.upper, 2.4, hex(COL.upper,'12'));
+    // the true circle
+    ctx.beginPath(); ctx.arc(cx, cy, R, 0, 2*Math.PI);
+    ctx.strokeStyle = COL.tru; ctx.lineWidth = 2.2; ctx.stroke();
+    // inscribed (lower)
+    stroke(poly(n, R, 0), COL.lower, 2.4, null);
+
+    // ---- number-line bracket, zoomed near pi ----
+    const bx0 = 430, bx1 = 730, by = 150, span0 = 2.9, span1 = 3.5;
+    const toX = v => bx0 + (v - span0)/(span1 - span0) * (bx1 - bx0);
+    // baseline
+    ctx.strokeStyle = COL.axis; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(bx0, by); ctx.lineTo(bx1, by); ctx.stroke();
+    // ticks
+    ctx.font = MONO; ctx.fillStyle = COL.soft; ctx.textAlign = 'center';
+    [2.9,3.0,3.1,3.2,3.3,3.4,3.5].forEach(v=>{
+      const x = toX(v);
+      ctx.strokeStyle = COL.line; ctx.beginPath(); ctx.moveTo(x,by-4); ctx.lineTo(x,by+4); ctx.stroke();
+      ctx.fillText(v.toFixed(1), x, by+20);
+    });
+    // shaded fence [lo,hi] (clamp to view)
+    const cL = Math.max(lo, span0), cH = Math.min(hi, span1);
+    if (cH > cL) {
+      ctx.fillStyle = hex(COL.gold,'33');
+      ctx.fillRect(toX(cL), by-34, toX(cH)-toX(cL), 28);
+    }
+    function mark(v, color, label, dy) {
+      if (v < span0 || v > span1) return;
+      const x = toX(v);
+      ctx.strokeStyle = color; ctx.lineWidth = 2.4;
+      ctx.beginPath(); ctx.moveTo(x, by-34); ctx.lineTo(x, by+6); ctx.stroke();
+      ctx.fillStyle = color; ctx.font = MONOb; ctx.textAlign = 'center';
+      ctx.fillText(label, x, dy);
+    }
+    mark(Math.PI, COL.tru, 'pi', by-42);
+    mark(lo, COL.lower, 'lo', by-58);
+    mark(hi, COL.upper, 'hi', by-58);
+
+    // title over the bracket
+    ctx.fillStyle = COL.soft; ctx.font = MONO; ctx.textAlign = 'left';
+    ctx.fillText('the fence around pi, zoomed in', bx0, 60);
+
+    out.innerHTML =
+      '<b style="color:'+COL.lower+'">'+lo.toFixed(5)+'</b>' +
+      '  &lt;  <b style="color:'+COL.tru+'">&pi; = '+Math.PI.toFixed(5)+'</b>  &lt;  ' +
+      '<b style="color:'+COL.upper+'">'+hi.toFixed(5)+'</b>' +
+      '&nbsp;&nbsp;·&nbsp;&nbsp;fence width = <b>'+(hi-lo).toFixed(5)+'</b>';
+  }
+  nEl.addEventListener('input', draw);
+  draw();
+})();
+
+/* =========================================================================
+   STEP 2 — crude bound: round every 1/k^2 up to the max term
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('w2-canvas');
+  const ctx = setupCanvas(canvas, 760, 340);
+  const W = canvas._cssW, H = canvas._cssH;
+  const nEl = document.getElementById('w2-n');
+  const out = document.getElementById('w2-readout');
+  const backBtn = document.getElementById('w2-back');
+  const nextBtn = document.getElementById('w2-next');
+  const capEl   = document.getElementById('w2-caption');
+  let stage = 0; // 0 = true bars, 1 = rounded up
+
+  const captions = [
+    'The true terms 1/k^2 shrink fast. Their sum is small and settles down.',
+    'Every bar rounded up to the tallest (=1). Total is now n - a real ceiling, but a wasteful one.'
+  ];
+
+  function draw() {
+    const n = parseInt(nEl.value);
+    document.getElementById('w2-nV').textContent = n;
+    ctx.clearRect(0,0,W,H);
+    const padL = 56, padR = 24, padB = 54, padT = 30;
+    const plotW = W - padL - padR, plotH = H - padB - padT;
+    const maxT = 1;                       // tallest term, k=1
+    const yScale = plotH / (maxT * 1.05);
+    const bw = plotW / n;
+    const baseY = padT + plotH;
+
+    // axis
+    ctx.strokeStyle = COL.axis; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(padL, baseY); ctx.lineTo(padL+plotW, baseY);
+    ctx.moveTo(padL, baseY); ctx.lineTo(padL, padT); ctx.stroke();
+    ctx.fillStyle = COL.soft; ctx.font = MONO; ctx.textAlign = 'right';
+    ctx.fillText('1.0', padL-8, padT+12);
+    ctx.fillText('0', padL-8, baseY+4);
+
+    let trueSum = 0;
+    for (let k=1;k<=n;k++) trueSum += 1/(k*k);
+    const crude = n * maxT;
+
+    // rounded (red) bars behind, if stage 1
+    for (let k=1;k<=n;k++) {
+      const x = padL + (k-1)*bw + bw*0.14;
+      const w = bw*0.72;
+      const t = 1/(k*k);
+      if (stage===1) {
+        const hR = maxT*yScale;
+        ctx.fillStyle = hex(COL.upper,'22');
+        ctx.strokeStyle = hex(COL.upper,'99');
+        ctx.lineWidth = 1.2;
+        ctx.fillRect(x, baseY-hR, w, hR);
+        ctx.strokeRect(x, baseY-hR, w, hR);
+      }
+      const hT = t*yScale;
+      ctx.fillStyle = COL.tru;
+      ctx.fillRect(x, baseY-hT, w, hT);
+      // k labels (only if not too many)
+      if (n <= 12) {
+        ctx.fillStyle = COL.soft; ctx.font = MONO; ctx.textAlign='center';
+        ctx.fillText(k, x+w/2, baseY+18);
+      }
+    }
+    ctx.fillStyle = COL.soft; ctx.font = MONO; ctx.textAlign='center';
+    ctx.fillText('k  (term index)', padL+plotW/2, baseY+40);
+
+    // running-total readout bars on the right-top corner
+    out.innerHTML =
+      '<b style="color:'+COL.tru+'">true sum &Sigma; 1/k&sup2; = '+trueSum.toFixed(4)+'</b>' +
+      (stage===1
+        ? '&nbsp;&nbsp;&le;&nbsp;&nbsp;<b style="color:'+COL.upper+'">crude ceiling n&middot;1 = '+crude+'</b>'
+          + '&nbsp;&nbsp;·&nbsp;&nbsp;overshoot factor &asymp; <b>'+(crude/trueSum).toFixed(1)+'&times;</b>'
+        : '&nbsp;&nbsp;·&nbsp;&nbsp;press the button to round every term up');
+
+    capEl.textContent = captions[stage];
+    backBtn.disabled = stage===0;
+    nextBtn.style.display = stage===0 ? '' : 'none';
+  }
+  nextBtn.addEventListener('click', ()=>{ if(stage<1){stage=1;draw();} });
+  backBtn.addEventListener('click', ()=>{ if(stage>0){stage=0;draw();} });
+  nEl.addEventListener('input', draw);
+  draw();
+})();
+
+/* =========================================================================
+   STEP 3 — telescoping as a tiling of [1/n, 1]
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('w3-canvas');
+  const ctx = setupCanvas(canvas, 760, 300);
+  const W = canvas._cssW, H = canvas._cssH;
+  const nEl = document.getElementById('w3-n');
+  const out = document.getElementById('w3-readout');
+  const backBtn = document.getElementById('w3-back');
+  const nextBtn = document.getElementById('w3-next');
+  const capEl   = document.getElementById('w3-caption');
+  let stage = 0;
+
+  const stages = [
+    { label:'Lay down the tiling &rarr;',
+      cap:'The reciprocals 1/k crowd toward 0. We will fill the gaps between them.' },
+    { label:'Nestle the true terms in &rarr;',
+      cap:'Each blue segment [1/k, 1/(k-1)] is one telescoping swap. Together they tile [1/n, 1].' },
+    { label:'Read off the fence &rarr;',
+      cap:'Every true term 1/k^2 (green) fits inside its segment, with gold slack to spare.' },
+    { label:null,
+      cap:'So the tail sum < total blue = 1 - 1/n < 1. Add the k=1 term: the whole sum < 2.' }
+  ];
+
+  const axY = 120, x0 = 60, x1 = 720;
+  const toX = v => x0 + v*(x1-x0);   // v in [0,1]
+
+  function draw() {
+    const n = parseInt(nEl.value);
+    document.getElementById('w3-nV').textContent = n;
+    ctx.clearRect(0,0,W,H);
+
+    // baseline
+    ctx.strokeStyle = COL.axis; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(x0, axY); ctx.lineTo(x1, axY); ctx.stroke();
+
+    // reciprocal ticks (stage >=0)
+    ctx.textAlign='center';
+    for (let k=1;k<=n;k++){
+      const x = toX(1/k);
+      ctx.strokeStyle = COL.line; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(x, axY-6); ctx.lineTo(x, axY+6); ctx.stroke();
+      // label only a few to avoid clutter
+      if (k<=4 || k===n) {
+        ctx.fillStyle = COL.soft; ctx.font = MONO;
+        ctx.fillText(k===1?'1':('1/'+k), x, axY+22);
+      }
+    }
+
+    let tail = 0;   // sum_{k=2}^n 1/k^2
+    for (let k=2;k<=n;k++) tail += 1/(k*k);
+    const blueTotal = 1 - 1/n;
+    const wholeSum = 1 + tail;
+
+    // segments + true terms
+    const segH = 30;
+    for (let k=2;k<=n;k++){
+      const left = toX(1/k), right = toX(1/(k-1));
+      const segLen = 1/(k-1) - 1/k;      // value length
+      const term = 1/(k*k);
+      if (stage>=1) {
+        // blue segment (the swap)
+        ctx.fillStyle = hex(COL.lower,'2e');
+        ctx.strokeStyle = hex(COL.lower,'cc'); ctx.lineWidth=1;
+        ctx.fillRect(left, axY-segH, right-left, segH);
+        ctx.strokeRect(left, axY-segH, right-left, segH);
+      }
+      if (stage>=2) {
+        // gold slack fills the whole segment first...
+        ctx.fillStyle = hex(COL.gold,'40');
+        ctx.fillRect(left, axY-segH, right-left, segH);
+        // ...then green true term over the left portion (width term/segLen of segment)
+        const gw = (right-left) * (term/segLen);
+        ctx.fillStyle = COL.tru;
+        ctx.fillRect(left, axY-segH, gw, segH);
+      }
+    }
+
+    // stage 3: the < 2 budget bar
+    if (stage>=3) {
+      const bx0 = 60, bx1 = 720, by = 235, val2 = 2;
+      const bToX = v => bx0 + v/val2*(bx1-bx0);
+      ctx.strokeStyle = COL.axis; ctx.lineWidth=1.2;
+      ctx.beginPath(); ctx.moveTo(bx0,by); ctx.lineTo(bx1,by); ctx.stroke();
+      ctx.font=MONO; ctx.fillStyle=COL.soft; ctx.textAlign='center';
+      [0,0.5,1,1.5,2].forEach(v=>{
+        const x=bToX(v); ctx.strokeStyle=COL.line;
+        ctx.beginPath(); ctx.moveTo(x,by-4); ctx.lineTo(x,by+4); ctx.stroke();
+        ctx.fillText(v.toFixed(1), x, by+18);
+      });
+      // the true whole sum filled
+      ctx.fillStyle = hex(COL.tru,'55');
+      ctx.fillRect(bx0, by-24, bToX(wholeSum)-bx0, 20);
+      ctx.fillStyle = COL.tru; ctx.textAlign='left'; ctx.font=MONOb;
+      ctx.fillText('sum = '+wholeSum.toFixed(3), bx0+4, by-30);
+      // ceiling at 2
+      ctx.strokeStyle = COL.upper; ctx.lineWidth=2.4;
+      ctx.beginPath(); ctx.moveTo(bToX(2), by-30); ctx.lineTo(bToX(2), by+6); ctx.stroke();
+      ctx.fillStyle=COL.upper; ctx.textAlign='right';
+      ctx.fillText('ceiling 2', bToX(2)-6, by-34);
+    }
+
+    // spanning brace label for blue total
+    if (stage>=1 && stage<3) {
+      ctx.fillStyle = COL.lower; ctx.font = MONO; ctx.textAlign='center';
+      ctx.fillText('total blue length = 1 - 1/n = '+blueTotal.toFixed(4),
+                   (toX(1/n)+toX(1))/2, axY-segH-14);
+    }
+
+    out.innerHTML =
+      '<b style="color:'+COL.tru+'">&Sigma; 1/k&sup2; = '+wholeSum.toFixed(4)+'</b>' +
+      '&nbsp;&nbsp;&lt;&nbsp;&nbsp;<b>2 - 1/n = '+(2-1/n).toFixed(4)+'</b>' +
+      '&nbsp;&nbsp;&lt;&nbsp;&nbsp;<b style="color:'+COL.upper+'">2</b>' +
+      '&nbsp;&nbsp;·&nbsp;&nbsp;true limit &pi;&sup2;/6 &asymp; 1.6449';
+
+    capEl.innerHTML = stages[stage].cap;
+    backBtn.disabled = stage===0;
+    if (stages[stage].label) { nextBtn.style.display=''; nextBtn.innerHTML = stages[stage].label; }
+    else nextBtn.style.display='none';
+  }
+  nextBtn.addEventListener('click', ()=>{ if(stage<stages.length-1){stage++;draw();} });
+  backBtn.addEventListener('click', ()=>{ if(stage>0){stage--;draw();} });
+  nEl.addEventListener('input', draw);
+  draw();
+})();
+
+/* =========================================================================
+   STEP 4 — integral comparison for the harmonic sum
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('w4-canvas');
+  const ctx = setupCanvas(canvas, 760, 360);
+  const nEl = document.getElementById('w4-n');
+  const out = document.getElementById('w4-readout');
+  let stage = 0;
+
+  // The step-4 widget in HTML has only the canvas + readout; inject a reveal bar.
+  const widget = document.getElementById('w4');
+  const bar = document.createElement('div');
+  bar.className = 'reveal-bar';
+  bar.innerHTML =
+    '<button id="w4-back" disabled>&larr; Back</button>' +
+    '<span class="reveal-caption" id="w4-caption"></span>' +
+    '<button id="w4-next">Bars above the curve &rarr;</button>';
+  widget.insertBefore(bar, out);
+  const bBack = document.getElementById('w4-back');
+  const bNext = document.getElementById('w4-next');
+  const capEl = document.getElementById('w4-caption');
+
+  const stages = [
+    { label:'Bars above the curve &rarr;',
+      cap:'The curve y = 1/x. Each harmonic term will become a width-1 bar of height 1/k.' },
+    { label:'Now bars below &rarr;',
+      cap:'Bars pushed LEFT sit above the curve. Their area H_n exceeds the area under it: H_n > ln(n+1).' },
+    { label:'Read the sandwich &rarr;',
+      cap:'Bars pushed RIGHT sit below the curve. Their area H_n - 1 is under it: H_n < 1 + ln n.' },
+    { label:null,
+      cap:'Both fences at once: ln(n+1) < H_n < 1 + ln n. A sum with no formula, trapped by an area that has one.' }
+  ];
+
+  function draw() {
+    const n = parseInt(nEl.value);
+    document.getElementById('w4-nV').textContent = n;
+    setupNothing();
+    const view = makeView(canvas, {xmin:0, xmax:n+1, ymin:0, ymax:1.15});
+    ctx.clearRect(0,0,view.w,view.h);
+
+    // axes
+    ctx.strokeStyle = COL.axis; ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(view.x(0), view.y(0)); ctx.lineTo(view.x(n+1), view.y(0));
+    ctx.moveTo(view.x(0), view.y(0)); ctx.lineTo(view.x(0), view.y(1.15));
+    ctx.stroke();
+    ctx.fillStyle = COL.soft; ctx.font = MONO;
+    ctx.textAlign='right'; ctx.fillText('1', view.x(0)-6, view.y(1)+4);
+    ctx.textAlign='center';
+    for (let k=1;k<=n+1;k++){ if(n<=15 || k%2===1 || k===n+1) ctx.fillText(k, view.x(k), view.y(0)+18); }
+    ctx.fillText('x', view.x(n+1)-4, view.y(0)+34);
+
+    let Hn = 0; for(let k=1;k<=n;k++) Hn += 1/k;
+    const lo = Math.log(n+1), hi = 1 + Math.log(n);
+
+    // over-bars (stage 1) : on [k,k+1] height 1/k  -> lie above curve
+    if (stage===1) {
+      for(let k=1;k<=n;k++){
+        const x=view.x(k), w=view.x(k+1)-view.x(k), yTop=view.y(1/k), h=view.y(0)-yTop;
+        ctx.fillStyle=hex(COL.upper,'20'); ctx.fillRect(x,yTop,w,h);
+        ctx.strokeStyle=hex(COL.upper,'99'); ctx.lineWidth=1; ctx.strokeRect(x,yTop,w,h);
+      }
+    }
+    // under-bars (stage 2): on [k-1,k] height 1/k -> lie below curve
+    if (stage===2) {
+      for(let k=2;k<=n;k++){
+        const x=view.x(k-1), w=view.x(k)-view.x(k-1), yTop=view.y(1/k), h=view.y(0)-yTop;
+        ctx.fillStyle=hex(COL.lower,'20'); ctx.fillRect(x,yTop,w,h);
+        ctx.strokeStyle=hex(COL.lower,'99'); ctx.lineWidth=1; ctx.strokeRect(x,yTop,w,h);
+      }
+    }
+
+    // shade area under curve on [1, n+1] (stage 1) or [1,n] (stage 2) to name the integral
+    function shade(xa, xb, color){
+      ctx.beginPath();
+      ctx.moveTo(view.x(xa), view.y(0));
+      for(let px=view.x(xa); px<=view.x(xb); px+=1){
+        const mx = view.xmin + px/view.w*(view.xmax-view.xmin);
+        ctx.lineTo(px, view.y(1/mx));
+      }
+      ctx.lineTo(view.x(xb), view.y(0)); ctx.closePath();
+      ctx.fillStyle = color; ctx.fill();
+    }
+    if (stage===1) shade(1, n+1, hex(COL.tru,'22'));
+    if (stage===2) shade(1, n,   hex(COL.tru,'22'));
+
+    // the curve 1/x on [~0.4, n+1]
+    ctx.strokeStyle = COL.tru; ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    let started=false;
+    for(let px=view.x(0.4); px<=view.x(n+1); px+=1){
+      const mx = view.xmin + px/view.w*(view.xmax-view.xmin);
+      if (mx<=0) continue;
+      const my = 1/mx; if (my>1.15) continue;
+      const py = view.y(my);
+      if(!started){ctx.moveTo(px,py);started=true;} else ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+    ctx.fillStyle = COL.tru; ctx.font = MONO; ctx.textAlign='left';
+    ctx.fillText('y = 1/x', view.x(n+1)-70, view.y(1/(n+1))-8);
+
+    // stage 3: sandwich number line
+    if (stage===3) {
+      const bx0=90, bx1=690, by=view.h-30;
+      const lohi0 = lo - 0.15, lohi1 = hi + 0.15;
+      const bToX = v => bx0 + (v-lohi0)/(lohi1-lohi0)*(bx1-bx0);
+      ctx.strokeStyle=COL.axis; ctx.lineWidth=1.2;
+      ctx.beginPath(); ctx.moveTo(bx0,by); ctx.lineTo(bx1,by); ctx.stroke();
+      ctx.fillStyle=hex(COL.gold,'33');
+      ctx.fillRect(bToX(lo), by-22, bToX(hi)-bToX(lo), 18);
+      function tick(v,c,lab,up){
+        const x=bToX(v);
+        ctx.strokeStyle=c; ctx.lineWidth=2.4;
+        ctx.beginPath(); ctx.moveTo(x,by-22); ctx.lineTo(x,by+6); ctx.stroke();
+        ctx.fillStyle=c; ctx.font=MONOb; ctx.textAlign='center';
+        ctx.fillText(lab, x, up?by-28:by+22);
+      }
+      tick(lo, COL.lower, 'ln(n+1)='+lo.toFixed(3), true);
+      tick(hi, COL.upper, '1+ln n='+hi.toFixed(3), false);
+      tick(Hn, COL.tru, 'H_n='+Hn.toFixed(3), true);
+    }
+
+    out.innerHTML =
+      '<b style="color:'+COL.lower+'">ln(n+1) = '+lo.toFixed(4)+'</b>' +
+      '&nbsp;&le;&nbsp;<b style="color:'+COL.tru+'">H_n = '+Hn.toFixed(4)+'</b>' +
+      '&nbsp;&le;&nbsp;<b style="color:'+COL.upper+'">1 + ln n = '+hi.toFixed(4)+'</b>';
+
+    capEl.textContent = stages[stage].cap;
+    bBack.disabled = stage===0;
+    if (stages[stage].label){ bNext.style.display=''; bNext.innerHTML=stages[stage].label; }
+    else bNext.style.display='none';
+  }
+  function setupNothing(){ /* view rebuilt each draw because xmax depends on n */ }
+
+  bNext.addEventListener('click', ()=>{ if(stage<stages.length-1){stage++;draw();} });
+  bBack.addEventListener('click', ()=>{ if(stage>0){stage--;draw();} });
+  nEl.addEventListener('input', draw);
+  draw();
+})();
+
+/* =========================================================================
+   STEP 5 — Markov: fixed mean budget vs the ceiling mu/a
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('w5-canvas');
+  const ctx = setupCanvas(canvas, 760, 340);
+  const aEl = document.getElementById('w5-a');
+  const xEl = document.getElementById('w5-x');
+  const out = document.getElementById('w5-readout');
+  const MU = 1; // fixed average budget
+
+  const view = makeView(canvas, {xmin:-0.4, xmax:6.4, ymin:-0.15, ymax:1.15});
+  const axY = view.y(0);
+
+  function draw() {
+    const a = parseFloat(aEl.value);
+    let x = parseFloat(xEl.value);
+    if (x < 1) x = 1;                    // keep p = mu/x <= 1
+    const p = MU / x;                    // mass out at x
+    const rest = 1 - p;                  // mass parked at 0
+    const tail = (x >= a) ? p : 0;       // P(X >= a)
+    const ceil = MU / a;                 // Markov bound
+    document.getElementById('w5-aV').textContent = a.toFixed(1);
+    document.getElementById('w5-xV').textContent = x.toFixed(2);
+
+    ctx.clearRect(0,0,view.w,view.h);
+
+    // number line
+    ctx.strokeStyle = COL.axis; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(view.x(0), axY); ctx.lineTo(view.x(6.3), axY); ctx.stroke();
+    ctx.fillStyle = COL.soft; ctx.font = MONO; ctx.textAlign='center';
+    for(let v=0;v<=6;v++){ ctx.fillText(v, view.x(v), axY+20);
+      ctx.strokeStyle=COL.line; ctx.beginPath(); ctx.moveTo(view.x(v),axY-4); ctx.lineTo(view.x(v),axY+4); ctx.stroke(); }
+    ctx.fillText('value of X', view.x(5.6), axY+38);
+
+    // threshold line at a
+    ctx.strokeStyle = COL.ink; ctx.lineWidth = 1.6; ctx.setLineDash([5,5]);
+    ctx.beginPath(); ctx.moveTo(view.x(a), view.y(1.08)); ctx.lineTo(view.x(a), axY); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = COL.ink; ctx.font = MONOb; ctx.textAlign='center';
+    ctx.fillText('a = '+a.toFixed(1), view.x(a), view.y(1.08)-6);
+    // shade the tail region x>=a faintly
+    ctx.fillStyle = hex(COL.lower,'10');
+    ctx.fillRect(view.x(a), view.y(1.08), view.x(6.4)-view.x(a), axY-view.y(1.08));
+
+    // lollipop: mass parked at 0 (gray)
+    function lolli(vx, mass, color) {
+      const top = view.y(mass);
+      ctx.strokeStyle = color; ctx.lineWidth = 6;
+      ctx.beginPath(); ctx.moveTo(view.x(vx), axY); ctx.lineTo(view.x(vx), top); ctx.stroke();
+      ctx.fillStyle = color;
+      ctx.beginPath(); ctx.arc(view.x(vx), top, 9, 0, 2*Math.PI); ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.font = 'bold 11px "JetBrains Mono", monospace'; ctx.textAlign='center';
+      ctx.fillText(mass.toFixed(2), view.x(vx), top-16>view.y(1.1)? top-16: top+22);
+    }
+    lolli(0, rest, COL.soft);
+    lolli(x, p, (x>=a)?COL.upper:COL.gold);
+    // label lump position
+    ctx.fillStyle = (x>=a)?COL.upper:COL.gold; ctx.font=MONO; ctx.textAlign='center';
+    ctx.fillText('lump at x='+x.toFixed(2), view.x(x), axY+38);
+
+    // ---- right-side tail-vs-ceiling gauge ----
+    const gx = view.x(6.7), gW = 40; // off to the right? keep inside: place a vertical gauge
+    // Put gauge as a vertical bar near x-pixel 700
+    const barX = 700, barBot = axY, barTop = view.y(1.0), fullH = barBot-barTop;
+    ctx.strokeStyle = COL.line; ctx.lineWidth=1;
+    ctx.strokeRect(barX, barTop, 34, fullH);
+    // ceiling marker mu/a
+    const cy = barBot - ceil*fullH;
+    ctx.strokeStyle = COL.ink; ctx.setLineDash([4,4]); ctx.lineWidth=1.8;
+    ctx.beginPath(); ctx.moveTo(barX-6, cy); ctx.lineTo(barX+40, cy); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle=COL.ink; ctx.font=MONO; ctx.textAlign='right';
+    ctx.fillText('mu/a='+ceil.toFixed(2), barX-8, cy-4);
+    // filled tail
+    const th = tail*fullH;
+    ctx.fillStyle = (Math.abs(tail-ceil)<1e-9)? COL.lower : hex(COL.lower,'88');
+    ctx.fillRect(barX, barBot-th, 34, th);
+    ctx.fillStyle=COL.lower; ctx.font=MONOb; ctx.textAlign='center';
+    ctx.fillText(tail.toFixed(2), barX+17, barBot-th-8>barTop? barBot-th-8 : barBot-th+16);
+    ctx.fillStyle=COL.soft; ctx.font=MONO;
+    ctx.fillText('tail', barX+17, barBot+18);
+
+    const saturated = (x>=a) && Math.abs(x-a)<1e-6;
+    out.innerHTML =
+      'mean = p&middot;x + 0 = <b>'+(p*x).toFixed(2)+'</b> (held fixed)' +
+      '&nbsp;·&nbsp; mass at x: p = mu/x = <b>'+p.toFixed(3)+'</b>' +
+      '&nbsp;·&nbsp; <b style="color:'+COL.lower+'">P(X&ge;a) = '+tail.toFixed(3)+'</b>' +
+      ' &le; <b style="color:'+COL.ink+'">mu/a = '+ceil.toFixed(3)+'</b>' +
+      (saturated? '&nbsp; <b style="color:'+COL.lower+'">&larr; touching the ceiling!</b>' : '');
+  }
+  aEl.addEventListener('input', draw);
+  xEl.addEventListener('input', draw);
+  draw();
+})();
+
+/* =========================================================================
+   STEP 6 — the ELBO: guessed q chasing the evidence ceiling
+   Model: z~N(0,1), x|z~N(z,1), x=2. Everything closed-form so the bound is exact.
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('w6-canvas');
+  const ctx = setupCanvas(canvas, 760, 380);
+  const W = canvas._cssW, H = canvas._cssH;
+  const mEl = document.getElementById('w6-m');
+  const sEl = document.getElementById('w6-s');
+  const out = document.getElementById('w6-readout');
+
+  const vObs = 1, xObs = 2;
+  const postVar  = vObs/(1+vObs);        // 0.5
+  const postMean = xObs/(1+vObs);        // 1
+  const evVar    = 1+vObs;               // 2
+  const logpx    = -0.5*Math.log(2*Math.PI*evVar) - xObs*xObs/(2*evVar); // -2.2655
+
+  const npdf = (z,mu,va) => Math.exp(-(z-mu)*(z-mu)/(2*va)) / Math.sqrt(2*Math.PI*va);
+  function KL(m,s){ const s2=s*s;
+    return 0.5*Math.log(postVar/s2) + (s2 + (m-postMean)*(m-postMean))/(2*postVar) - 0.5; }
+
+  // plot region (densities over z) and gauge region (log-prob line)
+  const pL=60, pR=720, pT=22, pB=232, zMin=-4, zMax=4, dMax=1.72;
+  const zX = z => pL + (z - zMin)/(zMax - zMin)*(pR - pL);
+  const dY = d => pB - d/dMax*(pB - pT);
+  const gy=330, gx0=95, gx1=690, gLo=logpx-5, gHi=logpx+0.5;
+  const gX = lp => gx0 + (lp - gLo)/(gHi - gLo)*(gx1 - gx0);
+
+  function curve(mu, va, color, fillA, lw) {
+    ctx.beginPath();
+    for (let px=pL; px<=pR; px+=1){
+      const z = zMin + (px-pL)/(pR-pL)*(zMax-zMin);
+      const y = dY(npdf(z,mu,va));
+      px===pL ? ctx.moveTo(px,y) : ctx.lineTo(px,y);
+    }
+    if (fillA){ ctx.lineTo(pR, dY(0)); ctx.lineTo(pL, dY(0)); ctx.closePath();
+      ctx.fillStyle = hex(color, fillA); ctx.fill(); ctx.beginPath();
+      for (let px=pL; px<=pR; px+=1){ const z=zMin+(px-pL)/(pR-pL)*(zMax-zMin);
+        const y=dY(npdf(z,mu,va)); px===pL?ctx.moveTo(px,y):ctx.lineTo(px,y);} }
+    ctx.strokeStyle = color; ctx.lineWidth = lw; ctx.stroke();
+  }
+
+  function draw() {
+    const m = parseFloat(mEl.value), s = parseFloat(sEl.value);
+    document.getElementById('w6-mV').textContent = m.toFixed(2);
+    document.getElementById('w6-sV').textContent = s.toFixed(2);
+    const kl = Math.max(0, KL(m,s)), elbo = logpx - kl;
+    ctx.clearRect(0,0,W,H);
+
+    // z-axis
+    ctx.strokeStyle = COL.axis; ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(pL, dY(0)); ctx.lineTo(pR, dY(0)); ctx.stroke();
+    ctx.fillStyle = COL.soft; ctx.font = MONO; ctx.textAlign='center';
+    for (let z=zMin; z<=zMax; z++){ ctx.fillText(z, zX(z), dY(0)+18);
+      ctx.strokeStyle=COL.line; ctx.beginPath(); ctx.moveTo(zX(z),dY(0)-3); ctx.lineTo(zX(z),dY(0)+3); ctx.stroke(); }
+    ctx.fillText('hidden variable z', zX(3.3), dY(0)+18);
+
+    // KL-gap shading: region between guess and posterior (the mismatch)
+    ctx.beginPath();
+    for (let px=pL; px<=pR; px+=2){ const z=zMin+(px-pL)/(pR-pL)*(zMax-zMin);
+      const yq=dY(npdf(z,m,s*s)); px===pL?ctx.moveTo(px,yq):ctx.lineTo(px,yq); }
+    for (let px=pR; px>=pL; px-=2){ const z=zMin+(px-pL)/(pR-pL)*(zMax-zMin);
+      ctx.lineTo(px, dY(npdf(z,postMean,postVar))); }
+    ctx.closePath(); ctx.fillStyle = hex(COL.gold,'2a'); ctx.fill();
+
+    // posterior (target, green) then guess (blue)
+    curve(postMean, postVar, COL.tru,  '20', 2.6);
+    curve(m, s*s, COL.lower, null, 2.8);
+    ctx.fillStyle=COL.tru;  ctx.font=MONO; ctx.textAlign='left';
+    ctx.fillText('posterior p(z|x)', zX(postMean)+10, dY(npdf(postMean,postMean,postVar))-4);
+    ctx.fillStyle=COL.lower; ctx.textAlign='center';
+    ctx.fillText('q(z)', zX(m), dY(npdf(m,m,s*s))-8);
+
+    // ---- log-prob gauge ----
+    ctx.strokeStyle=COL.line; ctx.lineWidth=1.2;
+    ctx.beginPath(); ctx.moveTo(gx0-40, gy); ctx.lineTo(gx1+8, gy); ctx.stroke();
+    ctx.fillStyle=COL.soft; ctx.font=MONO; ctx.textAlign='left';
+    ctx.fillText('log-probability  (higher = better)', gx0-40, gy-58);
+
+    // ceiling = evidence
+    const cx = gX(logpx);
+    ctx.strokeStyle=COL.upper; ctx.lineWidth=2.6; ctx.setLineDash([5,4]);
+    ctx.beginPath(); ctx.moveTo(cx, gy-46); ctx.lineTo(cx, gy+8); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle=COL.upper; ctx.font=MONOb; ctx.textAlign='center';
+    ctx.fillText('evidence  log p(x) = '+logpx.toFixed(3), cx, gy-52);
+
+    // elbo tick (clamped) + gold gap to ceiling
+    const elboClamped = Math.max(elbo, gLo);
+    const ex = gX(elboClamped);
+    ctx.fillStyle = hex(COL.gold,'44');
+    ctx.fillRect(ex, gy-30, cx-ex, 22);
+    ctx.strokeStyle = (kl<1e-3)?COL.lower:COL.lower; ctx.lineWidth=2.6;
+    ctx.beginPath(); ctx.moveTo(ex, gy-30); ctx.lineTo(ex, gy+8); ctx.stroke();
+    ctx.fillStyle=COL.lower; ctx.font=MONOb; ctx.textAlign='center';
+    const offscale = elbo < gLo;
+    ctx.fillText((offscale?'‹ ':'')+'ELBO = '+elbo.toFixed(3), Math.max(ex, gx0+30), gy+24);
+    // gap label
+    if (cx-ex > 46){
+      ctx.fillStyle=COL.gold; ctx.font=MONO; ctx.textAlign='center';
+      ctx.fillText('KL = '+kl.toFixed(3), (ex+cx)/2, gy-14);
+    }
+
+    const tight = kl < 1e-3;
+    out.innerHTML =
+      'guess q = N('+m.toFixed(2)+', '+(s*s).toFixed(2)+')' +
+      '&nbsp;·&nbsp; <b style="color:'+COL.lower+'">ELBO = '+elbo.toFixed(3)+'</b>' +
+      ' = <b style="color:'+COL.upper+'">log p(x) '+logpx.toFixed(3)+'</b>' +
+      ' &minus; <b style="color:'+COL.gold+'">KL '+kl.toFixed(3)+'</b>' +
+      (tight
+        ? '&nbsp; <b style="color:'+COL.tru+'">&larr; q = posterior: bound is tight!</b>'
+        : '&nbsp; <span style="color:'+COL.soft+'">move q onto the green curve to close the gap</span>');
+  }
+  document.getElementById('w6-snap').addEventListener('click', ()=>{
+    mEl.value = postMean; sEl.value = Math.sqrt(postVar).toFixed(2); draw(); });
+  document.getElementById('w6-reset').addEventListener('click', ()=>{
+    mEl.value = 0; sEl.value = 1; draw(); });
+  mEl.addEventListener('input', draw);
+  sEl.addEventListener('input', draw);
+  draw();
+})();
+
+/* =========================================================================
+   READING PROGRESS BAR
+   ========================================================================= */
+(function () {
+  const bar = document.getElementById('progress');
+  function update() {
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%';
+  }
+  window.addEventListener('scroll', update, {passive:true});
+  window.addEventListener('resize', update);
+  update();
+})();
+</script>
+</body>
+</html>

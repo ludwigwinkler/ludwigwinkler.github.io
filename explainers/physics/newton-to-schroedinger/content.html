@@ -1,0 +1,2160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Newton to Schrödinger</title>
+
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg:        #0c1322;
+    --bg-2:      #0a0f1b;
+    --surface:   #131d31;
+    --surface-2: #182441;
+    --ink:       #dde6f4;
+    --ink-soft:  #91a0bd;
+    --accent:    #56cfd8;   /* wave cyan — intuition strand */
+    --accent-2:  #e6a85c;   /* warm amber — rigor strand    */
+    --accent-3:  #b98bff;   /* soft violet                  */
+    --line:      #233152;
+    --axis:      #3a4d72;
+    --radius: 14px;
+    --measure: 70ch;
+    --font-display: 'Cormorant Garamond', Georgia, serif;
+    --font-body:    'Spectral', Georgia, serif;
+    --font-mono:    'IBM Plex Mono', ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 19px;
+    font-weight: 300;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(1200px 700px at 78% -8%, rgba(86,207,216,0.10), transparent 60%),
+      radial-gradient(900px 600px at 8% 12%, rgba(230,168,92,0.07), transparent 55%),
+      radial-gradient(1000px 800px at 50% 120%, rgba(185,139,255,0.06), transparent 60%);
+    background-attachment: fixed;
+  }
+
+  #progress {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    z-index: 100; transition: width 0.08s linear;
+    box-shadow: 0 0 12px rgba(86,207,216,0.6);
+  }
+
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 24px 140px; }
+  .prose { max-width: var(--measure); }
+  .prose p { margin: 0 0 1.15em; }
+  strong { font-weight: 600; color: #eaf1fc; }
+  em { color: #e8eefb; }
+
+  header { padding: 104px 0 26px; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.32em;
+    text-transform: uppercase; color: var(--accent); margin: 0 0 22px;
+  }
+  h1 {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(3rem, 8vw, 5.4rem); line-height: 0.98;
+    margin: 0 0 26px; letter-spacing: -0.01em; color: #f3f7ff;
+  }
+  h1 .sub { display:block; font-style: italic; font-weight:500; color: var(--accent);
+            font-size: clamp(1.4rem,3.4vw,2.1rem); letter-spacing:0; margin-top:10px; }
+  .promise {
+    font-size: 1.28rem; color: var(--ink-soft); font-weight: 300;
+    max-width: var(--measure); line-height: 1.6;
+  }
+
+  .kernel {
+    position: relative;
+    background: linear-gradient(180deg, var(--surface-2), var(--surface));
+    border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 38px 42px; margin: 52px 0 88px;
+    box-shadow: 0 0 0 1px rgba(86,207,216,0.08), 0 24px 60px -30px rgba(0,0,0,0.8);
+  }
+  .kernel::before {
+    content:''; position:absolute; left:0; top:22px; bottom:22px; width:3px;
+    background: linear-gradient(180deg, var(--accent), var(--accent-2));
+    border-radius: 3px; box-shadow: 0 0 16px rgba(86,207,216,0.5);
+  }
+  .kernel .label {
+    font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.26em;
+    text-transform: uppercase; color: var(--accent); margin: 0 0 16px; opacity:0.9;
+  }
+  .kernel .sentence {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 1.62rem; line-height: 1.42; margin: 0; color:#eef3fd;
+  }
+
+  .concept-step { margin: 0 0 96px; scroll-margin-top: 40px; }
+  .step-num {
+    font-family: var(--font-mono); font-size: 0.74rem; font-weight: 500;
+    color: var(--accent-2); letter-spacing: 0.22em; text-transform: uppercase;
+    margin: 0 0 10px;
+  }
+  .concept-step h2 {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(2rem, 4.6vw, 2.9rem); line-height: 1.08;
+    margin: 0 0 22px; letter-spacing: -0.005em; color:#f0f5ff;
+  }
+
+  /* ============ THE TWO STRANDS ============ */
+  .strand {
+    position: relative;
+    max-width: var(--measure);
+    margin: 26px 0;
+    padding: 20px 24px 8px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+  }
+  .strand .strand-tag {
+    display: inline-block;
+    font-family: var(--font-mono); font-size: 0.68rem; font-weight: 500;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    padding: 3px 10px; border-radius: 20px; margin-bottom: 14px;
+  }
+  .strand.intuit {
+    background: linear-gradient(180deg, rgba(86,207,216,0.055), rgba(86,207,216,0.015));
+    border-color: rgba(86,207,216,0.28);
+  }
+  .strand.intuit .strand-tag {
+    color: #0c1322; background: var(--accent);
+  }
+  .strand.rigor {
+    background: linear-gradient(180deg, rgba(230,168,92,0.055), rgba(230,168,92,0.015));
+    border-color: rgba(230,168,92,0.28);
+  }
+  .strand.rigor .strand-tag {
+    color: #0c1322; background: var(--accent-2);
+  }
+  .strand p { margin: 0 0 1.05em; }
+  .strand.rigor { font-size: 0.97rem; }
+  .strand.rigor p { line-height: 1.7; }
+
+  details.formal {
+    border: 1px solid var(--line); border-radius: 10px;
+    background: rgba(19,29,49,0.6); margin: 26px 0; max-width: var(--measure);
+  }
+  details.formal summary {
+    cursor: pointer; padding: 15px 20px; font-family: var(--font-mono);
+    font-size: 0.82rem; letter-spacing: 0.08em; color: var(--accent);
+    list-style: none; user-select: none;
+  }
+  details.formal summary::-webkit-details-marker { display:none; }
+  details.formal summary::before { content: '+ '; color: var(--accent-2); font-weight:600; }
+  details.formal[open] summary::before { content: '\2212 '; }
+  details.formal .formal-body { padding: 2px 20px 18px; color: var(--ink); }
+  details.formal .formal-body p { font-size: 0.96rem; }
+
+  .aside {
+    border-left: 2px solid var(--accent-3); padding: 4px 0 4px 20px;
+    margin: 26px 0; max-width: var(--measure); color: var(--ink-soft);
+    font-size: 0.98rem;
+  }
+  .aside .tag {
+    font-family: var(--font-mono); font-size: 0.68rem; letter-spacing:0.16em;
+    text-transform: uppercase; color: var(--accent-3); display:block; margin-bottom:6px;
+  }
+
+  .widget {
+    background: linear-gradient(180deg, var(--surface), var(--bg-2));
+    border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 24px; margin: 30px 0;
+    box-shadow: 0 20px 50px -34px rgba(0,0,0,0.9);
+  }
+  .widget-title {
+    font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--accent); margin: -2px 0 18px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .widget-title::before {
+    content: ''; width: 16px; height: 1px; background: var(--accent-2); opacity: 0.8;
+  }
+  .widget-controls { display: flex; flex-wrap: wrap; gap: 20px 34px; margin-bottom: 18px; }
+  .widget-controls label {
+    display: flex; flex-direction: column; gap: 8px;
+    font-family: var(--font-mono); font-size: 0.78rem; letter-spacing:0.04em;
+    color: var(--ink-soft); min-width: 190px;
+  }
+  .widget-controls .val { color: var(--accent); font-weight: 500; }
+  input[type=range] { accent-color: var(--accent); cursor: pointer; width: 100%; }
+  .widget button {
+    font-family: var(--font-mono); font-size: 0.8rem; letter-spacing:0.04em;
+    background: var(--surface-2); color: var(--ink); border: 1px solid var(--line);
+    padding: 9px 16px; border-radius: 8px; cursor: pointer; transition: all 0.15s;
+  }
+  .widget button:hover { border-color: var(--accent); color: var(--accent); }
+  .widget button:disabled { opacity: 0.3; cursor: default; }
+  .widget-stage {
+    display: block; width: 100%; border-radius: 10px;
+    background: radial-gradient(120% 140% at 50% 0%, #0e1729, #080d18);
+    border: 1px solid #1b2742;
+  }
+  .readout {
+    margin-top: 14px; font-size: 0.98rem; color: var(--ink-soft);
+    min-height: 1.4em; font-family: var(--font-body);
+  }
+  .readout .hl { color: var(--accent); }
+  .reveal-bar { display: flex; align-items: center; gap: 16px; margin-top: 16px; flex-wrap: wrap; }
+  .reveal-caption { flex: 1; min-width: 200px; font-size: 0.92rem; color: var(--ink-soft); font-style: italic; }
+  .caption { font-size: 0.84rem; color: var(--ink-soft); font-style: italic; margin-top: 10px; }
+  .btn-row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+
+  .eqbox {
+    background: radial-gradient(120% 160% at 50% 0%, #0f1a2e, #0a1120);
+    border: 1px solid #1b2742; border-radius: 10px;
+    padding: 30px 20px; min-height: 132px;
+    display:flex; align-items:center; justify-content:center; text-align:center;
+    font-size: 1.05rem;
+  }
+  .eqline { display:inline-block; line-height:1.5; }
+  .eqline span { white-space:nowrap; }
+  .swap { color: var(--accent); }
+  .swap2 { color: var(--accent-2); }
+
+  .recap { border-top: 1px solid var(--line); padding-top: 46px; margin-top: 30px; }
+  .recap h2 { font-family: var(--font-display); font-weight:600; font-size: 2.4rem; margin: 0 0 18px; color:#f0f5ff; }
+
+  mark { background: linear-gradient(transparent 58%, rgba(86,207,216,0.32) 58%); color: inherit; padding: 0 1px; }
+  a { color: var(--accent); }
+  hr.rule { border:none; border-top:1px solid var(--line); margin: 40px 0; max-width: var(--measure); }
+
+  mjx-container { color: var(--ink); }
+  .dict { display:flex; gap:14px; flex-wrap:wrap; margin: 18px 0; }
+  .dict .chip {
+    font-family: var(--font-mono); font-size:0.82rem; background: var(--surface-2);
+    border:1px solid var(--line); border-radius:8px; padding:10px 14px; color: var(--ink);
+  }
+  .dict .chip b { color: var(--accent); }
+
+  @media (max-width: 600px) {
+    body { font-size: 17px; }
+    .wrap { padding: 0 18px 90px; }
+    .kernel { padding: 28px 24px; }
+    .kernel .sentence { font-size: 1.32rem; }
+    header { padding: 72px 0 16px; }
+    .strand { padding: 16px 16px 4px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<div class="wrap">
+
+  <!-- ===================== HEADER ===================== -->
+  <header>
+    <p class="eyebrow">A step-by-step derivation · two strands</p>
+    <h1>From Newton<br>to Schrödinger
+      <span class="sub">how a particle becomes a wave</span>
+    </h1>
+    <p class="promise">
+      We start from the most ordinary statement in all of physics — <em>kinetic energy
+      plus potential energy equals total energy</em> — and watch it turn, by a single
+      mechanical substitution, into both the time-dependent and time-independent
+      Schrödinger equations. Every step comes in two strands:
+      an <span style="color:var(--accent)">intuitive</span> one you can hold in your head,
+      and a <span style="color:var(--accent-2)">rigorous</span> one where no equation is
+      skipped and every symbol earns its place.
+    </p>
+  </header>
+
+  <!-- ===================== KERNEL ===================== -->
+  <div class="kernel">
+    <p class="label">The whole idea, in one sentence</p>
+    <p class="sentence">
+      The Schrödinger equation is just the classical bookkeeping
+      <mark>\(E = \tfrac{p^2}{2m} + V\)</mark> — except we let it act on a wave, and replace
+      <em>"multiply by energy"</em> with <em>"differentiate in time"</em> and
+      <em>"multiply by momentum"</em> with <em>"differentiate in space."</em>
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      One honest caveat before we start. You cannot <em>logically deduce</em> quantum
+      mechanics from classical mechanics — if you could, it would not have taken the
+      twentieth century to find it. What follows is the path of <strong>plausibility</strong>:
+      we take the classical skeleton, add exactly one new physical input (that matter has a
+      wavelength), and discover that there is essentially only one equation those two ideas
+      can fit into. The "derivation" is really a guided guess that turns out to be right.
+    </p>
+    <p>
+      How to read the page: each step opens with the
+      <span style="color:var(--accent)"><strong>intuitive strand</strong></span> — the picture, in
+      plain words. Directly below it sits the
+      <span style="color:var(--accent-2)"><strong>rigorous strand</strong></span> — the same claim
+      with every equation written out, nothing waved through. Read the intuition first, play with
+      the widget, then check the rigor; or read both in parallel. They always assert the same thing.
+    </p>
+  </div>
+
+  <!-- ===================== STEP 1 ===================== -->
+  <section class="concept-step" id="step-1">
+    <p class="step-num">Step 1 · the classical starting point</p>
+    <h2>A particle is an energy ledger</h2>
+
+    <div class="strand intuit">
+      <span class="strand-tag">Intuition</span>
+      <p>
+        Strip classical mechanics down and you are left with one quantity that never changes:
+        the <strong>total energy</strong>. For a single particle it is split into two accounts —
+        motion (kinetic) and position (potential). As the particle rolls through a valley the two
+        accounts trade back and forth, but the sum holds fixed. That fixed total, and how it splits,
+        is the only thing we will carry across into the quantum world.
+      </p>
+      <p>
+        Drag the particle through the well below. The total \(E\) is a fixed line; the kinetic and
+        potential bars trade off to always add up to it. Where the well is deepest, the particle
+        moves fastest; at the <em>turning points</em> the kinetic account hits zero and the particle
+        (classically) cannot go further.
+      </p>
+    </div>
+
+    <div class="strand rigor">
+      <span class="strand-tag">Rigor</span>
+      <p>
+        A particle of mass \(m\) at position \(x(t)\) with velocity \(v=\dot x\) carries momentum
+        \(p = mv\), kinetic energy \(T\), and potential energy \(V(x)\). The kinetic energy in terms
+        of momentum:
+      </p>
+      <p style="text-align:center">
+        \[ T \;=\; \tfrac12 m v^2 \;=\; \tfrac12 m \left(\frac{p}{m}\right)^{\!2} \;=\; \frac{p^2}{2m}. \]
+      </p>
+      <p>
+        The total energy is the <strong>Hamiltonian</strong>, a function of position and momentum:
+      </p>
+      <p style="text-align:center">
+        \[ H(x,p) \;=\; \underbrace{\frac{p^2}{2m}}_{\text{kinetic}} \;+\; \underbrace{V(x)}_{\text{potential}} \;=\; E. \]
+      </p>
+      <p>
+        Why is \(E\) constant? Differentiate along the trajectory and use Newton's second law
+        \(\dot p = F = -\partial_x V\):
+      </p>
+      <p style="text-align:center">
+        \[ \frac{dE}{dt} \;=\; \frac{p\,\dot p}{m} + \frac{\partial V}{\partial x}\,\dot x
+           \;=\; \dot x\,\dot p + \frac{\partial V}{\partial x}\,\dot x
+           \;=\; \dot x\!\left(-\frac{\partial V}{\partial x}\right) + \frac{\partial V}{\partial x}\,\dot x
+           \;=\; 0, \]
+      </p>
+      <p>
+        where we used \(p/m = \dot x\). Equivalently, Newton's law is repackaged as
+        <strong>Hamilton's equations</strong> — the Hamiltonian <em>generates</em> the motion:
+      </p>
+      <p style="text-align:center">
+        \[ \dot x = \frac{\partial H}{\partial p} = \frac{p}{m}, \qquad
+           \dot p = -\frac{\partial H}{\partial x} = -\frac{\partial V}{\partial x}. \]
+      </p>
+      <p>
+        For the widget's well \(V(x)=\tfrac12 x^2\), the classically allowed region is where
+        \(T = E - V(x) \ge 0\), i.e. \(|x| \le x_{\text{turn}} = \sqrt{2E}\). At \(E=0.8\) that gives
+        \(x_{\text{turn}} = \sqrt{1.6} \approx 1.26\) — check it against the widget.
+      </p>
+    </div>
+
+    <div class="widget" id="w1">
+      <div class="widget-title">Widget 1 · Classical energy ledger — live · drag x and E</div>
+      <div class="widget-controls">
+        <label>particle position&nbsp; x = <span class="val" id="w1-xV">0.00</span>
+          <input type="range" id="w1-x" min="-1" max="1" step="0.005" value="0">
+        </label>
+        <label>total energy&nbsp; E = <span class="val" id="w1-EV">0.80</span>
+          <input type="range" id="w1-E" min="0.15" max="1.4" step="0.01" value="0.8">
+        </label>
+      </div>
+      <canvas id="w1-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w1-readout"></div>
+      <p class="caption">The potential is \(V(x)=\tfrac12 x^2\). Notice: only inside the well, where
+        \(V\le E\), can the kinetic account stay positive.</p>
+    </div>
+
+    <div class="aside">
+      <span class="tag">Bridge to what you know</span>
+      The Hamiltonian is the generator of the dynamics. In classical mechanics it generates flow
+      through Hamilton's equations \(\dot x = \partial_p H,\ \dot p = -\partial_x H\); in the quantum
+      version it will generate the unitary flow \(U(t)=e^{-i\hat H t/\hbar}\) — the exact analogue of a
+      <em>semigroup generator</em> producing time evolution. Same role, different algebra.
+    </div>
+  </section>
+
+  <!-- ===================== STEP 2 · symmetry ===================== -->
+  <section class="concept-step" id="step-symmetry">
+    <p class="step-num">Step 2 · the symmetry idea (still classical)</p>
+    <h2>Momentum is the handle that translations grab</h2>
+
+    <div class="strand intuit">
+      <span class="strand-tag">Intuition</span>
+      <p>
+        We are still entirely in classical physics — no waves yet. Before we can promote energy and
+        momentum into a wave theory, we need to know what they fundamentally <em>are</em>, and
+        classical mechanics already has the deep answer through Noether's theorem:
+        <strong>every continuous symmetry owns a conserved quantity.</strong> Momentum is
+        <em>defined</em> as the quantity belonging to the symmetry of sliding space sideways —
+        conserved precisely when the physics does not care <em>where</em> you are. Energy is the
+        quantity belonging to sliding in <em>time</em> — conserved when it does not care <em>when</em>.
+      </p>
+      <p>
+        The concrete machine behind "slide sideways" turns out to be the humble
+        <strong>derivative</strong>: an infinitesimal slide of a function is a derivative, and a
+        finite slide is derivatives stacked up — an exponential of the derivative. The familiar
+        \(p = mv\) is merely the <em>value</em> momentum takes on a moving particle; "generator of
+        slides" is what momentum <em>is</em>. Hold onto one more fact: the only shapes a slide
+        cannot reshape — only re-phase — are the pure waves \(e^{ikx}\). Those are exactly the
+        plane waves we meet next. Walk the slide machine below.
+      </p>
+    </div>
+
+    <div class="strand rigor">
+      <span class="strand-tag">Rigor</span>
+      <p>
+        <strong>The generator of translations.</strong> Shift a function by \(a\):
+        \(f(x) \to f(x-a)\). Taylor-expand around \(x\):
+      </p>
+      <p style="text-align:center">
+        \[ f(x-a) \;=\; \sum_{n=0}^{\infty} \frac{(-a)^n}{n!}\,\frac{\partial^n f}{\partial x^n}
+           \;=\; f(x) - a\,\partial_x f + \frac{a^2}{2}\,\partial_x^2 f - \cdots
+           \;=\; e^{-a\,\partial_x} f(x). \]
+      </p>
+      <p>
+        Here \(e^{-a\,\partial_x}\) is shorthand for the operator power series
+        \(\sum_n \tfrac{(-a\,\partial_x)^n}{n!}\) — the same construction as the matrix exponential
+        \(e^{At}\). The derivative \(\partial_x\) is therefore the <strong>generator of
+        translations</strong>: every term of a finite slide is built from it.
+      </p>
+      <p>
+        <strong>Eigenfunctions of the slide.</strong> Feed the pure wave \(e^{ikx}\) to the slide
+        operator, term by term:
+      </p>
+      <p style="text-align:center">
+        \[ e^{-a\,\partial_x}\, e^{ikx}
+           \;=\; \sum_{n=0}^{\infty} \frac{(-a)^n}{n!}\,\underbrace{\partial_x^n\, e^{ikx}}_{=\,(ik)^n e^{ikx}}
+           \;=\; \left(\sum_{n=0}^{\infty} \frac{(-ika)^n}{n!}\right) e^{ikx}
+           \;=\; e^{-ika}\, e^{ikx}. \]
+      </p>
+      <p>
+        The slide returns the <em>same</em> wave multiplied by the constant phase \(e^{-ika}\):
+        plane waves are the eigenfunctions of translation, with eigenvalue \(e^{-ika}\). No other
+        shape survives a slide unchanged.
+      </p>
+      <p>
+        <strong>Noether, in one line.</strong> If the Hamiltonian is translation-invariant —
+        \(H(x+a,p) = H(x,p)\) for all \(a\), i.e. \(\partial_x H = -\,\dot p = 0\) — then momentum
+        is conserved. Switch on a potential and the symmetry breaks by exactly the force law:
+      </p>
+      <p style="text-align:center">
+        \[ \text{no } V(x): \;\; \dot p = -\partial_x V = 0 \;\;(\text{conserved}); \qquad
+           \text{with } V(x): \;\; \dot p = -\partial_x V \neq 0. \]
+      </p>
+      <p>
+        Energy plays the identical role for time: if \(H\) has no explicit \(t\)-dependence,
+        \(\tfrac{dE}{dt} = \partial_t H = 0\) — time-translation symmetry \(\Rightarrow\) energy
+        conserved. The dictionary "space-slide \(\leftrightarrow\) momentum, time-slide
+        \(\leftrightarrow\) energy" is the Ansatz we carry into the quantum theory unchanged.
+      </p>
+    </div>
+
+    <div class="widget" id="ws">
+      <div class="widget-title">Widget 2 · The slide machine — live · drag the shift</div>
+      <canvas id="ws-canvas" class="widget-stage"></canvas>
+      <div class="widget-controls" style="margin-top:16px">
+        <label>shift&nbsp; a = <span class="val" id="ws-aV">0.00</span>
+          <input type="range" id="ws-a" min="-2.5" max="2.5" step="0.05" value="0">
+        </label>
+      </div>
+      <div class="readout" id="ws-readout"></div>
+      <p class="caption">The whole system — particle and potential — shifts together. Translation symmetry
+        says physics must look identical before and after: there is no preferred origin.
+        The generator of that shift is \(\partial_x\), i.e. momentum.</p>
+    </div>
+
+    <div class="prose">
+      <p>
+        Notice none of this used a wavefunction, \(\hbar\), or anything quantum — it is just classical
+        symmetry. The quantum theory will change exactly one thing: <em>what</em> the generator acts on. Once
+        the particle becomes a complex amplitude (next step), this same translation generator, acting on it,
+        becomes the <em>momentum operator</em> — and that is the move that finally produces \(p=\hbar k\).
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== STEP 3 · plane wave ===================== -->
+  <section class="concept-step" id="step-2">
+    <p class="step-num">Step 3 · the one new ingredient</p>
+    <h2>Replace the particle with a plane wave</h2>
+
+    <div class="strand intuit">
+      <span class="strand-tag">Intuition</span>
+      <p>
+        Here is the single physical input that classical mechanics does not have.
+        De Broglie's proposal: a particle is not a point — it is a <strong>wave</strong>. The simplest
+        travelling wave is the <em>plane wave</em>: a corkscrew of phase gliding through space. Two
+        knobs control it — how tightly wound it is in space (the wavenumber \(k\)) and how fast it
+        spins in time (the frequency \(\omega\)). For now these are purely wave-geometric labels; they
+        earn their physical names — momentum and energy — in Step 5.
+      </p>
+      <p>
+        To <em>see</em> it: freeze one location and the wave is just a point bobbing up and down at
+        rate \(\omega\); its position along \(x\) only sets <em>where in its cycle</em> the bob starts.
+        Stitch all locations together and the staggered starting phases make the pattern appear to
+        travel. Set \(k=0\) and every point shares the same phase — the whole line bobs in unison.
+        Build it step by step below.
+      </p>
+    </div>
+
+    <div class="strand rigor">
+      <span class="strand-tag">Rigor</span>
+      <p>
+        The plane wave is the complex exponential
+      </p>
+      <p style="text-align:center">
+        \[ \psi(x,t) \;=\; e^{\,i(kx - \omega t)}
+           \;=\; \cos(kx-\omega t) \;+\; i\,\sin(kx-\omega t), \]
+      </p>
+      <p>
+        by Euler's formula \(e^{i\theta} = \cos\theta + i\sin\theta\). The symbols:
+        \(k = 2\pi/\lambda\) is the <strong>wavenumber</strong> (radians of phase per metre,
+        \(\lambda\) the wavelength), and \(\omega = 2\pi/T_{\text{per}}\) is the
+        <strong>angular frequency</strong> (radians of phase per second, \(T_{\text{per}}\) the period).
+      </p>
+      <p>
+        <strong>Why it "travels": the phase velocity.</strong> Follow one crest — a point of constant
+        phase \(\phi_0\). Constant phase means
+      </p>
+      <p style="text-align:center">
+        \[ kx - \omega t = \phi_0 \;=\; \text{const}
+           \quad\Longrightarrow\quad x(t) = \frac{\phi_0}{k} + \frac{\omega}{k}\,t
+           \quad\Longrightarrow\quad v_p \;=\; \frac{dx}{dt} \;=\; \frac{\omega}{k}. \]
+      </p>
+      <p>
+        The pattern moves rigidly at the <strong>phase velocity</strong> \(v_p = \omega/k\). At a fixed
+        location \(x_0\), \(\psi(x_0,t) = e^{ikx_0}\,e^{-i\omega t}\): a unit arrow rotating clockwise
+        in the complex plane at rate \(\omega\), with fixed phase offset \(kx_0\).
+      </p>
+      <p>
+        <strong>Why this wave and not another.</strong> The plane wave is exactly the translation
+        eigenfunction of Step 2: \(e^{-a\partial_x} e^{ikx} = e^{-ika}\,e^{ikx}\). A slide cannot
+        reshape it, only re-phase it. If momentum is to be "the handle translations grab," the state of
+        definite momentum must be the state translations cannot deform — the plane wave is forced on us.
+      </p>
+    </div>
+
+    <div class="widget" id="wa">
+      <div class="widget-title">Widget 3 · Anatomy of a plane wave — staged · then play</div>
+      <canvas id="wa-canvas" class="widget-stage"></canvas>
+      <div class="reveal-bar">
+        <button id="wa-back" disabled>&larr; Back</button>
+        <span class="reveal-caption" id="wa-caption"></span>
+        <button id="wa-next">Add the neighbours &rarr;</button>
+      </div>
+      <div class="widget-controls" style="margin-top:16px">
+        <label>wavenumber&nbsp; k = <span class="val" id="wa-kV">3.0</span>
+          <input type="range" id="wa-k" min="0" max="6" step="0.1" value="3">
+        </label>
+        <label>frequency&nbsp; &omega; = <span class="val" id="wa-wV">2.0</span>
+          <input type="range" id="wa-w" min="0" max="5" step="0.1" value="2">
+        </label>
+      </div>
+      <div class="btn-row">
+        <button id="wa-play">Play</button>
+        <button id="wa-reset">Reset</button>
+      </div>
+      <div class="readout" id="wa-readout"></div>
+      <p class="caption">Cyan dot = one fixed location; amber dots = its neighbours. Time \(t\) only ever
+        multiplies \(\omega\); space \(x\) only ever multiplies \(k\) — together they make the pattern move.</p>
+    </div>
+  </section>
+
+  <!-- ===================== STEP 4 · Born ===================== -->
+  <section class="concept-step" id="step-born">
+    <p class="step-num">Step 4 · reading the wave</p>
+    <h2>Born's rule: from amplitude to probability</h2>
+
+    <div class="strand intuit">
+      <span class="strand-tag">Intuition</span>
+      <p>
+        We can now draw the plane wave — but what does it <em>mean</em>? Two features demand
+        interpretation. First, \(\psi\) is <em>complex</em> — a rotating arrow, real and imaginary
+        parts a quarter-cycle apart. That hidden phase is exactly what will encode momentum and
+        energy once we apply the translation generator in Step 5. Second, it is spread out over all
+        of space — so where <em>is</em> the particle? Born's rule answers: the squared length of the
+        arrow at each point is the <strong>probability</strong> of finding the particle there.
+      </p>
+      <p>
+        A plane wave's arrow has the same length everywhere, so its probability is flat — the
+        particle is equally likely to be anywhere. That is not a bug: it is the price of a perfectly
+        definite wavelength. Watch the point particle dissolve into a complex amplitude below.
+      </p>
+    </div>
+
+    <div class="strand rigor">
+      <span class="strand-tag">Rigor</span>
+      <p>
+        The state of the particle is a complex-valued function \(\psi(x,t)\), the
+        <strong>wavefunction</strong>. Born's rule: the <strong>probability density</strong> for
+        finding the particle at \(x\) is the squared modulus, and total probability is one:
+      </p>
+      <p style="text-align:center">
+        \[ \rho(x,t) \;=\; |\psi(x,t)|^2 \;=\; \psi^*(x,t)\,\psi(x,t), \qquad
+           \int_{-\infty}^{\infty} |\psi(x,t)|^2\,dx \;=\; 1, \]
+      </p>
+      <p>
+        where \(\psi^* \) is the complex conjugate (\(i \to -i\)). For the plane wave the density is
+        computed in one line:
+      </p>
+      <p style="text-align:center">
+        \[ |\psi|^2 \;=\; \left(e^{i(kx-\omega t)}\right)^{*} e^{i(kx-\omega t)}
+           \;=\; e^{-i(kx-\omega t)}\, e^{i(kx-\omega t)} \;=\; e^{0} \;=\; 1 \quad \text{everywhere}. \]
+      </p>
+      <p>
+        Flat, and therefore not normalizable — \(\int 1\,dx = \infty\). A lone plane wave is an
+        idealized limit, not a physical state; the fix (superposition) is Step 6.
+      </p>
+      <p>
+        <strong>Why amplitudes and not probabilities.</strong> Amplitudes <em>add before they are
+        squared</em>. For two overlapping waves:
+      </p>
+      <p style="text-align:center">
+        \[ |\psi_1 + \psi_2|^2 \;=\; (\psi_1+\psi_2)^*(\psi_1+\psi_2)
+           \;=\; |\psi_1|^2 + |\psi_2|^2 + \underbrace{2\,\mathrm{Re}\!\left(\psi_1^*\psi_2\right)}_{\text{interference}}. \]
+      </p>
+      <p>
+        The cross term \(2\,\mathrm{Re}(\psi_1^*\psi_2)\) can be negative — two possibilities can
+        <em>cancel</em>. Classical probabilities can never do that; this single term is the entire
+        difference between quantum and classical randomness.
+      </p>
+    </div>
+
+    <div class="widget" id="w2">
+      <div class="widget-title">Widget 4 · Particle into amplitude — staged reveal</div>
+      <canvas id="w2-canvas" class="widget-stage"></canvas>
+      <div class="reveal-bar">
+        <button id="w2-back" disabled>&larr; Back</button>
+        <span class="reveal-caption" id="w2-caption"></span>
+        <button id="w2-next">Spread it out &rarr;</button>
+      </div>
+      <p class="caption">Each press keeps the previous layers and adds one. The probability
+        cloud \(|\psi|^2\) is all we can observe; the phase underneath is hidden machinery.</p>
+    </div>
+
+    <div class="aside">
+      <span class="tag">Bridge to what you know</span>
+      Think of \(\psi\) as an <em>amplitude</em> whose modulus-squared is a normalized density — almost a
+      generative model over position. The crucial difference from an ordinary probability model is
+      that amplitudes are complex and <em>add before they are squared</em>:
+      \(|\psi_1+\psi_2|^2 \neq |\psi_1|^2+|\psi_2|^2\). That cross term is interference, and it is the
+      whole reason quantum probability is not classical probability.
+    </div>
+  </section>
+
+  <!-- ===================== STEP 5 · operators ===================== -->
+  <section class="concept-step" id="step-4">
+    <p class="step-num">Step 5 · apply the operators</p>
+    <h2>Feed the wave to the generator: momentum pops out</h2>
+
+    <div class="strand intuit">
+      <span class="strand-tag">Intuition</span>
+      <p>
+        Now the two threads meet. Step 2 found the generator of translations — the bare derivative
+        \(\partial_x\). Steps 3–4 supplied the thing for it to act on: the complex wavefunction.
+        Dress the generator with two constants and it becomes the <strong>momentum operator</strong>;
+        its time-twin becomes the <strong>energy operator</strong>. Feed the plane wave to either one
+        and something remarkable happens: the operator hands back <em>the same wave</em>, just
+        multiplied by a number. That number <em>is</em> the momentum (\(\hbar k\)) or the energy
+        (\(\hbar\omega\)) of the wave.
+      </p>
+      <p>
+        So the de Broglie relation \(p = \hbar k\) — "more wiggles per metre means more momentum" —
+        is not an extra postulate. It is what the symmetry definition of momentum <em>outputs</em>
+        when you point it at a wave. The widget makes this visible: the operator only rescales the
+        wave, and the scale factor is exactly \(p\). Same wave, louder.
+      </p>
+    </div>
+
+    <div class="strand rigor">
+      <span class="strand-tag">Rigor</span>
+      <p>
+        Define the <strong>momentum operator</strong> and the <strong>energy operator</strong> as the
+        dressed generators of space- and time-translation:
+      </p>
+      <p style="text-align:center">
+        \[ \hat p \;=\; -i\hbar\,\frac{\partial}{\partial x}, \qquad
+           \hat E \;=\; +\,i\hbar\,\frac{\partial}{\partial t}. \]
+      </p>
+      <p>
+        Each factor earns its keep. The \(\hbar\) (Planck's constant over \(2\pi\), units
+        \(\mathrm{J\,s}\)) converts "radians of phase per metre" into \(\mathrm{kg\,m\,s^{-1}}\) —
+        it is the single empirically measured constant in the whole construction. The \(-i\) makes
+        \(\hat p\) <strong>Hermitian</strong>, so its eigenvalues are real, measurable numbers:
+        integrating by parts (boundary terms vanish for normalizable \(\psi\)),
+      </p>
+      <p style="text-align:center">
+        \[ \int \varphi^*\,(-i\hbar\,\partial_x\psi)\,dx
+           \;=\; \Big[-i\hbar\,\varphi^*\psi\Big]_{-\infty}^{\infty} + \int (i\hbar\,\partial_x\varphi^*)\,\psi\,dx
+           \;=\; \int \big(-i\hbar\,\partial_x\varphi\big)^{*}\,\psi\,dx . \]
+      </p>
+      <p>
+        The \(i\) flips sign under conjugation exactly when the minus sign from integration by parts
+        appears — the two cancel, which is the Hermiticity condition
+        \(\langle\varphi,\hat p\,\psi\rangle = \langle\hat p\,\varphi,\psi\rangle\). Without the
+        \(i\), the bare \(\hbar\,\partial_x\) would be <em>anti</em>-Hermitian, with imaginary eigenvalues.
+      </p>
+      <p>
+        <strong>The eigenvalue computation, in full.</strong> Differentiate the plane wave in space:
+      </p>
+      <p style="text-align:center">
+        \[ \frac{\partial}{\partial x}\, e^{i(kx-\omega t)} \;=\; ik\, e^{i(kx-\omega t)} \;=\; ik\,\psi
+           \quad\Longrightarrow\quad
+           \hat p\,\psi \;=\; -i\hbar\,(ik)\,\psi \;=\; -\,i^2\,\hbar k\,\psi \;=\; \hbar k\,\psi, \]
+      </p>
+      <p>
+        using \(i^2 = -1\). And in time:
+      </p>
+      <p style="text-align:center">
+        \[ \frac{\partial}{\partial t}\, e^{i(kx-\omega t)} \;=\; -i\omega\,\psi
+           \quad\Longrightarrow\quad
+           \hat E\,\psi \;=\; i\hbar\,(-i\omega)\,\psi \;=\; \hbar\omega\,\psi. \]
+      </p>
+      <p>
+        The plane wave is a simultaneous eigenfunction of both operators, with eigenvalues
+      </p>
+      <p style="text-align:center">
+        \[ p \;=\; \hbar k, \qquad E \;=\; \hbar\omega \]
+      </p>
+      <p>
+        — the de Broglie and Planck–Einstein relations, arriving as <strong>outputs of the symmetry
+        definition</strong> rather than postulates. (Honesty note: symmetry fixes the
+        <em>structure</em> — \(p \propto k\), \(E \propto \omega\). That the proportionality constant
+        is the same \(\hbar\) for all matter is the empirical content, confirmed by electron
+        diffraction.)
+      </p>
+    </div>
+
+    <div class="prose">
+      <div class="dict">
+        <div class="chip"><b>p = \(\hbar k\)</b> &nbsp; momentum \(\leftarrow\) wavenumber</div>
+        <div class="chip"><b>E = \(\hbar\omega\)</b> &nbsp; energy \(\leftarrow\) frequency</div>
+      </div>
+    </div>
+
+    <div class="widget" id="w4">
+      <div class="widget-title">Widget 5 · Operator eigenvalue — live · drag k</div>
+      <div class="widget-controls">
+        <label>wavenumber&nbsp; k = <span class="val" id="w4-kV">3.0</span>
+          <input type="range" id="w4-k" min="0.5" max="6" step="0.1" value="3">
+        </label>
+      </div>
+      <canvas id="w4-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w4-readout"></div>
+      <p class="caption">\(\hbar=1\) here. The bold wave is the operator output \(\hat p\,\psi\); it is
+        \(\psi\) scaled by \(p\). Same wave, louder — that is what "\(\psi\) is an eigenfunction of \(\hat p\)" means.</p>
+    </div>
+
+    <div class="aside">
+      <span class="tag">Bridge to what you know</span>
+      Position and momentum are <em>Fourier-conjugate</em>. In Fourier space, multiplying by frequency is
+      differentiating in the original variable — exactly \(\hat p = -i\hbar\partial_x\). The momentum operator
+      is nothing more exotic than "the thing that reads off frequency," the same identity you use whenever a
+      derivative becomes \(i\xi\) under a Fourier transform.
+    </div>
+
+    <details class="formal">
+      <summary>Where this secretly came from: Hamilton–Jacobi</summary>
+      <div class="formal-body prose">
+        <p>
+          The substitution is less arbitrary than it looks. Write a wavefunction in polar form
+          \(\psi = A\,e^{iS/\hbar}\) and feed it into the equation we are about to build. Expanding in powers of
+          \(\hbar\), the leading term is
+          \(\;\partial_t S + \tfrac{1}{2m}(\partial_x S)^2 + V = 0\) — the <strong>Hamilton–Jacobi equation</strong>
+          of classical mechanics, with \(S\) the classical action and \(p=\partial_x S\). So the phase of the quantum
+          wave <em>is</em> the classical action divided by \(\hbar\), and classical mechanics is the
+          \(\hbar\to 0\) limit (geometric optics) of a wave theory. Schrödinger found his equation precisely by
+          running Hamilton's optical–mechanical analogy in reverse: if mechanics is the ray-limit of some wave
+          equation, what wave equation is it the limit of?
+        </p>
+      </div>
+    </details>
+
+    <details class="formal">
+      <summary>The full symmetry dictionary, and Ehrenfest closing the loop</summary>
+      <div class="formal-body prose">
+        <p>
+          Each continuous symmetry has a generator, and that generator is the conserved observable:
+          space translations \(\to \hat p=-i\hbar\partial_x\) (momentum); time translations
+          \(\to \hat H\) via \(U(t)=e^{-i\hat Ht/\hbar}\) (energy); rotations \(\to \hat L\) (angular
+          momentum). In each case "symmetry" means the generator commutes with \(\hat H\), and Heisenberg
+          evolution \(\tfrac{d}{dt}\langle\hat A\rangle = \tfrac{i}{\hbar}\langle[\hat H,\hat A]\rangle\)
+          turns commuting into conserved. The canonical pair structure \([\hat x,\hat p]=i\hbar\) is the same
+          statement read sideways: \(\hat p\) generates shifts of \(x\), and \(\hat x\) generates shifts of
+          \(p\). Ehrenfest's theorem then closes the loop with classical mechanics:
+          \(\tfrac{d}{dt}\langle x\rangle = \langle\hat p\rangle/m\) and
+          \(\tfrac{d}{dt}\langle\hat p\rangle = -\langle\partial_x V\rangle\) — mass times velocity, and
+          Newton's second law, recovered as statements about the packet's averages. Together with the group
+          velocity \(v_g=\hbar k_0/m\) of Step 6, every classical role of momentum is accounted for.
+        </p>
+      </div>
+    </details>
+
+    <div class="prose">
+      <p style="color:var(--ink-soft)">
+        One worry before we assemble anything: an infinitely-extended plane wave cannot be a real, localized
+        electron. That is exactly the puzzle the next step resolves.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== STEP 6 · wave packets ===================== -->
+  <section class="concept-step" id="step-packet">
+    <p class="step-num">Step 6 · resolving the puzzle</p>
+    <h2>What a real electron is: a wave packet</h2>
+
+    <div class="strand intuit">
+      <span class="strand-tag">Intuition</span>
+      <p>
+        A fair objection to Steps 3–5: a plane wave stretches from \(-\infty\) to \(+\infty\) with the
+        same brightness everywhere — not localized at all. Real electrons are <em>somewhere</em>. The
+        key realization: <strong>the plane wave was never the electron — it is a building block.</strong>
+        It is the state of one perfectly definite momentum, and "equally likely to be anywhere" is
+        exactly the right answer for that. A real electron carries a <em>spread</em> of momenta, so we
+        stack many plane waves on top of each other.
+      </p>
+      <p>
+        Then interference does the work: near one point the components line up in phase and reinforce;
+        far away their phases fan out and cancel. The result is a localized bump — a
+        <strong>wave packet</strong> — built entirely from non-localized pieces, exactly as a sharp
+        drum hit is a superposition of pure tones. Build it below: start with one wave (flat — the
+        puzzle), add momenta band by band, and watch the packet sharpen, drift, and slowly spread.
+      </p>
+    </div>
+
+    <div class="strand rigor">
+      <span class="strand-tag">Rigor</span>
+      <p>
+        <strong>Superposition.</strong> Weight each plane wave \(e^{ikx}\) by a complex amplitude
+        \(A(k)\) and add them all:
+      </p>
+      <p style="text-align:center">
+        \[ \psi(x,0) \;=\; \int_{-\infty}^{\infty} A(k)\, e^{ikx}\, dk. \]
+      </p>
+      <p>
+        This is an inverse Fourier transform; \(A(k)\) is the wavefunction in momentum space and
+        \(|A(k)|^2\) the probability density over momentum (Step 7 makes this exact).
+      </p>
+      <p>
+        <strong>The Gaussian packet, computed in full.</strong> Choose a Gaussian band of momenta
+        centred at \(k_0\) with width \(\sigma_k\): \(A(k) = e^{-(k-k_0)^2/2\sigma_k^2}\). Substitute
+        \(u = k-k_0\):
+      </p>
+      <p style="text-align:center">
+        \[ \psi(x,0) \;=\; \int e^{-u^2/2\sigma_k^2}\, e^{i(k_0+u)x}\, du
+           \;=\; e^{ik_0x} \int e^{-u^2/2\sigma_k^2 + iux}\, du. \]
+      </p>
+      <p>
+        Complete the square in the exponent:
+        \(-\tfrac{u^2}{2\sigma_k^2} + iux = -\tfrac{1}{2\sigma_k^2}\big(u - i\sigma_k^2 x\big)^2 - \tfrac{\sigma_k^2 x^2}{2}\).
+        The shifted Gaussian integrates to \(\sqrt{2\pi}\,\sigma_k\) regardless of the shift, so
+      </p>
+      <p style="text-align:center">
+        \[ \psi(x,0) \;=\; \sqrt{2\pi}\,\sigma_k\; e^{ik_0x}\; e^{-\sigma_k^2 x^2/2}. \]
+      </p>
+      <p>
+        A Gaussian band of momenta gives a Gaussian bump in space: carrier wave \(e^{ik_0x}\) times
+        envelope \(e^{-\sigma_k^2x^2/2}\). <strong>The uncertainty product falls out.</strong> The
+        position density \(|\psi|^2 \propto e^{-\sigma_k^2 x^2}\) has standard deviation
+        \(\Delta x = 1/(\sqrt2\,\sigma_k)\); the momentum density \(|A(k)|^2 \propto e^{-(k-k_0)^2/\sigma_k^2}\)
+        has \(\Delta k = \sigma_k/\sqrt2\). Multiply:
+      </p>
+      <p style="text-align:center">
+        \[ \Delta x\,\Delta k \;=\; \frac{1}{\sqrt2\,\sigma_k}\cdot\frac{\sigma_k}{\sqrt2} \;=\; \frac12
+           \qquad\Longrightarrow\qquad
+           \Delta x\,\Delta p \;=\; \hbar\,\Delta x\,\Delta k \;=\; \frac{\hbar}{2}, \]
+      </p>
+      <p>
+        the minimum the uncertainty principle allows — Gaussians saturate
+        \(\Delta x\,\Delta p \ge \hbar/2\). Narrow band \(\Rightarrow\) wide packet and vice versa;
+        the lone plane wave is the limit \(\Delta k \to 0\), \(\Delta x \to \infty\).
+      </p>
+      <p>
+        <strong>Group velocity.</strong> Each component evolves as \(e^{i(kx - \omega(k)t)}\). Add two
+        neighbouring components \(k_0 \pm \tfrac{\Delta k}{2}\) (real parts, using the sum-to-product
+        identity \(\cos\alpha + \cos\beta = 2\cos\tfrac{\alpha-\beta}{2}\cos\tfrac{\alpha+\beta}{2}\)):
+      </p>
+      <p style="text-align:center">
+        \[ \cos(k_1x-\omega_1 t) + \cos(k_2x-\omega_2 t)
+           \;=\; 2\,\underbrace{\cos\!\Big(\tfrac{\Delta k}{2}x - \tfrac{\Delta\omega}{2}t\Big)}_{\text{slow envelope}}\;
+                 \underbrace{\cos\!\big(k_0 x - \omega_0 t\big)}_{\text{fast carrier}}. \]
+      </p>
+      <p>
+        The envelope travels at \(\tfrac{\Delta\omega/2}{\Delta k/2} = \tfrac{\Delta\omega}{\Delta k}
+        \to \tfrac{d\omega}{dk}\). With the free dispersion \(\omega(k) = \hbar k^2/2m\) (derived in
+        Step 8),
+      </p>
+      <p style="text-align:center">
+        \[ v_g \;=\; \left.\frac{d\omega}{dk}\right|_{k_0} \;=\; \frac{\hbar k_0}{m} \;=\; \frac{p_0}{m}, \]
+      </p>
+      <p>
+        exactly the classical velocity \(v = p/m\): <strong>the packet's envelope moves like the
+        classical particle</strong>. And because \(\omega(k)\) is curved
+        (\(d^2\omega/dk^2 = \hbar/m \neq 0\)), components drift out of step and the packet slowly
+        spreads.
+      </p>
+    </div>
+
+    <div class="widget" id="wp">
+      <div class="widget-title">Widget 6 · Wave-packet builder — staged · then tune &amp; play</div>
+      <canvas id="wp-canvas" class="widget-stage"></canvas>
+      <div class="reveal-bar">
+        <button id="wp-back" disabled>&larr; Back</button>
+        <span class="reveal-caption" id="wp-caption"></span>
+        <button id="wp-next">Add a second momentum &rarr;</button>
+      </div>
+      <div class="widget-controls" style="margin-top:16px">
+        <label>momentum spread&nbsp; &Delta;k &asymp; <span class="val" id="wp-sigV">0.60</span>
+          <input type="range" id="wp-sig" min="0.3" max="1.0" step="0.02" value="0.6" disabled>
+        </label>
+      </div>
+      <div class="btn-row">
+        <button id="wp-play" disabled>Play</button>
+        <button id="wp-reset" disabled>Reset</button>
+      </div>
+      <div class="readout" id="wp-readout"></div>
+      <p class="caption">Filled = \(|\psi|^2\); faint line = \(\operatorname{Re}\psi\) (the carrier); ticks along
+        the bottom = the momenta \(k\) in the mix. The slider and Play unlock once the full band is revealed.</p>
+    </div>
+
+    <div class="aside">
+      <span class="tag">Bridge to what you know</span>
+      Position and momentum are a Fourier-conjugate pair, and \(\psi(x)\), \(\tilde\psi(k)\) are a signal and its
+      spectrum. \(\Delta x\,\Delta k\ge\tfrac12\) is precisely the time–bandwidth (Gabor) limit, with the Gaussian
+      as the joint-optimal, minimum-uncertainty window — the same reason a Gaussian pulse is the tightest you can
+      be in time and frequency at once.
+    </div>
+
+    <details class="formal">
+      <summary>The free Gaussian packet: group vs. phase velocity, and spreading</summary>
+      <div class="formal-body prose">
+        <p>
+          For a free particle \(E=\tfrac{p^2}{2m}=\tfrac{\hbar^2k^2}{2m}\), so \(\omega(k)=\hbar k^2/2m\). Each
+          component runs at phase velocity \(v_p=\omega/k=\hbar k/2m\), but the <em>envelope</em> travels at
+          \(v_g=d\omega/dk=\hbar k/m=2v_p\): the packet outruns its own ripples. Spreading is the curvature
+          \(d^2\omega/dk^2=\hbar/m\neq 0\); a Gaussian of initial width \(\sigma_x(0)\) widens as
+          \(\sigma_x(t)=\sigma_x(0)\sqrt{1+\big(\hbar t/2m\sigma_x(0)^2\big)^2}\), so tightly-localized packets
+          (small \(\sigma_x(0)\)) spread fastest — squeezing position now is paid for by faster blurring later.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 7 · the Fourier picture ===================== -->
+  <section class="concept-step" id="step-fourier">
+    <p class="step-num">Step 7 · the Fourier picture</p>
+    <h2>Position and momentum are a Fourier pair</h2>
+
+    <div class="strand intuit">
+      <span class="strand-tag">Intuition</span>
+      <p>
+        Everything in Step 6 was one theorem in disguise — one you already know from sound.
+        Position is the signal; momentum is its spectrum. "A localized particle is built from many
+        momenta" is the <em>same statement</em> as "a short pulse contains a broad band of
+        frequencies." A pure tone rings forever — a plane wave fills all of space; a sharp click is
+        broadband — a localized packet needs many \(k\). Squeeze the signal in one domain and it
+        stretches in the other; that trade-off, written with de Broglie's \(\hbar\), <em>is</em> the
+        uncertainty principle.
+      </p>
+      <p>
+        Watch it assemble below. The top window is a <strong>target</strong> — a localized electron.
+        The bottom window starts from a single plane wave: one momentum, dead-flat probability. Each
+        press adds one more wavenumber from the spectrum; the partial sum sharpens until it reproduces
+        the target. Localization is paid for one momentum at a time.
+      </p>
+    </div>
+
+    <div class="strand rigor">
+      <span class="strand-tag">Rigor</span>
+      <p>
+        <strong>The transform pair.</strong> With the symmetric convention,
+      </p>
+      <p style="text-align:center">
+        \[ \tilde\psi(k) = \frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty} \psi(x)\, e^{-ikx}\, dx,
+           \qquad
+           \psi(x) = \frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty} \tilde\psi(k)\, e^{ikx}\, dk. \]
+      </p>
+      <p>
+        <strong>Parseval's theorem</strong> guarantees the two descriptions carry the same total
+        probability, so \(|\tilde\psi(k)|^2\) is a legitimate density over momentum:
+      </p>
+      <p style="text-align:center">
+        \[ \int |\psi(x)|^2\, dx \;=\; \int |\tilde\psi(k)|^2\, dk \;=\; 1. \]
+      </p>
+      <p>
+        <strong>The scaling law — the trade-off made exact.</strong> Stretch the wavefunction by a
+        factor \(s\): \(\psi_s(x) = \tfrac{1}{\sqrt s}\,\psi(x/s)\) (the prefactor keeps it
+        normalized). Substituting \(y = x/s\) in the transform:
+      </p>
+      <p style="text-align:center">
+        \[ \tilde\psi_s(k) \;=\; \frac{1}{\sqrt{2\pi}}\int \frac{1}{\sqrt s}\,\psi(x/s)\,e^{-ikx}\,dx
+           \;=\; \frac{\sqrt s}{\sqrt{2\pi}}\int \psi(y)\,e^{-i(sk)y}\,dy
+           \;=\; \sqrt{s}\;\tilde\psi(sk). \]
+      </p>
+      <p>
+        Widen in \(x\) by \(s\) \(\Rightarrow\) squeeze in \(k\) by the same \(s\): the product
+        \(\Delta x\,\Delta k\) is scale-invariant. The general lower bound (proved from the
+        Cauchy–Schwarz inequality applied to \(x\psi\) and \(\partial_x\psi\)) is
+      </p>
+      <p style="text-align:center">
+        \[ \Delta x\,\Delta k \;\ge\; \tfrac12
+           \qquad\Longrightarrow\qquad
+           \Delta x\,\Delta p \;\ge\; \frac{\hbar}{2}, \]
+      </p>
+      <p>
+        with equality exactly for Gaussians — the case computed in Step 6. Heisenberg's principle is
+        Fourier analysis wearing \(p = \hbar k\).
+      </p>
+    </div>
+
+    <div class="widget" id="wf">
+      <div class="widget-title">Widget 7 · Building a particle from waves — click to add momenta</div>
+      <canvas id="wf-canvas" class="widget-stage"></canvas>
+      <div class="btn-row" style="margin-top:16px">
+        <button id="wf-add">Add a wavenumber &rarr;</button>
+        <button id="wf-rem">&larr; Remove</button>
+        <button id="wf-reset">Reset</button>
+      </div>
+      <div class="readout" id="wf-readout"></div>
+      <p class="caption">Top: the target electron, \(|\psi|^2\) filled, \(\operatorname{Re}\psi\) as the line.
+        Bottom: the running superposition (dashed = target) with its momentum spectrum \(A(k)\) filling in below.</p>
+    </div>
+
+    <div class="aside">
+      <span class="tag">Bridge to what you know</span>
+      The dictionary is exact: signal \(\leftrightarrow\) \(\psi(x)\), spectrum \(\leftrightarrow\)
+      \(\tilde\psi(k)\), pure tone \(\leftrightarrow\) plane wave, click \(\leftrightarrow\) wave packet,
+      time–bandwidth \(\Delta t\,\Delta\omega\ge\tfrac12\) \(\leftrightarrow\) \(\Delta x\,\Delta p\ge\hbar/2\),
+      Gaussian \(\leftrightarrow\) minimum-uncertainty state. The one entry that is <em>not</em> a clean
+      translation is the ontology: in DSP the spectrum is a definite property your finite window lets you
+      <em>estimate</em>; in QM the spectrum <em>is</em> the state — the components genuinely coexist (the
+      interference nodes of \(e^{ikx}+e^{-ikx}=2\cos kx\) prove it), and a single measurement returns one \(k\)
+      drawn from \(|\tilde\psi(k)|^2\) rather than revealing a value that was already there.
+    </div>
+
+    <details class="formal">
+      <summary>Why \(k\) and not \(\omega\)? Statics versus dynamics</summary>
+      <div class="formal-body prose">
+        <p>
+          A plane wave \(e^{i(kx-\omega t)}\) carries two labels, but for a free particle they are chained by the
+          <strong>dispersion relation</strong>: combining \(E=\tfrac{\hbar^2k^2}{2m}\) with \(E=\hbar\omega\)
+          gives \(\omega(k)=\hbar k^2/2m\). Once \(k\) is chosen, \(\omega\) is fixed — so we superpose over
+          \(k\) <em>only</em>, each component dragging its own \(\omega(k)\) along. That is why \(k\) carries the
+          whole conversation: \(k\) owns the <em>statics</em> (the shape, the position–momentum Fourier pair),
+          while \(\omega\) owns the <em>dynamics</em> — the phase \(e^{-i\omega(k)t}\) makes the packet move at
+          the group velocity \(v_g=d\omega/dk=\hbar k_0/m\), and the curvature of \(\omega(k)\) is what makes it
+          spread. An electron in vacuum is simply a dispersive medium for matter waves. There is still a genuine
+          \(t\leftrightarrow\omega\) pair — it gives the energy–time relation \(\Delta E\,\Delta t\ge\hbar/2\),
+          the natural linewidth of a state that lives only for a finite time — but that is a statement about
+          <em>how long the state lasts</em>, not <em>where the particle is</em>, which is why it stayed off-stage
+          while we built the packet.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 8 · assemble TDSE ===================== -->
+  <section class="concept-step" id="step-5">
+    <p class="step-num">Step 8 · assemble it</p>
+    <h2>The time-dependent Schrödinger equation</h2>
+
+    <div class="strand intuit">
+      <span class="strand-tag">Intuition</span>
+      <p>
+        We now have everything. Take the classical energy ledger from Step 1, demand that it hold as
+        an operator equation acting on \(\psi\), and substitute the operators from Step 5. Walk the
+        build below one substitution at a time and watch Newton's energy statement turn into
+        Schrödinger's equation. Read the result back in plain words and it is still Step 1:
+        <em>the rate at which the wave's phase turns (its energy) equals its kinetic part plus its
+        potential part.</em> Same ledger; the accounts are now derivatives.
+      </p>
+    </div>
+
+    <div class="strand rigor">
+      <span class="strand-tag">Rigor</span>
+      <p>
+        <strong>The substitution, every line.</strong> Start from the ledger and let it act on \(\psi\):
+      </p>
+      <p style="text-align:center">
+        \[ E = \frac{p^2}{2m} + V(x)
+           \quad\longrightarrow\quad
+           E\,\psi = \frac{p^2}{2m}\,\psi + V(x)\,\psi. \]
+      </p>
+      <p>
+        Replace \(E \to \hat E = i\hbar\,\partial_t\) and \(p \to \hat p = -i\hbar\,\partial_x\). The
+        only real algebra is squaring the momentum operator — apply it twice and track the constants:
+      </p>
+      <p style="text-align:center">
+        \[ \hat p^{\,2}\psi \;=\; \left(-i\hbar\,\partial_x\right)\!\left(-i\hbar\,\partial_x \psi\right)
+           \;=\; (-i\hbar)^2\, \partial_x^2 \psi
+           \;=\; i^2 \hbar^2\, \partial_x^2\psi
+           \;=\; -\hbar^2\, \frac{\partial^2 \psi}{\partial x^2}. \]
+      </p>
+      <p>
+        Substituting both operators gives the <strong>time-dependent Schrödinger equation</strong> (TDSE):
+      </p>
+      <p style="text-align:center">
+        \[ i\hbar\,\frac{\partial \psi}{\partial t}
+           \;=\; -\frac{\hbar^2}{2m}\,\frac{\partial^2 \psi}{\partial x^2} + V(x)\,\psi
+           \;=\; \hat H\,\psi,
+           \qquad
+           \hat H \;=\; \frac{\hat p^{\,2}}{2m} + V(x). \]
+      </p>
+      <p>
+        <strong>Consistency check — the free plane wave.</strong> Set \(V=0\) and insert
+        \(\psi = e^{i(kx-\omega t)}\). Left side: \(i\hbar(-i\omega)\psi = \hbar\omega\,\psi\). Right
+        side: \(-\tfrac{\hbar^2}{2m}(ik)^2\psi = \tfrac{\hbar^2k^2}{2m}\psi\). Equating:
+      </p>
+      <p style="text-align:center">
+        \[ \hbar\omega \;=\; \frac{\hbar^2 k^2}{2m}
+           \qquad\Longleftrightarrow\qquad
+           E \;=\; \frac{p^2}{2m}. \]
+      </p>
+      <p>
+        The equation admits a plane wave precisely when the wave's labels satisfy the classical
+        ledger — the dispersion relation \(\omega(k) = \hbar k^2/2m\) <em>is</em> Newton's energy
+        bookkeeping, wearing wave clothes. This closes the loop: the TDSE is the unique linear wave
+        equation whose dispersion relation reproduces \(E = p^2/2m + V\).
+      </p>
+      <p>
+        <strong>Probability is conserved.</strong> Differentiate the density and substitute the TDSE
+        (\(\partial_t\psi = \tfrac{1}{i\hbar}\hat H\psi\)) and its conjugate:
+      </p>
+      <p style="text-align:center">
+        \[ \frac{\partial}{\partial t}|\psi|^2
+           = \psi^*\,\partial_t\psi + \psi\,\partial_t\psi^*
+           = \frac{1}{i\hbar}\Big(\psi^*\hat H\psi - \psi\,(\hat H\psi)^*\Big)
+           = -\,\frac{\partial}{\partial x}\underbrace{\left[\frac{\hbar}{2mi}\Big(\psi^*\partial_x\psi - \psi\,\partial_x\psi^*\Big)\right]}_{\text{probability current } j(x,t)} \]
+      </p>
+      <p>
+        (the \(V\psi\) terms cancel because \(V\) is real; the kinetic terms combine into a total
+        derivative). This is a <strong>continuity equation</strong> \(\partial_t\rho + \partial_x j = 0\):
+        probability is never created or destroyed, only moved — the wave analogue of "the total in the
+        ledger never changes."
+      </p>
+    </div>
+
+    <div class="widget" id="w5">
+      <div class="widget-title">Widget 8 · Assembling the TDSE — staged equation build</div>
+      <div class="eqbox" id="w5-eq"></div>
+      <div class="reveal-bar">
+        <button id="w5-back" disabled>&larr; Back</button>
+        <span class="reveal-caption" id="w5-caption"></span>
+        <button id="w5-next">Let it act on \(\psi\) &rarr;</button>
+      </div>
+      <p class="caption">Each step changes exactly one thing, highlighted. The classical content never moves —
+        only the <span class="swap">energy</span> and <span class="swap2">momentum</span> symbols become derivatives.</p>
+    </div>
+
+    <details class="formal">
+      <summary>Why first order in time but second in space?</summary>
+      <div class="formal-body prose">
+        <p>
+          The asymmetry is forced. The energy operator \(\hat E = i\hbar\partial_t\) is <em>first</em> order
+          because energy appears linearly in \(H\). The kinetic term carries \(p^2\), and
+          \(\hat p^2 = -\hbar^2\partial_x^2\) is <em>second</em> order. This single-time-derivative structure is
+          why the wavefunction must be complex: a real first-order-in-time wave equation would just decay or
+          grow, but \(i\) makes \(\partial_t\psi\) a <em>rotation</em>, so \(|\psi|^2\) is conserved and
+          probability is preserved. Solving \(i\hbar\,\partial_t\psi=\hat H\psi\) gives
+          \(\psi(t)=e^{-i\hat H t/\hbar}\psi(0)\): a unitary (norm-preserving) flow generated by \(\hat H\).
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 9 · TISE ===================== -->
+  <section class="concept-step" id="step-6">
+    <p class="step-num">Step 9 · freeze the time</p>
+    <h2>Stationary states and the time-independent equation</h2>
+
+    <div class="strand intuit">
+      <span class="strand-tag">Intuition</span>
+      <p>
+        The TDSE describes everything, but it is a partial differential equation in two variables.
+        When the potential does not change in time, there is a clean shortcut: look for solutions
+        whose <em>shape</em> is frozen and whose only motion is a spinning phase. For such states the
+        probability cloud \(|\psi|^2\) never moves at all — hence <em>stationary state</em> — and the
+        TDSE collapses into a pure eigenvalue problem: find the shapes the Hamiltonian merely rescales,
+        and the rescaling factors are the <strong>allowed energies</strong>. That is where quantized
+        levels come from. Pick a level \(n\) below and play: the real part oscillates, but the cloud
+        sits perfectly still.
+      </p>
+    </div>
+
+    <div class="strand rigor">
+      <span class="strand-tag">Rigor</span>
+      <p>
+        <strong>Separation of variables, every line.</strong> Try a product solution
+        \(\psi(x,t) = \varphi(x)\,T(t)\) in the TDSE:
+      </p>
+      <p style="text-align:center">
+        \[ i\hbar\,\varphi(x)\,\frac{dT}{dt}
+           \;=\; T(t)\left[-\frac{\hbar^2}{2m}\frac{d^2\varphi}{dx^2} + V(x)\,\varphi(x)\right]. \]
+      </p>
+      <p>
+        Divide both sides by \(\varphi(x)T(t)\):
+      </p>
+      <p style="text-align:center">
+        \[ \underbrace{\,i\hbar\,\frac{1}{T}\frac{dT}{dt}\,}_{\text{depends only on } t}
+           \;=\; \underbrace{\frac{1}{\varphi}\left[-\frac{\hbar^2}{2m}\frac{d^2\varphi}{dx^2} + V\varphi\right]}_{\text{depends only on } x}. \]
+      </p>
+      <p>
+        A function of \(t\) alone equals a function of \(x\) alone for <em>all</em> \(x,t\) only if
+        both are one constant — call it \(E\) (it has units of energy). The time equation is solved
+        immediately:
+      </p>
+      <p style="text-align:center">
+        \[ i\hbar\,\frac{dT}{dt} = E\,T
+           \quad\Longrightarrow\quad
+           \frac{dT}{T} = -\frac{iE}{\hbar}\,dt
+           \quad\Longrightarrow\quad
+           T(t) = e^{-iEt/\hbar}, \]
+      </p>
+      <p>
+        a pure phase rotation at rate \(E/\hbar\) — precisely \(E = \hbar\omega\) again. The space
+        equation is the <strong>time-independent Schrödinger equation</strong> (TISE), an eigenvalue
+        problem for \(\hat H\):
+      </p>
+      <p style="text-align:center">
+        \[ -\frac{\hbar^2}{2m}\frac{d^2\varphi}{dx^2} + V(x)\,\varphi \;=\; E\,\varphi,
+           \qquad\text{i.e.}\qquad \hat H\,\varphi = E\,\varphi. \]
+      </p>
+      <p>
+        The full solution \(\psi(x,t) = \varphi(x)\,e^{-iEt/\hbar}\) has
+        \(|\psi|^2 = |\varphi|^2\,|e^{-iEt/\hbar}|^2 = |\varphi|^2\): the density is frozen.
+      </p>
+      <p>
+        <strong>Worked example — the particle in a box</strong> (the widget below;
+        \(V=0\) inside \([0,L]\), infinite walls, so \(\varphi(0)=\varphi(L)=0\)). Inside the box the
+        TISE reads
+      </p>
+      <p style="text-align:center">
+        \[ \frac{d^2\varphi}{dx^2} = -\frac{2mE}{\hbar^2}\,\varphi \;\equiv\; -k^2\varphi
+           \quad\Longrightarrow\quad
+           \varphi(x) = A\sin(kx) + B\cos(kx). \]
+      </p>
+      <p>
+        The boundary conditions do the quantizing: \(\varphi(0)=0\) kills the cosine (\(B=0\));
+        \(\varphi(L)=0\) forces \(\sin(kL)=0\), i.e. \(kL = n\pi\) for integer \(n\ge1\). Only a
+        discrete ladder of wavenumbers fits in the box, and with \(E = \hbar^2k^2/2m\):
+      </p>
+      <p style="text-align:center">
+        \[ k_n = \frac{n\pi}{L}, \qquad
+           E_n = \frac{\hbar^2 \pi^2}{2mL^2}\,n^2, \qquad
+           \varphi_n(x) = \sqrt{\tfrac{2}{L}}\,\sin\!\Big(\frac{n\pi x}{L}\Big), \]
+      </p>
+      <p>
+        where \(\sqrt{2/L}\) comes from normalization
+        \(\int_0^L \sin^2(n\pi x/L)\,dx = L/2\). With \(\hbar=m=L=1\) (the widget's units):
+        \(E_n = n^2\pi^2/2\), so \(E_1 = \pi^2/2 \approx 4.93\) and \(E_2 = 2\pi^2 \approx 19.74\) —
+        check them against the readout. Quantization is not mysterious: it is the same reason a
+        guitar string has discrete harmonics — only whole half-waves fit between the clamps.
+      </p>
+    </div>
+
+    <div class="widget" id="w6">
+      <div class="widget-title">Widget 9 · Stationary states — pick n · play the phase</div>
+      <div class="widget-controls">
+        <label>energy level&nbsp; n = <span class="val" id="w6-nV">1</span>
+          <input type="range" id="w6-n" min="1" max="5" step="1" value="1">
+        </label>
+      </div>
+      <canvas id="w6-canvas" class="widget-stage"></canvas>
+      <div class="btn-row" style="margin-top:14px">
+        <button id="w6-play">Play</button>
+        <button id="w6-reset">Reset</button>
+      </div>
+      <div class="readout" id="w6-readout"></div>
+      <p class="caption">A particle in a box, \(\hbar=m=L=1\). Oscillating line = \(\operatorname{Re}\psi(x,t)\);
+        filled cloud = \(|\psi|^2\). Raise \(n\) and the energy jumps as \(n^2\) — quantized levels.</p>
+    </div>
+
+    <div class="aside">
+      <span class="tag">Bridge to what you know</span>
+      The TISE is \(\hat H\varphi = E\varphi\): a spectral decomposition of a (Hermitian) operator. Energy levels
+      are eigenvalues, stationary states are the eigenbasis, and a general state is a superposition
+      \(\psi=\sum_n c_n\varphi_n\) whose coefficients evolve by independent phases \(e^{-iE_n t/\hbar}\). It is the
+      same move as diagonalizing a covariance matrix — find the eigenbasis, and the dynamics become trivial in it.
+    </div>
+
+    <div class="aside">
+      <span class="tag">Bridge to what you know</span>
+      Symmetry is also the practical answer to "how is \(\hat H\varphi=E\varphi\) actually solved?" When a
+      symmetry survives, you diagonalize the symmetry first and it hands you the eigenbasis (free space
+      \(\to\) Fourier; periodic crystal \(\to\) Bloch waves; rotational symmetry \(\to\) spherical harmonics,
+      which is why hydrogen is solvable). When no symmetry survives, you discretize: on a grid, \(\hat H\)
+      <em>is</em> a sparse matrix (\(\partial_x^2\to\) the \([1,-2,1]\) stencil, \(V\to\) a diagonal) handed
+      to an iterative eigensolver. That works for one particle — for \(N\) interacting electrons the grid
+      lives in \(\mathbb{R}^{3N}\) and explodes exponentially, which is precisely the curse DFT escapes by
+      collapsing the problem to the 3-dimensional density.
+    </div>
+  </section>
+
+  <!-- ===================== RECAP ===================== -->
+  <section class="recap prose">
+    <h2>Putting it together</h2>
+    <p>
+      We never invented anything but one idea. Classical mechanics handed us the ledger
+      \(E=\tfrac{p^2}{2m}+V\) (Step 1). Still in the classical world, Noether's theorem told us what energy and
+      momentum <em>are</em> — the conserved quantities of time- and space-translation symmetry — with the
+      derivative \(\partial_x\) as the generator of a spatial slide (Step 2). De Broglie then took the quantum
+      leap, replacing the particle with a plane wave \(e^{i(kx-\omega t)}\) — precisely the state a slide
+      cannot reshape (Step 3) — and Born told us how to read it: \(|\psi|^2\) is the probability of finding
+      the particle, flat for a single plane wave (Step 4). Promoting the generator to act on \(\psi\) as
+      \(\hat p=-i\hbar\partial_x\) and feeding it the wave returned \(\hbar k\) and \(\hbar\omega\): the de
+      Broglie dictionary as an output, not a postulate (Step 5). A real, localized electron turned out to be a
+      <em>superposition</em> of those waves — a wave packet whose width trades against its momentum spread, the
+      uncertainty principle (Step 6) — which is just the Fourier-pair fact that localizing in position forces a
+      spread in momentum, the time–bandwidth limit wearing de Broglie's \(\hbar\) (Step 7). Substituting the
+      operators into the ledger gave the time-dependent equation (Step 8), and separating time from space
+      collapsed it into the eigenvalue problem \(\hat H\varphi=E\varphi\) (Step 9).
+    </p>
+    <p>
+      So the kernel holds exactly as promised: <mark>the Schrödinger equation is the classical energy
+      statement, made to act on a wave, with "multiply by energy/momentum" rewritten as "differentiate in
+      time/space."</mark> The formidable-looking PDE is that one plain sentence wearing operator clothes.
+    </p>
+    <hr class="rule">
+    <p style="color:var(--ink-soft); font-size:0.96rem">
+      <strong>Where it shows up.</strong> Every spectroscopic line is a difference of TISE eigenvalues
+      \(E_n-E_m\). The "particle in a box" you just played with is the quantum-dot model behind some LED colors.
+      And the unitary flow \(e^{-i\hat H t/\hbar}\) from Step 8 is literally the gate model of quantum computing:
+      choose \(\hat H\), let it run, and you have computed.
+    </p>
+  </section>
+
+</div>
+
+<script>
+/* =========================================================================
+   SHARED CANVAS HELPERS
+   ========================================================================= */
+function setupCanvas(canvas, cssW, cssH) {
+  const dpr = Math.max((window.devicePixelRatio || 1) * 2.5, 3);
+  canvas.style.width = cssW + 'px';
+  canvas.style.maxWidth = '100%';
+  canvas.style.height = cssH + 'px';
+  canvas.width = cssW * dpr;
+  canvas.height = cssH * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  canvas._cssW = cssW; canvas._cssH = cssH;
+  return ctx;
+}
+function makeView(canvas, b) {
+  const w = canvas._cssW, h = canvas._cssH;
+  return {
+    ...b, w, h,
+    x: mx => (mx - b.xmin) / (b.xmax - b.xmin) * w,
+    y: my => h - (my - b.ymin) / (b.ymax - b.ymin) * h
+  };
+}
+const CSS = getComputedStyle(document.documentElement);
+const COL = {
+  accent:  CSS.getPropertyValue('--accent').trim(),
+  accent2: CSS.getPropertyValue('--accent-2').trim(),
+  accent3: CSS.getPropertyValue('--accent-3').trim(),
+  axis:    CSS.getPropertyValue('--axis').trim(),
+  ink:     CSS.getPropertyValue('--ink').trim(),
+  inkSoft: CSS.getPropertyValue('--ink-soft').trim()
+};
+function typeset(el){ if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([el]); }
+
+/* =========================================================================
+   STEP 1 — classical energy ledger
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('w1-canvas');
+  const ctx = setupCanvas(canvas, 760, 320);
+  const view = makeView(canvas, {xmin:-1.6, xmax:1.6, ymin:-0.18, ymax:1.55});
+  const xS = document.getElementById('w1-x'), ES = document.getElementById('w1-E');
+
+  function V(x){ return 0.5*x*x; }
+
+  function draw() {
+    let x = parseFloat(xS.value), E = parseFloat(ES.value);
+    ctx.clearRect(0,0,view.w,view.h);
+
+    ctx.strokeStyle = COL.axis; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(view.x(-1.6), view.y(0)); ctx.lineTo(view.x(1.6), view.y(0)); ctx.stroke();
+
+    ctx.strokeStyle = COL.inkSoft; ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let px=0; px<=view.w; px++){
+      const mx = view.xmin + px/view.w*(view.xmax-view.xmin);
+      const my = V(mx);
+      px===0 ? ctx.moveTo(px, view.y(my)) : ctx.lineTo(px, view.y(my));
+    }
+    ctx.stroke();
+    ctx.fillStyle = COL.inkSoft; ctx.font = '13px IBM Plex Mono';
+    ctx.fillText('V(x)', view.x(1.25), view.y(V(1.25))-8);
+
+    ctx.strokeStyle = COL.accent3; ctx.setLineDash([6,5]); ctx.lineWidth = 1.6;
+    ctx.beginPath(); ctx.moveTo(view.x(-1.6), view.y(E)); ctx.lineTo(view.x(1.6), view.y(E)); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = COL.accent3; ctx.fillText('E (total)', view.x(-1.55), view.y(E)-8);
+
+    const xt = Math.sqrt(2*E);
+    const allowed = Math.min(Math.abs(x), xt) * Math.sign(x || 1);
+    const xc = allowed;
+    const Vc = V(xc);
+    const KE = Math.max(0, E - Vc);
+
+    ctx.strokeStyle = COL.accent; ctx.lineWidth = 6; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(view.x(xc), view.y(Vc)); ctx.lineTo(view.x(xc), view.y(E)); ctx.stroke();
+    ctx.strokeStyle = COL.accent2; ctx.lineWidth = 6;
+    ctx.beginPath(); ctx.moveTo(view.x(xc), view.y(0)); ctx.lineTo(view.x(xc), view.y(Vc)); ctx.stroke();
+    ctx.lineCap='butt';
+
+    ctx.fillStyle = '#f3f7ff';
+    ctx.beginPath(); ctx.arc(view.x(xc), view.y(Vc), 7, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle = COL.accent; ctx.lineWidth=2; ctx.stroke();
+
+    document.getElementById('w1-xV').textContent = xc.toFixed(2);
+    document.getElementById('w1-EV').textContent = E.toFixed(2);
+
+    const forbidden = Math.abs(x) > xt + 1e-9;
+    const out = document.getElementById('w1-readout');
+    out.innerHTML =
+      `Kinetic <span class="hl">T = p²/2m = ${KE.toFixed(2)}</span> &nbsp;+&nbsp; ` +
+      `potential <span style="color:var(--accent-2)">V = ${Vc.toFixed(2)}</span> &nbsp;=&nbsp; ` +
+      `total <span style="color:var(--accent-3)">E = ${E.toFixed(2)}</span>` +
+      (forbidden ? ` &nbsp;·&nbsp; <em>(held at the turning point — beyond here V&gt;E is classically forbidden)</em>` : ``);
+  }
+  xS.addEventListener('input', draw);
+  ES.addEventListener('input', draw);
+  draw();
+})();
+
+/* =========================================================================
+   STEP 4 — particle dissolves into a complex amplitude (staged reveal)
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('w2-canvas');
+  const ctx = setupCanvas(canvas, 760, 340);
+  const view = makeView(canvas, {xmin:-6, xmax:6, ymin:-1.3, ymax:1.55});
+  const x0 = 0.6, sig = 1.6, k0 = 3.0;
+  function gauss(x){ return Math.exp(-((x-x0)*(x-x0))/(2*sig*sig)); }
+
+  function axes(){
+    ctx.strokeStyle = COL.axis; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(view.x(-6), view.y(0)); ctx.lineTo(view.x(6), view.y(0)); ctx.stroke();
+  }
+  function pointParticle(){
+    ctx.fillStyle = '#f3f7ff';
+    ctx.beginPath(); ctx.arc(view.x(x0), view.y(0), 8, 0, Math.PI*2); ctx.fill();
+    ctx.strokeStyle = COL.accent2; ctx.lineWidth=2; ctx.stroke();
+    ctx.fillStyle = COL.inkSoft; ctx.font='13px IBM Plex Mono';
+    ctx.fillText('a point at x', view.x(x0)+12, view.y(0)-12);
+  }
+  function realEnvelope(){
+    ctx.strokeStyle = COL.inkSoft; ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let px=0;px<=view.w;px++){
+      const mx=view.xmin+px/view.w*(view.xmax-view.xmin);
+      const my=gauss(mx);
+      px===0?ctx.moveTo(px,view.y(my)):ctx.lineTo(px,view.y(my));
+    }
+    ctx.stroke();
+    ctx.fillStyle=COL.inkSoft; ctx.font='13px IBM Plex Mono';
+    ctx.fillText('spread-out wave', view.x(-5.8), view.y(1.35));
+  }
+  function complexWave(){
+    ctx.strokeStyle = COL.accent; ctx.lineWidth=2.4;
+    ctx.beginPath();
+    for (let px=0;px<=view.w;px++){
+      const mx=view.xmin+px/view.w*(view.xmax-view.xmin);
+      const my=gauss(mx)*Math.cos(k0*mx);
+      px===0?ctx.moveTo(px,view.y(my)):ctx.lineTo(px,view.y(my));
+    }
+    ctx.stroke();
+    ctx.strokeStyle = COL.accent2; ctx.lineWidth=2; ctx.setLineDash([5,4]);
+    ctx.beginPath();
+    for (let px=0;px<=view.w;px++){
+      const mx=view.xmin+px/view.w*(view.xmax-view.xmin);
+      const my=gauss(mx)*Math.sin(k0*mx);
+      px===0?ctx.moveTo(px,view.y(my)):ctx.lineTo(px,view.y(my));
+    }
+    ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle=COL.accent; ctx.font='13px IBM Plex Mono';
+    ctx.fillText('Re ψ', view.x(4.4), view.y(1.35));
+    ctx.fillStyle=COL.accent2;
+    ctx.fillText('Im ψ', view.x(5.2), view.y(1.35));
+  }
+  function density(){
+    ctx.beginPath();
+    ctx.moveTo(view.x(-6), view.y(0));
+    for (let px=0;px<=view.w;px++){
+      const mx=view.xmin+px/view.w*(view.xmax-view.xmin);
+      const my=gauss(mx)*gauss(mx);
+      ctx.lineTo(px, view.y(my));
+    }
+    ctx.lineTo(view.x(6), view.y(0)); ctx.closePath();
+    const g = ctx.createLinearGradient(0, view.y(1.1), 0, view.y(0));
+    g.addColorStop(0, 'rgba(185,139,255,0.45)');
+    g.addColorStop(1, 'rgba(185,139,255,0.05)');
+    ctx.fillStyle = g; ctx.fill();
+    ctx.strokeStyle = COL.accent3; ctx.lineWidth=2; ctx.stroke();
+    ctx.fillStyle=COL.accent3; ctx.font='13px IBM Plex Mono';
+    ctx.fillText('|ψ|²  (probability density)', view.x(-5.8), view.y(1.05));
+  }
+
+  const stages = [
+    { next:'Spread it out →',  caption:'Step 1’s picture: a sharp point at one position.', draws:[axes, pointParticle] },
+    { next:'Add the phase →',  caption:'De Broglie: the point becomes a spread-out wave.',       draws:[axes, realEnvelope] },
+    { next:'Show |ψ|² →',      caption:'And it is complex — a real and imaginary part, a rotating phase.', draws:[axes, complexWave] },
+    { next:null,               caption:'All we can observe is |ψ|²: the probability of finding the particle there.', draws:[axes, complexWave, density] }
+  ];
+  let stage = 0;
+  const backBtn=document.getElementById('w2-back'), nextBtn=document.getElementById('w2-next'),
+        cap=document.getElementById('w2-caption');
+  function render(){
+    ctx.clearRect(0,0,view.w,view.h);
+    stages[stage].draws.forEach(fn=>fn());
+    cap.textContent = stages[stage].caption;
+    backBtn.disabled = stage===0;
+    if (stages[stage].next){ nextBtn.style.display=''; nextBtn.textContent=stages[stage].next; }
+    else nextBtn.style.display='none';
+  }
+  nextBtn.addEventListener('click',()=>{ if(stage<stages.length-1){stage++;render();} });
+  backBtn.addEventListener('click',()=>{ if(stage>0){stage--;render();} });
+  render();
+})();
+
+/* =========================================================================
+   STEP 5 — operator eigenvalue relation: p-hat psi = hbar k psi
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('w4-canvas');
+  const ctx = setupCanvas(canvas, 760, 320);
+  const view = makeView(canvas, {xmin:-6, xmax:6, ymin:-6.5, ymax:6.5});
+  const kS=document.getElementById('w4-k');
+
+  function render(){
+    const k=parseFloat(kS.value);
+    ctx.clearRect(0,0,view.w,view.h);
+    ctx.strokeStyle=COL.axis; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(view.x(-6),view.y(0)); ctx.lineTo(view.x(6),view.y(0)); ctx.stroke();
+    ctx.strokeStyle='rgba(145,160,189,0.18)'; ctx.setLineDash([3,4]);
+    ctx.beginPath(); ctx.moveTo(view.x(-6),view.y(1)); ctx.lineTo(view.x(6),view.y(1));
+    ctx.moveTo(view.x(-6),view.y(-1)); ctx.lineTo(view.x(6),view.y(-1)); ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.strokeStyle='rgba(145,160,189,0.7)'; ctx.lineWidth=2;
+    ctx.beginPath();
+    for(let px=0;px<=view.w;px++){
+      const mx=view.xmin+px/view.w*(view.xmax-view.xmin);
+      px===0?ctx.moveTo(px,view.y(Math.cos(k*mx))):ctx.lineTo(px,view.y(Math.cos(k*mx)));
+    }
+    ctx.stroke();
+
+    ctx.strokeStyle=COL.accent; ctx.lineWidth=2.8;
+    ctx.beginPath();
+    for(let px=0;px<=view.w;px++){
+      const mx=view.xmin+px/view.w*(view.xmax-view.xmin);
+      const my=k*Math.cos(k*mx);
+      px===0?ctx.moveTo(px,view.y(my)):ctx.lineTo(px,view.y(my));
+    }
+    ctx.stroke();
+
+    ctx.fillStyle=COL.inkSoft; ctx.font='13px IBM Plex Mono';
+    ctx.fillText('Re ψ  (amplitude 1)', view.x(-5.8), view.y(5.7));
+    ctx.fillStyle=COL.accent;
+    ctx.fillText('Re (p̂ψ)  (amplitude p = ħk)', view.x(-5.8), view.y(5.0));
+
+    document.getElementById('w4-kV').textContent=k.toFixed(1);
+    const out=document.getElementById('w4-readout');
+    out.innerHTML = `\\( \\hat p\\,\\psi = -i\\hbar\\,\\partial_x\\psi = \\hbar k\\,\\psi \\) &nbsp;with \\(\\hbar=1\\): ` +
+      `same wave, scaled by <span class="hl">\\(p=${k.toFixed(1)}\\)</span>. ` +
+      `Bigger \\(k\\) = tighter wiggles = more momentum.`;
+    typeset(out);
+  }
+  kS.addEventListener('input',render);
+  render();
+})();
+
+/* =========================================================================
+   STEP 8 — assemble the TDSE (staged equation reveal)
+   ========================================================================= */
+(function () {
+  const eq=document.getElementById('w5-eq');
+  const backBtn=document.getElementById('w5-back'), nextBtn=document.getElementById('w5-next'),
+        cap=document.getElementById('w5-caption');
+  const C1 = '#56cfd8', C2 = '#e6a85c';
+  const stages = [
+    { html: '\\(\\displaystyle E = \\frac{p^2}{2m} + V\\)',
+      next: 'Let it act on \\(\\psi\\) →',
+      caption: 'The classical energy ledger from Step 1.' },
+    { html: '\\(\\displaystyle E\\,\\psi = \\frac{p^2}{2m}\\,\\psi + V\\,\\psi\\)',
+      next: 'Substitute \\(E \\to i\\hbar\\partial_t\\) →',
+      caption: 'Demand the same equation hold as an operator acting on the wave ψ.' },
+    { html: '<span style="color:'+C1+'">\\(\\displaystyle i\\hbar\\frac{\\partial \\psi}{\\partial t}\\)</span>&nbsp;\\(\\displaystyle =\\ \\frac{p^2}{2m}\\,\\psi + V\\,\\psi\\)',
+      next: 'Substitute \\(p \\to -i\\hbar\\partial_x\\) →',
+      caption: 'Energy becomes the time-derivative operator (Step 5): Ê = iħ∂ₜ.' },
+    { html: '\\(\\displaystyle i\\hbar\\frac{\\partial \\psi}{\\partial t} =\\)&nbsp;<span style="color:'+C2+'">\\(\\displaystyle -\\frac{\\hbar^2}{2m}\\frac{\\partial^2 \\psi}{\\partial x^2}\\)</span>&nbsp;\\(\\displaystyle +\\ V\\,\\psi\\)',
+      next: 'Name the right-hand side →',
+      caption: 'Momentum-squared becomes −ħ²∂ₓ². The only real algebra: (−iħ∂ₓ)².' },
+    { html: '\\(\\displaystyle i\\hbar\\frac{\\partial \\psi}{\\partial t} = \\hat H\\,\\psi\\)',
+      next: null,
+      caption: 'The time-dependent Schrödinger equation. Ĥ is exactly the classical Hamiltonian, now an operator.' }
+  ];
+  let stage=0;
+  function render(){
+    eq.innerHTML = '<span class="eqline">' + stages[stage].html + '</span>';
+    cap.textContent = stages[stage].caption;
+    backBtn.disabled = stage===0;
+    if (stages[stage].next){ nextBtn.style.display=''; nextBtn.innerHTML=stages[stage].next; }
+    else nextBtn.style.display='none';
+    typeset(eq); typeset(nextBtn); typeset(backBtn);
+  }
+  nextBtn.addEventListener('click',()=>{ if(stage<stages.length-1){stage++;render();} });
+  backBtn.addEventListener('click',()=>{ if(stage>0){stage--;render();} });
+  render();
+})();
+</script>
+
+<script>
+/* =========================================================================
+   STEP 9 — stationary states (particle in a box), animated phase
+   hbar = m = L = 1:  phi_n = sqrt(2) sin(n pi x),  E_n = n^2 pi^2 / 2
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('w6-canvas');
+  const ctx = setupCanvas(canvas, 760, 340);
+  const view = makeView(canvas, {xmin:-0.08, xmax:1.08, ymin:-1.7, ymax:2.25});
+  const nS=document.getElementById('w6-n');
+  const playBtn=document.getElementById('w6-play'), resetBtn=document.getElementById('w6-reset');
+  let t=0, playing=false, raf=null;
+
+  const SQRT2 = Math.SQRT2;
+  function phi(n,x){ return (x<0||x>1)?0:SQRT2*Math.sin(n*Math.PI*x); }
+  function En(n){ return n*n*Math.PI*Math.PI/2; }
+
+  function render(){
+    const n=parseInt(nS.value), E=En(n);
+    ctx.clearRect(0,0,view.w,view.h);
+
+    ctx.strokeStyle=COL.axis; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(view.x(0),view.y(-1.7)); ctx.lineTo(view.x(0),view.y(2.1));
+    ctx.moveTo(view.x(1),view.y(-1.7)); ctx.lineTo(view.x(1),view.y(2.1));
+    ctx.moveTo(view.x(0),view.y(0)); ctx.lineTo(view.x(1),view.y(0)); ctx.stroke();
+
+    ctx.beginPath(); ctx.moveTo(view.x(0),view.y(0));
+    for(let px=0;px<=view.w;px++){
+      const mx=view.xmin+px/view.w*(view.xmax-view.xmin);
+      const v=phi(n,mx); ctx.lineTo(px, view.y(v*v));
+    }
+    ctx.lineTo(view.x(1.08),view.y(0)); ctx.closePath();
+    const g=ctx.createLinearGradient(0,view.y(2.1),0,view.y(0));
+    g.addColorStop(0,'rgba(230,168,92,0.40)'); g.addColorStop(1,'rgba(230,168,92,0.04)');
+    ctx.fillStyle=g; ctx.fill();
+    ctx.strokeStyle=COL.accent2; ctx.lineWidth=2; ctx.stroke();
+
+    const base = -0.85, amp = 0.55;
+    const phase = Math.cos(t * 0.035 * n);
+    ctx.strokeStyle=COL.accent; ctx.lineWidth=2.6;
+    ctx.beginPath();
+    for(let px=0;px<=view.w;px++){
+      const mx=view.xmin+px/view.w*(view.xmax-view.xmin);
+      const v=phi(n,mx)*phase;
+      const yv = base + amp*v;
+      px===0?ctx.moveTo(px,view.y(yv)):ctx.lineTo(px,view.y(yv));
+    }
+    ctx.stroke();
+    ctx.strokeStyle='rgba(145,160,189,0.25)'; ctx.setLineDash([3,4]);
+    ctx.beginPath(); ctx.moveTo(view.x(0),view.y(base)); ctx.lineTo(view.x(1),view.y(base)); ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle=COL.accent2; ctx.font='13px IBM Plex Mono';
+    ctx.fillText('|ψ|²  (stationary)', view.x(0.04), view.y(2.0));
+    ctx.fillStyle=COL.accent;
+    ctx.fillText('Re ψ(x,t) = φₙ(x)·cos(Eₙ t)  (oscillates)', view.x(0.04), view.y(-1.45));
+
+    document.getElementById('w6-nV').textContent=n;
+    const out=document.getElementById('w6-readout');
+    const newHTML = `Ĥφ<sub>${n}</sub> = E<sub>${n}</sub>φ<sub>${n}</sub>: &nbsp; ` +
+      `φ<sub>${n}</sub> = √2 · sin(${n}πx), &nbsp; ` +
+      `energy <span class="hl">E<sub>${n}</sub> = ${n}²π²/2 = ${E.toFixed(2)}</span> ` +
+      `(E<sub>n</sub> ∝ n²). The cloud |ψ|² never moves — that is why it is <em>stationary</em>.`;
+    if (out._last !== newHTML) { out.innerHTML = newHTML; out._last = newHTML; }
+  }
+  function frame(){ t+=1; render(); if(playing) raf=requestAnimationFrame(frame); }
+  playBtn.addEventListener('click',()=>{
+    playing=!playing; playBtn.textContent=playing?'Pause':'Play';
+    if(playing) frame(); else cancelAnimationFrame(raf);
+  });
+  resetBtn.addEventListener('click',()=>{ t=0; render(); });
+  nS.addEventListener('input',()=>{ render(); });
+  render();
+})();
+
+/* =========================================================================
+   STEP 6 — wave packet: localize a plane wave by superposition
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('wp-canvas');
+  const ctx = setupCanvas(canvas, 760, 360);
+  const W = 760, H = 360, k0 = 2.0, L = 14, NX = 360;
+  const sigS = document.getElementById('wp-sig');
+  const playBtn = document.getElementById('wp-play'), resetBtn = document.getElementById('wp-reset');
+  const backBtn = document.getElementById('wp-back'), nextBtn = document.getElementById('wp-next');
+  const cap = document.getElementById('wp-caption');
+  let stage = 0, t = 0, playing = false, raf = null;
+
+  function components(){
+    const sig = parseFloat(sigS.value);
+    if (stage===0) return { ks:[k0], ws:[1] };
+    if (stage===1) return { ks:[k0-0.6, k0+0.6], ws:[1,1] };
+    if (stage===2){ const off=[-1.2,-0.6,0,0.6,1.2]; return { ks:off.map(o=>k0+o), ws:off.map(o=>Math.exp(-o*o/(2*0.7*0.7))) }; }
+    const M=81, kmin=k0-4*sig, kmax=k0+4*sig, dk=(kmax-kmin)/(M-1);
+    const ks=[], ws=[];
+    for(let j=0;j<M;j++){ const k=kmin+j*dk; ks.push(k); ws.push(Math.exp(-((k-k0)**2)/(2*sig*sig))); }
+    return { ks, ws };
+  }
+  function psiAt(x, comp, tt){
+    let re=0, im=0;
+    for(let j=0;j<comp.ks.length;j++){ const ph=comp.ks[j]*x - 0.5*comp.ks[j]*comp.ks[j]*tt; re+=comp.ws[j]*Math.cos(ph); im+=comp.ws[j]*Math.sin(ph); }
+    return [re, im];
+  }
+  const stageMeta=[
+    { next:'Add a second momentum →', cap:'One plane wave: |ψ|² is flat — the electron is everywhere. This is the puzzle.' },
+    { next:'Add a few more →',        cap:'Two momenta: beats appear — a first hint of localization, but it repeats forever.' },
+    { next:'Fill in the band →',      cap:'A handful of momenta: a real bump forms, with faint repeats to the sides.' },
+    { next:null,                      cap:'A smooth band of momenta: a clean, localized packet. Now tune Δk and press Play.' }
+  ];
+
+  function render(){
+    const comp = components();
+    ctx.clearRect(0,0,W,H);
+    const xpx = x => (x+L)/(2*L)*W;
+
+    const xs=[], res=[], rhos=[]; let maxAbs=1e-9, sumRho=0;
+    const dx=2*L/(NX-1);
+    for(let i=0;i<NX;i++){
+      const x=-L+2*L*i/(NX-1); const [re,im]=psiAt(x,comp,t); const rho=re*re+im*im;
+      xs.push(x); res.push(re); rhos.push(rho); maxAbs=Math.max(maxAbs,Math.abs(re)); sumRho+=rho;
+    }
+    let maxRho=1e-9; for(let i=0;i<NX;i++){ rhos[i]/=(sumRho*dx); maxRho=Math.max(maxRho,rhos[i]); }
+
+    const reMid=74, reAmp=52, rhoBase=270, rhoH=120;
+
+    ctx.strokeStyle='rgba(145,160,189,0.18)'; ctx.setLineDash([3,4]);
+    ctx.beginPath(); ctx.moveTo(0,reMid); ctx.lineTo(W,reMid); ctx.stroke(); ctx.setLineDash([]);
+    ctx.strokeStyle='rgba(86,207,216,0.6)'; ctx.lineWidth=1.6;
+    ctx.beginPath();
+    for(let i=0;i<NX;i++){ const y=reMid - res[i]/maxAbs*reAmp; const px=xpx(xs[i]); i===0?ctx.moveTo(px,y):ctx.lineTo(px,y); }
+    ctx.stroke();
+    ctx.fillStyle='rgba(86,207,216,0.85)'; ctx.font='12px IBM Plex Mono';
+    ctx.fillText('Re ψ  (carrier)', 12, 22);
+
+    ctx.beginPath(); ctx.moveTo(xpx(-L), rhoBase);
+    for(let i=0;i<NX;i++){ const y=rhoBase - rhos[i]/maxRho*rhoH; ctx.lineTo(xpx(xs[i]), y); }
+    ctx.lineTo(xpx(L), rhoBase); ctx.closePath();
+    const g=ctx.createLinearGradient(0,rhoBase-rhoH,0,rhoBase);
+    g.addColorStop(0,'rgba(230,168,92,0.42)'); g.addColorStop(1,'rgba(230,168,92,0.04)');
+    ctx.fillStyle=g; ctx.fill();
+    ctx.strokeStyle='#e6a85c'; ctx.lineWidth=2; ctx.stroke();
+    ctx.strokeStyle='rgba(145,160,189,0.25)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(0,rhoBase); ctx.lineTo(W,rhoBase); ctx.stroke();
+    ctx.fillStyle='#e6a85c'; ctx.fillText('|ψ|²  (probability density)', 12, rhoBase-rhoH-8);
+
+    const kStripBase=348, kStripTop=296;
+    const kLo=k0-3.4, kHi=k0+3.4; const kpx=k=>(k-kLo)/(kHi-kLo)*W;
+    ctx.strokeStyle='rgba(145,160,189,0.3)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(0,kStripBase); ctx.lineTo(W,kStripBase); ctx.stroke();
+    let wmax=1e-9; for(let j=0;j<comp.ws.length;j++) wmax=Math.max(wmax,comp.ws[j]);
+    ctx.strokeStyle=COL.accent3; ctx.lineWidth=2.2;
+    for(let j=0;j<comp.ks.length;j++){
+      const px=kpx(comp.ks[j]); const h=(comp.ws[j]/wmax)*(kStripBase-kStripTop);
+      ctx.beginPath(); ctx.moveTo(px,kStripBase); ctx.lineTo(px,kStripBase-h); ctx.stroke();
+    }
+    ctx.fillStyle=COL.accent3; ctx.fillText('momenta k in the mix', 12, kStripTop-4);
+    ctx.fillStyle='rgba(145,160,189,0.7)'; ctx.fillText('k₀', kpx(k0)-5, kStripBase+14);
+
+    const out=document.getElementById('wp-readout');
+    let newHTML;
+    if (stage<3){
+      const n=comp.ks.length;
+      newHTML = (n===1 ? 'A single plane wave' : n+' plane waves') +
+        ' in the sum — not yet a clean, normalizable packet.';
+    } else {
+      let mx=0; for(let i=0;i<NX;i++) mx+=xs[i]*rhos[i]*dx;
+      let vx=0; for(let i=0;i<NX;i++) vx+=(xs[i]-mx)**2*rhos[i]*dx; const dX=Math.sqrt(vx);
+      let wn=0,mk=0; for(let j=0;j<comp.ws.length;j++){ const w=comp.ws[j]**2; wn+=w; mk+=comp.ks[j]*w; } mk/=wn;
+      let vk=0; for(let j=0;j<comp.ws.length;j++){ const w=comp.ws[j]**2; vk+=(comp.ks[j]-mk)**2*w; } vk/=wn; const dP=Math.sqrt(vk);
+      newHTML = `Δx = ${dX.toFixed(2)}, Δp = ${dP.toFixed(2)} ` +
+        `⇒ Δx·Δp = ${(dX*dP).toFixed(2)} ≥ ħ/2 = 0.5. ` +
+        `Center ⟨x⟩ = ${mx.toFixed(1)}, drifting at v_g = k₀ = ${k0.toFixed(1)}` +
+        (t>0.05 ? ` — and Δx keeps growing as it spreads.` : `.`);
+    }
+    if (out._last !== newHTML) { out.innerHTML = newHTML; out._last = newHTML; }
+
+    cap.textContent = stageMeta[stage].cap;
+    backBtn.disabled = stage===0;
+    if (stageMeta[stage].next){ nextBtn.style.display=''; nextBtn.textContent=stageMeta[stage].next; }
+    else nextBtn.style.display='none';
+    const live = (stage===3);
+    sigS.disabled=!live; playBtn.disabled=!live; resetBtn.disabled=!live;
+    document.getElementById('wp-sigV').textContent = parseFloat(sigS.value).toFixed(2);
+  }
+
+  function frame(){ t+=0.02; if(t>5){ t=0; } render(); if(playing) raf=requestAnimationFrame(frame); }
+  nextBtn.addEventListener('click',()=>{ if(stage<3){ stage++; render(); } });
+  backBtn.addEventListener('click',()=>{
+    if(stage>0){ stage--; if(stage<3){ playing=false; playBtn.textContent='Play'; cancelAnimationFrame(raf); t=0; } render(); }
+  });
+  sigS.addEventListener('input', render);
+  playBtn.addEventListener('click',()=>{
+    if(stage!==3) return;
+    playing=!playing; playBtn.textContent=playing?'Pause':'Play';
+    if(playing) frame(); else cancelAnimationFrame(raf);
+  });
+  resetBtn.addEventListener('click',()=>{ t=0; render(); });
+  render();
+})();
+</script>
+
+<script>
+/* =========================================================================
+   STEP 3 — plane wave taken apart: point bob -> neighbours -> travel
+   ========================================================================= */
+(function () {
+  const canvas=document.getElementById('wa-canvas');
+  const ctx=setupCanvas(canvas,760,320);
+  const W=760,H=320,L=8,yMid=148,A=96,N=17;
+  const kS=document.getElementById('wa-k'), wS=document.getElementById('wa-w');
+  const playBtn=document.getElementById('wa-play'), resetBtn=document.getElementById('wa-reset');
+  const backBtn=document.getElementById('wa-back'), nextBtn=document.getElementById('wa-next');
+  const cap=document.getElementById('wa-caption');
+  let stage=0, t=0, playing=false, raf=null;
+  const xpx=x=>(x+L)/(2*L)*W;
+  const stageMeta=[
+    { next:'Add the neighbours →', cap:'One fixed location (x=0): the wave is just cos(ωt) — a point bobbing up and down. No space yet.' },
+    { next:'Connect them →',       cap:'Each location bobs at rate ω, but the kx term staggers the phase — neighbours lag behind.' },
+    { next:null,                   cap:'Connected: a wave travelling at v_p = ω/k. Set k=0 → it bobs in unison; set ω=0 → frozen.' }
+  ];
+  function render(){
+    const k=parseFloat(kS.value), w=parseFloat(wS.value);
+    ctx.clearRect(0,0,W,H);
+    ctx.strokeStyle=COL.axis; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(0,yMid); ctx.lineTo(W,yMid); ctx.stroke();
+
+    if(stage>=2){
+      ctx.strokeStyle=COL.accent; ctx.lineWidth=2.4;
+      ctx.beginPath();
+      for(let px=0;px<=W;px++){ const x=-L+px/W*2*L; const y=yMid - A*Math.cos(k*x - w*t); px===0?ctx.moveTo(px,y):ctx.lineTo(px,y); }
+      ctx.stroke();
+    }
+    if(stage>=1){
+      for(let j=0;j<N;j++){
+        const x=-L+2*L*j/(N-1);
+        if(Math.abs(x)<1e-9) continue;
+        ctx.strokeStyle='rgba(230,168,92,0.10)'; ctx.lineWidth=1;
+        ctx.beginPath(); ctx.moveTo(xpx(x),yMid-A); ctx.lineTo(xpx(x),yMid+A); ctx.stroke();
+        const y=yMid - A*Math.cos(k*x - w*t);
+        ctx.fillStyle='rgba(230,168,92,0.92)';
+        ctx.beginPath(); ctx.arc(xpx(x),y,4,0,Math.PI*2); ctx.fill();
+      }
+    }
+    ctx.strokeStyle='rgba(86,207,216,0.22)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(xpx(0),yMid-A); ctx.lineTo(xpx(0),yMid+A); ctx.stroke();
+    const yp=yMid - A*Math.cos(-w*t);
+    ctx.fillStyle='#f3f7ff';
+    ctx.beginPath(); ctx.arc(xpx(0),yp,6,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle=COL.accent; ctx.lineWidth=2; ctx.stroke();
+    ctx.fillStyle=COL.inkSoft; ctx.font='12px IBM Plex Mono';
+    ctx.fillText('x = 0', xpx(0)+10, yMid+A+2);
+
+    document.getElementById('wa-kV').textContent=k.toFixed(1);
+    document.getElementById('wa-wV').textContent=w.toFixed(1);
+    const out=document.getElementById('wa-readout');
+    let tail;
+    if(k===0) tail = `with k = 0, every point shares the phase — the line bobs as one, independent of x.`;
+    else if(w===0) tail = `with ω = 0, time is frozen — a static spatial wave.`;
+    else tail = `travelling at v_p = ω/k = ${(w/k).toFixed(2)}.`;
+    const newHTML = `At x = 0: Re ψ = cos(ωt). Across space: cos(kx − ωt), ` + tail;
+    if (out._last !== newHTML) { out.innerHTML = newHTML; out._last = newHTML; }
+
+    cap.textContent=stageMeta[stage].cap;
+    backBtn.disabled=stage===0;
+    if(stageMeta[stage].next){ nextBtn.style.display=''; nextBtn.textContent=stageMeta[stage].next; } else nextBtn.style.display='none';
+  }
+  function frame(){ t+=0.02; render(); if(playing) raf=requestAnimationFrame(frame); }
+  nextBtn.addEventListener('click',()=>{ if(stage<2){stage++;render();} });
+  backBtn.addEventListener('click',()=>{ if(stage>0){stage--;render();} });
+  kS.addEventListener('input',render); wS.addEventListener('input',render);
+  playBtn.addEventListener('click',()=>{ playing=!playing; playBtn.textContent=playing?'Pause':'Play'; if(playing)frame(); else cancelAnimationFrame(raf); });
+  resetBtn.addEventListener('click',()=>{ t=0; render(); });
+  render();
+})();
+
+/* =========================================================================
+   STEP 2 — symmetry: translation slides the entire system (particle + well)
+   ========================================================================= */
+(function () {
+  const canvas=document.getElementById('ws-canvas');
+  const ctx=setupCanvas(canvas,760,300);
+  const W=760,H=300;
+  const aS=document.getElementById('ws-a');
+  const XMIN=-4, XMAX=4;
+  const xpx=x=>(x-XMIN)/(XMAX-XMIN)*W;
+  function V(x){ return 0.5*x*x; }
+  const E0=1.1;
+  const xProbe=1.0;
+
+  function render(){
+    const a=parseFloat(aS.value);
+    ctx.clearRect(0,0,W,H);
+    ctx.font='12px IBM Plex Mono';
+    const yBot=262, yScale=88;
+
+    ctx.strokeStyle=COL.axis; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(0,yBot); ctx.lineTo(W,yBot); ctx.stroke();
+
+    ctx.strokeStyle='rgba(145,160,189,0.18)'; ctx.lineWidth=1.5; ctx.setLineDash([3,4]);
+    ctx.beginPath();
+    for(let px=0;px<=W;px++){
+      const x=XMIN+px/W*(XMAX-XMIN);
+      const y=yBot-yScale*V(x);
+      px===0?ctx.moveTo(px,y):ctx.lineTo(px,y);
+    }
+    ctx.stroke(); ctx.setLineDash([]);
+
+    ctx.strokeStyle=COL.inkSoft; ctx.lineWidth=2.2;
+    ctx.beginPath();
+    for(let px=0;px<=W;px++){
+      const x=XMIN+px/W*(XMAX-XMIN);
+      const y=yBot-yScale*V(x-a);
+      px===0?ctx.moveTo(px,y):ctx.lineTo(px,y);
+    }
+    ctx.stroke();
+
+    const tipX=a, tipY=yBot-yScale*V(0)+2;
+    if(xpx(tipX)>50 && xpx(tipX)<W-50)
+      ctx.fillStyle=COL.inkSoft, ctx.fillText('V(x−a)', xpx(tipX)+8, tipY+14);
+
+    ctx.strokeStyle=COL.accent3; ctx.setLineDash([6,5]); ctx.lineWidth=1.4;
+    ctx.beginPath(); ctx.moveTo(0,yBot-yScale*E0); ctx.lineTo(W,yBot-yScale*E0); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle=COL.accent3; ctx.fillText('E', 6, yBot-yScale*E0-6);
+
+    ctx.fillStyle='#f3f7ff';
+    ctx.beginPath(); ctx.arc(xpx(a),yBot-yScale*0,7,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle=COL.accent; ctx.lineWidth=2; ctx.stroke();
+
+    ctx.strokeStyle='rgba(230,168,92,0.35)'; ctx.lineWidth=1; ctx.setLineDash([3,4]);
+    ctx.beginPath(); ctx.moveTo(xpx(xProbe),yBot+6); ctx.lineTo(xpx(xProbe),20); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle=COL.accent2; ctx.fillText('x = '+xProbe.toFixed(0)+' (fixed)', xpx(xProbe)+7, yBot+16);
+
+    const vAtProbe=V(xProbe-a);
+    const probeY=yBot-yScale*vAtProbe;
+    ctx.strokeStyle='rgba(230,168,92,0.45)'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(xpx(xProbe),yBot); ctx.lineTo(xpx(xProbe),probeY); ctx.stroke();
+    ctx.fillStyle=COL.accent2;
+    ctx.beginPath(); ctx.arc(xpx(xProbe),probeY,6,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#0c1322'; ctx.font='bold 9px IBM Plex Mono';
+    ctx.fillText('V',xpx(xProbe)-3,probeY+3);
+    ctx.font='12px IBM Plex Mono';
+    ctx.fillStyle=COL.accent2;
+    ctx.fillText('V('+xProbe.toFixed(0)+'−a) = '+vAtProbe.toFixed(2), xpx(xProbe)+10, probeY-6);
+
+    const F = -(xProbe - a);
+    if(Math.abs(F) > 0.06){
+      const pixPerUnit = W / (XMAX - XMIN);
+      const tx = pixPerUnit;
+      const ty = -yScale * (xProbe - a);
+      const tlen = Math.hypot(tx, ty);
+      const arrowLen = Math.min(55, Math.abs(F) * 55);
+      const dir = Math.sign(F);
+      const dx = dir * tx / tlen * arrowLen;
+      const dy = dir * ty / tlen * arrowLen;
+      const ax0=xpx(xProbe), ay0=probeY, ax1=ax0+dx, ay1=ay0+dy;
+      ctx.strokeStyle=COL.accent3; ctx.lineWidth=2.2;
+      ctx.beginPath(); ctx.moveTo(ax0,ay0); ctx.lineTo(ax1,ay1); ctx.stroke();
+      const ux=dx/arrowLen, uy=dy/arrowLen, hLen=10, ang=Math.PI/6;
+      const cos=Math.cos(ang), sin=Math.sin(ang);
+      ctx.beginPath();
+      ctx.moveTo(ax1,ay1);
+      ctx.lineTo(ax1 - hLen*(ux*cos - uy*sin), ay1 - hLen*(uy*cos + ux*sin));
+      ctx.moveTo(ax1,ay1);
+      ctx.lineTo(ax1 - hLen*(ux*cos + uy*sin), ay1 - hLen*(uy*cos - ux*sin));
+      ctx.stroke();
+      const lx = ax1 + (dy/arrowLen)*14 + (dx>0?4:-52);
+      const ly = ay1 - (dx/arrowLen)*14;
+      ctx.fillStyle=COL.accent3;
+      ctx.fillText('F = '+F.toFixed(2), lx, ly);
+    } else {
+      ctx.fillStyle=COL.accent3;
+      ctx.fillText('F = 0  (at minimum)', xpx(xProbe)+10, probeY+18);
+    }
+
+    if(Math.abs(a)>0.05){
+      const ya=28, x0=xpx(0), x1=xpx(a), dir=Math.sign(a);
+      ctx.strokeStyle=COL.accent; ctx.lineWidth=1.6;
+      ctx.beginPath(); ctx.moveTo(x0,ya); ctx.lineTo(x1,ya); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x1,ya); ctx.lineTo(x1-7*dir,ya-5); ctx.moveTo(x1,ya); ctx.lineTo(x1-7*dir,ya+5); ctx.stroke();
+      ctx.fillStyle=COL.accent; ctx.fillText('a = '+a.toFixed(2), (x0+x1)/2-16, ya-9);
+    }
+
+    document.getElementById('ws-aV').textContent=a.toFixed(2);
+    const out=document.getElementById('ws-readout');
+    const inside = vAtProbe <= E0;
+    const newHTML = a===0
+      ? 'No shift. The probe at x = 1 sits at V(1) = '+V(xProbe).toFixed(2)+'.'
+      : 'Potential shifted by a = '+a.toFixed(2)+'. The system is <span class="hl">physically identical</span> — '
+        +'same shape, same energy levels. But the fixed probe at x = 1 now reads '
+        +'V(1−a) = '+vAtProbe.toFixed(2)+', '
+        +(inside ? 'still inside the well (classically reachable).' : '<span style="color:var(--accent-3)">above the energy — classically forbidden from this vantage point.</span>');
+    if (out._last !== newHTML) { out.innerHTML = newHTML; out._last = newHTML; }
+  }
+  aS.addEventListener('input',render);
+  render();
+})();
+
+/* =========================================================================
+   STEP 7 — Fourier synthesis: build a localized electron from plane waves
+   ========================================================================= */
+(function () {
+  const canvas=document.getElementById('wf-canvas');
+  const ctx=setupCanvas(canvas,760,470);
+  const W=760,H=470;
+  const addBtn=document.getElementById('wf-add'), remBtn=document.getElementById('wf-rem'), resetBtn=document.getElementById('wf-reset');
+  const L=8, NX=420, k0=4.0, sigK=0.8, M=21;
+  const kmin=k0-4*sigK, kmax=k0+4*sigK, dk=(kmax-kmin)/(M-1);
+  const order=[k0];
+  for(let n=1;n<=(M-1)/2;n++){ order.push(k0+n*dk); order.push(k0-n*dk); }
+  function A(k){ return Math.exp(-((k-k0)**2)/(2*sigK*sigK)); }
+  const C=Math.sqrt(2*Math.PI)*sigK;
+  const xpx=x=>(x+L)/(2*L)*W;
+
+  const xs=[], tRe=[], tRho=[];
+  for(let i=0;i<NX;i++){
+    const x=-L+2*L*i/(NX-1);
+    const e=C*Math.exp(-sigK*sigK*x*x/2);
+    const re=e*Math.cos(k0*x), im=e*Math.sin(k0*x);
+    xs.push(x); tRe.push(re); tRho.push(re*re+im*im);
+  }
+  const maxRho=C*C, maxRe=C;
+
+  const tBase=185, sBase=375, rhoH=90, reMidT=52, reMidS=250, reAmp=33;
+  const vRho=rhoH/maxRho, vRe=reAmp/maxRe;
+  const dx=2*L/(NX-1);
+
+  function partial(x,n){ let re=0,im=0; for(let j=0;j<n;j++){ const k=order[j], w=A(k)*dk, ph=k*x; re+=w*Math.cos(ph); im+=w*Math.sin(ph);} return [re,im]; }
+
+  let N=1;
+
+  function fillRho(rhoArr, base){
+    ctx.beginPath(); ctx.moveTo(xpx(-L), base);
+    for(let i=0;i<NX;i++) ctx.lineTo(xpx(xs[i]), base - Math.min(rhoArr[i]*vRho, rhoH+8));
+    ctx.lineTo(xpx(L), base); ctx.closePath();
+    const g=ctx.createLinearGradient(0,base-rhoH,0,base);
+    g.addColorStop(0,'rgba(230,168,92,0.42)'); g.addColorStop(1,'rgba(230,168,92,0.04)');
+    ctx.fillStyle=g; ctx.fill();
+    ctx.strokeStyle='#e6a85c'; ctx.lineWidth=2; ctx.stroke();
+  }
+  function lineRe(reArr, mid){
+    ctx.strokeStyle=COL.accent; ctx.lineWidth=1.8;
+    ctx.beginPath();
+    for(let i=0;i<NX;i++){ const y=mid - reArr[i]*vRe; i===0?ctx.moveTo(xpx(xs[i]),y):ctx.lineTo(xpx(xs[i]),y); }
+    ctx.stroke();
+  }
+  function baseLine(base){ ctx.strokeStyle='rgba(145,160,189,0.22)'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(0,base); ctx.lineTo(W,base); ctx.stroke(); }
+
+  function render(){
+    ctx.clearRect(0,0,W,H);
+    ctx.font='12px IBM Plex Mono';
+
+    const sRe=[], sRho=[];
+    for(let i=0;i<NX;i++){ const [re,im]=partial(xs[i],N); sRe.push(re); sRho.push(re*re+im*im); }
+
+    baseLine(tBase); fillRho(tRho, tBase); lineRe(tRe, reMidT);
+    ctx.fillStyle=COL.inkSoft; ctx.fillText('①  Target: a localized electron', 12, 18);
+    ctx.fillStyle='#e6a85c'; ctx.fillText('|ψ|²', xpx(0)+8, tBase-rhoH+2);
+    ctx.fillStyle=COL.accent; ctx.fillText('Re ψ', xpx(0)-58, reMidT-8);
+
+    ctx.strokeStyle='rgba(145,160,189,0.18)'; ctx.setLineDash([4,5]);
+    ctx.beginPath(); ctx.moveTo(0,200); ctx.lineTo(W,200); ctx.stroke(); ctx.setLineDash([]);
+
+    ctx.fillStyle=COL.inkSoft; ctx.fillText('②  Synthesis from '+N+' plane wave'+(N>1?'s':''), 12, 218);
+    ctx.strokeStyle='rgba(230,168,92,0.4)'; ctx.lineWidth=1.4; ctx.setLineDash([5,4]);
+    ctx.beginPath();
+    for(let i=0;i<NX;i++){ const y=sBase - Math.min(tRho[i]*vRho, rhoH+8); i===0?ctx.moveTo(xpx(xs[i]),y):ctx.lineTo(xpx(xs[i]),y); }
+    ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle='rgba(230,168,92,0.55)'; ctx.fillText('dashed = target', W-118, 218);
+    baseLine(sBase); fillRho(sRho, sBase); lineRe(sRe, reMidS);
+
+    const kTop=410, kBase=450;
+    const kLo=k0-4.5*sigK, kHi=k0+4.5*sigK; const kpx=k=>(k-kLo)/(kHi-kLo)*W;
+    ctx.strokeStyle='rgba(185,139,255,0.3)'; ctx.lineWidth=1.4; ctx.setLineDash([4,4]);
+    ctx.beginPath();
+    for(let p=0;p<=W;p++){ const k=kLo+p/W*(kHi-kLo); const y=kBase-A(k)*(kBase-kTop); p===0?ctx.moveTo(p,y):ctx.lineTo(p,y); }
+    ctx.stroke(); ctx.setLineDash([]);
+    ctx.strokeStyle='rgba(145,160,189,0.3)'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(0,kBase); ctx.lineTo(W,kBase); ctx.stroke();
+    ctx.strokeStyle=COL.accent3; ctx.lineWidth=2.6;
+    for(let j=0;j<N;j++){ const k=order[j], h=A(k)*(kBase-kTop); ctx.beginPath(); ctx.moveTo(kpx(k),kBase); ctx.lineTo(kpx(k),kBase-h); ctx.stroke(); }
+    ctx.fillStyle=COL.accent3; ctx.fillText('momentum spectrum A(k) — filling in', 12, kTop-2);
+    ctx.fillStyle='rgba(145,160,189,0.7)'; ctx.fillText('k₀', kpx(k0)-5, kBase+14);
+
+    let areaN=0, areaT=0;
+    for(let i=0;i<NX;i++){ areaN+=sRho[i]*dx; areaT+=tRho[i]*dx; }
+    let num=0, den=0;
+    for(let i=0;i<NX;i++){ const a=sRho[i]/areaN, b=tRho[i]/areaT; num+=(a-b)*(a-b)*dx; den+=b*b*dx; }
+    const match=Math.max(0,Math.min(100,100*(1-Math.sqrt(num/den))));
+
+    addBtn.disabled=N>=M; remBtn.disabled=N<=1;
+    const out=document.getElementById('wf-readout');
+    out.innerHTML = N===1
+      ? 'One plane wave: a single momentum k₀, so |ψ|² is <span class="hl">flat</span> — the electron is everywhere. Add momenta to localize it.'
+      : N+' momenta in the mix — |ψ|² matches the target to <span class="hl">'+match.toFixed(0)+'%</span>. '+
+        (N>=M ? 'The full band reproduces the localized electron: localization cost a whole spread of momenta.' : 'Each new wavenumber sharpens the packet a little more.');
+  }
+  addBtn.addEventListener('click',()=>{ if(N<M){N++;render();} });
+  remBtn.addEventListener('click',()=>{ if(N>1){N--;render();} });
+  resetBtn.addEventListener('click',()=>{ N=1; render(); });
+  render();
+})();
+
+/* =========================================================================
+   PROGRESS BAR
+   ========================================================================= */
+(function () {
+  const bar=document.getElementById('progress');
+  function update(){
+    const h=document.documentElement;
+    const max=h.scrollHeight-h.clientHeight;
+    bar.style.width=(max>0?(h.scrollTop/max)*100:0)+'%';
+  }
+  window.addEventListener('scroll',update,{passive:true});
+  window.addEventListener('resize',update);
+  update();
+})();
+</script>
+</body>
+</html>

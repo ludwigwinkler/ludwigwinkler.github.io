@@ -8,6 +8,18 @@ url: "" # the base hostname & protocol for your site
 
 defaults:
   - scope:
+      path: "explainers"
+      type: pages
+    values:
+      layout: explainer
+  - scope:
+      path: "explainers"
+      type: posts
+    values:
+      permalink: "/explainers/:title/"
+      layout: post
+      category: explainers
+  - scope:
       path: ""
       type: posts
     values:

@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DockQ: judging a predicted protein interface</title>
+<script>
+window.MathJax = {tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Literata:opsz,wght@7..72,400;7..72,500;7..72,650&family=Oswald:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#edf1eb;--paper:#fbfdf9;--ink:#17241f;--muted:#58675f;--line:#c7d2ca;--red:#d75b47;--blue:#287c98;--gold:#d29a35;--green:#3d8b67;--dark:#183d35;--faint:#e0eae3;--mono:'DM Mono',monospace;--body:'Literata',Georgia,serif;--display:'Oswald',sans-serif}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:18px;line-height:1.68} #progress{position:fixed;z-index:5;top:0;left:0;height:4px;width:0;background:var(--red)} .wrap{max-width:900px;margin:auto;padding:0 25px 100px} header{padding:84px 0 30px;border-bottom:1px solid var(--line)} .eyebrow,.step-num,.tag{font:500 .73rem var(--mono);letter-spacing:.13em;text-transform:uppercase;color:var(--green)}h1,h2,h3{font-family:var(--display);letter-spacing:.01em;line-height:1.05}h1{font-size:clamp(3.1rem,9vw,5.7rem);font-weight:500;margin:.15em 0}.promise{font-size:1.3rem;max-width:61ch;color:var(--muted)} .kernel{margin:48px 0 78px;padding:32px 36px;background:var(--dark);color:#f4f8f1;border-left:7px solid var(--gold)}.kernel .label{font:500 .72rem var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#b7d8c4}.kernel p{font-size:1.55rem;line-height:1.38;margin:.5em 0 0}.concept-step{margin:0 0 82px;max-width:76ch}.step-num{margin:0 0 8px}.concept-step h2{font-size:2.35rem;font-weight:500;margin:0 0 16px}.concept-step p{margin:0 0 1em}strong{font-weight:650} .widget{margin:28px 0;background:var(--paper);border:1px solid var(--line);box-shadow:0 4px 14px #23382a0b}.widget-titlewrap{padding:17px 20px 13px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:16px;align-items:baseline}.widget-title{font:500 1.2rem var(--display);letter-spacing:.03em}.tag{white-space:nowrap;font-size:.67rem}.canvas-wrap{padding:14px 14px 3px}.widget canvas{display:block;width:100%;height:auto;border-radius:3px;background:#f3f7f2}.controls{display:flex;flex-wrap:wrap;align-items:end;gap:12px;padding:8px 20px 18px}.controls label{display:flex;flex-direction:column;gap:4px;min-width:155px;font:400 .76rem var(--mono);color:var(--muted)}input[type=range]{accent-color:var(--red);width:100%}.val{color:var(--red);font-weight:500}.readout,.caption{padding:0 20px 18px;color:var(--muted);font-size:.95rem}.caption{font-style:italic;min-height:2.2em}.reveal{display:flex;flex-wrap:wrap;gap:10px;padding:0 20px 18px;align-items:center}.reveal button,.toggle{border:0;border-radius:2px;background:var(--dark);color:white;padding:8px 12px;font:500 .76rem var(--mono);cursor:pointer}.reveal button:hover,.toggle:hover{background:var(--red)}.reveal button:disabled{opacity:.35;cursor:default}details{margin:22px 0;border:1px solid var(--line);background:var(--paper)}summary{padding:12px 16px;cursor:pointer;font:500 .82rem var(--mono);color:var(--muted)}details div{padding:0 16px 16px}.formula{background:#e4eee6;border-left:4px solid var(--green);padding:16px 20px;margin:22px 0}.recap{border-top:3px solid var(--dark);padding-top:32px;margin-top:20px}.thresholds{display:flex;gap:4px;height:12px;margin:14px 20px 0;border-radius:2px;overflow:hidden}.thresholds span:nth-child(1){background:#cbd2ce;flex:23}.thresholds span:nth-child(2){background:#f0cd71;flex:26}.thresholds span:nth-child(3){background:#e48b61;flex:31}.thresholds span:nth-child(4){background:#4a9b78;flex:20}@media(max-width:600px){body{font-size:17px}.wrap{padding:0 16px 80px}header{padding-top:60px}.kernel{padding:24px}.widget-titlewrap{display:block}.tag{display:block;margin-top:5px}.concept-step h2{font-size:2rem}.controls label{min-width:100%}}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<main class="wrap">
+<header>
+<div class="eyebrow">Structural biology · interface quality</div>
+<h1>How do we judge a docked structure?</h1>
+<p class="promise">DockQ turns a deceptively visual judgment — “did these two proteins meet in the right way?” — into three complementary measurements and one interpretable score.</p>
+</header>
+
+<aside class="kernel">
+<div class="label">The kernel</div>
+<p>Stripped of all formality, evaluating a structure prediction means checking that it makes <strong>the same handshakes</strong> and puts the partners in <strong>the same place</strong> as the experimental structure.</p>
+</aside>
+
+<section class="concept-step">
+<div class="step-num">Step 1 · Start with the question</div>
+<h2>Same proteins is not the same interface</h2>
+<p>A docking prediction contains the right two molecular partners, but that is only the beginning. Imagine protein A as a rigid receptor and protein B as a ligand. B can be near A, yet rotated, shifted, or using a completely different patch. An evaluation must compare the <strong>relationship</strong> between them, not merely recognize the ingredients.</p>
+<div class="widget">
+<div class="widget-titlewrap"><div class="widget-title">One ligand, many possible meetings</div><div class="tag">live · move the predicted ligand</div></div>
+<div class="canvas-wrap"><canvas id="poseCanvas" width="780" height="310"></canvas></div>
+<div class="controls">
+<label>sideways shift <span id="shiftVal" class="val">12 px</span><input id="shift" type="range" min="-65" max="65" value="12"></label>
+<label>rotation <span id="rotVal" class="val">18°</span><input id="rot" type="range" min="-55" max="55" value="18"></label>
+</div>
+<div id="poseReadout" class="readout"></div>
+</div>
+<details><summary>Formal version: what is compared?</summary><div>For an experimentally solved <em>reference</em> complex and a predicted complex, the chains are matched by identity. Evaluation then asks whether corresponding interface residues contact one another and whether corresponding atoms occupy the same positions after a specified alignment.</div></details>
+</section>
+
+<section class="concept-step">
+<div class="step-num">Step 2 · Did it keep the handshakes?</div>
+<h2>Native contacts make the interface discrete</h2>
+<p>Call a residue pair a <strong>contact</strong> when the two residues lie close across the interface (a common convention uses a 5 Å heavy-atom cutoff). The reference structure supplies the list of <em>native</em> contacts. We then ask how many of those exact pairs the prediction recovered. This is \(F_\text{nat}\): the fraction of native contacts reproduced.</p>
+<div class="formula">If the reference has \(N_\text{native}\) contacts and the prediction reproduces \(N_\text{shared}\), then \[F_\text{nat}=\frac{N_\text{shared}}{N_\text{native}}.\] It is a recall-like quantity: extra, wrong contacts do not repair missing native ones.</div>
+<div class="widget">
+<div class="widget-titlewrap"><div class="widget-title">Which residue handshakes survived?</div><div class="tag">staged · add predicted contacts</div></div>
+<div class="canvas-wrap"><canvas id="contactCanvas" width="780" height="330"></canvas></div>
+<div class="reveal"><button id="contactBack">← Back</button><button id="contactNext">Add a predicted contact →</button><span id="contactCaption" class="caption"></span></div>
+<div id="contactReadout" class="readout"></div>
+</div>
+<details><summary>Formal version: the exact convention behind \(F_\text{nat}\)</summary><div>DockQ follows the CAPRI-style idea of native contacts. Its implementation identifies interface residue pairs in the reference, then counts the fraction that are also in contact in the model. The precise atom/contact convention should be reported, because changing a cutoff changes the contact list.</div></details>
+</section>
+
+<section class="concept-step">
+<div class="step-num">Step 3 · Is the whole pose right?</div>
+<h2>Distance needs an alignment rule</h2>
+<p>RMSD is a root-mean-square distance between corresponding atoms. But before measuring it, we must decide what to line up. This choice is not a technicality: aligning on the interface asks whether its local geometry matches; aligning on the receptor asks whether the ligand landed in the right global pose.</p>
+<div class="widget">
+<div class="widget-titlewrap"><div class="widget-title">The same error under two alignments</div><div class="tag">toggle · choose the reference frame</div></div>
+<div class="canvas-wrap"><canvas id="rmsCanvas" width="780" height="335"></canvas></div>
+<div class="controls"><button id="alignToggle" class="toggle">Show ligand RMSD frame</button></div>
+<div id="rmsReadout" class="readout"></div>
+</div>
+<p><strong>iRMSD</strong> aligns the interface residues and measures their RMSD. It is unforgiving about the local fit where the proteins touch. <strong>LRMSD</strong> aligns the receptor, then measures the ligand's RMSD; it exposes a ligand that is rotated or translated relative to a correctly fixed receptor.</p>
+<details><summary>Formal version: RMSD in one line</summary><div>For \(n\) corresponding atoms, after the chosen optimal superposition, \[ \mathrm{RMSD}=\sqrt{\frac{1}{n}\sum_{i=1}^{n}\left\|\mathbf{x}_i-\mathbf{y}_i\right\|^2}. \] Here \(\mathbf{x}_i\) and \(\mathbf{y}_i\) are predicted and reference coordinates. The alignment rule determines which rigid motion is removed before this average is taken.</div></details>
+</section>
+
+<section class="concept-step">
+<div class="step-num">Step 4 · Three clues, one score</div>
+<h2>DockQ rewards agreement without a cliff edge</h2>
+<p>A score based only on contacts would miss a near-correct pose; a score based only on distances could forgive the wrong handshake pattern. DockQ averages one contact term with two smoothly scaled distance terms. The scaling matters: a 1 Å error should count as strong evidence, while a 20 Å error should not become twenty times “more wrong.”</p>
+<div class="formula">\[
+\mathrm{DockQ}=\frac{1}{3}\left(F_\text{nat}+\frac{1}{1+(\mathrm{iRMSD}/1.5)^2}+\frac{1}{1+(\mathrm{LRMSD}/8.5)^2}\right).
+\]
+The constants \(1.5\) Å and \(8.5\) Å set the scales where the two distance contributions have fallen to one half.</div>
+<div class="widget">
+<div class="widget-titlewrap"><div class="widget-title">How the three kinds of evidence combine</div><div class="tag">live · perturb one quality at a time</div></div>
+<div class="canvas-wrap"><canvas id="scoreCanvas" width="780" height="350"></canvas></div>
+<div class="controls">
+<label>native contacts \(F_\text{nat}\) <span id="fnVal" class="val">0.67</span><input id="fn" type="range" min="0" max="1" step=".01" value=".67"></label>
+<label>interface error <span id="irVal" class="val">1.2 Å</span><input id="ir" type="range" min="0" max="6" step=".1" value="1.2"></label>
+<label>ligand error <span id="lrVal" class="val">4.0 Å</span><input id="lr" type="range" min="0" max="25" step=".1" value="4"></label>
+</div>
+<div id="scoreReadout" class="readout"></div>
+</div>
+<details><summary>Why these particular shapes?</summary><div>Each distance term has the form \(1/(1+(d/d_0)^2)\). At \(d=0\), it contributes 1; at its scale \(d=d_0\), it contributes \(1/2\); and it approaches 0 smoothly as the mismatch becomes large. This avoids a brittle pass/fail cutoff while keeping the score bounded between 0 and 1.</div></details>
+</section>
+
+<section class="concept-step">
+<div class="step-num">Step 5 · Turn a score into a judgment</div>
+<h2>DockQ makes categories comparable</h2>
+<p>DockQ is continuous, so it preserves the difference between “barely useful” and “almost perfect.” For familiar CAPRI-style labels, common DockQ boundaries are: <strong>incorrect</strong> below 0.23, <strong>acceptable</strong> from 0.23, <strong>medium</strong> from 0.49, and <strong>high</strong> from 0.80.</p>
+<div class="widget">
+<div class="widget-titlewrap"><div class="widget-title">Place a model on the quality scale</div><div class="tag">live · drag the score</div></div>
+<div class="canvas-wrap"><canvas id="classCanvas" width="780" height="235"></canvas></div>
+<div class="controls"><label>DockQ score <span id="classVal" class="val">0.62</span><input id="classScore" type="range" min="0" max="1" step=".01" value=".62"></label></div>
+<div class="thresholds"><span></span><span></span><span></span><span></span></div>
+<div id="classReadout" class="readout"></div>
+</div>
+<p>These labels are a communication aid, not an excuse to ignore the components. Two structures can have similar DockQ values for different reasons: one may have the right contacts but a slightly shifted ligand, while another is geometrically close but missing much of the intended interface. Inspect \(F_\text{nat}\), iRMSD, and LRMSD alongside the final score.</p>
+</section>
+
+<section class="recap">
+<div class="step-num">Putting it together</div>
+<h2>One interface, three views</h2>
+<p>DockQ is not a magic number. It formalizes the plain test we began with: <strong>did the predicted proteins shake the same hands, at the same meeting place?</strong> \(F_\text{nat}\) checks the handshakes; iRMSD checks the local meeting surface; LRMSD checks the ligand's global landing. Their bounded average gives a fair, smooth way to compare docked complexes.</p>
+<p><strong>Where this shows up:</strong> benchmarking protein-protein docking methods, evaluating multimeric structure predictions, and comparing model-quality scores across targets whose interfaces have different sizes and geometries.</p>
+</section>
+</main>
+<script>
+const C={ink:'#17241f',muted:'#58675f',line:'#c7d2ca',red:'#d75b47',blue:'#287c98',gold:'#d29a35',green:'#3d8b67',dark:'#183d35',bg:'#f3f7f2'};
+function ctx(id){const c=document.getElementById(id),x=c.getContext('2d');x.font='13px "DM Mono", monospace';return [c,x]}
+function txt(x,s,a,b,color=C.muted,align='left'){x.fillStyle=color;x.textAlign=align;x.fillText(s,a,b)}
+function line(x,a,b,c,d,color=C.line,w=1,dash=[]){x.save();x.strokeStyle=color;x.lineWidth=w;x.setLineDash(dash);x.beginPath();x.moveTo(a,b);x.lineTo(c,d);x.stroke();x.restore()}
+function dot(x,a,b,r,color,label){x.fillStyle=color;x.beginPath();x.arc(a,b,r,0,Math.PI*2);x.fill();if(label)txt(x,label,a,b+4,'white','center')}
+function clear(c,x){x.clearRect(0,0,c.width,c.height);x.fillStyle=C.bg;x.fillRect(0,0,c.width,c.height)}
+function protein(x,cx,cy,ang,color,alpha=1){x.save();x.globalAlpha=alpha;x.translate(cx,cy);x.rotate(ang);x.fillStyle=color;x.beginPath();x.moveTo(-72,-18);x.bezierCurveTo(-45,-58,15,-55,62,-26);x.bezierCurveTo(88,-9,72,33,34,44);x.bezierCurveTo(-5,57,-68,39,-79,12);x.closePath();x.fill();x.fillStyle='rgba(255,255,255,.45)';for(let i=0;i<5;i++){x.beginPath();x.arc(-43+i*26,(-1)**i*11,5,0,7);x.fill()}x.restore()}
+
+// Step 1
+const [pc,px]=ctx('poseCanvas');const shift=document.getElementById('shift'),rot=document.getElementById('rot');
+function drawPose(){clear(pc,px);const s=+shift.value,r=+rot.value*Math.PI/180;txt(px,'REFERENCE',185,28,C.blue,'center');txt(px,'PREDICTION',585,28,C.red,'center');protein(px,192,158,0,C.blue);protein(px,278,159,-.33,C.gold);protein(px,575,158,0,C.blue);protein(px,661+s*.55,159,-.33+r,C.red,.76);line(px,390,54,390,273,C.line,1,[4,5]);txt(px,'same receptor',575,283,C.muted,'center');txt(px,'reference pose',230,283,C.muted,'center');const severity=Math.abs(s)/65+Math.abs(r*180/Math.PI)/55;document.getElementById('shiftVal').textContent=s+' px';document.getElementById('rotVal').textContent=Math.round(r*180/Math.PI)+'°';document.getElementById('poseReadout').textContent=severity<.25?'This prediction nearly overlays the reference ligand.':severity<.9?'The ligand still meets the receptor, but it reaches a different patch.':'The ingredients are right; their relationship is not.'}
+[shift,rot].forEach(e=>e.addEventListener('input',drawPose));drawPose();
+
+// Step 2
+const [cc,cx]=ctx('contactCanvas');let stage=0;
+const edges=[[0,1,true],[1,2,true],[2,2,true],[3,4,true],[4,3,true],[5,4,true],[1,4,false],[4,1,false]];
+const caps=['The reference interface has six native residue contacts.','This predicted contact recovers a native handshake.','Another native handshake is recovered.','The prediction makes a wrong extra contact (dashed): it does not increase Fnat.','A third native contact appears; now reveal the remaining contacts.'];
+function drawContacts(){clear(cc,cx);const left=[55,103,151,199,247,295],right=[55,103,151,199,247,295];txt(cx,'RECEPTOR residues',145,23,C.blue,'center');txt(cx,'LIGAND residues',630,23,C.gold,'center');for(let i=0;i<6;i++){dot(cx,145,left[i],15,C.blue,'A'+(i+1));dot(cx,630,right[i],15,C.gold,'B'+(i+1))}for(let e of edges.slice(0,6)){line(cx,160,left[e[0]],615,right[e[1]],C.line,2)}const shown=[0,1,6,2,3,4,5,7].slice(0,stage);shown.forEach(i=>{let e=edges[i];line(cx,160,left[e[0]],615,right[e[1]],e[2]?C.green:C.red,e[2]?4:3,e[2]?[]:[7,5])});const shared=shown.filter(i=>edges[i][2]).length;txt(cx,'solid green = recovered native contact',20,320,C.green);txt(cx,'dashed red = extra, non-native contact',430,320,C.red);document.getElementById('contactCaption').textContent=caps[Math.min(stage,caps.length-1)];document.getElementById('contactReadout').textContent='Recovered '+shared+' of 6 native contacts: Fnat = '+(shared/6).toFixed(2)+'.';document.getElementById('contactBack').disabled=stage===0;const n=document.getElementById('contactNext');n.disabled=stage===8;n.textContent=stage===8?'All contacts revealed':'Add a predicted contact →'}
+document.getElementById('contactNext').onclick=()=>{stage=Math.min(8,stage+1);drawContacts()};document.getElementById('contactBack').onclick=()=>{stage=Math.max(0,stage-1);drawContacts()};drawContacts();
+
+// Step 3
+const [rc,rx]=ctx('rmsCanvas');let ligandFrame=false;
+function drawRms(){clear(rc,rx);txt(rx,ligandFrame?'Align on the receptor; measure the ligand':'Align on the interface; measure its local atoms',390,27,C.ink,'center');const ref=[[228,175],[270,138],[313,181],[350,145]],pred=ligandFrame?[[260,145],[315,118],[366,160],[405,132]]:[[238,167],[278,143],[320,176],[359,151]];protein(rx,150,177,0,C.blue,.32);protein(rx,605,177,0,C.blue,.32);for(let i=0;i<4;i++){dot(rx,ref[i][0],ref[i][1],10,C.gold);dot(rx,pred[i][0]+250,pred[i][1],10,C.red);line(rx,ref[i][0]+250,ref[i][1],pred[i][0]+250,pred[i][1],C.red,2,[4,4])}txt(rx,'reference interface',283,278,C.gold,'center');txt(rx,'predicted interface',576,278,C.red,'center');const d=ligandFrame?13.6:4.2;txt(rx,'distance arrows = atom-wise deviations',390,310,C.muted,'center');document.getElementById('rmsReadout').innerHTML=ligandFrame?'<strong>LRMSD is large:</strong> after the receptor is fixed, the ligand atoms remain displaced.':'<strong>iRMSD is smaller:</strong> allowing the interface to align removes some global pose error, but local deviations remain.'}
+document.getElementById('alignToggle').onclick=()=>{ligandFrame=!ligandFrame;document.getElementById('alignToggle').textContent=ligandFrame?'Show interface RMSD frame':'Show ligand RMSD frame';drawRms()};drawRms();
+
+// Step 4
+const [sc,sx]=ctx('scoreCanvas');const fn=document.getElementById('fn'),ir=document.getElementById('ir'),lr=document.getElementById('lr');
+function q(d,scale){return 1/(1+(d/scale)**2)}
+function quality(score){return score>=.8?'high quality':score>=.49?'medium quality':score>=.23?'acceptable quality':'incorrect'}
+function drawScore(){clear(sc,sx);const f=+fn.value,i=+ir.value,l=+lr.value,qi=q(i,1.5),ql=q(l,8.5),dock=(f+qi+ql)/3;const bars=[['native contacts',f,C.green],['interface fit',qi,C.blue],['ligand pose',ql,C.gold]];bars.forEach((b,k)=>{const y=72+k*75;txt(sx,b[0],30,y-12,C.muted);sx.fillStyle='#dbe5de';sx.fillRect(30,y,510,27);sx.fillStyle=b[2];sx.fillRect(30,y,510*b[1],27);txt(sx,b[1].toFixed(2),560,y+20,b[2]);});sx.fillStyle=C.dark;sx.fillRect(640,65,105,180);txt(sx,'DockQ',692,94,'white','center');txt(sx,dock.toFixed(2),692,163,'white','center');txt(sx,quality(dock),692,192,'#c8ddcf','center');document.getElementById('fnVal').textContent=f.toFixed(2);document.getElementById('irVal').textContent=i.toFixed(1)+' Å';document.getElementById('lrVal').textContent=l.toFixed(1)+' Å';document.getElementById('scoreReadout').textContent='Average of '+f.toFixed(2)+' (contacts), '+qi.toFixed(2)+' (iRMSD evidence), and '+ql.toFixed(2)+' (LRMSD evidence) = DockQ '+dock.toFixed(2)+'.'}
+[fn,ir,lr].forEach(e=>e.addEventListener('input',drawScore));drawScore();
+
+// Step 5
+const [kc,kx]=ctx('classCanvas');const cs=document.getElementById('classScore');
+function drawClass(){clear(kc,kx);const v=+cs.value,x=45+690*v;const cuts=[0,.23,.49,.8,1],names=['incorrect','acceptable','medium','high'],colors=['#cbd2ce','#f0cd71','#e48b61','#4a9b78'];for(let j=0;j<4;j++){const a=45+690*cuts[j],b=45+690*cuts[j+1];kx.fillStyle=colors[j];kx.fillRect(a,105,b-a,45);txt(kx,names[j],(a+b)/2,135,C.ink,'center');if(j>0)txt(kx,cuts[j].toFixed(2),a,89,C.muted,'center')}dot(kx,x,82,9,C.dark);line(kx,x,91,x,104,C.dark,3);txt(kx,'your model',x,56,C.dark,'center');const label=quality(v);document.getElementById('classVal').textContent=v.toFixed(2);document.getElementById('classReadout').innerHTML='DockQ <strong>'+v.toFixed(2)+'</strong> falls in the <strong>'+label+'</strong> band.'}
+cs.addEventListener('input',drawClass);drawClass();
+
+addEventListener('scroll',()=>{const h=document.documentElement;document.getElementById('progress').style.width=(100*h.scrollTop/(h.scrollHeight-h.clientHeight))+'%'},{passive:true});
+</script>
+</body>
+</html>

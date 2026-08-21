@@ -1,0 +1,3472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diffusion Models for SU(N) Gauge Theory</title>
+
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['\\(', '\\)']],
+    displayMath: [['\\[', '\\]']],
+    macros: {
+      SU: ["\\mathrm{SU}(#1)", 1],
+      su: ["\\mathfrak{su}(#1)", 1],
+      Tr: "\\operatorname{Tr}",
+      Re: "\\operatorname{Re}",
+      dd: "\\mathrm{d}"
+    }
+  },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,650;1,7..72,400&family=Syne:wght@500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg:#071019;
+  --bg-lift:#0b1722;
+  --surface:#101e2b;
+  --surface-2:#142635;
+  --ink:#edf5f4;
+  --ink-soft:#a9bac0;
+  --muted:#728992;
+  --line:#27404d;
+  --grid:#1a3440;
+  --cyan:#54d9d1;
+  --gold:#f0bd66;
+  --violet:#ac8cff;
+  --coral:#ff7c72;
+  --green:#7dde9d;
+  --danger:#ff8e84;
+  --font-display:'Syne', sans-serif;
+  --font-body:'Literata', serif;
+  --font-mono:'IBM Plex Mono', monospace;
+  --measure:74ch;
+  --radius:14px;
+}
+* { box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  margin:0;
+  color:var(--ink);
+  font-family:var(--font-body);
+  font-size:18px;
+  line-height:1.72;
+  background:
+    radial-gradient(900px 600px at 82% -5%, rgba(84,217,209,.12), transparent 62%),
+    radial-gradient(800px 600px at -10% 23%, rgba(172,140,255,.09), transparent 60%),
+    linear-gradient(180deg, #071019 0%, #09131d 45%, #071019 100%);
+  background-attachment:fixed;
+  -webkit-font-smoothing:antialiased;
+}
+body::before {
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:.025;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+#progress {
+  position:fixed;
+  z-index:50;
+  left:0;
+  top:0;
+  height:3px;
+  width:0;
+  background:linear-gradient(90deg,var(--cyan),var(--violet),var(--gold));
+}
+.wrap { width:min(100% - 40px, 940px); margin:0 auto; padding-bottom:120px; }
+.prose { max-width:var(--measure); }
+p { margin:0 0 1.08em; }
+a { color:var(--cyan); text-decoration-color:rgba(84,217,209,.45); }
+a:hover { text-decoration-color:var(--cyan); }
+code {
+  font-family:var(--font-mono);
+  font-size:.86em;
+  color:#d9e9ea;
+  background:rgba(255,255,255,.05);
+  padding:.12em .35em;
+  border-radius:4px;
+}
+strong { font-weight:650; color:#fff; }
+
+header { padding:100px 0 36px; }
+.eyebrow {
+  margin:0 0 20px;
+  color:var(--cyan);
+  font-family:var(--font-mono);
+  font-size:.72rem;
+  letter-spacing:.24em;
+  text-transform:uppercase;
+}
+h1 {
+  margin:0 0 24px;
+  max-width:850px;
+  font-family:var(--font-display);
+  font-size:clamp(2.55rem,7vw,4.8rem);
+  font-weight:650;
+  line-height:1.02;
+  letter-spacing:-.045em;
+}
+h1 .gauge {
+  color:var(--cyan);
+  text-shadow:0 0 34px rgba(84,217,209,.22);
+}
+.promise {
+  max-width:760px;
+  color:var(--ink-soft);
+  font-size:1.18rem;
+}
+.route {
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin:32px 0 0;
+}
+.route a {
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:6px 11px;
+  color:var(--muted);
+  font-family:var(--font-mono);
+  font-size:.68rem;
+  letter-spacing:.03em;
+  text-decoration:none;
+}
+.route a:hover { color:var(--cyan); border-color:var(--cyan); }
+
+.kernel {
+  position:relative;
+  margin:46px 0 84px;
+  padding:38px 42px;
+  border:1px solid rgba(84,217,209,.4);
+  border-radius:var(--radius);
+  background:
+    linear-gradient(120deg,rgba(84,217,209,.09),rgba(172,140,255,.05)),
+    var(--bg-lift);
+  box-shadow:0 24px 90px -55px rgba(84,217,209,.9);
+}
+.kernel::before {
+  content:"THE WHOLE IDEA";
+  position:absolute;
+  top:-11px;
+  left:26px;
+  padding:0 9px;
+  color:var(--cyan);
+  background:var(--bg);
+  font-family:var(--font-mono);
+  font-size:.68rem;
+  letter-spacing:.2em;
+}
+.kernel p {
+  margin:0;
+  max-width:820px;
+  font-family:var(--font-display);
+  font-size:clamp(1.2rem,2.4vw,1.55rem);
+  line-height:1.48;
+}
+.kernel em { color:var(--gold); font-style:normal; }
+
+.concept-step { margin:0 0 102px; scroll-margin-top:30px; }
+.step-kicker {
+  margin:0 0 7px;
+  color:var(--violet);
+  font-family:var(--font-mono);
+  font-size:.72rem;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+}
+.concept-step h2 {
+  margin:0 0 20px;
+  font-family:var(--font-display);
+  font-size:clamp(1.75rem,4vw,2.55rem);
+  font-weight:600;
+  line-height:1.12;
+  letter-spacing:-.025em;
+}
+.lede {
+  color:var(--ink-soft);
+  font-size:1.08rem;
+}
+.equation-path {
+  max-width:var(--measure);
+  margin:22px 0;
+  padding:18px 22px;
+  border-left:3px solid var(--violet);
+  background:rgba(172,140,255,.055);
+  color:var(--ink-soft);
+}
+.equation-path p:last-child { margin-bottom:0; }
+.callout {
+  max-width:var(--measure);
+  margin:22px 0;
+  padding:17px 20px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:rgba(255,255,255,.025);
+  color:var(--ink-soft);
+}
+.callout.good { border-color:rgba(125,222,157,.35); }
+.callout.warn { border-color:rgba(255,124,114,.42); }
+.callout .tag {
+  display:block;
+  margin-bottom:5px;
+  color:var(--gold);
+  font-family:var(--font-mono);
+  font-size:.67rem;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+}
+
+details.formal {
+  max-width:var(--measure);
+  margin:24px 0;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:rgba(255,255,255,.018);
+}
+details.formal summary {
+  cursor:pointer;
+  padding:13px 17px;
+  color:var(--muted);
+  font-family:var(--font-mono);
+  font-size:.76rem;
+  letter-spacing:.07em;
+  list-style:none;
+  text-transform:uppercase;
+}
+details.formal summary::before { content:"+  "; color:var(--cyan); }
+details.formal[open] summary::before { content:"-  "; }
+.formal-body { padding:2px 19px 18px; color:var(--ink-soft); font-size:.96rem; }
+.formal-body p:last-child { margin-bottom:0; }
+
+.widget {
+  margin:30px 0;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  overflow:hidden;
+  background:linear-gradient(180deg,var(--surface),var(--bg-lift));
+  box-shadow:0 22px 55px -40px #000;
+}
+.widget-titlewrap {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:14px 18px;
+  border-bottom:1px solid var(--line);
+  background:rgba(255,255,255,.016);
+}
+.widget-title {
+  font-family:var(--font-display);
+  font-size:1rem;
+  font-weight:600;
+}
+.widget-mode {
+  flex:none;
+  padding:4px 9px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  color:var(--muted);
+  font-family:var(--font-mono);
+  font-size:.63rem;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+.widget-body { padding:18px; }
+.widget canvas {
+  display:block;
+  width:100%;
+  max-width:100%;
+  border-radius:8px;
+  background:#07111a;
+}
+.controls {
+  display:flex;
+  flex-wrap:wrap;
+  align-items:flex-end;
+  gap:14px 22px;
+  margin-top:17px;
+}
+.control {
+  display:flex;
+  flex:1 1 170px;
+  flex-direction:column;
+  gap:6px;
+  min-width:150px;
+  color:var(--muted);
+  font-family:var(--font-mono);
+  font-size:.69rem;
+  letter-spacing:.03em;
+  text-transform:uppercase;
+}
+.control .value { float:right; color:var(--cyan); }
+input[type=range] { width:100%; accent-color:var(--cyan); cursor:pointer; }
+.btn {
+  cursor:pointer;
+  border:1px solid rgba(84,217,209,.42);
+  border-radius:7px;
+  padding:9px 14px;
+  color:var(--cyan);
+  background:rgba(84,217,209,.09);
+  font-family:var(--font-mono);
+  font-size:.74rem;
+}
+.btn:hover { background:rgba(84,217,209,.17); }
+.btn.alt { color:var(--gold); border-color:rgba(240,189,102,.4); background:rgba(240,189,102,.07); }
+.btn.ghost { color:var(--muted); border-color:var(--line); background:transparent; }
+.btn:disabled { cursor:default; opacity:.35; }
+.caption {
+  min-height:1.5em;
+  margin:14px 0 0;
+  padding:10px 13px;
+  border-left:2px solid var(--cyan);
+  border-radius:0 6px 6px 0;
+  color:var(--ink-soft);
+  background:rgba(84,217,209,.045);
+  font-size:.88rem;
+}
+.readout {
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px 22px;
+  margin-top:13px;
+  color:var(--muted);
+  font-family:var(--font-mono);
+  font-size:.72rem;
+}
+.readout b { color:var(--ink); font-weight:500; }
+.readout .ok { color:var(--green); }
+.readout .hot { color:var(--gold); }
+.segmented {
+  display:inline-flex;
+  overflow:hidden;
+  border:1px solid var(--line);
+  border-radius:7px;
+}
+.segmented button {
+  cursor:pointer;
+  border:0;
+  border-right:1px solid var(--line);
+  padding:8px 12px;
+  color:var(--muted);
+  background:transparent;
+  font-family:var(--font-mono);
+  font-size:.7rem;
+}
+.segmented button:last-child { border-right:0; }
+.segmented button.on { color:#061315; background:var(--cyan); }
+.reveal-bar {
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:12px;
+  margin-top:14px;
+}
+.reveal-caption {
+  flex:1 1 300px;
+  color:var(--ink-soft);
+  font-size:.87rem;
+  font-style:italic;
+}
+.equation-legend {
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:8px;
+  margin-top:14px;
+}
+.equation-legend.four { grid-template-columns:repeat(4,minmax(0,1fr)); }
+.equation-chip {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:54px;
+  padding:8px 7px;
+  border:1px solid var(--line);
+  border-radius:7px;
+  color:var(--muted);
+  background:rgba(255,255,255,.012);
+  font-size:.72rem;
+  text-align:center;
+  transition:border-color .18s, background .18s, color .18s;
+}
+.equation-chip.active {
+  border-color:var(--cyan);
+  color:var(--ink);
+  background:rgba(84,217,209,.085);
+  box-shadow:0 0 24px -17px var(--cyan);
+}
+
+.comparison {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin:24px 0;
+}
+.comparison .card {
+  padding:16px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:rgba(255,255,255,.02);
+}
+.comparison .card h3 {
+  margin:0 0 7px;
+  color:var(--cyan);
+  font-family:var(--font-mono);
+  font-size:.74rem;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+}
+.comparison .card p { margin:0; color:var(--ink-soft); font-size:.9rem; }
+
+.verdict {
+  margin:38px 0 0;
+  border:1px solid rgba(240,189,102,.42);
+  border-radius:12px;
+  overflow:hidden;
+}
+.verdict-head {
+  padding:15px 19px;
+  color:var(--gold);
+  background:rgba(240,189,102,.08);
+  font-family:var(--font-mono);
+  font-size:.75rem;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+.verdict-body { padding:20px; color:var(--ink-soft); }
+.verdict-body p:last-child { margin-bottom:0; }
+
+.recipe {
+  counter-reset:item;
+  display:grid;
+  gap:10px;
+  margin:24px 0;
+  padding:0;
+  list-style:none;
+}
+.recipe li {
+  position:relative;
+  padding:14px 16px 14px 52px;
+  border:1px solid var(--line);
+  border-radius:9px;
+  color:var(--ink-soft);
+  background:rgba(255,255,255,.018);
+}
+.recipe li::before {
+  counter-increment:item;
+  content:counter(item);
+  position:absolute;
+  left:15px;
+  top:13px;
+  display:grid;
+  width:25px;
+  height:25px;
+  place-items:center;
+  border-radius:50%;
+  color:#061315;
+  background:var(--cyan);
+  font-family:var(--font-mono);
+  font-size:.7rem;
+  font-weight:600;
+}
+
+.recap {
+  margin-top:30px;
+  padding-top:42px;
+  border-top:1px solid var(--line);
+}
+.recap h2 {
+  margin:0 0 19px;
+  font-family:var(--font-display);
+  font-size:2rem;
+}
+.recap-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+  margin:24px 0;
+}
+.recap-card {
+  padding:17px 18px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:rgba(255,255,255,.02);
+}
+.recap-card.yes { border-color:rgba(125,222,157,.35); }
+.recap-card.no { border-color:rgba(255,124,114,.35); }
+.recap-card h3 {
+  margin:0 0 8px;
+  font-family:var(--font-mono);
+  font-size:.73rem;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+.recap-card.yes h3 { color:var(--green); }
+.recap-card.no h3 { color:var(--coral); }
+.recap-card p { margin:0; color:var(--ink-soft); font-size:.9rem; }
+
+.sources {
+  margin-top:72px;
+  padding-top:32px;
+  border-top:1px solid var(--line);
+  color:var(--muted);
+  font-size:.86rem;
+}
+.sources h2 {
+  color:var(--ink);
+  font-family:var(--font-display);
+  font-size:1.45rem;
+}
+.sources ol { padding-left:1.3em; }
+.sources li { margin-bottom:9px; }
+.foot {
+  padding:40px 0 0;
+  color:var(--muted);
+  font-family:var(--font-mono);
+  font-size:.67rem;
+  text-align:center;
+}
+
+@media(max-width:760px) {
+  body { font-size:16.5px; }
+  .wrap { width:min(100% - 28px, 940px); }
+  header { padding-top:72px; }
+  .kernel { padding:30px 25px; }
+  .comparison { grid-template-columns:1fr; }
+  .recap-grid { grid-template-columns:1fr; }
+  .equation-legend,
+  .equation-legend.four { grid-template-columns:1fr; }
+  .widget-titlewrap { align-items:flex-start; flex-direction:column; }
+}
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<main class="wrap">
+
+<header>
+  <p class="eyebrow">Gauge fields &rarr; diffusion &rarr; optimization</p>
+  <h1>Diffusion models for <span class="gauge">SU(N)</span> gauge theory</h1>
+  <p class="promise">
+    A ground-up tutorial on the group, the lattice, the probability distribution,
+    what the recent diffusion models learn, and how diffeomorphic optimization
+    could search their base space without confusing a low-action configuration
+    with a quantum ground state.
+  </p>
+  <nav class="route" aria-label="Tutorial steps">
+    <a href="#ising-bridge">Start &middot; Ising bridge</a>
+    <a href="#group">1 &middot; SU(N)</a>
+    <a href="#lattice">2 &middot; gauge fields</a>
+    <a href="#wilson-action">Action &middot; Wilson</a>
+    <a href="#ensemble">3 &middot; ensemble</a>
+    <a href="#diffusion">4 &middot; diffusion</a>
+    <a href="#score">5 &middot; score</a>
+    <a href="#papers">6 &middot; papers</a>
+    <a href="#optimization">7 &middot; optimization</a>
+  </nav>
+</header>
+
+<section class="kernel">
+  <p>
+    SU(N) lattice gauge theory is like a matrix-valued cousin of the Ising model:
+    the sampled variables live on <em>edges rather than sites</em>, and the local
+    action is built around squares rather than pairs. A gauge diffusion model
+    learns their equilibrium ensemble. Diffeomorphic optimization then searches
+    the random starting matrices for a generated configuration with low loss&mdash;not
+    automatically for the quantum ground state.
+  </p>
+</section>
+
+<section class="concept-step" id="ising-bridge">
+  <p class="step-kicker">Start here &middot; the Ising bridge</p>
+  <h2>Move the spins from sites to edges, then replace signs by matrices</h2>
+  <div class="prose">
+    <p class="lede">
+      The ordinary Ising model is the right starting point. It separates three
+      ideas that are easy to blur together: <strong>what is sampled</strong>,
+      <strong>where it lives</strong>, and <strong>which fixed parameter controls
+      its energy</strong>.
+    </p>
+    <p>
+      In the Ising model, each site carries a sampled spin \(s_x=\pm1\). The
+      number \(J\) on a bond is usually a fixed coupling, not a sampled variable:
+      \[
+        E_{\mathrm{Ising}}[s]
+        =-J\sum_{\langle xy\rangle}s_xs_y.
+      \]
+      The notation \(\langle xy\rangle\) means that \(x\) and \(y\) are nearest
+      neighbors, and the sum counts every bond once. Each local energy term
+      therefore examines two neighboring site spins.
+    </p>
+    <p>
+      In the standard homogeneous model, we choose the same number \(J\)
+      beforehand for every bond. It is a fixed coupling, not another sampled
+      variable. When \(J&gt;0\), equal neighboring spins lower the energy; when
+      \(J&lt;0\), opposite spins lower it. A more general graph may assign a
+      different fixed value \(J_{xy}\) to each bond:
+      \[
+        E[s]=-\sum_{\langle xy\rangle}J_{xy}s_xs_y.
+      \]
+      During an ordinary Monte Carlo simulation, the \(J_{xy}\) values remain
+      fixed while the site spins \(s_x\) are sampled.
+    </p>
+    <div class="callout warn">
+      <span class="tag">Minimization and sampling are different questions</span>
+      <p>
+        If we ask for the zero-temperature ground-state configuration, then yes:
+        the task is
+        \[
+          s^\star=\arg\min_{\{s_x=\pm1\}}E[s].
+        \]
+        For a connected graph with every \(J_{xy}&gt;0\), the two minima are all
+        \(+1\) and all \(-1\). Mixed positive and negative couplings can create
+        frustration and make the optimization much harder.
+      </p>
+      <p>
+        At finite temperature, however, the Ising model does not keep only the
+        minimum. It assigns every spin configuration the probability
+        \[
+          p_{\beta_T}(s)=\frac{1}{Z}e^{-\beta_T E[s]},
+          \qquad
+          Z=\sum_{\{s_x\}}e^{-\beta_T E[s]},
+        \]
+        where \(\beta_T=1/(k_BT)\) is inverse temperature. Low-energy
+        configurations are more likely, but their number also matters. Only as
+        \(T\to0\), or \(\beta_T\to\infty\), does this distribution concentrate
+        on the energy minima. The same distinction between sampling an ensemble
+        and minimizing one configuration will matter for SU(N) gauge theory.
+      </p>
+    </div>
+    <p>
+      A lattice gauge theory changes the placement of the dynamical variables.
+      A \(\mathbb Z_2\) gauge theory puts a sampled sign \(u_\ell=\pm1\) on every
+      edge \(\ell\). The smallest gauge-invariant energy term must close into a
+      loop, so it multiplies the four edge signs around a plaquette \(p\):
+      \[
+        E_{\mathbb Z_2\text{ gauge}}[u]
+        =-\beta\sum_p\prod_{\ell\in p}u_\ell.
+      \]
+      Here \(\beta\), not \(u_\ell\), plays the role of the fixed coupling.
+    </p>
+    <div class="callout">
+      <span class="tag">What is optimized or sampled in the Z2 theory?</span>
+      <p>
+        We do not choose a subset of edges. Every edge receives one dynamical
+        sign, and a complete configuration is
+        \[
+          u=\{u_\ell\in\{-1,+1\}\}_{\text{every edge}}.
+        \]
+        For the zero-temperature optimization problem, we search over all such
+        assignments for the one minimizing \(E[u]\). With positive coupling,
+        each plaquette prefers
+        \[
+          \prod_{\ell\in p}u_\ell=+1.
+        \]
+        For the ensemble problem, we instead sample complete edge assignments
+        with Boltzmann probability proportional to \(e^{-E[u]}\) in the
+        dimensionless convention used here.
+      </p>
+      <p>
+        The minimizing edge assignment is not unique. Choose a node and flip
+        every edge touching it. Each adjacent plaquette contains two flipped
+        edges, so its product is unchanged. This local redundancy is the
+        \(\mathbb Z_2\) version of a gauge transformation. The plaquette
+        products are physical; the individual edge signs depend on the chosen
+        gauge.
+      </p>
+    </div>
+    <p>
+      SU(N) gauge theory keeps this edge-and-plaquette architecture but upgrades
+      each sign to a noncommuting matrix \(U_\ell\in\SU{N}\). The product around
+      a square becomes an ordered matrix product, and the trace turns it into a
+      scalar action:
+      \[
+        S_W[U]
+        =-\frac{\beta}{N}\sum_p
+        \Re\Tr\!\left(U_1U_2U_3^\dagger U_4^\dagger\right)
+        \quad\text{(up to counting conventions).}
+      \]
+    </p>
+  </div>
+
+  <div class="widget" id="w0">
+    <div class="widget-titlewrap">
+      <span class="widget-title">Where the sampled variables move</span>
+      <span class="widget-mode">staged &middot; Ising to SU(N)</span>
+    </div>
+    <div class="widget-body">
+      <canvas id="w0-canvas"></canvas>
+      <div class="controls" id="w0-z2-controls" hidden>
+        <button class="btn" id="w0-random-gauge">New irregular ground state</button>
+        <button class="btn alt" id="w0-flip-link">Flip one link</button>
+        <div class="readout">
+          <span>good plaquettes <b class="ok" id="w0-good">12 / 12</b></span>
+          <span>flux defects <b class="hot" id="w0-defects">0</b></span>
+        </div>
+      </div>
+      <div class="equation-legend four" id="w0-equations">
+        <div class="equation-chip active" data-stage="0">
+          Ising: \(s_x=\pm1\) on sites
+        </div>
+        <div class="equation-chip" data-stage="1">
+          \(\mathbb Z_2\): \(u_\ell=\pm1\) on edges
+        </div>
+        <div class="equation-chip" data-stage="2">
+          SU(N): \(U_\ell\in\SU{N}\) on edges
+        </div>
+        <div class="equation-chip" data-stage="3">
+          With matter: \(\psi(x)\) also on sites
+        </div>
+      </div>
+      <div class="reveal-bar">
+        <button class="btn ghost" id="w0-back" disabled>&larr; Back</button>
+        <span class="reveal-caption" id="w0-caption">
+          Ising samples one sign on every site; a bond term compares two signs.
+        </span>
+        <button class="btn" id="w0-next">Move the variables to edges &rarr;</button>
+      </div>
+      <p class="caption">
+        Watch two changes separately: first the variables move from sites to
+        edges; then each edge sign is upgraded to an SU(N) matrix. The pure-gauge
+        diffusion papers stop at the third stage.
+      </p>
+    </div>
+  </div>
+
+  <div class="comparison">
+    <div class="card">
+      <h3>Ordinary Ising</h3>
+      <p>
+        Sample \(s_x\) on sites. \(J\) is fixed. Local energy lives on bonds:
+        \(-Js_xs_y\).
+      </p>
+    </div>
+    <div class="card">
+      <h3>Pure SU(N) gauge</h3>
+      <p>
+        Sample \(U_\mu(x)\) on edges. \(\beta\) is fixed. Local action lives on
+        plaquettes: \(-(\beta/N)\Re\Tr U_p\).
+      </p>
+    </div>
+    <div class="card">
+      <h3>Gauge plus matter</h3>
+      <p>
+        Sample both site fields \(\psi(x)\) and gauge links \(U_\mu(x)\).
+        Covariant hopping terms couple them.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="concept-step" id="group">
+  <p class="step-kicker">Step 1 &middot; the object</p>
+  <h2>SU(N) is the space each link is allowed to live in</h2>
+  <div class="prose">
+    <p class="lede">
+      Start with a complex \(N\times N\) matrix \(U\). Requiring
+      \(U^\dagger U=I\) says it preserves lengths; requiring \(\det U=1\)
+      removes an overall phase. The matrices satisfying both conditions form
+      the <strong>special unitary group</strong> \(\SU{N}\).
+    </p>
+    <p>
+      A group is not merely a set: multiplying two allowed matrices gives
+      another allowed matrix, every matrix has an inverse, and multiplication
+      is associative. It is also a smooth curved space. Near the identity,
+      every small motion is generated by a traceless anti-Hermitian matrix
+      \(A\in\su{N}\):
+    </p>
+  </div>
+  <div class="equation-path">
+    \[
+      A^\dagger=-A,\qquad \Tr A=0,\qquad
+      U(s)=e^{sA}U(0)\in\SU{N}.
+    \]
+    <p>
+      There are \(N^2-1\) independent generator directions. This is why an
+      \(\SU{3}\) link has eight continuous degrees of freedom.
+    </p>
+  </div>
+
+  <div class="widget" id="w1">
+    <div class="widget-titlewrap">
+      <span class="widget-title">An SU(2) matrix as a unit quaternion</span>
+      <span class="widget-mode">live &middot; tracked axis projections</span>
+    </div>
+    <div class="widget-body">
+      <canvas id="w1-canvas"></canvas>
+      <div class="controls">
+        <label class="control">group angle <span class="value" id="w1-angle-v">1.10</span>
+          <input id="w1-angle" type="range" min="0" max="3.14159" step="0.01" value="1.10">
+        </label>
+        <label class="control">axis polar angle <span class="value" id="w1-polar-v">1.00</span>
+          <input id="w1-polar" type="range" min="0" max="3.14159" step="0.01" value="1.00">
+        </label>
+        <label class="control">axis azimuth <span class="value" id="w1-az-v">0.65</span>
+          <input id="w1-az" type="range" min="0" max="6.28318" step="0.01" value="0.65">
+        </label>
+        <button class="btn" id="w1-rotate">Rotate azimuth</button>
+      </div>
+      <div class="readout">
+        <span>unitarity error <b class="ok" id="w1-unitarity">0.00e+0</b></span>
+        <span>determinant <b id="w1-det">1.000 + 0.000i</b></span>
+        <span>quaternion norm <b id="w1-norm">1.000000</b></span>
+      </div>
+      <p class="caption">
+        The crosshairs track the imaginary quaternion vector in the
+        \(a_1a_2\), \(a_1a_3\), and \(a_2a_3\) planes. Hold the group and polar
+        angles fixed, then rotate the azimuth: the \(a_1a_2\) projection follows
+        the highlighted circle while \((a_0,a_1,a_2,a_3)\) remains on the unit
+        three-sphere.
+      </p>
+    </div>
+  </div>
+
+  <details class="formal">
+    <summary>Why SU(2) is a three-sphere</summary>
+    <div class="formal-body">
+      <p>
+        Every \(U\in\SU{2}\) can be written
+        \[
+          U=a_0I+i\sum_{k=1}^{3}a_k\sigma_k
+          =
+          \begin{pmatrix}
+          a_0+ia_3 & a_2+ia_1\\
+          -a_2+ia_1 & a_0-ia_3
+          \end{pmatrix},
+        \]
+        where the Pauli matrices are \(\sigma_k\). Unitarity and unit determinant
+        collapse to one condition: \(\sum_{k=0}^3a_k^2=1\). Thus SU(2) is
+        diffeomorphic to \(S^3\), not to an unconstrained Euclidean vector space.
+      </p>
+    </div>
+  </details>
+</section>
+
+<section class="concept-step" id="lattice">
+  <p class="step-kicker">Step 2 &middot; the physics</p>
+  <h2>A lattice gauge field puts one SU(N) transporter on every edge</h2>
+  <div class="callout good">
+    <span class="tag">First: what is a field?</span>
+    <p>
+      A <strong>field is a rule that assigns a value to every position</strong>.
+      A temperature field assigns one number \(T(x)\); a wind field assigns a
+      vector \(\mathbf v(x)\); a matter field assigns an internal color vector
+      \(\psi(x)\). The symbol \(x\) asks &ldquo;at which point?&rdquo; and the
+      field name tells us what value lives there.
+    </p>
+    <p>
+      On a continuum there are infinitely many positions. A lattice replaces
+      them by a finite grid, so a field becomes a finite collection of values.
+      A <em>site field</em> stores one value at every node. A
+      <em>gauge field</em> is different: it tells us how to compare internal
+      directions at neighboring nodes, so its lattice values
+      \(U_\mu(x)\in\SU{N}\) live on oriented edges.
+    </p>
+    <p>
+      The continuum gauge field is usually written \(A_\mu(x)\), a
+      Lie-algebra-valued quantity at every spacetime point and direction. A
+      short lattice link packages its accumulated effect into
+      \[
+        U_\mu(x)\approx
+        \exp\!\left[iag\,A_\mu\!\left(x+\tfrac{a}{2}\hat\mu\right)\right],
+      \]
+      where \(a\) is the lattice spacing and \(g\) the coupling. So the link
+      matrix is not a different kind of physics: it is the finite-step version
+      of the continuum gauge field.
+    </p>
+  </div>
+  <div class="callout">
+    <span class="tag">Analogy: a network of laboratories</span>
+    <p>
+      Imagine a laboratory at every lattice node. Every lab describes the same
+      kind of \(N\)-channel signal, but each is free to choose its own channel
+      labels and reference phases. A column vector records the signal using one
+      lab's convention. The same signal generally has different components
+      when written down by the neighboring lab.
+    </p>
+    <p>
+      An edge matrix \(U_\mu(x)\) is the <strong>translation dictionary</strong>
+      between two neighboring conventions. Multiplying by it converts a vector
+      written by one lab into the coordinates understood by the other.
+      \(\Omega(x)\) means that the lab at \(x\) changed its private convention,
+      so every dictionary touching that lab must be updated.
+    </p>
+    <p>
+      A closed chain of perfect dictionaries would bring a signal back
+      unchanged. If multiplying the dictionaries around a square produces a
+      net rotation, that mismatch is curvature. Gauge theory uses this same
+      structure, but the \(N\) channels are components of an internal SU(N)
+      vector rather than literal laboratory instruments. In QCD specifically,
+      this internal degree of freedom is called <em>color</em>.
+    </p>
+  </div>
+  <div class="prose">
+    <p class="lede">
+      A lattice site is one point in discretized spacetime. Attached to every
+      site \(x\) is an abstract copy of \(\mathbb C^N\): the vector space carrying
+      the fundamental representation of SU(N). In QCD, this is called the local
+      color space.
+    </p>
+    <p>
+      If the theory contains matter, a field \(\psi(x)\in\mathbb C^N\) picks one
+      vector in that local color space. For SU(3), for example,
+      \(\psi(x)=(\psi_r,\psi_g,\psi_b)^T\) contains the complex amplitudes for
+      the three color basis states. This is <strong>one quantum color state with
+      \(N\) components</strong>, not \(N\) little colored objects sitting on the
+      node.
+    </p>
+    <p>
+      Call the neighboring site \(y=x+\hat\mu\). Suppose its field value is the
+      column vector \(\psi(y)\), written using the coordinate convention at
+      \(y\). We cannot compare those numbers directly with \(\psi(x)\), because
+      \(\psi(x)\) uses the convention at \(x\). First translate the neighbor's
+      vector into \(x\)'s coordinates:
+      \[
+        \underbrace{\psi_{y\to x}}_{\text{neighbor's vector, written at }x}
+        =
+        \underbrace{U_\mu(x)}_{\text{dictionary from }y\text{ to }x}
+        \underbrace{\psi(y)}_{\text{vector written at }y}.
+      \]
+      Now \(\psi_{y\to x}\) and \(\psi(x)\) are written in the same coordinate
+      system and can be compared. To translate the other way, use the inverse
+      dictionary:
+      \[
+        \psi_{x\to y}=U_\mu^\dagger(x)\psi(x).
+      \]
+      The dagger appears because an SU(N) matrix is unitary, so
+      \(U_\mu^\dagger=U_\mu^{-1}\). Nothing physically travels during this
+      calculation; we are rewriting vectors so both descriptions use the same
+      local coordinates.
+    </p>
+    <p>
+      <strong>What, then, lives on a node?</strong> In a theory with matter, a
+      node can carry a dynamical field such as a quark color vector
+      \(\psi(x)\in\mathbb C^N\). But the diffusion papers study
+      <strong>pure gauge theory</strong>, so no dynamical value is sampled on
+      the nodes. A node supplies only the spacetime label \(x\), an abstract
+      local color space \(\mathbb C^N\), and a freely chosen local basis.
+      The matrix \(\Omega(x)\) describes changing that basis; it is a gauge
+      choice, not an additional physical field. The sampled dynamical data are
+      only the edge matrices \(U_\mu(x)\).
+    </p>
+    <div class="callout warn">
+      <span class="tag">The clean mental model</span>
+      <p>
+        A node does <strong>not</strong> contain a randomly chosen vector in the
+        pure-gauge theory. Instead, site \(x\) has an abstract vector space
+        \[
+          V_x\cong\mathbb C^N,
+        \]
+        meaning &ldquo;the kind of \(N\)-component vector that could be described
+        here.&rdquo; It is a vector space, not a group, and no particular element
+        of \(V_x\) is part of a pure-gauge configuration.
+      </p>
+      <p>
+        The dynamical object on the edge is one matrix
+        \[
+          U_\mu(x)\in\SU{N},
+          \qquad
+          U_\mu(x):V_{x+\hat\mu}\longrightarrow V_x.
+        \]
+        Its matrix entries are not the elements of a node vector. Together they
+        specify one allowed linear map between two neighboring copies of
+        \(\mathbb C^N\).
+      </p>
+      <p>
+        A complete gauge-field configuration is the collection of all edge
+        matrices,
+        \[
+          U=\{U_\mu(x)\}_{\text{every oriented edge}}.
+        \]
+        HMC or the diffusion model samples this whole collection from
+        \[
+          p(U)=\frac{1}{Z}e^{-S_W[U]}
+          \prod_{\text{edges}}\dd\mu_{\mathrm{Haar}}\!\left(U_\mu(x)\right).
+        \]
+        The individual links are therefore not independent Haar draws: the
+        Wilson action \(S_W\) correlates neighboring links through plaquettes.
+        Finally, \(\Omega(x)\in\SU{N}\) is a local change of coordinates on
+        \(V_x\), not another physical field applied after sampling.
+      </p>
+    </div>
+    <p>
+      Now change the color coordinates independently at every site:
+      \(\psi(x)\mapsto\Omega(x)\psi(x)\). The link must change with both endpoint
+      bases:
+      \[
+        U_\mu(x)\longmapsto
+        U_\mu^\Omega(x)=
+        \Omega(x)U_\mu(x)\Omega^\dagger(x+\hat\mu).
+      \]
+      This rule ensures
+      \[
+        U_\mu^\Omega(x)\psi^\Omega(x+\hat\mu)
+        =\Omega(x)U_\mu(x)\psi(x+\hat\mu),
+      \]
+      so everyone agrees on the transported color state even if they use
+      different coordinates. Individual link matrices depend on those
+      coordinates; physics must be built from combinations in which the basis
+      changes cancel.
+    </p>
+    <p>
+      The smallest closed loop is a square called a <strong>plaquette</strong>,
+      hence the letter \(P\). A square needs two directions: \(\mu\) names its
+      first axis and \(\nu\) its second. Thus \(P_{\mu\nu}(x)\) means
+      &ldquo;the plaquette based at site \(x\), lying in the
+      \(\mu\)-\(\nu\) plane, with the orientation fixed by the ordered pair
+      \((\mu,\nu)\).&rdquo; Its four factors represent the edges in the
+      \(+\mu,+\nu,-\mu,-\nu\) directions. For example,
+      \(P_{12}(x)\) is the square in lattice directions 1 and 2 that starts at
+      \(x\):
+      \[
+      P_{\mu\nu}(x)=U_\mu(x)U_\nu(x+\hat\mu)
+      U_\mu^\dagger(x+\hat\nu)U_\nu^\dagger(x).
+      \]
+      The ordered subscripts matter because SU(N) matrices generally do not
+      commute. Reversing the orientation produces the inverse loop matrix
+      (up to the corresponding shift of base point).
+      It transforms as \(P\mapsto\Omega(x)P\Omega^\dagger(x)\), so its trace is
+      unchanged. The trace measures the curvature trapped in that square.
+    </p>
+  </div>
+
+  <div class="comparison">
+    <div class="card">
+      <h3>At a site</h3>
+      <p>
+        A local color space \(\mathbb C^N\). With matter, \(\psi(x)\) is an
+        \(N\)-component vector in it. In pure gauge theory, no matter vector is
+        stored.
+      </p>
+    </div>
+    <div class="card">
+      <h3>On a link</h3>
+      <p>
+        \(U_\mu(x)\in\SU{N}\), an \(N\times N\) matrix that translates color
+        components between neighboring local bases.
+      </p>
+    </div>
+    <div class="card">
+      <h3>Around a loop</h3>
+      <p>
+        Multiply the link translators in order. Returning rotated reveals gauge
+        curvature; the traced product is independent of all chosen bases.
+      </p>
+    </div>
+  </div>
+
+  <div class="widget" id="w2a">
+    <div class="widget-titlewrap">
+      <span class="widget-title">What lives where on a gauge lattice</span>
+      <span class="widget-mode">staged &middot; build the notation</span>
+    </div>
+    <div class="widget-body">
+      <canvas id="w2a-canvas"></canvas>
+      <div class="equation-legend" id="w2a-equations">
+        <div class="equation-chip active" data-stage="0">site \(x\)</div>
+        <div class="equation-chip" data-stage="1">neighbor \(x+\hat\mu\)</div>
+        <div class="equation-chip" data-stage="2">link \(U_\mu(x)\in\SU{N}\)</div>
+        <div class="equation-chip" data-stage="3">
+          \(U_\mu(x)\psi(x+\hat\mu)\)
+        </div>
+        <div class="equation-chip" data-stage="4">
+          \(\Omega(x)U_\mu(x)\Omega^\dagger(x+\hat\mu)\)
+        </div>
+      </div>
+      <div class="reveal-bar">
+        <button class="btn ghost" id="w2a-back" disabled>&larr; Back</button>
+        <span class="reveal-caption" id="w2a-caption">
+          Pick one lattice site and call it \(x\).
+        </span>
+        <button class="btn" id="w2a-next">Choose a direction \(\hat\mu\) &rarr;</button>
+      </div>
+      <p class="caption">
+        Each equation is a label for one visible part of the same picture.
+        Advance one stage at a time; the highlighted equation names what has
+        just appeared.
+      </p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <span class="tag">Notation decoder</span>
+    <p>
+      <strong>Yes: matrices written next to one another are simply multiplied.</strong>
+      Thus \(AB\) means ordinary matrix multiplication&mdash;but order matters,
+      because generally \(AB\neq BA\). The remaining symbols are compact
+      bookkeeping:
+    </p>
+    <p>
+      \(U_\mu(x)\) is the matrix assigned to the oriented link from \(x\) toward
+      direction \(\mu\); \(x+\hat\mu\) is the neighboring site one lattice step
+      away. With the convention above, \(U_\mu\) translates the neighbor's
+      components back to the basis at \(x\), while \(U_\mu^\dagger\) translates
+      forward.
+      \(\Omega(x)\) is a change of color basis at site \(x\). The dagger
+      \(U^\dagger\) means transpose and complex-conjugate; for a unitary matrix
+      it is also the inverse, so it traverses the same link backward.
+    </p>
+    <p>
+      Finally, \(\Tr U\) adds the diagonal entries of \(U\), \(\Re\) keeps the
+      real part, and \(\mapsto\) means &ldquo;changes into under a gauge
+      transformation.&rdquo; There is no new exotic multiplication hiding in
+      the plaquette formula: it is four ordered matrix multiplications around a
+      closed square.
+    </p>
+  </div>
+
+  <div class="widget" id="w2">
+    <div class="widget-titlewrap">
+      <span class="widget-title">Local bases change; the plaquette does not</span>
+      <span class="widget-mode">click &middot; gauge transform</span>
+    </div>
+    <div class="widget-body">
+      <canvas id="w2-canvas"></canvas>
+      <div class="controls">
+        <button class="btn" id="w2-transform">Apply random local gauge rotations</button>
+        <button class="btn ghost" id="w2-reset">Reset links</button>
+      </div>
+      <div class="readout">
+        <span>before: Re Tr(P)/2 = <b id="w2-before">0.000000</b></span>
+        <span>after: Re Tr(P)/2 = <b id="w2-after">0.000000</b></span>
+        <span>difference = <b class="ok" id="w2-diff">0.00e+0</b></span>
+      </div>
+      <p class="caption" id="w2-caption">
+        The four link descriptions are basis-dependent. Multiply around the
+        closed loop and every intermediate basis rotation cancels.
+      </p>
+    </div>
+  </div>
+
+</section>
+
+<section class="concept-step" id="wilson-action">
+  <p class="step-kicker">Bridge &middot; from curvature to probability</p>
+  <h2>The Wilson action turns every plaquette mismatch into a local cost</h2>
+  <div class="prose">
+    <p class="lede">
+      The symbol \(U_p\) means the <strong>plaquette matrix</strong>: the ordered
+      product of the four link matrices around one square \(p\). For the
+      plaquette based at \(x\) in the \(\mu\)-\(\nu\) plane,
+      \[
+        U_p\equiv P_{\mu\nu}(x)
+        =
+        U_\mu(x)\,
+        U_\nu(x+\hat\mu)\,
+        U_\mu^\dagger(x+\hat\nu)\,
+        U_\nu^\dagger(x).
+      \]
+      The daggered matrices traverse the final two edges backward. Thus \(U_p\)
+      is one SU(N) matrix answering: &ldquo;after transporting around this closed
+      square, what net transformation remains?&rdquo; If every internal vector
+      returns unchanged, then \(U_p=I\): the plaquette is locally flat. The
+      action needs to measure how far every \(U_p\) is from that ideal.
+    </p>
+    <p>
+      First compress the matrix to one real, gauge-invariant number:
+      \[
+        w_p=\frac{1}{N}\Re\Tr U_p.
+      \]
+      The normalized trace reaches its maximum \(w_p=1\) when \(U_p=I\).
+      Therefore \(1-w_p\) is zero for a flat plaquette and positive when going
+      around the square produces a nontrivial rotation.
+    </p>
+    <p>
+      Add that local cost over every plaquette:
+      \[
+        \boxed{
+        S_W[U]
+        =\beta\sum_p\left(1-\frac{1}{N}\Re\Tr U_p\right)
+        =\frac{\beta}{N}\sum_p\left(N-\Re\Tr U_p\right).
+        }
+      \]
+      This is the <strong>Wilson gauge action</strong>. The lattice and all link
+      matrices \(U_\mu(x)\) are the variables; \(\beta\) is one fixed coupling.
+      In a common four-dimensional SU(N) convention,
+      \(\beta=2N/g_0^2\), where \(g_0\) is the bare gauge coupling.
+    </p>
+  </div>
+
+  <div class="widget" id="w2c">
+    <div class="widget-titlewrap">
+      <span class="widget-title">Build the plaquette matrix on a 2D grid</span>
+      <span class="widget-mode">staged &middot; one edge matrix at a time</span>
+    </div>
+    <div class="widget-body">
+      <canvas id="w2c-canvas"></canvas>
+      <div class="equation-legend four" id="w2c-equations">
+        <div class="equation-chip active" data-stage="0">
+          \(U_\mu(x)\)
+        </div>
+        <div class="equation-chip" data-stage="1">
+          \(U_\nu(x+\hat\mu)\)
+        </div>
+        <div class="equation-chip" data-stage="2">
+          \(U_\mu^\dagger(x+\hat\nu)\)
+        </div>
+        <div class="equation-chip" data-stage="3">
+          \(U_\nu^\dagger(x)\)
+        </div>
+      </div>
+      <div class="reveal-bar">
+        <button class="btn ghost" id="w2c-back" disabled>&larr; Back</button>
+        <span class="reveal-caption" id="w2c-caption">
+          Start at \(x\) and follow the stored \(+\mu\) link to
+          \(x+\hat\mu\).
+        </span>
+        <button class="btn" id="w2c-next">Add the \(+\nu\) edge &rarr;</button>
+      </div>
+      <p class="caption">
+        Thin gray arrows show how link matrices are stored in the positive
+        coordinate directions. Thick colored arrows show how this loop is
+        traversed. Moving against a stored arrow uses its inverse,
+        \(U^{-1}=U^\dagger\).
+      </p>
+    </div>
+  </div>
+
+  <div class="widget" id="w2b">
+    <div class="widget-titlewrap">
+      <span class="widget-title">A Wilson action assembled one square at a time</span>
+      <span class="widget-mode">click a plaquette &middot; bend its holonomy</span>
+    </div>
+    <div class="widget-body">
+      <canvas id="w2b-canvas"></canvas>
+      <div class="controls">
+        <label class="control">selected curvature angle
+          <span class="value" id="w2b-theta-v">1.10</span>
+          <input id="w2b-theta" type="range" min="-3.14159" max="3.14159" step="0.01" value="1.10">
+        </label>
+        <label class="control">fixed coupling beta
+          <span class="value" id="w2b-beta-v">2.00</span>
+          <input id="w2b-beta" type="range" min="0.5" max="8" step="0.1" value="2">
+        </label>
+        <button class="btn" id="w2b-random">Make a rough field</button>
+        <button class="btn ghost" id="w2b-flat">Set every plaquette flat</button>
+      </div>
+      <div class="readout">
+        <span>selected \(\Re\Tr U_p/2\) <b id="w2b-trace">0.4536</b></span>
+        <span>selected cost <b class="hot" id="w2b-local">1.0928</b></span>
+        <span>total \(S_W\) <b id="w2b-total">1.0928</b></span>
+      </div>
+      <p class="caption">
+        This SU(2) slice uses \(U_p(\theta)=\mathrm{diag}(e^{i\theta},e^{-i\theta})\),
+        so \(\Re\Tr U_p/2=\cos\theta\) and the local Wilson cost is
+        \(\beta(1-\cos\theta)\). Click any square, then change its loop angle.
+      </p>
+    </div>
+  </div>
+
+  <div class="equation-path">
+    <p>
+      Why does this reproduce Yang&ndash;Mills theory? For a small square of side
+      \(a\), the loop matrix is approximately
+      \[
+        U_{\mu\nu}(x)
+        \approx\exp\!\left[i\,a^2g_0F_{\mu\nu}(x)\right],
+      \]
+      where \(F_{\mu\nu}\) is the continuum field strength. Expanding the
+      exponential gives
+      \[
+        \Re\Tr U_{\mu\nu}
+        =
+        N-\frac{a^4g_0^2}{2}\Tr(F_{\mu\nu}^2)+O(a^6).
+      \]
+      Thus \(N-\Re\Tr U_p\) is proportional to curvature squared times the
+      plaquette volume. Summing over squares becomes the continuum integral
+      \[
+        S_{\mathrm{YM}}\propto
+        \int\dd^dx\;\Tr(F_{\mu\nu}F_{\mu\nu})
+      \]
+      as \(a\to0\).
+    </p>
+  </div>
+
+  <div class="callout good">
+    <span class="tag">Why the trace is essential</span>
+    <p>
+      A gauge transformation conjugates the loop matrix:
+      \(U_p\mapsto\Omega(x)U_p\Omega^\dagger(x)\). Conjugation changes the matrix
+      entries but not its trace. The Wilson action therefore assigns the same
+      cost to every gauge-equivalent description. It measures curvature, not
+      the arbitrary coordinate convention at a node.
+    </p>
+  </div>
+
+  <details class="formal">
+    <summary>Equivalent conventions in papers and code</summary>
+    <div class="formal-body">
+      <p>
+        Authors may write
+        \(S_W=-(\beta/N)\sum_p\Re\Tr U_p\), dropping the additive constant
+        \(\beta\sum_p1\), because constants cancel from normalized expectation
+        values. Some sum over ordered pairs \(\mu\ne\nu\), counting each
+        unoriented plaquette twice, and compensate with a factor of \(1/2\).
+        These conventions generate the same probability distribution when their
+        prefactors are matched.
+      </p>
+    </div>
+  </details>
+</section>
+
+<section class="concept-step" id="ensemble">
+  <p class="step-kicker">Step 3 &middot; the target distribution</p>
+  <h2>The calculation needs an ensemble, not one best configuration</h2>
+  <div class="prose">
+    <p class="lede">
+      After Wick rotating time, quantum expectation values become averages over
+      classical-looking Euclidean field configurations:
+      \[
+        \langle\mathcal O\rangle=
+        \frac{1}{Z}\int\!\mathcal DU\;\mathcal O[U]e^{-S_W[U]},
+        \qquad
+        Z=\int\!\mathcal DU\;e^{-S_W[U]}.
+      \]
+    </p>
+    <p>
+      Low-action fields are more probable, but they are not the only fields that
+      matter. The enormous number of less-than-minimal configurations contributes
+      entropy. Standard lattice calculations use Markov-chain Monte Carlo,
+      especially HMC, to draw correlated samples from this Boltzmann weight.
+      At fine lattice spacing, long autocorrelation times and frozen topological
+      sectors can make those samples expensive.
+    </p>
+  </div>
+
+  <div class="widget" id="w3">
+    <div class="widget-titlewrap">
+      <span class="widget-title">One SU(2) plaquette: minimum versus ensemble</span>
+      <span class="widget-mode">sample &middot; change coupling</span>
+    </div>
+    <div class="widget-body">
+      <canvas id="w3-canvas"></canvas>
+      <div class="controls">
+        <label class="control">coupling beta <span class="value" id="w3-beta-v">2.00</span>
+          <input id="w3-beta" type="range" min="0.2" max="8" step="0.1" value="2">
+        </label>
+        <button class="btn" id="w3-sample">Draw 100</button>
+        <button class="btn alt" id="w3-sample-one">Draw one</button>
+        <button class="btn ghost" id="w3-clear">Clear</button>
+      </div>
+      <div class="readout">
+        <span>samples <b id="w3-n">0</b></span>
+        <span>sample mean cos(theta) <b id="w3-mean">--</b></span>
+        <span>exact ensemble mean <b class="hot" id="w3-exact">0.4331</b></span>
+        <span>action-minimizing value <b class="ok">1.0000</b></span>
+      </div>
+      <p class="caption">
+        The action minimum is the single point \(\theta=0\), but Haar measure
+        contributes a \(\sin^2\theta\) volume factor. The quantum path integral
+        averages the whole shaded distribution.
+      </p>
+    </div>
+  </div>
+
+  <div class="callout warn">
+    <span class="tag">The ground-state trap</span>
+    <p>
+      Minimizing \(S_W[U]\) gives a <strong>classical minimum-action field</strong>
+      (for the pure Wilson action, flat plaquettes \(U_p=I\), modulo gauge and
+      boundary degeneracies). A quantum ground state is instead a lowest-energy
+      wavefunctional \(\Psi_0[U]\), or the state projected out by long Euclidean
+      time. It is not one link configuration obtained by minimizing the Euclidean
+      action.
+    </p>
+  </div>
+</section>
+
+<section class="concept-step" id="diffusion">
+  <p class="step-kicker">Step 4 &middot; the generative mechanism</p>
+  <h2>Forward diffusion forgets the field by taking a random walk on SU(N)</h2>
+  <div class="prose">
+    <p class="lede">
+      A diffusion model creates a bridge between hard samples \(U_0\sim p_{\rm data}\)
+      and an easy reference distribution. On a compact group, the natural easy
+      distribution is Haar measure: uniform over the group.
+    </p>
+    <p>
+      The intrinsic construction in Komijani, Marinkovic, and Turgut multiplies
+      each link by many tiny random group elements:
+      \[
+        U_{t+\Delta t}
+        =
+        \exp\!\left[\sigma(t)\sqrt{\Delta t}\,\eta_t\right]U_t,
+        \qquad \eta_t\in\su{N}.
+      \]
+      Because the exponential of a traceless anti-Hermitian matrix is in SU(N),
+      every intermediate state remains a valid gauge field. As accumulated
+      variance grows, memory of \(U_0\) disappears and \(U_t\) approaches Haar.
+    </p>
+  </div>
+
+  <div class="widget" id="w4">
+    <div class="widget-titlewrap">
+      <span class="widget-title">Brownian motion spreading over SU(2)</span>
+      <span class="widget-mode">real group walk &middot; advance noise</span>
+    </div>
+    <div class="widget-body">
+      <canvas id="w4-canvas"></canvas>
+      <div class="controls">
+        <label class="control">increment width <span class="value" id="w4-width-v">0.18</span>
+          <input id="w4-width" type="range" min="0.03" max="0.45" step="0.01" value="0.18">
+        </label>
+        <button class="btn" id="w4-step">Add 5 random group steps</button>
+        <button class="btn alt" id="w4-run">Diffuse to 80 steps</button>
+        <button class="btn ghost" id="w4-reset">Reset at identity</button>
+      </div>
+      <div class="readout">
+        <span>steps <b id="w4-steps">0</b></span>
+        <span>mean Re Tr(U)/2 <b id="w4-trace">1.000</b></span>
+        <span>mean quaternion norm <b class="ok" id="w4-qnorm">1.000000</b></span>
+      </div>
+      <p class="caption">
+        Every dot is an SU(2) matrix. The histogram tracks
+        \(x=\Re\Tr(U)/2=a_0\). It begins at \(x=1\) and approaches the Haar shape
+        proportional to \(\sqrt{1-x^2}\), while every quaternion norm stays one.
+      </p>
+    </div>
+  </div>
+
+  <details class="formal">
+    <summary>The continuous group diffusion</summary>
+    <div class="formal-body">
+      <p>
+        With generators normalized by \(\Tr(T^aT^b)=-\delta^{ab}\), write
+        \(dW_t=dW_t^aT^a\). The time-ordered process is
+        \[
+          U_t=K_{t,0}U_0,\qquad
+          K_{t,0}=\mathcal T\exp\!\left(\int_0^t\sigma(\tau)\,dW_\tau\right).
+        \]
+        Time ordering matters because SU(N) is non-Abelian: increments at
+        different times generally do not commute. The cited SU(N) paper uses
+        \(\sigma(t)=\sigma_0/\sqrt{1-t+\varepsilon}\), whose diverging accumulated
+        variance drives the endpoint toward exact Haar measure.
+      </p>
+    </div>
+  </details>
+</section>
+
+<section class="concept-step" id="score">
+  <p class="step-kicker">Step 5 &middot; learning the way back</p>
+  <h2>The score points toward configurations that are more probable at each noise level</h2>
+  <div class="prose">
+    <p class="lede">
+      At time \(t\), noisy fields have density \(\rho_t(U)\). Its score is the
+      tangent vector
+      \[
+        s(U,t)=T^a\partial^a\log\rho_t(U)\in\su{N}.
+      \]
+      It answers a local question: &ldquo;which infinitesimal group motion most
+      increases log probability?&rdquo;
+    </p>
+    <p>
+      A neural network \(s_\theta(U,t)\) learns this vector from noised training
+      fields. Reversing the diffusion uses the score to oppose the entropy-producing
+      random walk. The deterministic member of the reverse family is the
+      probability-flow ODE
+      \[
+        \frac{dU_t}{dt}
+        =
+        -\frac12\sigma^2(t)s_\theta(U_t,t)U_t,
+      \]
+      integrated from noisy \(t=1\) toward data \(t=0\).
+    </p>
+  </div>
+
+  <div class="widget" id="w5">
+    <div class="widget-titlewrap">
+      <span class="widget-title">A score field on one SU(2) subgroup</span>
+      <span class="widget-mode">live &middot; drag noise level</span>
+    </div>
+    <div class="widget-body">
+      <canvas id="w5-canvas"></canvas>
+      <div class="controls">
+        <label class="control">noise level t <span class="value" id="w5-t-v">0.65</span>
+          <input id="w5-t" type="range" min="0.05" max="1" step="0.01" value="0.65">
+        </label>
+        <button class="btn" id="w5-denoise">Follow the score</button>
+        <button class="btn ghost" id="w5-reset">Reset probes</button>
+      </div>
+      <div class="readout">
+        <span>mean log-density gain <b class="ok" id="w5-gain">0.000</b></span>
+        <span>probe steps <b id="w5-k">0</b></span>
+      </div>
+      <p class="caption">
+        This is a one-parameter SU(2) cross-section, not the full lattice.
+        Arrows show \(\partial_\theta\log\rho_t\): broad and weak at high noise,
+        sharp near learned modes at low noise. The network must produce the
+        analogous tangent matrix for every lattice link.
+      </p>
+    </div>
+  </div>
+
+  <div class="equation-path">
+    <p>
+      The SU(N) paper avoids needing the unknown marginal score directly.
+      For algebra increments
+      \(d\Gamma_t=\log(U_{t+dt}U_t^\dagger)\), the conditional increment score is
+      Gaussian:
+    </p>
+    \[
+      \nabla_{\Gamma_t}\log q_t(\Gamma_t\mid\Gamma_0)
+      =
+      -\frac{\Gamma_t-\Gamma_0}{\sigma_{\rm cum}^2(0,t)}.
+    \]
+    <p>
+      It trains \(s_\theta\) by weighted implicit score matching against this
+      known target. For non-Abelian groups, translating the algebra-space result
+      to the exact group reverse drift is subtle; the paper gives a heuristic
+      stochastic-equivalence argument rather than a full proof.
+    </p>
+  </div>
+
+  <div class="callout good">
+    <span class="tag">Why equivariance belongs in the architecture</span>
+    <p>
+      If \(U\mapsto U^\Omega\), a gauge-equivariant score must transform in the
+      corresponding link tangent representation. GaugeLinkConv layers build
+      features from Wilson staples and parallel transport them before combining
+      them. The network therefore cannot mistake a local basis change for new
+      physics. Augmentation can encourage this behavior; equivariant layers
+      guarantee it by construction.
+    </p>
+  </div>
+</section>
+
+<section class="concept-step" id="papers">
+  <p class="step-kicker">Step 6 &middot; what the models actually solve</p>
+  <h2>Two recent papers make two importantly different choices</h2>
+  <div class="prose">
+    <p class="lede">
+      Both papers learn to generate finite-lattice equilibrium gauge configurations,
+      but only one treats SU(N) as the curved group it is throughout diffusion.
+      Use the staged comparison below; each click adds one design decision.
+    </p>
+  </div>
+
+  <div class="widget" id="w6">
+    <div class="widget-titlewrap">
+      <span class="widget-title">Flat DDPM versus intrinsic Lie-group diffusion</span>
+      <span class="widget-mode">staged &middot; compare papers</span>
+    </div>
+    <div class="widget-body">
+      <div class="segmented" aria-label="Choose paper">
+        <button id="w6-flat" class="on">SU(2) flat DDPM</button>
+        <button id="w6-group">SU(N) group diffusion</button>
+      </div>
+      <canvas id="w6-canvas"></canvas>
+      <div class="reveal-bar">
+        <button class="btn ghost" id="w6-back" disabled>&larr; Back</button>
+        <span class="reveal-caption" id="w6-caption"></span>
+        <button class="btn" id="w6-next">Add the noising rule &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="comparison">
+    <div class="card">
+      <h3>Why use ML?</h3>
+      <p>
+        After training, produce new approximately independent equilibrium fields
+        without walking one long Markov chain from its previous state.
+      </p>
+    </div>
+    <div class="card">
+      <h3>What is learned?</h3>
+      <p>
+        A noise predictor or group score at every noise time&mdash;not the action
+        minimum, not a wavefunction, and not an exact sampler guarantee.
+      </p>
+    </div>
+    <div class="card">
+      <h3>What validates it?</h3>
+      <p>
+        Agreement of Wilson-loop distributions and other observables with HMC or
+        exact results, plus scaling, topology, and autocorrelation tests.
+      </p>
+    </div>
+  </div>
+
+  <details class="formal">
+    <summary>Results and limitations from the two papers</summary>
+    <div class="formal-body">
+      <p>
+        <strong>Alharazin, Panteleeva, and Sun (arXiv:2602.09045v1).</strong>
+        SU(2) links are unit quaternions, but ordinary Gaussian DDPM noise moves
+        intermediate states into \(\mathbb R^8\); links are renormalized only at
+        the end. Gauge symmetry is learned through random gauge augmentation,
+        not enforced. On \(8^2\) at \(\beta=2\), the reported plaquette
+        \(0.4329\pm0.0001\) agrees with the exact \(0.4331\), but transfer to
+        distant couplings and large unseen volumes degrades substantially.
+      </p>
+      <p>
+        <strong>Komijani, Marinkovic, and Turgut (arXiv:2605.06134).</strong>
+        Multiplicative Brownian motion stays on SU(N), the score is Lie-algebra
+        valued, and GaugeLinkConv is equivariant. Tests use SU(3) in 2D and 4D.
+        A plain RK4 reverse ODE works in easier settings; at 4D \(\beta=6\), they
+        require 20 predictor steps with HMD correctors. Those correctors are
+        unadjusted, the estimated cost exceeds their HMC thermalization baseline,
+        and only a small set of Wilson loops is tested. The exact GaugeLinkUNet
+        used in the paper is not publicly released.
+      </p>
+      <p>
+        Neither reported sampler includes a final Metropolis correction, so finite
+        model and integration error can bias observables. Neither paper claims a
+        quantum ground-state calculation.
+      </p>
+    </div>
+  </details>
+</section>
+
+<section class="concept-step" id="optimization">
+  <p class="step-kicker">Step 7 &middot; your proposed connection</p>
+  <h2>Diffeomorphic optimization turns the frozen reverse flow into coordinates for search</h2>
+  <div class="prose">
+    <p class="lede">
+      Set stochastic reverse noise to zero and freeze the trained score model.
+      Integrating its probability-flow ODE gives a deterministic map
+      \(g:\mathcal Z\to\mathcal C\) from easy base fields \(Z\) to generated
+      gauge fields \(U=g(Z)\).
+    </p>
+    <p>
+      Given any differentiable gauge-invariant loss \(\mathcal L(U)\), optimize
+      its pullback:
+      \[
+        \widetilde{\mathcal L}(Z)=\mathcal L(g(Z)).
+      \]
+      Backpropagation through the full ODE gives the gradient at the base field.
+      Every outer update is made intrinsically on each SU(N) base link:
+      \[
+        Z_{\ell}^{(k+1)}
+        =
+        \exp\!\left[-\eta A_{\ell}^{(k)}\right]Z_{\ell}^{(k)},
+        \qquad
+        A_{\ell}^{(k)}
+        =
+        \operatorname{grad}_{Z_\ell}
+        \mathcal L(g(Z^{(k)}))\in\su{N}.
+      \]
+    </p>
+    <p>
+      To first order, mapping this step through \(g\) is Riemannian gradient
+      descent on the generated manifold. In Euclidean notation,
+      \[
+        \Delta U\approx-\eta\,J_gJ_g^\top\nabla_U\mathcal L.
+      \]
+      The learned generator supplies a geometry-aware preconditioner
+      \(J_gJ_g^\top\): base-space motion is pushed into directions the model
+      knows how to generate.
+    </p>
+  </div>
+
+  <div class="widget" id="w7">
+    <div class="widget-titlewrap">
+      <span class="widget-title">Optimize through a diffeomorphic SU(2) flow</span>
+      <span class="widget-mode">iterate &middot; backpropagate to base</span>
+    </div>
+    <div class="widget-body">
+      <canvas id="w7-canvas"></canvas>
+      <div class="controls">
+        <label class="control">initial base angle z <span class="value" id="w7-z-v">2.45</span>
+          <input id="w7-z" type="range" min="-3.14" max="3.14" step="0.01" value="2.45">
+        </label>
+        <label class="control">learning rate eta <span class="value" id="w7-lr-v">0.18</span>
+          <input id="w7-lr" type="range" min="0.02" max="0.35" step="0.01" value="0.18">
+        </label>
+        <button class="btn" id="w7-step">One base-space update</button>
+        <button class="btn alt" id="w7-run">Run 20 updates</button>
+        <button class="btn ghost" id="w7-reset">Reset</button>
+      </div>
+      <div class="readout">
+        <span>base z <b id="w7-base">2.450</b></span>
+        <span>generated angle x=g(z) <b id="w7-output">2.801</b></span>
+        <span>Jacobian g'(z) <b id="w7-jac">0.576</b></span>
+        <span>loss 1-cos(x) <b class="hot" id="w7-loss">1.942</b></span>
+        <span>iteration <b id="w7-iter">0</b></span>
+      </div>
+      <p class="caption">
+        The toy flow \(x=g(z)=z+0.55\sin z\) is a genuine orientation-preserving
+        diffeomorphism of a one-parameter SU(2) subgroup because
+        \(g'(z)=1+0.55\cos z&gt;0\). The gradient is pulled back as
+        \(d\mathcal L/dz=\sin(g(z))g'(z)\), then the group-valued base is updated.
+      </p>
+    </div>
+  </div>
+
+  <div class="verdict">
+    <div class="verdict-head">So: can it find the &ldquo;ground state SU(N) diffusion model&rdquo;?</div>
+    <div class="verdict-body">
+      <p>
+        <strong>Yes, under a precise reinterpretation:</strong> it can search for
+        a low-loss SU(N) gauge configuration inside the image of a frozen,
+        deterministic, gauge-equivariant diffusion flow. Choosing
+        \(\mathcal L=S_W\) searches for a low <em>classical lattice action</em>.
+        Choosing a differentiable Wilson-loop target, smooth topological surrogate,
+        or variational energy gives a different constrained design problem.
+      </p>
+      <p>
+        <strong>No, under the literal quantum interpretation:</strong> minimizing
+        \(S_W(g(Z))\) does not produce the quantum Yang&ndash;Mills ground-state
+        wavefunctional or an unbiased path-integral ensemble. It returns
+        \(\arg\min_Z\mathcal L(g(Z))\), which may differ from the global
+        \(\arg\min_U\mathcal L(U)\) and intentionally collapses sampling diversity.
+      </p>
+    </div>
+  </div>
+
+  <h3 style="font-family:var(--font-display);margin-top:34px;">A technically sound experiment</h3>
+  <ol class="recipe">
+    <li>
+      Start with the intrinsic SU(N) model, not the flat quaternion DDPM. Use
+      \(\mathcal Z=\SU{N}^{|E|}\) with independent Haar base links so the base and
+      configuration spaces have compatible topology.
+    </li>
+    <li>
+      Use the deterministic probability-flow ODE only. Predictor&ndash;corrector
+      noise is stochastic and does not define the invertible map required by the
+      diffeomorphic-optimization argument.
+    </li>
+    <li>
+      Enforce gauge equivariance in \(g_\theta\) and choose a gauge-invariant
+      differentiable objective. Otherwise the optimizer can exploit gauge artifacts.
+    </li>
+    <li>
+      Backpropagate through the group-valued ODE using stored solver states,
+      checkpointing, or a matrix-Lie-group adjoint. The adjoint contains the
+      noncommutative commutator term; a Euclidean adjoint copied verbatim is not enough.
+    </li>
+    <li>
+      Project each base gradient to its traceless anti-Hermitian part and update
+      with the matrix exponential. Monitor unitarity, determinant, gradient norms,
+      reversibility error, and ODE tolerance.
+    </li>
+    <li>
+      Compare against direct Riemannian optimization of \(U\), cooling/gradient
+      flow, HMC-derived best-of-\(K\) samples, and random base restarts. Report both
+      the optimized objective and physical observables not used as the loss.
+    </li>
+    <li>
+      If the actual target is a quantum ground state, formulate a variational
+      wavefunctional \(\Psi_\phi[U]\) and minimize
+      \(\langle\Psi_\phi|H|\Psi_\phi\rangle/\langle\Psi_\phi|\Psi_\phi\rangle\).
+      Diffeomorphic optimization might optimize samples or variational parameters,
+      but the Hamiltonian expectation&mdash;not \(S_W\) alone&mdash;defines the task.
+    </li>
+  </ol>
+
+  <details class="formal">
+    <summary>Geometric and physical caveats</summary>
+    <div class="formal-body">
+      <p>
+        <strong>Topology.</strong> There is no global diffeomorphism
+        \(\mathbb R^d\to\SU{N}\): the former is noncompact and the latter compact.
+        A Euclidean Gaussian latent plus one global Lie-algebra chart cannot satisfy
+        the theorem globally. Use group-valued base variables, intrinsic flows, or
+        an explicitly charted construction.
+      </p>
+      <p>
+        <strong>Gauge zero modes.</strong> A gauge-invariant loss is flat along
+        gauge orbits. That degeneracy is physical. Equivariance keeps it from
+        turning into a spurious learning signal, but the Hessian remains singular
+        along pure-gauge directions.
+      </p>
+      <p>
+        <strong>Topological sectors.</strong> A smooth invertible flow cannot cross
+        disconnected components. At finite lattice spacing sectors may not be
+        exactly disconnected, but continuum-like admissibility makes sector
+        transitions increasingly difficult. Multiple base initializations or
+        sector-conditional models may be necessary.
+      </p>
+      <p>
+        <strong>Approximate invertibility.</strong> The theorem assumes a smooth
+        diffeomorphism. A finite-step ODE solver, learned-score error, projection
+        back to SU(N), and stiff dynamics all make the implemented map only
+        approximately invertible. Large optimization steps also invalidate the
+        local first-order equivalence.
+      </p>
+    </div>
+  </details>
+</section>
+
+<section class="recap prose">
+  <h2>Putting it together</h2>
+  <p>
+    SU(N) supplies the curved link space. Gauge symmetry says local color bases
+    are redundant, so observables come from closed loops. The Euclidean path
+    integral needs a whole Boltzmann ensemble. Intrinsic diffusion destroys that
+    ensemble by a group-valued random walk and learns the score needed to reverse
+    it. Diffeomorphic optimization then freezes the deterministic reverse flow and
+    uses its base space as learned coordinates for a separate optimization problem.
+  </p>
+  <div class="recap-grid">
+    <div class="recap-card yes">
+      <h3>Defensible claim</h3>
+      <p>
+        &ldquo;We optimize a differentiable gauge-invariant objective over
+        configurations generated by an SU(N)-equivariant probability-flow
+        ODE, using intrinsic base-space gradient updates.&rdquo;
+      </p>
+    </div>
+    <div class="recap-card no">
+      <h3>Claim to avoid</h3>
+      <p>
+        &ldquo;Minimizing the Wilson action through a diffusion model finds the
+        quantum ground state or preserves the equilibrium sampling
+        distribution.&rdquo;
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="sources">
+  <h2>Primary sources and code map</h2>
+  <ol>
+    <li>
+      H. Alharazin, J. Yu. Panteleeva, and B.-D. Sun,
+      <a href="https://arxiv.org/abs/2602.09045v1">Diffusion Models for SU(2)
+      Lattice Gauge Theory in Two Dimensions</a> (2026).
+    </li>
+    <li>
+      J. Komijani, M. K. Marinkovic, and L. Turgut,
+      <a href="https://arxiv.org/abs/2605.06134">Diffusion model for SU(N)
+      gauge theories</a> (2026).
+    </li>
+    <li>
+      L. Winkler, A. Leaver-Fay, J. Kleinhenz, and P. Kessel,
+      <a href="https://arxiv.org/abs/2607.00947">Diffeomorphic Optimization</a>
+      (2026).
+    </li>
+    <li>
+      <a href="https://github.com/jkomijani/lattice_ml">jkomijani/lattice_ml</a>:
+      active implementation. Relevant modules are
+      <a href="https://github.com/jkomijani/lattice_ml/tree/main/src/lattice_ml/diffusion">diffusion</a>,
+      <a href="https://github.com/jkomijani/lattice_ml/tree/main/src/lattice_ml/gauge_tools">gauge_tools</a>,
+      and
+      <a href="https://github.com/jkomijani/lattice_ml/tree/main/src/lattice_ml/integrate">integrate</a>.
+      The Wilson action is in <code>gauge_action.py</code>, the intrinsic process
+      in <code>_lie_diffusion_process.py</code>, and HMD/Langevin correctors in
+      <code>gauge/_lie_corrector.py</code>.
+    </li>
+    <li>
+      <a href="https://github.com/jkomijani/diffusion">jkomijani/diffusion</a>:
+      archived predecessor; development moved to <code>lattice_ml.diffusion</code>.
+    </li>
+  </ol>
+  <p>
+    Conventions for signs and plaquette counting differ across sources. This page
+    uses the positive-shifted Wilson action when discussing minimization; the code
+    repository implements the equivalent negative-trace convention.
+  </p>
+</section>
+
+<p class="foot">Interactive tutorial &middot; equations rendered with MathJax &middot; all simulations run locally in this page</p>
+</main>
+
+<script>
+const SCALE = Math.max((window.devicePixelRatio || 1) * 2.5, 3);
+function setupCanvas(canvas, width, height) {
+  canvas.style.height = height + 'px';
+  canvas.width = Math.round(width * SCALE);
+  canvas.height = Math.round(height * SCALE);
+  const ctx = canvas.getContext('2d');
+  ctx.scale(SCALE, SCALE);
+  canvas._w = width;
+  canvas._h = height;
+  return ctx;
+}
+function cssColor(name) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+function clamp(x, lo, hi) { return Math.max(lo, Math.min(hi, x)); }
+function wrapPi(x) {
+  while (x > Math.PI) x -= 2 * Math.PI;
+  while (x < -Math.PI) x += 2 * Math.PI;
+  return x;
+}
+function mulQ(a, b) {
+  return [
+    a[0]*b[0] - a[1]*b[1] - a[2]*b[2] - a[3]*b[3],
+    a[0]*b[1] + a[1]*b[0] + a[2]*b[3] - a[3]*b[2],
+    a[0]*b[2] - a[1]*b[3] + a[2]*b[0] + a[3]*b[1],
+    a[0]*b[3] + a[1]*b[2] - a[2]*b[1] + a[3]*b[0]
+  ];
+}
+function invQ(q) { return [q[0], -q[1], -q[2], -q[3]]; }
+function normQ(q) {
+  const n = Math.hypot(q[0], q[1], q[2], q[3]) || 1;
+  return q.map(v => v / n);
+}
+function randomNormal() {
+  let u = 0, v = 0;
+  while (u === 0) u = Math.random();
+  while (v === 0) v = Math.random();
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+function randomHaarQ() {
+  return normQ([randomNormal(), randomNormal(), randomNormal(), randomNormal()]);
+}
+function expSu2(v) {
+  const r = Math.hypot(v[0], v[1], v[2]);
+  if (r < 1e-12) return [1, 0, 0, 0];
+  const s = Math.sin(r) / r;
+  return [Math.cos(r), s*v[0], s*v[1], s*v[2]];
+}
+function lineArrow(ctx, x1, y1, x2, y2, color, width) {
+  const angle = Math.atan2(y2-y1, x2-x1);
+  ctx.strokeStyle = color;
+  ctx.fillStyle = color;
+  ctx.lineWidth = width || 2;
+  ctx.beginPath();
+  ctx.moveTo(x1,y1);
+  ctx.lineTo(x2,y2);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x2,y2);
+  ctx.lineTo(x2-9*Math.cos(angle-.45), y2-9*Math.sin(angle-.45));
+  ctx.lineTo(x2-9*Math.cos(angle+.45), y2-9*Math.sin(angle+.45));
+  ctx.closePath();
+  ctx.fill();
+}
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.roundRect(x,y,w,h,r);
+}
+
+(function progressBar() {
+  const bar = document.getElementById('progress');
+  function update() {
+    const d = document.documentElement;
+    const denom = d.scrollHeight - d.clientHeight;
+    bar.style.width = (denom > 0 ? 100 * d.scrollTop / denom : 0) + '%';
+  }
+  document.addEventListener('scroll', update, {passive:true});
+  update();
+})();
+
+(function widget0() {
+  const canvas=document.getElementById('w0-canvas');
+  const ctx=setupCanvas(canvas,900,430);
+  const cyan=cssColor('--cyan'), gold=cssColor('--gold'), violet=cssColor('--violet');
+  const green=cssColor('--green'), coral=cssColor('--coral');
+  const muted=cssColor('--muted'), line=cssColor('--line'), ink=cssColor('--ink');
+  const back=document.getElementById('w0-back');
+  const next=document.getElementById('w0-next');
+  const caption=document.getElementById('w0-caption');
+  const z2Controls=document.getElementById('w0-z2-controls');
+  const randomGaugeBtn=document.getElementById('w0-random-gauge');
+  const flipLinkBtn=document.getElementById('w0-flip-link');
+  const goodReadout=document.getElementById('w0-good');
+  const defectReadout=document.getElementById('w0-defects');
+  const chips=[...document.querySelectorAll('#w0-equations .equation-chip')];
+  const xs=[92,222,352,482,612], ys=[72,166,260,354];
+  const spins=[
+    [1,-1,1,1,-1],
+    [-1,-1,1,-1,1],
+    [1,1,-1,1,1],
+    [-1,1,-1,-1,1]
+  ];
+  let siteGauge, horizontalEdges, verticalEdges, defectInserted=false;
+  const stages=[
+    {
+      next:'Move the variables to edges ->',
+      caption:'Ising samples one sign on every site; a bond term compares two neighboring signs.'
+    },
+    {
+      next:'Upgrade each sign to an SU(N) matrix ->',
+      caption:'Z2 edge signs can look irregular while every plaquette remains +1. Flip one link to create the two adjacent defects.'
+    },
+    {
+      next:'Now add optional matter ->',
+      caption:'SU(N) replaces each edge sign by a noncommuting matrix; the traced plaquette product is the local action.'
+    },
+    {
+      next:null,
+      caption:'A gauge-plus-matter theory also samples node vectors. The cited diffusion models are pure gauge, so they sample only the matrices.'
+    }
+  ];
+  let stage=0;
+
+  function buildGroundState(randomize) {
+    siteGauge=randomize
+      ? ys.map(()=>xs.map(()=>Math.random()<.5?-1:1))
+      : [
+          [1,-1,-1,1,-1],
+          [-1,-1,1,-1,-1],
+          [1,-1,1,1,-1],
+          [1,1,-1,1,1]
+        ];
+    horizontalEdges=ys.map((_,r)=>
+      xs.slice(0,-1).map((__,c)=>siteGauge[r][c]*siteGauge[r][c+1]));
+    verticalEdges=ys.slice(0,-1).map((_,r)=>
+      xs.map((__,c)=>siteGauge[r][c]*siteGauge[r+1][c]));
+    defectInserted=false;
+    flipLinkBtn.textContent='Flip one link';
+  }
+
+  function plaquetteValue(r,c) {
+    return horizontalEdges[r][c]
+      *verticalEdges[r][c+1]
+      *horizontalEdges[r+1][c]
+      *verticalEdges[r][c];
+  }
+
+  function baseGrid() {
+    ctx.strokeStyle=line;
+    ctx.lineWidth=1;
+    ctx.globalAlpha=.7;
+    ys.forEach(y=>{
+      ctx.beginPath();
+      ctx.moveTo(xs[0],y);
+      ctx.lineTo(xs[xs.length-1],y);
+      ctx.stroke();
+    });
+    xs.forEach(x=>{
+      ctx.beginPath();
+      ctx.moveTo(x,ys[0]);
+      ctx.lineTo(x,ys[ys.length-1]);
+      ctx.stroke();
+    });
+    ctx.globalAlpha=1;
+  }
+
+  function emptyNodes() {
+    ys.forEach(y=>xs.forEach(x=>{
+      ctx.fillStyle='#07111a';
+      ctx.strokeStyle=muted;
+      ctx.lineWidth=1.3;
+      ctx.beginPath();
+      ctx.arc(x,y,5,0,2*Math.PI);
+      ctx.fill();
+      ctx.stroke();
+    }));
+  }
+
+  function drawPanel(title,lines,color) {
+    ctx.fillStyle='#0b1722';
+    roundRect(ctx,672,62,204,306,10);
+    ctx.fill();
+    ctx.strokeStyle=line;
+    ctx.stroke();
+    ctx.fillStyle=color;
+    ctx.font='12px "IBM Plex Mono"';
+    ctx.fillText(title,690,88);
+    lines.forEach((text,i)=>{
+      ctx.fillStyle=i===0?ink:muted;
+      ctx.font=(i===0?'600 13px "Syne"':'11px "IBM Plex Mono"');
+      const words=text.split(' ');
+      let current='',y=122+i*58;
+      words.forEach(word=>{
+        const test=current+word+' ';
+        if(ctx.measureText(test).width>166&&current){
+          ctx.fillText(current,690,y);
+          current=word+' ';
+          y+=16;
+        } else current=test;
+      });
+      ctx.fillText(current,690,y);
+    });
+  }
+
+  function drawIsing() {
+    baseGrid();
+    spins.forEach((row,r)=>row.forEach((spin,c)=>{
+      ctx.fillStyle=spin>0?cyan:coral;
+      ctx.beginPath();
+      ctx.arc(xs[c],ys[r],16,0,2*Math.PI);
+      ctx.fill();
+      ctx.fillStyle='#061315';
+      ctx.font='600 16px "IBM Plex Mono"';
+      ctx.textAlign='center';
+      ctx.fillText(spin>0?'+':'-',xs[c],ys[r]+5);
+    }));
+    ctx.textAlign='left';
+    ctx.strokeStyle=gold;
+    ctx.lineWidth=7;
+    ctx.beginPath();
+    ctx.moveTo(xs[1]+18,ys[1]);
+    ctx.lineTo(xs[2]-18,ys[1]);
+    ctx.stroke();
+    ctx.fillStyle=gold;
+    ctx.font='11px "IBM Plex Mono"';
+    ctx.textAlign='center';
+    ctx.fillText('one bond: -J s_x s_y',(xs[1]+xs[2])/2,ys[1]-25);
+    ctx.textAlign='left';
+    drawPanel('ISING MODEL',[
+      'Sampled: site spins s_x',
+      'Fixed: coupling J',
+      'Local energy: one bond',
+      'Object: two neighboring signs'
+    ],cyan);
+  }
+
+  function drawZ2() {
+    baseGrid();
+    emptyNodes();
+    let defects=0;
+    for(let r=0;r<ys.length-1;r++){
+      for(let c=0;c<xs.length-1;c++){
+        const p=plaquetteValue(r,c);
+        if(p<0) defects++;
+        if(p<0){
+          ctx.fillStyle='rgba(255,124,114,.16)';
+          ctx.fillRect(xs[c],ys[r],xs[c+1]-xs[c],ys[r+1]-ys[r]);
+          ctx.strokeStyle=coral;
+          ctx.lineWidth=3;
+          ctx.strokeRect(xs[c]+2,ys[r]+2,xs[c+1]-xs[c]-4,ys[r+1]-ys[r]-4);
+          ctx.fillStyle=coral;
+          ctx.font='600 12px "IBM Plex Mono"';
+          ctx.textAlign='center';
+          ctx.fillText('P = -1',(xs[c]+xs[c+1])/2,(ys[r]+ys[r+1])/2+4);
+        }
+      }
+    }
+    ctx.font='10px "IBM Plex Mono"';
+    ctx.textAlign='center';
+    for(let r=0;r<ys.length;r++){
+      for(let c=0;c<xs.length-1;c++){
+        const sign=horizontalEdges[r][c],mx=(xs[c]+xs[c+1])/2;
+        ctx.fillStyle=sign>0?cyan:coral;
+        ctx.fillText(sign>0?'+1':'-1',mx,ys[r]-7);
+      }
+    }
+    for(let c=0;c<xs.length;c++){
+      for(let r=0;r<ys.length-1;r++){
+        const sign=verticalEdges[r][c],my=(ys[r]+ys[r+1])/2;
+        ctx.fillStyle=sign>0?cyan:coral;
+        ctx.fillText(sign>0?'+1':'-1',xs[c]+18,my+4);
+      }
+    }
+    if(!defectInserted){
+      const c=1,r=1,x1=xs[c],x2=xs[c+1],y1=ys[r],y2=ys[r+1];
+      ctx.strokeStyle=gold;
+      ctx.lineWidth=4;
+      ctx.strokeRect(x1+2,y1+2,x2-x1-4,y2-y1-4);
+      ctx.fillStyle=gold;
+      ctx.font='11px "IBM Plex Mono"';
+      ctx.fillText('P = +1',x1+49,y1+53);
+    } else {
+      ctx.strokeStyle=coral;
+      ctx.lineWidth=6;
+      ctx.beginPath();
+      ctx.moveTo(xs[1]+5,ys[1]);
+      ctx.lineTo(xs[2]-5,ys[1]);
+      ctx.stroke();
+    }
+    ctx.textAlign='left';
+    drawPanel('Z2 GAUGE THEORY',[
+      defects===0?'Irregular links, zero defects':'One flipped link, two defects',
+      'Fixed: coupling beta',
+      'Physical value: plaquette product',
+      defects===0?'Every P_p = +1':'Two adjacent P_p = -1'
+    ],gold);
+    const total=(ys.length-1)*(xs.length-1);
+    goodReadout.textContent=(total-defects)+' / '+total;
+    defectReadout.textContent=String(defects);
+  }
+
+  function drawSUN(addMatter) {
+    ctx.strokeStyle=line;
+    ctx.lineWidth=1;
+    ys.forEach(y=>{
+      for(let c=0;c<xs.length-1;c++){
+        lineArrow(ctx,xs[c]+8,y,xs[c+1]-8,y,cyan,1.5);
+      }
+    });
+    xs.forEach(x=>{
+      for(let r=0;r<ys.length-1;r++){
+        lineArrow(ctx,x,ys[r]+8,x,ys[r+1]-8,violet,1.5);
+      }
+    });
+    emptyNodes();
+    const c=1,r=1,x1=xs[c],x2=xs[c+1],y1=ys[r],y2=ys[r+1];
+    lineArrow(ctx,x1+10,y1,x2-10,y1,gold,5);
+    lineArrow(ctx,x2,y1+10,x2,y2-10,gold,5);
+    lineArrow(ctx,x2-10,y2,x1+10,y2,gold,5);
+    lineArrow(ctx,x1,y2-10,x1,y1+10,gold,5);
+    ctx.fillStyle='#07111a';
+    ctx.font='11px "IBM Plex Mono"';
+    ctx.textAlign='center';
+    [['U1',(x1+x2)/2,y1-13],['U2',x2+19,(y1+y2)/2],
+      ['U3*',(x1+x2)/2,y2+21],['U4*',x1-23,(y1+y2)/2]].forEach(item=>{
+      ctx.fillStyle=gold;
+      ctx.fillText(item[0],item[1],item[2]);
+    });
+    if(addMatter){
+      ys.forEach((y,ri)=>xs.forEach((x,ci)=>{
+        const angle=.35+(ri*xs.length+ci)*.43;
+        lineArrow(ctx,x,y,x+18*Math.cos(angle),y-18*Math.sin(angle),green,2);
+      }));
+      ctx.fillStyle=green;
+      ctx.font='11px "IBM Plex Mono"';
+      ctx.fillText('psi(x)',xs[3]+22,ys[1]-22);
+    }
+    ctx.textAlign='left';
+    drawPanel(addMatter?'GAUGE + MATTER':'PURE SU(N) GAUGE',addMatter?[
+      'Sampled: U_l and psi(x)',
+      'Fixed: beta and matter couplings',
+      'Terms: plaquettes plus hopping',
+      'Node vectors are now dynamical'
+    ]:[
+      'Sampled: edge matrices U_l',
+      'Fixed: coupling beta',
+      'Local action: traced square',
+      'No sampled node vectors'
+    ],addMatter?green:violet);
+  }
+
+  function draw() {
+    ctx.clearRect(0,0,canvas._w,canvas._h);
+    ctx.fillStyle=muted;
+    ctx.font='11px "IBM Plex Mono"';
+    ctx.fillText('same lattice, different placement and type of dynamical variable',24,25);
+    if(stage===0) drawIsing();
+    else if(stage===1) drawZ2();
+    else drawSUN(stage===3);
+    z2Controls.hidden=stage!==1;
+    chips.forEach((chip,i)=>chip.classList.toggle('active',i===stage));
+    caption.textContent=stages[stage].caption;
+    back.disabled=stage===0;
+    if(stages[stage].next){
+      next.style.visibility='visible';
+      next.textContent=stages[stage].next;
+    } else next.style.visibility='hidden';
+  }
+  back.addEventListener('click',()=>{if(stage>0){stage--;draw();}});
+  next.addEventListener('click',()=>{if(stage<stages.length-1){stage++;draw();}});
+  randomGaugeBtn.addEventListener('click',()=>{buildGroundState(true);draw();});
+  flipLinkBtn.addEventListener('click',()=>{
+    horizontalEdges[1][1]*=-1;
+    defectInserted=!defectInserted;
+    flipLinkBtn.textContent=defectInserted?'Remove flipped link':'Flip one link';
+    draw();
+  });
+  buildGroundState(false);
+  draw();
+})();
+
+(function widget1() {
+  const canvas = document.getElementById('w1-canvas');
+  const ctx = setupCanvas(canvas, 900, 525);
+  const angle = document.getElementById('w1-angle');
+  const polar = document.getElementById('w1-polar');
+  const az = document.getElementById('w1-az');
+  const rotateBtn = document.getElementById('w1-rotate');
+  const cyan = cssColor('--cyan');
+  const gold = cssColor('--gold');
+  const violet = cssColor('--violet');
+  const green = cssColor('--green');
+  const muted = cssColor('--muted');
+  const line = cssColor('--line');
+  let playing = false;
+  let raf = null;
+  let previousTime = 0;
+
+  function projection(v, cx, cy, radius) {
+    return [
+      cx + radius * (.74*v[0] - .38*v[2]),
+      cy - radius * (.74*v[1] + .28*v[2])
+    ];
+  }
+
+  function drawMainAxes(cx, cy, radius) {
+    const axes = [
+      {v:[1,0,0], label:'a1', color:cyan},
+      {v:[0,1,0], label:'a2', color:gold},
+      {v:[0,0,1], label:'a3', color:violet}
+    ];
+    axes.forEach(axis => {
+      const neg = projection(axis.v.map(x => -x), cx, cy, radius);
+      const pos = projection(axis.v, cx, cy, radius);
+      ctx.strokeStyle = axis.color;
+      ctx.globalAlpha = .42;
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(neg[0],neg[1]);
+      ctx.lineTo(pos[0],pos[1]);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+      lineArrow(ctx,cx,cy,pos[0],pos[1],axis.color,1.8);
+      ctx.fillStyle = axis.color;
+      ctx.font = '11px "IBM Plex Mono"';
+      ctx.fillText(axis.label,pos[0]+5,pos[1]-5);
+    });
+  }
+
+  function drawPlane(cx, cy, radius, q, ia, ib, label, colorA, colorB, orbitRadius) {
+    ctx.fillStyle = '#0b1722';
+    roundRect(ctx,cx-radius-24,cy-radius-29,2*radius+48,2*radius+54,9);
+    ctx.fill();
+    ctx.strokeStyle = line;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    ctx.strokeStyle = line;
+    ctx.beginPath();
+    ctx.arc(cx,cy,radius,0,2*Math.PI);
+    ctx.stroke();
+    ctx.strokeStyle = colorA;
+    ctx.globalAlpha = .45;
+    ctx.beginPath();
+    ctx.moveTo(cx-radius-8,cy);
+    ctx.lineTo(cx+radius+8,cy);
+    ctx.stroke();
+    ctx.strokeStyle = colorB;
+    ctx.beginPath();
+    ctx.moveTo(cx,cy+radius+8);
+    ctx.lineTo(cx,cy-radius-8);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+
+    if (orbitRadius !== null) {
+      ctx.strokeStyle = cyan;
+      ctx.globalAlpha = .7;
+      ctx.setLineDash([5,4]);
+      ctx.beginPath();
+      ctx.arc(cx,cy,radius*orbitRadius,0,2*Math.PI);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.globalAlpha = 1;
+    }
+
+    const px = cx + radius*q[ia];
+    const py = cy - radius*q[ib];
+    ctx.strokeStyle = muted;
+    ctx.setLineDash([3,4]);
+    ctx.beginPath();
+    ctx.moveTo(px,cy);
+    ctx.lineTo(px,py);
+    ctx.lineTo(cx,py);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = cyan;
+    ctx.beginPath();
+    ctx.arc(px,py,6.5,0,2*Math.PI);
+    ctx.fill();
+
+    ctx.fillStyle = muted;
+    ctx.font = '10px "IBM Plex Mono"';
+    ctx.textAlign = 'center';
+    ctx.fillText(label,cx,cy-radius-12);
+    ctx.fillStyle = colorA;
+    ctx.fillText('a'+ia,cx+radius+14,cy+4);
+    ctx.fillStyle = colorB;
+    ctx.fillText('a'+ib,cx+4,cy-radius-2);
+    ctx.fillStyle = muted;
+    ctx.fillText('('+q[ia].toFixed(2)+', '+q[ib].toFixed(2)+')',cx,cy+radius+17);
+    ctx.textAlign = 'left';
+  }
+
+  function draw() {
+    const a = +angle.value, th = +polar.value, ph = +az.value;
+    const n = [Math.sin(th)*Math.cos(ph), Math.sin(th)*Math.sin(ph), Math.cos(th)];
+    const q = [Math.cos(a), Math.sin(a)*n[0], Math.sin(a)*n[1], Math.sin(a)*n[2]];
+    ctx.clearRect(0,0,canvas._w,canvas._h);
+
+    const cx=205, cy=154, R=128;
+    ctx.strokeStyle=line;
+    ctx.lineWidth=1;
+    ctx.beginPath();
+    ctx.arc(cx,cy,R,0,2*Math.PI);
+    ctx.stroke();
+    ctx.beginPath();
+    for (let i=0;i<=120;i++) {
+      const phi=2*Math.PI*i/120;
+      const p=projection([Math.cos(phi),Math.sin(phi),0],cx,cy,R);
+      i ? ctx.lineTo(p[0],p[1]) : ctx.moveTo(p[0],p[1]);
+    }
+    ctx.stroke();
+    drawMainAxes(cx,cy,R);
+    ctx.fillStyle=muted; ctx.font='12px "IBM Plex Mono"';
+    ctx.fillText('imaginary quaternion vector',104,24);
+
+    const orbit=Math.hypot(q[1],q[2]);
+    ctx.strokeStyle=cyan;
+    ctx.globalAlpha=.55;
+    ctx.setLineDash([5,4]);
+    ctx.beginPath();
+    for(let i=0;i<=120;i++) {
+      const phi=2*Math.PI*i/120;
+      const p=projection([orbit*Math.cos(phi),orbit*Math.sin(phi),q[3]],cx,cy,R);
+      i ? ctx.lineTo(p[0],p[1]) : ctx.moveTo(p[0],p[1]);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.globalAlpha=1;
+
+    const point=projection([q[1],q[2],q[3]],cx,cy,R);
+    const floorPoint=projection([q[1],q[2],0],cx,cy,R);
+    const px=point[0], py=point[1];
+    ctx.strokeStyle=muted;
+    ctx.setLineDash([3,4]);
+    ctx.beginPath();
+    ctx.moveTo(px,py);
+    ctx.lineTo(floorPoint[0],floorPoint[1]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.strokeStyle=violet; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(px,py); ctx.stroke();
+    const radius=8+7*(q[0]+1)/2;
+    const grad=ctx.createRadialGradient(px-3,py-3,2,px,py,radius);
+    grad.addColorStop(0,'#ffffff'); grad.addColorStop(1,cyan);
+    ctx.fillStyle=grad; ctx.beginPath(); ctx.arc(px,py,radius,0,2*Math.PI); ctx.fill();
+    ctx.fillStyle=gold; ctx.font='12px "IBM Plex Mono"';
+    ctx.fillText('a0 = '+q[0].toFixed(3),px+14,py-10);
+
+    ctx.fillStyle='#0b1722'; roundRect(ctx,395,34,470,246,12); ctx.fill();
+    ctx.strokeStyle=line; ctx.stroke();
+    ctx.fillStyle=muted; ctx.font='12px "IBM Plex Mono"';
+    ctx.fillText('U = a0 I + i a.sigma',425,66);
+    ctx.fillStyle=cyan; ctx.font='16px "IBM Plex Mono"';
+    const rows = [
+      '['+(q[0]>=0?' ':'')+q[0].toFixed(3)+(q[3]>=0?'+':'')+q[3].toFixed(3)+'i,  '+q[2].toFixed(3)+(q[1]>=0?'+':'')+q[1].toFixed(3)+'i ]',
+      '['+(-q[2]).toFixed(3)+(q[1]>=0?'+':'')+q[1].toFixed(3)+'i,  '+q[0].toFixed(3)+(q[3]>=0?'-':'+')+Math.abs(q[3]).toFixed(3)+'i ]'
+    ];
+    ctx.fillText(rows[0],425,110);
+    ctx.fillText(rows[1],425,143);
+    ctx.fillStyle=muted; ctx.font='12px "IBM Plex Mono"';
+    ctx.fillText('quaternion coordinates',425,187);
+    ctx.fillStyle=gold; ctx.font='15px "IBM Plex Mono"';
+    ctx.fillText('('+q.map(x=>x.toFixed(3)).join(', ')+')',425,216);
+    ctx.fillStyle=muted; ctx.font='12px "IBM Plex Mono"';
+    ctx.fillText('3 free parameters, 4 coordinates, 1 constraint',425,251);
+
+    const planeY=412, planeR=68;
+    drawPlane(155,planeY,planeR,q,1,2,'a1-a2 plane',cyan,gold,orbit);
+    drawPlane(450,planeY,planeR,q,1,3,'a1-a3 plane',cyan,violet,null);
+    drawPlane(745,planeY,planeR,q,2,3,'a2-a3 plane',gold,violet,null);
+
+    const nrm=q.reduce((s,x)=>s+x*x,0);
+    document.getElementById('w1-angle-v').textContent=a.toFixed(2);
+    document.getElementById('w1-polar-v').textContent=th.toFixed(2);
+    document.getElementById('w1-az-v').textContent=ph.toFixed(2);
+    document.getElementById('w1-unitarity').textContent=Math.abs(1-nrm).toExponential(2);
+    document.getElementById('w1-det').textContent=nrm.toFixed(3)+' + 0.000i';
+    document.getElementById('w1-norm').textContent=Math.sqrt(nrm).toFixed(6);
+  }
+
+  function stopRotation() {
+    playing=false;
+    rotateBtn.textContent='Rotate azimuth';
+    if (raf !== null) cancelAnimationFrame(raf);
+    raf=null;
+    previousTime=0;
+  }
+  function frame(time) {
+    if (!playing) return;
+    if (previousTime) {
+      az.value=((+az.value+(time-previousTime)*.00075)%(2*Math.PI)).toFixed(4);
+      draw();
+    }
+    previousTime=time;
+    raf=requestAnimationFrame(frame);
+  }
+  rotateBtn.addEventListener('click',()=>{
+    if (playing) {
+      stopRotation();
+    } else {
+      playing=true;
+      rotateBtn.textContent='Pause rotation';
+      raf=requestAnimationFrame(frame);
+    }
+  });
+  angle.addEventListener('input',draw);
+  polar.addEventListener('input',draw);
+  az.addEventListener('input',()=>{stopRotation();draw();});
+  draw();
+})();
+
+(function widget2a() {
+  const canvas=document.getElementById('w2a-canvas');
+  const ctx=setupCanvas(canvas,900,430);
+  const cyan=cssColor('--cyan'), gold=cssColor('--gold'), violet=cssColor('--violet');
+  const green=cssColor('--green'), coral=cssColor('--coral');
+  const muted=cssColor('--muted'), line=cssColor('--line'), ink=cssColor('--ink');
+  const back=document.getElementById('w2a-back');
+  const next=document.getElementById('w2a-next');
+  const caption=document.getElementById('w2a-caption');
+  const chips=[...document.querySelectorAll('#w2a-equations .equation-chip')];
+  const stages=[
+    {
+      next:'Choose a direction hat(mu) ->',
+      caption:'Pick one lattice site and call it x.'
+    },
+    {
+      next:'Place the link matrix U_mu(x) ->',
+      caption:'hat(mu) is a unit lattice step. Following it reaches the neighboring site x + hat(mu).'
+    },
+    {
+      next:'Transport a color vector ->',
+      caption:'The oriented edge carries U_mu(x), an SU(N) translation dictionary relating the endpoint coordinate conventions.'
+    },
+    {
+      next:'Change both local bases ->',
+      caption:'Multiplying U_mu(x) by the neighbor vector expresses that vector in the basis at x.'
+    },
+    {
+      next:null,
+      caption:'Omega(x) and Omega(x + hat(mu)) rotate the endpoint bases; the link changes on both sides to compensate.'
+    }
+  ];
+  let stage=0;
+  const xSite={x:397,y:270};
+  const neighbor={x:539,y:270};
+
+  function drawGrid() {
+    ctx.strokeStyle=line;
+    ctx.lineWidth=1;
+    ctx.globalAlpha=.55;
+    for(let row=0;row<4;row++){
+      const y=78+96*row;
+      ctx.beginPath();
+      ctx.moveTo(105,y);
+      ctx.lineTo(815,y);
+      ctx.stroke();
+    }
+    for(let col=0;col<6;col++){
+      const x=113+142*col;
+      ctx.beginPath();
+      ctx.moveTo(x,56);
+      ctx.lineTo(x,390);
+      ctx.stroke();
+    }
+    ctx.globalAlpha=1;
+    for(let row=0;row<4;row++){
+      for(let col=0;col<6;col++){
+        const x=113+142*col,y=78+96*row;
+        ctx.fillStyle='#07111a';
+        ctx.strokeStyle=muted;
+        ctx.lineWidth=1.2;
+        ctx.beginPath();
+        ctx.arc(x,y,5,0,2*Math.PI);
+        ctx.fill();
+        ctx.stroke();
+      }
+    }
+    ctx.fillStyle=muted;
+    ctx.font='11px "IBM Plex Mono"';
+    ctx.fillText('2D spacetime lattice',26,25);
+    lineArrow(ctx,48,370,93,370,cyan,1.6);
+    lineArrow(ctx,48,370,48,325,gold,1.6);
+    ctx.fillStyle=cyan;
+    ctx.fillText('hat(1)',98,374);
+    ctx.fillStyle=gold;
+    ctx.fillText('hat(2)',25,317);
+  }
+
+  function drawSite(point,label,color) {
+    ctx.fillStyle='#07111a';
+    ctx.strokeStyle=color;
+    ctx.lineWidth=3;
+    ctx.beginPath();
+    ctx.arc(point.x,point.y,13,0,2*Math.PI);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle=color;
+    ctx.font='13px "IBM Plex Mono"';
+    ctx.textAlign='center';
+    ctx.fillText(label,point.x,point.y+34);
+    ctx.textAlign='left';
+  }
+
+  function drawBasis(point,angle,color,label) {
+    const r=34;
+    ctx.save();
+    ctx.translate(point.x,point.y);
+    ctx.rotate(-angle);
+    lineArrow(ctx,-r,0,r,0,color,1.5);
+    lineArrow(ctx,0,r,0,-r,gold,1.5);
+    ctx.restore();
+    ctx.fillStyle=color;
+    ctx.font='11px "IBM Plex Mono"';
+    ctx.textAlign='center';
+    ctx.fillText(label,point.x,point.y-48);
+    ctx.textAlign='left';
+  }
+
+  function drawColorVector(point,angle,color,label) {
+    const end={x:point.x+42*Math.cos(angle),y:point.y-42*Math.sin(angle)};
+    lineArrow(ctx,point.x,point.y,end.x,end.y,color,3);
+    ctx.fillStyle=color;
+    ctx.font='11px "IBM Plex Mono"';
+    ctx.textAlign='center';
+    ctx.fillText(label,end.x,end.y-9);
+    ctx.textAlign='left';
+  }
+
+  function draw() {
+    ctx.clearRect(0,0,canvas._w,canvas._h);
+    drawGrid();
+    drawSite(xSite,'x',cyan);
+
+    if(stage>=1){
+      drawSite(neighbor,'x + hat(mu)',gold);
+      lineArrow(ctx,xSite.x+19,xSite.y-35,neighbor.x-19,neighbor.y-35,violet,2);
+      ctx.fillStyle=violet;
+      ctx.font='12px "IBM Plex Mono"';
+      ctx.textAlign='center';
+      ctx.fillText('hat(mu)',(xSite.x+neighbor.x)/2,xSite.y-47);
+      ctx.textAlign='left';
+    }
+
+    if(stage>=2){
+      lineArrow(ctx,xSite.x+18,xSite.y,neighbor.x-18,neighbor.y,cyan,5);
+      ctx.fillStyle='#07111a';
+      roundRect(ctx,422,281,94,29,6);
+      ctx.fill();
+      ctx.fillStyle=cyan;
+      ctx.font='12px "IBM Plex Mono"';
+      ctx.textAlign='center';
+      ctx.fillText('U_mu(x)',469,300);
+      ctx.textAlign='left';
+    }
+
+    if(stage>=3){
+      drawBasis(xSite,0,muted,'coordinates at x');
+      drawBasis(neighbor,0,muted,'neighbor coordinates');
+      drawColorVector(neighbor,.9,gold,'psi(x+mu)');
+      drawColorVector(xSite,.52,green,'U_mu psi');
+      ctx.strokeStyle=green;
+      ctx.setLineDash([4,4]);
+      ctx.lineWidth=1.5;
+      ctx.beginPath();
+      ctx.moveTo(neighbor.x-10,neighbor.y+55);
+      ctx.bezierCurveTo(501,365,433,365,xSite.x+10,xSite.y+55);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle=green;
+      ctx.font='11px "IBM Plex Mono"';
+      ctx.textAlign='center';
+      ctx.fillText('same abstract color state, expressed at x',468,370);
+      ctx.textAlign='left';
+    }
+
+    if(stage>=4){
+      ctx.fillStyle='rgba(7,17,26,.78)';
+      ctx.fillRect(341,202,255,138);
+      drawBasis(xSite,.55,violet,'Omega(x)');
+      drawBasis(neighbor,-.38,coral,'Omega(x+mu)');
+      lineArrow(ctx,xSite.x+18,xSite.y,neighbor.x-18,neighbor.y,cyan,5);
+      ctx.fillStyle='#07111a';
+      roundRect(ctx,409,283,119,29,6);
+      ctx.fill();
+      ctx.fillStyle=cyan;
+      ctx.font='11px "IBM Plex Mono"';
+      ctx.textAlign='center';
+      ctx.fillText("U'_mu(x)",469,302);
+      ctx.textAlign='left';
+
+      ctx.fillStyle='#0b1722';
+      roundRect(ctx,590,102,276,184,10);
+      ctx.fill();
+      ctx.strokeStyle=line;
+      ctx.stroke();
+      ctx.fillStyle=muted;
+      ctx.font='11px "IBM Plex Mono"';
+      ctx.fillText('same link, new endpoint coordinates',608,128);
+      ctx.fillStyle=violet;
+      ctx.font='13px "IBM Plex Mono"';
+      ctx.fillText("U'_mu(x) =",608,164);
+      ctx.fillStyle=cyan;
+      ctx.fillText('Omega(x) U_mu(x)',608,195);
+      ctx.fillStyle=coral;
+      ctx.fillText('Omega*(x + hat(mu))',608,226);
+      ctx.fillStyle=muted;
+      ctx.font='10px "IBM Plex Mono"';
+      ctx.fillText('* here means dagger / inverse',608,260);
+    }
+
+    chips.forEach((chip,i)=>chip.classList.toggle('active',i===stage));
+    caption.textContent=stages[stage].caption;
+    back.disabled=stage===0;
+    if(stages[stage].next){
+      next.style.visibility='visible';
+      next.textContent=stages[stage].next;
+    } else {
+      next.style.visibility='hidden';
+    }
+  }
+
+  back.addEventListener('click',()=>{if(stage>0){stage--;draw();}});
+  next.addEventListener('click',()=>{if(stage<stages.length-1){stage++;draw();}});
+  draw();
+})();
+
+(function widget2() {
+  const canvas=document.getElementById('w2-canvas');
+  const ctx=setupCanvas(canvas,900,350);
+  const cyan=cssColor('--cyan'), gold=cssColor('--gold'), violet=cssColor('--violet');
+  const muted=cssColor('--muted'), line=cssColor('--line'), ink=cssColor('--ink');
+  const original=[
+    normQ([.86,.25,-.31,.29]), normQ([.71,-.44,.18,.51]),
+    normQ([.79,.12,.47,-.36]), normQ([.67,-.33,-.51,.44])
+  ];
+  let links=original.map(q=>q.slice());
+  const baseline=plaquette(links)[0];
+
+  function plaquette(L) {
+    return mulQ(mulQ(mulQ(L[0],L[1]),invQ(L[2])),invQ(L[3]));
+  }
+  function gaugeTransform() {
+    const g=[randomHaarQ(),randomHaarQ(),randomHaarQ(),randomHaarQ()];
+    links=[
+      mulQ(mulQ(g[0],links[0]),invQ(g[1])),
+      mulQ(mulQ(g[1],links[1]),invQ(g[2])),
+      mulQ(mulQ(g[3],links[2]),invQ(g[2])),
+      mulQ(mulQ(g[0],links[3]),invQ(g[3]))
+    ].map(normQ);
+    render(true);
+  }
+  function render(transformed) {
+    ctx.clearRect(0,0,canvas._w,canvas._h);
+    const pts=[[180,270],[520,270],[520,65],[180,65]];
+    ctx.strokeStyle=line; ctx.lineWidth=1;
+    for(let x=40;x<860;x+=40){ctx.beginPath();ctx.moveTo(x,20);ctx.lineTo(x,330);ctx.stroke();}
+    for(let y=25;y<330;y+=40){ctx.beginPath();ctx.moveTo(30,y);ctx.lineTo(870,y);ctx.stroke();}
+    const paths=[[pts[0],pts[1]],[pts[1],pts[2]],[pts[3],pts[2]],[pts[0],pts[3]]];
+    const cols=[cyan,gold,violet,'#7dde9d'];
+    paths.forEach((p,i)=>lineArrow(ctx,p[0][0],p[0][1],p[1][0],p[1][1],cols[i],5));
+    pts.forEach((p,i)=>{
+      ctx.fillStyle='#07111a';ctx.strokeStyle=ink;ctx.lineWidth=2;
+      ctx.beginPath();ctx.arc(p[0],p[1],18,0,2*Math.PI);ctx.fill();ctx.stroke();
+      ctx.fillStyle=ink;ctx.font='13px "IBM Plex Mono"';ctx.textAlign='center';
+      ctx.fillText('x'+i,p[0],p[1]+5);
+    });
+    ctx.textAlign='left';
+    links.forEach((q,i)=>{
+      const p=paths[i], mx=(p[0][0]+p[1][0])/2, my=(p[0][1]+p[1][1])/2;
+      ctx.fillStyle='#07111a'; roundRect(ctx,mx-64,my-18,128,36,6);ctx.fill();
+      ctx.fillStyle=cols[i];ctx.font='11px "IBM Plex Mono"';ctx.textAlign='center';
+      ctx.fillText('U'+i+'  a0='+q[0].toFixed(3),mx,my+4);
+    });
+    ctx.textAlign='left';
+    const P=plaquette(links);
+    ctx.fillStyle='#07111a';roundRect(ctx,610,95,235,150,10);ctx.fill();
+    ctx.strokeStyle=line;ctx.stroke();
+    ctx.fillStyle=muted;ctx.font='12px "IBM Plex Mono"';
+    ctx.fillText('closed-loop product',632,126);
+    ctx.fillStyle=cyan;ctx.font='17px "IBM Plex Mono"';
+    ctx.fillText('P = U0 U1 U2* U3*',632,161);
+    ctx.fillStyle=gold;ctx.font='15px "IBM Plex Mono"';
+    ctx.fillText('Re Tr(P)/2 = '+P[0].toFixed(6),632,202);
+    ctx.fillStyle=muted;ctx.font='11px "IBM Plex Mono"';
+    ctx.fillText(transformed?'new local bases, same trace':'original local color bases',632,229);
+    const diff=Math.abs(P[0]-baseline);
+    document.getElementById('w2-before').textContent=baseline.toFixed(6);
+    document.getElementById('w2-after').textContent=P[0].toFixed(6);
+    document.getElementById('w2-diff').textContent=diff.toExponential(2);
+    document.getElementById('w2-caption').textContent=transformed
+      ? 'Every link matrix changed, often dramatically. The closed-loop trace stayed fixed to floating-point precision.'
+      : 'The four link descriptions are basis-dependent. Multiply around the closed loop and every intermediate basis rotation cancels.';
+  }
+  document.getElementById('w2-transform').addEventListener('click',gaugeTransform);
+  document.getElementById('w2-reset').addEventListener('click',()=>{links=original.map(q=>q.slice());render(false);});
+  render(false);
+})();
+
+(function widget2c() {
+  const canvas=document.getElementById('w2c-canvas');
+  const ctx=setupCanvas(canvas,900,410);
+  const cyan=cssColor('--cyan'), gold=cssColor('--gold'), violet=cssColor('--violet');
+  const green=cssColor('--green'), muted=cssColor('--muted');
+  const line=cssColor('--line'), ink=cssColor('--ink');
+  const back=document.getElementById('w2c-back');
+  const next=document.getElementById('w2c-next');
+  const caption=document.getElementById('w2c-caption');
+  const chips=[...document.querySelectorAll('#w2c-equations .equation-chip')];
+  const gridX=[70,250,430,610],gridY=[55,185,315];
+  const points={
+    x:{x:250,y:315},
+    xmu:{x:430,y:315},
+    xmunu:{x:430,y:185},
+    xnu:{x:250,y:185}
+  };
+  const stages=[
+    {
+      next:'Add the +nu edge ->',
+      caption:'Start at x and follow the stored +mu link to x + hat(mu).',
+      title:'FIRST FACTOR',
+      lines:['U_mu(x)','stored at x','loop follows +mu','no dagger needed']
+    },
+    {
+      next:'Return along -mu ->',
+      caption:'From x + hat(mu), follow the stored +nu link to the opposite corner.',
+      title:'SECOND FACTOR',
+      lines:['U_nu(x + hat(mu))','stored at x + hat(mu)','loop follows +nu','no dagger needed']
+    },
+    {
+      next:'Close along -nu ->',
+      caption:'The top link is stored toward +mu, but the loop moves along -mu, so use its inverse U_mu dagger.',
+      title:'THIRD FACTOR',
+      lines:['U_mu dagger(x + hat(nu))','stored toward +mu','loop moves -mu','inverse / dagger required']
+    },
+    {
+      next:null,
+      caption:'The left link is stored toward +nu, but the loop closes along -nu, giving the final daggered factor.',
+      title:'FOURTH FACTOR',
+      lines:['U_nu dagger(x)','stored toward +nu','loop moves -nu','inverse / dagger required']
+    }
+  ];
+  let stage=0;
+
+  function drawStoredGrid() {
+    ctx.strokeStyle=line;
+    ctx.globalAlpha=.52;
+    ctx.lineWidth=1;
+    gridY.forEach(y=>{
+      for(let c=0;c<gridX.length-1;c++){
+        lineArrow(ctx,gridX[c]+8,y,gridX[c+1]-8,y,muted,1);
+      }
+    });
+    gridX.forEach(x=>{
+      for(let r=1;r<gridY.length;r++){
+        lineArrow(ctx,x,gridY[r]-8,x,gridY[r-1]+8,muted,1);
+      }
+    });
+    ctx.globalAlpha=1;
+    gridY.forEach(y=>gridX.forEach(x=>{
+      ctx.fillStyle='#07111a';
+      ctx.strokeStyle=muted;
+      ctx.lineWidth=1.2;
+      ctx.beginPath();
+      ctx.arc(x,y,5,0,2*Math.PI);
+      ctx.fill();
+      ctx.stroke();
+    }));
+    ctx.fillStyle=muted;
+    ctx.font='11px "IBM Plex Mono"';
+    ctx.fillText('stored link orientation: right = +mu, up = +nu',31,25);
+  }
+
+  function labelNode(point,text,dx,dy) {
+    ctx.fillStyle=ink;
+    ctx.font='11px "IBM Plex Mono"';
+    ctx.textAlign='center';
+    ctx.fillText(text,point.x+dx,point.y+dy);
+    ctx.textAlign='left';
+  }
+
+  function labelEdge(text,x,y,color,rotation) {
+    ctx.save();
+    ctx.translate(x,y);
+    ctx.rotate(rotation||0);
+    ctx.font='11px "IBM Plex Mono"';
+    ctx.fillStyle='#07111a';
+    const width=Math.max(106,ctx.measureText(text).width+18);
+    ctx.fillRect(-width/2,-12,width,24);
+    ctx.strokeStyle=color;
+    ctx.lineWidth=1;
+    ctx.strokeRect(-width/2,-12,width,24);
+    ctx.fillStyle=color;
+    ctx.textAlign='center';
+    ctx.fillText(text,0,4);
+    ctx.restore();
+    ctx.textAlign='left';
+  }
+
+  function drawFactors() {
+    if(stage>=0){
+      lineArrow(ctx,points.x.x+9,points.x.y,points.xmu.x-9,points.xmu.y,cyan,5);
+      labelEdge('U_mu(x)',340,347,cyan,0);
+    }
+    if(stage>=1){
+      lineArrow(ctx,points.xmu.x,points.xmu.y-9,points.xmunu.x,points.xmunu.y+9,gold,5);
+      labelEdge('U_nu(x+mu)',478,250,gold,-Math.PI/2);
+    }
+    if(stage>=2){
+      lineArrow(ctx,points.xmunu.x-9,points.xmunu.y,points.xnu.x+9,points.xnu.y,violet,5);
+      labelEdge('U_mu dagger(x+nu)',340,153,violet,0);
+    }
+    if(stage>=3){
+      lineArrow(ctx,points.xnu.x,points.xnu.y+9,points.x.x,points.x.y-9,green,5);
+      labelEdge('U_nu dagger(x)',202,250,green,-Math.PI/2);
+    }
+  }
+
+  function drawPanel() {
+    const current=stages[stage];
+    ctx.fillStyle='#0b1722';
+    roundRect(ctx,647,55,225,270,10);
+    ctx.fill();
+    ctx.strokeStyle=line;
+    ctx.stroke();
+    ctx.fillStyle=[cyan,gold,violet,green][stage];
+    ctx.font='11px "IBM Plex Mono"';
+    ctx.fillText(current.title,668,82);
+    current.lines.forEach((text,i)=>{
+      ctx.fillStyle=i===0?ink:muted;
+      ctx.font=i===0?'600 13px "Syne"':'11px "IBM Plex Mono"';
+      ctx.fillText(text,668,119+i*39);
+    });
+    if(stage>=2){
+      ctx.fillStyle=muted;
+      ctx.font='10px "IBM Plex Mono"';
+      ctx.fillText('stored',668,293);
+      lineArrow(ctx,715,289,757,289,muted,1.4);
+      ctx.fillText('loop',784,293);
+      lineArrow(ctx,850,289,808,289,[violet,green][stage-2],2);
+    }
+    if(stage===3){
+      ctx.fillStyle=gold;
+      ctx.font='12px "IBM Plex Mono"';
+      ctx.textAlign='center';
+      ctx.fillText('U_p = product of all 4 factors',759,357);
+      ctx.textAlign='left';
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0,0,canvas._w,canvas._h);
+    drawStoredGrid();
+    labelNode(points.x,'x',0,25);
+    labelNode(points.xmu,'x + hat(mu)',0,25);
+    labelNode(points.xmunu,'x + hat(mu) + hat(nu)',0,-18);
+    labelNode(points.xnu,'x + hat(nu)',0,-18);
+    drawFactors();
+    drawPanel();
+    chips.forEach((chip,i)=>chip.classList.toggle('active',i===stage));
+    caption.textContent=stages[stage].caption;
+    back.disabled=stage===0;
+    if(stages[stage].next){
+      next.style.visibility='visible';
+      next.textContent=stages[stage].next;
+    } else next.style.visibility='hidden';
+  }
+
+  back.addEventListener('click',()=>{if(stage>0){stage--;draw();}});
+  next.addEventListener('click',()=>{if(stage<stages.length-1){stage++;draw();}});
+  draw();
+})();
+
+(function widget2b() {
+  const canvas=document.getElementById('w2b-canvas');
+  const ctx=setupCanvas(canvas,900,390);
+  const thetaEl=document.getElementById('w2b-theta');
+  const betaEl=document.getElementById('w2b-beta');
+  const cyan=cssColor('--cyan'), gold=cssColor('--gold'), coral=cssColor('--coral');
+  const green=cssColor('--green'), muted=cssColor('--muted');
+  const line=cssColor('--line'), ink=cssColor('--ink');
+  const cols=4,rows=3,left=38,top=46,cellW=130,cellH=96;
+  const angles=new Array(cols*rows).fill(0);
+  let selected=5;
+  angles[selected]=1.1;
+
+  function localCost(theta,beta) {
+    return beta*(1-Math.cos(theta));
+  }
+
+  function drawLoopArrow(x1,y1,x2,y2,color) {
+    lineArrow(ctx,x1,y1,x2,y2,color,2);
+  }
+
+  function drawPlaquette(c,r,index,beta) {
+    const x=left+c*cellW,y=top+r*cellH,theta=angles[index];
+    const normalized=(1-Math.cos(theta))/2;
+    ctx.fillStyle=`rgba(255,124,114,${.025+.46*normalized})`;
+    ctx.fillRect(x+2,y+2,cellW-4,cellH-4);
+    ctx.strokeStyle=index===selected?cyan:line;
+    ctx.lineWidth=index===selected?3:1;
+    ctx.strokeRect(x+2,y+2,cellW-4,cellH-4);
+
+    const edgeColor=index===selected?gold:muted;
+    drawLoopArrow(x+17,y+15,x+cellW-17,y+15,edgeColor);
+    drawLoopArrow(x+cellW-15,y+17,x+cellW-15,y+cellH-17,edgeColor);
+    drawLoopArrow(x+cellW-17,y+cellH-15,x+17,y+cellH-15,edgeColor);
+    drawLoopArrow(x+15,y+cellH-17,x+15,y+17,edgeColor);
+
+    ctx.textAlign='center';
+    ctx.fillStyle=index===selected?ink:muted;
+    ctx.font='11px "IBM Plex Mono"';
+    ctx.fillText('p'+(index+1),x+cellW/2,y+42);
+    ctx.fillStyle=index===selected?cyan:muted;
+    ctx.fillText('w = '+Math.cos(theta).toFixed(2),x+cellW/2,y+61);
+    ctx.fillStyle=index===selected?gold:muted;
+    ctx.fillText('s = '+localCost(theta,beta).toFixed(2),x+cellW/2,y+78);
+    ctx.textAlign='left';
+  }
+
+  function drawHolonomy(theta,total,beta) {
+    const cx=731,cy=151,R=83;
+    ctx.strokeStyle=line;
+    ctx.lineWidth=1.5;
+    ctx.beginPath();
+    ctx.arc(cx,cy,R,0,2*Math.PI);
+    ctx.stroke();
+    ctx.fillStyle=muted;
+    ctx.font='11px "IBM Plex Mono"';
+    ctx.textAlign='center';
+    ctx.fillText('internal vector after one loop',cx,39);
+
+    lineArrow(ctx,cx,cy,cx+R*.78,cy,cyan,3);
+    lineArrow(ctx,cx,cy,cx+R*.78*Math.cos(theta),cy-R*.78*Math.sin(theta),gold,3);
+    ctx.fillStyle=cyan;
+    ctx.fillText('start v',cx+R*.78+4,cy+17);
+    const endX=cx+R*.78*Math.cos(theta),endY=cy-R*.78*Math.sin(theta);
+    ctx.fillStyle=gold;
+    ctx.fillText('U_p v',endX,endY-11);
+
+    ctx.strokeStyle=coral;
+    ctx.lineWidth=2;
+    ctx.beginPath();
+    const direction=theta>=0?-1:1;
+    ctx.arc(cx,cy,R*.43,0,-theta,theta<0);
+    ctx.stroke();
+    ctx.fillStyle=coral;
+    ctx.fillText('mismatch theta = '+theta.toFixed(2),cx,cy+R+25);
+
+    const bx=603,by=306,bw=258,bh=22;
+    ctx.fillStyle='#0b1722';
+    ctx.fillRect(bx,by,bw,bh);
+    ctx.strokeStyle=line;
+    ctx.strokeRect(bx,by,bw,bh);
+    const maxTotal=2*beta*angles.length;
+    ctx.fillStyle=coral;
+    ctx.fillRect(bx,by,bw*clamp(total/maxTotal,0,1),bh);
+    ctx.fillStyle=muted;
+    ctx.font='11px "IBM Plex Mono"';
+    ctx.textAlign='left';
+    ctx.fillText('sum of all local costs',bx,by-10);
+    ctx.fillStyle=ink;
+    ctx.textAlign='center';
+    ctx.fillText('S_W = '+total.toFixed(3),bx+bw/2,by+15);
+    ctx.textAlign='left';
+  }
+
+  function draw() {
+    const beta=+betaEl.value;
+    const theta=angles[selected];
+    const total=angles.reduce((sum,value)=>sum+localCost(value,beta),0);
+    ctx.clearRect(0,0,canvas._w,canvas._h);
+    ctx.fillStyle=muted;
+    ctx.font='11px "IBM Plex Mono"';
+    ctx.fillText('each square contributes beta [1 - Re Tr(U_p)/2]',38,25);
+    for(let r=0;r<rows;r++){
+      for(let c=0;c<cols;c++) drawPlaquette(c,r,r*cols+c,beta);
+    }
+    drawHolonomy(theta,total,beta);
+    thetaEl.value=theta.toFixed(4);
+    document.getElementById('w2b-theta-v').textContent=theta.toFixed(2);
+    document.getElementById('w2b-beta-v').textContent=beta.toFixed(2);
+    document.getElementById('w2b-trace').textContent=Math.cos(theta).toFixed(4);
+    document.getElementById('w2b-local').textContent=localCost(theta,beta).toFixed(4);
+    document.getElementById('w2b-total').textContent=total.toFixed(4);
+  }
+
+  canvas.addEventListener('click',event=>{
+    const rect=canvas.getBoundingClientRect();
+    const px=(event.clientX-rect.left)*canvas._w/rect.width;
+    const py=(event.clientY-rect.top)*canvas._h/rect.height;
+    const c=Math.floor((px-left)/cellW),r=Math.floor((py-top)/cellH);
+    if(c>=0&&c<cols&&r>=0&&r<rows){
+      selected=r*cols+c;
+      draw();
+    }
+  });
+  thetaEl.addEventListener('input',()=>{
+    angles[selected]=+thetaEl.value;
+    draw();
+  });
+  betaEl.addEventListener('input',draw);
+  document.getElementById('w2b-random').addEventListener('click',()=>{
+    for(let i=0;i<angles.length;i++) angles[i]=(Math.random()*2-1)*1.5;
+    draw();
+  });
+  document.getElementById('w2b-flat').addEventListener('click',()=>{
+    angles.fill(0);
+    draw();
+  });
+  draw();
+})();
+
+(function widget3() {
+  const canvas=document.getElementById('w3-canvas');
+  const ctx=setupCanvas(canvas,900,370);
+  const betaEl=document.getElementById('w3-beta');
+  const cyan=cssColor('--cyan'), gold=cssColor('--gold'), coral=cssColor('--coral');
+  const muted=cssColor('--muted'), line=cssColor('--line'), ink=cssColor('--ink');
+  const bins=new Array(34).fill(0);
+  let total=0, sum=0;
+
+  function density(theta,beta) {
+    const s=Math.sin(theta);
+    return s*s*Math.exp(beta*Math.cos(theta));
+  }
+  function exactMean(beta) {
+    let z=0, m=0;
+    const n=5000, h=Math.PI/n;
+    for(let i=0;i<=n;i++){
+      const th=i*h, w=(i===0||i===n)?1:(i%2?4:2);
+      const d=density(th,beta);
+      z+=w*d; m+=w*d*Math.cos(th);
+    }
+    return m/z;
+  }
+  function sampleOne() {
+    const beta=+betaEl.value;
+    const max=Math.exp(beta);
+    while(true){
+      const th=Math.random()*Math.PI;
+      if(Math.random()*max<=density(th,beta)) return th;
+    }
+  }
+  function addSamples(n) {
+    for(let i=0;i<n;i++){
+      const th=sampleOne(), x=Math.cos(th);
+      const b=clamp(Math.floor(th/Math.PI*bins.length),0,bins.length-1);
+      bins[b]++; total++; sum+=x;
+    }
+    draw();
+  }
+  function reset() { bins.fill(0);total=0;sum=0;draw(); }
+  function draw() {
+    const beta=+betaEl.value, exact=exactMean(beta);
+    ctx.clearRect(0,0,canvas._w,canvas._h);
+    const left=62,right=868,top=30,bottom=314,w=right-left,h=bottom-top;
+    ctx.strokeStyle=line;ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(left,bottom);ctx.lineTo(right,bottom);ctx.stroke();
+    ctx.fillStyle=muted;ctx.font='11px "IBM Plex Mono"';ctx.textAlign='center';
+    ['0','pi/4','pi/2','3pi/4','pi'].forEach((s,i)=>{
+      const x=left+w*i/4;ctx.fillText(s,x,bottom+23);
+      ctx.beginPath();ctx.moveTo(x,bottom);ctx.lineTo(x,bottom+5);ctx.stroke();
+    });
+    ctx.fillText('plaquette class angle theta',left+w/2,bottom+48);
+
+    let maxD=0;
+    for(let i=0;i<=400;i++) maxD=Math.max(maxD,density(i*Math.PI/400,beta));
+    ctx.fillStyle='rgba(84,217,209,.13)';ctx.beginPath();ctx.moveTo(left,bottom);
+    for(let i=0;i<=400;i++){
+      const th=i*Math.PI/400,x=left+w*i/400,y=bottom-h*.88*density(th,beta)/maxD;
+      ctx.lineTo(x,y);
+    }
+    ctx.lineTo(right,bottom);ctx.closePath();ctx.fill();
+    ctx.strokeStyle=cyan;ctx.lineWidth=2.5;ctx.beginPath();
+    for(let i=0;i<=400;i++){
+      const th=i*Math.PI/400,x=left+w*i/400,y=bottom-h*.88*density(th,beta)/maxD;
+      i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+    }
+    ctx.stroke();
+
+    const maxBin=Math.max(1,...bins);
+    const bw=w/bins.length;
+    bins.forEach((c,i)=>{
+      const bh=h*.72*c/maxBin;
+      ctx.fillStyle='rgba(240,189,102,.55)';
+      ctx.fillRect(left+i*bw+1,bottom-bh,bw-2,bh);
+    });
+    ctx.strokeStyle=coral;ctx.setLineDash([5,5]);ctx.lineWidth=2;
+    ctx.beginPath();ctx.moveTo(left,top);ctx.lineTo(left,bottom);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle=coral;ctx.textAlign='left';ctx.font='11px "IBM Plex Mono"';
+    ctx.fillText('action minimum',left+8,top+13);
+    ctx.fillStyle=ink;ctx.fillText('target density = Haar volume x exp(beta cos theta)',left+16,top+33);
+
+    document.getElementById('w3-beta-v').textContent=beta.toFixed(2);
+    document.getElementById('w3-n').textContent=String(total);
+    document.getElementById('w3-mean').textContent=total? (sum/total).toFixed(4):'--';
+    document.getElementById('w3-exact').textContent=exact.toFixed(4);
+  }
+  betaEl.addEventListener('input',reset);
+  document.getElementById('w3-sample').addEventListener('click',()=>addSamples(100));
+  document.getElementById('w3-sample-one').addEventListener('click',()=>addSamples(1));
+  document.getElementById('w3-clear').addEventListener('click',reset);
+  draw();
+})();
+
+(function widget4() {
+  const canvas=document.getElementById('w4-canvas');
+  const ctx=setupCanvas(canvas,900,380);
+  const widthEl=document.getElementById('w4-width');
+  const cyan=cssColor('--cyan'), gold=cssColor('--gold'), violet=cssColor('--violet');
+  const muted=cssColor('--muted'), line=cssColor('--line');
+  const count=700;
+  let particles=[],steps=0;
+  function reset(){particles=Array.from({length:count},()=>[1,0,0,0]);steps=0;draw();}
+  function advance(n){
+    const width=+widthEl.value;
+    for(let k=0;k<n;k++){
+      particles=particles.map(q=>{
+        const v=[randomNormal()*width,randomNormal()*width,randomNormal()*width];
+        return normQ(mulQ(expSu2(v),q));
+      });
+      steps++;
+    }
+    draw();
+  }
+  function draw(){
+    ctx.clearRect(0,0,canvas._w,canvas._h);
+    const cx=220,cy=190,R=142;
+    ctx.strokeStyle=line;ctx.lineWidth=1;ctx.beginPath();ctx.arc(cx,cy,R,0,2*Math.PI);ctx.stroke();
+    ctx.fillStyle=muted;ctx.font='11px "IBM Plex Mono"';ctx.fillText('projection: (a1,a2), color = a0',88,28);
+    particles.forEach(q=>{
+      const x=cx+R*q[1],y=cy-R*q[2];
+      const t=(q[0]+1)/2;
+      ctx.fillStyle=t>.5?`rgba(84,217,209,${.15+.32*t})`:`rgba(172,140,255,${.18+.25*(1-t)})`;
+      ctx.beginPath();ctx.arc(x,y,2.1,0,2*Math.PI);ctx.fill();
+    });
+    const left=430,right=862,top=50,bottom=325,bins=32;
+    const hist=new Array(bins).fill(0);
+    particles.forEach(q=>hist[clamp(Math.floor((q[0]+1)*.5*bins),0,bins-1)]++);
+    const max=Math.max(...hist,1);
+    ctx.strokeStyle=line;ctx.beginPath();ctx.moveTo(left,bottom);ctx.lineTo(right,bottom);ctx.stroke();
+    hist.forEach((n,i)=>{
+      const bw=(right-left)/bins,bh=(bottom-top)*.9*n/max;
+      ctx.fillStyle='rgba(84,217,209,.55)';ctx.fillRect(left+i*bw+1,bottom-bh,bw-2,bh);
+    });
+    let haarMax=0;
+    for(let i=0;i<=100;i++) haarMax=Math.max(haarMax,Math.sqrt(1-Math.pow(-1+2*i/100,2)));
+    ctx.strokeStyle=gold;ctx.lineWidth=2;ctx.beginPath();
+    for(let i=0;i<=200;i++){
+      const x0=-1+2*i/200;
+      const x=left+(x0+1)*.5*(right-left);
+      const y=bottom-(bottom-top)*.84*Math.sqrt(Math.max(0,1-x0*x0))/haarMax;
+      i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+    }
+    ctx.stroke();
+    ctx.fillStyle=muted;ctx.font='11px "IBM Plex Mono"';ctx.textAlign='center';
+    ctx.fillText('-1',left,bottom+20);ctx.fillText('0',left+(right-left)/2,bottom+20);ctx.fillText('+1',right,bottom+20);
+    ctx.fillStyle=gold;ctx.fillText('Haar reference shape',left+(right-left)/2,35);
+    ctx.textAlign='left';
+    const mean=particles.reduce((s,q)=>s+q[0],0)/count;
+    const qn=particles.reduce((s,q)=>s+Math.hypot(...q),0)/count;
+    document.getElementById('w4-width-v').textContent=(+widthEl.value).toFixed(2);
+    document.getElementById('w4-steps').textContent=String(steps);
+    document.getElementById('w4-trace').textContent=mean.toFixed(3);
+    document.getElementById('w4-qnorm').textContent=qn.toFixed(6);
+  }
+  widthEl.addEventListener('input',()=>{document.getElementById('w4-width-v').textContent=(+widthEl.value).toFixed(2);});
+  document.getElementById('w4-step').addEventListener('click',()=>advance(5));
+  document.getElementById('w4-run').addEventListener('click',()=>advance(Math.max(0,80-steps)));
+  document.getElementById('w4-reset').addEventListener('click',reset);
+  reset();
+})();
+
+(function widget5() {
+  const canvas=document.getElementById('w5-canvas');
+  const ctx=setupCanvas(canvas,900,365);
+  const tEl=document.getElementById('w5-t');
+  const cyan=cssColor('--cyan'), gold=cssColor('--gold'), violet=cssColor('--violet');
+  const muted=cssColor('--muted'), line=cssColor('--line');
+  const means=[-.95,1.15], weights=[.55,.45];
+  let probes=[-2.65,-1.85,-.25,.38,2.25,2.78],initial=probes.slice(),k=0,gain=0;
+
+  function wrappedDiff(x,m){return wrapPi(x-m);}
+  function components(x,t){
+    const s=.18+1.05*t;
+    return means.map((m,i)=>weights[i]*Math.exp(-.5*Math.pow(wrappedDiff(x,m)/s,2)));
+  }
+  function rho(x,t){return components(x,t).reduce((a,b)=>a+b,0)+1e-12;}
+  function score(x,t){
+    const s=.18+1.05*t,c=components(x,t),z=c[0]+c[1]+1e-12;
+    return -(c[0]*wrappedDiff(x,means[0])+c[1]*wrappedDiff(x,means[1]))/(s*s*z);
+  }
+  function reset(){probes=initial.slice();k=0;gain=0;draw();}
+  function denoise(){
+    const t=+tEl.value;
+    let before=0,after=0;
+    probes=probes.map(x=>{
+      before+=Math.log(rho(x,t));
+      const y=wrapPi(x+.11*score(x,t));
+      after+=Math.log(rho(y,t));
+      return y;
+    });
+    gain=(after-before)/probes.length;k++;draw();
+  }
+  function draw(){
+    const t=+tEl.value;
+    ctx.clearRect(0,0,canvas._w,canvas._h);
+    const left=55,right=865,top=34,bottom=288,w=right-left,h=bottom-top;
+    ctx.strokeStyle=line;ctx.beginPath();ctx.moveTo(left,bottom);ctx.lineTo(right,bottom);ctx.stroke();
+    let maxR=0;
+    for(let i=0;i<=500;i++)maxR=Math.max(maxR,rho(-Math.PI+2*Math.PI*i/500,t));
+    ctx.fillStyle='rgba(172,140,255,.11)';ctx.beginPath();ctx.moveTo(left,bottom);
+    for(let i=0;i<=500;i++){
+      const x=-Math.PI+2*Math.PI*i/500,px=left+w*i/500,py=bottom-h*.74*rho(x,t)/maxR;
+      ctx.lineTo(px,py);
+    }
+    ctx.lineTo(right,bottom);ctx.closePath();ctx.fill();
+    ctx.strokeStyle=violet;ctx.lineWidth=2.4;ctx.beginPath();
+    for(let i=0;i<=500;i++){
+      const x=-Math.PI+2*Math.PI*i/500,px=left+w*i/500,py=bottom-h*.74*rho(x,t)/maxR;
+      i?ctx.lineTo(px,py):ctx.moveTo(px,py);
+    }
+    ctx.stroke();
+    for(let i=0;i<19;i++){
+      const x=-Math.PI+(i+.5)*2*Math.PI/19,s=clamp(score(x,t),-4,4);
+      const px=left+(x+Math.PI)/(2*Math.PI)*w,py=bottom-28;
+      const len=9+16*Math.min(1,Math.abs(s)/2);
+      lineArrow(ctx,px,py,px+Math.sign(s||1)*len,py,Math.abs(s)>.8?cyan:gold,1.4);
+    }
+    probes.forEach((x,i)=>{
+      const px=left+(x+Math.PI)/(2*Math.PI)*w;
+      ctx.fillStyle=i%2?gold:cyan;ctx.beginPath();ctx.arc(px,bottom-58,7,0,2*Math.PI);ctx.fill();
+    });
+    ctx.fillStyle=muted;ctx.font='11px "IBM Plex Mono"';ctx.textAlign='center';
+    ctx.fillText('-pi',left,bottom+22);ctx.fillText('0',left+w/2,bottom+22);ctx.fillText('+pi',right,bottom+22);
+    ctx.fillText('subgroup angle theta',left+w/2,bottom+46);
+    ctx.textAlign='left';ctx.fillText('rho_t(theta)',left+8,top+13);
+    ctx.fillStyle=cyan;ctx.fillText('arrows: score = d log rho_t / d theta',left+8,top+33);
+    document.getElementById('w5-t-v').textContent=t.toFixed(2);
+    document.getElementById('w5-gain').textContent=gain.toFixed(3);
+    document.getElementById('w5-k').textContent=String(k);
+  }
+  tEl.addEventListener('input',reset);
+  document.getElementById('w5-denoise').addEventListener('click',denoise);
+  document.getElementById('w5-reset').addEventListener('click',reset);
+  draw();
+})();
+
+(function widget6() {
+  const canvas=document.getElementById('w6-canvas');
+  const ctx=setupCanvas(canvas,900,350);
+  const cyan=cssColor('--cyan'), gold=cssColor('--gold'), violet=cssColor('--violet');
+  const coral=cssColor('--coral'), muted=cssColor('--muted'), line=cssColor('--line'), ink=cssColor('--ink');
+  let mode='flat',stage=0;
+  const info={
+    flat:[
+      ['REPRESENT','8 real channels per 2D site','SU(2) link = unit quaternion; two link directions.'],
+      ['NOISE','add Gaussian noise in R^8','Intermediate states leave the unit-quaternion sphere.'],
+      ['SYMMETRY','U-Net + gauge augmentation','Periodic convolutions; gauge equivariance is not exact.'],
+      ['SAMPLE','reverse DDPM + normalize','No Metropolis correction; final links projected to SU(2).']
+    ],
+    group:[
+      ['REPRESENT','matrix links in SU(N)','Tangent vectors are traceless anti-Hermitian matrices.'],
+      ['NOISE','multiply Lie-group increments','Every intermediate link remains in SU(N).'],
+      ['SYMMETRY','GaugeLinkConv / equivariant U-Net','Staples and parallel transport enforce gauge covariance.'],
+      ['SAMPLE','probability ODE or PC sampler','RK4 predictor; optional HMD/Langevin corrector, unadjusted.']
+    ]
+  };
+  function render(){
+    ctx.clearRect(0,0,canvas._w,canvas._h);
+    const arr=info[mode], boxW=190,gap=24,start=46,y=92;
+    for(let i=0;i<4;i++){
+      const x=start+i*(boxW+gap),visible=i<=stage;
+      ctx.fillStyle=visible?(i===stage?'rgba(84,217,209,.12)':'rgba(255,255,255,.035)'):'rgba(255,255,255,.012)';
+      roundRect(ctx,x,y,boxW,166,10);ctx.fill();
+      ctx.strokeStyle=visible?(i===stage?cyan:line):'#172a34';ctx.lineWidth=i===stage?2:1;ctx.stroke();
+      ctx.fillStyle=visible?[cyan,gold,violet,coral][i]:'#38505a';
+      ctx.font='11px "IBM Plex Mono"';ctx.fillText(arr[i][0],x+15,y+25);
+      ctx.fillStyle=visible?ink:'#38505a';ctx.font='600 14px "Syne"';
+      wrapText(ctx,arr[i][1],x+15,y+52,boxW-30,19);
+      ctx.fillStyle=visible?muted:'#2d424b';ctx.font='11px "IBM Plex Mono"';
+      wrapText(ctx,arr[i][2],x+15,y+100,boxW-30,16);
+      if(i<3)lineArrow(ctx,x+boxW+4,y+83,x+boxW+gap-4,y+83,visible&&i<stage?cyan:'#29404a',1.4);
+    }
+    ctx.fillStyle=muted;ctx.font='12px "IBM Plex Mono"';
+    ctx.fillText(mode==='flat'?'Alharazin et al. 2026: simple DDPM, geometry restored at output':'Komijani et al. 2026: intrinsic compact-group process',46,307);
+    document.getElementById('w6-caption').textContent=arr[stage][2];
+    document.getElementById('w6-back').disabled=stage===0;
+    const next=document.getElementById('w6-next');
+    if(stage===3){next.style.visibility='hidden';}
+    else{next.style.visibility='visible';next.textContent='Add '+arr[stage+1][0].toLowerCase()+' ->';}
+  }
+  function wrapText(c,text,x,y,maxWidth,lineHeight){
+    const words=text.split(' ');let lineText='';
+    words.forEach(word=>{
+      const test=lineText+word+' ';
+      if(c.measureText(test).width>maxWidth&&lineText){c.fillText(lineText,x,y);lineText=word+' ';y+=lineHeight;}
+      else lineText=test;
+    });
+    c.fillText(lineText,x,y);
+  }
+  function setMode(m){
+    mode=m;stage=0;
+    document.getElementById('w6-flat').classList.toggle('on',m==='flat');
+    document.getElementById('w6-group').classList.toggle('on',m==='group');
+    render();
+  }
+  document.getElementById('w6-flat').addEventListener('click',()=>setMode('flat'));
+  document.getElementById('w6-group').addEventListener('click',()=>setMode('group'));
+  document.getElementById('w6-next').addEventListener('click',()=>{if(stage<3){stage++;render();}});
+  document.getElementById('w6-back').addEventListener('click',()=>{if(stage>0){stage--;render();}});
+  render();
+})();
+
+(function widget7() {
+  const canvas=document.getElementById('w7-canvas');
+  const ctx=setupCanvas(canvas,900,420);
+  const zEl=document.getElementById('w7-z'),lrEl=document.getElementById('w7-lr');
+  const cyan=cssColor('--cyan'),gold=cssColor('--gold'),violet=cssColor('--violet');
+  const coral=cssColor('--coral'),muted=cssColor('--muted'),line=cssColor('--line');
+  let z=+zEl.value,iter=0,path=[];
+  function map(x){return wrapPi(x+.55*Math.sin(x));}
+  function jac(x){return 1+.55*Math.cos(x);}
+  function loss(x){return 1-Math.cos(x);}
+  function reset(){z=+zEl.value;iter=0;path=[{z,x:map(z),l:loss(map(z))}];draw();}
+  function step(n){
+    const lr=+lrEl.value;
+    for(let i=0;i<n;i++){
+      const x=map(z),grad=Math.sin(x)*jac(z);
+      z=wrapPi(z-lr*grad);iter++;
+      path.push({z,x:map(z),l:loss(map(z))});
+      if(path.length>60)path.shift();
+    }
+    draw();
+  }
+  function pointOnCircle(cx,cy,r,a){return [cx+r*Math.cos(a),cy-r*Math.sin(a)];}
+  function draw(){
+    ctx.clearRect(0,0,canvas._w,canvas._h);
+    const x=map(z),J=jac(z),L=loss(x);
+    const c1=[190,175],c2=[525,175],R=112;
+    [[c1,'BASE  Z in SU(2)',violet],[c2,'OUTPUT  U=g(Z)',cyan]].forEach(item=>{
+      ctx.strokeStyle=line;ctx.lineWidth=2;ctx.beginPath();ctx.arc(item[0][0],item[0][1],R,0,2*Math.PI);ctx.stroke();
+      ctx.fillStyle=muted;ctx.font='11px "IBM Plex Mono"';ctx.textAlign='center';ctx.fillText(item[1],item[0][0],34);
+      ctx.fillText('identity',item[0][0]+R+2,item[0][1]+4);
+    });
+    path.forEach((p,i)=>{
+      const alpha=(i+1)/path.length;
+      const a=pointOnCircle(c1[0],c1[1],R,p.z),b=pointOnCircle(c2[0],c2[1],R,p.x);
+      ctx.fillStyle=`rgba(172,140,255,${.1+.65*alpha})`;ctx.beginPath();ctx.arc(a[0],a[1],i===path.length-1?7:3,0,2*Math.PI);ctx.fill();
+      ctx.fillStyle=`rgba(84,217,209,${.1+.65*alpha})`;ctx.beginPath();ctx.arc(b[0],b[1],i===path.length-1?7:3,0,2*Math.PI);ctx.fill();
+    });
+    lineArrow(ctx,c1[0]+R+28,c1[1],c2[0]-R-28,c2[1],gold,2);
+    ctx.fillStyle=gold;ctx.font='12px "IBM Plex Mono"';ctx.textAlign='center';
+    ctx.fillText('frozen probability-flow map g',357,c1[1]-13);
+    const a=pointOnCircle(c1[0],c1[1],R,z),b=pointOnCircle(c2[0],c2[1],R,x);
+    ctx.fillStyle=violet;ctx.beginPath();ctx.arc(a[0],a[1],9,0,2*Math.PI);ctx.fill();
+    ctx.fillStyle=cyan;ctx.beginPath();ctx.arc(b[0],b[1],9,0,2*Math.PI);ctx.fill();
+    ctx.textAlign='left';
+
+    const left=690,right=865,top=58,bottom=293;
+    ctx.strokeStyle=line;ctx.beginPath();ctx.moveTo(left,bottom);ctx.lineTo(right,bottom);ctx.stroke();
+    ctx.strokeStyle=coral;ctx.lineWidth=2.3;ctx.beginPath();
+    for(let i=0;i<=180;i++){
+      const a0=-Math.PI+2*Math.PI*i/180;
+      const px=left+(a0+Math.PI)/(2*Math.PI)*(right-left);
+      const py=bottom-loss(a0)/2*(bottom-top);
+      i?ctx.lineTo(px,py):ctx.moveTo(px,py);
+    }
+    ctx.stroke();
+    const pLoss=[left+(x+Math.PI)/(2*Math.PI)*(right-left),bottom-L/2*(bottom-top)];
+    ctx.fillStyle=gold;ctx.beginPath();ctx.arc(pLoss[0],pLoss[1],7,0,2*Math.PI);ctx.fill();
+    ctx.fillStyle=muted;ctx.font='11px "IBM Plex Mono"';ctx.fillText('L(x)=1-cos(x)',left,39);
+    ctx.fillText('0',left-12,bottom+4);ctx.fillText('2',left-12,top+4);
+
+    ctx.fillStyle='#0b1722';roundRect(ctx,105,330,690,60,8);ctx.fill();ctx.strokeStyle=line;ctx.stroke();
+    ctx.fillStyle=muted;ctx.font='12px "IBM Plex Mono"';
+    ctx.fillText("backprop:  dL/dz = sin(g(z)) x g'(z) = "+(Math.sin(x)*J).toFixed(4),130,355);
+    ctx.fillStyle=gold;ctx.fillText('update:    z <- Exp[-eta grad] z   (angle form: z <- z - eta dL/dz)',130,378);
+
+    document.getElementById('w7-z-v').textContent=(+zEl.value).toFixed(2);
+    document.getElementById('w7-lr-v').textContent=(+lrEl.value).toFixed(2);
+    document.getElementById('w7-base').textContent=z.toFixed(3);
+    document.getElementById('w7-output').textContent=x.toFixed(3);
+    document.getElementById('w7-jac').textContent=J.toFixed(3);
+    document.getElementById('w7-loss').textContent=L.toFixed(3);
+    document.getElementById('w7-iter').textContent=String(iter);
+  }
+  zEl.addEventListener('input',reset);
+  lrEl.addEventListener('input',()=>{document.getElementById('w7-lr-v').textContent=(+lrEl.value).toFixed(2);});
+  document.getElementById('w7-step').addEventListener('click',()=>step(1));
+  document.getElementById('w7-run').addEventListener('click',()=>step(20));
+  document.getElementById('w7-reset').addEventListener('click',reset);
+  reset();
+})();
+</script>
+</body>
+</html>

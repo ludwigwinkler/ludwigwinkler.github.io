@@ -1,0 +1,1550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Calculus of Variations — an animated explainer</title>
+
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=STIX+Two+Text:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg:        #0d1030;
+    --bg-2:      #090b22;
+    --surface:   #161a40;
+    --surface-2: #1d2356;
+    --ink:       #eef0ff;
+    --ink-soft:  #a8acd0;
+    --ink-faint: #6e739f;
+    --gold:      #f6c453;   /* the extremal / optimum / analytic target */
+    --gold-soft: #f6c45333;
+    --teal:      #4fd6c6;   /* the trial function & its functional value */
+    --teal-soft: #4fd6c633;
+    --magenta:   #ff7ab6;   /* the variation η / perturbation */
+    --magenta-soft:#ff7ab633;
+    --line:      #2a2f5c;
+    --grid:      #181d44;
+    --axis:      #3b4178;
+    --radius: 16px;
+    --measure: 70ch;
+    --font-display: 'Space Grotesk', system-ui, sans-serif;
+    --font-body:    'STIX Two Text', Georgia, serif;
+    --font-mono:    'Space Mono', 'SF Mono', monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background:
+      radial-gradient(1200px 700px at 75% -8%, #1a2056 0%, rgba(26,32,86,0) 55%),
+      radial-gradient(900px 600px at 5% 8%, #15193f 0%, rgba(21,25,63,0) 50%),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+    background-attachment: fixed;
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 19px;
+    line-height: 1.72;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #progress {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+    background: linear-gradient(90deg, var(--teal), var(--gold));
+    z-index: 100; transition: width 0.1s linear;
+  }
+
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 26px 140px; }
+  .prose { max-width: var(--measure); }
+  .prose p { margin: 0 0 1.15em; }
+  .prose em { color: var(--ink); font-style: italic; }
+  strong { color: var(--ink); font-weight: 600; }
+
+  /* ---- HEADER / HERO ---- */
+  header { padding: 76px 0 8px; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.34em;
+    text-transform: uppercase; color: var(--teal); margin: 0 0 22px;
+  }
+  h1 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(2.5rem, 6.2vw, 4.3rem); line-height: 1.02;
+    margin: 0 0 24px; letter-spacing: -0.025em; color: var(--ink);
+  }
+  h1 .accent { color: var(--gold); }
+  .promise {
+    font-size: 1.24rem; color: var(--ink-soft); font-style: italic;
+    max-width: 60ch; margin: 0;
+  }
+
+  .hero-stage {
+    margin: 40px 0 8px; border: 1px solid var(--line); border-radius: var(--radius);
+    background: linear-gradient(180deg, rgba(7,9,30,0.55), rgba(13,16,48,0.2));
+    overflow: hidden; position: relative;
+  }
+  .hero-stage canvas { display:block; width:100%; }
+  .hero-legend {
+    display:flex; gap: 22px; flex-wrap: wrap; padding: 0 0 0 4px;
+    font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em;
+    color: var(--ink-faint); margin: 16px 0 0;
+  }
+  .hero-legend span { display:flex; align-items:center; gap:8px; }
+  .swatch { width: 22px; height: 3px; border-radius: 2px; display:inline-block; }
+
+  /* ---- KERNEL ---- */
+  .kernel {
+    background: linear-gradient(135deg, var(--surface-2), var(--surface));
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--gold);
+    border-radius: var(--radius); padding: 34px 40px; margin: 52px 0 30px;
+  }
+  .kernel .label {
+    font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.24em;
+    text-transform: uppercase; color: var(--gold); margin: 0 0 16px;
+  }
+  .kernel .sentence {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 1.46rem; line-height: 1.42; margin: 0; color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .kernel .sentence b { color: var(--teal); font-weight: 600; }
+  .kernel .sentence .g { color: var(--gold); font-weight: 600; }
+
+  .lead { font-size: 1.08rem; color: var(--ink-soft); margin: 30px 0 0; }
+
+  /* ---- STEPS ---- */
+  .concept-step { margin: 92px 0 0; scroll-margin-top: 30px; }
+  .step-num {
+    font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700;
+    color: var(--teal); letter-spacing: 0.2em; margin: 0 0 10px;
+    text-transform: uppercase;
+  }
+  .concept-step h2 {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(1.7rem, 3.6vw, 2.35rem); line-height: 1.13;
+    margin: 0 0 22px; letter-spacing: -0.02em; color: var(--ink);
+  }
+
+  details.formal {
+    border: 1px solid var(--line); border-radius: 12px;
+    background: rgba(7,9,30,0.4); margin: 26px 0; max-width: var(--measure);
+  }
+  details.formal summary {
+    cursor: pointer; padding: 15px 20px; font-family: var(--font-mono);
+    font-size: 0.82rem; letter-spacing: 0.06em; color: var(--ink-soft);
+    list-style: none; user-select: none;
+  }
+  details.formal summary::before { content: '+ '; color: var(--gold); font-weight:700; }
+  details.formal[open] summary::before { content: '\2212  '; }
+  details.formal .formal-body { padding: 2px 20px 18px; font-size: 0.96rem; }
+  details.formal .formal-body p { color: var(--ink-soft); }
+
+  /* ---- DERIVATION (from first principles) ---- */
+  .derivation {
+    background: linear-gradient(180deg, rgba(22,26,64,0.5), rgba(13,16,48,0.38));
+    border: 1px solid var(--line); border-left: 4px solid var(--magenta);
+    border-radius: var(--radius); padding: 30px 36px; margin: 30px 0;
+    max-width: var(--measure);
+  }
+  .derivation .deriv-label {
+    font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--magenta); margin: 0 0 6px;
+  }
+  .derivation h3 {
+    font-family: var(--font-display); font-weight: 600; font-size: 1.28rem;
+    margin: 0 0 8px; color: var(--ink); letter-spacing: -0.01em;
+  }
+  .derivation .deriv-intro { color: var(--ink-soft); margin: 0 0 24px; }
+  .derivation .move { margin: 0 0 22px; }
+  .derivation .move-head {
+    font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.07em;
+    color: var(--teal); text-transform: uppercase; margin: 0 0 4px;
+  }
+  .derivation .move-head .n { color: var(--magenta); font-weight: 700; margin-right: 8px; }
+  .derivation .move p { color: var(--ink-soft); margin: 6px 0; }
+  .derivation .qed {
+    margin-top: 26px; padding-top: 20px; border-top: 1px solid var(--line);
+  }
+  .derivation .qed .result {
+    border: 1px solid var(--line); border-left: 3px solid var(--gold);
+    background: rgba(7,9,30,0.45); border-radius: 10px;
+    padding: 6px 20px; margin: 4px 0 0;
+  }
+  .derivation .qed .result p { color: var(--ink); }
+
+  /* ---- WIDGET ---- */
+  .widget {
+    background: linear-gradient(180deg, rgba(22,26,64,0.75), rgba(13,16,48,0.55));
+    border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 22px; margin: 30px 0;
+    box-shadow: 0 30px 60px -40px rgba(0,0,0,0.8);
+  }
+  .fig-head {
+    display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+    margin: -2px 0 18px; padding-bottom: 14px; border-bottom: 1px solid var(--line);
+  }
+  .fig-num {
+    font-family: var(--font-mono); font-size: 0.68rem; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: #2a1d00; background: var(--gold);
+    padding: 3px 9px; border-radius: 6px; white-space: nowrap;
+  }
+  .fig-title {
+    font-family: var(--font-display); font-weight: 500; font-size: 1.05rem;
+    color: var(--ink); letter-spacing: -0.01em; line-height: 1.3;
+  }
+  .fig-mode {
+    margin-left: auto; align-self: center;
+    font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.06em;
+    color: var(--teal); text-transform: lowercase;
+    border: 1px solid var(--teal-soft); border-radius: 999px;
+    padding: 3px 11px; white-space: nowrap;
+  }
+  .surf-eyebrow { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--ink-faint); margin-right: 2px; }
+  .surf-switch { display: inline-flex; align-items: stretch; border: 1px solid var(--teal-soft);
+    border-radius: 8px; overflow: hidden; background: rgba(7,9,30,0.4); }
+  .surf-switch button { background: none; border: none; color: var(--teal);
+    font-family: var(--font-mono); font-size: 1.05rem; line-height: 1; padding: 5px 12px; cursor: pointer; transition: background .15s; }
+  .surf-switch button:hover { background: rgba(79,214,198,0.16); }
+  .surf-switch .sname { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink);
+    padding: 0 12px; min-width: 124px; text-align: center; display: flex; align-items: center; justify-content: center;
+    border-left: 1px solid var(--line); border-right: 1px solid var(--line); }
+  .widget-controls {
+    display: flex; flex-wrap: wrap; gap: 16px 26px; margin-bottom: 18px;
+    align-items: flex-end;
+  }
+  .widget-controls label {
+    display: flex; flex-direction: column; gap: 8px;
+    font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.04em;
+    color: var(--ink-soft); min-width: 170px; text-transform: uppercase;
+  }
+  .widget-controls .val { color: var(--teal); font-weight: 700; text-transform: none; }
+  input[type=range] {
+    accent-color: var(--teal); cursor: pointer; width: 100%;
+  }
+  .btn {
+    font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.04em;
+    background: var(--surface-2); color: var(--ink); border: 1px solid var(--line);
+    padding: 10px 16px; border-radius: 9px; cursor: pointer; transition: all .15s;
+    text-transform: uppercase;
+  }
+  .btn:hover { background: var(--teal); color: #07131a; border-color: var(--teal); }
+  .btn:disabled { opacity: 0.3; cursor: default; background: var(--surface-2); color: var(--ink); border-color: var(--line); }
+  .btn.primary { background: var(--gold); color: #2a1d00; border-color: var(--gold); font-weight: 700; }
+  .btn.primary:hover { filter: brightness(1.08); }
+  .btn.on { background: var(--teal); color: #07131a; border-color: var(--teal); }
+  .btn-row { display:flex; gap:10px; flex-wrap: wrap; align-items:center; }
+
+  .widget-stage {
+    display: block; width: 100%; border-radius: 10px;
+    background: rgba(7,9,30,0.55); border: 1px solid var(--grid);
+  }
+  .widget-stage + .widget-stage { margin-top: 10px; }
+  .readout {
+    margin-top: 14px; font-family: var(--font-mono); font-size: 0.82rem;
+    color: var(--ink-soft); min-height: 1.4em; line-height: 1.65;
+  }
+  .readout .num { color: var(--gold); font-weight: 700; }
+  .readout .tnum { color: var(--teal); font-weight: 700; }
+  .readout .mnum { color: var(--magenta); font-weight: 700; }
+  .caption {
+    font-size: 0.92rem; color: var(--ink-faint); font-style: italic;
+    margin-top: 12px; font-family: var(--font-body);
+  }
+  .reveal-bar {
+    display: flex; align-items: center; gap: 14px; margin-top: 16px; flex-wrap: wrap;
+  }
+  .reveal-caption {
+    flex: 1; min-width: 220px; font-size: 0.9rem;
+    color: var(--ink-soft); font-style: italic; font-family: var(--font-body);
+  }
+
+  /* value gauge for step 2 */
+  .gauge { margin-top: 12px; }
+  .gauge-track {
+    height: 10px; border-radius: 6px; background: rgba(7,9,30,0.7);
+    border: 1px solid var(--grid); overflow: hidden;
+  }
+  .gauge-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--teal), var(--gold)); transition: width .05s linear; }
+
+  /* tag chips for functional choice */
+  .chips { display:flex; gap:8px; flex-wrap:wrap; }
+  .chip {
+    font-family: var(--font-mono); font-size: 0.74rem; padding: 8px 13px;
+    border-radius: 999px; border: 1px solid var(--line); background: rgba(7,9,30,0.4);
+    color: var(--ink-soft); cursor:pointer; transition: all .15s;
+  }
+  .chip.on { background: var(--teal); color:#07131a; border-color: var(--teal); font-weight:700; }
+
+  /* ---- mapping table ---- */
+  .map-table { width:100%; border-collapse: collapse; margin: 22px 0; font-size: 0.98rem; }
+  .map-table th, .map-table td { text-align:left; padding: 13px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .map-table th { font-family: var(--font-mono); font-size:0.72rem; letter-spacing:0.12em; text-transform:uppercase; color: var(--ink-faint); }
+  .map-table td:first-child { color: var(--ink-soft); }
+  .map-table td:last-child { color: var(--ink); }
+  .map-table .arrow { color: var(--gold); }
+
+  /* ---- RECAP ---- */
+  .recap { border-top: 1px solid var(--line); padding-top: 46px; margin-top: 96px; }
+  .recap h2 { font-family: var(--font-display); font-weight:600; font-size: 2rem; margin: 0 0 18px; letter-spacing:-0.02em; }
+  .where { display:grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 28px; }
+  .where .card {
+    border:1px solid var(--line); border-radius: 12px; padding: 18px 20px;
+    background: rgba(7,9,30,0.4);
+  }
+  .where .card h3 { font-family: var(--font-display); font-size: 1rem; margin:0 0 8px; color: var(--gold); font-weight:600; }
+  .where .card p { margin:0; font-size: 0.94rem; color: var(--ink-soft); }
+
+  mark { background: linear-gradient(transparent 58%, var(--gold-soft) 58%); color: inherit; padding: 0 1px; }
+  a { color: var(--teal); text-decoration: none; border-bottom: 1px solid var(--teal-soft); }
+  a:hover { border-bottom-color: var(--teal); }
+
+  footer { margin-top: 70px; font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-faint); letter-spacing: 0.04em; }
+
+  @media (max-width: 640px) {
+    body { font-size: 17.5px; }
+    .wrap { padding: 0 18px 90px; }
+    .kernel { padding: 26px 22px; }
+    .kernel .sentence { font-size: 1.24rem; }
+    .where { grid-template-columns: 1fr; }
+    .widget-controls label { min-width: 140px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<div class="wrap">
+
+  <!-- ===================== HEADER + HERO ===================== -->
+  <header>
+    <p class="eyebrow">A step-by-step, animated explainer</p>
+    <h1>The Calculus of <span class="accent">Variations</span></h1>
+    <p class="promise">
+      Ordinary calculus optimizes over numbers. This optimizes over entire
+      functions. By the end you'll see it is the <em>same machinery</em> — gradient,
+      zero-gradient, gradient descent — with the variable promoted from a point to a curve.
+    </p>
+  </header>
+
+  <div class="hero-stage">
+    <canvas id="hero-canvas"></canvas>
+  </div>
+  <div class="hero-legend">
+    <span><i class="swatch" style="background:var(--teal)"></i> trial functions</span>
+    <span><i class="swatch" style="background:var(--gold)"></i> the extremal (least &ldquo;cost&rdquo;)</span>
+    <span><i class="swatch" style="background:var(--magenta)"></i> a variation we test</span>
+  </div>
+
+  <!-- ===================== KERNEL ===================== -->
+  <div class="kernel">
+    <p class="label">The whole idea, in one sentence</p>
+    <p class="sentence">
+      A <b>functional</b> is just a function whose input is an <em>entire function</em> instead of a number;
+      its <span class="g">functional derivative</span> is the ordinary gradient with the index
+      \(i\) replaced by a continuous coordinate \(x\) — so &ldquo;set the gradient to zero&rdquo;
+      becomes <mark>&ldquo;find the best-shaped curve.&rdquo;</mark>
+    </p>
+  </div>
+
+  <p class="lead prose">
+    Everything below is built on one move, made early and never undone: stop thinking of a function
+    \(y(x)\) as a rule, and start thinking of it as a <em>point</em> — a point with one coordinate for every
+    value of \(x\). Once \(y\) is a point, a functional \(F[y]\) is an ordinary surface over that
+    (infinite-dimensional) space, and all of calculus carries over. Seven steps, a live animation in every one,
+    one promise: you'll watch functionals actually change, not just sliders move.
+  </p>
+
+  <!-- ===================== STEP 1 ===================== -->
+  <section class="concept-step" id="step-1">
+    <p class="step-num">Step 1 — the move that makes everything work</p>
+    <h2>A function is a point with infinitely many coordinates</h2>
+    <div class="prose">
+      <p>
+        Sample a function \(y(x)\) at \(N\) evenly spaced points on \([0,1]\). What you hold in your hand
+        is now a <em>vector</em> \((y_1, y_2, \dots, y_N)\in\mathbb{R}^N\) — an ordinary multivariable input.
+        A quantity built from it, \(F(y_1,\dots,y_N)\), is an ordinary multivariable function. Nothing exotic yet.
+      </p>
+      <p>
+        Now turn the dial: let \(N\to\infty\). The samples fuse into the continuous curve, the index \(i\)
+        becomes the continuous coordinate \(x\), and \(F\) becomes a rule that eats the <em>whole function</em>
+        and returns a number. We write it \(F[y]\) with square brackets and call it a <strong>functional</strong>.
+        That is the entire conceptual leap — drag \(N\) and watch a vector become a function.
+      </p>
+    </div>
+
+    <div class="widget" id="w1">
+      <div class="fig-head"><span class="fig-num">Figure 1</span><span class="fig-title">From a point in \(\mathbb{R}^N\) to a curve</span><span class="fig-mode">live · drag N</span></div>
+      <div class="widget-controls">
+        <label>samples &nbsp; N = <span class="val" id="w1-NV">8</span>
+          <input type="range" id="w1-N" min="2" max="160" step="1" value="8">
+        </label>
+        <div class="btn-row" style="align-self:flex-end">
+          <button class="btn primary" id="w1-play">▶ Grow N → ∞</button>
+        </div>
+      </div>
+      <canvas id="w1-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w1-readout"></div>
+      <p class="caption">At small \(N\) the input is a point in \(\mathbb{R}^N\); push \(N\) up and the same data becomes a curve. A functional is what you get when you let this go all the way.</p>
+    </div>
+  </section>
+
+  <!-- ===================== STEP 2 ===================== -->
+  <section class="concept-step" id="step-2">
+    <p class="step-num">Step 2 — what a functional actually does</p>
+    <h2>Feed it a whole curve, get back a single number</h2>
+    <div class="prose">
+      <p>
+        A functional collapses an entire function down to one number. Three workhorse examples, each an
+        integral of the curve and possibly its slope:
+      </p>
+      <p style="text-align:center">
+        \( \displaystyle A[y]=\int_0^1 y\,dx \qquad E[y]=\int_0^1 y^2\,dx \qquad L[y]=\int_0^1\!\sqrt{1+y'^2}\,dx \)
+      </p>
+      <p>
+        Press play and the curve below genuinely <em>deforms</em> — not a single knob turning, but the whole
+        shape wandering through a family. Watch the output number breathe with it. Switch the functional and
+        the <em>same</em> instant of curve produces a different number: that's the point — a functional is a rule
+        from shapes to scalars.
+      </p>
+    </div>
+
+    <div class="widget" id="w2">
+      <div class="fig-head"><span class="fig-num">Figure 2</span><span class="fig-title">A whole curve collapses to a single number</span><span class="fig-mode">live · play & switch functional</span></div>
+      <div class="widget-controls" style="justify-content:space-between">
+        <div class="chips" id="w2-chips">
+          <div class="chip on" data-f="area">A[y] = ∫ y dx</div>
+          <div class="chip" data-f="energy">E[y] = ∫ y² dx</div>
+          <div class="chip" data-f="arc">L[y] = ∫ √(1+y′²) dx</div>
+        </div>
+        <div class="btn-row">
+          <button class="btn primary" id="w2-play">▶ Play</button>
+        </div>
+      </div>
+      <canvas id="w2-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w2-readout"></div>
+      <div class="gauge"><div class="gauge-track"><div class="gauge-fill" id="w2-gauge"></div></div></div>
+      <p class="caption">The shaded region is the integrand being accumulated. The bar is the output value on its natural range.</p>
+    </div>
+  </section>
+
+  <!-- ===================== STEP 3 ===================== -->
+  <section class="concept-step" id="step-3">
+    <p class="step-num">Step 3 — the gradient, reborn</p>
+    <h2>The functional derivative: how sensitive the number is to a poke at \(x\)</h2>
+    <div class="prose">
+      <p>
+        In \(\mathbb{R}^N\), the gradient's \(i\)-th entry answers: <em>if I nudge coordinate \(y_i\), how much does
+        \(F\) change?</em> Promote \(i\) to \(x\) and you get the <strong>functional derivative</strong>
+        \(\frac{\delta F}{\delta y(x)}\): a whole <em>function</em> recording the sensitivity of \(F\) to a poke
+        at each location \(x\).
+      </p>
+      <p>
+        We make this literal. Take \(F[y]=\int_0^1 y(x)^2\,dx\). Add a tiny localized bump \(\eta\) of strength
+        \(\epsilon\) at a chosen spot, measure the change \(\Delta F\), and shrink \(\epsilon\). The linear part
+        is the <em>first variation</em>
+        \(\;\delta F=\int \frac{\delta F}{\delta y}\,\eta\,dx\). Then <strong>sweep the bump across the domain</strong>:
+        the trail of sensitivities it leaves <em>is</em> the functional derivative — and for this \(F\) it traces
+        exactly \(2y(x)\). Walk the four stages.
+      </p>
+    </div>
+
+    <div class="widget" id="w3">
+      <div class="fig-head"><span class="fig-num">Figure 3</span><span class="fig-title">Sweeping a bump traces out the functional derivative</span><span class="fig-mode">staged · drag the bump</span></div>
+      <canvas id="w3-canvas" class="widget-stage"></canvas>
+      <div class="widget-controls" id="w3-eps-wrap" style="margin-top:14px; display:none">
+        <label>bump strength &nbsp; ε = <span class="val" id="w3-epsV">0.40</span>
+          <input type="range" id="w3-eps" min="0.02" max="0.6" step="0.01" value="0.4">
+        </label>
+      </div>
+      <div class="reveal-bar">
+        <button class="btn" id="w3-back" disabled>← Back</button>
+        <span class="reveal-caption" id="w3-caption"></span>
+        <button class="btn primary" id="w3-next">Add a variation η →</button>
+      </div>
+      <div class="readout" id="w3-readout"></div>
+      <p class="caption">Drag the bump along the curve at any time. The dashed magenta curve is \(y+\epsilon\eta\); the gold trail is the swept sensitivity.</p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version — first variation by direct expansion (article Eq. 9–11)</summary>
+      <div class="formal-body prose">
+        <p>With \(F[y]=\int_0^1 y^2\,dx\) and variation \(\delta y=\epsilon\eta\):</p>
+        <p style="text-align:center">
+          \( F[y+\delta y]=\int_0^1 (y+\delta y)^2 dx = F[y] + \int_0^1 2y\,\delta y\,dx + \underbrace{\int_0^1 \delta y^2 dx}_{\to 0} \)
+        </p>
+        <p>So \(\delta F = \int_0^1 2y(x)\,\delta y(x)\,dx\). Matching against \(\delta F=\int \frac{\delta F}{\delta y}\,\delta y\,dx\)
+        reads off \(\frac{\delta F}{\delta y(x)} = 2y(x)\) — exactly the curve the sweep traces.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 4 ===================== -->
+  <section class="concept-step" id="step-4">
+    <p class="step-num">Step 4 — the shortcut</p>
+    <h2>Euler–Lagrange: compute that sensitivity curve without sweeping</h2>
+    <div class="prose">
+      <p>
+        Sweeping bumps is honest but slow. Suppose the functional is the integral of one fixed recipe — call it the
+        <strong>integrand</strong> \(L(x,y,y')\) (physicists call it the <em>Lagrangian</em>), an ordinary function of
+        the position \(x\), the height \(y\), and the slope \(y'\): \(F[y]=\int_a^b L(x,y,y')\,dx\). (The square brackets
+        in \(F[y]\) still mean &ldquo;whole function in, one number out&rdquo;; the parentheses in \(L(x,y,y')\) are an
+        ordinary function of three numbers.) For any functional of this form,
+        the Euler–Lagrange equation hands you the functional derivative in closed form:
+      </p>
+      <p style="text-align:center">
+        \( \displaystyle \frac{\delta F}{\delta y(x)} \;=\; \frac{\partial L}{\partial y} \;-\; \frac{d}{dx}\frac{\partial L}{\partial y'} \)
+      </p>
+      <p>
+        That formula isn't handed down from above — it is <em>forced</em> by a single demand: at the optimal curve,
+        nudging it in <em>any</em> admissible direction must not change \(F\) to first order. That is the exact
+        function-space echo of \(\nabla F=0\). Here is the whole thing from scratch, in five moves; the engine is the
+        same perturb-and-expand trick you used by hand in Step&nbsp;3.
+      </p>
+    </div>
+
+    <div class="derivation">
+      <p class="deriv-label">From first principles</p>
+      <h3>Deriving Euler–Lagrange</h3>
+      <p class="deriv-intro">
+        Goal: find the function \(y(x)\) on \([a,b]\), with the endpoints pinned at \(y(a)=y_a\) and \(y(b)=y_b\),
+        that makes \(F[y]=\int_a^b L(x,y,y')\,dx\) stationary.
+      </p>
+
+      <div class="move">
+        <p class="move-head"><span class="n">Move 1</span> Perturb the winner</p>
+        <p>
+          Suppose \(y(x)\) is the optimum. Jiggle it in some arbitrary direction \(\eta(x)\), scaled by a single knob
+          \(\varepsilon\). Both the curve and its slope move:
+        </p>
+        <p>
+          \[ y(x)\;\longrightarrow\; y(x)+\varepsilon\,\eta(x), \qquad
+             y'(x)\;\longrightarrow\; y'(x)+\varepsilon\,\eta'(x). \]
+        </p>
+        <p>
+          Every competitor must still hit the same two endpoints, so the variation is not allowed to move them:
+          \(\eta(a)=\eta(b)=0\). Apart from that, \(\eta\) is completely free — remember this, it does all the work in Move 5.
+        </p>
+      </div>
+
+      <div class="move">
+        <p class="move-head"><span class="n">Move 2</span> Collapse to one variable</p>
+        <p>
+          Feed the jiggled curve into the functional. Since \(\varepsilon\) is now the only thing that varies, the
+          functional becomes an ordinary single-variable function:
+        </p>
+        <p>
+          \[ \Phi(\varepsilon)\;=\;F[\,y+\varepsilon\eta\,]\;=\;\int_a^b L\big(x,\;y+\varepsilon\eta,\;y'+\varepsilon\eta'\big)\,dx. \]
+        </p>
+        <p>
+          \(y\) is stationary exactly when \(\Phi\) is stationary at \(\varepsilon=0\) — and it must be, for
+          <em>every</em> direction \(\eta\). The infinite-dimensional problem just became first-year calculus:
+          \(\Phi'(0)=0\).
+        </p>
+      </div>
+
+      <div class="move">
+        <p class="move-head"><span class="n">Move 3</span> Differentiate under the integral</p>
+        <p>
+          We need \(\Phi'(\varepsilon)=\dfrac{d}{d\varepsilon}\displaystyle\int_a^b L\big(x,\,y+\varepsilon\eta,\,y'+\varepsilon\eta'\big)\,dx\),
+          and two things deserve care: moving the \(\tfrac{d}{d\varepsilon}\) inside, and the chain rule itself.
+        </p>
+        <p>
+          <strong>Move the derivative inside.</strong> The limits \(a,b\) are fixed, and with \(L\) continuously differentiable
+          and \(y,\eta\in C^1[a,b]\) the integrand and its \(\varepsilon\)-partial are continuous on the compact strip
+          \([a,b]\times(-\delta,\delta)\). Leibniz's rule then licenses the swap, with no boundary terms since the domain itself doesn't move:
+        </p>
+        <p>
+          \[ \Phi'(\varepsilon)=\int_a^b \frac{\partial}{\partial\varepsilon}\,L\big(x,\,y+\varepsilon\eta,\,y'+\varepsilon\eta'\big)\,dx. \]
+        </p>
+        <p>
+          <strong>Chain rule, slot by slot.</strong> Read \(L=L(x,u,v)\) as a function of three independent slots; along the
+          perturbation \(u=y+\varepsilon\eta\) and \(v=y'+\varepsilon\eta'\), so only \(u,v\) carry \(\varepsilon\), with
+          \(\partial u/\partial\varepsilon=\eta\) and \(\partial v/\partial\varepsilon=\eta'\). Crucially, \(\partial L/\partial y\)
+          and \(\partial L/\partial y'\) mean the partials of \(L\) in its <em>second</em> and <em>third</em> slots (each holding the
+          other two fixed) — not derivatives with respect to the function \(y\). So
+        </p>
+        <p>
+          \[ \frac{\partial}{\partial\varepsilon}\,L(x,u,v)=\frac{\partial L}{\partial y}\bigg|_{(x,u,v)}\!\eta+\frac{\partial L}{\partial y'}\bigg|_{(x,u,v)}\!\eta'. \]
+        </p>
+        <p>
+          <strong>Evaluate at \(\varepsilon=0\).</strong> There \(u=y(x)\) and \(v=y'(x)\), so the partials land on the unperturbed curve:
+        </p>
+        <p>
+          \[ \Phi'(0)=\int_a^b\!\left(\frac{\partial L}{\partial y}\bigg|_{(x,y,y')}\!\eta+\frac{\partial L}{\partial y'}\bigg|_{(x,y,y')}\!\eta'\right)dx. \]
+        </p>
+        <p>
+          This equality is an <em>identity</em> — true for every admissible \(\eta\). It defines the <em>first variation</em>
+          \(\delta F(y;\eta)=\frac{d}{d\varepsilon}\big|_{0}\,F[y+\varepsilon\eta]\), the directional (Gâteaux) derivative of \(F\)
+          at \(y\) along \(\eta\). Stationarity from Move 2 is the <em>separate</em> demand that this identity equal zero for
+          every \(\eta\): \(\;\Phi'(0)=0\).
+        </p>
+      </div>
+
+      <div class="move">
+        <p class="move-head"><span class="n">Move 4</span> Integrate by parts to free \(\eta\)</p>
+        <p>
+          The term in \(\eta'\) is the nuisance: it ties the direction to its own slope. Integration by parts trades
+          \(\eta'\) for \(\eta\):
+        </p>
+        <p>
+          \[ \int_a^b \frac{\partial L}{\partial y'}\,\eta'\,dx
+             =\underbrace{\left[\frac{\partial L}{\partial y'}\,\eta\right]_a^b}_{=\,0}
+             -\int_a^b \frac{d}{dx}\!\left(\frac{\partial L}{\partial y'}\right)\eta\,dx. \]
+        </p>
+        <p>
+          The boundary term vanishes because \(\eta(a)=\eta(b)=0\) (Move 1 earns its keep). Substitute back, and every
+          appearance of the direction is now a single clean factor of \(\eta\):
+        </p>
+        <p>
+          \[ \Phi'(0)=\int_a^b\left(\frac{\partial L}{\partial y}-\frac{d}{dx}\frac{\partial L}{\partial y'}\right)\eta(x)\,dx=0. \]
+        </p>
+      </div>
+
+      <div class="move">
+        <p class="move-head"><span class="n">Move 5</span> Kill \(\eta\) — the fundamental lemma</p>
+        <p>
+          Read that last line as an inner product: \(\langle g,\eta\rangle=0\), where
+          \(g(x)=\frac{\partial L}{\partial y}-\frac{d}{dx}\frac{\partial L}{\partial y'}\). It holds for <em>every</em>
+          admissible direction \(\eta\). A fixed function that is orthogonal to <em>all</em> directions can only be the
+          zero function: if \(g\) were, say, positive on any little sliver, just choose \(\eta\) to be a small positive
+          bump sitting exactly on that sliver and zero elsewhere — the integral would come out strictly positive, a
+          contradiction. Hence \(g\equiv 0\). It is the function-space twin of a plain fact in \(\mathbb{R}^n\): a vector
+          perpendicular to every vector is \(\mathbf{0}\).
+        </p>
+      </div>
+
+      <div class="qed">
+        <p>
+          The bracket that survives <em>is</em> the functional derivative — the same per-point gradient density you
+          swept out bump-by-bump in Step&nbsp;3:
+        </p>
+        <div class="result">
+          <p style="text-align:center">
+            \[ \frac{\delta F}{\delta y(x)}=\frac{\partial L}{\partial y}-\frac{d}{dx}\frac{\partial L}{\partial y'} \]
+          </p>
+        </div>
+        <p style="margin-top:14px">
+          Setting it to zero is nothing more exotic than \(\nabla F=0\), enforced at one continuous coordinate \(x\) at a time.
+        </p>
+      </div>
+    </div>
+
+    <div class="prose">
+      <p>
+        Take the <strong>bending energy</strong> \(E[y]=\int_0^1 \tfrac12\,y'^2\,dx\). Here \(\partial L/\partial y=0\) and
+        \(\partial L/\partial y'=y'\), so \(\;\frac{\delta E}{\delta y}=-\,y''(x)\): the sensitivity at each point is
+        <em>minus the curvature there</em>. Reshape the curve by dragging its control points and watch the bottom
+        panel — the functional derivative — respond live. Where the curve is straight, it reads zero.
+      </p>
+    </div>
+
+    <div class="widget" id="w4">
+      <div class="fig-head"><span class="fig-num">Figure 4</span><span class="fig-title">Euler–Lagrange live: a curve and its sensitivity \(-y''\)</span><span class="fig-mode">live · drag the curve</span></div>
+      <div class="btn-row" style="margin-bottom:14px">
+        <button class="btn" id="w4-wiggle">Wiggle it</button>
+        <button class="btn" id="w4-straight">Straighten</button>
+        <span class="readout" id="w4-readout" style="margin:0 0 0 6px"></span>
+      </div>
+      <canvas id="w4-canvas-y" class="widget-stage"></canvas>
+      <canvas id="w4-canvas-d" class="widget-stage"></canvas>
+      <p class="caption">Top: the trial curve \(y(x)\) (drag the gold control points). Bottom: its functional derivative \(\delta E/\delta y=-y''(x)\). Zero-crossings — the inflection points — are marked.</p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version — Euler–Lagrange worked examples (article Eq. 14–15)</summary>
+      <div class="formal-body prose">
+        <p>If \(L\) has no \(y'\): \(F[y]=\int_0^1 x^3 e^{-y}\,dx \Rightarrow \frac{\delta F}{\delta y}=\frac{\partial L}{\partial y}=-x^3 e^{-y}\).</p>
+        <p>With both terms: \(F[y]=\int_0^1 x^2 y^3 y'^4\,dx \Rightarrow \frac{\delta F}{\delta y}=3x^2y^2y'^4-\frac{d}{dx}\!\left(4x^2y^3y'^3\right)=3x^2y^2y'^4-8xy^3y'^3.\)</p>
+        <p>The recipe never changes: differentiate \(L\) treating \(y\) and \(y'\) as independent, then subtract the total-\(x\) derivative of the \(y'\)-part.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 5 ===================== -->
+  <section class="concept-step" id="step-5">
+    <p class="step-num">Step 5 — the payoff</p>
+    <h2>Set it to zero: gradient descent that optimizes a shape</h2>
+    <div class="prose">
+      <p>
+        A point is stationary when its gradient is zero. A <em>function</em> is stationary when its functional
+        derivative is zero <em>everywhere</em>. And just as we slide downhill against \(-\nabla F\) to reach a
+        minimum, we can flow a whole curve against \(-\frac{\delta F}{\delta y}\) to reach the extremal:
+      </p>
+      <p style="text-align:center">
+        \( \displaystyle \frac{\partial y}{\partial t} \;=\; -\frac{\delta E}{\delta y} \;=\; y''(x) \)
+      </p>
+      <p>
+        That is gradient descent in function space — and for bending energy it is <mark>literally the heat
+        equation</mark>. Pin the endpoints, start from any wiggle, press play: the curve diffuses, the energy
+        falls monotonically, the functional derivative vanishes, and what's left is the straight line. You just
+        watched &ldquo;the shortest path is a line&rdquo; happen as an optimization. Drag the endpoints and re-run.
+      </p>
+    </div>
+
+    <div class="widget" id="w5">
+      <div class="fig-head"><span class="fig-num">Figure 5</span><span class="fig-title">Gradient flow relaxes any wiggle to the straight line</span><span class="fig-mode">live sim · drag the endpoints</span></div>
+      <div class="btn-row" style="margin-bottom:14px">
+        <button class="btn primary" id="w5-play">▶ Flow to the extremal</button>
+        <button class="btn" id="w5-reset">Reset wiggle</button>
+        <span class="readout" id="w5-readout" style="margin:0 0 0 6px"></span>
+      </div>
+      <canvas id="w5-canvas" class="widget-stage"></canvas>
+      <p class="caption">Teal: the evolving curve. Faint trail: where it started. Gold dashed: the straight-line extremal it's converging to. Drag either endpoint.</p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version — the article's classic: arc length ⇒ straight line (Eq. 16–19)</summary>
+      <div class="formal-body prose">
+        <p>For true arc length \(L[y]=\int_a^b\sqrt{1+y'^2}\,dx\): \(\partial L/\partial y=0\) and
+        \(\partial L/\partial y'=\frac{y'}{\sqrt{1+y'^2}}\). Euler–Lagrange gives</p>
+        <p style="text-align:center">\( \frac{d}{dx}\frac{y'}{\sqrt{1+y'^2}}=0 \;\Rightarrow\; \frac{y'}{\sqrt{1+y'^2}}=C \;\Rightarrow\; y'=\text{const}=A \;\Rightarrow\; y=Ax+B. \)</p>
+        <p>A straight line — exactly the extremal the bending-energy flow above relaxes to. Two different functionals,
+        same stationary curve; we animate bending energy because its flow (the heat equation) is numerically gentle and visibly diffusive.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 6 ===================== -->
+  <section class="concept-step" id="step-6">
+    <p class="step-num">Step 6 — the cost decides the shape</p>
+    <h2>Change the functional again: the most even route across a landscape</h2>
+    <div class="prose">
+      <p>
+        The straight line was optimal because the cost was <em>bending</em>. Change the cost and the optimal shape
+        changes with it — that is the whole point. So make it physical: a <strong>hiking route</strong> \(y(x)\) across
+        a landscape, from a fixed start to a fixed end, that wants to be as <em>even</em> as possible — gaining and
+        losing as little height as it can. The evenest imaginable climb is a <em>constant grade</em>: a straight line
+        in altitude from the start's height \(z_0\) to the end's height \(z_1\). So penalize the squared deviation of
+        the trail's altitude from that steady grade \(\bar z(x)=z_0+(z_1-z_0)x\):
+      </p>
+      <p style="text-align:center">
+        \( \displaystyle F[y]=\int_0^1 \Big[\big(h(x,y(x))-\bar z(x)\big)^2+\tfrac{\lambda}{2}\,y'^2\Big]\,dx \)
+      </p>
+      <p>
+        Euler–Lagrange gives \(2\,(h-\bar z)\,\partial_y h=\lambda\,y''\), and flowing against \(-\,\delta F/\delta y\)
+        settles any starting trail onto the terrain that best tracks the grade. When the two ends sit at the
+        <em>same</em> height, \(\bar z\) is flat and the route becomes a <mark>level contour</mark> — climbing nothing,
+        weaving between the hills and the sinks. When the ends sit at <em>different</em> heights, \(\bar z\) tilts and
+        the same principle picks the <mark>steady descent</mark> down a valley floor — all drop, no wasted up-and-down.
+        Swap the surface under the figure to see both; drag to view either from any angle.
+      </p>
+    </div>
+
+    <div class="widget" id="w5b">
+      <div class="fig-head"><span class="fig-num">Figure 6</span><span class="fig-title">The most even route, on a surface you can swap</span><span class="fig-mode">3d · drag to rotate</span></div>
+      <div class="btn-row" style="margin-bottom:10px;align-items:center">
+        <span class="surf-eyebrow">surface</span>
+        <span class="surf-switch"><button id="w5b-prev" aria-label="previous surface">‹</button><span class="sname" id="w5b-sname">Level traverse</span><button id="w5b-next" aria-label="next surface">›</button></span>
+      </div>
+      <div class="btn-row" style="margin-bottom:14px">
+        <button class="btn" id="w5b-rand">🎲 Random trail</button>
+        <button class="btn primary" id="w5b-min">▶ Most even trail</button>
+        <button class="btn" id="w5b-view">↺ Reset view</button>
+        <span class="readout" id="w5b-readout" style="margin:0 0 0 6px"></span>
+      </div>
+      <canvas id="w5b-canvas" class="widget-stage" style="touch-action:none"></canvas>
+      <canvas id="w5b-prof" class="widget-stage"></canvas>
+      <p class="caption">Use the <strong>‹ surface ›</strong> box to swap the landscape calculus of variations runs on. <em>Level traverse</em>: a winding zero-level corridor between two ends at the <em>same</em> height — the even route is a flat contour. <em>Valley descent</em>: a winding valley whose floor drops from a high start to a low end — now the even route is the steady, constant-grade descent along the floor. <strong>Drag to orbit</strong>; press <em>Most even trail</em> to watch the route relax. Bottom: altitude \(h\) along the trail (white) against the steady grade (gold) it is trying to match.</p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version — Euler–Lagrange for the grade-deviation functional, and the \(\lambda\to0\) iso-grade limit</summary>
+      <div class="formal-body prose">
+        <p>With integrand \(L=(h-\bar z)^2+\tfrac{\lambda}{2}y'^2\) (and \(\bar z(x)=z_0+(z_1-z_0)x\) a fixed line, since the
+        endpoints are pinned), the pieces are \(\partial L/\partial y=2(h-\bar z)h_y\) and \(\partial L/\partial y'=\lambda y'\).
+        Euler–Lagrange, \(\;\frac{\delta F}{\delta y}=2(h-\bar z)h_y-\lambda y''=0\), i.e. \(\lambda y''=2(h-\bar z)h_y\). The
+        flow \(y_t=-2(h-\bar z)h_y+\lambda y''\) is what the figure integrates: the reaction term pushes each point toward
+        terrain whose altitude equals the grade (it vanishes where \(h=\bar z\)); \(\lambda y''\) lightly smooths.</p>
+        <p>Let \(\lambda\to0\) and the condition is purely \(h(x,y)=\bar z(x)\): the trail rides the terrain's
+        <em>iso-grade</em> set. If \(z_0=z_1\) that is a contour line — constant altitude, zero gain or loss. If
+        \(z_0\neq z_1\) it is the locus descending at exactly the average grade, so the trail's total climb-plus-descent
+        equals the unavoidable net drop \(|z_1-z_0|\) and not a metre more — the steady valley descent. Same machinery as
+        Step&nbsp;5's bending energy; a different integrand; a different optimal shape.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 7 ===================== -->
+  <section class="concept-step" id="step-7">
+    <p class="step-num">Step 7 — where it pays off in probability</p>
+    <h2>Constraints &amp; maximum entropy: where the Gaussian comes from</h2>
+    <div class="prose">
+      <p>
+        Constrained optimization over functions works exactly like Lagrange multipliers over numbers: add
+        \(-\lambda\,(\text{constraint})\) to the integrand and apply Euler–Lagrange. Maximize the entropy
+        \(H[f]=-\int f\log f\,dx\) of a density subject to what you know about it. Euler–Lagrange on the
+        Lagrangian immediately yields the stationary form
+      </p>
+      <p style="text-align:center">
+        \( \displaystyle f(x)=e^{-1-\lambda_0-\lambda_1 x-\lambda_2 x^2} \)
+      </p>
+      <p>
+        — an exponential family. The multipliers are then tuned so the constraints hold. Know only the
+        <strong>support</strong> \([a,b]\)? Only \(\lambda_0\) is active and \(f\) flattens to the <em>uniform</em>
+        distribution. Know the <strong>mean and variance</strong> on the whole line? All three multipliers engage
+        and \(f\) becomes the <em>Gaussian</em>. Press a button and watch the density climb in entropy while the
+        constraint meters lock onto their targets.
+      </p>
+    </div>
+
+    <div class="widget" id="w6">
+      <div class="fig-head"><span class="fig-num">Figure 7</span><span class="fig-title">Constraints select the maximum-entropy density</span><span class="fig-mode">live sim · choose the constraints</span></div>
+      <div class="btn-row" style="margin-bottom:14px">
+        <button class="btn primary on" id="w6-uniform">Support only → Uniform</button>
+        <button class="btn primary" id="w6-gauss">Mean + variance → Gaussian</button>
+        <button class="btn" id="w6-reset">Reset</button>
+      </div>
+      <canvas id="w6-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w6-readout"></div>
+      <p class="caption">Teal fill: the current density \(f(x)\), always of the exponential form above. Gold dashed: the analytic maximum-entropy target. Meters show the active constraints converging.</p>
+    </div>
+  </section>
+
+  <!-- ===================== RECAP ===================== -->
+  <section class="recap prose">
+    <h2>Putting it together</h2>
+    <p>
+      Every step was the same calculus you already know, with one substitution made on the first line — the
+      variable is a function, the index is continuous. Line them up:
+    </p>
+    <table class="map-table">
+      <tr><th>Ordinary calculus on \(\mathbb{R}^N\)</th><th></th><th>Variational calculus on functions</th></tr>
+      <tr><td>point \((y_1,\dots,y_N)\)</td><td class="arrow">→</td><td>function \(y(x)\)</td></tr>
+      <tr><td>function \(F(y_1,\dots,y_N)\)</td><td class="arrow">→</td><td>functional \(F[y]\)</td></tr>
+      <tr><td>gradient \(\partial F/\partial y_i\)</td><td class="arrow">→</td><td>functional derivative \(\delta F/\delta y(x)\)</td></tr>
+      <tr><td>\(dF=\sum_i \frac{\partial F}{\partial y_i}\,dy_i\)</td><td class="arrow">→</td><td>\(\delta F=\int \frac{\delta F}{\delta y}\,\delta y\,dx\)</td></tr>
+      <tr><td>set \(\nabla F=0\) for the best point</td><td class="arrow">→</td><td>Euler–Lagrange \(=0\) for the best function</td></tr>
+      <tr><td>Lagrange multipliers</td><td class="arrow">→</td><td>multipliers / multiplier functions</td></tr>
+      <tr><td>gradient descent \(\dot y=-\nabla F\)</td><td class="arrow">→</td><td>gradient flow \(\partial_t y=-\delta F/\delta y\)</td></tr>
+    </table>
+    <p>
+      The kernel holds up: a functional is a function of a function, its derivative is the gradient with a
+      continuous index, and zeroing that derivative finds the best-shaped curve. The dressing — \(\delta\) instead
+      of \(\partial\), \(\int\) instead of \(\sum\), &ldquo;extremal&rdquo; instead of &ldquo;minimizer&rdquo; — is
+      just formal clothes over machinery you've used since first-year calculus.
+    </p>
+
+    <div class="where">
+      <div class="card">
+        <h3>Variational inference / VAEs</h3>
+        <p>Maximizing the ELBO is optimizing a functional over a density \(q\). The &ldquo;variational&rdquo; in variational Bayes is this exact calculus.</p>
+      </div>
+      <div class="card">
+        <h3>The exponential family</h3>
+        <p>Maximum entropy under moment constraints yields \(e^{\sum\lambda_k T_k(x)}\) — Gaussian, exponential, Boltzmann — straight from Euler–Lagrange.</p>
+      </div>
+      <div class="card">
+        <h3>Least action in physics</h3>
+        <p>Trajectories extremize \(\int L\,dt\). Euler–Lagrange on the action <em>is</em> Newton's laws; geodesics minimize path length.</p>
+      </div>
+      <div class="card">
+        <h3>Diffusion as gradient flow</h3>
+        <p>The heat equation you saw in Step 5 is gradient flow of an energy — the same lens behind score-based diffusion and many smoothing methods.</p>
+      </div>
+    </div>
+
+    <footer>
+      Built from Brian Keng's <em>The Calculus of Variations</em> (bjlkeng.io), itself following Svetitsky's
+      <em>Notes on Functionals</em>. Numerics validated before embedding; all animations run on the real equations.
+    </footer>
+  </section>
+
+</div>
+  <script>
+/* ============================ SHARED HELPERS ============================ */
+function setupCanvas(canvas, cssW, cssH) {
+  const dpr = window.devicePixelRatio || 1;
+  canvas.style.width = cssW + 'px';
+  canvas.style.maxWidth = '100%';
+  canvas.style.height = cssH + 'px';
+  canvas.width = cssW * dpr;
+  canvas.height = cssH * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  canvas._cssW = cssW; canvas._cssH = cssH;
+  return ctx;
+}
+function makeView(canvas, b) {
+  const w = canvas._cssW, h = canvas._cssH, pad = b.pad || {l:8,r:8,t:14,b:14};
+  const iw = w - pad.l - pad.r, ih = h - pad.t - pad.b;
+  return {
+    ...b, w, h, pad,
+    x: mx => pad.l + (mx - b.xmin) / (b.xmax - b.xmin) * iw,
+    y: my => pad.t + ih - (my - b.ymin) / (b.ymax - b.ymin) * ih
+  };
+}
+const CSS = getComputedStyle(document.documentElement);
+const C = n => CSS.getPropertyValue(n).trim();
+const COL = {
+  gold: C('--gold'), teal: C('--teal'), magenta: C('--magenta'),
+  axis: C('--axis'), grid: C('--grid'), ink: C('--ink'), inkSoft: C('--ink-soft'),
+  inkFaint: C('--ink-faint')
+};
+function rgba(hex, a) {
+  const h = hex.replace('#',''); const n = parseInt(h.length===3 ? h.split('').map(c=>c+c).join('') : h, 16);
+  return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;
+}
+function grid(ctx, view, nx, ny) {
+  ctx.strokeStyle = COL.grid; ctx.lineWidth = 1;
+  for (let i = 0; i <= nx; i++) { const x = view.xmin + (view.xmax-view.xmin)*i/nx;
+    ctx.beginPath(); ctx.moveTo(view.x(x), view.pad.t); ctx.lineTo(view.x(x), view.h-view.pad.b); ctx.stroke(); }
+  for (let j = 0; j <= ny; j++) { const y = view.ymin + (view.ymax-view.ymin)*j/ny;
+    ctx.beginPath(); ctx.moveTo(view.pad.l, view.y(y)); ctx.lineTo(view.w-view.pad.r, view.y(y)); ctx.stroke(); }
+}
+function axisLine(ctx, view, y0) {
+  ctx.strokeStyle = COL.axis; ctx.lineWidth = 1.4;
+  ctx.beginPath(); ctx.moveTo(view.pad.l, view.y(y0)); ctx.lineTo(view.w-view.pad.r, view.y(y0)); ctx.stroke();
+}
+function plot(ctx, view, fn, color, lw, dash) {
+  ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = lw; if (dash) ctx.setLineDash(dash);
+  ctx.lineJoin = 'round'; ctx.beginPath();
+  const N = 400;
+  for (let i = 0; i <= N; i++) { const mx = view.xmin + (view.xmax-view.xmin)*i/N; const my = fn(mx);
+    const px = view.x(mx), py = view.y(my); i===0 ? ctx.moveTo(px,py) : ctx.lineTo(px,py); }
+  ctx.stroke(); ctx.restore();
+}
+function plotArr(ctx, view, xs, ys, color, lw, dash) {
+  ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = lw; if (dash) ctx.setLineDash(dash);
+  ctx.lineJoin = 'round'; ctx.beginPath();
+  for (let i = 0; i < xs.length; i++) { const px = view.x(xs[i]), py = view.y(ys[i]); i===0?ctx.moveTo(px,py):ctx.lineTo(px,py); }
+  ctx.stroke(); ctx.restore();
+}
+function pointer(canvas, view, e) {
+  const r = canvas.getBoundingClientRect();
+  const cx = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
+  const cy = (e.touches ? e.touches[0].clientY : e.clientY) - r.top;
+  const w = r.width, h = r.height, pl = view.pad.l*w/view.w, pr = view.pad.r*w/view.w,
+        pt = view.pad.t*h/view.h, pb = view.pad.b*h/view.h;
+  return {
+    mx: view.xmin + (cx - pl) / (w - pl - pr) * (view.xmax - view.xmin),
+    my: view.ymin + (h - pb - cy) / (h - pt - pb) * (view.ymax - view.ymin)
+  };
+}
+const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ============================ HERO ============================ */
+(function () {
+  const canvas = document.getElementById('hero-canvas');
+  const ctx = setupCanvas(canvas, 840, 250);
+  const view = makeView(canvas, {xmin:0, xmax:1, ymin:0, ymax:1, pad:{l:30,r:30,t:24,b:24}});
+  const P0 = {x:0.07, y:0.40}, P1 = {x:0.93, y:0.66};
+  const M = 90, dx = 1/(M-1);
+  let y = new Array(M), ghost = new Array(M);
+  function init() {
+    for (let i=0;i<M;i++){ const t=i/(M-1);
+      const lin = P0.y + (P1.y-P0.y)*t;
+      y[i] = lin + 0.30*Math.sin(3*Math.PI*t) - 0.18*Math.sin(6*Math.PI*t+1) + 0.10*Math.sin(9*Math.PI*t);
+    }
+    y[0]=P0.y; y[M-1]=P1.y; ghost = y.slice();
+  }
+  function step() {
+    const r=0.45, yn=y.slice();
+    for (let s=0;s<3;s++){ for(let i=1;i<M-1;i++) yn[i]=y[i]+r*(y[i+1]-2*y[i]+y[i-1]); for(let i=1;i<M-1;i++) y[i]=yn[i]; }
+  }
+  function draw() {
+    ctx.clearRect(0,0,view.w,view.h);
+    grid(ctx, view, 14, 4);
+    // fan of faint trial curves
+    for (let k=0;k<6;k++){
+      const amp = 0.34*(1-k/7), ph = k*0.9, fr = 2+k;
+      ctx.strokeStyle = rgba(COL.teal, 0.13); ctx.lineWidth=1.4; ctx.beginPath();
+      for (let i=0;i<=M;i++){ const t=i/M; const lin=P0.y+(P1.y-P0.y)*t;
+        const yy = lin + amp*Math.sin(fr*Math.PI*t+ph);
+        const px=view.x(P0.x+(P1.x-P0.x)*t), py=view.y(yy); i===0?ctx.moveTo(px,py):ctx.lineTo(px,py); }
+      ctx.stroke();
+    }
+    // ghost (starting wiggle)
+    ctx.strokeStyle = rgba(COL.teal, 0.22); ctx.lineWidth=1.5;
+    ctx.beginPath();
+    for (let i=0;i<M;i++){ const px=view.x(P0.x+(P1.x-P0.x)*i/(M-1)), py=view.y(ghost[i]); i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);} ctx.stroke();
+    // gold extremal (relaxing)
+    ctx.strokeStyle = COL.gold; ctx.lineWidth=3; ctx.shadowColor=rgba(COL.gold,0.6); ctx.shadowBlur=14;
+    ctx.beginPath();
+    for (let i=0;i<M;i++){ const px=view.x(P0.x+(P1.x-P0.x)*i/(M-1)), py=view.y(y[i]); i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);} ctx.stroke();
+    ctx.shadowBlur=0;
+    // endpoints
+    [P0,P1].forEach(p=>{ ctx.fillStyle=COL.gold; ctx.beginPath(); ctx.arc(view.x(p.x),view.y(p.y),5,0,7); ctx.fill();
+      ctx.strokeStyle=rgba(COL.gold,0.4); ctx.lineWidth=2; ctx.beginPath(); ctx.arc(view.x(p.x),view.y(p.y),9,0,7); ctx.stroke(); });
+  }
+  init();
+  if (REDUCED) { for(let n=0;n<400;n++) step(); draw(); return; }
+  let frame=0;
+  (function loop(){ if (frame % 460 === 0) init(); step(); draw(); frame++; requestAnimationFrame(loop); })();
+})();
+
+/* ============================ STEP 1 — densification ============================ */
+(function () {
+  const canvas = document.getElementById('w1-canvas');
+  const ctx = setupCanvas(canvas, 760, 280);
+  const view = makeView(canvas, {xmin:0, xmax:1, ymin:-0.15, ymax:1.12, pad:{l:18,r:18,t:18,b:24}});
+  const slider = document.getElementById('w1-N'), NV = document.getElementById('w1-NV');
+  const playBtn = document.getElementById('w1-play'), readout = document.getElementById('w1-readout');
+  const g = x => 0.5 + 0.28*Math.sin(3*Math.PI*x) + 0.10*Math.cos(6*Math.PI*x);
+
+  function draw() {
+    const N = parseInt(slider.value);
+    ctx.clearRect(0,0,view.w,view.h);
+    grid(ctx, view, 12, 5); axisLine(ctx, view, 0);
+    plot(ctx, view, g, rgba(COL.gold,0.28), 2);          // limiting function (faint)
+    const dotR = Math.max(1.4, 6 - N/26);
+    for (let i=0;i<N;i++){ const x = N===1?0.5:i/(N-1); const yy=g(x);
+      ctx.strokeStyle = rgba(COL.teal,0.5); ctx.lineWidth=1.2;
+      ctx.beginPath(); ctx.moveTo(view.x(x),view.y(0)); ctx.lineTo(view.x(x),view.y(yy)); ctx.stroke();
+      ctx.fillStyle = COL.teal; ctx.beginPath(); ctx.arc(view.x(x),view.y(yy),dotR,0,7); ctx.fill();
+    }
+    NV.textContent = N;
+    if (N < 70) readout.innerHTML = `input = a point <span class="tnum">(y\u2081, \u2026, y_N) \u2208 \u211D<sup>${N}</sup></span> &nbsp;\u2014 ordinary multivariable data`;
+    else readout.innerHTML = `N is large: the samples have fused into the whole function <span class="tnum">y(x)</span> &nbsp;\u2014 input now lives in an <span class="num">\u221E-dimensional</span> space`;
+  }
+  slider.addEventListener('input', draw);
+  let raf=null;
+  playBtn.addEventListener('click', ()=>{
+    cancelAnimationFrame(raf);
+    let N = 2; slider.value = 2; draw();
+    (function grow(){ N += Math.max(1, Math.round(N*0.06)); if (N>=160){N=160;} slider.value=N; draw();
+      if (N<160) raf=requestAnimationFrame(grow); })();
+  });
+  draw();
+})();
+
+/* ============================ STEP 2 — functional = function -> number ============================ */
+(function () {
+  const canvas = document.getElementById('w2-canvas');
+  const ctx = setupCanvas(canvas, 760, 300);
+  const view = makeView(canvas, {xmin:0, xmax:1, ymin:-1, ymax:2, pad:{l:18,r:18,t:16,b:22}});
+  const playBtn = document.getElementById('w2-play'), readout = document.getElementById('w2-readout');
+  const gauge = document.getElementById('w2-gauge'), chips = document.querySelectorAll('#w2-chips .chip');
+  let mode = 'area', t = 1.2, playing = false, raf = null;
+  const Y = (x,tt) => 0.4 + 0.5*Math.sin(0.7*tt)*Math.sin(Math.PI*x)
+                          + 0.35*Math.sin(1.1*tt+1)*Math.sin(2*Math.PI*x)
+                          + 0.22*Math.sin(1.7*tt+2)*Math.sin(3*Math.PI*x);
+  const RANGE = { area:{lo:-0.7, hi:1.5, name:'A[y] = \u222B y dx', fmt:'A[y]'},
+                  energy:{lo:0, hi:1.9, name:'E[y] = \u222B y\u00B2 dx', fmt:'E[y]'},
+                  arc:{lo:1, hi:2.6, name:'L[y] = \u222B \u221A(1+y\u2032\u00B2) dx', fmt:'L[y]'} };
+  function value(tt) {
+    const N=400, dx=1/N; let s=0; let prev=Y(0,tt);
+    for (let i=1;i<=N;i++){ const x=i/N, y=Y(x,tt);
+      if (mode==='area') s += y*dx;
+      else if (mode==='energy') s += y*y*dx;
+      else { const dy=(y-prev)/dx; s += Math.sqrt(1+dy*dy)*dx; }
+      prev=y;
+    }
+    return s;
+  }
+  function draw() {
+    ctx.clearRect(0,0,view.w,view.h);
+    grid(ctx, view, 12, 6); axisLine(ctx, view, 0);
+    const N=200;
+    // shaded integrand
+    if (mode==='area') {
+      ctx.fillStyle = rgba(COL.teal,0.16); ctx.beginPath(); ctx.moveTo(view.x(0),view.y(0));
+      for(let i=0;i<=N;i++){ const x=i/N; ctx.lineTo(view.x(x),view.y(Y(x,t))); } ctx.lineTo(view.x(1),view.y(0)); ctx.closePath(); ctx.fill();
+    } else if (mode==='energy') {
+      ctx.fillStyle = rgba(COL.gold,0.14); ctx.beginPath(); ctx.moveTo(view.x(0),view.y(0));
+      for(let i=0;i<=N;i++){ const x=i/N; const yy=Y(x,t); ctx.lineTo(view.x(x),view.y(yy*yy)); } ctx.lineTo(view.x(1),view.y(0)); ctx.closePath(); ctx.fill();
+      plot(ctx, view, x=>Y(x,t)**2, rgba(COL.gold,0.55), 1.5, [4,4]);   // y^2 curve
+    } else {
+      ctx.strokeStyle = rgba(COL.gold,0.5); ctx.lineWidth=1;
+      for(let i=0;i<=40;i++){ const x=i/40, yy=Y(x,t); ctx.beginPath();
+        ctx.moveTo(view.x(x),view.y(0)); ctx.lineTo(view.x(x),view.y(yy)); ctx.stroke(); }
+    }
+    plot(ctx, view, x=>Y(x,t), COL.teal, 3);   // the curve itself
+    const v = value(t), R = RANGE[mode];
+    readout.innerHTML = `${R.name} &nbsp;=&nbsp; <span class="num" style="font-size:1.3em">${v.toFixed(4)}</span>`;
+    gauge.style.width = Math.max(0, Math.min(100, (v-R.lo)/(R.hi-R.lo)*100)) + '%';
+  }
+  chips.forEach(ch => ch.addEventListener('click', ()=>{
+    chips.forEach(c=>c.classList.remove('on')); ch.classList.add('on'); mode = ch.dataset.f; draw();
+  }));
+  function frame(){ t += 0.016; draw(); if (playing) raf=requestAnimationFrame(frame); }
+  playBtn.addEventListener('click', ()=>{ playing=!playing; playBtn.textContent = playing?'\u275A\u275A Pause':'\u25B6 Play';
+    if (playing) frame(); else cancelAnimationFrame(raf); });
+  draw();
+})();
+
+/* ============================ STEP 3 — first variation + sweep (staged) ============================ */
+(function () {
+  const canvas = document.getElementById('w3-canvas');
+  const ctx = setupCanvas(canvas, 760, 330);
+  const view = makeView(canvas, {xmin:0, xmax:1, ymin:-0.45, ymax:2.45, pad:{l:18,r:18,t:16,b:22}});
+  const backBtn=document.getElementById('w3-back'), nextBtn=document.getElementById('w3-next'),
+        cap=document.getElementById('w3-caption'), readout=document.getElementById('w3-readout'),
+        epsWrap=document.getElementById('w3-eps-wrap'), epsS=document.getElementById('w3-eps'), epsV=document.getElementById('w3-epsV');
+  const base = x => 0.6 + 0.45*Math.sin(2*Math.PI*x);
+  const Nint = 600, dxi = 1/Nint;
+  let x0 = 0.30, stage = 0, sweepRun=false, trail=[];
+  function bump(x, c, w){ return Math.exp(-0.5*((x-c)/w)**2); }
+  function bumpArea(c, w){ let s=0; for(let i=0;i<=Nint;i++) s+=bump(i*dxi,c,w)*dxi; return s; }
+  const W = 0.045;
+  function F(fn){ let s=0; for(let i=0;i<=Nint;i++){ const x=i*dxi, v=fn(x); s+=v*v*dxi; } return s; }
+  const Fbase = F(base);
+  function deltaF(c, eps){ const area=bumpArea(c,W); return (F(x=>base(x)+eps*bump(x,c,W)/area) - Fbase); }
+  function sensitivity(c){ const eps=0.04; return deltaF(c,eps)/eps; }   // ~2 y(c)
+
+  function drawBase(){ plot(ctx, view, base, COL.teal, 3); }
+  function drawBump(){
+    const eps=parseFloat(epsS.value), area=bumpArea(x0,W);
+    plot(ctx, view, x=>base(x)+eps*bump(x,x0,W)/area, COL.magenta, 2.2, [6,5]);   // y+eps eta
+    // eta itself (scaled small near baseline)
+    ctx.strokeStyle=rgba(COL.magenta,0.8); ctx.lineWidth=2; ctx.beginPath();
+    for(let i=0;i<=200;i++){ const x=i/200, e=0.35*bump(x,x0,W); const px=view.x(x), py=view.y(-0.32+e);
+      i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);} ctx.stroke();
+    // marker at x0 on curve
+    ctx.fillStyle=COL.magenta; ctx.beginPath(); ctx.arc(view.x(x0),view.y(base(x0)),5,0,7); ctx.fill();
+  }
+  function drawTrail(){
+    // analytic 2y(x)
+    plot(ctx, view, x=>2*base(x), rgba(COL.gold,0.45), 1.6, [5,5]);
+    ctx.fillStyle=COL.gold;
+    trail.forEach(p=>{ ctx.beginPath(); ctx.arc(view.x(p.x),view.y(p.y),3.2,0,7); ctx.fill(); });
+  }
+  const stages = [
+    { cap:'F[y] = \u222B\u2080\u00B9 y\u00B2 dx. Here is the curve and the value it produces.', next:'Add a variation \u03B7 \u2192', draw:[drawBase] },
+    { cap:'Add a localized bump \u03B7 at the marker (drag it). The number shifts by \u0394F.', next:'Shrink \u03B5 \u2192', draw:[drawBase, drawBump] },
+    { cap:'Shrink \u03B5: the \u03B5\u00B2 part dies, and \u0394F/\u03B5 \u2192 2y(x\u2080). That ratio is the sensitivity here.', next:'Sweep the bump \u2192', draw:[drawBase, drawBump] },
+    { cap:'Sweeping x\u2080 traces \u03B4F/\u03B4y = 2y(x): the functional derivative is a whole function.', next:null, draw:[drawBase, drawBump, drawTrail] }
+  ];
+  function render(){
+    ctx.clearRect(0,0,view.w,view.h);
+    grid(ctx, view, 12, 6); axisLine(ctx, view, 0);
+    stages[stage].draw.forEach(d=>d());
+    cap.textContent = stages[stage].cap;
+    backBtn.disabled = stage===0;
+    nextBtn.style.display = stages[stage].next ? '' : 'none';
+    if (stages[stage].next) nextBtn.textContent = stages[stage].next;
+    epsWrap.style.display = (stage>=1 && stage<=2) ? 'flex' : 'none';
+    // readout
+    const eps=parseFloat(epsS.value);
+    if (stage===0) readout.innerHTML = `F[y] = <span class="num">${Fbase.toFixed(4)}</span>`;
+    else if (stage===1) readout.innerHTML = `x\u2080=<span class="mnum">${x0.toFixed(2)}</span> &nbsp; \u0394F = <span class="num">${deltaF(x0,eps).toFixed(4)}</span> &nbsp; (\u03B5=${eps.toFixed(2)})`;
+    else if (stage===2) readout.innerHTML = `\u0394F/\u03B5 = <span class="num">${(deltaF(x0,eps)/eps).toFixed(3)}</span> &nbsp;\u2192&nbsp; 2y(x\u2080) = <span class="tnum">${(2*base(x0)).toFixed(3)}</span>`;
+    else readout.innerHTML = `sweeping\u2026 the gold trail meets 2y(x). \u03B4F/\u03B4y(x) = <span class="num">2y(x)</span>`;
+  }
+  nextBtn.addEventListener('click', ()=>{ if(stage<stages.length-1){ stage++; if(stage===3) startSweep(); render(); } });
+  backBtn.addEventListener('click', ()=>{ if(stage>0){ stage--; sweepRun=false; if(stage<3) trail=[]; render(); } });
+  epsS.addEventListener('input', ()=>{ epsV.textContent=parseFloat(epsS.value).toFixed(2); render(); });
+  function startSweep(){
+    trail=[]; sweepRun=true; let c=0.05;
+    (function sweep(){ if(!sweepRun) return; trail.push({x:c, y:sensitivity(c)}); x0=c; render();
+      c+=0.022; if(c<=0.955) requestAnimationFrame(sweep); else sweepRun=false; })();
+  }
+  // drag bump
+  let dragging=false;
+  function setFromEvent(e){ const {mx}=pointer(canvas,view,e); x0=Math.max(0.04,Math.min(0.96,mx)); render(); }
+  canvas.addEventListener('mousedown', e=>{ if(stage>=1){dragging=true; setFromEvent(e);} });
+  canvas.addEventListener('mousemove', e=>{ if(dragging) setFromEvent(e); });
+  window.addEventListener('mouseup', ()=>dragging=false);
+  canvas.addEventListener('touchstart', e=>{ if(stage>=1){dragging=true; setFromEvent(e); e.preventDefault();} }, {passive:false});
+  canvas.addEventListener('touchmove', e=>{ if(dragging){ setFromEvent(e); e.preventDefault(); } }, {passive:false});
+  window.addEventListener('touchend', ()=>dragging=false);
+  render();
+})();
+
+/* ============================ STEP 4 — Euler-Lagrange = -y'' (drag control points) ============================ */
+(function () {
+  const cy = document.getElementById('w4-canvas-y'), cd = document.getElementById('w4-canvas-d');
+  const ctxY = setupCanvas(cy, 760, 220), ctxD = setupCanvas(cd, 760, 170);
+  const viewY = makeView(cy, {xmin:0, xmax:1, ymin:-0.15, ymax:1.15, pad:{l:18,r:18,t:14,b:18}});
+  const readout = document.getElementById('w4-readout');
+  const K = 7;
+  let pts = [];
+  function preset(kind){
+    pts = [];
+    for (let k=0;k<K;k++){ const x=k/(K-1);
+      let yv = 0.5 + 0.12*x;
+      if (kind==='wiggle') yv = 0.5 + 0.32*Math.sin(2.2*Math.PI*x) - 0.16*Math.sin(4*Math.PI*x+0.6);
+      pts.push({x, y: Math.max(0.02, Math.min(1.08, yv))});
+    }
+  }
+  function cr(p0,p1,p2,p3,t){ const t2=t*t,t3=t2*t;
+    return 0.5*((2*p1)+(-p0+p2)*t+(2*p0-5*p1+4*p2-p3)*t2+(-p0+3*p1-3*p2+p3)*t3); }
+  function sample(S){
+    const xs=[], ys=[];
+    for (let i=0;i<S;i++){ const x=i/(S-1); xs.push(x);
+      let k=Math.min(K-2, Math.max(0, Math.floor(x*(K-1)))); const seg=(K-1);
+      const tt=(x*seg)-k;
+      const p0=pts[Math.max(0,k-1)].y, p1=pts[k].y, p2=pts[k+1].y, p3=pts[Math.min(K-1,k+2)].y;
+      ys.push(cr(p0,p1,p2,p3,tt));
+    }
+    return {xs, ys};
+  }
+  function render(){
+    const S=240, {xs,ys}=sample(S), h=1/(S-1);
+    // second derivative
+    const d2=new Array(S).fill(0);
+    for (let i=1;i<S-1;i++) d2[i] = (ys[i+1]-2*ys[i]+ys[i-1])/(h*h);
+    d2[0]=d2[1]; d2[S-1]=d2[S-2];
+    const deriv = d2.map(v=>-v);   // delta E / delta y = -y''
+    let dmax=0.5; for(const v of deriv) dmax=Math.max(dmax, Math.abs(v)); dmax*=1.15;
+    // ---- top panel: y ----
+    ctxY.clearRect(0,0,viewY.w,viewY.h); grid(ctxY, viewY, 12, 5); axisLine(ctxY, viewY, 0);
+    plotArr(ctxY, viewY, xs, ys, COL.teal, 3);
+    pts.forEach((p,idx)=>{ const fixed=(idx===0||idx===K-1);
+      ctxY.fillStyle = fixed?rgba(COL.gold,0.45):COL.gold; ctxY.beginPath(); ctxY.arc(viewY.x(p.x),viewY.y(p.y),fixed?5:7,0,7); ctxY.fill(); });
+    // ---- bottom panel: -y'' ----
+    const viewD = makeView(cd, {xmin:0, xmax:1, ymin:-dmax, ymax:dmax, pad:{l:18,r:18,t:14,b:18}});
+    ctxD.clearRect(0,0,viewD.w,viewD.h); grid(ctxD, viewD, 12, 4); axisLine(ctxD, viewD, 0);
+    // fill
+    ctxD.fillStyle = rgba(COL.magenta,0.13); ctxD.beginPath(); ctxD.moveTo(viewD.x(0),viewD.y(0));
+    for(let i=0;i<S;i++) ctxD.lineTo(viewD.x(xs[i]),viewD.y(deriv[i])); ctxD.lineTo(viewD.x(1),viewD.y(0)); ctxD.closePath(); ctxD.fill();
+    plotArr(ctxD, viewD, xs, deriv, COL.magenta, 2.6);
+    // zero crossings
+    ctxD.fillStyle=COL.gold;
+    for (let i=1;i<S;i++){ if (deriv[i-1]===0 || (deriv[i-1]<0)!==(deriv[i]<0)){
+      const xz=xs[i]; ctxD.beginPath(); ctxD.arc(viewD.x(xz),viewD.y(0),3.5,0,7); ctxD.fill();
+      ctxY.strokeStyle=rgba(COL.gold,0.3); ctxY.setLineDash([3,4]); ctxY.lineWidth=1;
+      ctxY.beginPath(); ctxY.moveTo(viewY.x(xz),viewY.pad.t); ctxY.lineTo(viewY.x(xz),viewY.h-viewY.pad.b); ctxY.stroke(); ctxY.setLineDash([]);
+    }}
+    let dm=0; for(const v of deriv) dm=Math.max(dm,Math.abs(v));
+    readout.innerHTML = `\u03B4E/\u03B4y = \u2212y\u2033(x) &nbsp;\u00B7&nbsp; max|\u03B4E/\u03B4y| = <span class="mnum">${dm.toFixed(2)}</span>`;
+  }
+  // drag interior control points
+  let drag=-1;
+  function nearest(e){ const {mx,my}=pointer(cy,viewY,e); let best=-1,bd=1e9;
+    for(let k=1;k<K-1;k++){ const d=Math.hypot(mx-pts[k].x, my-pts[k].y); if(d<bd){bd=d;best=k;} }
+    return bd<0.08?best:-1; }
+  cy.addEventListener('mousedown', e=>{ drag=nearest(e); });
+  cy.addEventListener('mousemove', e=>{ if(drag>0){ const {my}=pointer(cy,viewY,e); pts[drag].y=Math.max(-0.1,Math.min(1.12,my)); render(); } });
+  window.addEventListener('mouseup', ()=>drag=-1);
+  cy.addEventListener('touchstart', e=>{ drag=nearest(e); if(drag>0)e.preventDefault(); }, {passive:false});
+  cy.addEventListener('touchmove', e=>{ if(drag>0){ const {my}=pointer(cy,viewY,e); pts[drag].y=Math.max(-0.1,Math.min(1.12,my)); render(); e.preventDefault(); } }, {passive:false});
+  window.addEventListener('touchend', ()=>drag=-1);
+  document.getElementById('w4-wiggle').addEventListener('click', ()=>{ preset('wiggle'); render(); });
+  document.getElementById('w4-straight').addEventListener('click', ()=>{ preset('line'); render(); });
+  preset('wiggle'); render();
+})();
+
+/* ============================ STEP 5 — gradient flow = heat equation ============================ */
+(function () {
+  const canvas = document.getElementById('w5-canvas');
+  const ctx = setupCanvas(canvas, 760, 280);
+  const view = makeView(canvas, {xmin:0, xmax:1, ymin:0, ymax:1, pad:{l:18,r:18,t:16,b:20}});
+  const playBtn=document.getElementById('w5-play'), resetBtn=document.getElementById('w5-reset'), readout=document.getElementById('w5-readout');
+  const M=120, dx=1/(M-1);
+  let y=new Array(M), ghost=new Array(M), ends={a:0.22, b:0.78}, playing=false, raf=null;
+  function reseed(){
+    for(let i=0;i<M;i++){ const t=i/(M-1); const lin=ends.a+(ends.b-ends.a)*t;
+      y[i]=lin + 0.30*Math.sin(3*Math.PI*t) - 0.18*Math.sin(6*Math.PI*t+1) + 0.10*Math.sin(8*Math.PI*t);
+    }
+    y[0]=ends.a; y[M-1]=ends.b; ghost=y.slice();
+  }
+  function energy(){ let e=0; for(let i=0;i<M-1;i++){ const d=(y[i+1]-y[i])/dx; e+=0.5*d*d*dx; } return e; }
+  function step(){ const r=0.45, yn=y.slice();
+    for(let s=0;s<2;s++){ for(let i=1;i<M-1;i++) yn[i]=y[i]+r*(y[i+1]-2*y[i]+y[i-1]); for(let i=1;i<M-1;i++) y[i]=yn[i]; } }
+  function draw(){
+    ctx.clearRect(0,0,view.w,view.h); grid(ctx, view, 12, 5);
+    // target straight line
+    plot(ctx, view, x=>ends.a+(ends.b-ends.a)*x, rgba(COL.gold,0.55), 2, [6,6]);
+    // ghost (start)
+    ctx.strokeStyle=rgba(COL.teal,0.2); ctx.lineWidth=1.5; ctx.beginPath();
+    for(let i=0;i<M;i++){ const px=view.x(i/(M-1)),py=view.y(ghost[i]); i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);} ctx.stroke();
+    // current
+    ctx.strokeStyle=COL.teal; ctx.lineWidth=3; ctx.shadowColor=rgba(COL.teal,0.4); ctx.shadowBlur=10; ctx.beginPath();
+    for(let i=0;i<M;i++){ const px=view.x(i/(M-1)),py=view.y(y[i]); i===0?ctx.moveTo(px,py):ctx.lineTo(px,py);} ctx.stroke(); ctx.shadowBlur=0;
+    // endpoints (draggable)
+    [[0,ends.a],[1,ends.b]].forEach(([xx,yy])=>{ ctx.fillStyle=COL.gold; ctx.beginPath(); ctx.arc(view.x(xx),view.y(yy),7,0,7); ctx.fill();
+      ctx.strokeStyle=rgba(COL.gold,0.4); ctx.lineWidth=2; ctx.beginPath(); ctx.arc(view.x(xx),view.y(yy),11,0,7); ctx.stroke(); });
+    const eStar = 0.5*(ends.b-ends.a)*(ends.b-ends.a);
+    readout.innerHTML = `E[y] = <span class="num">${energy().toFixed(4)}</span> &nbsp;\u2192&nbsp; E* (line) = <span class="tnum">${eStar.toFixed(4)}</span>`;
+  }
+  function frame(){ for(let k=0;k<2;k++) step(); draw(); if(playing) raf=requestAnimationFrame(frame); }
+  playBtn.addEventListener('click', ()=>{ playing=!playing; playBtn.textContent=playing?'\u275A\u275A Pause':'\u25B6 Flow to the extremal';
+    if(playing) frame(); else cancelAnimationFrame(raf); });
+  resetBtn.addEventListener('click', ()=>{ reseed(); draw(); });
+  // drag endpoints
+  let dragEnd=null;
+  function pick(e){ const {mx}=pointer(canvas,view,e); if(mx<0.5){dragEnd='a';} else {dragEnd='b';} setEnd(e); }
+  function setEnd(e){ const {my}=pointer(canvas,view,e); const v=Math.max(0.05,Math.min(0.95,my));
+    if(dragEnd==='a'){ ends.a=v; y[0]=v; ghost[0]=v; } else { ends.b=v; y[M-1]=v; ghost[M-1]=v; } draw(); }
+  canvas.addEventListener('mousedown', pick);
+  canvas.addEventListener('mousemove', e=>{ if(dragEnd) setEnd(e); });
+  window.addEventListener('mouseup', ()=>dragEnd=null);
+  canvas.addEventListener('touchstart', e=>{ pick(e); e.preventDefault(); }, {passive:false});
+  canvas.addEventListener('touchmove', e=>{ if(dragEnd){ setEnd(e); e.preventDefault(); } }, {passive:false});
+  window.addEventListener('touchend', ()=>dragEnd=null);
+  reseed(); draw();
+})();
+
+/* ============================ STEP 7 — max-entropy constrained flow ============================ */
+(function () {
+  const canvas = document.getElementById('w6-canvas');
+  const ctx = setupCanvas(canvas, 760, 300);
+  const readout = document.getElementById('w6-readout');
+  const uBtn=document.getElementById('w6-uniform'), gBtn=document.getElementById('w6-gauss'), rBtn=document.getElementById('w6-reset');
+  const M=201, LO=-5, HI=5, dx=(HI-LO)/(M-1);
+  const xs=Array.from({length:M},(_,i)=>LO+i*dx);
+  const view = makeView(canvas, {xmin:LO, xmax:HI, ymin:0, ymax:0.55, pad:{l:18,r:18,t:16,b:22}});
+  let mode='uniform', lam=[0,0,0.12], raf=null, running=false;
+  const A=-2, B=2;                         // support for uniform mode
+  function dens(x){
+    if (mode==='uniform') return (x>=A && x<=B) ? Math.exp(-1-lam[0]) : 0;
+    return Math.exp(-1-lam[0]-lam[1]*x-lam[2]*x*x);
+  }
+  function moments(){ const m=[0,0,0,0,0];
+    for(let i=0;i<M;i++){ const x=xs[i], f=dens(x); let xp=1; for(let j=0;j<5;j++){ m[j]+=xp*f*dx; xp*=x; } } return m; }
+  function solve3(J,r){ const Aug=J.map((row,i)=>row.concat(r[i]));
+    for(let i=0;i<3;i++){ let p=i; for(let k=i+1;k<3;k++) if(Math.abs(Aug[k][i])>Math.abs(Aug[p][i]))p=k;
+      [Aug[i],Aug[p]]=[Aug[p],Aug[i]];
+      for(let k=0;k<3;k++) if(k!==i){ const f=Aug[k][i]/Aug[i][i]; for(let c=i;c<4;c++) Aug[k][c]-=f*Aug[i][c]; } }
+    return [Aug[0][3]/Aug[0][0],Aug[1][3]/Aug[1][1],Aug[2][3]/Aug[2][2]]; }
+  function entropy(){ let h=0; for(let i=0;i<M;i++){ const f=dens(xs[i]); if(f>1e-12) h-=f*Math.log(f)*dx; } return h; }
+  function residual(){
+    const m=moments();
+    if (mode==='uniform'){ return [ (B-A)*Math.exp(-1-lam[0]) - 1, 0, 0 ]; }
+    return [ m[0]-1, m[1]-0, m[2]-1 ];     // mean 0, var 1 (2nd moment = 1)
+  }
+  function newtonStep(damp){
+    if (mode==='uniform'){ const f=Math.exp(-1-lam[0]); const r=(B-A)*f-1; const dr=-(B-A)*f; lam[0]-= damp*(r/dr); return; }
+    const m=moments(); const r=[m[0]-1, m[1]-0, m[2]-1];
+    const J=[[-m[0],-m[1],-m[2]],[-m[1],-m[2],-m[3]],[-m[2],-m[3],-m[4]]];
+    const dz=solve3(J,r);
+    lam[0]-=damp*dz[0]; lam[1]-=damp*dz[1]; lam[2]-=damp*dz[2];
+    if (lam[2]<0.02) lam[2]=0.02;
+  }
+  function reinit(){
+    if (mode==='uniform'){ lam=[ -1 + Math.log(1/0.13), 0, 0 ]; }   // start ~0.13 flat, climbs to 0.25
+    else { lam=[ -1 + (-Math.log(1/Math.sqrt(2*Math.PI*4))), 0, 1/(2*4) ]; }  // start ~N(0,4) broad
+  }
+  function draw(){
+    ctx.clearRect(0,0,view.w,view.h); grid(ctx, view, 10, 5); axisLine(ctx, view, 0);
+    // support shading for uniform
+    if (mode==='uniform'){ ctx.fillStyle=rgba(COL.inkFaint,0.12);
+      ctx.fillRect(view.x(A), view.pad.t, view.x(B)-view.x(A), view.h-view.pad.t-view.pad.b); }
+    // analytic target
+    if (mode==='uniform') plot(ctx, view, x=>(x>=A&&x<=B)?1/(B-A):0, rgba(COL.gold,0.6), 2, [6,6]);
+    else plot(ctx, view, x=>1/Math.sqrt(2*Math.PI)*Math.exp(-0.5*x*x), rgba(COL.gold,0.6), 2, [6,6]);
+    // current density fill
+    ctx.fillStyle=rgba(COL.teal,0.18); ctx.beginPath(); ctx.moveTo(view.x(LO),view.y(0));
+    for(let i=0;i<M;i++) ctx.lineTo(view.x(xs[i]),view.y(Math.min(view.ymax,dens(xs[i])))); ctx.lineTo(view.x(HI),view.y(0)); ctx.closePath(); ctx.fill();
+    plotArr(ctx, view, xs, xs.map(x=>Math.min(view.ymax,dens(x))), COL.teal, 3);
+    // readout
+    const m=moments(), H=entropy();
+    if (mode==='uniform'){
+      const Htgt=Math.log(B-A);
+      readout.innerHTML = `f(x)=e^(\u22121\u2212\u03BB\u2080), \u03BB\u2080=<span class="num">${lam[0].toFixed(3)}</span> &nbsp;\u00B7&nbsp; \u222Bf=<span class="tnum">${m[0].toFixed(3)}</span> (\u21921) &nbsp;\u00B7&nbsp; H=<span class="num">${H.toFixed(3)}</span> (\u2192${Htgt.toFixed(3)})`;
+    } else {
+      const Htgt=0.5*Math.log(2*Math.PI*Math.E);
+      readout.innerHTML = `\u03BB=[<span class="num">${lam[0].toFixed(2)}, ${lam[1].toFixed(2)}, ${lam[2].toFixed(2)}</span>] &nbsp;\u00B7&nbsp; \u222Bf=<span class="tnum">${m[0].toFixed(2)}</span> mean=<span class="tnum">${m[1].toFixed(2)}</span> var=<span class="tnum">${(m[2]-m[1]*m[1]).toFixed(2)}</span> &nbsp;\u00B7&nbsp; H=<span class="num">${H.toFixed(3)}</span> (\u2192${Htgt.toFixed(3)})`;
+    }
+  }
+  function frame(){
+    newtonStep(0.32); draw();
+    const r=residual(); const rn=Math.hypot(r[0],r[1],r[2]);
+    if (running && rn>5e-4) raf=requestAnimationFrame(frame); else running=false;
+  }
+  function start(){ cancelAnimationFrame(raf); running=true; frame(); }
+  function setMode(m){ mode=m; uBtn.classList.toggle('on', m==='uniform'); gBtn.classList.toggle('on', m==='gauss');
+    reinit(); draw(); start(); }
+  uBtn.addEventListener('click', ()=>setMode('uniform'));
+  gBtn.addEventListener('click', ()=>setMode('gauss'));
+  rBtn.addEventListener('click', ()=>{ reinit(); draw(); start(); });
+  reinit(); draw(); start();
+})();
+
+/* ============================ PROGRESS BAR ============================ */
+(function () {
+  const bar = document.getElementById('progress');
+  function update(){ const h=document.documentElement; const max=h.scrollHeight-h.clientHeight;
+    bar.style.width = (max>0 ? (h.scrollTop/max)*100 : 0) + '%'; }
+  window.addEventListener('scroll', update, {passive:true});
+  window.addEventListener('resize', update); update();
+})();
+
+/* ============================ STEP 6 — most even route over swappable 3D terrain ============================ */
+(function () {
+  const C3 = document.getElementById('w5b-canvas');
+  const CP = document.getElementById('w5b-prof');
+  const readout = document.getElementById('w5b-readout');
+  if (!C3 || !CP) return;
+  const W3=760, H3=440, WP=760, HP=130;
+  const ctx  = setupCanvas(C3, W3, H3);
+  const ctxP = setupCanvas(CP, WP, HP);
+  const dpr = window.devicePixelRatio||1;
+  const off = document.createElement('canvas'); off.width=W3*dpr; off.height=H3*dpr;
+  const octx = off.getContext('2d'); octx.scale(dpr,dpr);
+
+  const stops=[[0,[16,40,58]],[0.30,[27,107,103]],[0.55,[110,140,90]],[0.78,[201,162,74]],[1,[240,232,210]]];
+  function cmap(t){t=Math.max(0,Math.min(1,t));for(let i=1;i<stops.length;i++){if(t<=stops[i][0]){const a=stops[i-1],c=stops[i],u=(t-a[0])/(c[0]-a[0]);return[a[1][0]+(c[1][0]-a[1][0])*u,a[1][1]+(c[1][1]-a[1][1])*u,a[1][2]+(c[1][2]-a[1][2])*u];}}return stops[4][1];}
+  const sech2=u=>{const t=Math.tanh(u);return 1-t*t;};
+
+  // ================= surface definitions =================
+  function levelSurface(){
+    const RR=0.70, ww=0.12;
+    const v =x=>0.5+0.18*Math.sin(2*Math.PI*x)+0.10*Math.sin(4*Math.PI*x)+0.05*Math.sin(6*Math.PI*x);
+    const vp=x=>0.18*2*Math.PI*Math.cos(2*Math.PI*x)+0.10*4*Math.PI*Math.cos(4*Math.PI*x)+0.05*6*Math.PI*Math.cos(6*Math.PI*x);
+    const B=[[0.22,0.82,0.10,0.55],[0.50,0.88,0.10,0.50],[0.78,0.84,0.10,0.55],[0.35,0.16,0.10,-0.55],[0.62,0.13,0.10,-0.50],[0.85,0.20,0.09,-0.50],[0.45,0.56,0.08,0.26],[0.70,0.44,0.08,-0.26],[0.15,0.45,0.07,-0.30],[0.90,0.60,0.07,0.30]];
+    return { name:'Level traverse', ya:0.5, yb:0.5, HMIN:-1.3, HMAX:1.3, ZS:0.30,
+      hf:(x,y)=>{let s=RR*Math.tanh((y-v(x))/ww);for(const g of B){const ax=x-g[0],ay=y-g[1];s+=g[3]*Math.exp(-(ax*ax+ay*ay)/(2*g[2]*g[2]));}return s;},
+      hy:(x,y)=>{let s=(RR/ww)*sech2((y-v(x))/ww);for(const g of B){const ax=x-g[0],ay=y-g[1];s+=g[3]*Math.exp(-(ax*ax+ay*ay)/(2*g[2]*g[2]))*(-(y-g[1])/(g[2]*g[2]));}return s;},
+      hx:(x,y)=>{let s=RR*sech2((y-v(x))/ww)*(-vp(x)/ww);for(const g of B){const ax=x-g[0],ay=y-g[1];s+=g[3]*Math.exp(-(ax*ax+ay*ay)/(2*g[2]*g[2]))*(-(x-g[0])/(g[2]*g[2]));}return s;} };
+  }
+  function valleySurface(){
+    const Z0=0.72, Z1=-0.72, WB=3.2;
+    const u =x=>0.5+0.21*Math.sin(2*Math.PI*x)+0.09*Math.sin(4*Math.PI*x);
+    const up=x=>0.21*2*Math.PI*Math.cos(2*Math.PI*x)+0.09*4*Math.PI*Math.cos(4*Math.PI*x);
+    const f =x=>Z0+(Z1-Z0)*x, fp=Z1-Z0;
+    const B=[[0.30,0.86,0.10,0.45],[0.70,0.14,0.10,0.45],[0.20,0.18,0.08,0.32],[0.80,0.82,0.08,0.32],[0.50,0.85,0.09,0.30],[0.50,0.15,0.09,0.30]];
+    return { name:'Valley descent', ya:0.5, yb:0.5, HMIN:-0.8, HMAX:2.4, ZS:0.26,
+      hf:(x,y)=>{let s=f(x)+WB*(y-u(x))**2;for(const g of B){const ax=x-g[0],ay=y-g[1];s+=g[3]*Math.exp(-(ax*ax+ay*ay)/(2*g[2]*g[2]));}return s;},
+      hy:(x,y)=>{let s=2*WB*(y-u(x));for(const g of B){const ax=x-g[0],ay=y-g[1];s+=g[3]*Math.exp(-(ax*ax+ay*ay)/(2*g[2]*g[2]))*(-(y-g[1])/(g[2]*g[2]));}return s;},
+      hx:(x,y)=>{let s=fp+WB*2*(y-u(x))*(-up(x));for(const g of B){const ax=x-g[0],ay=y-g[1];s+=g[3]*Math.exp(-(ax*ax+ay*ay)/(2*g[2]*g[2]))*(-(x-g[0])/(g[2]*g[2]));}return s;} };
+  }
+  const SURF=[levelSurface(), valleySurface()];
+  let si=0, S=SURF[0];
+  let hf=S.hf, hy=S.hy, hx=S.hx, HMIN=S.HMIN, HMAX=S.HMAX, ZS=S.ZS, zoff=0;
+
+  // ---- route + steady-grade deviation functional ----
+  const M=140, hdx=1/(M-1), LAM=0.0015, DT=0.004;
+  const yArr=new Float64Array(M), tmp=new Float64Array(M);
+  let z0=0, z1=0;                         // endpoint heights
+  const zbar=x=>z0+(z1-z0)*x;             // steady grade between endpoints
+  const setStraight=()=>{for(let i=0;i<M;i++)yArr[i]=S.ya+(S.yb-S.ya)*(i/(M-1));};
+  function cost(){let s=0;for(let i=0;i<M;i++){const x=i/(M-1),d=hf(x,yArr[i])-zbar(x);s+=d*d;}s/=M;let t=0;for(let i=0;i<M-1;i++){const dd=(yArr[i+1]-yArr[i])/hdx;t+=0.5*LAM*dd*dd;}return s+t/(M-1);}
+  let seed=20260618; const rnd=()=>{seed=(seed*1103515245+12345)&0x7fffffff;return seed/0x7fffffff*2-1;};
+  function setRandom(){const a=[];for(let k=1;k<=5;k++)a.push(rnd()*0.22/Math.sqrt(k));
+    for(let i=0;i<M;i++){const x=i/(M-1);let yv=S.ya+(S.yb-S.ya)*x;for(let k=1;k<=5;k++)yv+=a[k-1]*Math.sin(k*Math.PI*x);yArr[i]=Math.max(0.04,Math.min(0.96,yv));}}
+  function flowStep(){tmp[0]=yArr[0];tmp[M-1]=yArr[M-1];
+    for(let i=1;i<M-1;i++){const x=i/(M-1),yi=yArr[i],diff=(yArr[i+1]-2*yi+yArr[i-1])/(hdx*hdx);
+      tmp[i]=Math.max(0.02,Math.min(0.98,yi+DT*(-2*(hf(x,yi)-zbar(x))*hy(x,yi)+LAM*diff)));}
+    for(let i=1;i<M-1;i++)yArr[i]=tmp[i];}
+
+  // ---- mesh (rebuilt per surface) ----
+  const N=44; let verts=[], quads=[], scale=210;
+  const L=(()=>{const v=[-0.45,-0.55,0.78],n=Math.hypot(v[0],v[1],v[2]);return[v[0]/n,v[1]/n,v[2]/n];})();
+  function buildMesh(){
+    zoff=((HMIN+HMAX)/2)*ZS;
+    verts=[]; for(let j=0;j<N;j++)for(let i=0;i<N;i++){const x=i/(N-1),y=j/(N-1);verts.push({X:x-0.5,Y:y-0.5,Z:hf(x,y)*ZS-zoff});}
+    quads=[];
+    for(let j=0;j<N-1;j++)for(let i=0;i<N-1;i++){
+      const a=j*N+i,b=j*N+i+1,c=(j+1)*N+i+1,d=(j+1)*N+i;
+      const x=(i+0.5)/(N-1),y=(j+0.5)/(N-1),hh=hf(x,y);
+      let nx=-hx(x,y)*ZS,ny=-hy(x,y)*ZS,nz=1;const nn=Math.hypot(nx,ny,nz);nx/=nn;ny/=nn;nz/=nn;
+      let sh=Math.min(1.15,0.42+0.72*Math.max(0,nx*L[0]+ny*L[1]+nz*L[2]));
+      const cc=cmap((hh-HMIN)/(HMAX-HMIN));
+      quads.push({a,b,c,d,fill:'rgb('+Math.min(255,cc[0]*sh|0)+','+Math.min(255,cc[1]*sh|0)+','+Math.min(255,cc[2]*sh|0)+')'});
+    }
+    let Rmax=0.5; for(const p of verts){const r=Math.hypot(p.X,p.Y,p.Z);if(r>Rmax)Rmax=r;}
+    scale=Math.min(W3-80,H3-110)/(2*Rmax);
+  }
+
+  // ---- camera ----
+  const AZ0=-0.62, EL0=0.6, EL_MIN=0.14, EL_MAX=1.45;
+  let az=AZ0, el=EL0, curB=null;
+  const cx0=W3/2, cy0=H3/2+14;
+  function basis(){
+    const cd=[Math.cos(el)*Math.cos(az),Math.cos(el)*Math.sin(az),Math.sin(el)];
+    const rn=Math.hypot(-cd[1],cd[0])||1, right=[-cd[1]/rn,cd[0]/rn,0];
+    const up=[cd[1]*right[2]-cd[2]*right[1],cd[2]*right[0]-cd[0]*right[2],cd[0]*right[1]-cd[1]*right[0]];
+    return {cd,right,up};
+  }
+  function proj(X,Y,Z,B){return {px:cx0+(X*B.right[0]+Y*B.right[1]+Z*B.right[2])*scale,py:cy0-(X*B.up[0]+Y*B.up[1]+Z*B.up[2])*scale,dp:X*B.cd[0]+Y*B.cd[1]+Z*B.cd[2]};}
+  function renderSurface(){
+    const B=curB,n=verts.length,px=new Float64Array(n),py=new Float64Array(n),dp=new Float64Array(n);
+    for(let k=0;k<n;k++){const p=verts[k],P=proj(p.X,p.Y,p.Z,B);px[k]=P.px;py[k]=P.py;dp[k]=P.dp;}
+    const order=new Array(quads.length),qd=new Float64Array(quads.length);
+    for(let k=0;k<quads.length;k++){const q=quads[k];qd[k]=(dp[q.a]+dp[q.b]+dp[q.c]+dp[q.d])*0.25;order[k]=k;}
+    order.sort((A,Z)=>qd[A]-qd[Z]);
+    octx.clearRect(0,0,W3,H3);
+    for(let oi=0;oi<order.length;oi++){const q=quads[order[oi]];
+      octx.beginPath();octx.moveTo(px[q.a],py[q.a]);octx.lineTo(px[q.b],py[q.b]);octx.lineTo(px[q.c],py[q.c]);octx.lineTo(px[q.d],py[q.d]);octx.closePath();
+      octx.fillStyle=q.fill;octx.fill();octx.strokeStyle='rgba(7,9,30,0.16)';octx.lineWidth=0.5;octx.stroke();}
+  }
+
+  function routePath(B,ctxx){ctxx.beginPath();
+    for(let i=0;i<M;i++){const x=i/(M-1),P=proj(x-0.5,yArr[i]-0.5,hf(x,yArr[i])*ZS-zoff+0.02,B);i?ctxx.lineTo(P.px,P.py):ctxx.moveTo(P.px,P.py);}}
+  function pin3(x,y,color,label,B){
+    const top=proj(x-0.5,y-0.5,hf(x,y)*ZS-zoff+0.02,B), base=proj(x-0.5,y-0.5,HMIN*ZS-zoff,B);
+    ctx.save();ctx.strokeStyle=rgba(color,0.85);ctx.lineWidth=1.6;ctx.beginPath();ctx.moveTo(base.px,base.py);ctx.lineTo(top.px,top.py);ctx.stroke();
+    ctx.fillStyle=color;ctx.strokeStyle='rgba(7,9,30,0.9)';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(top.px,top.py,5,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.fillStyle=COL.ink;ctx.font='600 12px "Space Mono", monospace';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText(label,top.px,top.py-9);ctx.restore();
+  }
+  function draw(){
+    if(!curB)curB=basis();
+    ctx.clearRect(0,0,W3,H3);ctx.drawImage(off,0,0,W3,H3);
+    ctx.save();ctx.lineJoin='round';
+    ctx.strokeStyle='rgba(7,9,30,0.6)';ctx.lineWidth=4;routePath(curB,ctx);ctx.stroke();
+    ctx.strokeStyle='rgba(245,247,255,0.97)';ctx.lineWidth=2.2;routePath(curB,ctx);ctx.stroke();ctx.restore();
+    pin3(0,yArr[0],COL.teal,'Start',curB);
+    pin3(1,yArr[M-1],COL.gold,'End',curB);
+  }
+  let pv=null;
+  function drawProfile(){
+    ctxP.clearRect(0,0,pv.w,pv.h);grid(ctxP,pv,6,2);
+    // steady grade (dashed gold)
+    plot(ctxP,pv,x=>zbar(x),COL.gold,1.6,[6,5]);
+    // altitude along trail (white)
+    ctxP.save();ctxP.strokeStyle='rgba(245,247,255,0.96)';ctxP.lineWidth=2.2;ctxP.lineJoin='round';ctxP.beginPath();
+    for(let i=0;i<M;i++){const x=i/(M-1),p=pv.x(x),q=pv.y(hf(x,yArr[i]));i?ctxP.lineTo(p,q):ctxP.moveTo(p,q);}
+    ctxP.stroke();ctxP.restore();
+    ctxP.fillStyle=COL.inkSoft;ctxP.font='10px "Space Mono", monospace';ctxP.textAlign='left';
+    ctxP.fillText('altitude h along the trail  (gold = steady grade)',pv.pad.l+4,pv.pad.t-4);
+  }
+  let modeLabel='straight chord';
+  function update(){if(readout)readout.innerHTML='trail: '+modeLabel+
+    ' &nbsp;\u00B7&nbsp; F = \u222B(h\u2212grade)\u00B2 + (\u03BB/2)\u222By\u2032\u00B2 = <b style="color:'+COL.teal+'">'+cost().toFixed(3)+'</b>';}
+
+  // ---- loop ----
+  let cameraDirty=true, animating=false, animSteps=0, dragging=false, running=false;
+  function tick(){
+    if(cameraDirty){curB=basis();renderSurface();cameraDirty=false;}
+    if(animating){for(let s=0;s<3;s++)flowStep();if(++animSteps>=1000)animating=false;}
+    draw();drawProfile();update();
+    if(cameraDirty||animating||dragging)requestAnimationFrame(tick); else running=false;
+  }
+  function kick(){if(!running){running=true;requestAnimationFrame(tick);}}
+  function oneShot(){draw();drawProfile();update();}
+
+  // ---- switch surface ----
+  const sname=document.getElementById('w5b-sname');
+  function setSurface(i){
+    si=(i+SURF.length)%SURF.length; S=SURF[si];
+    hf=S.hf; hy=S.hy; hx=S.hx; HMIN=S.HMIN; HMAX=S.HMAX; ZS=S.ZS;
+    z0=hf(0,S.ya); z1=hf(1,S.yb);
+    pv=makeView(CP,{xmin:0,xmax:1,ymin:HMIN,ymax:HMAX,pad:{l:14,r:10,t:16,b:16}});
+    buildMesh(); setStraight(); modeLabel='straight chord';
+    if(sname)sname.textContent=S.name;
+    animating=false; cameraDirty=true; curB=basis(); renderSurface(); oneShot();
+  }
+
+  // ---- interaction ----
+  let lastX=0,lastY=0;
+  function rotateBy(dxp,dyp){az-=dxp*0.008;el=Math.max(EL_MIN,Math.min(EL_MAX,el+dyp*0.006));cameraDirty=true;kick();}
+  C3.style.cursor='grab';
+  C3.addEventListener('pointerdown',e=>{dragging=true;C3.style.cursor='grabbing';lastX=e.clientX;lastY=e.clientY;if(C3.setPointerCapture)C3.setPointerCapture(e.pointerId);kick();});
+  C3.addEventListener('pointermove',e=>{if(!dragging)return;rotateBy(e.clientX-lastX,e.clientY-lastY);lastX=e.clientX;lastY=e.clientY;e.preventDefault();});
+  window.addEventListener('pointerup',()=>{dragging=false;C3.style.cursor='grab';});
+  C3.addEventListener('touchstart',e=>{dragging=true;lastX=e.touches[0].clientX;lastY=e.touches[0].clientY;kick();},{passive:true});
+  C3.addEventListener('touchmove',e=>{if(!dragging)return;const t=e.touches[0];rotateBy(t.clientX-lastX,t.clientY-lastY);lastX=t.clientX;lastY=t.clientY;e.preventDefault();},{passive:false});
+  window.addEventListener('touchend',()=>{dragging=false;});
+
+  const bR=document.getElementById('w5b-rand'), bM=document.getElementById('w5b-min'), bV=document.getElementById('w5b-view');
+  if(bR)bR.addEventListener('click',()=>{animating=false;setRandom();modeLabel='random trail';oneShot();});
+  if(bM)bM.addEventListener('click',()=>{modeLabel='most even trail';
+    if(REDUCED){for(let s=0;s<3000;s++)flowStep();animating=false;oneShot();return;}
+    animating=true;animSteps=0;kick();});
+  if(bV)bV.addEventListener('click',()=>{az=AZ0;el=EL0;cameraDirty=true;kick();});
+  const bP=document.getElementById('w5b-prev'), bN=document.getElementById('w5b-next');
+  if(bP)bP.addEventListener('click',()=>setSurface(si-1));
+  if(bN)bN.addEventListener('click',()=>setSurface(si+1));
+
+  setSurface(0);
+})();
+  </script>
+</body>
+</html>

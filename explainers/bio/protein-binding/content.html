@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>What makes a drug bind a protein?</title>
+<script>
+window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]}};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#edf3ee;--paper:#fbfdf9;--ink:#16251e;--muted:#617167;--line:#cad7cd;--pine:#176447;--lime:#b9d85a;--coral:#e46e56;--blue:#397fa6;--purple:#7957a4;--shadow:0 14px 35px #173a2712}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 83% 7%,#d8ead7 0,transparent 25rem),var(--bg);color:var(--ink);font:18px/1.68 Manrope,sans-serif}.wrap{max-width:880px;margin:auto;padding:0 28px 100px}header{padding:92px 0 40px}.eyebrow,.step-no,.tag{color:var(--pine);font:500 12px/1.4 "DM Mono",monospace;letter-spacing:.14em;text-transform:uppercase}.eyebrow{margin-bottom:15px}h1,h2{font-family:"Instrument Serif",Georgia,serif;font-weight:400;letter-spacing:-.025em}h1{font-size:clamp(3.1rem,8vw,5.6rem);line-height:.92;max-width:710px;margin:0 0 22px}h2{font-size:clamp(2.1rem,5vw,3rem);line-height:1;margin:7px 0 18px}.promise{font-size:1.16rem;color:var(--muted);max-width:650px}.kernel{background:var(--ink);color:#f3f7ed;padding:34px 38px;border-radius:22px;margin:18px 0 85px;box-shadow:var(--shadow)}.kernel .tag{color:var(--lime);margin-bottom:12px}.kernel p{font:2rem/1.15 "Instrument Serif",serif;margin:0}.step{margin:0 0 90px;max-width:720px}.step p{margin:0 0 16px}.widget{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:19px;margin:28px 0 23px;box-shadow:var(--shadow);overflow:hidden}.widget-head{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin-bottom:13px}.widget-title{font-weight:700}.tag{font-size:10px;white-space:nowrap}.scene{width:100%;height:300px;display:block;border-radius:13px;background:linear-gradient(160deg,#f4f9f2 0%,#e8f1e9 100%);border:1px solid #e0eae1}.controls{display:flex;flex-wrap:wrap;gap:14px;align-items:end;margin:15px 0 4px}.control{min-width:185px;flex:1;color:var(--muted);font-size:.83rem}.control strong{float:right;color:var(--pine);font-family:"DM Mono",monospace;font-weight:500}input[type=range]{display:block;width:100%;accent-color:var(--pine);margin-top:6px}button{border:0;border-radius:8px;padding:9px 13px;background:var(--ink);color:white;font:500 12px Manrope,sans-serif;cursor:pointer}button:hover{background:var(--pine)}button:disabled{opacity:.35;cursor:default}.reveal{display:flex;gap:10px;align-items:center;margin-top:13px}.caption{flex:1;color:var(--muted);font-size:.87rem;font-style:italic}.readout{border-left:3px solid var(--lime);padding:8px 11px;margin-top:12px;background:#f1f6e9;color:#46554b;font-size:.88rem}.formal{border:1px solid var(--line);border-radius:12px;background:#f7faf6;margin:22px 0}.formal summary{cursor:pointer;padding:12px 15px;color:var(--muted);font-size:.9rem}.formal div{padding:0 15px 15px;font-size:.94rem}.recap{border-top:2px solid var(--ink);padding-top:33px;max-width:720px}.pill{font:600 11px "DM Mono",monospace;fill:#fff}.pilld{font:600 11px "DM Mono",monospace;fill:#173a27}.tick{font:500 10px "DM Mono",monospace;fill:#8a9d90}.axtitle{font:600 10px Manrope,sans-serif;fill:#7d9086;letter-spacing:.1em;text-transform:uppercase}.key{font:600 10.5px Manrope,sans-serif;fill:#46584d}.panel{fill:#f7fbf5;stroke:#d9e5db;stroke-width:1}.grid{stroke:#dfe9e0;stroke-width:1}.axis{stroke:#a9bcae;stroke-width:1.3}@keyframes breathe{0%,100%{opacity:.26;transform:scale(1)}50%{opacity:.42;transform:scale(1.05)}}.cloud{animation:breathe 3.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center}@keyframes flow{to{stroke-dashoffset:-28}}.flow{animation:flow 1.4s linear infinite}@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3.5px)}}.bob{animation:bob 2.8s ease-in-out infinite;transform-box:view-box}@keyframes pulse{0%,100%{opacity:.35}50%{opacity:.9}}.pulse{animation:pulse 2.2s ease-in-out infinite}@media(prefers-reduced-motion:reduce){.cloud,.flow,.bob,.pulse{animation:none}}.small{font:12px Manrope,sans-serif;fill:#526259}.label{font:600 12px Manrope,sans-serif;fill:#273a2e}.atom{stroke:#fff;stroke-width:2}.legend{display:flex;gap:15px;flex-wrap:wrap;color:var(--muted);font-size:.76rem;margin-top:7px}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}.contact{stroke-width:2;stroke-dasharray:5 4}.grid{stroke:#cddbd0;stroke-width:1}.axis{stroke:#91a99a;stroke-width:1.2}@media(max-width:560px){body{font-size:16px}.wrap{padding:0 17px 70px}header{padding-top:60px}.kernel{padding:26px}.kernel p{font-size:1.65rem}.scene{height:255px}.widget{padding:13px}.widget-head{align-items:flex-start;flex-direction:column;gap:3px}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<header>
+<div class="eyebrow">Molecular recognition · an interactive field guide</div>
+<h1>Why does one molecule stick while another slips away?</h1>
+<p class="promise">Follow a small drug molecule as it finds a protein pocket—from fluctuating electron clouds to whole-population equilibrium. By the end, you will be able to separate <em>getting there</em>, <em>fitting</em>, <em>making contacts</em>, and <em>staying bound</em>.</p>
+</header>
+
+<section class="kernel">
+<div class="tag">The kernel</div>
+<p>At the bottom, binding is one quantum system finding a lower free-energy arrangement—but that single result is best understood by peeling it into electron interactions, water rearrangement, and molecular motion.</p>
+</section>
+
+<section class="step">
+<div class="step-no">01 · First principles</div>
+<h2>When atoms approach, they become one quantum problem.</h2>
+<p>Each nucleus attracts every electron; electrons repel one another; nuclei repel one another; and confining an electron’s wavefunction costs kinetic energy. The Schrödinger equation balances all four at once. Far apart, “an orbital on atom A” is a useful approximation. Close together, the stationary states extend across both partners and the electron density rearranges.</p>
+<p>The animation uses the simplest honest picture: one electron shared by two nuclei. Moving the nuclei changes the combined wavefunction. More density can accumulate between them, but nuclear repulsion eventually prevents collapse.</p>
+<div class="widget">
+<div class="widget-head"><span class="widget-title">Two nuclei sharing a one-electron state</span><span class="tag">animate · approach and separate</span></div>
+<svg id="quantum" class="scene" viewBox="0 0 680 300" aria-label="Two-center wavefunction and energy"></svg>
+<div class="controls"><label class="control">nuclear separation <strong id="qSepVal"></strong><input id="qSep" type="range" min="1.2" max="6" step=".04" value="2.4"></label><button id="qPlay">Animate approach</button></div>
+<div id="qReadout" class="readout"></div>
+</div>
+<details class="formal"><summary>From Schrödinger’s equation to DFT</summary><div>For fixed nuclei, \(\hat H\Psi=E\Psi\). The electronic Hamiltonian contains electron kinetic energy, electron–nucleus attraction, electron–electron repulsion, and nucleus–nucleus repulsion:
+\[
+\hat H=-\sum_i\frac{\hbar^2}{2m_e}\nabla_i^2-\sum_{iA}\frac{Z_Ae^2}{4\pi\epsilon_0r_{iA}}+\sum_{i&lt;j}\frac{e^2}{4\pi\epsilon_0r_{ij}}+\sum_{A&lt;B}\frac{Z_AZ_Be^2}{4\pi\epsilon_0R_{AB}}.
+\]
+\(\Psi\) is a joint amplitude over all electron coordinates, not one independent wave per atom. The Born–Oppenheimer approximation solves this electronic problem at each nuclear geometry to obtain a potential-energy surface. Wavefunction methods approximate \(\Psi\); density-functional theory (DFT) instead seeks the ground-state energy as a functional of the electron density \(n(\mathbf r)\). Neither makes binding a separate force: binding is an energy difference between geometries.</div></details>
+</section>
+
+<section class="step">
+<div class="step-no">02 · Van der Waals contact</div>
+<h2>Neutral clouds attract at long range and resist overlap at short range.</h2>
+<p>Electron density fluctuates even in a neutral atom. One fleeting dipole polarizes its neighbor; quantum mechanics correlates the fluctuations so attractive arrangements occur slightly more often. This is London dispersion. At short range, occupied states must remain antisymmetric under electron exchange. Forcing overlapping electrons into distinguishable states adds nodes and kinetic energy: exchange, or Pauli, repulsion.</p>
+<div class="widget">
+<div class="widget-head"><span class="widget-title">Correlated clouds meeting the Pauli wall</span><span class="tag">animate · follow both terms</span></div>
+<svg id="vdw" class="scene" viewBox="0 0 680 300" aria-label="Dispersion attraction and Pauli repulsion"></svg>
+<div class="controls"><label class="control">atom separation <strong id="vdwSepVal"></strong><input id="vdwSep" type="range" min="2.7" max="6.2" step=".04" value="3.8"></label><button id="vdwPlay">Animate contact</button></div>
+<div id="vdwReadout" class="readout"></div>
+</div>
+<details class="formal"><summary>Where the familiar van der Waals formula comes from</summary><div>Second-order perturbation theory for two polarizable quantum systems gives the leading dispersion term \(U_\mathrm{disp}(r)=-C_6/r^6\). \(C_6\) depends on their excitation spectra and polarizabilities. Exchange repulsion decays roughly exponentially, \(U_\mathrm{ex}\approx Ae^{-br}\). Force fields often replace that combination with the convenient Lennard–Jones form \(4\varepsilon[(\sigma/r)^{12}-(\sigma/r)^6]\); its \(r^{-12}\) wall is computational convenience, not a first-principles law.</div></details>
+</section>
+
+<section class="step">
+<div class="step-no">03 · Coulomb interactions and polarization</div>
+<h2>“Neutral” molecules contain electrical landscapes.</h2>
+<p>Nuclei and electron density rarely cancel point-by-point. A polar bond leaves partial positive and negative regions; several bonds create dipoles and higher multipoles. Their electric fields act through ordinary Coulomb attraction and repulsion. The field also distorts the neighbor’s electron density—<em>polarization</em>—which is usually attractive because the induced density relaxes into the field.</p>
+<div class="widget">
+<div class="widget-head"><span class="widget-title">A molecular dipole rotating in a protein electric field</span><span class="tag">animate · rotate the dipole</span></div>
+<svg id="coulomb" class="scene" viewBox="0 0 680 300" aria-label="Dipole orientation and polarization in an electric field"></svg>
+<div class="controls"><label class="control">dipole angle to the field <strong id="dipoleAngleVal"></strong><input id="dipoleAngle" type="range" min="0" max="180" step="1" value="25"></label><button id="dipolePlay">Animate rotation</button></div>
+<div id="coulombReadout" class="readout"></div>
+</div>
+<details class="formal"><summary>Charges, multipoles, dielectric screening, and induction</summary><div>For point charges, \(U=\sum_{ij}q_iq_j/(4\pi\epsilon_0\epsilon_r r_{ij})\). Partial charges approximate the electrostatic potential produced by a continuous quantum density. At longer range, a dipole \(\boldsymbol\mu\) in a field \(\mathbf E\) has \(U=-\boldsymbol\mu\cdot\mathbf E=-\mu E\cos\theta\). A polarizable site develops \(\boldsymbol\mu_\mathrm{ind}=\alpha\mathbf E\), giving \(U_\mathrm{ind}=-\tfrac12\alpha E^2\). The factor \(1/2\) appears because the dipole grows from zero while the field does work. Water and ions screen fields, so the local protein dielectric environment matters.</div></details>
+</section>
+
+<section class="step">
+<div class="step-no">04 · Hydrogen-bond geometry</div>
+<h2>A hydrogen bond is an electrostatic contact sharpened by quantum directionality.</h2>
+<p>A donor bond \(D{-}H\) exposes a partially positive hydrogen. An acceptor carries negative potential and usually a directed lone-pair orbital. Electrostatics brings them together; polarization and slight donation from the occupied lone pair into the donor’s empty antibonding orbital reinforce geometries where \(D{-}H\cdots A\) is close to straight. Bend or stretch the contact and those contributions weaken.</p>
+<div class="widget">
+<div class="widget-head"><span class="widget-title">A lone pair aligning with a donor antibond</span><span class="tag">animate · bend the contact</span></div>
+<svg id="hbond" class="scene" viewBox="0 0 680 300" aria-label="Hydrogen bond distance, angle, and orbital overlap"></svg>
+<div class="controls"><label class="control">departure from linear <strong id="hbAngleVal"></strong><input id="hbAngle" type="range" min="0" max="90" step="1" value="18"></label><label class="control">H···A distance <strong id="hbDistVal"></strong><input id="hbDist" type="range" min="1.5" max="3.5" step=".02" value="1.9"></label><button id="hbPlay">Animate bend</button></div>
+<div id="hbondReadout" class="readout"></div>
+</div>
+<details class="formal"><summary>What “orbital interaction” means here</summary><div>A common donor–acceptor analysis describes mixing of the acceptor lone pair \(n_A\) with the donor bond’s antibonding orbital \(\sigma^*_{D-H}\). In second-order perturbation language, stabilization grows roughly like \(-|\langle n_A|\hat H|\sigma^*\rangle|^2/\Delta E\): larger spatial overlap and a smaller orbital-energy gap strengthen it. The widget’s \(\cos^2\theta\) factor is a geometric toy, not a universal hydrogen-bond law. Energy decomposition methods disagree on exact percentages because electrostatics, polarization, and charge transfer are not uniquely separable.</div></details>
+</section>
+
+<section class="step">
+<div class="step-no">05 · Solvent exposure and desolvation</div>
+<h2>Binding partners arrive already bound to water.</h2>
+<p>A polar group in solution is stabilized by oriented water molecules. To make a direct protein–drug contact, those waters must leave; the new contact must repay that desolvation cost. Burying a polar group without a partner is therefore expensive. Nonpolar surfaces pose a different problem: nearby water has fewer comfortable arrangements. Burying those surfaces together can release constrained water back to the bulk—the hydrophobic effect.</p>
+<div class="widget">
+<div class="widget-head"><span class="widget-title">Water shells leaving as two surfaces meet</span><span class="tag">animate · bind through solvent</span></div>
+<svg id="solvent" class="scene" viewBox="0 0 680 300" aria-label="Desolvation and release of water during binding"></svg>
+<div class="controls"><label class="control">binding progress <strong id="solvProgressVal"></strong><input id="solvProgress" type="range" min="0" max="1" step=".01" value="0.55"></label><label class="control">ligand group <strong id="polarityVal">polar</strong><input id="polarity" type="range" min="0" max="1" step="1" value="1"></label><button id="solvPlay">Animate binding</button></div>
+<div id="solventReadout" class="readout"></div>
+</div>
+<details class="formal"><summary>A thermodynamic cycle for solvent</summary><div>Imagine first removing each partner from water, then letting the dry partners interact, then allowing water to relax around the complex. The binding free energy is unchanged because free energy is a state function. This cycle exposes the competition:
+\[
+\Delta G_\mathrm{bind}=\Delta G_\mathrm{desolv,P}+\Delta G_\mathrm{desolv,L}+\Delta G_\mathrm{direct}+\Delta G_\mathrm{solvent\ release}.
+\]
+Continuum-solvent models estimate polar electrostatics and nonpolar surface terms; explicit-water simulations represent individual water molecules. Neither “hydrogen bond good” nor “hydrophobic contact good” is meaningful without asking what interactions and water configurations were lost.</div></details>
+</section>
+
+<section class="step">
+<div class="step-no">06 · Conformational preferences</div>
+<h2>The binding pose must be paid for before it can be rewarded.</h2>
+<p>A flexible drug and protein each occupy an ensemble of shapes. If only a rare shape fits, binding must first select that shape; its rarity is a free-energy cost. Bending bonds or torsions away from their preferred values adds strain. Once bound, translations, rotations, and internal motions are also restricted. Preorganization helps because the free molecule already spends more time near the binding-ready shape.</p>
+<div class="widget">
+<div class="widget-head"><span class="widget-title">An ensemble searching for its binding-ready shape</span><span class="tag">animate · cycle conformers</span></div>
+<svg id="conformation" class="scene" viewBox="0 0 680 300" aria-label="Conformational ensemble and binding-ready state"></svg>
+<div class="controls"><label class="control">accessible conformers <strong id="nConfVal"></strong><input id="nConf" type="range" min="1" max="16" step="1" value="8"></label><label class="control">current conformer <strong id="poseVal"></strong><input id="pose" type="range" min="1" max="8" step="1" value="1"></label><button id="posePlay">Animate ensemble</button></div>
+<div id="confReadout" class="readout"></div>
+</div>
+<details class="formal"><summary>From populations to conformational free energy</summary><div>If the binding-compatible region has equilibrium probability \(p_\mathrm{ready}\) in the free ensemble, selecting it costs \(\Delta G_\mathrm{select}=-RT\ln p_\mathrm{ready}\). For \(N\) equally probable conformers with only one ready, this becomes \(RT\ln N\). Real conformers are not equally probable: their weights follow \(p_i=e^{-G_i/RT}/Z\), where \(Z=\sum_i e^{-G_i/RT}\). “Conformational selection” and “induced fit” describe kinetic routes; equilibrium affinity depends on the free energies of the full free and bound ensembles.</div></details>
+</section>
+
+<section class="step">
+<div class="step-no">07 · The complete ledger</div>
+<h2>Binding is the sum over everything that changes.</h2>
+<p>Now bring two ligand atoms toward a three-atom pocket. No single curve decides the result. Dispersion, electrostatics, polarization, and a correctly aligned hydrogen bond lower the interaction energy. Pauli overlap, desolvation, and conformational restriction oppose them. The total develops a well only when one geometry makes the entire ledger favorable.</p>
+<div class="widget">
+<div class="widget-head"><span class="widget-title">Five atoms building a binding free-energy well</span><span class="tag">animate · sum every layer</span></div>
+<svg id="ledger" class="scene" style="height:350px" viewBox="0 0 680 350" aria-label="Five-atom binding energy decomposition"></svg>
+<div class="controls"><label class="control">group separation <strong id="ledgerSepVal"></strong><input id="ledgerSep" type="range" min="2.6" max="6" step=".04" value="3.45"></label><button id="ledgerPlay">Animate binding</button></div>
+<div class="legend"><span><i class="dot" style="background:var(--coral)"></i>Pauli + strain</span><span><i class="dot" style="background:var(--blue)"></i>electrostatics + H bond</span><span><i class="dot" style="background:var(--purple)"></i>dispersion + polarization</span><span><i class="dot" style="background:#b98b35"></i>solvent</span><span><i class="dot" style="background:var(--pine)"></i>total</span></div>
+<div id="ledgerReadout" class="readout"></div>
+</div>
+<details class="formal"><summary>From microscopic energy to measurable affinity</summary><div>A force-field score at one pose is not yet a binding free energy. Statistical mechanics integrates over all solvent, protein, and ligand configurations:
+\[
+\Delta G^\circ_\mathrm{bind}=-RT\ln\!\left(\frac{Z_{PL}}{Z_PZ_L}C^\circ\right).
+\]
+The partition functions \(Z\) sum Boltzmann weights over quantum states and nuclear configurations. In practice, molecular dynamics uses an approximate potential—often fitted to quantum calculations—and free-energy methods sample the configurations. The result connects to experiment through \(\Delta G^\circ=RT\ln(K_D/1\,\mathrm M)\). A favorable pose is necessary; a favorable ensemble average is what produces affinity.</div></details>
+</section>
+
+<section class="recap">
+<div class="step-no">Putting it together</div>
+<h2>There is one physics, viewed at useful resolutions.</h2>
+<p>At the finest layer, nuclei and electrons form one quantum state. That state’s energy changes through electrostatics, correlation, polarization, orbital mixing, and exchange. At the molecular layer, those effects appear as van der Waals contacts, hydrogen bonds, charge complementarity, and strain. In solution, water and fluctuating conformations add enormous numbers of competing arrangements. Binding occurs when the <em>whole bound ensemble</em> has lower free energy—not when a shape-matching rule fires.</p>
+<p>DFT can estimate the electronic energy of a small frozen geometry. Molecular mechanics makes larger systems affordable. Molecular dynamics samples their motion. Free-energy perturbation, thermodynamic integration, and related methods turn those samples into \(\Delta G\). Experiment measures the final population ratio as \(K_D\), \(K_i\), or a kinetic pair \(k_\mathrm{on}\) and \(k_\mathrm{off}\).</p>
+</section>
+</main>
+<script>
+const NS='http://www.w3.org/2000/svg';
+const $=id=>document.getElementById(id);
+const svg=(tag,a={},t='')=>{const e=document.createElementNS(NS,tag);Object.entries(a).forEach(([k,v])=>e.setAttribute(k,v));if(t!=='')e.textContent=t;return e};
+const PAL={pine:'#176447',lime:'#9dc23f',coral:'#e46e56',blue:'#397fa6',purple:'#7957a4',gold:'#c08a2e',sage:'#8fb597',ink:'#243a30',ice:'#5fa8c9'};
+const clamp=(v,a,b)=>v<a?a:v>b?b:v;
+
+function mix(hex,to,t){const c=[1,3,5].map(i=>parseInt(hex.substr(i,2),16)),d=[1,3,5].map(i=>parseInt(to.substr(i,2),16));return '#'+c.map((v,i)=>Math.round(v+(d[i]-v)*t).toString(16).padStart(2,'0')).join('')}
+
+let uid=0;
+function ensureDefs(s){
+  if(s.querySelector('defs'))return;
+  const d=svg('defs');
+  Object.entries(PAL).forEach(([k,c])=>{
+    const g=svg('radialGradient',{id:'gr-'+k,cx:'34%',cy:'28%',r:'82%'});
+    g.append(svg('stop',{offset:'0%','stop-color':mix(c,'#ffffff',.62)}));
+    g.append(svg('stop',{offset:'52%','stop-color':c}));
+    g.append(svg('stop',{offset:'100%','stop-color':mix(c,'#000000',.34)}));
+    d.append(g);
+    const f=svg('linearGradient',{id:'fill-'+k,x1:'0',y1:'0',x2:'0',y2:'1'});
+    f.append(svg('stop',{offset:'0%','stop-color':c,'stop-opacity':'.38'}));
+    f.append(svg('stop',{offset:'100%','stop-color':c,'stop-opacity':'.02'}));
+    d.append(f);
+  });
+  const gl=svg('filter',{id:'glow',x:'-70%',y:'-70%',width:'240%',height:'240%'});
+  gl.append(svg('feGaussianBlur',{stdDeviation:'5',result:'b'}));
+  const m=svg('feMerge');m.append(svg('feMergeNode',{in:'b'}));m.append(svg('feMergeNode',{in:'SourceGraphic'}));
+  gl.append(m);d.append(gl);
+  const sh=svg('filter',{id:'soft',x:'-40%',y:'-40%',width:'180%',height:'180%'});
+  sh.append(svg('feDropShadow',{dx:'0',dy:'2','stdDeviation':'2.5','flood-color':'#16251e','flood-opacity':'.18'}));
+  d.append(sh);
+  s.append(d);
+}
+function stage(s){ensureDefs(s);s.querySelectorAll('g.layer').forEach(n=>n.remove());const g=svg('g',{class:'layer'});s.append(g);return g}
+function lab(g,x,y,t,cls='small',anchor='start'){g.append(svg('text',{x,y,class:cls,'text-anchor':anchor},t))}
+
+function atom(g,x,y,r,key,txt,dark){
+  g.append(svg('ellipse',{cx:x,cy:y+r*.98,rx:r*.82,ry:r*.26,fill:'#16251e',opacity:.11}));
+  g.append(svg('circle',{cx:x,cy:y,r,fill:'url(#gr-'+key+')',stroke:'#ffffff','stroke-width':1.5,'stroke-opacity':.8}));
+  g.append(svg('ellipse',{cx:x-r*.3,cy:y-r*.36,rx:r*.32,ry:r*.2,fill:'#fff',opacity:.5}));
+  if(txt)lab(g,x,y+4,txt,dark?'pilld':'pill','middle');
+}
+
+function ticks(a,b,n){const raw=(b-a)/n,mag=Math.pow(10,Math.floor(Math.log10(raw))),nm=raw/mag;const st=(nm>=5?5:nm>=2?2:nm>=1?1:.5)*mag;const out=[];for(let v=Math.ceil(a/st-1e-9)*st;v<=b+1e-9;v+=st)out.push(+v.toFixed(6));return out}
+const fmt=v=>Math.abs(v)<1e-9?'0':(Math.abs(v)>=10?v.toFixed(0):v.toFixed(1));
+
+function chart(g,c){
+  const {x,y,w,h,xmin,xmax,ymin,ymax}=c;
+  const xm=v=>x+(v-xmin)/(xmax-xmin)*w, ym=v=>y+h-(v-ymin)/(ymax-ymin)*h;
+  const clip='clip'+(++uid);
+  const cp=svg('clipPath',{id:clip});cp.append(svg('rect',{x,y,width:w,height:h}));g.append(cp);
+  g.append(svg('rect',{x,y,width:w,height:h,rx:9,class:'panel'}));
+  if(!c.bare)ticks(xmin,xmax,c.xt||5).forEach(v=>{if(v<xmin||v>xmax)return;g.append(svg('line',{x1:xm(v),y1:y,x2:xm(v),y2:y+h,class:'grid'}));lab(g,xm(v),y+h+15,fmt(v),'tick','middle')});
+  ticks(ymin,ymax,5).forEach(v=>{if(v<ymin||v>ymax)return;g.append(svg('line',{x1:x,y1:ym(v),x2:x+w,y2:ym(v),class:'grid'}));lab(g,x-7,ym(v)+3.5,fmt(v),'tick','end')});
+  if(ymin<0&&ymax>0)g.append(svg('line',{x1:x,y1:ym(0),x2:x+w,y2:ym(0),class:'axis'}));
+  if(c.title)lab(g,x,y-10,c.title,'axtitle');
+  if(c.xlabel)lab(g,x+w/2,y+h+30,c.xlabel,'key','middle');
+  if(c.ylabel)g.append(svg('text',{x:x-30,y:y+h/2,class:'key','text-anchor':'middle',transform:'rotate(-90 '+(x-30)+' '+(y+h/2)+')'},c.ylabel));
+  return {x,y,w,h,xmin,xmax,ymin,ymax,xm,ym,clip};
+}
+
+function curve(ch,g,fn,color,o={}){
+  const n=o.n||190;let d='';
+  for(let i=0;i<=n;i++){const xv=ch.xmin+i/n*(ch.xmax-ch.xmin),yv=clamp(fn(xv),ch.ymin,ch.ymax);d+=(i?'L':'M')+ch.xm(xv).toFixed(1)+' '+ch.ym(yv).toFixed(1)}
+  if(o.fill){const base=ch.ym(clamp(0,ch.ymin,ch.ymax));
+    g.append(svg('path',{d:d+'L'+ch.xm(ch.xmax)+' '+base+' L'+ch.xm(ch.xmin)+' '+base+' Z',fill:'url(#fill-'+o.fill+')','clip-path':'url(#'+ch.clip+')'}));}
+  g.append(svg('path',{d,fill:'none',stroke:color,'stroke-width':o.width||1.9,'stroke-linecap':'round','stroke-linejoin':'round','stroke-dasharray':o.dash||'none',opacity:o.opacity===undefined?1:o.opacity,'clip-path':'url(#'+ch.clip+')'}));
+}
+
+function marker(ch,g,xv,yv,color){
+  g.append(svg('line',{x1:ch.xm(xv),y1:ch.y,x2:ch.xm(xv),y2:ch.y+ch.h,stroke:'#243a30','stroke-width':1,'stroke-dasharray':'3 5',opacity:.55}));
+  if(yv!==null&&yv!==undefined){const yy=ch.ym(clamp(yv,ch.ymin,ch.ymax));
+    g.append(svg('circle',{cx:ch.xm(xv),cy:yy,r:9,fill:color,opacity:.2}));
+    g.append(svg('circle',{cx:ch.xm(xv),cy:yy,r:5,fill:color,stroke:'#fff','stroke-width':2}));}
+}
+
+function keys(g,x,y,items){
+  const w=22+Math.max.apply(null,items.map(it=>it[0].length))*6.2;
+  g.append(svg('rect',{x:x-8,y:y-12,width:w+14,height:items.length*16+8,rx:7,fill:'#ffffff',opacity:.82}));
+  items.forEach((it,i)=>{const yy=y+i*16;
+    g.append(svg('line',{x1:x,y1:yy,x2:x+16,y2:yy,stroke:it[1],'stroke-width':it[2]||2.6,'stroke-linecap':'round','stroke-dasharray':it[3]||'none'}));
+    lab(g,x+22,yy+3.5,it[0],'key');});
+}
+
+function auto(btn,slider,period=4600){
+  let on=false,start=0,raf;const label=btn.textContent;
+  function tick(t){if(!on)return;if(!start)start=t;const min=+slider.min,max=+slider.max;
+    slider.value=min+(max-min)*(.5-.5*Math.cos(2*Math.PI*(t-start)/period));
+    slider.dispatchEvent(new Event('input'));raf=requestAnimationFrame(tick)}
+  btn.onclick=()=>{on=!on;btn.textContent=on?'Pause':label;if(on){start=0;raf=requestAnimationFrame(tick)}else cancelAnimationFrame(raf)};
+}
+
+/* 1 — two nuclei sharing one electron */
+(()=>{
+  const s=$('quantum'),r=$('qSep');
+  const energy=R=>4.5*(Math.pow(1-Math.exp(-.9*(R-2)),2)-1);
+  function render(){
+    const R=+r.value,g=stage(s);
+    const x0=26,w=286,base=214,lo=-5,hi=5,xp=x=>x0+(x-lo)/(hi-lo)*w;
+    g.append(svg('rect',{x:x0,y:44,width:w,height:base-44+14,rx:9,class:'panel'}));
+    const dens=x=>{const p=Math.exp(-Math.abs(x+R/2))+Math.exp(-Math.abs(x-R/2));return p*p};
+    const sep=x=>Math.exp(-2*Math.abs(x+R/2))+Math.exp(-2*Math.abs(x-R/2));
+    let mx=0;for(let i=0;i<=200;i++){mx=Math.max(mx,dens(lo+i/200*(hi-lo)))}
+    const H=140,yp=v=>base-v/mx*H;
+    let d='M'+xp(lo)+' '+base,e='M'+xp(lo)+' '+base;
+    for(let i=0;i<=200;i++){const x=lo+i/200*(hi-lo);d+='L'+xp(x).toFixed(1)+' '+yp(dens(x)).toFixed(1);e+='L'+xp(x).toFixed(1)+' '+yp(sep(x)).toFixed(1)}
+    g.append(svg('path',{d:d+'L'+xp(hi)+' '+base+' Z',fill:'url(#fill-blue)'}));
+    g.append(svg('path',{d:e,fill:'none',stroke:'#8a9d90','stroke-width':1.6,'stroke-dasharray':'4 4'}));
+    g.append(svg('path',{d,fill:'none',stroke:PAL.blue,'stroke-width':2.4,'stroke-linejoin':'round'}));
+    const build=dens(0)-sep(0);
+    if(build>.02){g.append(svg('circle',{cx:xp(0),cy:(base+yp(dens(0)))/2,r:16,fill:PAL.lime,opacity:.28,class:'pulse',filter:'url(#glow)'}));
+      lab(g,xp(0),yp(dens(0))-12,'shared density','key','middle');}
+    g.append(svg('line',{x1:x0,y1:base,x2:x0+w,y2:base,class:'axis'}));
+    [-R/2,R/2].forEach(x=>atom(g,xp(x),base,11,'coral','+'));
+    lab(g,x0,34,'electron density along the axis','axtitle');
+    lab(g,x0+w,base+22,'dashed = the two atoms kept apart','key','end');
+    const ch=chart(g,{x:400,y:56,w:236,h:180,xmin:1.2,xmax:6,ymin:-5,ymax:2,title:'nuclear energy',xlabel:'separation R (Å)'});
+    curve(ch,g,energy,PAL.pine,{width:2.8,fill:'pine'});
+    marker(ch,g,R,energy(R),PAL.coral);
+    $('qSepVal').textContent=R.toFixed(2)+' Å';
+    $('qReadout').textContent='The symmetric state spreads across both centers. Its toy Born\u2013Oppenheimer energy is '+energy(R).toFixed(2)+' units; attraction wins near 2 \u00c5, while nuclear and electronic repulsion win if the nuclei are squeezed closer.';
+  }
+  r.oninput=render;auto($('qPlay'),r);render();
+})();
+
+/* 2 — dispersion vs exchange repulsion */
+(()=>{
+  const s=$('vdw'),r=$('vdwSep'),sigma=3.8/Math.pow(2,1/6),eps=2;
+  const terms=x=>{const q=sigma/x;return{rep:4*eps*Math.pow(q,12),disp:-4*eps*Math.pow(q,6),total:4*eps*(Math.pow(q,12)-Math.pow(q,6))}};
+  function render(){
+    const R=+r.value,c=terms(R),g=stage(s);
+    const cx=170,half=(R-2.7)/3.5*70+32,ax=cx-half,bx=cx+half,tilt=Math.min(9,60/R);
+    g.append(svg('rect',{x:26,y:44,width:286,height:184,rx:9,class:'panel'}));
+    g.append(svg('ellipse',{cx:ax+tilt,cy:136,rx:42,ry:33,fill:PAL.blue,class:'cloud'}));
+    g.append(svg('ellipse',{cx:bx-tilt,cy:136,rx:42,ry:33,fill:PAL.blue,class:'cloud',style:'animation-delay:-1.8s'}));
+    atom(g,ax,136,11,'coral','+');atom(g,bx,136,11,'coral','+');
+    g.append(svg('line',{x1:ax,y1:196,x2:bx,y2:196,stroke:PAL.ink,'stroke-width':1,'stroke-dasharray':'3 4'}));
+    lab(g,(ax+bx)/2,210,R.toFixed(2)+' \u00c5','key','middle');
+    lab(g,26,34,'electron clouds lean toward each other','axtitle');
+    lab(g,169,254,'instantaneous dipoles stay correlated','key','middle');
+    const ch=chart(g,{x:400,y:56,w:236,h:180,xmin:2.7,xmax:6.2,ymin:-5,ymax:8,title:'energy terms',xlabel:'separation (Å)'});
+    curve(ch,g,x=>terms(x).rep,PAL.coral,{dash:'5 4'});
+    curve(ch,g,x=>terms(x).disp,PAL.purple,{dash:'5 4'});
+    curve(ch,g,x=>terms(x).total,PAL.pine,{width:2.8,fill:'pine'});
+    marker(ch,g,R,c.total,PAL.pine);
+    keys(g,516,182,[['Pauli repulsion',PAL.coral,2,'5 4'],['dispersion',PAL.purple,2,'5 4'],['total',PAL.pine,2.8]]);
+    $('vdwSepVal').textContent=R.toFixed(2)+' Å';
+    $('vdwReadout').textContent='Dispersion '+c.disp.toFixed(2)+' + exchange repulsion '+c.rep.toFixed(2)+' = '+c.total.toFixed(2)+' units. The minimum is a compromise, not a surface where atoms literally touch.';
+  }
+  r.oninput=render;auto($('vdwPlay'),r);render();
+})();
+
+/* 3 — dipole in a field, plus induction */
+(()=>{
+  const s=$('coulomb'),a=$('dipoleAngle');
+  const orient=th=>-4*Math.cos(th),IND=-.8;
+  function render(){
+    const deg=+a.value,th=deg*Math.PI/180,g=stage(s);
+    g.append(svg('rect',{x:26,y:44,width:286,height:200,rx:9,class:'panel'}));
+    for(let i=0;i<5;i++){const y=68+i*40;
+      g.append(svg('line',{x1:40,y1:y,x2:296,y2:y,stroke:PAL.sage,'stroke-width':1.6,'stroke-dasharray':'8 6',class:'flow'}));
+      g.append(svg('path',{d:'M288 '+(y-4.5)+' L296 '+y+' L288 '+(y+4.5),fill:'none',stroke:PAL.sage,'stroke-width':1.6}));}
+    lab(g,26,34,'field from charged protein groups','axtitle');
+    lab(g,40,258,'field direction \u2192','key');
+    const cx=180,cy=148,L=76,dx=Math.cos(th)*L,dy=Math.sin(th)*L;
+    const nx=cx-dx/2,ny=cy-dy/2,px=cx+dx/2,py=cy+dy/2;
+    g.append(svg('ellipse',{cx,cy,rx:L*.62,ry:30,fill:PAL.ice,opacity:.16,transform:'rotate('+deg+' '+cx+' '+cy+')'}));
+    g.append(svg('line',{x1:nx,y1:ny,x2:px,y2:py,stroke:PAL.ink,'stroke-width':4,'stroke-linecap':'round'}));
+    atom(g,nx,ny,19,'blue','\u2212');atom(g,px,py,19,'coral','+');
+    const ch=chart(g,{x:400,y:56,w:236,h:180,xmin:0,xmax:180,ymin:-5.5,ymax:4,title:'energy vs orientation',xlabel:'angle θ (degrees)'});
+    curve(ch,g,d=>orient(d*Math.PI/180),PAL.blue,{dash:'5 4'});
+    curve(ch,g,()=>IND,PAL.purple,{dash:'2 4'});
+    curve(ch,g,d=>orient(d*Math.PI/180)+IND,PAL.pine,{width:2.8,fill:'pine'});
+    marker(ch,g,deg,orient(th)+IND,PAL.pine);
+    keys(g,406,72,[['\u2212\u03bcE cos \u03b8',PAL.blue,2,'5 4'],['induced \u2212\u00bd\u03b1E\u00b2',PAL.purple,2,'2 4'],['total',PAL.pine,2.8]]);
+    $('dipoleAngleVal').textContent=deg+'°';
+    $('coulombReadout').textContent='Permanent dipole term \u2212\u03bcE cos \u03b8 = '+orient(th).toFixed(2)+'; polarization = '+IND.toFixed(2)+'; total = '+(orient(th)+IND).toFixed(2)+' toy units. Parallel is favorable, reversed is unfavorable, and induction remains attractive.';
+  }
+  a.oninput=render;auto($('dipolePlay'),a,5200);render();
+})();
+
+/* 4 — directional hydrogen bond */
+(()=>{
+  const s=$('hbond'),a=$('hbAngle'),r=$('hbDist');
+  const E=(R,th)=>-8*Math.exp(-Math.pow((R-1.9)/.55,2))*Math.pow(Math.cos(th),2)+2*Math.exp(-(R-1.5)/.16);
+  function render(){
+    const deg=+a.value,R=+r.value,th=deg*Math.PI/180,g=stage(s);
+    const ov=Math.exp(-Math.pow((R-1.9)/.55,2))*Math.pow(Math.cos(th),2);
+    g.append(svg('rect',{x:26,y:44,width:286,height:200,rx:9,class:'panel'}));
+    const A={x:66,y:150},H={x:66+R*44,y:150},D={x:H.x+58*Math.cos(th),y:H.y+58*Math.sin(th)};
+    g.append(svg('ellipse',{cx:A.x+32,cy:A.y,rx:40,ry:20,fill:PAL.purple,opacity:.12+.45*ov}));
+    g.append(svg('line',{x1:H.x,y1:H.y,x2:H.x+30*Math.cos(th),y2:H.y+30*Math.sin(th),stroke:PAL.sage,'stroke-width':1.2,'stroke-dasharray':'3 3'}));
+    g.append(svg('line',{x1:A.x,y1:A.y,x2:H.x,y2:H.y,stroke:PAL.blue,'stroke-width':2.2,'stroke-dasharray':'5 5',opacity:.4+.6*ov}));
+    g.append(svg('line',{x1:H.x,y1:H.y,x2:D.x,y2:D.y,stroke:PAL.ink,'stroke-width':4,'stroke-linecap':'round'}));
+    atom(g,D.x,D.y,20,'coral','D');atom(g,A.x,A.y,22,'blue','A');atom(g,H.x,H.y,11,'gold','H');
+    lab(g,26,34,'lone pair overlapping the D\u2013H antibond','axtitle');
+    lab(g,(A.x+H.x)/2,196,R.toFixed(2)+' \u00c5 \u00b7 '+deg+'\u00b0 off axis','key','middle');
+    lab(g,26,256,'overlap '+ov.toFixed(2)+' of ideal','key');
+    const ch=chart(g,{x:400,y:56,w:236,h:180,xmin:1.5,xmax:3.5,ymin:-9,ymax:4,title:'energy vs H···A distance',xlabel:'distance (Å)'});
+    curve(ch,g,x=>E(x,0),PAL.sage,{dash:'4 5'});
+    curve(ch,g,x=>E(x,th),PAL.pine,{width:2.8,fill:'pine'});
+    marker(ch,g,R,E(R,th),PAL.pine);
+    keys(g,506,80,[['perfectly linear',PAL.sage,2,'4 5'],['at your angle',PAL.pine,2.8]]);
+    $('hbAngleVal').textContent=deg+'°';$('hbDistVal').textContent=R.toFixed(2)+' Å';
+    $('hbondReadout').textContent='Geometric overlap '+ov.toFixed(2)+'; toy interaction '+E(R,th).toFixed(2)+' units. It weakens on bending or stretching and becomes repulsive at very short distance.';
+  }
+  a.oninput=r.oninput=render;auto($('hbPlay'),a,4600);render();
+})();
+
+/* 5 — desolvation */
+(()=>{
+  const s=$('solvent'),p=$('solvProgress'),pol=$('polarity');
+  function water(g,x,y,i){
+    const wr=svg('g',{class:'bob',style:'animation-delay:'+(-i*.31).toFixed(2)+'s'});
+    wr.append(svg('circle',{cx:x,cy:y,r:6.5,fill:'url(#gr-ice)'}));
+    wr.append(svg('circle',{cx:x-6,cy:y+5.5,r:3,fill:'#fff',stroke:PAL.ice,'stroke-width':1}));
+    wr.append(svg('circle',{cx:x+6,cy:y+5.5,r:3,fill:'#fff',stroke:PAL.ice,'stroke-width':1}));
+    g.append(wr);
+  }
+  function render(){
+    const u=+p.value,isPolar=+pol.value===1,g=stage(s);
+    g.append(svg('rect',{x:26,y:44,width:286,height:200,rx:9,class:'panel'}));
+    g.append(svg('rect',{x:27,y:45,width:284,height:34,rx:8,fill:PAL.ice,opacity:.13}));
+    lab(g,36,58,'bulk water','key');
+    const left=96,right=250-58*u;
+    g.append(svg('path',{d:'M26 96 Q'+(left+18)+' 96 '+(left+30)+' 150 Q'+(left+18)+' 204 26 204 Z',fill:isPolar?'url(#gr-blue)':'url(#gr-pine)',opacity:.9}));
+    atom(g,right+22,150,32,isPolar?'coral':'pine','');
+    lab(g,44,232,'protein surface','key');lab(g,right+22,196,'ligand','key','middle');
+    for(let i=0;i<7;i++){
+      const slot=i/6,prox=1-Math.abs(slot-.5)*2,released=u>(1-prox)*.9+.05;
+      if(released){water(g,96+i*32,68,i)}
+      else{const ang=-1.05+slot*2.1;water(g,left+Math.cos(ang)*50,150+Math.sin(ang)*66,i)}
+    }
+    if(u>.72)g.append(svg('line',{x1:left+30,y1:150,x2:right-10,y2:150,stroke:isPolar?PAL.gold:PAL.pine,'stroke-width':3.5,'stroke-dasharray':'6 5',opacity:.85}));
+    lab(g,26,34,'water leaving the closing interface','axtitle');
+    const lost=isPolar?3.2*u:.6*u,ent=isPolar?-1.4*u:-3*u,dir=isPolar?-2.6*u:-1.2*u,net=lost+ent+dir;
+    const bx=396,bw=250,by=60,bh=180,ymin=-4,ymax=4;
+    const ch=chart(g,{x:bx,y:by,w:bw,h:bh,xmin:0,xmax:4,ymin,ymax,title:'desolvation ledger',bare:1,ylabel:'toy kJ/mol'});
+    [['water\ncontacts lost',lost,PAL.coral],['ordered water\nreleased',ent,PAL.blue],['direct\ncontact',dir,PAL.purple],['net',net,PAL.pine]].forEach((it,i)=>{
+      const cx2=bx+(i+.5)*(bw/4),y0=ch.ym(0),y1=ch.ym(clamp(it[1],ymin,ymax));
+      g.append(svg('rect',{x:cx2-18,y:Math.min(y0,y1),width:36,height:Math.max(1.5,Math.abs(y1-y0)),rx:4,fill:it[2],opacity:i===3?.95:.7}));
+      lab(g,cx2,y1+(it[1]>=0?-7:14),it[1].toFixed(2),'tick','middle');
+      it[0].split('\n').forEach((t,j)=>lab(g,cx2,by+bh+17+j*12,t,'key','middle'));
+    });
+    $('solvProgressVal').textContent=Math.round(u*100)+'%';
+    $('polarityVal').textContent=isPolar?'polar':'nonpolar';
+    const msg=isPolar?'Water contacts are lost; a well-matched direct polar contact must repay them.':'Constrained interfacial water is released as nonpolar area is buried.';
+    $('solventReadout').textContent=Math.round(6*u)+' interfacial waters are shown released. '+msg+' Net '+net.toFixed(2)+' toy kJ/mol.';
+  }
+  p.oninput=pol.oninput=render;auto($('solvPlay'),p,5000);render();
+})();
+
+function chain(g,i,ready,cx,cy,sc,col){
+  const pts=[[0,0]];let ang=ready?-.5:-1.4+((i*47)%100)/100*2.4;
+  for(let k=0;k<3;k++){ang+=ready?.95:((i*53+k*31)%100)/100*2.2-1.1;pts.push([pts[k][0]+Math.cos(ang)*11*sc,pts[k][1]+Math.sin(ang)*11*sc])}
+  const xs=pts.map(q=>q[0]),ys=pts.map(q=>q[1]),
+    ox=cx-(Math.min.apply(null,xs)+Math.max.apply(null,xs))/2,
+    oy=cy-(Math.min.apply(null,ys)+Math.max.apply(null,ys))/2;
+  g.append(svg('path',{d:pts.map((q,k)=>(k?'L':'M')+(q[0]+ox).toFixed(1)+' '+(q[1]+oy).toFixed(1)).join(''),fill:'none',stroke:col,'stroke-width':3.4*sc,'stroke-linecap':'round','stroke-linejoin':'round'}));
+  pts.forEach(q=>g.append(svg('circle',{cx:q[0]+ox,cy:q[1]+oy,r:2.6*sc,fill:col})));
+}
+/* 6 — conformational ensemble */
+(()=>{
+  const s=$('conformation'),n=$('nConf'),pose=$('pose'),RT=2.48;
+  function render(){
+    const N=+n.value;pose.max=N;if(+pose.value>N)pose.value=N;
+    const cur=+pose.value,g=stage(s);
+    g.append(svg('rect',{x:26,y:44,width:300,height:212,rx:9,class:'panel'}));
+    lab(g,26,34,'the ligand\u2019s conformer ensemble','axtitle');
+    const cols=Math.min(4,N);
+    for(let i=1;i<=N;i++){
+      const c=(i-1)%4,rw=Math.floor((i-1)/4),x=62+c*68,y=84+rw*46,ready=i===N,active=i===cur;
+      g.append(svg('rect',{x:x-25,y:y-20,width:50,height:38,rx:9,fill:active?'#e6f2c8':'#ffffff',stroke:ready?PAL.pine:'#d9e5db','stroke-width':ready?2.4:1,filter:active?'url(#soft)':'none'}));
+      chain(g,i,ready,x,y,1,ready?PAL.pine:'#8fa295');
+      if(ready)g.append(svg('circle',{cx:x+20,cy:y-15,r:4,fill:PAL.lime,class:'pulse'}));
+    }
+    g.append(svg('path',{d:'M414 92 C378 114 378 196 414 218 L448 218 L448 92 Z',fill:'url(#gr-sage)',stroke:PAL.pine,'stroke-width':2}));
+    lab(g,431,84,'pocket','key','middle');
+    if(cur===N)g.append(svg('circle',{cx:412,cy:155,r:26,fill:PAL.lime,opacity:.35,class:'pulse',filter:'url(#glow)'}));
+    chain(g,cur,cur===N,cur===N?412:352,155,1.25,cur===N?PAL.coral:'#8fa295');
+    lab(g,410,244,cur===N?'fits':'rejected','key','middle');
+    const ch=chart(g,{x:500,y:70,w:136,h:150,xmin:1,xmax:16,ymin:0,ymax:7.5,xt:3,title:'RT ln N (kJ/mol)',xlabel:'conformers N'});
+    curve(ch,g,x=>RT*Math.log(x),PAL.purple,{width:2.6,fill:'purple'});
+    marker(ch,g,N,RT*Math.log(N),PAL.purple);
+    const cost=RT*Math.log(N);
+    $('nConfVal').textContent=N;$('poseVal').textContent=cur;
+    $('confReadout').textContent='Only conformer '+N+' is binding-ready. If all '+N+' are equally likely, selecting it costs RT ln N = '+cost.toFixed(2)+' kJ/mol at 298 K.';
+  }
+  n.oninput=()=>{pose.max=n.value;render()};pose.oninput=render;auto($('posePlay'),pose,4800);render();
+})();
+
+/* 7 — the complete ledger */
+(()=>{
+  const s=$('ledger'),r=$('ledgerSep'),
+    P=[{y:-.7,q:-.35},{y:.65,q:.30},{y:1.7,q:.10}],
+    L=[{y:-.7,q:.30},{y:.65,q:-.30}],sig=3.2,eps=.28;
+  function C(d){
+    let rep=0,elec=0,attr=0;
+    for(const a of L)for(const b of P){const x=Math.hypot(d,a.y-b.y),z=sig/x;
+      rep+=eps*Math.pow(z,12);attr+=-2*eps*Math.pow(z,6)-.08*Math.pow(z,4);elec+=12*a.q*b.q/x}
+    const contact=Math.exp(-Math.pow((d-3.15)/.78,2)),pos=rep+.65*contact,blue=elec-1.7*contact,solv=.55*contact;
+    return{pos,blue,attr,solv,total:pos+blue+attr+solv};
+  }
+  function render(){
+    const d=+r.value,c=C(d),g=stage(s);
+    g.append(svg('rect',{x:26,y:48,width:300,height:250,rx:9,class:'panel'}));
+    lab(g,26,38,'3 pocket atoms \u00b7 2 ligand atoms','axtitle');
+    const lx=118,rx=lx+d*28,yo=y=>168+y*52;
+    for(const a of L)for(const b of P){
+      const dist=Math.hypot(d,a.y-b.y),good=a.q*b.q<0;
+      if(dist>5.2)continue;
+      g.append(svg('line',{x1:lx,y1:yo(b.y),x2:rx,y2:yo(a.y),stroke:good?PAL.blue:PAL.coral,'stroke-width':1.4,'stroke-dasharray':'4 4',opacity:clamp(1.4-dist/5,.08,.75)}));
+    }
+    for(const a of P)atom(g,lx,yo(a.y),16,'sage',a.q>0?'+':'\u2212',1);
+    for(const a of L)atom(g,rx,yo(a.y),16,'coral',a.q>0?'+':'\u2212');
+    lab(g,(lx+rx)/2,286,d.toFixed(2)+' \u00c5 apart','key','middle');
+    const ch=chart(g,{x:400,y:62,w:236,h:222,xmin:2.6,xmax:6,ymin:-7,ymax:8,title:'free-energy ledger',xlabel:'separation (Å)'});
+    curve(ch,g,x=>C(x).pos,PAL.coral,{dash:'5 4',width:1.7});
+    curve(ch,g,x=>C(x).blue,PAL.blue,{dash:'5 4',width:1.7});
+    curve(ch,g,x=>C(x).attr,PAL.purple,{dash:'5 4',width:1.7});
+    curve(ch,g,x=>C(x).solv,PAL.gold,{dash:'5 4',width:1.7});
+    curve(ch,g,x=>C(x).total,PAL.pine,{width:3,fill:'pine'});
+    marker(ch,g,d,c.total,PAL.pine);
+    $('ledgerSepVal').textContent=d.toFixed(2)+' Å';
+    const state=c.pos>4?'Pauli overlap dominates.':c.total<-.6?'The complete ledger forms a favorable well.':'The interaction is weak at this separation.';
+    $('ledgerReadout').textContent='Pauli + strain '+c.pos.toFixed(2)+'; electrostatics + H bond '+c.blue.toFixed(2)+'; dispersion + polarization '+c.attr.toFixed(2)+'; solvent '+c.solv.toFixed(2)+'; total '+c.total.toFixed(2)+' toy units. '+state;
+  }
+  r.oninput=render;auto($('ledgerPlay'),r,5200);render();
+})();
+</script>
+</body>
+</html>

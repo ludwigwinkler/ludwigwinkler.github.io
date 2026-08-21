@@ -1,0 +1,3088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Free Energy Perturbation — an interactive explainer</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,300..900,0..100,0..1&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<script>
+window.MathJax = {
+  loader: { load: ['[tex]/cancel'] },
+  tex: {
+    inlineMath: [['\\(', '\\)']],
+    displayMath: [['\\[', '\\]']],
+    processEscapes: true,
+    packages: { '[+]': ['cancel'] }
+  },
+  svg: { fontCache: 'global' },
+  startup: {
+    ready: () => {
+      MathJax.startup.defaultReady();
+    }
+  }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+<style>
+:root {
+  --bg: #F2EBDE;
+  --bg-card: #F8F2E5;
+  --bg-deep: #ECE2CF;
+  --ink: #18130F;
+  --ink-soft: #5A4F42;
+  --ink-faint: #8C8273;
+  --rule: #B9A98C;
+  --rule-soft: #D4C7AD;
+  --accent: #B7401A;
+  --accent-deep: #8A2F11;
+  --accent-soft: #E29077;
+  --cool: #18546A;
+  --cool-soft: #5E8896;
+  --highlight: #E4B85D;
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --measure: 38rem;
+  --measure-wide: 56rem;
+
+  --rad-sm: 2px;
+  --rad-md: 4px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.62;
+  letter-spacing: 0.005em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    radial-gradient(circle at 30% 20%, rgba(183,64,26,0.04) 0, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(24,84,106,0.04) 0, transparent 45%);
+}
+
+.shell {
+  position: relative;
+  z-index: 1;
+  max-width: 76rem;
+  margin: 0 auto;
+  padding: 4rem 2rem 6rem;
+}
+
+/* ---------------- HEADER ---------------- */
+.masthead {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 4rem;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.eyebrow::before {
+  content: "";
+  width: 1.5rem;
+  height: 1px;
+  background: var(--accent);
+}
+
+h1.title {
+  font-family: var(--font-display);
+  font-weight: 360;
+  font-size: clamp(2.6rem, 6vw, 4.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.022em;
+  margin: 0;
+  font-feature-settings: "ss01" 1, "lnum" 1;
+}
+h1.title em {
+  font-style: italic;
+  font-weight: 380;
+  color: var(--accent);
+  font-variation-settings: "SOFT" 50, "WONK" 1;
+}
+
+.promise {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-style: italic;
+  font-size: 1.35rem;
+  line-height: 1.45;
+  max-width: 36rem;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.masthead-meta {
+  display: flex;
+  gap: 2.5rem;
+  margin-top: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+  text-transform: uppercase;
+}
+.masthead-meta span strong {
+  color: var(--ink-soft);
+  font-weight: 500;
+}
+
+/* ---------------- KERNEL CALLOUT ---------------- */
+.kernel {
+  position: relative;
+  margin: 0 auto 5rem;
+  max-width: var(--measure-wide);
+  padding: 3rem 3.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--accent);
+}
+.kernel::before {
+  position: absolute;
+  top: -0.7rem;
+  left: 2.5rem;
+  padding: 0 0.75rem;
+  background: var(--bg);
+  content: "The whole thing in one sentence";
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.kernel p {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 350;
+  font-size: 1.5rem;
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+}
+.kernel p em {
+  font-style: italic;
+  color: var(--accent-deep);
+}
+
+/* ---------------- STEPS ---------------- */
+.step {
+  display: grid;
+  grid-template-columns: 6rem 1fr;
+  gap: 2.5rem;
+  max-width: var(--measure-wide);
+  margin: 0 auto 6rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--rule-soft);
+}
+
+.step-marker {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: 3.2rem;
+  line-height: 1;
+  color: var(--accent);
+  letter-spacing: -0.04em;
+  padding-top: 0.4rem;
+}
+.step-marker .slash {
+  color: var(--ink-faint);
+  font-weight: 250;
+}
+.step-marker .total {
+  color: var(--ink-faint);
+  font-size: 1.4rem;
+  font-weight: 300;
+  letter-spacing: 0;
+}
+
+.step-content {
+  min-width: 0;
+}
+
+.step h2 {
+  font-family: var(--font-display);
+  font-weight: 380;
+  font-size: clamp(1.7rem, 3vw, 2.3rem);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  margin: 0 0 1.5rem;
+}
+
+.step p, .step ul, .step ol {
+  max-width: var(--measure);
+  font-size: 1.025rem;
+  line-height: 1.7;
+  color: var(--ink);
+  margin: 0 0 1.2rem;
+}
+.step p em {
+  font-style: italic;
+  color: var(--accent-deep);
+}
+.step ul, .step ol { padding-left: 1.4rem; }
+.step li { margin-bottom: 0.4rem; }
+
+.step .math {
+  max-width: var(--measure);
+  margin: 1.3rem 0 1.5rem;
+  padding: 0.4rem 0;
+  font-size: 1.05rem;
+  overflow-x: auto;
+}
+
+mjx-container {
+  margin-block: 0.15rem;
+}
+
+/* ---------------- WIDGET FRAME ---------------- */
+.widget {
+  margin: 2.5rem 0 1.5rem;
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-radius: var(--rad-sm);
+  overflow: hidden;
+}
+
+.widget-titlewrap {
+  padding: 1.1rem 1.5rem 1rem;
+  border-bottom: 1px solid var(--rule-soft);
+  background: linear-gradient(to bottom, var(--bg-deep) 0%, var(--bg-card) 100%);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+.widget-title {
+  font-family: var(--font-display);
+  font-weight: 420;
+  font-size: 1.05rem;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+.widget-title .widget-num {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+  background: rgba(183,64,26,0.08);
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--rad-sm);
+}
+.widget-title .wt-sub {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+  text-transform: lowercase;
+  margin-left: 0.5rem;
+}
+
+.widget-body {
+  padding: 1.5rem;
+}
+
+.widget-canvas-wrap {
+  position: relative;
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--rule-soft);
+  border-radius: var(--rad-sm);
+  overflow: hidden;
+}
+.widget-canvas-wrap canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.controls {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 1.1rem;
+  padding: 1rem 1.1rem;
+  background: var(--bg-deep);
+  border-radius: var(--rad-sm);
+  border: 1px solid var(--rule-soft);
+}
+.control-row {
+  display: grid;
+  grid-template-columns: 7rem 1fr 4rem;
+  gap: 0.9rem;
+  align-items: center;
+}
+.control-row label {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  color: var(--ink-soft);
+}
+.control-row .readout {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--accent-deep);
+  text-align: right;
+}
+
+input[type="range"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 18px;
+  background: transparent;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 2px;
+  background: var(--rule);
+  border-radius: 1px;
+}
+input[type="range"]::-moz-range-track {
+  height: 2px;
+  background: var(--rule);
+  border-radius: 1px;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 14px;
+  width: 14px;
+  background: var(--accent);
+  border-radius: 50%;
+  border: 2px solid var(--bg-card);
+  margin-top: -6px;
+  cursor: grab;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+}
+input[type="range"]::-moz-range-thumb {
+  height: 14px;
+  width: 14px;
+  background: var(--accent);
+  border-radius: 50%;
+  border: 2px solid var(--bg-card);
+  cursor: grab;
+}
+
+button.ctl {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  padding: 0.4rem 0.9rem;
+  cursor: pointer;
+  border-radius: var(--rad-sm);
+  transition: background 120ms, border-color 120ms;
+}
+button.ctl:hover {
+  background: var(--bg-deep);
+  border-color: var(--accent);
+}
+button.ctl.primary {
+  background: var(--accent);
+  color: #FCF6E8;
+  border-color: var(--accent);
+}
+button.ctl.primary:hover {
+  background: var(--accent-deep);
+  border-color: var(--accent-deep);
+}
+
+.btn-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.6rem;
+}
+
+.readout-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 1.1rem;
+  margin-top: 1rem;
+  padding: 0.85rem 1rem;
+  background: var(--bg);
+  border: 1px solid var(--rule-soft);
+  border-radius: var(--rad-sm);
+}
+.readout-strip .rs-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.readout-strip .rs-label {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.readout-strip .rs-value {
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--ink);
+  font-feature-settings: "tnum" 1;
+}
+.readout-strip .rs-value.accent { color: var(--accent-deep); }
+.readout-strip .rs-value.cool { color: var(--cool); }
+
+/* ---------------- FORMAL DETAILS ---------------- */
+details.formal {
+  margin: 1.5rem 0;
+  max-width: var(--measure);
+  border-top: 1px solid var(--rule-soft);
+  border-bottom: 1px solid var(--rule-soft);
+  padding: 0.6rem 0;
+}
+details.formal summary {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  cursor: pointer;
+  padding: 0.4rem 0;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+details.formal summary::-webkit-details-marker { display: none; }
+details.formal summary::before {
+  content: "▸";
+  color: var(--accent);
+  transition: transform 150ms;
+  font-size: 0.7rem;
+}
+details.formal[open] summary::before {
+  transform: rotate(90deg);
+}
+details.formal[open] summary {
+  margin-bottom: 0.7rem;
+}
+details.formal .formal-body {
+  padding: 0.4rem 0 0.6rem 1.5rem;
+  border-left: 1px solid var(--rule-soft);
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+details.formal .formal-body p { margin: 0 0 0.8rem; max-width: 100%; }
+
+/* ---------------- RECAP / FOOTER ---------------- */
+.recap {
+  max-width: var(--measure-wide);
+  margin: 5rem auto 3rem;
+  padding: 3rem 3rem;
+  background: var(--bg-card);
+  border: 1px solid var(--rule);
+  border-top: 3px solid var(--accent);
+}
+.recap h3 {
+  font-family: var(--font-display);
+  font-weight: 380;
+  font-size: 1.7rem;
+  margin: 0 0 1.2rem;
+  letter-spacing: -0.01em;
+}
+.recap p {
+  font-size: 1.04rem;
+  line-height: 1.7;
+  max-width: var(--measure);
+  margin: 0 0 1.1rem;
+}
+.recap-kernel {
+  margin-top: 1.5rem !important;
+  padding: 1.2rem 1.4rem;
+  background: var(--bg);
+  border-left: 2px solid var(--accent);
+  font-size: 1.02rem !important;
+}
+.recap-kernel em {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 380;
+}
+
+.where {
+  max-width: var(--measure-wide);
+  margin: 4rem auto 2rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--rule-soft);
+}
+.where h3 {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 0 0 1.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.where h3::before {
+  content: "";
+  width: 1.5rem;
+  height: 1px;
+  background: var(--accent);
+}
+.where ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 1rem;
+}
+.where li {
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  padding-left: 1.4rem;
+  position: relative;
+  max-width: var(--measure);
+}
+.where li::before {
+  content: "·";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: 700;
+}
+.where li strong {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+footer.colophon {
+  max-width: var(--measure-wide);
+  margin: 4rem auto 0;
+  padding-top: 2rem;
+  border-top: 1px solid var(--rule-soft);
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* responsive */
+@media (max-width: 720px) {
+  .shell { padding: 2rem 1.2rem 4rem; }
+  .step { grid-template-columns: 1fr; gap: 0.5rem; }
+  .step-marker { font-size: 2.5rem; }
+  .kernel { padding: 2rem 1.5rem; }
+  .kernel p { font-size: 1.15rem; }
+  .recap { padding: 2rem 1.5rem; }
+  .control-row { grid-template-columns: 5rem 1fr 3.5rem; gap: 0.6rem; }
+}
+
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+<!-- ============== MASTHEAD ============== -->
+<header class="masthead">
+  <div class="eyebrow">An interactive explainer · biophysics &amp; computation</div>
+  <h1 class="title">Free energy <em>perturbation</em></h1>
+  <p class="promise">
+    Why &mdash; and how &mdash; we compute a free energy difference that is, on its face, impossible to compute.
+  </p>
+  <div class="masthead-meta">
+    <span><strong>Audience.</strong> Comfortable with probability and calculus.</span>
+    <span><strong>Length.</strong> Six steps, six widgets, ~25 min.</span>
+  </div>
+</header>
+
+<!-- ============== KERNEL ============== -->
+<section class="kernel">
+  <p>
+    A free energy difference is the log of a ratio of partition functions, and you can estimate that ratio &mdash; without ever computing either partition function &mdash; by sampling one state and asking <em>what its energy would be in the other</em>.
+  </p>
+</section>
+
+
+<!-- ============================================================== -->
+<!--    STEP 1 — TEMPERATURE WEIGHS STATES                          -->
+<!-- ============================================================== -->
+<section class="step" id="step-1">
+  <div class="step-marker">01<span class="slash">/</span><span class="total">06</span></div>
+  <div class="step-content">
+    <h2>Temperature weighs states</h2>
+
+    <p>A system held at temperature \(T\) does not sit still in its lowest-energy configuration. Thermal noise constantly bumps it between configurations, and the fraction of time it spends in each one is set by a single weight: the <strong>Boltzmann factor</strong> \(e^{-\beta E}\), where \(\beta = 1/k_B T\). The lower the energy, the more time spent there. The lower the temperature, the sharper that preference becomes.</p>
+
+    <p>Turning these weights into probabilities just needs a normalizer. That normalizer has a name &mdash; the <strong>partition function</strong>:</p>
+
+    <div class="math">\[ Z \;=\; \sum_i e^{-\beta E_i}. \]</div>
+
+    <p>Don't let the name make it sound deeper than it is. \(Z\) is the sum of all the weights, the thing we divide by so that probabilities add to one. But this innocuous-looking sum will turn out to be the doorway through which every thermodynamic question gets asked &mdash; and the thing that will give us trouble.</p>
+
+    <div class="widget" id="w1">
+      <div class="widget-titlewrap">
+        <div class="widget-title">
+          <span class="widget-num">Widget 01</span>
+          <span>A spectrum populating itself</span>
+          <span class="wt-sub">live simulation · drag levels · adjust T</span>
+        </div>
+      </div>
+      <div class="widget-body">
+        <div class="widget-canvas-wrap"><canvas id="w1-canvas" width="800" height="380"></canvas></div>
+        <div class="controls">
+          <div class="control-row">
+            <label for="w1-T">Temperature</label>
+            <input type="range" id="w1-T" min="0.15" max="3" step="0.01" value="0.8" />
+            <span class="readout" id="w1-T-readout">0.80</span>
+          </div>
+          <div class="btn-row">
+            <button class="ctl" id="w1-reset">Reset particles</button>
+            <button class="ctl" id="w1-pause">Pause</button>
+            <span style="font-family:var(--font-mono); font-size:0.7rem; color:var(--ink-faint); align-self:center; margin-left:0.5rem;">drag the energy levels &uarr;&darr;</span>
+          </div>
+        </div>
+        <div class="readout-strip">
+          <div class="rs-item"><span class="rs-label">Partition fn Z</span><span class="rs-value" id="w1-Z">—</span></div>
+          <div class="rs-item"><span class="rs-label">Free energy F</span><span class="rs-value accent" id="w1-F">—</span></div>
+          <div class="rs-item"><span class="rs-label">Mean energy ⟨E⟩</span><span class="rs-value" id="w1-Ebar">—</span></div>
+          <div class="rs-item"><span class="rs-label">Entropy S</span><span class="rs-value cool" id="w1-S">—</span></div>
+        </div>
+      </div>
+    </div>
+
+    <p>The widget runs the actual mechanism: 200 particles, each at one of five energy levels you can drag, hopping between levels with Metropolis dynamics. Every frame, each particle proposes moving to another level and accepts with probability \(\min(1, e^{-\beta \Delta E})\). After a few seconds, the populations stop changing &mdash; they have found the Boltzmann distribution. The histogram you watch settle into place is one realization of \(P_i = e^{-\beta E_i}/Z\), now arrived at by living the dynamics rather than by writing down the formula.</p>
+
+    <details class="formal">
+      <summary>The formal version</summary>
+      <div class="formal-body">
+        <p>For a system in thermal contact with a bath at temperature \(T\), the stationary distribution over microstates \(\{i\}\) is</p>
+        \[ P_i \;=\; \frac{e^{-\beta E_i}}{Z}, \qquad Z \equiv \sum_i e^{-\beta E_i}, \qquad \beta \equiv \frac{1}{k_B T}. \]
+        <p>This is the <em>canonical ensemble</em>. It is derived by treating the bath plus system as a microcanonical (fixed-energy) ensemble and using \(S = k_B \ln \Omega\) and a first-order Taylor expansion of \(\ln \Omega_{\text{bath}}\) in the small system's energy. The Boltzmann factor is what's left after the bath has been marginalized out.</p>
+        <p>Metropolis dynamics is one way to sample \(P_i\): a Markov chain whose transition rates satisfy detailed balance \(P_i \,W_{i\to j} = P_j \,W_{j\to i}\) with the choice \(W_{i\to j} = \min(1, e^{-\beta(E_j - E_i)})\). The widget's particles are independent walkers on this chain; their pooled occupations form an empirical estimate of \(P_i\) whose variance scales as \(1/\sqrt{N_{\text{particles}}}\).</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+
+<!-- ============================================================== -->
+<!--    STEP 2 — FREE ENERGY DETERMINES EQUILIBRIUM                 -->
+<!-- ============================================================== -->
+<section class="step" id="step-2">
+  <div class="step-marker">02<span class="slash">/</span><span class="total">06</span></div>
+  <div class="step-content">
+    <h2>Free energy decides where stuff goes</h2>
+
+    <p>The Boltzmann distribution from the last step is a complete description of how the system at temperature \(T\) apportions its time across configurations. But "complete" is the problem &mdash; we want a single number that summarizes the whole ensemble, something we can compare across systems and watch change with temperature. Energy alone won't do: at finite \(T\) the system isn't sitting at its ground state, and "lower \(\langle E \rangle\) wins" makes the wrong prediction the moment entropy is involved. The right summary quantity must know about both energy and the spread of the distribution.</p>
+
+    <p>There is a clean criterion for "which way does the system want to go." The combined system-plus-bath is closed, and a closed system spontaneously increases its total entropy. We need to express that total in terms of quantities the system's distribution actually controls.</p>
+
+    <p>In the canonical setup (weak coupling between system and bath), the joint distribution over (system microstate \(i\), bath microstate \(b\)) factorizes as \(P(i, b) = P_i \cdot P_{b\mid i}\), with \(P_{b\mid i}\) uniform over the bath microstates compatible with the system being in state \(i\). The joint Shannon entropy splits cleanly:</p>
+
+    <div class="math">\[
+      S_{\text{tot}}
+      \;=\; -k_B \sum_{i, b} P(i, b) \ln P(i, b)
+      \;=\; S_{\text{sys}} \;+\; \langle S_{\text{bath}} \rangle,
+    \]</div>
+
+    <p>where \(S_{\text{sys}} = -k_B \sum_i P_i \ln P_i\) is the system's Shannon entropy and \(\langle S_{\text{bath}}\rangle = \sum_i P_i \, S_{\text{bath}}(E_{\text{tot}} - E_i)\) is the bath's entropy averaged over the system's state. So far this is exact.</p>
+
+    <p>The bath's term we get from Boltzmann's counting formula \(S_{\text{bath}}(E) = k_B \ln \Omega_{\text{bath}}(E)\), where \(\Omega_{\text{bath}}(E)\) is the number of bath microstates at energy \(E\). When the system is in microstate \(i\) with energy \(E_i\), the bath holds the rest, \(E_{\text{tot}} - E_i\). Because the bath is huge, \(E_i \ll E_{\text{tot}}\), and a first-order Taylor expansion of the log-density of states around \(E_{\text{tot}}\) is accurate:</p>
+
+    <div class="math">\[
+      \ln \Omega_{\text{bath}}(E_{\text{tot}} - E_i)
+      \;\approx\; \ln \Omega_{\text{bath}}(E_{\text{tot}})
+      \;-\; E_i \cdot \left.\frac{\partial \ln \Omega_{\text{bath}}}{\partial E}\right|_{E_{\text{tot}}}.
+    \]</div>
+
+    <p>The derivative on the right is the bath's inverse temperature by definition: \(\beta \equiv 1/(k_B T) = \partial \ln \Omega_{\text{bath}} / \partial E\). Multiplying through by \(k_B\),</p>
+
+    <div class="math">\[
+      S_{\text{bath}}(E_{\text{tot}} - E_i) \;\approx\; S_{\text{bath}}(E_{\text{tot}}) \;-\; \frac{E_i}{T}.
+    \]</div>
+
+    <p>Averaging this over the system's distribution \(\{P_i\}\),</p>
+
+    <div class="math">\[
+      \langle S_{\text{bath}}\rangle
+      \;=\; \sum_i P_i \, S_{\text{bath}}(E_{\text{tot}} - E_i)
+      \;\approx\; S_{\text{bath}}(E_{\text{tot}}) \;-\; \frac{\langle E_{\text{sys}}\rangle}{T},
+    \]</div>
+
+    <p>where \(\langle E_{\text{sys}}\rangle \equiv \sum_i P_i E_i\) is the system's average energy. Substituting into the split for \(S_{\text{tot}}\):</p>
+
+    <div class="math">\[
+      S_{\text{tot}}
+      \;\approx\; S_{\text{sys}} \;-\; \frac{\langle E_{\text{sys}}\rangle}{T} \;+\; \underbrace{S_{\text{bath}}(E_{\text{tot}})}_{\text{constant}}.
+    \]</div>
+
+    <p>The bath baseline \(S_{\text{bath}}(E_{\text{tot}})\) depends only on the (fixed) total energy and is therefore the same for every choice of system distribution. When we optimize over \(\{P_i\}\), it drops out. What remains to be maximized is</p>
+
+    <div class="math">\[ S_{\text{sys}} \;-\; \frac{\langle E_{\text{sys}}\rangle}{T}. \]</div>
+
+    <p>Multiply through by \(-T\). Since \(T > 0\), multiplication by a negative number reverses the optimization direction: maximizing the line above is identical to <em>minimizing</em></p>
+
+    <div class="math">\[ F \;\equiv\; \langle E_{\text{sys}}\rangle \;-\; T\, S_{\text{sys}}. \]</div>
+
+    <p>That quantity is the <strong>free energy</strong>: the function that decreases as the system relaxes and sits at its minimum at equilibrium. The minus sign on the entropy term is not a convention &mdash; it's the bath's entropy contribution, \(-\langle E_{\text{sys}}\rangle/T\), after multiplication by \(-T\) flipped the entropy maximization into a free-energy minimization.</p>
+
+    <p>To see what \(F\) actually evaluates to, plug the Boltzmann distribution \(P_i = e^{-\beta E_i}/Z\) into the definition. The two energy terms cancel themselves:</p>
+
+    <div class="math">\[
+      \begin{aligned}
+        F &\;=\; \langle E_{\text{sys}}\rangle \;-\; T\, S_{\text{sys}} \\
+          &\;=\; \sum_i P_i E_i \;+\; k_B T \sum_i P_i \ln P_i \\
+          &\;=\; \sum_i P_i E_i \;+\; k_B T \sum_i P_i \,(-\beta E_i - \ln Z) \\
+          &\;=\; \sum_i P_i E_i \;-\; \sum_i P_i E_i \;-\; k_B T \ln Z \\
+          &\;=\; -k_B T \ln Z.
+      \end{aligned}
+    \]</div>
+
+    <p>The equilibrium value of "what the system minimizes" is determined entirely by the partition function. Two properties make \(F = -k_B T \ln Z\) the form worth carrying around. <em>Additivity</em>: independent systems multiply their partition functions, \(Z_{12} = Z_1 Z_2\), and the log turns that product into a sum, \(F_{12} = F_1 + F_2\) &mdash; properly extensive, the way an energy must be. <em>Soft minimum</em>: \(-k_B T \ln \sum_i e^{-\beta E_i}\) is a temperature-smoothed minimum of the energies. At \(T \to 0\) it returns the ground-state energy \(\min_i E_i\) exactly; at finite \(T\) it drops below the ground state by an amount that grows with how many states are accessible. Free energy is the system's <em>effective</em> lowest energy, with entropy folded in &mdash; both "how deep can I go" and "how many ways can I get there."</p>
+
+    <p>Now watch what that quantity actually <em>does</em>. Give a system two places it could live &mdash; say, two compartments with different sets of energy levels &mdash; and let particles hop freely between them. They do not distribute equally, and they do not distribute by ground-state energy. They distribute by free energy:</p>
+
+    <div class="math">\[ \frac{N_A}{N_B} \;=\; \frac{Z_A}{Z_B} \;=\; e^{-\beta\,(F_A - F_B)}. \]</div>
+
+    <p>Lower \(F\) wins. And the winner can be the compartment with the <em>higher</em> ground state if it has enough accessible states above that ground state. Entropy literally pulls particles in: when a compartment offers many configurations, that compartment's \(F\) is dragged down, and population follows.</p>
+
+    <p>This is the working definition: \(F\) is the quantity whose minimum determines equilibrium at constant temperature. It is the only number that matters for "which side wins" when energy and entropy fight.</p>
+
+    <div class="widget" id="w2">
+      <div class="widget-titlewrap">
+        <div class="widget-title">
+          <span class="widget-num">Widget 02</span>
+          <span>Two compartments competing for particles</span>
+          <span class="wt-sub">live simulation · drag levels · adjust T · try the presets</span>
+        </div>
+      </div>
+      <div class="widget-body">
+        <div class="widget-canvas-wrap"><canvas id="w2-canvas" width="800" height="420"></canvas></div>
+        <div class="controls">
+          <div class="control-row">
+            <label for="w2-T">Temperature</label>
+            <input type="range" id="w2-T" min="0.1" max="3" step="0.01" value="0.6" />
+            <span class="readout" id="w2-T-readout">0.60</span>
+          </div>
+          <div class="btn-row">
+            <button class="ctl" data-preset="energy">Preset: energy wins</button>
+            <button class="ctl" data-preset="entropy">Preset: entropy wins</button>
+            <button class="ctl" data-preset="tied">Preset: tied</button>
+            <button class="ctl" id="w2-reset">Reset particles</button>
+          </div>
+        </div>
+        <div class="readout-strip">
+          <div class="rs-item"><span class="rs-label">F<sub>A</sub></span><span class="rs-value cool" id="w2-FA">—</span></div>
+          <div class="rs-item"><span class="rs-label">F<sub>B</sub></span><span class="rs-value accent" id="w2-FB">—</span></div>
+          <div class="rs-item"><span class="rs-label">ΔF = F<sub>B</sub>−F<sub>A</sub></span><span class="rs-value" id="w2-dF">—</span></div>
+          <div class="rs-item"><span class="rs-label">N<sub>A</sub> : N<sub>B</sub> (empirical)</span><span class="rs-value" id="w2-NN">—</span></div>
+          <div class="rs-item"><span class="rs-label">Z<sub>A</sub> : Z<sub>B</sub> (theory)</span><span class="rs-value" id="w2-ZZ">—</span></div>
+        </div>
+      </div>
+    </div>
+
+    <p>Both compartments start with the same number of accessible levels, but with different spectra. Drag the lines up and down. Try the <em>energy wins</em> preset: A has a single deep level, B has a single shallow one, so A captures the particles even at moderate \(T\). Then try <em>entropy wins</em>: A still has a slightly lower ground state, but B has a stack of nearby states above its ground. At low \(T\) the ground state still wins; turn \(T\) up and watch the population cross over to B as the entropy of B's stack starts to count.</p>
+
+    <details class="formal">
+      <summary>The formal version</summary>
+      <div class="formal-body">
+        <p>Treating each particle as independent and distinguishable, with stationary distribution \(P(X,i) \propto e^{-\beta E_i^X}\) over (compartment \(X\), level \(i\)) pairs, the marginal over compartments is</p>
+        \[ P(X) \;=\; \frac{Z_X}{Z_A + Z_B}, \qquad Z_X \;=\; \sum_i e^{-\beta E_i^X}. \]
+        <p>So the equilibrium ratio of expected populations is \(\langle N_A \rangle / \langle N_B \rangle = Z_A/Z_B = e^{-\beta(F_A - F_B)}\). The two-compartment system is just a Boltzmann distribution over a discrete combined state space, and the marginalization recovers the "competing free energies" picture.</p>
+        <p>The dynamics implemented in the widget propose, per particle, a uniform random new state across all (compartment, level) pairs and accept Metropolis-style on the energy difference. This satisfies detailed balance with respect to the target distribution.</p>
+        <p>This is also exactly the structure of two competing thermodynamic states &mdash; folded vs. unfolded protein, ligand bound vs. unbound, two ligand conformations &mdash; whenever they share the same temperature and exchange a conserved population. Lower \(F\) wins.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+
+<!-- ============================================================== -->
+<!--    STEP 3 — THE ZWANZIG IDENTITY                              -->
+<!-- ============================================================== -->
+<section class="step" id="step-3">
+  <div class="step-marker">03<span class="slash">/</span><span class="total">06</span></div>
+  <div class="step-content">
+    <h2>The free energy difference is a re&#8209;weighted average</h2>
+
+    <p>We have a target: \(\Delta F = F_B - F_A = -k_B T \ln (Z_B/Z_A)\). Both \(Z\)'s are sums over all microstates of a protein-sized system, and there are roughly \(10^{6000}\) of them. Direct computation is finished as a strategy. But notice that we don't actually want \(Z_A\) or \(Z_B\). We want their <em>ratio</em>. And a ratio admits a trick that a single \(Z\) does not.</p>
+
+    <p>Write the ratio and force a factor of the \(A\) distribution to appear inside the integral:</p>
+
+    <div class="math">\[
+      \frac{Z_B}{Z_A}
+      \;=\; \frac{1}{Z_A}\int e^{-\beta U_B(x)}\,dx
+      \;=\; \int \underbrace{\frac{e^{-\beta U_A(x)}}{Z_A}}_{p_A(x)} \cdot e^{-\beta\,(U_B(x) - U_A(x))}\,dx
+      \;=\; \big\langle e^{-\beta \Delta U(x)} \big\rangle_{A},
+    \]</div>
+
+    <p>where \(\Delta U(x) = U_B(x) - U_A(x)\) and \(\langle \cdot \rangle_A\) is the expectation under the Boltzmann distribution of state \(A\). Take a log and you have it:</p>
+
+    <div class="math">\[
+      \boxed{\;\Delta F_{A \to B} \;=\; -k_B T \ln \big\langle e^{-\beta \Delta U} \big\rangle_{A}.\;}
+    \]</div>
+
+    <p>This is the <strong>Zwanzig identity</strong> (1954). Read what it instructs you to do. <em>Sample the world of state \(A\). At every sample, evaluate the energy of that same configuration as if it lived in state \(B\). The exponentiated negative difference is the weight. Average those weights. Take a log. That is the free energy difference.</em></p>
+
+    <p>You never enumerated microstates. You never computed \(Z_A\) or \(Z_B\). You computed their ratio from a single running ensemble in state \(A\). The "perturbation" in <em>free energy perturbation</em> is exactly this: you treat \(B\) as a perturbation of \(A\), and the perturbation shows up only as the energy difference \(\Delta U\) on the configurations you already have.</p>
+
+    <div class="widget" id="w3">
+      <div class="widget-titlewrap">
+        <div class="widget-title">
+          <span class="widget-num">Widget 03</span>
+          <span>Sampling A, predicting B</span>
+          <span class="wt-sub">live walker · re&#8209;weight on the fly · watch \(\hat{\Delta F}\) converge</span>
+        </div>
+      </div>
+      <div class="widget-body">
+        <div class="widget-canvas-wrap"><canvas id="w3-canvas" width="800" height="400"></canvas></div>
+        <div class="controls">
+          <div class="control-row">
+            <label for="w3-d">Shift d</label>
+            <input type="range" id="w3-d" min="-1.5" max="2.5" step="0.01" value="1.0" />
+            <span class="readout" id="w3-d-readout">1.00</span>
+          </div>
+          <div class="control-row">
+            <label for="w3-dG">Offset Δ</label>
+            <input type="range" id="w3-dG" min="-1.0" max="2.0" step="0.01" value="0.5" />
+            <span class="readout" id="w3-dG-readout">0.50</span>
+          </div>
+          <div class="btn-row">
+            <button class="ctl" id="w3-reset">Reset estimate</button>
+            <button class="ctl" id="w3-pause">Pause</button>
+          </div>
+        </div>
+        <div class="readout-strip">
+          <div class="rs-item"><span class="rs-label">⟨e<sup>−βΔU</sup>⟩</span><span class="rs-value" id="w3-mean">—</span></div>
+          <div class="rs-item"><span class="rs-label">\(\hat{\Delta F}\) (estimate)</span><span class="rs-value accent" id="w3-dFhat">—</span></div>
+          <div class="rs-item"><span class="rs-label">\(\Delta F\) (true)</span><span class="rs-value cool" id="w3-dFtrue">—</span></div>
+          <div class="rs-item"><span class="rs-label">samples</span><span class="rs-value" id="w3-N">0</span></div>
+        </div>
+      </div>
+    </div>
+
+    <p>Both potentials are harmonic wells: \(U_A(x) = \tfrac{1}{2}x^2\) and \(U_B(x) = \tfrac{1}{2}(x-d)^2 + \Delta\). The walker explores only \(U_A\) &mdash; that's the only state we sample. Each visited configuration is evaluated in <em>both</em> wells, and the exponentiated energy gap becomes its weight. The running mean of those weights, log&#8209;converted, drifts onto the true \(\Delta F = \Delta\). Notice something worth pausing on: the true answer is \(\Delta\) <em>no matter what \(d\) is</em> &mdash; the wells have the same curvature, so the shift never changes \(Z_B/Z_A\). This isn't a coincidence of the widget; it falls out of the integral itself. Expanding \(\Delta U = U_B - U_A = -dx + \tfrac{1}{2}d^2 + \Delta\) and pulling the \(x\)-independent pieces out of the average, \(Z_B/Z_A = e^{-\beta(\Delta + d^2/2)}\,\langle e^{\beta d x}\rangle_A\). The remaining piece, \(\langle e^{\beta d x}\rangle_A\), is the moment&#8209;generating function of the Gaussian \(p_A\) (mean 0, variance \(1/\beta\)), which evaluates in closed form to exactly \(e^{\beta d^2/2}\) &mdash; canceling the \(e^{-\beta d^2/2}\) prefactor precisely, for <em>any</em> \(d\), and leaving \(Z_B/Z_A = e^{-\beta\Delta}\). The shift \(d\) never had anywhere to hide in the final answer. Yet slide \(d\) out toward 2 and the estimate gets visibly noisier even though the target it chases hasn't moved: the cancellation is exact only in the infinite-sample average; with finitely many samples, a large \(d\) means the handful of samples that land far out in \(A\)'s tail (where \(x\) is large) carry disproportionately huge weights, and it's those rare samples the mean is struggling to average over. The shift touches only the <em>variance</em>, not the answer. Hold that thought &mdash; it is the whole subject of the next step.</p>
+
+    <details class="formal">
+      <summary>The formal version</summary>
+      <div class="formal-body">
+        <p>The Zwanzig identity is exact for any pair of states \(A, B\) with the same configuration space. The proof is the line of algebra above &mdash; one multiplication by \(1 = e^{-\beta U_A}/e^{-\beta U_A}\) and a relabel of the resulting integrand as an expectation.</p>
+        <p>Statistically, it is an instance of <strong>importance sampling</strong>: the proposal distribution is \(p_A\), the target distribution is \(p_B\), and the importance weight at configuration \(x\) is</p>
+        \[ w(x) \;=\; \frac{p_B(x)\,Z_B}{p_A(x)\,Z_A} \cdot \frac{Z_A}{Z_B} \;=\; e^{-\beta \Delta U(x)} \cdot \frac{Z_A}{Z_B}. \]
+        <p>So \(\langle w \rangle_A = 1\) (correctly normalized weights) and \(\langle e^{-\beta\Delta U} \rangle_A = Z_B/Z_A\), which is the Zwanzig identity. The exponentially-weighted form is what you actually compute; the partition function ratio is what you get out.</p>
+        <p>The same mathematical structure underlies the ELBO of variational inference, score-based density-ratio estimation, and noise-contrastive estimation. In every case you have two distributions, you can sample one, you want a property of the other, and you accept the bias-variance trade in exchange for tractability.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+
+<!-- ============================================================== -->
+<!--    STEP 4 — THE OVERLAP PROBLEM                                -->
+<!-- ============================================================== -->
+<section class="step" id="step-4">
+  <div class="step-marker">04<span class="slash">/</span><span class="total">06</span></div>
+  <div class="step-content">
+    <h2>Why the trick can quietly break</h2>
+
+    <p>The Zwanzig identity is exact. But "exact in the infinite-sample limit" is not what you get from a 10&#8209;ns simulation. With finite samples the estimator has variance, and the variance depends on a property of the two distributions that has nothing to do with how clever the math is: their <strong>overlap</strong>.</p>
+
+    <p>If \(p_A\) and \(p_B\) live on roughly the same configurations, samples from \(A\) get weights of order one, and the running mean converges fast. But if \(p_B\) puts substantial probability on configurations where \(p_A\) is vanishingly small &mdash; the world of \(B\) is somewhere the walker in \(A\) just never goes &mdash; the estimator becomes a lottery. Almost every weight is microscopic. A handful of weights are astronomical, and they carry the entire estimate. The mean of a heavy-tailed distribution converges painfully slowly, if at all, in finite samples.</p>
+
+    <p>The standard diagnostic is the <strong>effective sample size</strong>:</p>
+
+    <div class="math">\[ \text{ESS} \;=\; \frac{\big(\sum_n w_n\big)^2}{\sum_n w_n^2} \;\le\; N. \]</div>
+
+    <p>If your run has \(N = 10^6\) samples but ESS = 3, you are computing your free energy from <em>three</em> effective samples regardless of how long you wait. The error bar does not shrink with more sampling. You are not sample-limited &mdash; you are <em>overlap</em>-limited, and the wall is geometric.</p>
+
+    <div class="widget" id="w4">
+      <div class="widget-titlewrap">
+        <div class="widget-title">
+          <span class="widget-num">Widget 04</span>
+          <span>The estimator breaking under poor overlap</span>
+          <span class="wt-sub">push the two worlds apart · watch ESS collapse · watch the estimate refuse to settle</span>
+        </div>
+      </div>
+      <div class="widget-body">
+        <div class="widget-canvas-wrap"><canvas id="w4-canvas" width="800" height="420"></canvas></div>
+        <div class="controls">
+          <div class="control-row">
+            <label for="w4-d">Shift d</label>
+            <input type="range" id="w4-d" min="0" max="6" step="0.01" value="1.0" />
+            <span class="readout" id="w4-d-readout">1.00</span>
+          </div>
+          <div class="btn-row">
+            <button class="ctl" id="w4-reset">Reset estimate</button>
+            <button class="ctl" id="w4-pause">Pause</button>
+          </div>
+        </div>
+        <div class="readout-strip">
+          <div class="rs-item"><span class="rs-label">overlap</span><span class="rs-value" id="w4-ov">—</span></div>
+          <div class="rs-item"><span class="rs-label">ESS / N</span><span class="rs-value accent" id="w4-ess">—</span></div>
+          <div class="rs-item"><span class="rs-label">\(\hat{\Delta F}\)</span><span class="rs-value" id="w4-dFhat">—</span></div>
+          <div class="rs-item"><span class="rs-label">\(\Delta F\) true</span><span class="rs-value cool" id="w4-dFtrue">0.000</span></div>
+          <div class="rs-item"><span class="rs-label">samples</span><span class="rs-value" id="w4-N">0</span></div>
+        </div>
+      </div>
+    </div>
+
+    <p>Start with \(d = 1\) and the estimator looks reasonable. Slide \(d\) past 2 and the overlap region shrinks; past 3 it nearly vanishes. The weight histogram becomes a spike at zero with a far tail; the running estimate stops tracking the truth and jumps every time a rare large-weight sample lands. <strong>This is the failure mode of FEP applied directly between two real ligands.</strong> Two ligands that differ by even one atom can have non-overlapping conformational ensembles &mdash; and direct Zwanzig between them just doesn't work.</p>
+
+    <details class="formal">
+      <summary>The formal version</summary>
+      <div class="formal-body">
+        <p>The variance of the Zwanzig estimator is bounded below by a quantity that measures the dissimilarity of \(p_A\) and \(p_B\):</p>
+        \[ \text{Var}\big[\widehat{Z_B/Z_A}\big] \;\ge\; \frac{1}{N}\bigg(\!\int \frac{p_B^2}{p_A}dx \;-\; \Big(\!\int p_B\,dx\Big)^{\!2}\bigg). \]
+        <p>The integral \(\int p_B^2/p_A\,dx\) is finite only when the support of \(p_B\) is contained in the support of \(p_A\) with bounded ratio. In high dimensions, this is almost never the case for two distinct ligands. The integral diverges in the configurations where \(p_A\) is essentially zero but \(p_B\) is not &mdash; exactly the configurations that should have huge weights and that the \(A\)-walker, by construction, almost never visits.</p>
+        <p>The \(\chi^2\)-divergence between \(p_A\) and \(p_B\) bounds this variance and motivates the use of overlap-aware estimators (BAR, MBAR) as well as overlap-aware path design (the next step). The same divergence governs the variance of importance-weighted ELBOs in deep variational inference.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+
+<!-- ============================================================== -->
+<!--    STEP 5 — BRIDGE WITH INTERMEDIATE WORLDS                    -->
+<!-- ============================================================== -->
+<section class="step" id="step-5">
+  <div class="step-marker">05<span class="slash">/</span><span class="total">06</span></div>
+  <div class="step-content">
+    <h2>Bridge the gap with a chain of intermediates</h2>
+
+    <p>The fix is in the geometry of the path, not in the estimator. If the two distributions don't overlap, build a sequence of distributions between them that do, and walk the staircase.</p>
+
+    <p>Introduce a coupling parameter \(\lambda \in [0,1]\) and an interpolated potential:</p>
+
+    <div class="math">\[ U(\lambda, x) \;=\; (1-\lambda)\,U_A(x) \;+\; \lambda\,U_B(x). \]</div>
+
+    <p>At \(\lambda = 0\) you have state \(A\); at \(\lambda = 1\), state \(B\); in between, a continuum of synthetic intermediate worlds. Pick a ladder \(0 = \lambda_0 < \lambda_1 < \cdots < \lambda_K = 1\) such that each adjacent pair \((\lambda_i, \lambda_{i+1})\) <em>does</em> overlap. The total free energy difference is a sum:</p>
+
+    <div class="math">\[
+      \Delta F_{A \to B}
+      \;=\; \sum_{i=0}^{K-1} \Delta F_{\lambda_i \to \lambda_{i+1}}
+      \;=\; \sum_{i=0}^{K-1} \Big( -k_B T \ln \big\langle e^{-\beta (U_{i+1} - U_i)} \big\rangle_{\lambda_i} \Big).
+    \]</div>
+
+    <p>Notice what that sum is actually doing. Each window's contribution is itself a free energy difference, \(\Delta F_{\lambda_i \to \lambda_{i+1}} = F(\lambda_{i+1}) - F(\lambda_i)\), so the per-window pieces fit together like a chain. Write the \(K = 4\) case out longhand, with \(F_i \equiv F(\lambda_i)\):</p>
+
+    <div class="math">\[
+      \Delta F_{A \to B}
+      \;=\; \big[\,F_1 - F_0\,\big]
+      \;+\; \big[\,F_2 - F_1\,\big]
+      \;+\; \big[\,F_3 - F_2\,\big]
+      \;+\; \big[\,F_4 - F_3\,\big].
+    \]</div>
+
+    <p>The intermediate \(F_1, F_2, F_3\) each appear once with a \(+\) and once with a \(-\) and vanish in pairs:</p>
+
+    <div class="math">\[
+      \Delta F_{A \to B}
+      \;=\; -F_0
+      \;+\; \cancel{F_1} - \cancel{F_1}
+      \;+\; \cancel{F_2} - \cancel{F_2}
+      \;+\; \cancel{F_3} - \cancel{F_3}
+      \;+\; F_4
+      \;=\; F_B - F_A.
+    \]</div>
+
+    <p>This is a <strong>telescoping sum</strong>. The synthetic intermediate worlds drop out of the final answer; only the two real endpoints survive. So the windowing trick is not introducing any new approximation &mdash; algebraically it is exactly the same \(\Delta F_{A \to B}\). What it changes is purely the variance of how we <em>estimate</em> it: instead of one impossible long jump, we compute a chain of short, well-overlapped jumps whose estimator errors are small and which sum back up to the same exact quantity.</p>
+
+    <p>Each term is a small Zwanzig step between two distributions that <em>do</em> overlap, so each one converges. The impossible long jump has been factored into a sequence of possible short ones. This is the FEP that actually runs in software: a series of MD simulations, one per \(\lambda\) window, with reweighting between adjacent rungs.</p>
+
+    <div class="widget" id="w5">
+      <div class="widget-titlewrap">
+        <div class="widget-title">
+          <span class="widget-num">Widget 05</span>
+          <span>A bridge of intermediate distributions</span>
+          <span class="wt-sub">fix d = 6 (hopeless single-shot) · raise K · watch the bridge fill in</span>
+        </div>
+      </div>
+      <div class="widget-body">
+        <div class="widget-canvas-wrap"><canvas id="w5-canvas" width="800" height="440"></canvas></div>
+        <div class="controls">
+          <div class="control-row">
+            <label for="w5-K">Windows K</label>
+            <input type="range" id="w5-K" min="1" max="16" step="1" value="1" />
+            <span class="readout" id="w5-K-readout">1</span>
+          </div>
+          <div class="btn-row">
+            <button class="ctl" id="w5-reset">Reset estimate</button>
+            <button class="ctl" id="w5-pause">Pause</button>
+          </div>
+        </div>
+        <div class="readout-strip">
+          <div class="rs-item"><span class="rs-label">K</span><span class="rs-value" id="w5-Kval">1</span></div>
+          <div class="rs-item"><span class="rs-label">min adjacent overlap</span><span class="rs-value" id="w5-ov">—</span></div>
+          <div class="rs-item"><span class="rs-label">\(\hat{\Delta F}\) total</span><span class="rs-value accent" id="w5-dFhat">—</span></div>
+          <div class="rs-item"><span class="rs-label">\(\Delta F\) true</span><span class="rs-value cool" id="w5-dFtrue">0.000</span></div>
+        </div>
+      </div>
+    </div>
+
+    <p>The shift is held at \(d = 6\) &mdash; the regime where single-shot FEP collapsed in the last widget. At \(K = 1\), you see the same failure: one impossible jump, runaway variance. Raise \(K\): the chain of Gaussians fills in along the path, each pair overlapping its neighbor, and the per-window contributions sum back up to the true \(\Delta F\). The estimator recovers because the path was repaired, not because the estimator was.</p>
+
+    <details class="formal">
+      <summary>The formal version</summary>
+      <div class="formal-body">
+        <p>The choice of estimator on the ladder is itself a research subject. Forward FEP per window (used here) is the simplest. <strong>BAR</strong> (Bennett, 1976) combines forward and backward Zwanzig within each window:</p>
+        \[ \Delta F_i \;=\; k_B T \ln \frac{\big\langle f(\beta(U_{i+1}-U_i) + C)\big\rangle_{i+1}}{\big\langle f(\beta(U_i - U_{i+1}) - C)\big\rangle_{i}} + C, \quad f(x) = (1+e^x)^{-1}, \]
+        <p>and chooses \(C\) self-consistently to minimize variance. <strong>MBAR</strong> (Shirts &amp; Chodera, 2008) generalizes to all windows at once via reweighting across the full ladder.</p>
+        <p><strong>Thermodynamic integration</strong> takes the same ladder but a different identity: \(\Delta F = \int_0^1 \langle \partial_\lambda U \rangle_\lambda\,d\lambda\), computed by quadrature over the windows. TI is a derivative-based method; FEP/BAR/MBAR are ratio-based. The path is the same.</p>
+        <p>Modern variants: replica exchange across the ladder (HREX, Hamiltonian replica exchange), nonequilibrium switching (Crooks fluctuation theorem, Jarzynski), and learned \(\lambda\)-paths from generative models. All inherit this fundamental architecture of "bridge non-overlapping distributions with a chain."</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+
+<!-- ============================================================== -->
+<!--    STEP 6 — THE BINDING CYCLE                                  -->
+<!-- ============================================================== -->
+<section class="step" id="step-6">
+  <div class="step-marker">06<span class="slash">/</span><span class="total">06</span></div>
+  <div class="step-content">
+    <h2>An alchemical cycle closing on itself</h2>
+
+    <p>Now the payoff. Nothing in the construction required \(\lambda\) to interpolate between two <em>physical</em> states. The whole machinery still works if \(U_A\) and \(U_B\) differ by an arbitrary, even unphysical, transformation &mdash; one ligand's atoms smoothly morphing into another's, charges turning on and off, methyl groups appearing from vacuum. These nonphysical paths are <strong>alchemical</strong>, and they are what makes FEP useful for drug design.</p>
+
+    <p>In practice, the medicinal chemist's question is not "what is the absolute binding free energy of compound X?" but "does this proposed modification \(A \to B\) bind tighter?" That answer requires a <em>difference of differences</em>: \(\Delta\Delta G_{\text{bind}}^{A \to B} = \Delta G_{\text{bind}}^B - \Delta G_{\text{bind}}^A\). The physical legs of this calculation &mdash; ligand wandering through bulk water until it docks &mdash; require timescales no MD simulation will ever cover.</p>
+
+    <p>So we close a cycle and let the impossible legs cancel.</p>
+
+    <div class="widget" id="w6">
+      <div class="widget-titlewrap">
+        <div class="widget-title">
+          <span class="widget-num">Widget 06</span>
+          <span>The binding cycle closing on itself</span>
+          <span class="wt-sub">staged reveal · run both alchemies (live windowed FEP) · read ΔΔG off the cycle</span>
+        </div>
+      </div>
+      <div class="widget-body">
+        <div class="widget-canvas-wrap"><canvas id="w6-canvas" width="800" height="460"></canvas></div>
+        <div class="controls">
+          <div class="btn-row">
+            <button class="ctl" id="w6-stage">Next stage →</button>
+            <button class="ctl" id="w6-reset">Reset cycle</button>
+          </div>
+        </div>
+        <div class="readout-strip">
+          <div class="rs-item"><span class="rs-label">stage</span><span class="rs-value" id="w6-stage-readout">1 of 5</span></div>
+          <div class="rs-item"><span class="rs-label">ΔG<sub>solvent</sub> (A→B)</span><span class="rs-value cool" id="w6-dGw">—</span></div>
+          <div class="rs-item"><span class="rs-label">ΔG<sub>complex</sub> (A→B)</span><span class="rs-value cool" id="w6-dGp">—</span></div>
+          <div class="rs-item"><span class="rs-label">ΔΔG<sub>bind</sub></span><span class="rs-value accent" id="w6-ddG">—</span></div>
+          <div class="rs-item"><span class="rs-label">FEP samples / window</span><span class="rs-value" id="w6-N">0</span></div>
+        </div>
+      </div>
+    </div>
+
+    <p>Stage through the cycle. Four states sit at the corners: ligand \(A\) free in water, ligand \(B\) free in water, ligand \(A\) bound to the protein pocket, ligand \(B\) bound. The horizontal arrows are physical binding events &mdash; the thing we actually care about, and the thing we cannot simulate. The vertical arrows are alchemical transformations: \(A \to B\) <em>in water</em>, and \(A \to B\) <em>in the pocket</em>. At stages 4 and 5 the widget actually <em>runs</em> those two transformations &mdash; each is a live windowed-FEP calculation exactly like Widget 5, a ladder of six \(\lambda\)-windows with a Metropolis walker in each, reweighting between neighbors. The two ΔG numbers you watch converge are not scripted; they are running estimates accumulating from the sampling. (The pocket is modeled as a stiffer well than bulk water, which changes the per-window variance but &mdash; as you saw in Widget 3 &mdash; not the leg's true ΔG.) Because free energy is a state function, going around the cycle returns zero, which means</p>
+
+    <div class="math">\[
+      \boxed{\;\Delta\Delta G_{\text{bind}}^{A\to B}
+        \;=\; \Delta G_{\text{bind}}^{B} - \Delta G_{\text{bind}}^{A}
+        \;=\; \Delta G_{\text{complex}}^{A\to B} - \Delta G_{\text{solvent}}^{A\to B}.\;}
+    \]</div>
+
+    <p>The impossible legs cancel. Two alchemical calculations &mdash; the same ligand transformation done in two different environments &mdash; give the experimentally meaningful difference in binding affinity, often within 1 kcal/mol of measurement. This is, mechanically, how every relative binding free energy calculation in production drug discovery works.</p>
+
+    <details class="formal">
+      <summary>The formal version</summary>
+      <div class="formal-body">
+        <p>Free energy is a thermodynamic state function: the integral of \(dG\) around any closed cycle vanishes. Concretely, going around the box A&#8209;water → A&#8209;complex → B&#8209;complex → B&#8209;water → A&#8209;water gives</p>
+        \[ \Delta G_{\text{bind}}^A + \Delta G_{\text{complex}}^{A\to B} - \Delta G_{\text{bind}}^B - \Delta G_{\text{solvent}}^{A\to B} \;=\; 0, \]
+        <p>which rearranges to the boxed identity. The "alchemical" legs are simulated using the FEP/BAR/MBAR pipeline on a dual-topology or single-topology Hamiltonian where the molecular mechanics force field smoothly interpolates between \(A\) and \(B\). To avoid singularities as atoms appear or vanish, soft-core potentials replace the bare Lennard-Jones interaction near the endpoints (Beutler 1994; Steinbrecher 2007).</p>
+        <p>In practice the windows are run with replica exchange (HREX), trajectories are checked for convergence by overlap matrices, and the cycle is closed by comparing forward and reverse runs. Modern pipelines (Schrödinger FEP+, OpenFE, Amber TI) automate the dual-topology setup and ladder design; on standard benchmark sets they reach RMSE ≈ 1 kcal/mol against experimental \(\Delta\Delta G\), enough to guide medicinal-chemistry decisions on a series of analogs.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+
+<!-- ============================================================== -->
+<!--    RECAP                                                       -->
+<!-- ============================================================== -->
+<section class="recap">
+  <h3>Putting it together</h3>
+  <p>Six steps that arrived where they began.</p>
+  <p>Free energy is the quantity that decides equilibrium at fixed temperature: \(F = -k_B T \ln Z\). Differences in it are log&#8209;ratios of partition functions, \(\Delta F = -k_B T \ln(Z_B / Z_A)\). A ratio of partition functions admits a trick no single \(Z\) does &mdash; it equals a re&#8209;weighted average under either endpoint, the <strong>Zwanzig identity</strong>. That estimator works when the two distributions overlap and dies when they don't. The cure is geometric: bridge them with a chain of intermediate distributions, each adjacent pair overlapping, so the impossible jump factors into possible steps. Once that machinery exists, \(\lambda\) does not have to interpolate between physical states &mdash; it can interpolate between any two Hamiltonians. Alchemical transformations let us close a thermodynamic cycle in which the impossible physical legs of binding cancel out, leaving the experimentally meaningful \(\Delta\Delta G_{\text{bind}}\) as a difference of two computable alchemical legs.</p>
+  <p class="recap-kernel">The whole subject in one sentence again: <em>a free energy difference is the log of a ratio of partition functions, and you can estimate that ratio &mdash; without ever computing either &mdash; by sampling one state and asking what its energy would be in the other.</em></p>
+</section>
+
+
+<!-- ============================================================== -->
+<!--    WHERE THIS SHOWS UP                                         -->
+<!-- ============================================================== -->
+<section class="where">
+  <h3>Where this shows up</h3>
+  <ul>
+    <li><strong>Production drug discovery.</strong> Schrödinger's FEP+, OpenFE, Amber's TI/FEP module, and GROMACS free-energy pipelines all implement exactly this machinery — alchemical \(\lambda\)&#8209;ladders, BAR/MBAR estimators, thermodynamic cycles — on real protein-ligand systems. Standard benchmarks (Wang 2015, Schindler 2020) report ~1 kcal/mol RMSE against experimental \(\Delta\Delta G_{\text{bind}}\).</li>
+    <li><strong>Protein stability and design.</strong> The same alchemical FEP, applied to single-amino-acid mutations, gives \(\Delta\Delta G_{\text{fold}}\) for protein stability and is a standard target for ML-based protein scoring.</li>
+    <li><strong>Variational inference, EBMs, contrastive learning.</strong> The Zwanzig identity is importance sampling between Boltzmann distributions, and the same algebra reappears as the ELBO, as the partition-function trick in energy-based models, and as the density-ratio formulation of noise-contrastive estimation. The geometric pathology (lack of overlap → variance explosion) is the same pathology that gives high-dimensional importance-weighted ELBOs their notorious variance.</li>
+    <li><strong>Boltzmann generators and learned \(\lambda\)-paths.</strong> Normalizing flows (Noé 2019, Wirnsberger 2020) learn a map from a tractable prior to the target Boltzmann distribution, sidestepping the windowed chain entirely — the flow's Jacobian gives \(\log Z\) directly. Diffusion-based samplers (e.g. learned interpolants between \(p_A\) and \(p_B\)) are the latest entry in the lineage importance sampling → FEP → BAR/MBAR → learned proposals → generative samplers.</li>
+  </ul>
+</section>
+
+<footer class="colophon">
+  <span>Free energy perturbation · six steps · six widgets</span>
+  <span>Zwanzig 1954 · Bennett 1976 · Shirts &amp; Chodera 2008</span>
+</footer>
+
+</div><!-- /.shell -->
+
+
+<!-- ============================================================== -->
+<!--    SCRIPTS                                                     -->
+<!-- ============================================================== -->
+<script>
+"use strict";
+
+/* ============================================================ */
+/*   DESIGN CONSTANTS (mirror CSS for canvas rendering)        */
+/* ============================================================ */
+const PAL = {
+  bg: '#F2EBDE',
+  bgCard: '#F8F2E5',
+  bgDeep: '#ECE2CF',
+  ink: '#18130F',
+  inkSoft: '#5A4F42',
+  inkFaint: '#8C8273',
+  rule: '#B9A98C',
+  ruleSoft: '#D4C7AD',
+  accent: '#B7401A',
+  accentDeep: '#8A2F11',
+  accentSoft: '#E29077',
+  cool: '#18546A',
+  coolSoft: '#5E8896',
+  highlight: '#E4B85D',
+};
+
+const FONT_BODY = "13px 'IBM Plex Sans', sans-serif";
+const FONT_MONO = "12px 'IBM Plex Mono', monospace";
+const FONT_MONO_SMALL = "10.5px 'IBM Plex Mono', monospace";
+const FONT_DISPLAY = "15px 'Fraunces', serif";
+
+/* helper: setup canvas for retina */
+function setupCanvas(canvas) {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const w = canvas.width;   // logical width (set in HTML)
+  const h = canvas.height;
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  canvas.style.width = '100%';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.W = w;
+  ctx.H = h;
+  return ctx;
+}
+
+/* fast normal sample (Box-Muller) */
+function gaussSample() {
+  let u = 0, v = 0;
+  while (u === 0) u = Math.random();
+  while (v === 0) v = Math.random();
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+
+
+/* ============================================================ */
+/*   WIDGET 1 — A SPECTRUM POPULATING ITSELF                   */
+/* ============================================================ */
+(function initWidget1() {
+  const canvas = document.getElementById('w1-canvas');
+  if (!canvas) return;
+  const ctx = setupCanvas(canvas);
+  const W = ctx.W, H = ctx.H;
+
+  // State
+  const NLEVELS = 5;
+  const NPART = 200;
+  let energies = [0.0, 0.6, 1.2, 1.9, 2.7];   // user-draggable
+  let T = 0.8;
+  let beta = () => 1 / T;
+  let particles = new Int8Array(NPART);        // level index for each particle
+  // Initialize all at lowest level
+  for (let i = 0; i < NPART; i++) particles[i] = 0;
+  let paused = false;
+  let dragLevel = -1;
+
+  // Layout
+  const padL = 50, padR = 20, padT = 24, padB = 32;
+  const splitX = 0.52;
+  const leftX0 = padL, leftX1 = padL + (W - padL - padR) * splitX - 24;
+  const rightX0 = leftX1 + 36, rightX1 = W - padR;
+  const eMin = -0.5, eMax = 3.5;
+  function eToY(E) {
+    const t = (E - eMin) / (eMax - eMin);
+    return padT + (H - padT - padB) * (1 - t);
+  }
+  function yToE(y) {
+    const t = 1 - (y - padT) / (H - padT - padB);
+    return eMin + t * (eMax - eMin);
+  }
+
+  // Math helpers
+  function partitionFunction() {
+    let Z = 0;
+    for (let i = 0; i < NLEVELS; i++) Z += Math.exp(-beta() * energies[i]);
+    return Z;
+  }
+  function boltzmannP() {
+    const Z = partitionFunction();
+    const P = new Array(NLEVELS);
+    for (let i = 0; i < NLEVELS; i++) P[i] = Math.exp(-beta() * energies[i]) / Z;
+    return { P, Z };
+  }
+  function populations() {
+    const N = new Array(NLEVELS).fill(0);
+    for (let i = 0; i < NPART; i++) N[particles[i]]++;
+    return N;
+  }
+
+  // Metropolis step (one sweep = NPART proposals)
+  function mcStep(numProp) {
+    const b = beta();
+    for (let n = 0; n < numProp; n++) {
+      const i = (Math.random() * NPART) | 0;
+      const cur = particles[i];
+      // propose a new level uniformly from the other NLEVELS-1
+      let nxt = (Math.random() * (NLEVELS - 1)) | 0;
+      if (nxt >= cur) nxt++;
+      const dE = energies[nxt] - energies[cur];
+      if (dE <= 0 || Math.random() < Math.exp(-b * dE)) {
+        particles[i] = nxt;
+      }
+    }
+  }
+
+  // Drawing
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    // Left panel: spectrum + particles on rungs
+    // Axis
+    ctx.strokeStyle = PAL.ruleSoft;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(leftX0 - 6, eToY(eMin));
+    ctx.lineTo(leftX0 - 6, eToY(eMax));
+    ctx.stroke();
+    ctx.fillStyle = PAL.inkFaint;
+    ctx.font = FONT_MONO_SMALL;
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (let e = 0; e <= 3; e++) {
+      ctx.fillText(e.toFixed(0), leftX0 - 10, eToY(e));
+      ctx.strokeStyle = PAL.ruleSoft;
+      ctx.beginPath();
+      ctx.moveTo(leftX0 - 4, eToY(e));
+      ctx.lineTo(leftX0 - 2, eToY(e));
+      ctx.stroke();
+    }
+    // Axis label
+    ctx.save();
+    ctx.translate(leftX0 - 38, (eToY(eMin) + eToY(eMax)) / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'center';
+    ctx.fillStyle = PAL.inkSoft;
+    ctx.font = FONT_MONO_SMALL;
+    ctx.fillText('energy  E', 0, 0);
+    ctx.restore();
+
+    // Populations as we compute them
+    const N = populations();
+
+    // Draw each level as a horizontal bar + its particles
+    for (let i = 0; i < NLEVELS; i++) {
+      const y = eToY(energies[i]);
+      // line
+      ctx.strokeStyle = (dragLevel === i) ? PAL.accent : PAL.ink;
+      ctx.lineWidth = (dragLevel === i) ? 2.2 : 1.4;
+      ctx.beginPath();
+      ctx.moveTo(leftX0, y);
+      ctx.lineTo(leftX1, y);
+      ctx.stroke();
+      // small handle
+      ctx.fillStyle = (dragLevel === i) ? PAL.accent : PAL.inkSoft;
+      ctx.beginPath();
+      ctx.arc(leftX1 + 5, y, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Draw a stack of dots for particles on this level
+      const ni = N[i];
+      const dotR = 2.6;
+      const maxCols = Math.floor((leftX1 - leftX0 - 8) / 6);
+      ctx.fillStyle = PAL.cool;
+      for (let p = 0; p < ni; p++) {
+        const col = p % maxCols;
+        const row = Math.floor(p / maxCols);
+        const px = leftX0 + 4 + col * 6;
+        const py = y - 3.5 - row * 5.6;
+        ctx.beginPath();
+        ctx.arc(px, py, dotR, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      // Label
+      ctx.fillStyle = PAL.inkSoft;
+      ctx.font = FONT_MONO;
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('E=' + energies[i].toFixed(2), leftX1 + 12, y);
+    }
+
+    // Right panel: histogram (empirical) vs theoretical Boltzmann curve
+    const { P } = boltzmannP();
+    // x = level index, y = probability/density
+    // baseline
+    const histX0 = rightX0, histX1 = rightX1;
+    const histYbot = H - padB;
+    const histYtop = padT + 8;
+    ctx.strokeStyle = PAL.ruleSoft;
+    ctx.beginPath();
+    ctx.moveTo(histX0, histYbot);
+    ctx.lineTo(histX1, histYbot);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(histX0, histYtop - 4);
+    ctx.lineTo(histX0, histYbot);
+    ctx.stroke();
+
+    // ticks
+    ctx.fillStyle = PAL.inkFaint;
+    ctx.font = FONT_MONO_SMALL;
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    [0, 0.25, 0.5, 0.75, 1].forEach(p => {
+      const y = histYbot - (histYbot - histYtop) * p;
+      ctx.fillText(p.toFixed(2), histX0 - 6, y);
+      ctx.strokeStyle = PAL.ruleSoft;
+      ctx.beginPath();
+      ctx.moveTo(histX0 - 3, y); ctx.lineTo(histX0, y); ctx.stroke();
+    });
+    ctx.save();
+    ctx.translate(histX0 - 30, (histYbot + histYtop) / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'center';
+    ctx.fillStyle = PAL.inkSoft;
+    ctx.fillText('probability', 0, 0);
+    ctx.restore();
+
+    const barW = (histX1 - histX0) / NLEVELS;
+    for (let i = 0; i < NLEVELS; i++) {
+      const empirical = N[i] / NPART;
+      const theory = P[i];
+      const x = histX0 + i * barW + barW * 0.16;
+      const w = barW * 0.68;
+      // Theoretical (dashed outline)
+      const yT = histYbot - (histYbot - histYtop) * theory;
+      ctx.strokeStyle = PAL.accent;
+      ctx.setLineDash([3, 2.5]);
+      ctx.lineWidth = 1.4;
+      ctx.strokeRect(x, yT, w, histYbot - yT);
+      ctx.setLineDash([]);
+      // Empirical bar (solid filled)
+      const yE = histYbot - (histYbot - histYtop) * empirical;
+      ctx.fillStyle = PAL.cool;
+      ctx.globalAlpha = 0.85;
+      ctx.fillRect(x, yE, w, histYbot - yE);
+      ctx.globalAlpha = 1;
+
+      // x label
+      ctx.fillStyle = PAL.inkFaint;
+      ctx.font = FONT_MONO_SMALL;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText('lvl ' + i, x + w / 2, histYbot + 4);
+    }
+
+    // Legend
+    ctx.font = FONT_MONO_SMALL;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    const legY = padT + 4;
+    ctx.fillStyle = PAL.cool;
+    ctx.fillRect(rightX0, legY - 5, 12, 10);
+    ctx.fillStyle = PAL.inkSoft;
+    ctx.fillText('empirical', rightX0 + 18, legY);
+    ctx.strokeStyle = PAL.accent;
+    ctx.setLineDash([3, 2.5]);
+    ctx.strokeRect(rightX0 + 90, legY - 5, 12, 10);
+    ctx.setLineDash([]);
+    ctx.fillStyle = PAL.inkSoft;
+    ctx.fillText('Boltzmann', rightX0 + 108, legY);
+  }
+
+  // Readouts
+  const elZ = document.getElementById('w1-Z');
+  const elF = document.getElementById('w1-F');
+  const elEbar = document.getElementById('w1-Ebar');
+  const elS = document.getElementById('w1-S');
+  const elTread = document.getElementById('w1-T-readout');
+
+  let lastReadStr = '';
+  function updateReadouts() {
+    const { P, Z } = boltzmannP();
+    const F = -T * Math.log(Z);   // k_B = 1
+    let Ebar = 0;
+    for (let i = 0; i < NLEVELS; i++) Ebar += P[i] * energies[i];
+    let S = 0;
+    for (let i = 0; i < NLEVELS; i++) {
+      if (P[i] > 1e-12) S -= P[i] * Math.log(P[i]);
+    }
+    const str = `${Z.toFixed(3)}|${F.toFixed(3)}|${Ebar.toFixed(3)}|${S.toFixed(3)}|${T.toFixed(2)}`;
+    if (str !== lastReadStr) {
+      elZ.textContent = Z.toFixed(3);
+      elF.textContent = F.toFixed(3);
+      elEbar.textContent = Ebar.toFixed(3);
+      elS.textContent = S.toFixed(3);
+      elTread.textContent = T.toFixed(2);
+      lastReadStr = str;
+    }
+  }
+
+  // Animation loop
+  function frame() {
+    if (!paused) {
+      mcStep(400); // 400 proposals per frame
+    }
+    draw();
+    updateReadouts();
+    requestAnimationFrame(frame);
+  }
+  frame();
+
+  // Interactions
+  // Temperature slider
+  document.getElementById('w1-T').addEventListener('input', e => {
+    T = parseFloat(e.target.value);
+  });
+  // Reset button
+  document.getElementById('w1-reset').addEventListener('click', () => {
+    for (let i = 0; i < NPART; i++) particles[i] = (Math.random() * NLEVELS) | 0;
+  });
+  // Pause button
+  const pauseBtn = document.getElementById('w1-pause');
+  pauseBtn.addEventListener('click', () => {
+    paused = !paused;
+    pauseBtn.textContent = paused ? 'Resume' : 'Pause';
+  });
+
+  // Level dragging
+  function relPos(evt) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: (evt.clientX - rect.left) * (W / rect.width),
+      y: (evt.clientY - rect.top) * (H / rect.height),
+    };
+  }
+  function findLevel(x, y) {
+    if (x < leftX0 - 12 || x > leftX1 + 14) return -1;
+    let best = -1, bestD = 12;
+    for (let i = 0; i < NLEVELS; i++) {
+      const d = Math.abs(y - eToY(energies[i]));
+      if (d < bestD) { bestD = d; best = i; }
+    }
+    return best;
+  }
+  canvas.addEventListener('mousedown', evt => {
+    const { x, y } = relPos(evt);
+    dragLevel = findLevel(x, y);
+  });
+  window.addEventListener('mousemove', evt => {
+    if (dragLevel < 0) return;
+    const { y } = relPos(evt);
+    let newE = yToE(y);
+    if (newE < -0.4) newE = -0.4;
+    if (newE > 3.4) newE = 3.4;
+    energies[dragLevel] = newE;
+  });
+  window.addEventListener('mouseup', () => { dragLevel = -1; });
+  // touch
+  canvas.addEventListener('touchstart', evt => {
+    if (evt.touches.length === 0) return;
+    const t = evt.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    const x = (t.clientX - rect.left) * (W / rect.width);
+    const y = (t.clientY - rect.top) * (H / rect.height);
+    dragLevel = findLevel(x, y);
+    if (dragLevel >= 0) evt.preventDefault();
+  }, { passive: false });
+  canvas.addEventListener('touchmove', evt => {
+    if (dragLevel < 0 || evt.touches.length === 0) return;
+    const t = evt.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    const y = (t.clientY - rect.top) * (H / rect.height);
+    let newE = yToE(y);
+    if (newE < -0.4) newE = -0.4;
+    if (newE > 3.4) newE = 3.4;
+    energies[dragLevel] = newE;
+    evt.preventDefault();
+  }, { passive: false });
+  canvas.addEventListener('touchend', () => { dragLevel = -1; });
+})();
+
+
+/* ============================================================ */
+/*   WIDGET 2 — TWO COMPARTMENTS COMPETING                     */
+/* ============================================================ */
+(function initWidget2() {
+  const canvas = document.getElementById('w2-canvas');
+  if (!canvas) return;
+  const ctx = setupCanvas(canvas);
+  const W = ctx.W, H = ctx.H;
+
+  // Spectra (compartments A and B). Both have a fixed number of levels
+  // but the user can drag them and try presets.
+  const NA = 3, NB = 4;
+  let energiesA = [0.0, 1.6, 2.4];
+  let energiesB = [0.4, 0.9, 1.4, 2.0];
+  let T = 0.6;
+  let beta = () => 1 / T;
+
+  // Particles
+  const NPART = 180;
+  // each particle stores (compartment 0/1, level index)
+  const partComp = new Int8Array(NPART);
+  const partLvl = new Int8Array(NPART);
+  // init: split evenly at ground states
+  for (let i = 0; i < NPART; i++) {
+    partComp[i] = (i < NPART / 2) ? 0 : 1;
+    partLvl[i] = 0;
+  }
+
+  let dragInfo = null; // { comp: 0|1, lvl }
+
+  // Layout
+  const padL = 50, padR = 220, padT = 32, padB = 38;
+  const leftBoxX0 = padL, leftBoxX1 = padL + 200;
+  const rightBoxX0 = padL + 250, rightBoxX1 = padL + 450;
+
+  const eMin = -0.3, eMax = 3.0;
+  function eToY(E) {
+    const t = (E - eMin) / (eMax - eMin);
+    return padT + (H - padT - padB - 50) * (1 - t);
+  }
+  function yToE(y) {
+    const t = 1 - (y - padT) / (H - padT - padB - 50);
+    return eMin + t * (eMax - eMin);
+  }
+
+  function ZX(energies) {
+    let Z = 0;
+    for (let i = 0; i < energies.length; i++) Z += Math.exp(-beta() * energies[i]);
+    return Z;
+  }
+  function FX(energies) { return -T * Math.log(ZX(energies)); }
+
+  function popsByCompartment() {
+    let nA = 0, nB = 0;
+    for (let i = 0; i < NPART; i++) { if (partComp[i] === 0) nA++; else nB++; }
+    return [nA, nB];
+  }
+  function popsByLevel() {
+    const nA = new Array(NA).fill(0);
+    const nB = new Array(NB).fill(0);
+    for (let i = 0; i < NPART; i++) {
+      if (partComp[i] === 0) nA[partLvl[i]]++;
+      else nB[partLvl[i]]++;
+    }
+    return { nA, nB };
+  }
+
+  function mcStep(numProp) {
+    const b = beta();
+    const total = NA + NB;
+    for (let n = 0; n < numProp; n++) {
+      const i = (Math.random() * NPART) | 0;
+      const curC = partComp[i], curL = partLvl[i];
+      const curE = (curC === 0) ? energiesA[curL] : energiesB[curL];
+      // propose a uniform new (compartment, level)
+      let r = (Math.random() * (total - 1)) | 0;
+      // skip current state
+      let propC, propL;
+      let idxCount = 0;
+      let chosen = -1;
+      for (let cc = 0; cc < 2; cc++) {
+        const arr = (cc === 0) ? energiesA : energiesB;
+        for (let ll = 0; ll < arr.length; ll++) {
+          if (cc === curC && ll === curL) continue;
+          if (idxCount === r) { propC = cc; propL = ll; chosen = 1; break; }
+          idxCount++;
+        }
+        if (chosen >= 0) break;
+      }
+      if (chosen < 0) continue;
+      const propE = (propC === 0) ? energiesA[propL] : energiesB[propL];
+      const dE = propE - curE;
+      if (dE <= 0 || Math.random() < Math.exp(-b * dE)) {
+        partComp[i] = propC; partLvl[i] = propL;
+      }
+    }
+  }
+
+  function drawCompartmentBox(x0, x1, label, energies, comp, popsLvl) {
+    // Outer box
+    ctx.strokeStyle = PAL.rule;
+    ctx.lineWidth = 1;
+    const y0 = padT - 8, y1 = H - padB - 20;
+    ctx.strokeRect(x0, y0, x1 - x0, y1 - y0);
+    // label header
+    ctx.fillStyle = PAL.bgDeep;
+    ctx.fillRect(x0, y0, x1 - x0, 22);
+    ctx.fillStyle = (comp === 0) ? PAL.cool : PAL.accent;
+    ctx.font = "13px 'Fraunces', serif";
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(label, x0 + 8, y0 + 11);
+    ctx.fillStyle = PAL.inkSoft;
+    ctx.font = FONT_MONO_SMALL;
+    ctx.textAlign = 'right';
+    ctx.fillText('N=' + popsLvl.reduce((a,b)=>a+b,0), x1 - 8, y0 + 11);
+
+    // levels
+    for (let i = 0; i < energies.length; i++) {
+      const y = eToY(energies[i]);
+      const isDrag = dragInfo && dragInfo.comp === comp && dragInfo.lvl === i;
+      ctx.strokeStyle = isDrag ? PAL.accent : PAL.ink;
+      ctx.lineWidth = isDrag ? 2 : 1.3;
+      ctx.beginPath();
+      ctx.moveTo(x0 + 10, y);
+      ctx.lineTo(x1 - 30, y);
+      ctx.stroke();
+      // handle
+      ctx.fillStyle = isDrag ? PAL.accent : PAL.inkSoft;
+      ctx.beginPath();
+      ctx.arc(x1 - 25, y, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+      // E label
+      ctx.fillStyle = PAL.inkSoft;
+      ctx.font = FONT_MONO;
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(energies[i].toFixed(2), x1 - 5, y);
+      // particles as dots stacked above
+      const ni = popsLvl[i];
+      ctx.fillStyle = (comp === 0) ? PAL.cool : PAL.accent;
+      const dotR = 2.4;
+      const maxCols = Math.floor((x1 - 30 - x0 - 12) / 5.5);
+      for (let p = 0; p < ni; p++) {
+        const col = p % maxCols;
+        const row = Math.floor(p / maxCols);
+        const px = x0 + 12 + col * 5.5;
+        const py = y - 3 - row * 5;
+        ctx.beginPath();
+        ctx.arc(px, py, dotR, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+
+    // Energy axis on far left
+    ctx.strokeStyle = PAL.ruleSoft;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(padL - 8, eToY(eMin));
+    ctx.lineTo(padL - 8, eToY(eMax));
+    ctx.stroke();
+    ctx.fillStyle = PAL.inkFaint;
+    ctx.font = FONT_MONO_SMALL;
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (let e = 0; e <= 3; e++) {
+      ctx.fillText(e.toFixed(0), padL - 12, eToY(e));
+    }
+    ctx.save();
+    ctx.translate(padL - 38, (eToY(eMin) + eToY(eMax)) / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'center';
+    ctx.fillStyle = PAL.inkSoft;
+    ctx.fillText('energy  E', 0, 0);
+    ctx.restore();
+
+    // Both boxes
+    const { nA, nB } = popsByLevel();
+    drawCompartmentBox(leftBoxX0, leftBoxX1, 'Compartment A', energiesA, 0, nA);
+    drawCompartmentBox(rightBoxX0, rightBoxX1, 'Compartment B', energiesB, 1, nB);
+
+    // "Hopping gate" arrows between boxes
+    const gateY = (padT + H - padB) / 2;
+    ctx.strokeStyle = PAL.inkFaint;
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 2]);
+    // arrow right
+    ctx.beginPath();
+    ctx.moveTo(leftBoxX1 + 2, gateY - 8);
+    ctx.lineTo(rightBoxX0 - 2, gateY - 8);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(rightBoxX0 - 6, gateY - 11);
+    ctx.lineTo(rightBoxX0 - 2, gateY - 8);
+    ctx.lineTo(rightBoxX0 - 6, gateY - 5);
+    ctx.stroke();
+    // arrow left
+    ctx.beginPath();
+    ctx.moveTo(rightBoxX0 - 2, gateY + 8);
+    ctx.lineTo(leftBoxX1 + 2, gateY + 8);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(leftBoxX1 + 6, gateY + 11);
+    ctx.lineTo(leftBoxX1 + 2, gateY + 8);
+    ctx.lineTo(leftBoxX1 + 6, gateY + 5);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = PAL.inkFaint;
+    ctx.font = FONT_MONO_SMALL;
+    ctx.textAlign = 'center';
+    ctx.fillText('hop', (leftBoxX1 + rightBoxX0) / 2, gateY - 18);
+
+    // Bottom strip: ratio bar
+    const popA = nA.reduce((a,b)=>a+b,0);
+    const empA = popA / NPART;
+    const ZA = ZX(energiesA), ZB = ZX(energiesB);
+    const theoryA = ZA / (ZA + ZB);
+    const barX0 = padL, barX1 = padL + 450;
+    const barY = H - 30;
+    ctx.fillStyle = PAL.bgDeep;
+    ctx.fillRect(barX0, barY - 11, barX1 - barX0, 16);
+    ctx.strokeStyle = PAL.rule;
+    ctx.strokeRect(barX0, barY - 11, barX1 - barX0, 16);
+    // empirical fill
+    const splitEmp = barX0 + (barX1 - barX0) * empA;
+    ctx.fillStyle = PAL.cool;
+    ctx.globalAlpha = 0.75;
+    ctx.fillRect(barX0 + 1, barY - 10, splitEmp - barX0 - 1, 14);
+    ctx.fillStyle = PAL.accent;
+    ctx.fillRect(splitEmp, barY - 10, barX1 - splitEmp - 1, 14);
+    ctx.globalAlpha = 1;
+    // theory marker
+    const splitTh = barX0 + (barX1 - barX0) * theoryA;
+    ctx.strokeStyle = PAL.ink;
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(splitTh, barY - 14);
+    ctx.lineTo(splitTh, barY + 8);
+    ctx.stroke();
+    ctx.fillStyle = PAL.ink;
+    ctx.font = FONT_MONO_SMALL;
+    ctx.textAlign = 'center';
+    ctx.fillText('Z_A / (Z_A+Z_B)', splitTh, barY - 18);
+    // labels
+    ctx.fillStyle = PAL.cool;
+    ctx.textAlign = 'left';
+    ctx.fillText('A', barX0 + 4, barY - 4);
+    ctx.fillStyle = PAL.accent;
+    ctx.textAlign = 'right';
+    ctx.fillText('B', barX1 - 4, barY - 4);
+
+    // Right side info panel: explanation
+    const infoX = padL + 480;
+    const infoY = padT + 6;
+    const lines = [
+      "Each particle picks one",
+      "(compartment, level) pair",
+      "by Metropolis. At equilibrium,",
+      "",
+      "  P(A) = Z_A / (Z_A + Z_B)",
+      "",
+      "irrespective of whether Z is",
+      "small because of low energy",
+      "or large because of many",
+      "available states.",
+      "",
+      "Lower F wins."
+    ];
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'top';
+    lines.forEach((l, idx) => {
+      if (l.startsWith("  P(")) {
+        ctx.fillStyle = PAL.accentDeep;
+        ctx.font = "13px 'IBM Plex Mono', monospace";
+      } else if (l === "Lower F wins.") {
+        ctx.fillStyle = PAL.accent;
+        ctx.font = "italic 600 13px 'Fraunces', serif";
+      } else {
+        ctx.fillStyle = PAL.inkSoft;
+        ctx.font = "italic 12.5px 'Fraunces', serif";
+      }
+      ctx.fillText(l, infoX, infoY + idx * 17);
+    });
+  }
+
+  // Readouts
+  const elFA = document.getElementById('w2-FA');
+  const elFB = document.getElementById('w2-FB');
+  const elDF = document.getElementById('w2-dF');
+  const elNN = document.getElementById('w2-NN');
+  const elZZ = document.getElementById('w2-ZZ');
+  const elTread = document.getElementById('w2-T-readout');
+
+  let lastReadStr = '';
+  function updateReadouts() {
+    const [popA, popB] = popsByCompartment();
+    const FA = FX(energiesA), FB = FX(energiesB);
+    const ZA = ZX(energiesA), ZB = ZX(energiesB);
+    const dF = FB - FA;
+    const s = `${FA.toFixed(3)}|${FB.toFixed(3)}|${dF.toFixed(3)}|${popA}/${popB}|${ZA.toFixed(2)}/${ZB.toFixed(2)}|${T.toFixed(2)}`;
+    if (s !== lastReadStr) {
+      elFA.textContent = FA.toFixed(3);
+      elFB.textContent = FB.toFixed(3);
+      elDF.textContent = (dF >= 0 ? '+' : '') + dF.toFixed(3);
+      elNN.textContent = popA + ' : ' + popB;
+      elZZ.textContent = ZA.toFixed(2) + ' : ' + ZB.toFixed(2);
+      elTread.textContent = T.toFixed(2);
+      lastReadStr = s;
+    }
+  }
+
+  function frame() {
+    mcStep(450);
+    draw();
+    updateReadouts();
+    requestAnimationFrame(frame);
+  }
+  frame();
+
+  // Controls
+  document.getElementById('w2-T').addEventListener('input', e => {
+    T = parseFloat(e.target.value);
+  });
+  document.getElementById('w2-reset').addEventListener('click', () => {
+    for (let i = 0; i < NPART; i++) {
+      partComp[i] = (i < NPART/2) ? 0 : 1;
+      partLvl[i] = 0;
+    }
+  });
+
+  // Presets
+  const presets = {
+    energy:  { A: [0.0, 1.8, 2.4], B: [1.0, 1.8, 2.4, 2.8], T: 0.5 },
+    entropy: { A: [0.0, 2.0, 2.6], B: [0.4, 0.55, 0.7, 0.85], T: 1.0 },
+    tied:    { A: [0.0, 1.2, 2.0], B: [0.0, 1.2, 2.0, 2.5], T: 0.8 },
+  };
+  document.querySelectorAll('[data-preset]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const p = presets[btn.dataset.preset];
+      if (!p) return;
+      energiesA = p.A.slice();
+      energiesB = p.B.slice();
+      T = p.T;
+      document.getElementById('w2-T').value = T;
+    });
+  });
+
+  // Drag levels
+  function relPos(evt) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: (evt.clientX - rect.left) * (W / rect.width),
+      y: (evt.clientY - rect.top) * (H / rect.height),
+    };
+  }
+  function findLevel(x, y) {
+    // check A
+    if (x >= leftBoxX0 + 5 && x <= leftBoxX1 - 5) {
+      for (let i = 0; i < energiesA.length; i++) {
+        if (Math.abs(y - eToY(energiesA[i])) < 10) return { comp: 0, lvl: i };
+      }
+    }
+    if (x >= rightBoxX0 + 5 && x <= rightBoxX1 - 5) {
+      for (let i = 0; i < energiesB.length; i++) {
+        if (Math.abs(y - eToY(energiesB[i])) < 10) return { comp: 1, lvl: i };
+      }
+    }
+    return null;
+  }
+  canvas.addEventListener('mousedown', evt => {
+    const { x, y } = relPos(evt);
+    dragInfo = findLevel(x, y);
+  });
+  window.addEventListener('mousemove', evt => {
+    if (!dragInfo) return;
+    const { y } = relPos(evt);
+    let newE = yToE(y);
+    if (newE < -0.2) newE = -0.2;
+    if (newE > 2.95) newE = 2.95;
+    if (dragInfo.comp === 0) energiesA[dragInfo.lvl] = newE;
+    else energiesB[dragInfo.lvl] = newE;
+  });
+  window.addEventListener('mouseup', () => { dragInfo = null; });
+
+  canvas.addEventListener('touchstart', evt => {
+    if (evt.touches.length === 0) return;
+    const t = evt.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    const x = (t.clientX - rect.left) * (W / rect.width);
+    const y = (t.clientY - rect.top) * (H / rect.height);
+    dragInfo = findLevel(x, y);
+    if (dragInfo) evt.preventDefault();
+  }, { passive: false });
+  canvas.addEventListener('touchmove', evt => {
+    if (!dragInfo || evt.touches.length === 0) return;
+    const t = evt.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    const y = (t.clientY - rect.top) * (H / rect.height);
+    let newE = yToE(y);
+    if (newE < -0.2) newE = -0.2;
+    if (newE > 2.95) newE = 2.95;
+    if (dragInfo.comp === 0) energiesA[dragInfo.lvl] = newE;
+    else energiesB[dragInfo.lvl] = newE;
+    evt.preventDefault();
+  }, { passive: false });
+  canvas.addEventListener('touchend', () => { dragInfo = null; });
+})();
+
+
+/* ============================================================ */
+/*   WIDGET 3 — SAMPLING A, PREDICTING B                       */
+/* ============================================================ */
+(function initWidget3() {
+  const canvas = document.getElementById('w3-canvas');
+  if (!canvas) return;
+  const ctx = setupCanvas(canvas);
+  const W = ctx.W, H = ctx.H;
+
+  const dEl       = document.getElementById('w3-d');
+  const dGEl      = document.getElementById('w3-dG');
+  const dRO       = document.getElementById('w3-d-readout');
+  const dGRO      = document.getElementById('w3-dG-readout');
+  const meanEl    = document.getElementById('w3-mean');
+  const dFhatEl   = document.getElementById('w3-dFhat');
+  const dFtrueEl  = document.getElementById('w3-dFtrue');
+  const NEl       = document.getElementById('w3-N');
+  const btnReset  = document.getElementById('w3-reset');
+  const btnPause  = document.getElementById('w3-pause');
+
+  let d = parseFloat(dEl.value);
+  let dG = parseFloat(dGEl.value);
+  let paused = false;
+
+  // walker on U_A (Metropolis with sigma=0.7 proposal)
+  let x = 0;
+  let sumW = 0, sumW2 = 0, N = 0;
+  // running trace of dFhat (bounded)
+  const TRACE_MAX = 600;
+  const trace = [];
+
+  // layout: left = potentials with walker, right = ΔF̂ trace
+  const padL = 40, padR = 24, padT = 22, padB = 36;
+  const splitX = 0.52;
+  const leftX0 = padL, leftX1 = padL + (W - padL - padR) * splitX - 18;
+  const rightX0 = leftX1 + 40, rightX1 = W - padR;
+
+  // potential plot: x in [-3, 6], U in [0, 5]
+  const xMin = -3, xMax = 6;
+  const uMin = 0,  uMax = 5;
+  function xToPx(xv) { return leftX0 + (leftX1 - leftX0) * (xv - xMin) / (xMax - xMin); }
+  function uToPy2(uv) {
+    const t = (uv - uMin) / (uMax - uMin);
+    return padT + (H - padT - padB) * (1 - t);
+  }
+
+  function UA(xv) { return 0.5 * xv * xv; }
+  function UB(xv) { return 0.5 * (xv - d) * (xv - d) + dG; }
+
+  function reset() {
+    x = 0;
+    sumW = 0; sumW2 = 0; N = 0;
+    trace.length = 0;
+  }
+
+  // controls
+  dEl.addEventListener('input', () => {
+    d = parseFloat(dEl.value);
+    dRO.textContent = d.toFixed(2);
+    reset();
+  });
+  dGEl.addEventListener('input', () => {
+    dG = parseFloat(dGEl.value);
+    dGRO.textContent = dG.toFixed(2);
+    reset();
+  });
+  btnReset.addEventListener('click', reset);
+  btnPause.addEventListener('click', () => {
+    paused = !paused;
+    btnPause.textContent = paused ? 'Resume' : 'Pause';
+  });
+
+  function metropolisStep() {
+    // Gaussian proposal sigma 0.7
+    const xn = x + 0.7 * gaussSample();
+    const dE = UA(xn) - UA(x);
+    if (dE <= 0 || Math.random() < Math.exp(-dE)) x = xn;
+  }
+
+  function takeSample() {
+    // record weight at current x
+    const dU = UB(x) - UA(x);
+    const w = Math.exp(-dU);
+    sumW += w; sumW2 += w * w; N++;
+    if (N > 0) {
+      const meanW = sumW / N;
+      const dFhat = -Math.log(Math.max(meanW, 1e-300));
+      trace.push(dFhat);
+      if (trace.length > TRACE_MAX) trace.shift();
+    }
+  }
+
+  function draw() {
+    // bg panels
+    ctx.fillStyle = PAL.bg;
+    ctx.fillRect(0, 0, W, H);
+    // left panel bg
+    ctx.fillStyle = PAL.bgCard;
+    ctx.fillRect(leftX0 - 12, padT - 10, (leftX1 - leftX0) + 24, H - padT - padB + 20);
+    ctx.fillRect(rightX0 - 12, padT - 10, (rightX1 - rightX0) + 24, H - padT - padB + 20);
+
+    // ---- LEFT: potentials ----
+    // axes
+    ctx.strokeStyle = PAL.ruleSoft;
+    ctx.lineWidth = 0.5;
+    ctx.beginPath();
+    ctx.moveTo(leftX0, uToPy2(0)); ctx.lineTo(leftX1, uToPy2(0));
+    ctx.stroke();
+
+    // U_A curve (cinnabar)
+    ctx.strokeStyle = PAL.accent;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let px = leftX0; px <= leftX1; px += 2) {
+      const xv = xMin + (xMax - xMin) * (px - leftX0) / (leftX1 - leftX0);
+      const u = Math.min(UA(xv), uMax);
+      if (px === leftX0) ctx.moveTo(px, uToPy2(u)); else ctx.lineTo(px, uToPy2(u));
+    }
+    ctx.stroke();
+    // U_B curve (teal)
+    ctx.strokeStyle = PAL.cool;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let px = leftX0; px <= leftX1; px += 2) {
+      const xv = xMin + (xMax - xMin) * (px - leftX0) / (leftX1 - leftX0);
+      const u = Math.min(UB(xv), uMax);
+      if (px === leftX0) ctx.moveTo(px, uToPy2(u)); else ctx.lineTo(px, uToPy2(u));
+    }
+    ctx.stroke();
+
+    // labels
+    ctx.font = FONT_MONO_SMALL;
+    ctx.fillStyle = PAL.accent;
+    ctx.textAlign = 'left';
+    ctx.fillText('U_A', leftX0 + 4, uToPy2(UA(xMin)) - 4);
+    ctx.fillStyle = PAL.cool;
+    const labelX = Math.max(leftX0 + 4, Math.min(leftX1 - 32, xToPx(d)));
+    ctx.fillText('U_B', labelX, uToPy2(UB(d)) + 14);
+
+    // walker dot on U_A
+    if (Math.abs(x) < 10) {
+      const ux = UA(x);
+      const px = xToPx(x), py = uToPy2(ux);
+      // vertical line dropping to baseline
+      ctx.strokeStyle = PAL.inkSoft;
+      ctx.lineWidth = 0.5;
+      ctx.setLineDash([2, 3]);
+      ctx.beginPath();
+      ctx.moveTo(px, py); ctx.lineTo(px, uToPy2(0));
+      ctx.stroke();
+      ctx.setLineDash([]);
+      // walker
+      ctx.fillStyle = PAL.ink;
+      ctx.beginPath(); ctx.arc(px, py, 4, 0, 2 * Math.PI); ctx.fill();
+      // value of U_B at same x
+      const uB_here = UB(x);
+      const pyB = uToPy2(Math.min(uB_here, uMax));
+      ctx.fillStyle = PAL.cool;
+      ctx.beginPath(); ctx.arc(px, pyB, 3, 0, 2 * Math.PI); ctx.fill();
+      // ΔU arrow between the two
+      if (Math.abs(uB_here - ux) > 0.1 && uB_here < uMax) {
+        ctx.strokeStyle = PAL.cool;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(px + 6, py); ctx.lineTo(px + 6, pyB);
+        ctx.stroke();
+        ctx.fillStyle = PAL.inkSoft;
+        ctx.font = FONT_MONO_SMALL;
+        ctx.textAlign = 'left';
+        ctx.fillText('ΔU', px + 10, (py + pyB) / 2 + 3);
+      }
+    }
+
+    // x-axis tick labels
+    ctx.fillStyle = PAL.inkFaint;
+    ctx.font = FONT_MONO_SMALL;
+    ctx.textAlign = 'center';
+    for (let xv = -2; xv <= 6; xv += 2) {
+      ctx.fillText(String(xv), xToPx(xv), H - padB + 14);
+    }
+    // title left
+    ctx.font = FONT_DISPLAY;
+    ctx.fillStyle = PAL.ink;
+    ctx.textAlign = 'left';
+    ctx.fillText('the two worlds', leftX0, padT - 4);
+
+    // ---- RIGHT: ΔF̂ trace ----
+    // axes
+    const yMin = -1, yMax = 3;
+    function tToPx(t) { return rightX0 + (rightX1 - rightX0) * t / TRACE_MAX; }
+    function fToPy(fv) {
+      const tt = (fv - yMin) / (yMax - yMin);
+      return padT + (H - padT - padB) * (1 - tt);
+    }
+    // y grid
+    ctx.strokeStyle = PAL.ruleSoft;
+    ctx.lineWidth = 0.5;
+    for (let yv = yMin; yv <= yMax; yv++) {
+      ctx.beginPath();
+      ctx.moveTo(rightX0, fToPy(yv)); ctx.lineTo(rightX1, fToPy(yv));
+      ctx.stroke();
+      ctx.fillStyle = PAL.inkFaint;
+      ctx.font = FONT_MONO_SMALL;
+      ctx.textAlign = 'right';
+      ctx.fillText(String(yv), rightX0 - 4, fToPy(yv) + 3);
+    }
+    // truth line
+    const dF_true = dG;
+    ctx.strokeStyle = PAL.cool;
+    ctx.setLineDash([4, 4]);
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(rightX0, fToPy(dF_true)); ctx.lineTo(rightX1, fToPy(dF_true));
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // trace
+    if (trace.length > 1) {
+      ctx.strokeStyle = PAL.accent;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      for (let i = 0; i < trace.length; i++) {
+        const px = tToPx(i);
+        const py = fToPy(Math.max(yMin, Math.min(yMax, trace[i])));
+        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+    }
+    // title right
+    ctx.font = FONT_DISPLAY;
+    ctx.fillStyle = PAL.ink;
+    ctx.textAlign = 'left';
+    ctx.fillText('running ΔF̂ vs true', rightX0, padT - 4);
+
+    // legend
+    ctx.font = FONT_MONO_SMALL;
+    ctx.fillStyle = PAL.cool;
+    ctx.textAlign = 'right';
+    ctx.fillText('— true ΔF', rightX1 - 4, padT + 12);
+    ctx.fillStyle = PAL.accent;
+    ctx.fillText('— estimate', rightX1 - 4, padT + 26);
+  }
+
+  function updateReadouts() {
+    const meanW = N > 0 ? sumW / N : 0;
+    const dFhat = N > 0 ? -Math.log(Math.max(meanW, 1e-300)) : 0;
+    meanEl.textContent = N > 0 ? meanW.toExponential(3) : '—';
+    dFhatEl.textContent = N > 0 ? dFhat.toFixed(3) : '—';
+    dFtrueEl.textContent = dG.toFixed(3);
+    NEl.textContent = String(N);
+  }
+
+  function loop() {
+    if (!paused) {
+      // 6 metropolis steps + 1 sample per frame
+      for (let s = 0; s < 6; s++) metropolisStep();
+      takeSample();
+    }
+    draw();
+    updateReadouts();
+    requestAnimationFrame(loop);
+  }
+  reset();
+  requestAnimationFrame(loop);
+})();
+
+
+/* ============================================================ */
+/*   WIDGET 4 — THE ESTIMATOR BREAKING UNDER POOR OVERLAP      */
+/* ============================================================ */
+(function initWidget4() {
+  const canvas = document.getElementById('w4-canvas');
+  if (!canvas) return;
+  const ctx = setupCanvas(canvas);
+  const W = ctx.W, H = ctx.H;
+
+  const dEl       = document.getElementById('w4-d');
+  const dRO       = document.getElementById('w4-d-readout');
+  const ovEl      = document.getElementById('w4-ov');
+  const essEl     = document.getElementById('w4-ess');
+  const dFhatEl   = document.getElementById('w4-dFhat');
+  const NEl       = document.getElementById('w4-N');
+  const btnReset  = document.getElementById('w4-reset');
+  const btnPause  = document.getElementById('w4-pause');
+
+  let d = parseFloat(dEl.value);
+  let paused = false;
+
+  // x walker, sums, recent-weights ring buffer
+  let x = 0;
+  let sumW = 0, sumW2 = 0, N = 0;
+  const RECENT_W = 200;
+  const recentW = [];
+  // running ΔF̂ trace
+  const TRACE_MAX = 600;
+  const trace = [];
+
+  const padL = 50, padR = 24;
+  const x0 = padL, x1 = W - padR;
+  // x-domain for plots
+  const xMin = -3, xMax = 9;
+  function xToPx(xv) { return x0 + (x1 - x0) * (xv - xMin) / (xMax - xMin); }
+  function UA(xv) { return 0.5 * xv * xv; }
+  function UB(xv) { return 0.5 * (xv - d) * (xv - d); }
+  function pA(xv) { return Math.exp(-UA(xv)) / Math.sqrt(2 * Math.PI); }
+  function pB(xv) { return Math.exp(-UB(xv)) / Math.sqrt(2 * Math.PI); }
+  function overlapArea() {
+    // integrate min(pA, pB) dx by trapezoid
+    let s = 0, prev = 0;
+    const NQ = 400;
+    for (let i = 0; i <= NQ; i++) {
+      const xv = xMin + (xMax - xMin) * i / NQ;
+      const v = Math.min(pA(xv), pB(xv));
+      if (i > 0) s += 0.5 * (v + prev) * (xMax - xMin) / NQ;
+      prev = v;
+    }
+    return s;
+  }
+
+  function reset() {
+    x = 0; sumW = 0; sumW2 = 0; N = 0;
+    recentW.length = 0; trace.length = 0;
+  }
+  dEl.addEventListener('input', () => {
+    d = parseFloat(dEl.value);
+    dRO.textContent = d.toFixed(2);
+    reset();
+  });
+  btnReset.addEventListener('click', reset);
+  btnPause.addEventListener('click', () => {
+    paused = !paused;
+    btnPause.textContent = paused ? 'Resume' : 'Pause';
+  });
+
+  function metropolisStep() {
+    const xn = x + 0.7 * gaussSample();
+    const dE = UA(xn) - UA(x);
+    if (dE <= 0 || Math.random() < Math.exp(-dE)) x = xn;
+  }
+  function takeSample() {
+    const dU = UB(x) - UA(x);
+    const w = Math.exp(-dU);
+    sumW += w; sumW2 += w * w; N++;
+    recentW.push(w);
+    if (recentW.length > RECENT_W) recentW.shift();
+    if (N > 0) {
+      const meanW = sumW / N;
+      const dFhat = -Math.log(Math.max(meanW, 1e-300));
+      trace.push(dFhat);
+      if (trace.length > TRACE_MAX) trace.shift();
+    }
+  }
+
+  function draw() {
+    // bg
+    ctx.fillStyle = PAL.bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // ---- TOP: density overlap ----
+    const topY0 = 24, topY1 = 200;
+    ctx.fillStyle = PAL.bgCard;
+    ctx.fillRect(x0 - 14, topY0 - 8, (x1 - x0) + 28, (topY1 - topY0) + 16);
+
+    // axes
+    function pToPyTop(pv) {
+      const maxP = 0.42; // 1/sqrt(2pi) ~ 0.399, give headroom
+      const t = pv / maxP;
+      return topY1 - (topY1 - topY0) * Math.min(1, t);
+    }
+    ctx.strokeStyle = PAL.ruleSoft;
+    ctx.lineWidth = 0.5;
+    ctx.beginPath(); ctx.moveTo(x0, topY1); ctx.lineTo(x1, topY1); ctx.stroke();
+
+    // shaded overlap region first (so curves overlay it)
+    ctx.fillStyle = 'rgba(228, 184, 93, 0.35)'; // highlight
+    ctx.beginPath();
+    let firstPt = true;
+    const NX = 240;
+    for (let i = 0; i <= NX; i++) {
+      const xv = xMin + (xMax - xMin) * i / NX;
+      const v = Math.min(pA(xv), pB(xv));
+      const px = xToPx(xv), py = pToPyTop(v);
+      if (firstPt) { ctx.moveTo(px, topY1); ctx.lineTo(px, py); firstPt = false; }
+      else ctx.lineTo(px, py);
+    }
+    ctx.lineTo(xToPx(xMax), topY1);
+    ctx.closePath();
+    ctx.fill();
+
+    // p_A curve (filled, low alpha)
+    ctx.fillStyle = 'rgba(183, 64, 26, 0.18)';
+    ctx.beginPath();
+    ctx.moveTo(x0, topY1);
+    for (let i = 0; i <= NX; i++) {
+      const xv = xMin + (xMax - xMin) * i / NX;
+      ctx.lineTo(xToPx(xv), pToPyTop(pA(xv)));
+    }
+    ctx.lineTo(x1, topY1); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = PAL.accent; ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    for (let i = 0; i <= NX; i++) {
+      const xv = xMin + (xMax - xMin) * i / NX;
+      const px = xToPx(xv), py = pToPyTop(pA(xv));
+      if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+
+    // p_B curve
+    ctx.fillStyle = 'rgba(24, 84, 106, 0.18)';
+    ctx.beginPath();
+    ctx.moveTo(x0, topY1);
+    for (let i = 0; i <= NX; i++) {
+      const xv = xMin + (xMax - xMin) * i / NX;
+      ctx.lineTo(xToPx(xv), pToPyTop(pB(xv)));
+    }
+    ctx.lineTo(x1, topY1); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = PAL.cool; ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    for (let i = 0; i <= NX; i++) {
+      const xv = xMin + (xMax - xMin) * i / NX;
+      const px = xToPx(xv), py = pToPyTop(pB(xv));
+      if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+
+    // walker current position tick on baseline
+    if (x > xMin && x < xMax) {
+      ctx.strokeStyle = PAL.ink;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(xToPx(x), topY1); ctx.lineTo(xToPx(x), topY1 + 8);
+      ctx.stroke();
+    }
+
+    // labels
+    ctx.font = FONT_MONO_SMALL;
+    ctx.fillStyle = PAL.accent; ctx.textAlign = 'left';
+    ctx.fillText('p_A', xToPx(0) - 16, pToPyTop(0.4) - 4);
+    ctx.fillStyle = PAL.cool;
+    if (xToPx(d) > x0 + 40 && xToPx(d) < x1 - 20) {
+      ctx.fillText('p_B', xToPx(d) - 16, pToPyTop(0.4) - 4);
+    }
+    ctx.font = FONT_DISPLAY;
+    ctx.fillStyle = PAL.ink; ctx.textAlign = 'left';
+    ctx.fillText('two worlds — overlap shaded', x0, topY0 - 10);
+    // x-axis labels
+    ctx.font = FONT_MONO_SMALL;
+    ctx.fillStyle = PAL.inkFaint;
+    ctx.textAlign = 'center';
+    for (let xv = -2; xv <= 8; xv += 2) {
+      ctx.fillText(String(xv), xToPx(xv), topY1 + 22);
+    }
+
+    // ---- MIDDLE: weight stream (log scale) ----
+    const midY0 = 226, midY1 = 308;
+    ctx.fillStyle = PAL.bgCard;
+    ctx.fillRect(x0 - 14, midY0 - 6, (x1 - x0) + 28, (midY1 - midY0) + 12);
+    // log w axis from 1e-8 to 1
+    function wToPy(w) {
+      const lw = Math.log10(Math.max(w, 1e-12));
+      const t = (lw - (-8)) / (0 - (-8));
+      return midY1 - (midY1 - midY0) * Math.max(0, Math.min(1, t));
+    }
+    // grid
+    ctx.strokeStyle = PAL.ruleSoft; ctx.lineWidth = 0.5;
+    for (let lw = -8; lw <= 0; lw += 2) {
+      const py = wToPy(Math.pow(10, lw));
+      ctx.beginPath(); ctx.moveTo(x0, py); ctx.lineTo(x1, py); ctx.stroke();
+      ctx.fillStyle = PAL.inkFaint; ctx.font = FONT_MONO_SMALL;
+      ctx.textAlign = 'right';
+      ctx.fillText('1e' + lw, x0 - 4, py + 3);
+    }
+    // each recent weight as a tick
+    const recN = recentW.length;
+    for (let i = 0; i < recN; i++) {
+      const w = recentW[i];
+      const px = x0 + (x1 - x0) * (i / RECENT_W);
+      const py = wToPy(w);
+      // color: bigger weight = more accent
+      const lw = Math.log10(Math.max(w, 1e-12));
+      const heat = (lw + 8) / 8;
+      ctx.fillStyle = heat > 0.6 ? PAL.accent : PAL.inkFaint;
+      ctx.beginPath(); ctx.arc(px, py, heat > 0.6 ? 2.2 : 1.5, 0, 2 * Math.PI); ctx.fill();
+    }
+    ctx.font = FONT_DISPLAY;
+    ctx.fillStyle = PAL.ink; ctx.textAlign = 'left';
+    ctx.fillText('weights (log scale) — most near zero, a few big', x0, midY0 - 10);
+
+    // ---- BOTTOM: running ΔF̂ ----
+    const botY0 = 334, botY1 = H - 26;
+    ctx.fillStyle = PAL.bgCard;
+    ctx.fillRect(x0 - 14, botY0 - 6, (x1 - x0) + 28, (botY1 - botY0) + 12);
+    function fToPy(fv) {
+      const yMin = -2, yMax = 6;
+      const t = (fv - yMin) / (yMax - yMin);
+      return botY1 - (botY1 - botY0) * Math.max(0, Math.min(1, t));
+    }
+    // y grid
+    for (let yv = -2; yv <= 6; yv += 2) {
+      const py = fToPy(yv);
+      ctx.strokeStyle = PAL.ruleSoft; ctx.lineWidth = 0.5;
+      ctx.beginPath(); ctx.moveTo(x0, py); ctx.lineTo(x1, py); ctx.stroke();
+      ctx.fillStyle = PAL.inkFaint; ctx.font = FONT_MONO_SMALL;
+      ctx.textAlign = 'right';
+      ctx.fillText(String(yv), x0 - 4, py + 3);
+    }
+    // truth line (ΔF = 0 since same-width Gaussians, no offset)
+    ctx.strokeStyle = PAL.cool;
+    ctx.setLineDash([4, 4]); ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(x0, fToPy(0)); ctx.lineTo(x1, fToPy(0));
+    ctx.stroke();
+    ctx.setLineDash([]);
+    // trace
+    if (trace.length > 1) {
+      ctx.strokeStyle = PAL.accent; ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      for (let i = 0; i < trace.length; i++) {
+        const px = x0 + (x1 - x0) * (i / TRACE_MAX);
+        const py = fToPy(Math.max(-2, Math.min(6, trace[i])));
+        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+    }
+    ctx.font = FONT_DISPLAY;
+    ctx.fillStyle = PAL.ink; ctx.textAlign = 'left';
+    ctx.fillText('running ΔF̂ (truth = 0)', x0, botY0 - 10);
+  }
+
+  function updateReadouts() {
+    const ov = overlapArea();
+    ovEl.textContent = ov.toFixed(3);
+    if (N > 0) {
+      const ess = (sumW * sumW) / (N * sumW2);
+      const meanW = sumW / N;
+      const dFhat = -Math.log(Math.max(meanW, 1e-300));
+      essEl.textContent = (ess * 100).toFixed(1) + '%';
+      dFhatEl.textContent = dFhat.toFixed(3);
+      NEl.textContent = String(N);
+    } else {
+      essEl.textContent = '—'; dFhatEl.textContent = '—'; NEl.textContent = '0';
+    }
+  }
+
+  function loop() {
+    if (!paused) {
+      for (let s = 0; s < 6; s++) metropolisStep();
+      takeSample();
+    }
+    draw();
+    updateReadouts();
+    requestAnimationFrame(loop);
+  }
+  reset();
+  requestAnimationFrame(loop);
+})();
+
+
+/* ============================================================ */
+/*   WIDGET 5 — A BRIDGE OF INTERMEDIATE DISTRIBUTIONS         */
+/* ============================================================ */
+(function initWidget5() {
+  const canvas = document.getElementById('w5-canvas');
+  if (!canvas) return;
+  const ctx = setupCanvas(canvas);
+  const W = ctx.W, H = ctx.H;
+
+  const KEl       = document.getElementById('w5-K');
+  const KRO       = document.getElementById('w5-K-readout');
+  const KvalEl    = document.getElementById('w5-Kval');
+  const ovEl      = document.getElementById('w5-ov');
+  const dFhatEl   = document.getElementById('w5-dFhat');
+  const btnReset  = document.getElementById('w5-reset');
+  const btnPause  = document.getElementById('w5-pause');
+
+  const d = 6.0; // fixed: the hopeless case
+  let K = parseInt(KEl.value);
+  let paused = false;
+
+  // per-window state
+  let windows = [];
+  function rebuildWindows() {
+    windows = [];
+    for (let i = 0; i < K; i++) {
+      const lam = i / K;
+      windows.push({
+        lam: lam,
+        center: lam * d,
+        x: lam * d,    // walker init at the window mean
+        sumW: 0,
+        sumW2: 0,
+        N: 0,
+        dF: 0,
+      });
+    }
+  }
+  function reset() { rebuildWindows(); }
+  KEl.addEventListener('input', () => {
+    K = parseInt(KEl.value);
+    KRO.textContent = String(K);
+    rebuildWindows();
+  });
+  btnReset.addEventListener('click', reset);
+  btnPause.addEventListener('click', () => {
+    paused = !paused;
+    btnPause.textContent = paused ? 'Resume' : 'Pause';
+  });
+
+  function U(lam, xv) {
+    // (1-lam) * 0.5 x^2 + lam * 0.5 (x - d)^2
+    return 0.5 * ((1 - lam) * xv * xv + lam * (xv - d) * (xv - d));
+  }
+  function step() {
+    for (const win of windows) {
+      // Metropolis at lambda = win.lam
+      const xn = win.x + 0.7 * gaussSample();
+      const dE = U(win.lam, xn) - U(win.lam, win.x);
+      if (dE <= 0 || Math.random() < Math.exp(-dE)) win.x = xn;
+      // forward-FEP weight: U at lam_{i+1} - U at lam_i
+      const lamNext = win.lam + 1 / K;
+      if (lamNext <= 1.0 + 1e-9) {
+        const dU = U(lamNext, win.x) - U(win.lam, win.x);
+        const w = Math.exp(-dU);
+        win.sumW += w; win.sumW2 += w * w; win.N++;
+        const meanW = win.sumW / win.N;
+        win.dF = -Math.log(Math.max(meanW, 1e-300));
+      }
+    }
+  }
+
+  // overlap between adjacent windows (analytic for unit-var Gaussians shifted by d/K)
+  function minAdjacentOverlap() {
+    if (K < 2) return 0;
+    const shift = d / K;
+    function erf(z) {
+      const t = 1 / (1 + 0.3275911 * Math.abs(z));
+      const y = 1 - (((((1.061405429 * t - 1.453152027) * t) + 1.421413741) * t - 0.284496736) * t + 0.254829592) * t * Math.exp(-z * z);
+      return z >= 0 ? y : -y;
+    }
+    function phi(z) {
+      return 0.5 * (1 + erf(z / Math.SQRT2));
+    }
+    return 2 * phi(-shift / 2);
+  }
+
+  function totalDFhat() {
+    let s = 0;
+    for (const win of windows) s += win.dF;
+    return s;
+  }
+
+  function draw() {
+    ctx.fillStyle = PAL.bg;
+    ctx.fillRect(0, 0, W, H);
+
+    const padL = 50, padR = 24;
+    const x0 = padL, x1 = W - padR;
+
+    const xMin = -2, xMax = d + 2;
+    function xToPx(xv) { return x0 + (x1 - x0) * (xv - xMin) / (xMax - xMin); }
+
+    // ---- TOP: lambda-windows as Gaussian densities ----
+    const topY0 = 28, topY1 = 198;
+    ctx.fillStyle = PAL.bgCard;
+    ctx.fillRect(x0 - 14, topY0 - 8, (x1 - x0) + 28, (topY1 - topY0) + 16);
+
+    function densityVal(xv, center) {
+      return Math.exp(-0.5 * (xv - center) * (xv - center)) / Math.sqrt(2 * Math.PI);
+    }
+    function pToPy(pv) {
+      const maxP = 0.42;
+      return topY1 - (topY1 - topY0) * Math.min(1, pv / maxP);
+    }
+    // baseline
+    ctx.strokeStyle = PAL.ruleSoft; ctx.lineWidth = 0.5;
+    ctx.beginPath(); ctx.moveTo(x0, topY1); ctx.lineTo(x1, topY1); ctx.stroke();
+
+    // each window's density
+    const NX = 200;
+    for (let i = 0; i < K + 1; i++) {
+      const lam = i / K;
+      const center = lam * d;
+      const t = i / Math.max(K, 1);
+      const r = Math.round(0xB7 + (0x18 - 0xB7) * t);
+      const g = Math.round(0x40 + (0x54 - 0x40) * t);
+      const b = Math.round(0x1A + (0x6A - 0x1A) * t);
+      const col = 'rgb(' + r + ',' + g + ',' + b + ')';
+      ctx.fillStyle = 'rgba(' + r + ',' + g + ',' + b + ',0.12)';
+      ctx.strokeStyle = col;
+      ctx.lineWidth = 1.3;
+      ctx.beginPath();
+      ctx.moveTo(x0, topY1);
+      for (let j = 0; j <= NX; j++) {
+        const xv = xMin + (xMax - xMin) * j / NX;
+        const v = densityVal(xv, center);
+        const px = xToPx(xv), py = pToPy(v);
+        ctx.lineTo(px, py);
+      }
+      ctx.lineTo(x1, topY1);
+      ctx.closePath();
+      ctx.fill();
+      // outline
+      ctx.beginPath();
+      for (let j = 0; j <= NX; j++) {
+        const xv = xMin + (xMax - xMin) * j / NX;
+        const v = densityVal(xv, center);
+        const px = xToPx(xv), py = pToPy(v);
+        if (j === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+    }
+
+    // x-axis labels
+    ctx.font = FONT_MONO_SMALL;
+    ctx.fillStyle = PAL.inkFaint;
+    ctx.textAlign = 'center';
+    for (let xv = 0; xv <= d; xv += 1) {
+      ctx.fillText(String(xv), xToPx(xv), topY1 + 22);
+    }
+
+    // walker positions
+    for (const win of windows) {
+      if (win.x > xMin && win.x < xMax) {
+        ctx.strokeStyle = PAL.ink;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(xToPx(win.x), topY1); ctx.lineTo(xToPx(win.x), topY1 + 7);
+        ctx.stroke();
+      }
+    }
+
+    ctx.font = FONT_DISPLAY;
+    ctx.fillStyle = PAL.ink;
+    ctx.textAlign = 'left';
+    ctx.fillText('K + 1 windows along λ ∈ [0, 1]', x0, topY0 - 10);
+
+    // ---- MIDDLE: per-window ΔF_i bars ----
+    const midY0 = 224, midY1 = 326;
+    ctx.fillStyle = PAL.bgCard;
+    ctx.fillRect(x0 - 14, midY0 - 6, (x1 - x0) + 28, (midY1 - midY0) + 12);
+    const baseY = midY1 - 14;
+    let maxAbs = 0.1;
+    for (const w of windows) maxAbs = Math.max(maxAbs, Math.abs(w.dF));
+    maxAbs = Math.max(maxAbs, 0.5);
+    function dfToPy(v) {
+      return baseY - (v / maxAbs) * (baseY - midY0 - 6);
+    }
+    // zero line
+    ctx.strokeStyle = PAL.ruleSoft; ctx.lineWidth = 0.5;
+    ctx.beginPath(); ctx.moveTo(x0, baseY); ctx.lineTo(x1, baseY); ctx.stroke();
+
+    // bars
+    const nBars = windows.length;
+    if (nBars > 0) {
+      const barW = (x1 - x0) / nBars * 0.85;
+      for (let i = 0; i < nBars; i++) {
+        const win = windows[i];
+        const bx = x0 + (i + 0.5) * ((x1 - x0) / nBars) - barW / 2;
+        const by = dfToPy(win.dF);
+        const t = i / Math.max(nBars - 1, 1);
+        const r = Math.round(0xB7 + (0x18 - 0xB7) * t);
+        const g = Math.round(0x40 + (0x54 - 0x40) * t);
+        const b = Math.round(0x1A + (0x6A - 0x1A) * t);
+        ctx.fillStyle = 'rgba(' + r + ',' + g + ',' + b + ',0.8)';
+        const top = Math.min(by, baseY);
+        const h = Math.abs(by - baseY);
+        ctx.fillRect(bx, top, barW, h);
+      }
+    }
+    ctx.font = FONT_DISPLAY;
+    ctx.fillStyle = PAL.ink;
+    ctx.textAlign = 'left';
+    ctx.fillText('per-window ΔF_i contributions', x0, midY0 - 10);
+
+    // ---- BOTTOM: total ΔF̂ ----
+    const botY0 = 352, botY1 = H - 22;
+    ctx.fillStyle = PAL.bgCard;
+    ctx.fillRect(x0 - 14, botY0 - 6, (x1 - x0) + 28, (botY1 - botY0) + 12);
+
+    const total = totalDFhat();
+    ctx.font = "32px 'Fraunces', serif";
+    ctx.fillStyle = PAL.accent;
+    ctx.textAlign = 'left';
+    ctx.fillText('ΔF̂ total = ' + total.toFixed(3), x0 + 8, (botY0 + botY1) / 2 + 8);
+    ctx.font = "18px 'Fraunces', serif";
+    ctx.fillStyle = PAL.cool;
+    ctx.fillText('truth: 0.000', x0 + 8, (botY0 + botY1) / 2 + 30);
+  }
+
+  function updateReadouts() {
+    KvalEl.textContent = String(K);
+    ovEl.textContent = K >= 2 ? minAdjacentOverlap().toFixed(3) : '—';
+    dFhatEl.textContent = totalDFhat().toFixed(3);
+  }
+
+  function loop() {
+    if (!paused) {
+      for (let s = 0; s < 6; s++) step();
+    }
+    draw();
+    updateReadouts();
+    requestAnimationFrame(loop);
+  }
+  reset();
+  requestAnimationFrame(loop);
+})();
+
+
+/* ============================================================ */
+/*   WIDGET 6 — THE BINDING CYCLE CLOSING ON ITSELF            */
+/*   Both alchemical legs are REAL windowed-FEP calculations:  */
+/*   a ladder of K lambda-windows, one Metropolis walker each, */
+/*   forward reweighting between neighbours. The displayed     */
+/*   ΔG_solvent, ΔG_complex, ΔΔG are running sample estimates. */
+/* ============================================================ */
+(function initWidget6() {
+  const canvas = document.getElementById('w6-canvas');
+  if (!canvas) return;
+  const ctx = setupCanvas(canvas);
+  const W = ctx.W, H = ctx.H;
+
+  const stageRO   = document.getElementById('w6-stage-readout');
+  const dGwEl     = document.getElementById('w6-dGw');
+  const dGpEl     = document.getElementById('w6-dGp');
+  const ddGEl     = document.getElementById('w6-ddG');
+  const nEl       = document.getElementById('w6-N');
+  const btnStage  = document.getElementById('w6-stage');
+  const btnReset  = document.getElementById('w6-reset');
+
+  // ---- Toy alchemical legs (see header). Each leg is the A->B morph
+  //      of the ligand in one environment. U(lam,x) interpolates a
+  //      harmonic well from center 0 to center `shift`, plus lam*offset.
+  //      Total ΔG of a leg = offset, independent of stiffness k and
+  //      shift d (verified analytically & numerically). We give the
+  //      pocket a stiffer well than bulk water for physical flavour.
+  const K = 6;
+  function makeLeg(offset, shift, k) {
+    const wins = [];
+    for (let i = 0; i < K; i++) {
+      wins.push({ lam: i / K, x: (i / K) * shift, sumW: 0, N: 0, dF: 0 });
+    }
+    return { offset, shift, k, wins, running: false };
+  }
+  //   solvent leg: soft well (k=1.0), true ΔG = +2.0
+  //   complex leg: stiff pocket (k=1.4), true ΔG = +0.9
+  //   → ΔΔG_bind = 0.9 - 2.0 = -1.1  (B binds tighter)
+  let solventLeg = makeLeg(2.0, 1.5, 1.0);
+  let complexLeg = makeLeg(0.9, 1.5, 1.4);
+
+  function legU(leg, lam, xv) {
+    const d = leg.shift, k = leg.k;
+    return 0.5 * k * ((1 - lam) * xv * xv + lam * (xv - d) * (xv - d)) + lam * leg.offset;
+  }
+  function stepLeg(leg, nsteps) {
+    if (!leg.running) return;
+    for (let s = 0; s < nsteps; s++) {
+      for (const win of leg.wins) {
+        const xn = win.x + 0.7 * gaussSample();
+        const dE = legU(leg, win.lam, xn) - legU(leg, win.lam, win.x);
+        if (dE <= 0 || Math.random() < Math.exp(-dE)) win.x = xn;
+        const lamNext = win.lam + 1 / K;   // last window: lamNext = 1.0 exactly
+        const dU = legU(leg, lamNext, win.x) - legU(leg, win.lam, win.x);
+        const w = Math.exp(-dU);
+        win.sumW += w; win.N++;
+        win.dF = -Math.log(Math.max(win.sumW / win.N, 1e-300));
+      }
+    }
+  }
+  function legDF(leg) {
+    let s = 0;
+    for (const win of leg.wins) s += win.dF;
+    return s;
+  }
+  function legSamples(leg) {
+    return leg.wins[0].N;
+  }
+
+  // stages:
+  //   1: four corners
+  //   2: + physical horizontal arrows (not simulatable)
+  //   3: + alchemical vertical arrows (computable)
+  //   4: run the solvent-leg FEP live
+  //   5: run the complex-leg FEP live; cycle closes, ΔΔG revealed
+  let stage = 1;
+
+  function setStage(s) {
+    stage = s;
+    solventLeg.running = (s >= 4);
+    complexLeg.running = (s >= 5);
+    updateReadouts();
+  }
+  function reset() {
+    solventLeg = makeLeg(2.0, 1.5, 1.0);
+    complexLeg = makeLeg(0.9, 1.5, 1.4);
+    setStage(1);
+  }
+  btnStage.addEventListener('click', () => {
+    if (stage < 5) setStage(stage + 1);
+    else reset();
+  });
+  btnReset.addEventListener('click', reset);
+
+  // ---- geometry: 4 corners of a 2x2 layout
+  const padR = 60, padT = 70, padB = 90;
+  const colX = [140, W - 140];               // x of left/right column centers
+  const rowY = [padT + 50, H - padB - 30];   // y of top/bottom row centers
+  const boxW = 180, boxH = 78;
+
+  function drawBox(cx, cy, label1, label2, accent) {
+    ctx.fillStyle = PAL.bgCard;
+    ctx.strokeStyle = PAL.rule;
+    ctx.lineWidth = 1;
+    ctx.fillRect(cx - boxW/2, cy - boxH/2, boxW, boxH);
+    ctx.strokeRect(cx - boxW/2, cy - boxH/2, boxW, boxH);
+    ctx.fillStyle = accent;
+    ctx.fillRect(cx - boxW/2, cy - boxH/2, 3, boxH);
+    ctx.fillStyle = PAL.ink;
+    ctx.font = "14px 'Fraunces', serif";
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText(label1, cx, cy - 4);
+    ctx.font = FONT_MONO_SMALL;
+    ctx.fillStyle = PAL.inkSoft;
+    ctx.fillText(label2, cx, cy + 14);
+  }
+
+  function drawArrow(x1, y1, x2, y2, opts) {
+    opts = opts || {};
+    const dashed = !!opts.dashed;
+    const col = opts.color || PAL.ink;
+    const lw = opts.width || 1.5;
+    ctx.strokeStyle = col;
+    ctx.lineWidth = lw;
+    if (dashed) ctx.setLineDash([6, 5]); else ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    const ang = Math.atan2(y2 - y1, x2 - x1);
+    const al = 9;
+    ctx.fillStyle = col;
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - al * Math.cos(ang - 0.35), y2 - al * Math.sin(ang - 0.35));
+    ctx.lineTo(x2 - al * Math.cos(ang + 0.35), y2 - al * Math.sin(ang + 0.35));
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // small inline FEP-progress sparkline drawn beside a running leg
+  function drawLegSparkline(leg, cx, cy, col) {
+    const w = 92, h = 30;
+    const x0 = cx - w / 2, y0 = cy - h / 2;
+    ctx.fillStyle = 'rgba(248,242,229,0.9)';
+    ctx.strokeStyle = PAL.ruleSoft;
+    ctx.lineWidth = 1;
+    ctx.fillRect(x0, y0, w, h);
+    ctx.strokeRect(x0, y0, w, h);
+    // per-window dF bars, scaled so the true offset fills ~70% height
+    const scale = (h - 8) / Math.max(leg.offset * 1.4, 0.5);
+    const bw = w / K;
+    for (let i = 0; i < K; i++) {
+      const bh = Math.max(0, Math.min(h - 4, leg.wins[i].dF * scale));
+      ctx.fillStyle = col;
+      ctx.globalAlpha = 0.75;
+      ctx.fillRect(x0 + i * bw + 1.5, y0 + h - 2 - bh, bw - 3, bh);
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  function draw() {
+    ctx.fillStyle = PAL.bg;
+    ctx.fillRect(0, 0, W, H);
+
+    // Title
+    ctx.fillStyle = PAL.ink;
+    ctx.font = "20px 'Fraunces', serif";
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText('the thermodynamic cycle for relative binding', W / 2, 32);
+
+    // Stage caption
+    const stageCaptions = {
+      1: 'four states · the corners of the cycle',
+      2: 'horizontal arrows · the physical binding events we cannot simulate',
+      3: 'vertical arrows · the alchemical transformations we can simulate',
+      4: 'running windowed FEP in water · ΔG_solvent(A→B) converging live',
+      5: 'running windowed FEP in the pocket · cycle closes · ΔΔG_bind revealed',
+    };
+    ctx.fillStyle = PAL.inkSoft;
+    ctx.font = "italic 13px 'Fraunces', serif";
+    ctx.fillText(stageCaptions[stage] || '', W / 2, 52);
+
+    // Boxes (always drawn)
+    drawBox(colX[0], rowY[0], 'ligand A · in water',    '○ — freely diffusing',  PAL.accent);
+    drawBox(colX[1], rowY[0], 'ligand A · in complex',  '● — bound to protein',  PAL.accent);
+    drawBox(colX[0], rowY[1], 'ligand B · in water',    '○ — freely diffusing',  PAL.cool);
+    drawBox(colX[1], rowY[1], 'ligand B · in complex',  '● — bound to protein',  PAL.cool);
+
+    // Stage 2+ : physical horizontal arrows
+    if (stage >= 2) {
+      drawArrow(
+        colX[0] + boxW/2 + 6, rowY[0],
+        colX[1] - boxW/2 - 6, rowY[0],
+        { dashed: true, color: PAL.inkFaint, width: 1.4 }
+      );
+      drawArrow(
+        colX[0] + boxW/2 + 6, rowY[1],
+        colX[1] - boxW/2 - 6, rowY[1],
+        { dashed: true, color: PAL.inkFaint, width: 1.4 }
+      );
+      ctx.fillStyle = PAL.inkFaint;
+      ctx.font = FONT_MONO_SMALL;
+      ctx.textAlign = 'center';
+      const midX = (colX[0] + colX[1]) / 2;
+      ctx.fillText('ΔG_bind^A  ·  not directly simulatable', midX, rowY[0] - 10);
+      ctx.fillText('ΔG_bind^B  ·  not directly simulatable', midX, rowY[1] - 10);
+    }
+
+    // Stage 3+ : alchemical vertical arrows
+    if (stage >= 3) {
+      drawArrow(
+        colX[0], rowY[0] + boxH/2 + 6,
+        colX[0], rowY[1] - boxH/2 - 6,
+        { color: PAL.accent, width: 2.2 }
+      );
+      drawArrow(
+        colX[1], rowY[0] + boxH/2 + 6,
+        colX[1], rowY[1] - boxH/2 - 6,
+        { color: PAL.cool, width: 2.2 }
+      );
+      ctx.font = FONT_MONO_SMALL;
+      ctx.fillStyle = PAL.accent;
+      ctx.textAlign = 'right';
+      ctx.fillText('ΔG_solvent', colX[0] - 14, (rowY[0] + rowY[1]) / 2 - 22);
+      ctx.fillText('(A → B in water)', colX[0] - 14, (rowY[0] + rowY[1]) / 2 - 8);
+      ctx.fillStyle = PAL.cool;
+      ctx.textAlign = 'left';
+      ctx.fillText('ΔG_complex', colX[1] + 14, (rowY[0] + rowY[1]) / 2 - 22);
+      ctx.fillText('(A → B in pocket)', colX[1] + 14, (rowY[0] + rowY[1]) / 2 - 8);
+    }
+
+    // Stage 4+ : live solvent-leg estimate + sparkline on left arrow
+    if (stage >= 4) {
+      const mid = (rowY[0] + rowY[1]) / 2;
+      drawLegSparkline(solventLeg, colX[0], mid + 24, PAL.accent);
+      ctx.fillStyle = PAL.accent;
+      ctx.font = "16px 'Fraunces', serif";
+      ctx.textAlign = 'right';
+      ctx.fillText('= ' + legDF(solventLeg).toFixed(3), colX[0] - 14, mid + 8);
+    }
+
+    // Stage 5 : live complex-leg estimate + ΔΔG reveal
+    if (stage >= 5) {
+      const mid = (rowY[0] + rowY[1]) / 2;
+      drawLegSparkline(complexLeg, colX[1], mid + 24, PAL.cool);
+      ctx.fillStyle = PAL.cool;
+      ctx.font = "16px 'Fraunces', serif";
+      ctx.textAlign = 'left';
+      ctx.fillText('= ' + legDF(complexLeg).toFixed(3), colX[1] + 14, mid + 8);
+
+      const ddG = legDF(complexLeg) - legDF(solventLeg);
+      ctx.fillStyle = PAL.ink;
+      ctx.font = "18px 'Fraunces', serif";
+      ctx.textAlign = 'center';
+      const bottomY = H - 34;
+      ctx.fillText(
+        'ΔΔG_bind = ΔG_complex − ΔG_solvent = ' + ddG.toFixed(3) + ' kcal/mol',
+        W / 2, bottomY
+      );
+      ctx.font = "italic 12px 'Fraunces', serif";
+      ctx.fillStyle = PAL.inkSoft;
+      ctx.fillText(
+        '(' + (ddG < 0 ? 'B binds tighter' : 'A binds tighter') + ' by ' + Math.abs(ddG).toFixed(2) + ' kcal/mol)',
+        W / 2, bottomY + 16
+      );
+    }
+
+    // hint
+    ctx.font = FONT_MONO_SMALL;
+    ctx.fillStyle = PAL.inkFaint;
+    ctx.textAlign = 'right';
+    if (stage < 5) ctx.fillText('press "Next stage" →', W - 20, H - 8);
+  }
+
+  function updateReadouts() {
+    stageRO.textContent = stage + ' of 5';
+    dGwEl.textContent = (stage >= 4) ? legDF(solventLeg).toFixed(3) : '—';
+    dGpEl.textContent = (stage >= 5) ? legDF(complexLeg).toFixed(3) : '—';
+    ddGEl.textContent = (stage >= 5) ? (legDF(complexLeg) - legDF(solventLeg)).toFixed(3) : '—';
+    let n = 0;
+    if (stage >= 5) n = Math.min(legSamples(solventLeg), legSamples(complexLeg));
+    else if (stage >= 4) n = legSamples(solventLeg);
+    nEl.textContent = String(n);
+  }
+
+  function loop() {
+    stepLeg(solventLeg, 5);
+    stepLeg(complexLeg, 5);
+    draw();
+    updateReadouts();
+    requestAnimationFrame(loop);
+  }
+  setStage(1);
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

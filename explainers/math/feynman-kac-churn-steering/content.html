@@ -1,0 +1,2647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Steering a Diffusion Sampler: Feynman–Kac Weights Meet Churn</title>
+
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Spectral:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg:        #f2ece0;   /* cream paper                               */
+    --surface:   #fffdf7;   /* cards / widgets — warm near-white         */
+    --surface-2: #f8f3e8;   /* canvas insets                             */
+    --ink:       #1d1a14;   /* warm near-black, to sit on cream           */
+    --ink-soft:  #61594a;
+    --accent:    #cf4a26;   /* signal orange — the reward / the tilt      */
+    --accent-2:  #116d7e;   /* teal — the base model q_t                  */
+    --accent-3:  #63459f;   /* violet — the corrected/target series       */
+    --line:      #e2dac7;
+    --axis:      #b5a992;
+    --kernel-bg: #201c14;
+    --radius: 14px;
+    --measure: 70ch;
+    --font-display: 'Space Grotesk', system-ui, sans-serif;
+    --font-body:    'Spectral', Georgia, serif;
+  }
+
+  /* Single cream theme on purpose. This page does NOT follow the system's
+     dark-mode preference — the palette above always wins. (A dark override
+     used to live here; re-add a `@media (prefers-color-scheme: dark)` block
+     redefining the variables above if you ever want one back.) */
+  :root, :root[data-theme="dark"], :root[data-theme="light"] {
+    color-scheme: light;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; background: var(--bg); }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--font-body); font-size: 19px; line-height: 1.72;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #progress {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+    background: var(--accent); z-index: 100; transition: width 0.1s linear;
+  }
+
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 24px 120px; }
+  .prose { max-width: var(--measure); }
+  .prose p { margin: 0 0 1.15em; }
+
+  header { padding: 92px 0 32px; }
+  .eyebrow {
+    font-family: var(--font-display); font-size: 0.74rem; letter-spacing: 0.24em;
+    text-transform: uppercase; color: var(--accent); margin: 0 0 20px; font-weight: 600;
+  }
+  h1 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(2.3rem, 5.4vw, 3.5rem); line-height: 1.06;
+    margin: 0 0 24px; letter-spacing: -0.028em;
+  }
+  .promise { font-size: 1.18rem; color: var(--ink-soft); font-style: italic; max-width: var(--measure); }
+
+  .kernel {
+    background: var(--kernel-bg); color: #f2ece0;
+    border-radius: var(--radius); padding: 34px 38px; margin: 44px 0 76px;
+    border-left: 4px solid var(--accent);
+  }
+  .kernel .label {
+    font-family: var(--font-display); font-size: 0.72rem; letter-spacing: 0.2em;
+    text-transform: uppercase; opacity: 0.55; margin: 0 0 14px; font-weight: 600;
+  }
+  .kernel .sentence { font-size: 1.34rem; line-height: 1.5; margin: 0; }
+  .kernel mark { background: linear-gradient(transparent 62%, rgba(207,74,38,0.55) 62%); color: inherit; }
+
+  .concept-step { margin: 0 0 92px; scroll-margin-top: 40px; }
+  .step-num {
+    font-family: var(--font-display); font-size: 0.75rem; font-weight: 600;
+    color: var(--accent); letter-spacing: 0.18em; text-transform: uppercase; margin: 0 0 10px;
+  }
+  .concept-step h2 {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(1.6rem, 3.4vw, 2.15rem); line-height: 1.18;
+    margin: 0 0 22px; letter-spacing: -0.02em;
+  }
+
+  details.formal {
+    border: 1px solid var(--line); border-radius: 10px;
+    background: var(--surface); margin: 26px 0; max-width: var(--measure);
+  }
+  details.formal summary {
+    cursor: pointer; padding: 14px 18px; font-family: var(--font-display);
+    font-size: 0.88rem; letter-spacing: 0.03em; color: var(--ink-soft);
+    list-style: none; user-select: none;
+  }
+  details.formal summary::-webkit-details-marker { display: none; }
+  details.formal summary::before { content: '▸ '; color: var(--accent); }
+  details.formal[open] summary::before { content: '▾ '; }
+  details.formal .formal-body { padding: 0 18px 6px; font-size: 0.96rem; }
+
+  .widget {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 20px; margin: 30px 0;
+  }
+  .widget-titlewrap { margin-bottom: 16px; }
+  .widget-title {
+    font-family: var(--font-display); font-weight: 600; font-size: 1rem;
+    margin: 0 0 4px; letter-spacing: -0.01em;
+  }
+  .widget-tag {
+    font-family: var(--font-display); font-size: 0.7rem; letter-spacing: 0.13em;
+    text-transform: uppercase; color: var(--accent-2); font-weight: 600;
+  }
+  .widget-controls { display: flex; flex-wrap: wrap; gap: 16px 30px; margin-bottom: 16px; align-items: flex-end; }
+  .widget-controls label {
+    display: flex; flex-direction: column; gap: 6px;
+    font-family: var(--font-display); font-size: 0.8rem; color: var(--ink-soft);
+    min-width: 190px;
+  }
+  .widget-controls .val { color: var(--accent); font-weight: 600; }
+  .widget-controls .chk { flex-direction: row; align-items: center; gap: 8px; min-width: 0; cursor: pointer; }
+  input[type=range] { accent-color: var(--accent); cursor: pointer; }
+  input[type=checkbox] { accent-color: var(--accent); cursor: pointer; }
+  .widget button {
+    font-family: var(--font-display); font-size: 0.84rem; font-weight: 500;
+    background: var(--ink); color: var(--surface); border: none;
+    padding: 9px 16px; border-radius: 8px; cursor: pointer; letter-spacing: 0.01em;
+  }
+  .widget button:hover { background: var(--accent); }
+  .widget button:disabled { opacity: 0.32; cursor: default; }
+  .widget button.ghost { background: transparent; color: var(--ink-soft); border: 1px solid var(--line); }
+  .widget button.ghost:hover { background: var(--surface-2); color: var(--ink); }
+  .widget button.ghost.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .widget-stage { display: block; width: 100%; border-radius: 8px; background: var(--surface-2); }
+  .readout {
+    margin-top: 12px; font-size: 0.84rem; color: var(--ink-soft); min-height: 1.4em;
+    font-family: var(--font-display); line-height: 1.6;
+  }
+  .readout b { color: var(--ink); font-weight: 600; }
+  .reveal-bar { display: flex; align-items: center; gap: 14px; margin-top: 13px; flex-wrap: wrap; }
+  .reveal-caption { flex: 1; min-width: 220px; font-size: 0.88rem; color: var(--ink-soft); font-style: italic; }
+  .caption { font-size: 0.82rem; color: var(--ink-soft); font-style: italic; margin-top: 10px; }
+
+  pre.code {
+    font-family: ui-monospace, 'JetBrains Mono', Menlo, monospace;
+    font-size: 0.8rem; line-height: 1.7;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 10px; padding: 16px 18px; overflow-x: auto;
+    color: var(--ink); margin: 20px 0; max-width: var(--measure);
+  }
+  pre.code .c { color: var(--ink-soft); font-style: italic; }
+  pre.code [data-line].hl {
+    background: rgba(207,74,38,0.10); display: block;
+    margin: 0 -18px; padding: 0 18px; border-left: 3px solid var(--accent);
+  }
+
+  .recap { border-top: 2px solid var(--ink); padding-top: 38px; margin-top: 24px; }
+  .recap h2 { font-family: var(--font-display); font-size: 1.9rem; margin: 0 0 18px; letter-spacing: -0.02em; }
+
+  .keybox {
+    background: var(--surface-2); border: 1px solid var(--line);
+    border-left: 3px solid var(--accent-3);
+    border-radius: 8px; padding: 4px 22px; margin: 24px 0; max-width: var(--measure);
+  }
+  mark { background: linear-gradient(transparent 62%, rgba(207,74,38,0.26) 62%); color: inherit; }
+  a { color: var(--accent); }
+  @media (max-width: 640px) {
+    body { font-size: 17px; }
+    .wrap { padding: 0 16px 80px; }
+    .kernel { padding: 24px 22px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">A step-by-step explainer</p>
+  <h1>Steering a diffusion sampler without breaking it</h1>
+  <p class="promise">
+    You have a diffusion model that generates samples, and a reward saying which
+    samples you actually want. By the end of this page you will understand exactly
+    what bookkeeping turns the first into the second — and why that bookkeeping is
+    a single subtraction, with no score function and no Jacobian anywhere in it.
+  </p>
+</header>
+
+<div class="kernel">
+  <p class="label">The whole idea, in one sentence</p>
+  <p class="sentence">
+    A weight is not something a particle carries — it is the ratio between what you
+    want and what your sampler produces. So if the thing that moves your particles
+    already carries the plain distribution correctly from one time to the next,
+    <mark>the only job left for the weights is to divide out yesterday's reward tilt
+    and multiply in today's</mark> — everything else cancels.
+  </p>
+</div>
+
+<div class="prose">
+  <p>
+    The setting, in concrete terms. A diffusion model defines a family of
+    distributions \(q_t\) indexed by a noise level \(t\), running from
+    \(t=1\) (pure Gaussian noise) down to \(t=0\) (the data). Sampling means
+    starting from noise and walking down to \(t=0\).
+  </p>
+  <p>
+    Throughout this page the toy model is a mixture of two Gaussians — a small
+    mode near \(x=-1.6\) and a bigger one near \(x=+1.4\). This one example is the
+    spine: every widget below uses it, so you always know what you are looking at.
+    It is small enough that <em>everything</em> is available in closed form — the
+    density \(q_t\), the score \(\nabla\log q_t\), and the exact steered target —
+    which means every claim on this page can be checked against a formula rather
+    than taken on faith.
+  </p>
+</div>
+
+<!-- ===================== STEP 1 ===================== -->
+<section class="concept-step" id="step-1">
+  <p class="step-num">Step 1</p>
+  <h2>Steering means reweighting — and weights die</h2>
+  <div class="prose">
+    <p>
+      Suppose you want samples that score highly under a reward \(r(x)\). The
+      standard way to say "like \(q\), but pushed toward high reward" is to
+      multiply the density by an exponential of the reward and renormalize:
+    </p>
+    \[
+      \pi(x) \;=\; \frac{q(x)\,e^{\beta r(x)}}{Z},
+      \qquad Z=\int q(x)e^{\beta r(x)}\,dx .
+    \]
+    <p>
+      Why <em>that</em> shape and not some other? Because it is the answer to a
+      precise question: among all distributions \(\pi\) achieving a given expected
+      reward \(\mathbb E_\pi[r]\), which one stays closest to \(q\) in
+      KL divergence? Minimising \(\mathrm{KL}(\pi\|q) - \beta\,\mathbb E_\pi[r]\)
+      over densities \(\pi\) gives exactly \(\pi\propto q\,e^{\beta r}\). The knob
+      \(\beta\ge 0\) is the exchange rate: \(\beta=0\) leaves \(q\) untouched,
+      and large \(\beta\) buys reward at the cost of drifting far from the model.
+      So the exponential tilt is not a convention — it is <em>the</em> minimal
+      distortion of \(q\) that achieves a target reward.
+    </p>
+    <p>
+      Now here is the good news and the bad news. The good news: you never need to
+      sample \(\pi\) directly. If you have \(N\) samples \(x^n\sim q\), then
+      attaching the weight \(w^n \propto e^{\beta r(x^n)}\) to each one makes the
+      <em>weighted</em> cloud represent \(\pi\), because reweighting by a ratio of
+      densities is precisely what importance sampling does:
+      \(\mathbb E_\pi[f] = \mathbb E_q[f\,e^{\beta r}]/\mathbb E_q[e^{\beta r}]\).
+      The unknown \(Z\) cancels between numerator and denominator, which is why
+      you never have to compute it.
+    </p>
+    <p>
+      The bad news is what happens to those weights. Drag \(\beta\) up in the
+      widget and watch the bottom bar.
+    </p>
+  </div>
+
+  <div class="widget" id="w1">
+    <div class="widget-titlewrap">
+      <p class="widget-title">Tilting a two-mode model toward a reward the model rarely satisfies</p>
+      <span class="widget-tag">staged · then drag β</span>
+    </div>
+    <div class="widget-controls" id="w1-ctrls" style="display:none">
+      <label>tilt strength &nbsp;β = <span class="val" id="w1-bV">2.00</span>
+        <input type="range" id="w1-b" min="0" max="6" step="0.05" value="2">
+      </label>
+      <button class="ghost" id="w1-res">Resample the cloud</button>
+      <button class="ghost" id="w1-new">New sample</button>
+    </div>
+    <canvas id="w1-canvas" class="widget-stage"></canvas>
+    <div class="reveal-bar">
+      <button id="w1-back" disabled>← Back</button>
+      <span class="reveal-caption" id="w1-caption"></span>
+      <button id="w1-next">Add the reward →</button>
+    </div>
+    <div class="readout" id="w1-readout"></div>
+    <p class="caption">
+      The reward is centred at \(x=-3\), out past the left mode — deliberately
+      asking for something the model seldom produces. That is the realistic case:
+      if the model already made what you wanted, you would not need to steer it.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      At \(\beta=2\) roughly <strong>one particle in ten</strong> is doing any
+      work. The number in the bar is the <em>effective sample size</em>,
+    </p>
+    \[
+      \mathrm{ESS} \;=\; \frac{\bigl(\sum_n w^n\bigr)^2}{\sum_n (w^n)^2},
+    \]
+    <p>
+      which counts how many equally-weighted particles your weighted cloud is
+      really worth. If all weights are equal it returns \(N\); if one particle
+      holds all the mass it returns \(1\). Press <strong>Resample</strong> and the
+      other failure mode appears: drawing \(N\) particles from the weighted cloud
+      does restore equal weights, but it does so by <em>duplicating</em> the few
+      survivors. The unique-particle count collapses. You have traded skewed
+      weights for lost diversity.
+    </p>
+    <p>
+      Both problems have the same cause: we tried to make the whole jump at once.
+      The fix is to spread the tilt over the many noise levels the sampler already
+      visits — introduce a little reward at each step, and fix the cloud up as you
+      go. To do that we first need to look at what one step of the sampler
+      actually does.
+    </p>
+  </div>
+
+  <details class="formal">
+    <summary>The formal version — why \(\pi \propto q e^{\beta r}\)</summary>
+    <div class="formal-body prose">
+      <p>
+        Minimise \(\mathcal F[\pi]=\mathrm{KL}(\pi\|q)-\beta\mathbb E_\pi[r]\) over
+        densities with \(\int\pi=1\). Adding a Lagrange multiplier \(\lambda\) for
+        normalisation and taking the variational derivative at each \(x\):
+      </p>
+      \[ \frac{\delta\mathcal F}{\delta\pi(x)} = \log\frac{\pi(x)}{q(x)} + 1 - \beta r(x) + \lambda = 0, \]
+      <p>
+        so \(\log\pi(x)=\log q(x)+\beta r(x)-(1+\lambda)\), i.e.
+        \(\pi(x)\propto q(x)e^{\beta r(x)}\), with \(1+\lambda=\log Z\) fixed by
+        normalisation. The objective is strictly convex in \(\pi\), so this
+        stationary point is the unique minimum.
+      </p>
+      <p>
+        On this page the tilt is written \(\rho_t(x)=\beta_t r_t(x)\) so that the
+        strength \(\beta_t\) and the reward \(r_t\) can both depend on the noise
+        level, and \(\pi_t(x)=q_t(x)e^{\rho_t(x)}/Z_t\).
+      </p>
+    </div>
+  </details>
+</section>
+
+<!-- ===================== STEP 2 ===================== -->
+<section class="concept-step" id="step-2">
+  <p class="step-num">Step 2</p>
+  <h2>What one churn step does: reheat, then flow down</h2>
+  <div class="prose">
+    <p>
+      A <em>churn</em> sampler does something that looks perverse at first. To get
+      from noise level \(t_i\) to the lower level \(t_{i+1}\), it first goes
+      <em>up</em> — adds noise, back to some \(\hat t_i > t_i\) — and only then
+      runs a deterministic solver all the way down. One step is a composition of
+      two very different operators:
+    </p>
+    \[
+      x_i \;\xrightarrow{\;K_{t_i\to\hat t_i}\;}\; \hat x_i
+          \;\xrightarrow{\;\Phi_{\hat t_i\to t_{i+1}}\;}\; x_{i+1}.
+    \]
+    <p>
+      The first, \(K\), is the <strong>forward noising kernel</strong> — the same
+      one used to corrupt data during training. For the variance-preserving
+      schedule it is a rescale-and-add-noise:
+    </p>
+    \[
+      \hat x_i \;=\; \frac{\alpha_{\hat t_i}}{\alpha_{t_i}}\,x_i
+      \;+\; \sqrt{1-\frac{\alpha_{\hat t_i}^2}{\alpha_{t_i}^2}}\;\eta_i,
+      \qquad \eta_i\sim\mathcal N(0,I).
+    \]
+    <p>
+      Those two coefficients are not arbitrary — they are the unique pair that
+      makes the step land exactly on \(q_{\hat t}\). Here is the derivation, and
+      it is one line. A sample at level \(t\) is by construction
+      \(x=\alpha_t x_0+\sigma_t\varepsilon\) with \(\sigma_t^2=1-\alpha_t^2\).
+      Multiplying by \(\alpha_{\hat t}/\alpha_t\) turns the signal part into
+      \(\alpha_{\hat t}x_0\) — correct for level \(\hat t\) — while shrinking the
+      noise part to variance \((\alpha_{\hat t}^2/\alpha_t^2)\sigma_t^2\). We need
+      total noise variance \(\sigma_{\hat t}^2\), so we must top it up by
+    </p>
+    \[
+      \sigma_{\hat t}^2-\frac{\alpha_{\hat t}^2}{\alpha_t^2}\sigma_t^2
+      = 1-\alpha_{\hat t}^2-\frac{\alpha_{\hat t}^2}{\alpha_t^2}\bigl(1-\alpha_t^2\bigr)
+      = 1-\frac{\alpha_{\hat t}^2}{\alpha_t^2},
+    \]
+    <p>
+      which is exactly the square of the coefficient above. So
+      \(q_{t_i}K_{t_i\to\hat t_i}=q_{\hat t_i}\), <em>exactly</em> — no
+      approximation, no discretization error.
+    </p>
+    <p>
+      The second operator, \(\Phi\), is the <strong>probability-flow ODE</strong>:
+      a deterministic vector field whose trajectories transport \(q_{\hat t}\)
+      onto \(q_{t_{i+1}}\). For our schedule \(\alpha_t=\cos(\pi t/2)\) it takes
+      the compact form
+    </p>
+    \[
+      \frac{dx}{dt} \;=\; -\frac{\pi}{2}\tan\!\Bigl(\frac{\pi t}{2}\Bigr)\Bigl(x + s_t(x)\Bigr),
+      \qquad s_t(x)=\nabla_x\log q_t(x),
+    \]
+    <p>
+      and this is where the learned score enters. Sanity check the formula: if the
+      data were already \(\mathcal N(0,1)\), then \(q_t=\mathcal N(0,1)\) at every
+      level, \(s_t(x)=-x\), the bracket vanishes and nothing moves — correct,
+      since there is nothing to denoise.
+    </p>
+    <p>
+      Each operator individually maps one member of the family \(q_t\) to another.
+      So does their composition:
+    </p>
+    \[
+      M_i \;=\; K_{t_i\to\hat t_i}\,\Phi_{\hat t_i\to t_{i+1}},
+      \qquad q_{t_i}M_i \;=\; q_{t_{i+1}}.
+    \]
+    <p>
+      That single line is the entire foundation of what follows, so it is worth
+      seeing rather than believing. Step through the widget: the histogram is the
+      actual particle cloud, the smooth curve is the closed-form \(q_t\), and they
+      are never fitted to each other.
+    </p>
+  </div>
+
+  <div class="widget" id="w2">
+    <div class="widget-titlewrap">
+      <p class="widget-title">A cloud of particles staying glued to \(q_t\) through reheat-and-flow</p>
+      <span class="widget-tag">staged · drag churn strength · final stage animates</span>
+    </div>
+    <div class="widget-controls">
+      <label>churn strength &nbsp;κ = <span class="val" id="w2-kV">1.00</span>
+        <input type="range" id="w2-k" min="0" max="4" step="0.1" value="1">
+      </label>
+      <button class="ghost" id="w2-run" style="display:none">▶ Run all 40 steps</button>
+    </div>
+    <canvas id="w2-canvas" class="widget-stage"></canvas>
+    <div class="reveal-bar">
+      <button id="w2-back" disabled>← Back</button>
+      <span class="reveal-caption" id="w2-caption"></span>
+      <button id="w2-next">Reheat: add noise →</button>
+    </div>
+    <div class="readout" id="w2-readout"></div>
+    <p class="caption">
+      κ sets how far up the reheat goes: \(\hat t_i = t_i + \kappa\,(t_i-t_{i+1})\).
+      At κ=0 there is no churn at all and the step is a pure ODE step. Notice that
+      the cloud tracks \(q_t\) for <em>every</em> κ — the amount of churn is a free
+      knob, not something the correctness depends on.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      Two things to take away. First, churn genuinely re-randomises: the reheat
+      injects fresh noise, so duplicated particles separate again. That is the
+      answer to the diversity problem from Step 1 — it is built into the sampler
+      we already have. Second, and more important for what follows: <strong>the
+      unmodified churn step is a transition that already does the right thing to
+      the base distribution.</strong> Hold on to that. It is the reason the weight
+      update is about to be so short.
+    </p>
+  </div>
+</section>
+
+<!-- ===================== STEP 3 ===================== -->
+<section class="concept-step" id="step-4">
+  <p class="step-num">Step 4</p>
+  <h2>The weight update: strip yesterday's tilt, apply today's</h2>
+  <div class="prose">
+    <p>
+      Now put the two halves together. We want a cloud that, at <em>every</em>
+      noise level, represents the tilted distribution
+    </p>
+    \[ \pi_t(x)\;\propto\; q_t(x)\,e^{\rho_t(x)},\qquad \rho_t(x)=\beta_t r_t(x). \]
+    <p>
+      A chain of these is called a <em>bridge</em>: a sequence of targets that
+      starts somewhere easy (at \(t=1\) we set \(\beta_1=0\), so \(\pi_1=q_1\) is
+      just noise and every particle has weight 1) and ends where we want
+      (\(\pi_0\propto q_0e^{\beta_{\max}r}\)). Moving along it a little at a time
+      is what avoids the collapse of Step 1.
+    </p>
+    <p>
+      Here is the point that trips people up, so let us be explicit about it.
+      <strong>Applying a transition to a particle does not change its weight.</strong>
+      Weights change only because we <em>redefine what the cloud is supposed to
+      represent</em>. Push the cloud through \(M_i\) and carry the old weights
+      along untouched, and what you now hold is the unnormalized measure
+    </p>
+    \[ \int q_{t_i}(x_i)\,e^{\rho_{t_i}(x_i)}\;M_i(x_i,dx_{i+1}), \]
+    <p>
+      the old tilted distribution <em>diffused forward</em>. That is a perfectly
+      well-defined thing; it is simply not the thing we asked for, which was
+      \(q_{t_{i+1}}e^{\rho_{t_{i+1}}}\). The weight update is the correction
+      between the two. It is a <em>retargeting</em> step, not a consequence of
+      moving.
+    </p>
+    <p>
+      And now the derivation, which is three lines. Multiply each particle by
+    </p>
+    \[ G_i(x_i,x_{i+1}) = \exp\bigl(\rho_{t_{i+1}}(x_{i+1})-\rho_{t_i}(x_i)\bigr) \]
+    <p>
+      and compute what the cloud represents. The factor \(e^{\rho_{t_i}(x_i)}\) we
+      were carrying is cancelled by the \(e^{-\rho_{t_i}(x_i)}\) in \(G_i\), and
+      the factor \(e^{\rho_{t_{i+1}}(x_{i+1})}\) depends only on the new state so
+      it slides straight out of the integral over \(x_i\):
+    </p>
+    \[
+      \begin{aligned}
+      \int q_{t_i}(x_i)\underbrace{e^{\rho_{t_i}(x_i)}}_{\text{old tilt}} M_i(x_i,dx_{i+1})
+        \underbrace{e^{\rho_{t_{i+1}}(x_{i+1})-\rho_{t_i}(x_i)}}_{G_i}
+      &= e^{\rho_{t_{i+1}}(x_{i+1})}\int q_{t_i}(x_i)M_i(x_i,dx_{i+1})\\
+      &= q_{t_{i+1}}(x_{i+1})\,e^{\rho_{t_{i+1}}(x_{i+1})}.
+      \end{aligned}
+    \]
+    <p>
+      The last equality is the <em>only</em> place any property of the sampler is
+      used, and the property used is exactly the one Step 2 established:
+      \(q_{t_i}M_i=q_{t_{i+1}}\). The remaining integral does not care what
+      \(M_i\) is made of — reheat, ODE, both, in any order — only that it carries
+      the base marginal correctly. In log form:
+    </p>
+  </div>
+
+  <div class="keybox prose">
+    \[ \boxed{\;\Delta\log w_i \;=\; \rho_{t_{i+1}}(x_{i+1}) \;-\; \rho_{t_i}(x_i)\;} \]
+    <p style="font-size:0.93rem">
+      Evaluate the tilt where the particle ended up, subtract the tilt where it
+      started, add to the log-weight. That is the whole algorithm. No score, no
+      Jacobian, no time-derivative of \(\beta\), no Laplacian of the reward.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      The widget below runs it. Toggle the correction off and the weighted cloud
+      does not merely get noisier — it converges to the <em>wrong distribution</em>,
+      sitting on the untilted \(q_t\) while the target curve has moved left.
+    </p>
+  </div>
+
+  <div class="widget" id="w3">
+    <div class="widget-titlewrap">
+      <p class="widget-title">The steered sampler, with the retargeting correction on and off</p>
+      <span class="widget-tag">live · toggle the correction · watch every intermediate level</span>
+    </div>
+    <div class="widget-controls">
+      <button class="ghost on" id="w3-corr">Correction: ON</button>
+      <label class="chk"><input type="checkbox" id="w3-resamp"> resample when ESS &lt; 50%</label>
+      <button id="w3-run">▶ Run</button>
+      <button class="ghost" id="w3-reset">Reset</button>
+    </div>
+    <canvas id="w3-canvas" class="widget-stage"></canvas>
+    <div class="readout" id="w3-readout"></div>
+    <p class="caption">
+      The violet curve is the exact \(\pi_t\), computed in closed form — a
+      Gaussian mixture times a Gaussian tilt is another Gaussian mixture, so the
+      target is known analytically at every level and the histogram is being
+      judged against truth, not against another simulation.
+    </p>
+  </div>
+
+  <details class="formal">
+    <summary>The formal version — why the normalizing constants never appear</summary>
+    <div class="formal-body prose">
+      <p>
+        The identity above is between <em>unnormalized</em> measures: the cloud
+        represents \(q_{t}e^{\rho_{t}}\), not \(\pi_{t}=q_te^{\rho_t}/Z_t\). The
+        constants \(Z_t\) are unknown and unknowable here (they are integrals
+        against the model density). They never need to be known, because every
+        quantity we ever read off the cloud is a ratio in which they cancel:
+      </p>
+      \[
+        \mathbb E_{\pi_t}[f] \approx \frac{\sum_n w^n f(x^n)}{\sum_n w^n},
+      \]
+      <p>
+        and likewise for the ESS. Normalising the weights at the moment of use is
+        what silently divides out \(Z_t\). This is also why an arbitrary constant
+        may be added to all log-weights at any time without consequence — a fact
+        the implementation exploits, subtracting \(\max_n \log w^n\) before
+        exponentiating to avoid overflow.
+      </p>
+      <p>
+        Splitting the increment at the reheated state,
+        \(\Delta\log w^{\text{churn}}_i = \rho_{\hat t_i}(\hat x_i)-\rho_{t_i}(x_i)\)
+        and
+        \(\Delta\log w^{\text{ODE}}_i = \rho_{t_{i+1}}(x_{i+1})-\rho_{\hat t_i}(\hat x_i)\),
+        gives two increments that telescope to the same total. This is not merely
+        cosmetic: it lets you test the ESS and resample <em>at the reheated
+        state</em>, which is attractive because the reheat has just injected fresh
+        noise and so restored diversity right before selection prunes it.
+      </p>
+    </div>
+  </details>
+</section>
+
+<!-- ===================== STEP 3 ===================== -->
+<section class="concept-step" id="step-3">
+  <p class="step-num">Step 3</p>
+  <h2>A weight is a ratio, not a property of the particle</h2>
+  <div class="prose">
+    <p>
+      Before assembling anything, we have to clear up the thing that makes this
+      construction feel like a trick. A particle gets pushed through a kernel —
+      it moves in space, it moves in time, it lands somewhere with a different
+      density — and its weight does not change. That looks wrong.
+    </p>
+    <p>
+      It looks wrong because of a natural but mistaken picture: that the weight is
+      something the particle <em>carries</em>, like mass, which ought to be
+      affected by where it goes. It is not. A weight is a <strong>ratio between
+      two distributions</strong>, evaluated at the particle:
+    </p>
+    \[ w^n \;=\; \frac{\text{the distribution I want}}{\text{the distribution my sampler actually produces}}\Bigg|_{x^n}. \]
+    <p>
+      Nothing in that expression is a property of \(x^n\) alone. It is a statement
+      about a <em>mismatch between two recipes</em>, and \(x^n\) is merely where we
+      happen to be measuring it.
+    </p>
+    <p>
+      Now the punchline. Move every particle through a kernel \(M\). What happens
+      to the two things in the ratio? <em>Both</em> get moved — the sampler's
+      distribution becomes \(PM\), and the distribution we want, if we carry the
+      weights along unchanged, becomes \(TM\). One line of algebra says so
+      exactly. With \(x^n\sim P\) and \(w^n=(T/P)(x^n)\), draw \(y^n\sim M(x^n,\cdot)\):
+    </p>
+    \[
+      \mathbb E\Bigl[\textstyle\sum_n w^n f(y^n)\Bigr]
+      = \int\!\!\int P(dx)\,\frac{T}{P}(x)\,M(x,dy)\,f(y)
+      = \int\!\!\int T(dx)M(x,dy)f(y)
+      = \int (TM)(dy)\,f(y).
+    \]
+    <p>
+      So the weighted cloud, after moving, represents \(TM\) — <em>the old target,
+      carried forward by the very same kernel.</em> The mismatch between numerator
+      and denominator is unchanged because the same operation was applied to both.
+      That is why moving is free.
+    </p>
+  </div>
+
+  <div class="keybox prose">
+    <p style="font-size:0.95rem">
+      <strong>An analogy that fixes this.</strong> A survey over-sampled city
+      dwellers, so each rural respondent carries a weight of 3. A year passes;
+      everyone ages by one year. Do the weights change? No — the weight encodes
+      <em>who you failed to sample</em>, not <em>how old anybody is</em>. Aging
+      happened to the population you are trying to represent too, so the
+      discrepancy is untouched. The weights change only when you
+      <em>redefine the population you want to represent</em>.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      And that is exactly our situation. We do not want \(TM\), the old tilted
+      distribution smeared forward. We declared that we want \(\pi_{t_{i+1}}\propto
+      q_{t_{i+1}}e^{\rho_{t_{i+1}}}\) — a fresh target at the new level. The
+      weight update is the price of that redefinition, and of nothing else.
+    </p>
+    <p>
+      Here is where it gets easy rather than hard. The correction from \(TM\) to
+      the new target looks like it should require knowing \(TM\), which is a
+      smeared-out object nobody can write down. But we never compute it. Instead
+      we recompute the whole weight from scratch, using the definition above:
+    </p>
+    \[
+      w_{i+1} \;=\; \frac{\text{want}}{\text{produce}}
+      \;=\; \frac{q_{t_{i+1}}(x_{i+1})e^{\rho_{t_{i+1}}(x_{i+1})}}{\;q_{t_{i+1}}(x_{i+1})\;}
+      \;=\; e^{\rho_{t_{i+1}}(x_{i+1})}.
+    \]
+    <p>
+      The denominator is \(q_{t_{i+1}}\) — the law of the particle after the move —
+      <mark>and it is knowable only because Step 2 established that the churn
+      kernel carries \(q_{t_i}\) to \(q_{t_{i+1}}\).</mark> That single fact is
+      what turns an intractable correction into a cancellation. And the base
+      density \(q_{t_{i+1}}\), unknown though it is, appears in both numerator and
+      denominator and drops out.
+    </p>
+    <p>
+      So the weight of a particle, at every level, is just the current tilt
+      \(e^{\rho_t(x_t)}\). The "update" is nothing but the bookkeeping of a running
+      product:
+    </p>
+    \[
+      \log w_{i+1} = \underbrace{\log w_i}_{\rho_{t_i}(x_i)} + \bigl(\rho_{t_{i+1}}(x_{i+1})-\rho_{t_i}(x_i)\bigr)
+      = \rho_{t_{i+1}}(x_{i+1}).
+    \]
+    <p>
+      It telescopes. Run the sampler with no resampling and the accumulated
+      log-weight is <em>identical</em> to \(\rho_t\) evaluated at the particle's
+      current position — to machine precision, not approximately. The increments
+      are only needed because resampling periodically resets the weights to 1, and
+      after a reset the running product has to restart from the current tilt.
+    </p>
+    <p>
+      The widget below shows all of it at once. Watch stage 2 in particular: the
+      bars (the algorithm's cloud with unchanged weights) land on the orange curve
+      — which is an independently simulated \(\pi_{t}M\), computed by drawing
+      exact samples from \(\pi_{t}\) and pushing them through the same kernel. Two
+      completely different computations agreeing is what "carrying weights
+      unchanged means you represent \(TM\)" looks like in practice.
+    </p>
+  </div>
+
+  <div class="widget" id="w7">
+    <div class="widget-titlewrap">
+      <p class="widget-title">Where a weighted cloud actually lands when you move it and touch nothing</p>
+      <span class="widget-tag">staged · drag the step size</span>
+    </div>
+    <div class="widget-controls">
+      <label>one step from \(t_i=0.65\) down to &nbsp;t = <span class="val" id="w7-tV">0.30</span>
+        <input type="range" id="w7-t" min="0.15" max="0.60" step="0.01" value="0.30">
+      </label>
+    </div>
+    <canvas id="w7-canvas" class="widget-stage"></canvas>
+    <div class="reveal-bar">
+      <button id="w7-back" disabled>&larr; Back</button>
+      <span class="reveal-caption" id="w7-caption"></span>
+      <button id="w7-next">Move the cloud &rarr;</button>
+    </div>
+    <div class="readout" id="w7-readout"></div>
+    <p class="caption">
+      Slide the step size to \(t=0.60\) and the gap shrinks by roughly a factor of
+      ten — which is precisely why this error is easy to ship. Over one short step
+      "carry the weights along" is nearly right. Over forty of them it is not.
+    </p>
+  </div>
+
+  <div class="prose">
+    <h3 style="font-family:var(--font-display);font-size:1.15rem;margin:34px 0 12px">If you already know AIS or SMC</h3>
+    <p>
+      Then you already know this algorithm; it is the same template with one box
+      filled in differently. Every sequential importance sampler has the form
+      <em>weight update, move, (optionally) resample</em>, with the increment
+      \(G_i\) chosen so the weighted cloud tracks the current target. The two
+      settings differ only in what the move is asked to do.
+    </p>
+    <p>
+      In annealed importance sampling you build a ladder \(\gamma_0\to\gamma_K\) by
+      hand, and you move with an MCMC kernel \(T_k\) that is <strong>invariant</strong>
+      for \(\gamma_k\), i.e. \(\gamma_kT_k=\gamma_k\). Invariance is the AIS version of
+      "moving is free": the kernel maps the target to <em>itself</em>, so the move
+      costs no weight, and the entire increment comes from the target you changed
+      by hand, \(\gamma_k(x)/\gamma_{k-1}(x)\) — two distributions, one point.
+    </p>
+    <p>
+      Here the move is not invariant, it is a <strong>transport</strong>: \(M_i\)
+      maps \(q_{t_i}\) to a genuinely <em>different</em> distribution
+      \(q_{t_{i+1}}\). That is a strictly stronger thing to have, and it does most
+      of the work for you — the base part of the target is transported for free by
+      the dynamics, and the weights are left to handle only the tilt. That is why
+      the increment reads \(\rho_{t_{i+1}}(x_{i+1})-\rho_{t_i}(x_i)\): two tilts at
+      two <em>different</em> points, because the particle genuinely moved and the
+      target genuinely moved with it.
+    </p>
+    <table style="width:100%;max-width:var(--measure);border-collapse:collapse;font-size:0.86rem;margin:22px 0;font-family:var(--font-display)">
+      <thead><tr style="border-bottom:2px solid var(--line);text-align:left">
+        <th style="padding:8px 10px 8px 0"></th>
+        <th style="padding:8px 10px">AIS / SMC with MCMC moves</th>
+        <th style="padding:8px 10px">churn sampler + FK steering</th></tr></thead>
+      <tbody>
+      <tr style="border-bottom:1px solid var(--line)"><td style="padding:8px 10px 8px 0;color:var(--ink-soft)">the ladder</td>
+        <td style="padding:8px 10px">\(\gamma_k\), designed by hand</td>
+        <td style="padding:8px 10px">\(\pi_t=q_te^{\rho_t}\), indexed by noise level</td></tr>
+      <tr style="border-bottom:1px solid var(--line)"><td style="padding:8px 10px 8px 0;color:var(--ink-soft)">the move</td>
+        <td style="padding:8px 10px">\(T_k\) <b>invariant</b>: \(\gamma_kT_k=\gamma_k\)</td>
+        <td style="padding:8px 10px">\(M_i\) <b>transports</b>: \(q_{t_i}M_i=q_{t_{i+1}}\)</td></tr>
+      <tr style="border-bottom:1px solid var(--line)"><td style="padding:8px 10px 8px 0;color:var(--ink-soft)">what the move buys</td>
+        <td style="padding:8px 10px">mixing — decorrelates the cloud</td>
+        <td style="padding:8px 10px">mixing <em>and</em> the whole base marginal</td></tr>
+      <tr style="border-bottom:1px solid var(--line)"><td style="padding:8px 10px 8px 0;color:var(--ink-soft)">weight increment</td>
+        <td style="padding:8px 10px">\(\dfrac{\gamma_k(x_{k-1})}{\gamma_{k-1}(x_{k-1})}\) — one point</td>
+        <td style="padding:8px 10px">\(e^{\rho_{t_{i+1}}(x_{i+1})-\rho_{t_i}(x_i)}\) — two points</td></tr>
+      <tr><td style="padding:8px 10px 8px 0;color:var(--ink-soft)">where the score lives</td>
+        <td style="padding:8px 10px">nowhere</td>
+        <td style="padding:8px 10px">inside \(M_i\) only — never in the weight</td></tr>
+      </tbody>
+    </table>
+    <p>
+      Resampling then plays the identical role in both: it is optional, it does not
+      change what the cloud represents, and it trades weight variance for
+      duplicated particles. The difference is that a churn sampler repairs the
+      duplication for free on the next step, because the reheat injects fresh
+      noise into every particle.
+    </p>
+  </div>
+
+  <details class="formal">
+    <summary>The formal version — this is standard SMC with a specific backward kernel</summary>
+    <div class="formal-body prose">
+      <p>
+        General SMC on a path space uses an artificial <em>backward</em> kernel
+        \(L_i\) to define the extended target, giving the increment
+      </p>
+      \[
+        G_i=\frac{\tilde\pi_{t_{i+1}}(x_{i+1})\,L_i(x_{i+1},x_i)}{\tilde\pi_{t_i}(x_i)\,M_i(x_i,x_{i+1})},
+        \qquad \tilde\pi_t = q_te^{\rho_t}\ \text{(unnormalized)}.
+      \]
+      <p>
+        Everything above is the choice of \(L_i\) equal to the exact time-reversal
+        of \(M_i\) <em>under the base process</em>:
+      </p>
+      \[ L_i(x_{i+1},x_i)=\frac{q_{t_i}(x_i)\,M_i(x_i,x_{i+1})}{q_{t_{i+1}}(x_{i+1})}, \]
+      <p>
+        which is a valid probability kernel precisely because \(q_{t_i}M_i=q_{t_{i+1}}\).
+        Substituting, the kernel densities and both base marginals cancel:
+      </p>
+      \[
+        G_i=\frac{q_{t_{i+1}}e^{\rho_{t_{i+1}}}}{q_{t_i}e^{\rho_{t_i}}}\cdot
+            \frac{q_{t_i}M_i}{q_{t_{i+1}}M_i}=e^{\rho_{t_{i+1}}(x_{i+1})-\rho_{t_i}(x_i)}.
+      \]
+      <p>
+        This is worth noticing for two reasons. First, it is why no \(M_i\) density
+        appears — a relief, since \(M_i\) contains a deterministic ODE map and
+        therefore has no density with respect to Lebesgue measure at all. Second,
+        it identifies the assumption exactly: if \(q_{t_i}M_i\neq q_{t_{i+1}}\),
+        this \(L_i\) is not a probability kernel and the cancellation is invalid —
+        which is the same condition Steps 5 and 6 keep returning to.
+      </p>
+      <p>
+        The AIS increment drops out of the same formula with \(M_i=T_i\) invariant
+        and \(L_i\) the reversal of \(T_i\) under \(\gamma_i\); there the two base
+        marginals are the <em>same</em> distribution, which is why AIS's increment
+        is evaluated at a single point.
+      </p>
+    </div>
+  </details>
+</section>
+
+<!-- ===================== STEP 4 ===================== -->
+<section class="concept-step" id="step-6">
+  <p class="step-num">Step 6</p>
+  <h2>Why no Jacobian appears — the cancellation</h2>
+  <div class="prose">
+    <p>
+      Step 3's derivation goes through so quickly that it is worth stopping to ask
+      what happened to the terms you would expect. Half of \(M_i\) is a
+      <em>deterministic map</em> \(y=\Phi(x)\). Every time you push a density
+      through a deterministic map, a Jacobian appears — that is the change-of-variables
+      formula, and there are no exceptions to it. So where did it go?
+    </p>
+    <p>
+      It did appear. It appeared twice, and cancelled. Carry the weights unchanged
+      through \(\Phi\) and the cloud represents, by change of variables,
+    </p>
+    \[
+      \underbrace{q_{\hat t}\bigl(\Phi^{-1}(y)\bigr)\bigl|\det D\Phi^{-1}(y)\bigr|}_{\text{this is } q_{t_{i+1}}(y)}
+      \;\cdot\;
+      e^{\rho_{\hat t}(\Phi^{-1}(y))}.
+    \]
+    <p>
+      The Jacobian sits entirely inside the first group — and that group is
+      \(q_{t_{i+1}}(y)\), because "\(\Phi\) transports \(q_{\hat t}\) to
+      \(q_{t_{i+1}}\)" is precisely the statement that the density-with-Jacobian
+      equals the new marginal. The base density we <em>wanted</em> is already
+      there, Jacobian included. All that is left over is the wrong tilt factor,
+      evaluated at the ancestor — and fixing that is the same endpoint
+      subtraction as before, \(\Delta\log w_\Phi=\rho_{t_{i+1}}(y)-\rho_{\hat t}(x)\).
+    </p>
+    <p>
+      Said plainly: <mark>the Jacobian cancels between the proposal and the target
+      because both are built on the same base flow.</mark> You are not tracking
+      how \(\Phi\) distorts volume; you are relying on the fact that whatever
+      distortion it produces is by definition the distortion that turns
+      \(q_{\hat t}\) into \(q_{t_{i+1}}\).
+    </p>
+    <p>
+      The widget makes the cancelling quantity visible. Watch the gaps between
+      tracer particles stretch and squeeze as they flow — that changing spacing
+      <em>is</em> \(|\det D\Phi|\) — and then watch the transported density land
+      exactly on the analytic \(q_{t_{i+1}}\) anyway.
+    </p>
+  </div>
+
+  <div class="widget" id="w4">
+    <div class="widget-titlewrap">
+      <p class="widget-title">Tracer particles flowing down the PF-ODE, and the volume change they carry</p>
+      <span class="widget-tag">staged · drag the step size</span>
+    </div>
+    <div class="widget-controls">
+      <label>flow from \(\hat t=0.55\) down to &nbsp;t = <span class="val" id="w4-tV">0.30</span>
+        <input type="range" id="w4-t" min="0.05" max="0.50" step="0.01" value="0.30">
+      </label>
+    </div>
+    <canvas id="w4-canvas" class="widget-stage"></canvas>
+    <div class="reveal-bar">
+      <button id="w4-back" disabled>← Back</button>
+      <span class="reveal-caption" id="w4-caption"></span>
+      <button id="w4-next">Flow them down →</button>
+    </div>
+    <div class="readout" id="w4-readout"></div>
+    <p class="caption">
+      \(\Phi'(x)\) is computed by finite differences on the actual Heun solver —
+      it is measured from the same code that moves the particles, not from a
+      formula written alongside it.
+    </p>
+  </div>
+
+  <details class="formal">
+    <summary>The formal version — and what breaks when \(\Phi\) is only approximate</summary>
+    <div class="formal-body prose">
+      <p>
+        The clean cancellation assumed \(\Phi_{\#}q_{\hat t}=q_{t_{i+1}}\) exactly.
+        If it does not hold — and for a numerical solver with a learned score it
+        never holds exactly — the honest importance weight is
+      </p>
+      \[
+        \Delta\log w_\Phi=\rho_s(y)-\rho_t(x)+\log q_s(y)-\log q_t(x)+\log\bigl|\det D\Phi_{t\to s}(x)\bigr|.
+      \]
+      <p>
+        Every one of the three extra terms is unavailable in practice: the
+        densities \(q_t\) are exactly what the model does not give you (it gives
+        the score, their gradient), and \(\det D\Phi\) for a solver in \(d\)
+        dimensions costs \(O(d)\) backprops per step. So the practical sampler
+        drops them and, in doing so, <em>inherits</em> the base sampler's
+        discretization and model error rather than correcting it.
+      </p>
+      <p>
+        This is the right trade and worth being precise about the claim it
+        supports: the Feynman–Kac weighting adds <strong>no error of its own</strong>.
+        A steered run is exactly as biased as an unsteered run of the same solver
+        with the same score network — no more. The conditions for that are the
+        ones the widgets probe: the forward kernel used at its prescribed noise
+        scale (an EDM-style \(S_\text{noise}\neq1\) deliberately breaks this), a
+        converged ODE solver, and any proposal twist accompanied by its density
+        ratio.
+      </p>
+    </div>
+  </details>
+</section>
+
+<!-- ===================== STEP 5 ===================== -->
+<section class="concept-step" id="step-7">
+  <p class="step-num">Step 7</p>
+  <h2>Read the score at the reheated time</h2>
+  <div class="prose">
+    <p>
+      Everything above rests on \(q_{t_i}M_i=q_{t_{i+1}}\), and that identity has
+      a fragile ingredient: the ODE half only transports \(q_{\hat t}\) correctly
+      if it is <em>told</em> it is starting at \(\hat t\). This is the one place
+      where reordering the sampler creates a bug that is easy to write and hard to
+      see.
+    </p>
+    <p>
+      The reasoning is short. After the reheat, \(\hat x_i\) is a sample from
+      \(q_{\hat t_i}\) — a wider, smoother distribution than \(q_{t_i}\). The
+      score network is a function of two arguments, and the argument that says
+      "how noisy is this" must match the state you hand it:
+    </p>
+    \[ s_{\hat t_i}(\hat x_i) = \nabla_{\hat x_i}\log q_{\hat t_i}(\hat x_i). \]
+    <p>
+      Calling \(s_{t_i}(\hat x_i)\) instead asks the network to denoise a
+      \(\hat t_i\)-noisy state as though it carried only \(t_i\) worth of noise.
+      It will answer — score networks do not refuse — but it will under-remove
+      noise, and the flow will not transport \(q_{\hat t}\) anywhere in
+      particular. In code this is a one-token bug:
+    </p>
+    <pre class="code" id="w5-code"><span class="c"># inside one churn step</span>
+<span data-line="1">x_hat = forward_transition(x, t_curr, t_hat)   <span class="c"># exact; needs no score</span></span>
+<span data-line="2">v     = velocity(x_hat, t_hat)                <span class="c"># ✓ state and time agree</span></span>
+<span data-line="3">v     = velocity(x_hat, t_curr)               <span class="c"># ✗ the bug: stale time</span></span>
+<span data-line="4">x_next = heun_step(x_hat, v, t_hat, t_next)</span></pre>
+    <p>
+      Drag κ in the widget. The top panel shows the two score functions the two
+      calls return; at κ=0 they are the same call and the curves coincide, and as
+      the churn grows they peel apart. The bottom panel runs the full sampler both
+      ways and measures the damage against the analytic \(q_t\).
+    </p>
+  </div>
+
+  <div class="widget" id="w5">
+    <div class="widget-titlewrap">
+      <p class="widget-title">The same state, scored at two different times — and what it costs downstream</p>
+      <span class="widget-tag">drag churn strength · bottom panel re-runs both samplers</span>
+    </div>
+    <div class="widget-controls">
+      <label>churn strength &nbsp;κ = <span class="val" id="w5-kV">2.00</span>
+        <input type="range" id="w5-k" min="0" max="4" step="0.25" value="2">
+      </label>
+    </div>
+    <canvas id="w5-canvas" class="widget-stage"></canvas>
+    <div class="readout" id="w5-readout"></div>
+    <p class="caption">
+      Both samplers carry solver error — this is a coarse 15-step schedule — so
+      the fair comparison is the two error numbers side by side, not either one
+      against zero. The stale-time call roughly doubles the error, and the gap
+      grows with κ. Note the direction: it consistently makes the cloud too narrow,
+      because under-removing noise is what a score evaluated at too low a time
+      does.
+    </p>
+  </div>
+</section>
+
+<!-- ===================== STEP 5 ===================== -->
+<section class="concept-step" id="step-5">
+  <p class="step-num">Step 5</p>
+  <h2>Changing the tilt: what actually has to be recomputed</h2>
+  <div class="prose">
+    <p>
+      So far the tilt has been one specific thing. In practice you will want to
+      vary it — anneal its strength, make the reward itself depend on the noise
+      level, evaluate it on the denoised state instead of the noisy one. It is
+      worth stating the recipe in full generality, because it turns out to be
+      completely insensitive to those choices, and because the one thing that
+      <em>does</em> break it is easy to do by accident.
+    </p>
+    <p>
+      Set it up the way you would state it. You have \(q_t\), samples \(x_t\), and
+      a kernel that advances \(x_t\) to \(x_{t+dt}\) with the property that
+      \(x_{t+dt}\) is a sample from \(q_{t+dt}\). You want to bias both ends. The
+      general object is a <strong>tilt function attached to each time index</strong>
+      — call it \(\rho^{(i)}\), an arbitrary function of \(x\) chosen freely for
+      each \(i\) — defining the target
+    </p>
+    \[ \pi^{(i)}(x)\;\propto\;q_{t_i}(x)\,e^{\rho^{(i)}(x)} . \]
+    <p>
+      Now apply Step 3 mechanically. The weight is always want-over-produce. After
+      the move the particle's law is \(q_{t_{i+1}}\), so
+    </p>
+    \[
+      w_{i+1}=\frac{q_{t_{i+1}}(x_{i+1})e^{\rho^{(i+1)}(x_{i+1})}}{q_{t_{i+1}}(x_{i+1})}=e^{\rho^{(i+1)}(x_{i+1})},
+      \qquad
+      \frac{w_{i+1}}{w_i}=e^{\rho^{(i+1)}(x_{i+1})-\rho^{(i)}(x_i)} .
+    \]
+  </div>
+
+  <div class="keybox prose">
+    <p style="font-size:0.95rem;margin-top:14px">
+      <strong>The recipe, once and for all.</strong> Evaluate the tilt you assigned
+      to the <em>new</em> index at the <em>new</em> state. Subtract the tilt you
+      assigned to the <em>old</em> index at the <em>old</em> state. Nothing else.
+      This does not depend on whether the tilt is time-dependent, on how it depends
+      on time, or on what the reward is a function of.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      Concretely, for the three cases you are likely to write:
+    </p>
+    <table style="width:100%;max-width:var(--measure);border-collapse:collapse;font-size:0.86rem;margin:22px 0;font-family:var(--font-display)">
+      <thead><tr style="border-bottom:2px solid var(--line);text-align:left">
+        <th style="padding:8px 10px 8px 0">you write</th>
+        <th style="padding:8px 10px">\(\Delta\log w_i\) is</th>
+        <th style="padding:8px 10px">what changed</th></tr></thead>
+      <tbody>
+      <tr style="border-bottom:1px solid var(--line)">
+        <td style="padding:8px 10px 8px 0">\(\rho(x)=\beta\,r(x)\)</td>
+        <td style="padding:8px 10px">\(\beta\bigl[r(x_{i+1})-r(x_i)\bigr]\)</td>
+        <td style="padding:8px 10px">only the particle</td></tr>
+      <tr style="border-bottom:1px solid var(--line)">
+        <td style="padding:8px 10px 8px 0">\(\rho_t(x)=\beta_t\,r(x)\)</td>
+        <td style="padding:8px 10px">\(\beta_{t_{i+1}}r(x_{i+1})-\beta_{t_i}r(x_i)\)</td>
+        <td style="padding:8px 10px">particle and strength</td></tr>
+      <tr>
+        <td style="padding:8px 10px 8px 0">\(\rho_t(x)=\beta_t\,r(x,t)\)</td>
+        <td style="padding:8px 10px">\(\beta_{t_{i+1}}r(x_{i+1},t_{i+1})-\beta_{t_i}r(x_i,t_i)\)</td>
+        <td style="padding:8px 10px">particle, strength, reward</td></tr>
+      </tbody>
+    </table>
+    <p>
+      Look at the first row, because it is the one that catches people. The reward
+      does not depend on time at all, and yet <mark>the weight still changes</mark>.
+      It changes because the <em>particle moved</em>, not because the reward moved.
+      Step 3's ratio has \(x\) in it; move \(x\) and the ratio is a different
+      number. A zero update would mean the target had not changed, and it has —
+      \(\pi^{(i+1)}\propto q_{t_{i+1}}e^{\beta r}\) is a different distribution from
+      \(\pi^{(i)}\propto q_{t_i}e^{\beta r}\), because \(q\) moved underneath.
+    </p>
+    <p>
+      Your question about whether to use \(t\) or \(t+dt\) now has a precise
+      answer, and it is a slightly surprising one. Feeding the new state to the
+      <em>old</em> tilt function is not an error — it just means you have declared
+      \(\rho^{(i+1)}:=\rho_{t_i}\), i.e. shifted your schedule by one index. Any
+      assignment of functions to indices is a legal Feynman–Kac model. What is
+      <strong>not</strong> optional is <em>consistency</em>: whatever function you
+      use for the new endpoint of step \(i\) must be the same function you use for
+      the old endpoint of step \(i+1\). Get that right and the sum telescopes:
+    </p>
+    \[
+      \log w_N=\log w_0+\sum_{i=0}^{N-1}\bigl(\rho^{(i+1)}(x_{i+1})-\rho^{(i)}(x_i)\bigr)=\rho^{(N)}(x_N).
+    \]
+    <p>
+      Read that off carefully, because it is the practical payoff of the whole
+      step. <mark>The terminal weight depends only on the <em>last</em> tilt
+      function.</mark> Every intermediate \(\rho^{(i)}\) cancels. So the annealing
+      schedule cannot bias your endpoint — it is a pure variance knob, exactly like
+      the proposal twist in Step 8. Choose it to keep the ESS healthy; it has no
+      say in what you converge to.
+    </p>
+    <p>
+      This is sharper than a statistical statement. Since the particle trajectories
+      do not depend on \(\beta_t\) at all — the schedule touches only the weights —
+      and the telescoped final weight is \(\rho^{(N)}(x_N)\) regardless of the
+      route, two runs with different schedules and the same seed end with
+      <em>numerically identical</em> weights. Not the same distribution: the same
+      numbers. Drag the schedule shape below and the terminal histogram does not
+      move by a pixel, while the ESS trace reshapes completely. Then flip the
+      consistency switch to see the one thing that genuinely breaks.
+    </p>
+  </div>
+
+  <div class="widget" id="w8">
+    <div class="widget-titlewrap">
+      <p class="widget-title">The annealing schedule changes the path, never the destination</p>
+      <span class="widget-tag">drag the schedule · toggle reward type and consistency</span>
+    </div>
+    <div class="widget-controls">
+      <label>schedule shape &nbsp;p = <span class="val" id="w8-pV">1.00</span>
+        <input type="range" id="w8-p" min="0" max="3" step="0.05" value="1">
+      </label>
+      <button class="ghost" id="w8-mode">reward: r(x)</button>
+      <button class="ghost on" id="w8-cons">consistent: YES</button>
+    </div>
+    <canvas id="w8-canvas" class="widget-stage"></canvas>
+    <div class="readout" id="w8-readout"></div>
+    <p class="caption">
+      Every schedule is normalised to end at the same \(\beta\), so all of them
+      declare the <em>same</em> final target — which is exactly the thing being
+      tested. p = 0 means the full tilt is on from the very start (applied to
+      almost-pure noise); large p means it arrives only at the last moment, which
+      approaches the one-shot reweighting of Step 1 and collapses the same way.
+    </p>
+  </div>
+
+  <details class="formal">
+    <summary>The formal version — the denoised reward, and why it lands in the same place</summary>
+    <div class="formal-body prose">
+      <p>
+        A reward defined on clean data is close to meaningless when evaluated on a
+        noisy \(x_t\). The standard repair is to score the <em>denoised</em> state,
+        \(\rho_t(x)=\beta_t\,r(D(x,t))\), where \(D\) is the posterior mean
+        \(\mathbb E[x_0\mid x_t]\), available from the score by Tweedie's formula:
+      </p>
+      \[ D(x,t)=\frac{x+\sigma_t^2\,\nabla_x\log q_t(x)}{\alpha_t}. \]
+      <p>
+        This is a legal choice of \(\rho^{(i)}\) like any other, so the recipe is
+        unchanged — and note that it needs <em>no</em> \(\dot\beta_t\), no
+        \(\partial_t r\), no reward Laplacian and no score-alignment term, all of
+        which appear in the continuous-time version. The one implementation rule is
+        the same one as Step 7: recompute \(D(\hat x_i,\hat t_i)\) after the churn
+        rather than reusing a denoiser evaluated before it.
+      </p>
+      <p>
+        Because \(D(x,t)\to x\) as \(t\to0\), the denoised tilt converges to the
+        plain one, so it targets the same terminal distribution by a different
+        route. In the widget the two land within about \(0.002\) of each other —
+        not exactly equal, because the schedule stops at \(t=0.02\) rather than
+        \(0\), where \(D\) still differs slightly from the identity. That residual
+        gap is a real property of the construction, not solver error.
+      </p>
+      <p>
+        The broken-consistency setting uses \(\rho_{t_i}\) at the new endpoint of
+        step \(i\) while step \(i+1\) still starts from \(\rho_{t_{i+1}}\). The sum
+        then telescopes to \(\rho^{(N)}(x_N)+\sum_i\bigl(\rho_{t_i}(x_{i+1})-\rho_{t_{i+1}}(x_{i+1})\bigr)\)
+        — an accumulating pile of leftovers that is a function of the whole
+        trajectory, not of the endpoint. The result is not a different valid target;
+        it is a path-dependent mess, and the ESS collapses to near zero as it
+        accumulates.
+      </p>
+    </div>
+  </details>
+</section>
+
+<!-- ===================== STEP 6 ===================== -->
+<section class="concept-step" id="step-8">
+  <p class="step-num">Step 8</p>
+  <h2>Moving the reward into the proposal — and the price of overdoing it</h2>
+  <div class="prose">
+    <p>
+      The endpoint weight is exact, but Step 1's problem has not gone away, only
+      been spread out: particles still wander wherever the base model takes them,
+      and the weights still do all the steering. The natural improvement is to
+      <em>aim</em> the randomness — bias the churn noise toward high reward — and
+      then correct for having done so.
+    </p>
+    <p>
+      This is clean to do because the churn kernel is a Gaussian whose density we
+      know: \(K_i(\hat x\mid x_i)=\mathcal N(\hat x; m_i, V_i)\). Sample instead
+      from any \(\widetilde K_i\) with a known density, and importance sampling
+      supplies the exact fix — a likelihood ratio:
+    </p>
+    \[
+      \Delta\log w_i=\rho_{t_{i+1}}(x_{i+1})-\rho_{t_i}(x_i)
+      + \log K_i(\hat x_i\mid x_i)-\log\widetilde K_i(\hat x_i\mid x_i).
+    \]
+    <p>
+      Which \(\widetilde K_i\) though? Ideally we would sample from
+      \(\mathcal N(\hat x;m_i,V_i)\,e^{\rho_{\hat t}(\hat x)}\), but that is not a
+      Gaussian for a general reward. So linearize: approximate
+      \(\rho_{\hat t}(\hat x)\approx \rho_{\hat t}(m_i)+a_i^\top(\hat x-m_i)\)
+      with \(a_i=\nabla\rho_{\hat t}(m_i)\). Now the product <em>is</em> Gaussian,
+      and completing the square in the exponent,
+      \(-\tfrac12(\hat x-m)^\top V^{-1}(\hat x-m)+a^\top(\hat x-m)\), shifts the
+      mean by \(Va\) and leaves the covariance alone:
+    </p>
+    \[ \widetilde K_i=\mathcal N\bigl(m_i+V_ia_i,\;V_i\bigr). \]
+    <p>
+      Nudge the mean uphill on the reward, by an amount proportional to how much
+      noise this step was going to inject anyway. The correction is then a
+      two-term formula you can write down by hand — subtract the two Gaussian
+      log-densities and the quadratic terms cancel:
+    </p>
+    \[ \log K_i-\log\widetilde K_i = -a_i^\top(\hat x_i-m_i)+\tfrac12 a_i^\top V_ia_i. \]
+    <p>
+      Note what is <em>not</em> being twisted: the deterministic ODE. Bending a
+      deterministic flow gives you two maps whose transition kernels are mutually
+      singular — both put all their mass on a measure-zero set, so the likelihood
+      ratio between them does not exist as an ordinary density ratio, and you are
+      back to tracking inverse maps and Jacobians. Twisting a Gaussian is easy
+      precisely because Gaussians have densities. Twist the stochastic half; leave
+      the deterministic half alone.
+    </p>
+    <p>
+      Now drag the twist strength, and watch two things that behave differently.
+    </p>
+  </div>
+
+  <div class="widget" id="w6">
+    <div class="widget-titlewrap">
+      <p class="widget-title">Twist strength versus effective sample size, at fixed correctness</p>
+      <span class="widget-tag">drag the twist · re-runs the sampler</span>
+    </div>
+    <div class="widget-controls">
+      <label>twist strength &nbsp;c = <span class="val" id="w6-cV">0.35</span>
+        <input type="range" id="w6-c" min="0" max="1" step="0.05" value="0.35">
+      </label>
+      <button class="ghost" id="w6-sweep">Sweep all twist strengths</button>
+    </div>
+    <canvas id="w6-canvas" class="widget-stage"></canvas>
+    <div class="readout" id="w6-readout"></div>
+    <p class="caption">
+      The twist uses \(c\,a_i\) in place of \(a_i\), so c=0 is the untwisted
+      sampler and c=1 is the full local linearization. The correction term uses
+      whatever coefficient was actually used, so every setting is exact.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      The weighted mean sits on the target for every twist strength — as it must,
+      since the likelihood ratio is exact for any proposal. But the ESS traces a
+      hump: it climbs steeply from about 9% untwisted to around 60% near c≈0.35,
+      then falls off a cliff, ending <em>below</em> the untwisted sampler at c=1.
+    </p>
+    <p>
+      The diagnostic bar explains the cliff. The twist displaces the proposal mean
+      by \(V_ia_i\); the noise it was going to add has scale \(\sqrt{V_i}\). Once
+      the displacement is a large multiple of \(\sqrt{V_i}\), the proposal and the
+      base kernel barely overlap, and the ratio \(K_i/\widetilde K_i\) becomes a
+      wildly varying number — the very thing we introduced the twist to avoid. The
+      linearization was only ever valid near \(m_i\), and at c=1 the reward here
+      is steep enough to throw the proposal far outside that neighbourhood.
+    </p>
+    <p>
+      This is the honest shape of the technique. <mark>Twisting is a variance
+      knob, not a correctness knob</mark> — and like all variance knobs it has a
+      setting past which it does harm. The correction keeps you exact the whole
+      way; it cannot keep you <em>useful</em> the whole way. Note the practical
+      reading of the failure: at c=1 the estimate is unbiased in the mathematical
+      sense but is being carried by a handful of effective particles, so any
+      single finite run is unreliable — the number can be wrong even though the
+      estimator is right.
+    </p>
+  </div>
+
+  <details class="formal">
+    <summary>The formal version — relation to continuous-time FK steering</summary>
+    <div class="formal-body prose">
+      <p>
+        There is a continuous-time version of all this (Proposition D.6 in the
+        Feynman–Kac steering literature) whose weight formula <em>does</em>
+        contain a score term, along with \(\dot\beta_t\), \(\partial_t r\), a
+        reward Laplacian and a score-alignment term. It is natural to ask why none
+        of that appears here.
+      </p>
+      <p>
+        Because it is a different factorization, not a contradiction. Generic
+        Feynman–Kac weighting never requires a score. The score appears in D.6
+        only <em>after</em> part of the potential has been moved out of the weight
+        and into the drift — which is exactly the same manoeuvre as Step 6's
+        twist, done in continuous time via Girsanov instead of discretely via a
+        Gaussian likelihood ratio. The endpoint difference
+        \(\rho_{t_{i+1}}(x_{i+1})-\rho_{t_i}(x_i)\) contains the full stochastic
+        increment of \(\rho_t(X_t)\); D.6's weight is of finite variation because
+        that stochastic part has been pushed into the dynamics. The two agree on
+        the law, and disagree on which side of the ledger the fluctuation is
+        written.
+      </p>
+      <p>
+        There is also a concrete reason not to reach for D.6 here. It assumes the
+        ordinary reverse SDE generator. The churn split with parameter \(\kappa\)
+        converges instead to a reverse diffusion with
+      </p>
+      \[
+        b_\kappa(x,t)=f(x,t)-\tfrac{1+\kappa}{2}g(t)^2 s_t(x),
+        \qquad g_\kappa(t)=\sqrt{\kappa}\,g(t),
+      \]
+      <p>
+        which reduces to Anderson's reverse SDE only at \(\kappa=1\). Using D.6
+        unchanged inside a churn step with \(\kappa\neq1\) silently assumes the
+        wrong generator. The discrete endpoint construction sidesteps the question
+        entirely — it never approximates the churn step by a continuous
+        process, which is why the widget in Step 2 stays exact across the whole κ
+        slider.
+      </p>
+    </div>
+  </details>
+</section>
+
+<!-- ===================== RECAP ===================== -->
+<section class="recap prose">
+  <h2>Putting it together</h2>
+  <p>
+    Read backwards, the chain is short. We wanted a cloud representing
+    \(q_t e^{\rho_t}\) at every noise level (Step 1). We already had a mover that
+    carries \(q_t\) to \(q_{t+1}\) correctly, because it is built from the exact
+    forward kernel and the probability-flow ODE (Step 2). A weight is a ratio
+    between what we want and what the sampler produces, so moving the cloud moves
+    both halves of that ratio and costs nothing; the weight is always just the
+    current tilt (Step 3). Which means when we push the cloud through \(M_i\),
+    the \(q\) part of the target takes care of itself and the weights only have to
+    fix the mismatched tilt factor — one subtraction (Step 4). That recipe is
+    indifferent to how the tilt is defined, and because the increments telescope,
+    the annealing schedule steers the effective sample size but never the
+    destination (Step 5). The Jacobian of the deterministic half never surfaces
+    because it is already accounted for inside "carries \(q_t\) to \(q_{t+1}\)"
+    (Step 6). The one real fragility is making sure that claim stays true, which
+    means giving the score network the time argument that matches the state you
+    hand it (Step 7). And if the weights are too uneven, you may move reward
+    information into the Gaussian churn proposal and pay an exact likelihood ratio
+    for it — a variance knob with a sweet spot, not a free lunch (Step 8).
+  </p>
+  <p>
+    Which is the kernel again: <strong>if the mover already handles the base
+    distribution, the weights only owe the difference in tilt.</strong> The
+    formidable-looking \(\Delta\log w_i=\rho_{t_{i+1}}(x_{i+1})-\rho_{t_i}(x_i)\)
+    is that sentence wearing formal clothes.
+  </p>
+  <h2 style="font-size:1.4rem;margin-top:38px">Where this shows up</h2>
+  <p>
+    This is the machinery behind reward-guided image and molecule generation:
+    sampling a diffusion model under a classifier, an aesthetic score, a docking
+    score, or a physical constraint, without retraining and without the bias that
+    naive gradient guidance introduces. It is also plain sequential Monte Carlo,
+    the same algorithm used for particle filters in tracking and state-space
+    inference — the diffusion sampler is simply an unusually good proposal
+    distribution to run it with.
+  </p>
+  <p style="font-size:0.86rem;color:var(--ink-soft);font-style:italic;margin-top:32px">
+    Every widget on this page runs the real thing: a two-component Gaussian
+    mixture with closed-form \(q_t\), analytic score, Heun probability-flow
+    integration, and a closed-form tilted target to check against. Nothing is
+    fitted or drawn to match.
+  </p>
+</section>
+
+</div>
+
+<script>
+/* ==========================================================================
+   THEME — read CSS variables once, refresh on theme change, notify widgets.
+   ========================================================================== */
+const THEME = {};
+const themeSubs = [];
+function refreshTheme() {
+  const css = getComputedStyle(document.documentElement);
+  ['ink','ink-soft','accent','accent-2','accent-3','line','axis','surface','surface-2','bg']
+    .forEach(k => THEME[k] = css.getPropertyValue('--' + k).trim());
+}
+refreshTheme();
+if (window.matchMedia) {
+  const mq = window.matchMedia('(prefers-color-scheme: dark)');
+  const onChange = () => { refreshTheme(); themeSubs.forEach(f => f()); };
+  mq.addEventListener ? mq.addEventListener('change', onChange) : mq.addListener(onChange);
+}
+function onTheme(fn) { themeSubs.push(fn); }
+
+/* ==========================================================================
+   CANVAS HELPERS
+   ========================================================================== */
+const RENDER_SCALE = Math.max((window.devicePixelRatio || 1) * 2.5, 3);
+function setupCanvas(canvas, cssW, cssH) {
+  canvas.style.width = cssW + 'px';
+  canvas.style.maxWidth = '100%';
+  canvas.style.height = cssH + 'px';
+  canvas.width  = Math.round(cssW * RENDER_SCALE);
+  canvas.height = Math.round(cssH * RENDER_SCALE);
+  const ctx = canvas.getContext('2d');
+  ctx.scale(RENDER_SCALE, RENDER_SCALE);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  canvas._cssW = cssW; canvas._cssH = cssH;
+  return ctx;
+}
+function hexA(hex, a) {
+  const h = hex.replace('#','');
+  const f = h.length === 3 ? h.split('').map(c=>c+c).join('') : h;
+  const n = parseInt(f, 16);
+  return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;
+}
+
+/* ==========================================================================
+   FK ENGINE — the toy diffusion model, exactly as validated.
+     data:      p0 = 0.35 N(-1.6, 0.35^2) + 0.65 N(1.4, 0.50^2)
+     schedule:  alpha(t) = cos(pi t / 2),  sigma(t) = sin(pi t / 2)
+     marginal:  q_t = sum_k w_k N(alpha*mu_k, alpha^2 sd_k^2 + sigma^2)
+     PF-ODE:    dx/dt = -(pi/2) tan(pi t/2) (x + score)
+     reward:    r(x) = -(x - C)^2 / (2 TAU^2),  beta_t = BMAX (1 - t)
+     target:    pi_t ∝ q_t e^{beta_t r}, itself a Gaussian mixture (closed form)
+   ========================================================================== */
+const FK = (function () {
+  const MW = [0.35, 0.65], MU = [-1.6, 1.4], MSD = [0.35, 0.50];
+  const C = -3.0, TAU = 0.7, BMAX = 2.0;
+  const TMAX = 0.96, TMIN = 0.02;
+
+  const alpha = t => Math.cos(Math.PI * t / 2);
+  const sigma = t => Math.sin(Math.PI * t / 2);
+
+  function comps(t) {
+    const a = alpha(t), s = sigma(t), out = [];
+    for (let k = 0; k < MW.length; k++)
+      out.push({ w: MW[k], m: a * MU[k], v: a * a * MSD[k] * MSD[k] + s * s });
+    return out;
+  }
+  const npdf = (x, m, v) => Math.exp(-(x - m) * (x - m) / (2 * v)) / Math.sqrt(2 * Math.PI * v);
+
+  function q(x, t) {
+    const cs = comps(t); let s = 0;
+    for (const c of cs) s += c.w * npdf(x, c.m, c.v);
+    return s;
+  }
+  function score(x, t) {
+    const cs = comps(t); let num = 0, den = 0;
+    for (const c of cs) { const p = c.w * npdf(x, c.m, c.v); den += p; num += p * (-(x - c.m) / c.v); }
+    return den > 1e-300 ? num / den : -x;
+  }
+  function vel(x, t) { return -(Math.PI / 2) * Math.tan(Math.PI * t / 2) * (x + score(x, t)); }
+
+  // Heun. tvel overrides the time used for the PREDICTOR score call only
+  // (the corrector's time t1 is always known) — that is exactly the Step-5 bug.
+  function heun(x, t0, t1, tvel, nsub) {
+    nsub = nsub || 1;
+    for (let i = 0; i < nsub; i++) {
+      const a = t0 + (t1 - t0) * i / nsub, b = t0 + (t1 - t0) * (i + 1) / nsub, h = b - a;
+      const v0 = vel(x, tvel === undefined ? a : (a + (tvel - t0)));
+      const xp = x + h * v0;
+      const v1 = vel(xp, b);
+      x = x + h * 0.5 * (v0 + v1);
+    }
+    return x;
+  }
+
+  const beta = t => BMAX * (1 - t);
+  const rew  = x => -((x - C) * (x - C)) / (2 * TAU * TAU);
+  const rho  = (x, t) => beta(t) * rew(x);
+
+  // Tweedie: E[x_0 | x_t] = (x + sigma^2 * score) / alpha  -- the denoised state
+  function denoise(x, t) { return (x + sigma(t) * sigma(t) * score(x, t)) / Math.max(alpha(t), 1e-9); }
+
+  // pi_t as an exact Gaussian mixture: N(a,v) * exp(-lam (x-C)^2/2) is Gaussian.
+  function piComps(t) { return piCompsBeta(t, beta(t)); }
+  function piCompsBeta(t, bt) {
+    const lam = bt / (TAU * TAU), cs = comps(t), out = [];
+    let Z = 0;
+    for (const c of cs) {
+      const p = 1 / c.v + lam;
+      const m = (c.m / c.v + lam * C) / p;
+      const K = c.m * c.m / c.v + lam * C * C - p * m * m;
+      const w = c.w * Math.sqrt(1 / (c.v * p)) * Math.exp(-K / 2);
+      out.push({ w: w, m: m, v: 1 / p }); Z += w;
+    }
+    for (const o of out) o.w /= Z;
+    return out;
+  }
+  function piPdf(x, t) {
+    const cs = piComps(t); let s = 0;
+    for (const c of cs) s += c.w * npdf(x, c.m, c.v);
+    return s;
+  }
+  function moments(cs) {
+    let m = 0, m2 = 0;
+    for (const c of cs) { m += c.w * c.m; m2 += c.w * (c.v + c.m * c.m); }
+    return { mean: m, sd: Math.sqrt(Math.max(0, m2 - m * m)) };
+  }
+
+  // seeded RNG so re-runs are reproducible
+  function rng(seed) {
+    let a = seed >>> 0;
+    const u = () => { a |= 0; a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+    let spare = null;
+    u.gauss = () => {
+      if (spare !== null) { const s = spare; spare = null; return s; }
+      let v1, v2, s2;
+      do { v1 = 2 * u() - 1; v2 = 2 * u() - 1; s2 = v1 * v1 + v2 * v2; } while (s2 >= 1 || s2 === 0);
+      const f = Math.sqrt(-2 * Math.log(s2) / s2);
+      spare = v2 * f; return v1 * f;
+    };
+    return u;
+  }
+  function samplePi(t, u) {                 // exact draw from the tilted target
+    const cs = piComps(t);
+    let a = u(), acc = 0, pick = cs[cs.length - 1];
+    for (const c of cs) { acc += c.w; if (a < acc) { pick = c; break; } }
+    return pick.m + Math.sqrt(pick.v) * u.gauss();
+  }
+  function sampleQ(t, u) {
+    const k = u() < MW[0] ? 0 : 1;
+    const x0 = MU[k] + MSD[k] * u.gauss();
+    return alpha(t) * x0 + sigma(t) * u.gauss();
+  }
+
+  function ess(logw) {
+    let mx = -Infinity;
+    for (const l of logw) if (l > mx) mx = l;
+    let s = 0, s2 = 0;
+    for (const l of logw) { const w = Math.exp(l - mx); s += w; s2 += w * w; }
+    return s * s / s2;
+  }
+  function normWeights(logw) {
+    let mx = -Infinity;
+    for (const l of logw) if (l > mx) mx = l;
+    const w = new Float64Array(logw.length); let s = 0;
+    for (let i = 0; i < logw.length; i++) { w[i] = Math.exp(logw[i] - mx); s += w[i]; }
+    for (let i = 0; i < w.length; i++) w[i] /= s;
+    return w;
+  }
+  function systematicResample(xs, w, u) {
+    const N = xs.length, out = new Float64Array(N);
+    const off = u() / N; let c = w[0], j = 0;
+    for (let n = 0; n < N; n++) {
+      const tgt = off + n / N;
+      while (c < tgt && j < N - 1) { j++; c += w[j]; }
+      out[n] = xs[j];
+    }
+    return out;
+  }
+  function weightedStats(xs, w) {
+    let m = 0; for (let i = 0; i < xs.length; i++) m += w[i] * xs[i];
+    let v = 0; for (let i = 0; i < xs.length; i++) v += w[i] * (xs[i] - m) * (xs[i] - m);
+    return { mean: m, sd: Math.sqrt(Math.max(0, v)) };
+  }
+  function hist(xs, w, lo, hi, nb) {
+    const h = new Float64Array(nb), bw = (hi - lo) / nb;
+    for (let i = 0; i < xs.length; i++) {
+      const b = Math.floor((xs[i] - lo) / bw);
+      if (b >= 0 && b < nb) h[b] += (w ? w[i] : 1 / xs.length);
+    }
+    for (let b = 0; b < nb; b++) h[b] /= bw;   // -> density
+    return h;
+  }
+  function schedule(steps) {
+    const ts = [];
+    for (let i = 0; i <= steps; i++) ts.push(TMAX + (TMIN - TMAX) * i / steps);
+    return ts;
+  }
+
+  return { MW, MU, MSD, C, TAU, BMAX, TMAX, TMIN, alpha, sigma, comps, npdf, q, score,
+           vel, heun, beta, rew, rho, piComps, piPdf, moments, rng, sampleQ, ess,
+           normWeights, systematicResample, weightedStats, hist, schedule, samplePi,
+           denoise, piCompsBeta };
+})();
+
+/* Shared drawing bits ---------------------------------------------------- */
+function axisX(ctx, view, y0, lo, hi, step) {
+  ctx.strokeStyle = THEME.axis; ctx.lineWidth = 1; ctx.beginPath();
+  ctx.moveTo(view.x(lo), y0); ctx.lineTo(view.x(hi), y0); ctx.stroke();
+  ctx.fillStyle = THEME['ink-soft'];
+  ctx.font = '11px "Space Grotesk", sans-serif'; ctx.textAlign = 'center';
+  for (let v = Math.ceil(lo / step) * step; v <= hi + 1e-9; v += step) {
+    const px = view.x(v);
+    ctx.beginPath(); ctx.moveTo(px, y0); ctx.lineTo(px, y0 + 4); ctx.stroke();
+    ctx.fillText(v.toFixed(0), px, y0 + 16);
+  }
+}
+function essBar(ctx, x, y, w, h, frac, label) {
+  ctx.fillStyle = hexA(THEME.axis, 0.25);
+  ctx.fillRect(x, y, w, h);
+  const good = frac > 0.4 ? THEME['accent-2'] : (frac > 0.15 ? THEME.accent : '#c62828');
+  ctx.fillStyle = good;
+  ctx.fillRect(x, y, Math.max(1.5, w * Math.min(1, frac)), h);
+  ctx.fillStyle = THEME['ink-soft'];
+  ctx.font = '11px "Space Grotesk", sans-serif'; ctx.textAlign = 'left';
+  ctx.fillText(label, x, y - 6);
+}
+function curve(ctx, view, f, lo, hi, color, width, dash) {
+  ctx.save();
+  ctx.strokeStyle = color; ctx.lineWidth = width || 2.2;
+  if (dash) ctx.setLineDash(dash);
+  ctx.beginPath();
+  const n = 260;
+  for (let i = 0; i <= n; i++) {
+    const x = lo + (hi - lo) * i / n;
+    const px = view.x(x), py = view.y(f(x));
+    i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+  }
+  ctx.stroke(); ctx.restore();
+}
+function fillHist(ctx, view, h, lo, hi, color, alpha) {
+  const nb = h.length, bw = (hi - lo) / nb;
+  ctx.fillStyle = hexA(color, alpha === undefined ? 0.32 : alpha);
+  for (let b = 0; b < nb; b++) {
+    if (h[b] <= 0) continue;
+    const x0 = view.x(lo + b * bw), x1 = view.x(lo + (b + 1) * bw);
+    const y1 = view.y(0), y0 = view.y(h[b]);
+    ctx.fillRect(x0, y0, Math.max(0.6, x1 - x0 - 0.4), y1 - y0);
+  }
+}
+function histLine(ctx, view, h, lo, hi, color, width, dash) {
+  const nb = h.length, bw = (hi - lo) / nb;
+  ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = width || 2.2;
+  if (dash) ctx.setLineDash(dash);
+  ctx.beginPath();
+  for (let b = 0; b < nb; b++) {
+    const xc = lo + (b + 0.5) * bw;
+    b === 0 ? ctx.moveTo(view.x(xc), view.y(h[b])) : ctx.lineTo(view.x(xc), view.y(h[b]));
+  }
+  ctx.stroke(); ctx.restore();
+}
+function legend(ctx, x, y, items) {
+  ctx.font = '11px "Space Grotesk", sans-serif'; ctx.textAlign = 'left';
+  let cx = x;
+  for (const it of items) {
+    ctx.fillStyle = it.c;
+    if (it.dash) { ctx.strokeStyle = it.c; ctx.lineWidth = 2.2; ctx.save(); ctx.setLineDash([4,3]);
+      ctx.beginPath(); ctx.moveTo(cx, y); ctx.lineTo(cx + 15, y); ctx.stroke(); ctx.restore(); }
+    else ctx.fillRect(cx, y - 4, 15, 8);
+    ctx.fillStyle = THEME['ink-soft'];
+    ctx.fillText(it.t, cx + 20, y + 4);
+    cx += 20 + ctx.measureText(it.t).width + 20;
+  }
+}
+
+/* ==========================================================================
+   WIDGET 1 — tilting and ESS collapse
+   ========================================================================== */
+(function () {
+  const canvas = document.getElementById('w1-canvas');
+  const ctx = setupCanvas(canvas, 780, 400);
+  const LO = -4.6, HI = 3.6, N = 500;
+  let YMAX = 0.62;                       // rescaled per render: the tilted target
+  const view = { w: 780, h: 400,         // gets very tall at large β
+    x: mx => 46 + (mx - LO) / (HI - LO) * (780 - 70),
+    y: my => 250 - my / YMAX * 218 };
+
+  const bSl = document.getElementById('w1-b'), bV = document.getElementById('w1-bV');
+  const ctrls = document.getElementById('w1-ctrls');
+  const readout = document.getElementById('w1-readout');
+  const backBtn = document.getElementById('w1-back'), nextBtn = document.getElementById('w1-next');
+  const capEl = document.getElementById('w1-caption');
+  const resBtn = document.getElementById('w1-res'), newBtn = document.getElementById('w1-new');
+
+  let seed = 11, xs = [], resampled = false;
+  function draw_() { const u = FK.rng(seed); xs = []; for (let i = 0; i < N; i++) xs.push(FK.sampleQ(0, u)); resampled = false; }
+  draw_();
+
+  const stages = [
+    { next: 'Add the reward →',  cap: 'What the model makes on its own: two modes, most mass on the right.' },
+    { next: 'Show the target →', cap: 'The reward (orange) peaks at x = -3 — out past where the model puts almost anything.' },
+    { next: 'Weight the particles →', cap: 'Multiply q by e^{βr} and renormalize: that violet curve is what we want to sample.' },
+    { next: null, cap: 'Same 500 particles, now sized by weight. Almost all of them have gone to nothing.' }
+  ];
+  let stage = 0;
+
+  function weights(b) {
+    const lw = xs.map(x => b * FK.rew(x));
+    return { w: FK.normWeights(lw), ess: FK.ess(lw) };
+  }
+
+  function render() {
+    const b = parseFloat(bSl.value);
+    ctx.clearRect(0, 0, 780, 400);
+    const cs = FK.comps(0);
+    const qf = x => { let s = 0; for (const c of cs) s += c.w * FK.npdf(x, c.m, c.v); return s; };
+
+    // Tilted target first — it sets the vertical scale for the whole panel.
+    const lam = b / (FK.TAU * FK.TAU); const tilt = []; let Z = 0;
+    for (const c of cs) {
+      const p = 1 / c.v + lam, m = (c.m / c.v + lam * FK.C) / p;
+      const K = c.m * c.m / c.v + lam * FK.C * FK.C - p * m * m;
+      const wt = c.w * Math.sqrt(1 / (c.v * p)) * Math.exp(-K / 2);
+      tilt.push({ w: wt, m: m, v: 1 / p }); Z += wt;
+    }
+    for (const o of tilt) o.w /= Z;
+    const tiltf = x => { let s = 0; for (const c of tilt) s += c.w * FK.npdf(x, c.m, c.v); return s; };
+    let peak = 0.55;
+    if (stage >= 2) for (let i = 0; i <= 300; i++) peak = Math.max(peak, tiltf(LO + (HI - LO) * i / 300));
+    YMAX = 1.12 * peak;
+
+    axisX(ctx, view, 250, LO, HI, 1);
+
+    // stage 0: base density
+    ctx.fillStyle = hexA(THEME['accent-2'], 0.16);
+    ctx.beginPath(); ctx.moveTo(view.x(LO), view.y(0));
+    for (let i = 0; i <= 260; i++) { const x = LO + (HI - LO) * i / 260; ctx.lineTo(view.x(x), view.y(qf(x))); }
+    ctx.lineTo(view.x(HI), view.y(0)); ctx.closePath(); ctx.fill();
+    curve(ctx, view, qf, LO, HI, THEME['accent-2'], 2.4);
+
+    // stage 1: reward (drawn on its own scale, filling the panel height)
+    if (stage >= 1) {
+      const rmin = FK.rew(HI), top = 0.94 * YMAX;
+      curve(ctx, view, x => top * (FK.rew(x) - rmin) / (0 - rmin), LO, HI, THEME.accent, 2.2, [5, 4]);
+      ctx.fillStyle = THEME.accent; ctx.font = '600 12px "Space Grotesk", sans-serif'; ctx.textAlign = 'left';
+      ctx.fillText('reward r(x)', view.x(-4.5), view.y(top) + 4);
+    }
+    // stage 2: tilted target
+    const piM = FK.moments(tilt);
+    if (stage >= 2) curve(ctx, view, tiltf, LO, HI, THEME['accent-3'], 2.6);
+
+    // particles
+    const { w, ess } = weights(stage >= 3 ? b : 0);
+    const wmax = Math.max.apply(null, Array.from(w));
+    const yRug = 288;
+    for (let i = 0; i < N; i++) {
+      const rel = stage >= 3 ? w[i] / wmax : 0.25;
+      const rad = stage >= 3 ? 1.2 + 7 * Math.sqrt(rel) : 2.2;
+      ctx.fillStyle = hexA(THEME['accent-3'], stage >= 3 ? (0.12 + 0.75 * Math.sqrt(rel)) : 0.30);
+      ctx.beginPath(); ctx.arc(view.x(xs[i]), yRug, rad, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.fillStyle = THEME['ink-soft']; ctx.font = '11px "Space Grotesk", sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText(stage >= 3 ? '500 particles, radius ∝ √weight' : '500 particles drawn from the model', 46, 320);
+
+    if (stage >= 3) {
+      essBar(ctx, 46, 344, 400, 16, ess / N, `effective sample size  ${ess.toFixed(0)} / ${N}   (${(100*ess/N).toFixed(1)}%)`);
+      const uniq = new Set(xs.map(v => v.toFixed(6))).size;
+      ctx.fillStyle = THEME['ink-soft']; ctx.font = '11px "Space Grotesk", sans-serif'; ctx.textAlign = 'left';
+      ctx.fillText(`unique particles: ${uniq} / ${N}`, 466, 357);
+    }
+    legend(ctx, 46, 22, stage >= 2
+      ? [{c:THEME['accent-2'],t:'model  q(x)'},{c:THEME.accent,t:'reward  r(x)',dash:1},{c:THEME['accent-3'],t:'target  π ∝ q e^{βr}'}]
+      : (stage >= 1 ? [{c:THEME['accent-2'],t:'model  q(x)'},{c:THEME.accent,t:'reward  r(x)',dash:1}]
+                    : [{c:THEME['accent-2'],t:'model  q(x)'}]));
+
+    // readout
+    if (stage >= 3) {
+      const st = FK.weightedStats(xs, w);
+      readout.innerHTML = `β = <b>${b.toFixed(2)}</b> &nbsp;·&nbsp; weighted mean = <b>${st.mean.toFixed(3)}</b>`
+        + ` &nbsp;(exact target mean <b>${piM.mean.toFixed(3)}</b>)`
+        + ` &nbsp;·&nbsp; ESS = <b>${(100*ess/N).toFixed(1)}%</b>`
+        + (resampled ? ' &nbsp;·&nbsp; <b>resampled</b> — equal weights, but duplicates' : '');
+    } else if (stage >= 2) {
+      readout.innerHTML = `β = <b>${b.toFixed(2)}</b> &nbsp;·&nbsp; exact target mean = <b>${piM.mean.toFixed(3)}</b>`
+        + ` &nbsp;(the model's own mean is <b>${FK.moments(cs).mean.toFixed(3)}</b>)`;
+    } else readout.textContent = '';
+
+    capEl.textContent = stages[stage].cap;
+    backBtn.disabled = stage === 0;
+    ctrls.style.display = stage >= 2 ? 'flex' : 'none';
+    resBtn.style.display = stage >= 3 ? '' : 'none';
+    newBtn.style.display = stage >= 3 ? '' : 'none';
+    if (stages[stage].next) { nextBtn.style.display = ''; nextBtn.textContent = stages[stage].next; }
+    else nextBtn.style.display = 'none';
+    bV.textContent = b.toFixed(2);
+  }
+  nextBtn.onclick = () => { if (stage < stages.length - 1) { stage++; render(); } };
+  backBtn.onclick = () => { if (stage > 0) { stage--; render(); } };
+  bSl.oninput = render;
+  resBtn.onclick = () => {
+    const b = parseFloat(bSl.value);
+    const { w } = weights(b);
+    const u = FK.rng(seed + 900);
+    xs = Array.from(FK.systematicResample(Float64Array.from(xs), w, u));
+    resampled = true; render();
+  };
+  newBtn.onclick = () => { seed = (seed * 7 + 13) % 99991; draw_(); render(); };
+  onTheme(render);
+  render();
+})();
+
+/* ==========================================================================
+   WIDGET 2 — one churn step, then the whole schedule
+   ========================================================================== */
+(function () {
+  const canvas = document.getElementById('w2-canvas');
+  const ctx = setupCanvas(canvas, 780, 400);
+  const LO = -5.0, HI = 4.2, N = 3000, NB = 62;
+  const view = { w: 780, h: 400,
+    x: mx => 46 + (mx - LO) / (HI - LO) * (780 - 70),
+    y: my => 300 - my / 0.62 * 262 };
+
+  const kSl = document.getElementById('w2-k'), kV = document.getElementById('w2-kV');
+  const runBtn = document.getElementById('w2-run');
+  const readout = document.getElementById('w2-readout');
+  const backBtn = document.getElementById('w2-back'), nextBtn = document.getElementById('w2-next');
+  const capEl = document.getElementById('w2-caption');
+
+  const T0 = 0.62;                       // the demo step
+  let stage = 0, anim = null, animT = null, animCloud = null, animStep = 0;
+
+  const stages = [
+    { next: 'Reheat: add noise →', cap: 'A cloud sitting at noise level t = 0.62. The curve is the closed-form q_t; the bars are the actual particles.' },
+    { next: 'Flow down the ODE →', cap: 'The reheat added noise — the cloud is wider now, and it lands exactly on q at the higher level t̂.' },
+    { next: 'Now run all 40 steps →', cap: 'The PF-ODE transported it down. Back below where we started, and again exactly on q.' },
+    { next: null, cap: 'Press Run: 40 churn steps in a row. The cloud never leaves q_t.' }
+  ];
+
+  function stepTimes() {
+    const k = parseFloat(kSl.value);
+    const ts = FK.schedule(40);
+    // find the grid interval containing T0
+    let i = 0; while (i < 39 && ts[i + 1] > T0) i++;
+    const t0 = ts[i], t1 = ts[i + 1];
+    const th = Math.min(t0 + k * (t0 - t1), 0.995);
+    return { t0, t1, th, k };
+  }
+
+  function makeCloud(t) {
+    const u = FK.rng(4242), out = new Float64Array(N);
+    for (let i = 0; i < N; i++) out[i] = FK.sampleQ(t, u);
+    return out;
+  }
+  function reheat(xs, t, th, u) {
+    const r = FK.alpha(th) / FK.alpha(t), V = Math.max(0, 1 - r * r), sd = Math.sqrt(V);
+    const out = new Float64Array(xs.length);
+    for (let i = 0; i < xs.length; i++) out[i] = r * xs[i] + sd * u.gauss();
+    return out;
+  }
+  function flow(xs, ta, tb) {
+    const out = new Float64Array(xs.length);
+    for (let i = 0; i < xs.length; i++) out[i] = FK.heun(xs[i], ta, tb, undefined, 2);
+    return out;
+  }
+
+  function drawFrame(cloud, t, label, subtitle) {
+    ctx.clearRect(0, 0, 780, 400);
+    axisX(ctx, view, 300, LO, HI, 1);
+    const h = FK.hist(cloud, null, LO, HI, NB);
+    fillHist(ctx, view, h, LO, HI, THEME['accent-3'], 0.30);
+    curve(ctx, view, x => FK.q(x, t), LO, HI, THEME['accent-2'], 2.6);
+    legend(ctx, 46, 22, [{c:THEME['accent-3'],t:'particle cloud'},{c:THEME['accent-2'],t:'closed-form q_t'}]);
+
+    ctx.fillStyle = THEME.ink; ctx.font = '600 15px "Space Grotesk", sans-serif'; ctx.textAlign = 'right';
+    ctx.fillText(label, 740, 44);
+    if (subtitle) { ctx.fillStyle = THEME['ink-soft']; ctx.font = '12px "Space Grotesk", sans-serif';
+      ctx.fillText(subtitle, 740, 63); }
+
+    // noise-level ruler
+    const rx0 = 500, rx1 = 740, ry = 350;
+    ctx.strokeStyle = THEME.axis; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(rx0, ry); ctx.lineTo(rx1, ry); ctx.stroke();
+    ctx.fillStyle = THEME['ink-soft']; ctx.font = '10px "Space Grotesk", sans-serif';
+    ctx.textAlign = 'left';  ctx.fillText('t = 0  (data)', rx0 - 2, ry + 15);
+    ctx.textAlign = 'right'; ctx.fillText('t = 1  (noise)', rx1 + 2, ry + 15);
+    ctx.fillStyle = THEME.accent;
+    ctx.beginPath(); ctx.arc(rx0 + (rx1 - rx0) * t, ry, 5, 0, Math.PI * 2); ctx.fill();
+
+    // numeric agreement
+    let m = 0; for (let i = 0; i < cloud.length; i++) m += cloud[i]; m /= cloud.length;
+    let v = 0; for (let i = 0; i < cloud.length; i++) v += (cloud[i] - m) * (cloud[i] - m); v /= cloud.length;
+    const an = FK.moments(FK.comps(t));
+    readout.innerHTML = `at t = <b>${t.toFixed(3)}</b> &nbsp;·&nbsp; cloud mean <b>${m.toFixed(3)}</b> sd <b>${Math.sqrt(v).toFixed(3)}</b>`
+      + ` &nbsp;vs&nbsp; exact q_t mean <b>${an.mean.toFixed(3)}</b> sd <b>${an.sd.toFixed(3)}</b>`;
+  }
+
+  function render() {
+    kV.textContent = parseFloat(kSl.value).toFixed(2);
+    if (anim) { cancelAnimationFrame(anim); anim = null; runBtn.textContent = '▶ Run all 40 steps'; }
+    const { t0, t1, th, k } = stepTimes();
+    const u = FK.rng(777);
+    let cloud = makeCloud(t0), t = t0, lab = `x_i  at  t_i = ${t0.toFixed(3)}`, sub = null;
+    if (stage >= 1) { cloud = reheat(cloud, t0, th, u); t = th;
+      lab = `x̂_i  at  t̂_i = ${th.toFixed(3)}`; sub = `reheated by κ = ${k.toFixed(2)}`; }
+    if (stage >= 2) { cloud = flow(cloud, th, t1); t = t1;
+      lab = `x_{i+1}  at  t_{i+1} = ${t1.toFixed(3)}`; sub = 'after the PF-ODE'; }
+    if (stage >= 3) { animCloud = makeCloud(FK.TMAX); animStep = 0; animT = FK.TMAX;
+      drawFrame(animCloud, FK.TMAX, `t = ${FK.TMAX.toFixed(3)}`, 'start: pure noise — press Run'); }
+    else drawFrame(cloud, t, lab, sub);
+
+    capEl.textContent = stages[stage].cap;
+    backBtn.disabled = stage === 0;
+    runBtn.style.display = stage >= 3 ? '' : 'none';
+    if (stages[stage].next) { nextBtn.style.display = ''; nextBtn.textContent = stages[stage].next; }
+    else nextBtn.style.display = 'none';
+  }
+
+  function runAll() {
+    if (anim) { cancelAnimationFrame(anim); anim = null; runBtn.textContent = '▶ Run all 40 steps'; return; }
+    const k = parseFloat(kSl.value), ts = FK.schedule(40), u = FK.rng(31337);
+    animCloud = makeCloud(FK.TMAX); animStep = 0;
+    runBtn.textContent = '■ Stop';
+    function frame() {
+      if (animStep >= 40) { anim = null; runBtn.textContent = '▶ Run all 40 steps';
+        drawFrame(animCloud, ts[40], `t = ${ts[40].toFixed(3)}`, 'done — 40 churn steps'); return; }
+      const t0 = ts[animStep], t1 = ts[animStep + 1];
+      const th = Math.min(t0 + k * (t0 - t1), 0.995);
+      animCloud = flow(reheat(animCloud, t0, th, u), th, t1);
+      animStep++;
+      drawFrame(animCloud, t1, `t = ${t1.toFixed(3)}`, `step ${animStep} / 40   (κ = ${k.toFixed(2)})`);
+      anim = requestAnimationFrame(frame);
+    }
+    anim = requestAnimationFrame(frame);
+  }
+
+  nextBtn.onclick = () => { if (stage < stages.length - 1) { stage++; render(); } };
+  backBtn.onclick = () => { if (stage > 0) { stage--; render(); } };
+  kSl.oninput = render;
+  runBtn.onclick = runAll;
+  onTheme(render);
+  render();
+})();
+
+/* ==========================================================================
+   WIDGET 3 — the endpoint correction, on and off
+   ========================================================================== */
+(function () {
+  const canvas = document.getElementById('w3-canvas');
+  const ctx = setupCanvas(canvas, 780, 420);
+  const LO = -5.0, HI = 4.2, N = 2500, NB = 60, STEPS = 40, KAPPA = 1.0;
+  const view = { w: 780, h: 420,
+    x: mx => 46 + (mx - LO) / (HI - LO) * (780 - 70),
+    y: my => 300 - my / 1.45 * 262 };
+
+  const corrBtn = document.getElementById('w3-corr');
+  const resampChk = document.getElementById('w3-resamp');
+  const runBtn = document.getElementById('w3-run'), resetBtn = document.getElementById('w3-reset');
+  const readout = document.getElementById('w3-readout');
+
+  let correct = true, anim = null, S = null;
+
+  function init() {
+    const u = FK.rng(2024), xs = new Float64Array(N), lw = new Float64Array(N);
+    for (let i = 0; i < N; i++) { xs[i] = FK.sampleQ(FK.TMAX, u); lw[i] = FK.rho(xs[i], FK.TMAX); }
+    return { u, xs, lw, ts: FK.schedule(STEPS), i: 0, t: FK.TMAX, nres: 0, essMin: 1 };
+  }
+  function step(S) {
+    const t0 = S.ts[S.i], t1 = S.ts[S.i + 1];
+    const th = Math.min(t0 + KAPPA * (t0 - t1), 0.995);
+    const r = FK.alpha(th) / FK.alpha(t0), sd = Math.sqrt(Math.max(0, 1 - r * r));
+    for (let n = 0; n < N; n++) {
+      const x = S.xs[n], r0 = FK.rho(x, t0);
+      const xh = r * x + sd * S.u.gauss();
+      const xn = FK.heun(xh, th, t1, undefined, 1);
+      S.xs[n] = xn;
+      if (correct) S.lw[n] += FK.rho(xn, t1) - r0;
+    }
+    S.i++; S.t = t1;
+    const e = FK.ess(S.lw) / N;
+    S.essMin = Math.min(S.essMin, e);
+    if (resampChk.checked && e < 0.5) {
+      const w = FK.normWeights(S.lw);
+      S.xs = FK.systematicResample(S.xs, w, S.u);
+      S.lw = new Float64Array(N); S.nres++;
+    }
+  }
+  function draw() {
+    ctx.clearRect(0, 0, 780, 420);
+    axisX(ctx, view, 300, LO, HI, 1);
+    const t = S.t;
+    const w = FK.normWeights(S.lw);
+    const h = FK.hist(S.xs, w, LO, HI, NB);
+    fillHist(ctx, view, h, LO, HI, THEME.accent, 0.34);
+    curve(ctx, view, x => FK.q(x, t), LO, HI, THEME['accent-2'], 2.0, [5, 4]);
+    curve(ctx, view, x => FK.piPdf(x, t), LO, HI, THEME['accent-3'], 2.8);
+    legend(ctx, 46, 22, [
+      { c: THEME.accent,     t: 'weighted particle cloud' },
+      { c: THEME['accent-3'],t: 'exact target  π_t ∝ q_t e^{ρ_t}' },
+      { c: THEME['accent-2'],t: 'untilted  q_t', dash: 1 }]);
+
+    const e = FK.ess(S.lw) / N;
+    essBar(ctx, 46, 348, 340, 16, e, `effective sample size  ${(100*e).toFixed(1)}%`);
+
+    const st = FK.weightedStats(S.xs, w);
+    const tgt = FK.moments(FK.piComps(t));
+    const err = Math.abs(st.mean - tgt.mean);
+    ctx.fillStyle = THEME['ink-soft']; ctx.font = '11px "Space Grotesk", sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText(`step ${S.i} / ${STEPS}      t = ${t.toFixed(3)}`, 420, 342);
+    ctx.font = '600 13px "Space Grotesk", sans-serif';
+    ctx.fillStyle = err < 0.15 ? THEME['accent-2'] : '#c62828';
+    ctx.fillText(`weighted mean ${st.mean >= 0 ? '+' : ''}${st.mean.toFixed(3)}   vs   target ${tgt.mean.toFixed(3)}`, 420, 362);
+    ctx.fillStyle = THEME['ink-soft']; ctx.font = '11px "Space Grotesk", sans-serif';
+    ctx.fillText(correct ? 'Δlog w = ρ(new) − ρ(old)   applied each step'
+                         : 'weights carried unchanged — no retargeting', 420, 380);
+
+    readout.innerHTML = `t = <b>${t.toFixed(3)}</b> &nbsp;·&nbsp; weighted mean <b>${st.mean.toFixed(3)}</b>`
+      + ` / target <b>${tgt.mean.toFixed(3)}</b> &nbsp;·&nbsp; sd <b>${st.sd.toFixed(3)}</b> / <b>${tgt.sd.toFixed(3)}</b>`
+      + ` &nbsp;·&nbsp; ESS <b>${(100*e).toFixed(1)}%</b> (min <b>${(100*S.essMin).toFixed(1)}%</b>)`
+      + ` &nbsp;·&nbsp; resamples <b>${S.nres}</b>`;
+  }
+  function run() {
+    if (anim) { cancelAnimationFrame(anim); anim = null; runBtn.textContent = '▶ Run'; return; }
+    if (S.i >= STEPS) S = init();
+    runBtn.textContent = '■ Stop';
+    function frame() {
+      if (S.i >= STEPS) { anim = null; runBtn.textContent = '▶ Run'; draw(); return; }
+      step(S); draw();
+      anim = requestAnimationFrame(frame);
+    }
+    anim = requestAnimationFrame(frame);
+  }
+  function reset() {
+    if (anim) { cancelAnimationFrame(anim); anim = null; runBtn.textContent = '▶ Run'; }
+    S = init(); draw();
+  }
+  corrBtn.onclick = () => {
+    correct = !correct;
+    corrBtn.textContent = 'Correction: ' + (correct ? 'ON' : 'OFF');
+    corrBtn.classList.toggle('on', correct);
+    reset();
+  };
+  runBtn.onclick = run;
+  resetBtn.onclick = reset;
+  resampChk.onchange = reset;
+  onTheme(() => draw());
+  S = init(); draw();
+})();
+
+/* ==========================================================================
+   WIDGET 4 — the Jacobian, seen and then cancelled
+   ========================================================================== */
+(function () {
+  const canvas = document.getElementById('w4-canvas');
+  const ctx = setupCanvas(canvas, 780, 440);
+  const LO = -4.6, HI = 3.8, TH = 0.55;
+  const vTop = { x: mx => 46 + (mx - LO) / (HI - LO) * (780 - 70), y: my => 150 - my / 0.50 * 108 };
+  const vBot = { x: mx => 46 + (mx - LO) / (HI - LO) * (780 - 70), y: my => 410 - my / 0.62 * 150 };
+
+  const tSl = document.getElementById('w4-t'), tV = document.getElementById('w4-tV');
+  const readout = document.getElementById('w4-readout');
+  const backBtn = document.getElementById('w4-back'), nextBtn = document.getElementById('w4-next');
+  const capEl = document.getElementById('w4-caption');
+  let stage = 0;
+
+  const NT = 17;
+  const tracers = [];
+  for (let i = 0; i < NT; i++) tracers.push(LO + 0.35 + (HI - LO - 0.9) * i / (NT - 1));
+
+  const nsub = t1 => 24 + Math.round(80 * (TH - t1));   // keep solver error below the effect shown
+  const PHI = (x, t1) => FK.heun(x, TH, t1, undefined, nsub(t1));
+  function jac(x, t1) { const e = 2e-3; return (PHI(x + e, t1) - PHI(x - e, t1)) / (2 * e); }
+
+  function render() {
+    const t1 = parseFloat(tSl.value);
+    tV.textContent = t1.toFixed(2);
+    ctx.clearRect(0, 0, 780, 440);
+
+    // ---- top panel: q at t-hat, tracers ----
+    ctx.fillStyle = THEME['ink-soft']; ctx.font = '600 12px "Space Grotesk", sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText(`before:  q at  t̂ = ${TH.toFixed(2)}`, 46, 26);
+    curve(ctx, vTop, x => FK.q(x, TH), LO, HI, THEME['accent-2'], 2.2);
+    ctx.strokeStyle = THEME.axis; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(vTop.x(LO), 150); ctx.lineTo(vTop.x(HI), 150); ctx.stroke();
+    for (const x of tracers) {
+      ctx.fillStyle = THEME.accent;
+      ctx.beginPath(); ctx.arc(vTop.x(x), 150, 3.6, 0, Math.PI * 2); ctx.fill();
+    }
+
+    if (stage === 0) {
+      ctx.fillStyle = THEME['ink-soft']; ctx.font = '12px "Space Grotesk", sans-serif'; ctx.textAlign = 'center';
+      ctx.fillText('press Next to flow these tracers down the probability-flow ODE', 390, 300);
+    }
+
+    if (stage >= 1) {
+      const ys = tracers.map(x => PHI(x, t1));
+      const Js = tracers.map(x => jac(x, t1));
+
+      // connecting lines showing the transport
+      ctx.strokeStyle = hexA(THEME.accent, 0.30); ctx.lineWidth = 1.2;
+      for (let i = 0; i < NT; i++) {
+        ctx.beginPath(); ctx.moveTo(vTop.x(tracers[i]), 156); ctx.lineTo(vBot.x(ys[i]), 254); ctx.stroke();
+      }
+      // Jacobian bars between neighbouring tracers
+      for (let i = 0; i < NT - 1; i++) {
+        const gap0 = tracers[i + 1] - tracers[i], gap1 = ys[i + 1] - ys[i];
+        const ratio = gap1 / gap0;
+        const cx = (vBot.x(ys[i]) + vBot.x(ys[i + 1])) / 2;
+        const hgt = Math.min(38, Math.max(2, ratio * 26));
+        ctx.fillStyle = hexA(ratio < 1 ? THEME['accent-3'] : THEME['accent-2'], 0.5);
+        ctx.fillRect(cx - 5, 214 - hgt, 10, hgt);
+      }
+      ctx.fillStyle = THEME['ink-soft']; ctx.font = '11px "Space Grotesk", sans-serif'; ctx.textAlign = 'left';
+      ctx.fillText('bar height = local stretch  |dΦ/dx|   (violet: squeezed, teal: stretched)', 46, 232);
+
+      // ---- bottom panel ----
+      ctx.fillStyle = THEME['ink-soft']; ctx.font = '600 12px "Space Grotesk", sans-serif';
+      ctx.fillText(`after:  the tracers, now at  t = ${t1.toFixed(2)}`, 46, 272);
+      ctx.strokeStyle = THEME.axis; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(vBot.x(LO), 410); ctx.lineTo(vBot.x(HI), 410); ctx.stroke();
+      for (const y of ys) {
+        ctx.fillStyle = THEME.accent;
+        ctx.beginPath(); ctx.arc(vBot.x(y), 410, 3.6, 0, Math.PI * 2); ctx.fill();
+      }
+      if (stage >= 2) {
+        // transported density q_that(Phi^-1 y)/|Phi'| evaluated AT the tracer images
+        curve(ctx, vBot, x => FK.q(x, t1), LO, HI, THEME['accent-2'], 3.4);
+        ctx.fillStyle = THEME.accent;
+        for (let i = 0; i < NT; i++) {
+          const dens = FK.q(tracers[i], TH) / Math.abs(Js[i]);
+          ctx.beginPath(); ctx.arc(vBot.x(ys[i]), vBot.y(dens), 4.2, 0, Math.PI * 2); ctx.fill();
+        }
+        legend(ctx, 400, 272, [{ c: THEME['accent-2'], t: 'analytic q_t' }, { c: THEME.accent, t: 'q_t̂(x)/|dΦ/dx|' }]);
+      }
+
+      // numbers
+      let worst = 0, jmin = Infinity, jmax = -Infinity;
+      for (let i = 0; i < NT; i++) {
+        const dens = FK.q(tracers[i], TH) / Math.abs(Js[i]);
+        const ref = FK.q(ys[i], t1);
+        if (ref > 1e-4) worst = Math.max(worst, Math.abs(dens - ref) / ref);
+        jmin = Math.min(jmin, Js[i]); jmax = Math.max(jmax, Js[i]);
+      }
+      readout.innerHTML = `stretch factor |dΦ/dx| ranges from <b>${jmin.toFixed(3)}</b> to <b>${jmax.toFixed(3)}</b>`
+        + ` across the tracers &nbsp;·&nbsp; largest mismatch between <b>q<sub>t̂</sub>(x)/|dΦ/dx|</b> and <b>q<sub>t</sub>(Φ(x))</b>:`
+        + ` <b>${(100 * worst).toFixed(3)}%</b>`;
+    } else readout.textContent = '';
+
+    const caps = [
+      'Tracer particles evenly spaced under q at the reheated level t̂.',
+      'Flowed down. The spacing is no longer even — the flow squeezes some regions and stretches others. That change in spacing IS the Jacobian.',
+      'And yet: q_t̂(x) divided by that stretch lands exactly on the analytic q_t. The Jacobian is already inside "Φ carries q_t̂ to q_t" — which is why it never has to appear in the weight.'
+    ];
+    capEl.textContent = caps[stage];
+    backBtn.disabled = stage === 0;
+    const nx = ['Flow them down →', 'Check the density →', null][stage];
+    if (nx) { nextBtn.style.display = ''; nextBtn.textContent = nx; } else nextBtn.style.display = 'none';
+  }
+  nextBtn.onclick = () => { if (stage < 2) { stage++; render(); } };
+  backBtn.onclick = () => { if (stage > 0) { stage--; render(); } };
+  tSl.oninput = render;
+  onTheme(render);
+  render();
+})();
+
+/* ==========================================================================
+   WIDGET 5 — score at the right time
+   ========================================================================== */
+(function () {
+  const canvas = document.getElementById('w5-canvas');
+  const ctx = setupCanvas(canvas, 780, 440);
+  const LO = -4.6, HI = 3.8, N = 1800, NB = 58, STEPS = 15;
+  const vTop = { x: mx => 46 + (mx - LO) / (HI - LO) * (780 - 70), y: my => 128 - my / 6.0 * 96 };
+  const vBot = { x: mx => 46 + (mx - LO) / (HI - LO) * (780 - 70), y: my => 410 - my / 0.62 * 190 };
+
+  const kSl = document.getElementById('w5-k'), kV = document.getElementById('w5-kV');
+  const readout = document.getElementById('w5-readout');
+  const codeBlock = document.getElementById('w5-code');
+  let pending = false;
+
+  function runSampler(kappa, wrongTime) {
+    const u = FK.rng(5150), ts = FK.schedule(STEPS), xs = new Float64Array(N);
+    for (let i = 0; i < N; i++) xs[i] = FK.sampleQ(FK.TMAX, u);
+    for (let s = 0; s < STEPS; s++) {
+      const t0 = ts[s], t1 = ts[s + 1];
+      const th = Math.min(t0 + kappa * (t0 - t1), 0.995);
+      const r = FK.alpha(th) / FK.alpha(t0), sd = Math.sqrt(Math.max(0, 1 - r * r));
+      for (let n = 0; n < N; n++) {
+        const xh = r * xs[n] + sd * u.gauss();
+        const h = t1 - th;
+        const v0 = FK.vel(xh, wrongTime ? t0 : th);   // <- the only difference
+        const xp = xh + h * v0;
+        const v1 = FK.vel(xp, t1);
+        xs[n] = xh + h * 0.5 * (v0 + v1);
+      }
+    }
+    return xs;
+  }
+
+  function render() {
+    const k = parseFloat(kSl.value);
+    kV.textContent = k.toFixed(2);
+    ctx.clearRect(0, 0, 780, 440);
+
+    // representative step near the middle of the schedule
+    const ts = FK.schedule(STEPS);
+    const t0 = ts[7], t1 = ts[8];
+    const th = Math.min(t0 + k * (t0 - t1), 0.995);
+
+    // ---- top: the two score curves ----
+    ctx.fillStyle = THEME['ink-soft']; ctx.font = '600 12px "Space Grotesk", sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText(`the score the two calls return, at a step from t = ${t0.toFixed(3)} reheated to t̂ = ${th.toFixed(3)}`, 46, 24);
+    ctx.strokeStyle = THEME.axis; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(vTop.x(LO), vTop.y(0)); ctx.lineTo(vTop.x(HI), vTop.y(0)); ctx.stroke();
+
+    // shaded difference
+    ctx.fillStyle = hexA('#c62828', 0.16);
+    ctx.beginPath();
+    for (let i = 0; i <= 200; i++) { const x = LO + (HI - LO) * i / 200; const y = FK.score(x, th);
+      i === 0 ? ctx.moveTo(vTop.x(x), vTop.y(Math.max(-6, Math.min(6, y)))) : ctx.lineTo(vTop.x(x), vTop.y(Math.max(-6, Math.min(6, y)))); }
+    for (let i = 200; i >= 0; i--) { const x = LO + (HI - LO) * i / 200; const y = FK.score(x, t0);
+      ctx.lineTo(vTop.x(x), vTop.y(Math.max(-6, Math.min(6, y)))); }
+    ctx.closePath(); ctx.fill();
+
+    curve(ctx, vTop, x => Math.max(-6, Math.min(6, FK.score(x, th))), LO, HI, THEME['accent-2'], 2.6);
+    curve(ctx, vTop, x => Math.max(-6, Math.min(6, FK.score(x, t0))), LO, HI, '#c62828', 2.2, [5, 4]);
+    legend(ctx, 46, 176, [
+      { c: THEME['accent-2'], t: 'velocity(x̂, t̂)   ✓ correct' },
+      { c: '#c62828', t: 'velocity(x̂, t_curr)   ✗ stale time', dash: 1 }]);
+
+    let maxd = 0;
+    for (let i = 0; i <= 200; i++) { const x = LO + (HI - LO) * i / 200;
+      maxd = Math.max(maxd, Math.abs(FK.score(x, th) - FK.score(x, t0))); }
+
+    // ---- bottom: consequences ----
+    ctx.fillStyle = THEME['ink-soft']; ctx.font = '600 12px "Space Grotesk", sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText(`the cloud at t = ${FK.TMIN.toFixed(2)} after ${STEPS} steps, both ways`, 46, 210);
+
+    const a = runSampler(k, false), b = runSampler(k, true);
+    axisX(ctx, vBot, 410, LO, HI, 1);
+    fillHist(ctx, vBot, FK.hist(b, null, LO, HI, NB), LO, HI, '#c62828', 0.28);
+    fillHist(ctx, vBot, FK.hist(a, null, LO, HI, NB), LO, HI, THEME['accent-2'], 0.26);
+    curve(ctx, vBot, x => FK.q(x, FK.TMIN), LO, HI, THEME.ink, 2.4);
+    legend(ctx, 46, 232, [
+      { c: THEME['accent-2'], t: 'correct time' }, { c: '#c62828', t: 'stale time' },
+      { c: THEME.ink, t: 'exact q_t' }]);
+
+    function mom(z) { let m = 0; for (let i = 0; i < z.length; i++) m += z[i]; m /= z.length;
+      let v = 0; for (let i = 0; i < z.length; i++) v += (z[i] - m) * (z[i] - m);
+      return { mean: m, sd: Math.sqrt(v / z.length) }; }
+    const ma = mom(a), mb = mom(b), tr = FK.moments(FK.comps(FK.TMIN));
+    const ea = Math.abs(ma.mean - tr.mean) + Math.abs(ma.sd - tr.sd);
+    const eb = Math.abs(mb.mean - tr.mean) + Math.abs(mb.sd - tr.sd);
+
+    readout.innerHTML =
+      `max score gap over the step: <b>${maxd.toFixed(3)}</b><br>`
+      + `<span style="color:${THEME['accent-2']}">correct</span>: mean <b>${ma.mean.toFixed(3)}</b> sd <b>${ma.sd.toFixed(3)}</b>`
+      + ` &nbsp;·&nbsp; <span style="color:#c62828">stale</span>: mean <b>${mb.mean.toFixed(3)}</b> sd <b>${mb.sd.toFixed(3)}</b>`
+      + ` &nbsp;·&nbsp; exact: mean <b>${tr.mean.toFixed(3)}</b> sd <b>${tr.sd.toFixed(3)}</b><br>`
+      + `total error &nbsp; correct <b>${ea.toFixed(4)}</b> &nbsp; vs &nbsp; stale <b>${eb.toFixed(4)}</b>`
+      + `&nbsp; (<b>${(eb / Math.max(ea, 1e-9)).toFixed(1)}×</b> worse)`;
+
+    if (codeBlock) codeBlock.querySelectorAll('[data-line]').forEach(el => {
+      el.classList.toggle('hl', el.dataset.line === '2');
+    });
+  }
+  kSl.oninput = () => { if (pending) return; pending = true;
+    requestAnimationFrame(() => { pending = false; render(); }); };
+  onTheme(render);
+  render();
+})();
+
+/* ==========================================================================
+   WIDGET 6 — twisting the churn proposal
+   ========================================================================== */
+(function () {
+  const canvas = document.getElementById('w6-canvas');
+  const ctx = setupCanvas(canvas, 780, 440);
+  const LO = -5.0, HI = 4.2, N = 1200, NB = 58, STEPS = 40, KAPPA = 1.0;
+  const vD = { x: mx => 46 + (mx - LO) / (HI - LO) * (780 - 70), y: my => 250 - my / 1.5 * 212 };
+
+  const cSl = document.getElementById('w6-c'), cV = document.getElementById('w6-cV');
+  const sweepBtn = document.getElementById('w6-sweep');
+  const readout = document.getElementById('w6-readout');
+  let pending = false, sweep = null, baseline = null;   // baseline (c=0) never changes — compute once
+
+  function run(twist) {
+    const u = FK.rng(8080), ts = FK.schedule(STEPS);
+    const xs = new Float64Array(N), lw = new Float64Array(N);
+    for (let i = 0; i < N; i++) { xs[i] = FK.sampleQ(FK.TMAX, u); lw[i] = FK.rho(xs[i], FK.TMAX); }
+    const essTrace = [];
+    let shiftRatio = 0, nsr = 0;
+    for (let s = 0; s < STEPS; s++) {
+      const t0 = ts[s], t1 = ts[s + 1];
+      const th = Math.min(t0 + KAPPA * (t0 - t1), 0.995);
+      const r = FK.alpha(th) / FK.alpha(t0), V = Math.max(1e-12, 1 - r * r), sd = Math.sqrt(V);
+      for (let n = 0; n < N; n++) {
+        const x = xs[n], r0 = FK.rho(x, t0), m = r * x;
+        let xh;
+        if (twist > 0) {
+          // a = d/dx rho_{t-hat}(x) at the base mean m
+          const a = twist * FK.beta(th) * (-(m - FK.C) / (FK.TAU * FK.TAU));
+          xh = m + V * a + sd * u.gauss();
+          lw[n] += -a * (xh - m) + 0.5 * a * a * V;             // log K - log K~
+          if (n < 60) { shiftRatio += Math.abs(V * a) / sd; nsr++; }
+        } else { xh = m + sd * u.gauss(); if (n < 60) { nsr++; } }
+        const xn = FK.heun(xh, th, t1, undefined, 1);
+        xs[n] = xn;
+        lw[n] += FK.rho(xn, t1) - r0;                            // endpoint potential
+      }
+      essTrace.push(FK.ess(lw) / N);
+    }
+    const w = FK.normWeights(lw);
+    return { xs, w, lw, essTrace, ess: FK.ess(lw) / N,
+             shift: nsr ? shiftRatio / nsr : 0,
+             stats: FK.weightedStats(xs, w) };
+  }
+
+  function render() {
+    const c = parseFloat(cSl.value);
+    cV.textContent = c.toFixed(2);
+    ctx.clearRect(0, 0, 780, 440);
+
+    if (!baseline) baseline = run(0);
+    const R = c > 0 ? run(c) : baseline, R0 = baseline;
+    const t = FK.TMIN;
+
+    axisX(ctx, vD, 250, LO, HI, 1);
+    fillHist(ctx, vD, FK.hist(R.xs, R.w, LO, HI, NB), LO, HI, THEME.accent, 0.34);
+    curve(ctx, vD, x => FK.piPdf(x, t), LO, HI, THEME['accent-3'], 2.8);
+    legend(ctx, 46, 22, [{ c: THEME.accent, t: 'weighted cloud (twisted)' },
+                         { c: THEME['accent-3'], t: 'exact target π_t' }]);
+
+    // ESS traces
+    const gx0 = 46, gx1 = 430, gy0 = 300, gy1 = 400;
+    ctx.strokeStyle = THEME.axis; ctx.lineWidth = 1;
+    ctx.strokeRect(gx0, gy0, gx1 - gx0, gy1 - gy0);
+    ctx.fillStyle = THEME['ink-soft']; ctx.font = '11px "Space Grotesk", sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText('ESS over the run  (0–100%)', gx0, gy0 - 6);
+    ctx.textAlign = 'right'; ctx.fillText('100%', gx0 - 4, gy0 + 4); ctx.fillText('0', gx0 - 4, gy1 + 4);
+    function trace(tr, col, wd) {
+      ctx.strokeStyle = col; ctx.lineWidth = wd; ctx.beginPath();
+      for (let i = 0; i < tr.length; i++) {
+        const px = gx0 + (gx1 - gx0) * i / (tr.length - 1), py = gy1 - (gy1 - gy0) * Math.min(1, tr[i]);
+        i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+    }
+    trace(R0.essTrace, hexA(THEME['ink-soft'], 0.75), 1.6);
+    trace(R.essTrace, THEME.accent, 2.6);
+    ctx.textAlign = 'left'; ctx.fillStyle = THEME['ink-soft'];
+    ctx.font = '10px "Space Grotesk", sans-serif';
+    ctx.fillText('grey: untwisted (c = 0)', gx0 + 6, gy0 + 14);
+
+    // overreach diagnostic
+    const bx0 = 470, bw = 270, by = 330;
+    ctx.fillStyle = THEME['ink-soft']; ctx.font = '11px "Space Grotesk", sans-serif';
+    ctx.fillText('proposal mean shift, in units of the churn noise width', bx0, by - 22);
+    ctx.fillText('|V·a| / √V', bx0, by - 6);
+    const frac = Math.min(1, R.shift / 3);
+    ctx.fillStyle = hexA(THEME.axis, 0.25); ctx.fillRect(bx0, by, bw, 16);
+    ctx.fillStyle = R.shift < 0.8 ? THEME['accent-2'] : (R.shift < 1.6 ? THEME.accent : '#c62828');
+    ctx.fillRect(bx0, by, Math.max(2, bw * frac), 16);
+    ctx.fillStyle = THEME['ink-soft']; ctx.font = '10px "Space Grotesk", sans-serif';
+    ctx.fillText('0', bx0, by + 30); ctx.textAlign = 'center';
+    ctx.fillText('1 noise width', bx0 + bw / 3, by + 30);
+    ctx.textAlign = 'right'; ctx.fillText('3', bx0 + bw, by + 30);
+    ctx.textAlign = 'left';
+    ctx.font = '600 13px "Space Grotesk", sans-serif'; ctx.fillStyle = THEME.ink;
+    ctx.fillText(R.shift.toFixed(2), bx0 + bw + 8, by + 13);
+
+    // sweep curve if computed
+    if (sweep) {
+      ctx.fillStyle = THEME['ink-soft']; ctx.font = '11px "Space Grotesk", sans-serif'; ctx.textAlign = 'left';
+      ctx.fillText('final ESS vs twist strength', 470, 268);
+      const sx0 = 470, sx1 = 740, sy0 = 200, sy1 = 258;
+      ctx.strokeStyle = THEME.axis; ctx.lineWidth = 1; ctx.strokeRect(sx0, sy0, sx1 - sx0, sy1 - sy0);
+      ctx.strokeStyle = THEME['accent-3']; ctx.lineWidth = 2.2; ctx.beginPath();
+      sweep.forEach((p, i) => {
+        const px = sx0 + (sx1 - sx0) * p.c, py = sy1 - (sy1 - sy0) * Math.min(1, p.ess / 0.7);
+        i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+      });
+      ctx.stroke();
+      const px = sx0 + (sx1 - sx0) * c;
+      ctx.strokeStyle = THEME.accent; ctx.lineWidth = 1.4;
+      ctx.beginPath(); ctx.moveTo(px, sy0); ctx.lineTo(px, sy1); ctx.stroke();
+      ctx.fillStyle = THEME['ink-soft']; ctx.font = '10px "Space Grotesk", sans-serif';
+      ctx.fillText('c=0', sx0, sy1 + 12); ctx.textAlign = 'right'; ctx.fillText('c=1', sx1, sy1 + 12);
+      ctx.textAlign = 'left';
+    }
+
+    const tgt = FK.moments(FK.piComps(t));
+    const err = Math.abs(R.stats.mean - tgt.mean);
+    readout.innerHTML =
+      `twist c = <b>${c.toFixed(2)}</b> &nbsp;·&nbsp; final ESS <b>${(100 * R.ess).toFixed(1)}%</b>`
+      + ` &nbsp;(untwisted: <b>${(100 * R0.ess).toFixed(1)}%</b>)<br>`
+      + `weighted mean <b>${R.stats.mean.toFixed(3)}</b> vs exact target <b>${tgt.mean.toFixed(3)}</b>`
+      + ` &nbsp;·&nbsp; error <b>${err.toFixed(3)}</b>`
+      + (R.ess < 0.05 ? ' &nbsp;— <span style="color:#c62828">ESS too low for this number to be trusted</span>' : '');
+  }
+  cSl.oninput = () => { if (pending) return; pending = true;
+    requestAnimationFrame(() => { pending = false; render(); }); };
+  sweepBtn.onclick = () => {
+    sweepBtn.disabled = true; sweepBtn.textContent = 'Sweeping…';
+    setTimeout(() => {
+      sweep = [];
+      for (let i = 0; i <= 12; i++) { const c = i / 12; sweep.push({ c: c, ess: run(c).ess }); }
+      sweepBtn.disabled = false; sweepBtn.textContent = 'Sweep all twist strengths';
+      render();
+    }, 20);
+  };
+  onTheme(render);
+  render();
+})();
+
+/* ==========================================================================
+   WIDGET 7 — where a weighted cloud lands when you move it and change nothing
+   Bars  : the algorithm's own particles (drawn from q_t0, weights e^rho).
+   Orange: an INDEPENDENT simulation of pi_{t0} M — exact draws from pi_{t0}
+           pushed through the same kernel. The two must coincide at stage 1.
+   ========================================================================== */
+(function () {
+  const canvas = document.getElementById('w7-canvas');
+  const ctx = setupCanvas(canvas, 780, 420);
+  const LO = -5.0, HI = 4.2, N = 4000, NB = 56, T0 = 0.65, KAPPA = 1.0;
+  const view = { w: 780, h: 420,
+    x: mx => 46 + (mx - LO) / (HI - LO) * (780 - 70),
+    y: my => 320 - my / 1.55 * 282 };
+
+  const tSl = document.getElementById('w7-t'), tV = document.getElementById('w7-tV');
+  const readout = document.getElementById('w7-readout');
+  const backBtn = document.getElementById('w7-back'), nextBtn = document.getElementById('w7-next');
+  const capEl = document.getElementById('w7-caption');
+  let stage = 0, pending = false;
+
+  function build(t1) {
+    const th = Math.min(T0 + KAPPA * (T0 - t1), 0.995);
+    const r = FK.alpha(th) / FK.alpha(T0), sd = Math.sqrt(Math.max(0, 1 - r * r));
+    const u = FK.rng(6161);
+    const x0 = new Float64Array(N), x1 = new Float64Array(N);
+    const lwOld = new Float64Array(N), lwNew = new Float64Array(N);
+    for (let i = 0; i < N; i++) {
+      const a = FK.sampleQ(T0, u);
+      x0[i] = a;
+      lwOld[i] = FK.rho(a, T0);
+      const xh = r * a + sd * u.gauss();
+      const b = FK.heun(xh, th, t1, undefined, 4);
+      x1[i] = b;
+      lwNew[i] = FK.rho(b, t1);                       // telescoped: = lwOld + increment
+    }
+    // independent reference: exact pi_{T0} draws pushed through the SAME kernel
+    const v = FK.rng(9090), pm = new Float64Array(N);
+    for (let i = 0; i < N; i++) {
+      const z = FK.samplePi(T0, v);
+      pm[i] = FK.heun(r * z + sd * v.gauss(), th, t1, undefined, 4);
+    }
+    return { th, x0, x1, lwOld, lwNew, pm };
+  }
+
+  function render() {
+    const t1 = parseFloat(tSl.value);
+    tV.textContent = t1.toFixed(2);
+    const D = build(t1);
+    ctx.clearRect(0, 0, 780, 420);
+    axisX(ctx, view, 320, LO, HI, 1);
+
+    const wOld = FK.normWeights(D.lwOld), wNew = FK.normWeights(D.lwNew);
+
+    if (stage === 0) {
+      curve(ctx, view, x => FK.q(x, T0), LO, HI, THEME['accent-2'], 2.0, [5, 4]);
+      fillHist(ctx, view, FK.hist(D.x0, wOld, LO, HI, NB), LO, HI, THEME.accent, 0.34);
+      curve(ctx, view, x => FK.piPdf(x, T0), LO, HI, THEME['accent-3'], 2.8);
+      legend(ctx, 46, 22, [
+        { c: THEME.accent, t: 'weighted cloud' },
+        { c: THEME['accent-3'], t: 'π at t = 0.65' },
+        { c: THEME['accent-2'], t: 'q at t = 0.65', dash: 1 }]);
+      // annotate the ratio at one location
+      const xa = -1.6, qa = FK.q(xa, T0), pa = FK.piPdf(xa, T0);
+      ctx.strokeStyle = THEME.ink; ctx.lineWidth = 1.3; ctx.setLineDash([2, 3]);
+      ctx.beginPath(); ctx.moveTo(view.x(xa), view.y(qa)); ctx.lineTo(view.x(xa), view.y(pa)); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = THEME.ink; ctx.font = '600 12px "Space Grotesk", sans-serif'; ctx.textAlign = 'left';
+      ctx.fillText(`weight at x = ${xa} is π/q = ${(pa / qa).toFixed(2)}`,
+                   view.x(xa) + 8, view.y((qa + pa) / 2));
+    } else {
+      // after the move
+      const bars = FK.hist(D.x1, stage >= 2 ? wNew : wOld, LO, HI, NB);
+      fillHist(ctx, view, bars, LO, HI, THEME.accent, 0.34);
+      if (stage === 1) {
+        histLine(ctx, view, FK.hist(D.pm, null, LO, HI, NB), LO, HI, THEME.ink, 2.6);
+        curve(ctx, view, x => FK.piPdf(x, t1), LO, HI, THEME['accent-3'], 2.4, [6, 4]);
+        legend(ctx, 46, 22, [
+          { c: THEME.accent, t: 'cloud, weights untouched' },
+          { c: THEME.ink, t: 'π_t M  (simulated separately)' },
+          { c: THEME['accent-3'], t: 'π at the new level — what we asked for', dash: 1 }]);
+      } else {
+        curve(ctx, view, x => FK.piPdf(x, t1), LO, HI, THEME['accent-3'], 2.8);
+        legend(ctx, 46, 22, [
+          { c: THEME.accent, t: 'cloud, weights corrected' },
+          { c: THEME['accent-3'], t: 'π at the new level' }]);
+      }
+    }
+
+    // readout
+    const sOld = FK.weightedStats(D.x1, wOld), sNew = FK.weightedStats(D.x1, wNew);
+    let mPM = 0; for (let i = 0; i < N; i++) mPM += D.pm[i]; mPM /= N;
+    const tgt = FK.moments(FK.piComps(t1)), src = FK.moments(FK.piComps(T0));
+    if (stage === 0) {
+      const s0 = FK.weightedStats(D.x0, wOld);
+      readout.innerHTML = `at t = <b>0.65</b> &nbsp;·&nbsp; weighted cloud mean <b>${s0.mean.toFixed(3)}</b>`
+        + ` &nbsp;vs&nbsp; exact π mean <b>${src.mean.toFixed(3)}</b> — the cloud represents π.`;
+    } else if (stage === 1) {
+      readout.innerHTML =
+        `weights untouched &nbsp;→&nbsp; cloud mean <b>${sOld.mean.toFixed(3)}</b>`
+        + ` &nbsp;·&nbsp; independently simulated π<sub>t</sub>M mean <b>${mPM.toFixed(3)}</b>`
+        + ` &nbsp;<b style="color:${THEME['accent-2']}">(these agree — same distribution)</b><br>`
+        + `but the target we asked for has mean <b>${tgt.mean.toFixed(3)}</b>`
+        + ` &nbsp;·&nbsp; gap <b style="color:#c62828">${Math.abs(sOld.mean - tgt.mean).toFixed(3)}</b>`;
+    } else {
+      readout.innerHTML =
+        `after Δlog w = ρ(new) − ρ(old): cloud mean <b>${sNew.mean.toFixed(3)}</b>`
+        + ` &nbsp;vs&nbsp; exact target <b>${tgt.mean.toFixed(3)}</b>`
+        + ` &nbsp;·&nbsp; gap <b style="color:${THEME['accent-2']}">${Math.abs(sNew.mean - tgt.mean).toFixed(3)}</b><br>`
+        + `<span style="opacity:0.75">the accumulated log-weight now equals ρ at the particle's new position, exactly</span>`;
+    }
+
+    const caps = [
+      'The cloud represents π at t = 0.65. A particle’s weight is the height ratio of the two curves where it sits — how much the target wants that place relative to how often the sampler goes there.',
+      'Everyone moved; nobody’s weight changed. The bars now sit on π_t M — the OLD target carried forward by the same kernel — which we simulated separately to prove the point. It is a real distribution. It is just not the one we asked for (dashed).',
+      'Now multiply each weight by e^{ρ(new) − ρ(old)}. The bars land on the target at the new level. That subtraction is the entire price of redefining what the cloud represents.'
+    ];
+    capEl.textContent = caps[stage];
+    backBtn.disabled = stage === 0;
+    const nx = ['Move the cloud →', 'Apply the correction →', null][stage];
+    if (nx) { nextBtn.style.display = ''; nextBtn.textContent = nx; } else nextBtn.style.display = 'none';
+  }
+  nextBtn.onclick = () => { if (stage < 2) { stage++; render(); } };
+  backBtn.onclick = () => { if (stage > 0) { stage--; render(); } };
+  tSl.oninput = () => { if (pending) return; pending = true;
+    requestAnimationFrame(() => { pending = false; render(); }); };
+  onTheme(render);
+  render();
+})();
+
+/* ==========================================================================
+   WIDGET 8 — the annealing schedule is a variance knob, not a target knob
+   All schedules are normalised to beta(t_min) = BMAX, so every one of them
+   declares the SAME terminal target. Only the ESS path differs.
+   ========================================================================== */
+(function () {
+  const canvas = document.getElementById('w8-canvas');
+  const ctx = setupCanvas(canvas, 780, 470);
+  const LO = -5.0, HI = 4.2, N = 1200, NB = 56, STEPS = 40, KAPPA = 1.0, BMAX = 2.0;
+  const vD = { w: 780, h: 470,
+    x: mx => 46 + (mx - LO) / (HI - LO) * (780 - 70),
+    y: my => 440 - my / 1.55 * 240 };
+
+  const pSl = document.getElementById('w8-p'), pV = document.getElementById('w8-pV');
+  const modeBtn = document.getElementById('w8-mode'), consBtn = document.getElementById('w8-cons');
+  const readout = document.getElementById('w8-readout');
+  let denoised = false, consistent = true, pending = false, refTrace = null;
+
+  const TMIN = FK.TMIN, TMAX = FK.TMAX;
+  const betaOf = (t, p) => BMAX * Math.pow(Math.max(0, 1 - t) / (1 - TMIN), p);
+  const tiltOf = (x, t, p) => betaOf(t, p) * FK.rew(denoised ? FK.denoise(x, t) : x);
+
+  function run(p, cons) {
+    const u = FK.rng(1717), ts = FK.schedule(STEPS);
+    const xs = new Float64Array(N), lw = new Float64Array(N), trace = [];
+    for (let i = 0; i < N; i++) { xs[i] = FK.sampleQ(TMAX, u); lw[i] = tiltOf(xs[i], TMAX, p); }
+    for (let s = 0; s < STEPS; s++) {
+      const t0 = ts[s], t1 = ts[s + 1];
+      const th = Math.min(t0 + KAPPA * (t0 - t1), 0.995);
+      const r = FK.alpha(th) / FK.alpha(t0), sd = Math.sqrt(Math.max(0, 1 - r * r));
+      for (let n = 0; n < N; n++) {
+        const x = xs[n], oldT = tiltOf(x, t0, p);
+        const xn = FK.heun(r * x + sd * u.gauss(), th, t1, undefined, 1);
+        xs[n] = xn;
+        // consistent: new endpoint uses the tilt of the NEW index (telescopes).
+        // broken: it uses the OLD index's tilt, so leftovers accumulate.
+        lw[n] += (cons ? tiltOf(xn, t1, p) : tiltOf(xn, t0, p)) - oldT;
+      }
+      trace.push(FK.ess(lw) / N);
+    }
+    const w = FK.normWeights(lw);
+    return { xs, w, trace, ess: FK.ess(lw) / N, stats: FK.weightedStats(xs, w) };
+  }
+
+  function render() {
+    const p = parseFloat(pSl.value);
+    pV.textContent = p.toFixed(2);
+    if (!refTrace) refTrace = run(1, true).trace;
+    const R = run(p, consistent);
+    ctx.clearRect(0, 0, 780, 470);
+
+    // ---- top-left: the beta schedule ----
+    const ax0 = 46, ax1 = 360, ay0 = 30, ay1 = 150;
+    ctx.strokeStyle = THEME.axis; ctx.lineWidth = 1; ctx.strokeRect(ax0, ay0, ax1 - ax0, ay1 - ay0);
+    ctx.fillStyle = THEME['ink-soft']; ctx.font = '11px "Space Grotesk", sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText('tilt strength  β_t   along the run', ax0, ay0 - 8);
+    ctx.textAlign = 'right'; ctx.fillText('β=2', ax0 - 4, ay0 + 4); ctx.fillText('0', ax0 - 4, ay1 + 4);
+    ctx.textAlign = 'left'; ctx.font = '10px "Space Grotesk", sans-serif';
+    ctx.fillText('noise  t=0.96', ax0, ay1 + 14);
+    ctx.textAlign = 'right'; ctx.fillText('data  t=0.02', ax1, ay1 + 14);
+    ctx.strokeStyle = THEME.accent; ctx.lineWidth = 2.6; ctx.beginPath();
+    for (let i = 0; i <= 60; i++) {
+      const t = TMAX + (TMIN - TMAX) * i / 60;
+      const px = ax0 + (ax1 - ax0) * i / 60, py = ay1 - (ay1 - ay0) * betaOf(t, p) / BMAX;
+      i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+
+    // ---- top-right: ESS trace ----
+    const bx0 = 430, bx1 = 740;
+    ctx.strokeStyle = THEME.axis; ctx.lineWidth = 1; ctx.strokeRect(bx0, ay0, bx1 - bx0, ay1 - ay0);
+    ctx.fillStyle = THEME['ink-soft']; ctx.font = '11px "Space Grotesk", sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText('effective sample size along the run', bx0, ay0 - 8);
+    ctx.textAlign = 'right'; ctx.fillText('100%', bx0 - 4, ay0 + 4); ctx.fillText('0', bx0 - 4, ay1 + 4);
+    ctx.textAlign = 'left';
+    function trace(tr, col, wd) {
+      ctx.strokeStyle = col; ctx.lineWidth = wd; ctx.beginPath();
+      for (let i = 0; i < tr.length; i++) {
+        const px = bx0 + (bx1 - bx0) * i / (tr.length - 1);
+        const py = ay1 - (ay1 - ay0) * Math.min(1, tr[i]);
+        i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+    }
+    trace(refTrace, hexA(THEME['ink-soft'], 0.55), 1.5);
+    trace(R.trace, THEME.accent, 2.6);
+    ctx.fillStyle = THEME['ink-soft']; ctx.font = '10px "Space Grotesk", sans-serif';
+    ctx.fillText('grey: p = 1 reference', bx0 + 6, ay0 + 14);
+
+    // ---- bottom: terminal cloud vs the one exact target ----
+    ctx.fillStyle = THEME['ink-soft']; ctx.font = '600 12px "Space Grotesk", sans-serif'; ctx.textAlign = 'left';
+    ctx.fillText('terminal cloud at t = 0.02, against the target every schedule declares', 46, 196);
+    axisX(ctx, vD, 440, LO, HI, 1);
+    fillHist(ctx, vD, FK.hist(R.xs, R.w, LO, HI, NB), LO, HI, THEME.accent, 0.34);
+    const exact = FK.piCompsBeta(TMIN, BMAX);
+    curve(ctx, vD, x => { let v = 0; for (const c of exact) v += c.w * FK.npdf(x, c.m, c.v); return v; },
+          LO, HI, THEME['accent-3'], 2.8);
+    legend(ctx, 46, 216, [
+      { c: THEME.accent, t: 'weighted cloud' },
+      { c: THEME['accent-3'], t: 'exact terminal target (same for every schedule)' }]);
+
+    const tgt = FK.moments(exact);
+    const err = Math.abs(R.stats.mean - tgt.mean);
+    const minE = Math.min.apply(null, R.trace);
+    readout.innerHTML =
+      `p = <b>${p.toFixed(2)}</b> &nbsp;·&nbsp; reward on <b>${denoised ? 'the denoised state D(x,t)' : 'the noisy state x'}</b>`
+      + ` &nbsp;·&nbsp; <b>${consistent ? 'consistent' : 'BROKEN'}</b><br>`
+      + `terminal mean <b>${R.stats.mean.toFixed(4)}</b> vs exact <b>${tgt.mean.toFixed(4)}</b>`
+      + ` &nbsp;·&nbsp; gap <b style="color:${err < 0.05 ? THEME['accent-2'] : '#c62828'}">${err.toFixed(4)}</b>`
+      + ` &nbsp;·&nbsp; ESS: min <b>${(100 * minE).toFixed(1)}%</b>, final <b>${(100 * R.ess).toFixed(1)}%</b>`
+      + (consistent
+          ? ' <br><span style="opacity:0.75">drag p: the ESS curve reshapes; the terminal cloud is bit-identical</span>'
+          : ' <br><span style="color:#c62828">leftovers accumulate — the endpoint is now trajectory-dependent</span>');
+  }
+  pSl.oninput = () => { if (pending) return; pending = true;
+    requestAnimationFrame(() => { pending = false; render(); }); };
+  modeBtn.onclick = () => { denoised = !denoised;
+    modeBtn.textContent = 'reward: ' + (denoised ? 'r(D(x,t))' : 'r(x)');
+    modeBtn.classList.toggle('on', denoised); refTrace = null; render(); };
+  consBtn.onclick = () => { consistent = !consistent;
+    consBtn.textContent = 'consistent: ' + (consistent ? 'YES' : 'NO');
+    consBtn.classList.toggle('on', consistent); render(); };
+  onTheme(render);
+  render();
+})();
+
+/* ==========================================================================
+   READING PROGRESS
+   ========================================================================== */
+(function () {
+  const bar = document.getElementById('progress');
+  function update() {
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%';
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+})();
+</script>
+</body>
+</html>

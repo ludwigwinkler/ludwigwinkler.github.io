@@ -1,0 +1,2230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Energy</title>
+
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg:        #0e1116;   /* deep slate                              */
+    --bg-2:      #141923;   /* slightly lifted                         */
+    --surface:   #1a2030;   /* cards / widgets                         */
+    --ink:       #e8eaf0;   /* body text                               */
+    --ink-soft:  #9aa3b8;   /* secondary text                          */
+    --accent:    #62d2a2;   /* low-energy / favorable (green)          */
+    --accent-2:  #e8744e;   /* high-energy / entropy (warm)            */
+    --accent-3:  #6aa3ff;   /* probability / partition (blue)          */
+    --line:      #2a3346;   /* hairlines, borders                      */
+    --axis-c:    #455068;   /* plot axes                               */
+    --kernel-bg: #11271f;   /* the kernel callout                      */
+    --radius: 14px;
+    --measure: 70ch;
+    --font-display: 'Space Grotesk', system-ui, sans-serif;
+    --font-body:    'Spectral', Georgia, serif;
+    --font-mono:    'JetBrains Mono', monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background:
+      radial-gradient(1200px 600px at 80% -10%, #18233a 0%, transparent 55%),
+      radial-gradient(900px 500px at 0% 5%, #15241d 0%, transparent 50%),
+      var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 19px;
+    line-height: 1.72;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #progress {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-3));
+    z-index: 100; transition: width 0.1s linear;
+  }
+
+  .wrap { max-width: 840px; margin: 0 auto; padding: 0 24px 140px; }
+  .prose { max-width: var(--measure); }
+  .prose p { margin: 0 0 1.1em; }
+
+  header { padding: 104px 0 36px; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.28em;
+    text-transform: uppercase; color: var(--accent); margin: 0 0 20px;
+  }
+  h1 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(2.8rem, 7vw, 4.4rem); line-height: 1.02;
+    margin: 0 0 24px; letter-spacing: -0.03em;
+    background: linear-gradient(120deg, #fff 20%, var(--accent) 90%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .promise {
+    font-size: 1.22rem; color: var(--ink-soft); font-style: italic;
+    max-width: var(--measure);
+  }
+
+  .kernel {
+    background: var(--kernel-bg);
+    border: 1px solid #214a38;
+    border-radius: var(--radius); padding: 38px 42px; margin: 50px 0 78px;
+    box-shadow: 0 0 60px -20px var(--accent);
+  }
+  .kernel .label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--accent); opacity: 0.85; margin: 0 0 16px;
+  }
+  .kernel .sentence {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 1.5rem; line-height: 1.45; margin: 0; color: var(--ink);
+  }
+
+  .concept-step { margin: 0 0 92px; scroll-margin-top: 40px; }
+  .step-num {
+    font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500;
+    color: var(--accent-3); letter-spacing: 0.14em; margin: 0 0 8px;
+    text-transform: uppercase;
+  }
+  .concept-step h2 {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(1.7rem, 3.6vw, 2.4rem); line-height: 1.12;
+    margin: 0 0 22px; letter-spacing: -0.02em;
+  }
+
+  details.formal {
+    border: 1px solid var(--line); border-radius: 10px;
+    background: var(--bg-2); margin: 26px 0; max-width: var(--measure);
+  }
+  details.formal summary {
+    cursor: pointer; padding: 14px 18px; font-family: var(--font-mono);
+    font-size: 0.85rem; letter-spacing: 0.06em; color: var(--ink-soft);
+    list-style: none; user-select: none;
+  }
+  details.formal summary::before { content: '▸ '; color: var(--accent); }
+  details.formal[open] summary::before { content: '▾ '; }
+  details.formal .formal-body { padding: 0 20px 18px; }
+  details.formal .formal-body p { font-family: var(--font-body); }
+
+  .widget {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 24px; margin: 30px 0;
+    box-shadow: 0 12px 40px -28px #000;
+  }
+  .widget-title {
+    font-family: var(--font-display); font-weight: 600; font-size: 1.02rem;
+    color: var(--ink); margin: 0 0 4px; letter-spacing: -0.01em;
+    display: flex; align-items: baseline; gap: 10px;
+  }
+  .widget-title::before { content: none; }
+  .widget-title .wt-num {
+    flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center;
+    min-width: 1.5em; height: 1.5em; padding: 0 0.4em; border-radius: 6px;
+    background: var(--accent-3); color: #06121f; font-family: var(--font-mono);
+    font-size: 0.78rem; font-weight: 600; letter-spacing: 0; transform: translateY(-1px);
+  }
+  .widget-title .wt-sub {
+    font-family: var(--font-mono); font-size: 0.7rem; font-weight: 400;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft);
+  }
+  .widget-titlewrap { margin-bottom: 16px; border-bottom: 1px solid var(--line); padding-bottom: 12px; }
+  .widget-controls {
+    display: flex; flex-wrap: wrap; gap: 22px 34px; margin-bottom: 18px;
+  }
+  .widget-controls label {
+    display: flex; flex-direction: column; gap: 8px;
+    font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-soft);
+    min-width: 190px; letter-spacing: 0.02em;
+  }
+  .widget-controls .val { color: var(--accent); font-weight: 500; }
+  input[type=range] { accent-color: var(--accent); cursor: pointer; }
+  .widget button {
+    font-family: var(--font-mono); font-size: 0.82rem; letter-spacing: 0.03em;
+    background: var(--accent); color: #06120c; border: none; font-weight: 600;
+    padding: 10px 18px; border-radius: 8px; cursor: pointer;
+    transition: background 0.15s, transform 0.05s;
+  }
+  .widget button:hover { background: #7ee0b6; }
+  .widget button:active { transform: translateY(1px); }
+  .widget button:disabled { opacity: 0.3; cursor: default; }
+  .widget-stage {
+    display: block; width: 100%; border-radius: 8px; background: var(--bg);
+  }
+  .readout {
+    margin-top: 14px; font-size: 0.96rem; color: var(--ink-soft);
+    min-height: 1.4em; font-family: var(--font-body);
+  }
+  .reveal-bar {
+    display: flex; align-items: center; gap: 16px; margin-top: 14px;
+    flex-wrap: wrap;
+  }
+  .reveal-caption {
+    flex: 1; min-width: 200px; font-size: 0.9rem;
+    color: var(--ink-soft); font-style: italic; font-family: var(--font-body);
+  }
+  .caption {
+    font-size: 0.82rem; color: var(--ink-soft); font-style: italic;
+    margin-top: 10px; font-family: var(--font-body);
+  }
+  .toggle-row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom: 16px; }
+  .toggle-row button {
+    background: var(--bg-2); color: var(--ink-soft); border:1px solid var(--line);
+  }
+  .toggle-row button.on { background: var(--accent-3); color:#06121f; border-color: var(--accent-3); }
+  .toggle-row button:hover { background: var(--line); }
+  .toggle-row button.on:hover { background: #8bb8ff; }
+
+  .recap {
+    border-top: 1px solid var(--line); padding-top: 44px; margin-top: 24px;
+  }
+  .recap h2 { font-family: var(--font-display); font-size: 2rem; margin: 0 0 18px; font-weight: 600; }
+
+  mark { background: linear-gradient(transparent 58%, rgba(98,210,162,0.30) 58%); color: inherit; padding: 0 2px; }
+  strong { color: #fff; font-weight: 600; }
+  a { color: var(--accent); }
+  .lede { color: var(--ink-soft); }
+
+  @media (max-width: 600px) {
+    body { font-size: 17px; }
+    .wrap { padding: 0 18px 90px; }
+    .kernel { padding: 28px 24px; }
+    .widget-controls label { min-width: 140px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<div class="wrap">
+
+  <!-- ===================== HEADER ===================== -->
+  <header>
+    <p class="eyebrow">A step-by-step explainer</p>
+    <h1>Free Energy</h1>
+    <p class="promise">
+      Why a system "wants" to do something is never just about energy. By the
+      end of this page, free energy — and why it, not energy, is the thing that
+      decides what happens — should feel obvious.
+    </p>
+  </header>
+
+  <!-- ===================== THE KERNEL ===================== -->
+  <div class="kernel">
+    <p class="label">The whole idea, in one sentence</p>
+    <p class="sentence">
+      Free energy is energy <mark>discounted by how many ways there are to
+      arrange it</mark> — nature doesn't seek the lowest energy, it seeks the
+      best deal between low energy and lots of room to wiggle.
+    </p>
+  </div>
+
+  <!-- ===================== STEP 1 ===================== -->
+  <section class="concept-step" id="step-1">
+    <p class="step-num">Step 1 · The puzzle</p>
+    <h2>Why "lowest energy" is the wrong answer</h2>
+    <div class="prose">
+      <p>
+        Drop a ball and it rolls downhill: systems move toward lower energy.
+        That intuition is so reliable we assume it's the whole story. But it
+        can't be — ice melts in a warm room, gases fill their container,
+        proteins partly unfold at body temperature. In every one of those, the
+        system spontaneously moves to <em>higher</em> energy. Something is
+        competing with energy and winning.
+      </p>
+      <p>
+        That something is <strong>counting</strong>. A spread-out, jumbled
+        arrangement can be realized in vastly more ways than a neat, compact
+        one. Below, a handful of particles can sit in a tidy low-energy cluster
+        or spread across the box. Raise the temperature and watch which the
+        system prefers — even though spreading out <em>costs</em> energy.
+      </p>
+    </div>
+
+    <div class="widget" id="w1">
+      <div class="widget-titlewrap"><div class="widget-title"><span class="wt-num">1</span>Energy vs. arrangements <span class="wt-sub">drag the temperature</span></div></div>
+      <div class="widget-controls">
+        <label>temperature &nbsp;T = <span class="val" id="w1-tV">1.00</span>
+          <input type="range" id="w1-t" min="0.05" max="3" step="0.05" value="1">
+        </label>
+      </div>
+      <canvas id="w1-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w1-readout"></div>
+      <p class="caption">Each dot is a particle. Low T → it pays to huddle in
+        the low-energy well. High T → the system happily pays the energy cost to
+        access the many spread-out arrangements.</p>
+    </div>
+  </section>
+
+  <!-- ===================== STEP 2 ===================== -->
+  <section class="concept-step" id="step-2">
+    <p class="step-num">Step 2 · The other half</p>
+    <h2>Counting arrangements is called entropy</h2>
+    <div class="prose">
+      <p>
+        Give "the number of ways" a name: <strong>entropy</strong>. Boltzmann's
+        idea is almost embarrassingly simple — entropy is just the (log of the)
+        count of microscopic arrangements consistent with what you can see:
+      </p>
+      <p style="text-align:center">\[ S = k_B \ln \Omega \]</p>
+      <p>
+        \(\Omega\) is that count of microstates, and \(k_B\) is Boltzmann's
+        constant (the conversion factor between "counting" and "energy units").
+        The logarithm is what makes entropy <em>add up</em>: two independent
+        systems have \(\Omega_1\Omega_2\) joint arrangements, and
+        \(\ln(\Omega_1\Omega_2)=\ln\Omega_1+\ln\Omega_2\).
+      </p>
+      <p>
+        Slide the number of particles below and watch \(\Omega\) — the count of
+        ways to place them — explode, while \(\ln\Omega\) grows gently and
+        linearly. That gentle, additive quantity is the real currency.
+      </p>
+    </div>
+
+    <div class="widget" id="w2b">
+      <div class="widget-titlewrap"><div class="widget-title"><span class="wt-num">2</span>How fast Ω explodes <span class="wt-sub">drag particles & boxes</span></div></div>
+      <div class="widget-controls">
+        <label>particles &nbsp;N = <span class="val" id="w2b-nV">4</span>
+          <input type="range" id="w2b-n" min="1" max="14" step="1" value="4">
+        </label>
+        <label>boxes &nbsp;M = <span class="val" id="w2b-mV">6</span>
+          <input type="range" id="w2b-m" min="2" max="12" step="1" value="6">
+        </label>
+      </div>
+      <canvas id="w2b-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w2b-readout"></div>
+      <p class="caption">\(\Omega = M^N\) ways to drop \(N\) particles into
+        \(M\) boxes. The count rockets; its logarithm — the entropy — climbs
+        steadily.</p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version</summary>
+      <div class="formal-body prose">
+        <p>
+          More generally, for a probability distribution \(p_i\) over
+          microstates, the Gibbs entropy is
+          \( S = -k_B \sum_i p_i \ln p_i \), which reduces to
+          \( k_B\ln\Omega \) when all \(\Omega\) accessible states are
+          equally likely (\(p_i = 1/\Omega\)). This is the same functional form
+          as Shannon entropy up to the constant \(k_B\) and the choice of log
+          base — entropy <em>is</em> the missing information about which
+          microstate the system is in.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 3 (energy / microstates) ===================== -->
+  <section class="concept-step" id="step-well">
+    <p class="step-num">Step 3 · What energy is</p>
+    <h2>Energy is room to roam — and that room is the microstates</h2>
+    <div class="prose">
+      <p>
+        We've been counting microstates abstractly. Here is where they come
+        from physically. Picture a particle in a <strong>potential well</strong>
+        made of two stacked Gaussians: a <em>wide, shallow</em> basin with a
+        <em>narrow, steep</em> well sunk into its center. Its energy is split
+        between <em>motion</em> (kinetic) and <em>depth</em> (potential), and the
+        dynamics endlessly trade one for the other while keeping the total fixed.
+        That's all a Hamiltonian does: shuffle energy between kinetic and
+        potential along a path of constant total energy.
+      </p>
+      <p>
+        We're looking <strong>straight down</strong> on the well, colored by
+        depth — the bright core is the steep central well, the broad tint is the
+        shallow basin. The orange ring is the <strong>energy level</strong>
+        \(V=E\): the particle can go anywhere inside it and turns back right at
+        the ring, where all its energy is momentarily potential and none
+        kinetic. <mark>Energy is literally how far the particle can roam.</mark>
+        Raise it and watch the reachable region widen — and notice how it jumps
+        outward once the energy clears the steep core and the wide basin opens up.
+      </p>
+    </div>
+
+    <div class="widget" id="ww">
+      <div class="widget-titlewrap"><div class="widget-title"><span class="wt-num">3</span>A particle roaming a two-Gaussian well <span class="wt-sub">live · 3D · drag to rotate</span></div></div>
+      <div class="widget-controls">
+        <label>energy &nbsp;E = <span class="val" id="ww-eV">−0.80</span>
+          <input type="range" id="ww-e" min="-2.3" max="-0.05" step="0.01" value="-0.8">
+        </label>
+        <label>particles &nbsp;N = <span class="val" id="ww-nV">3</span>
+          <input type="range" id="ww-n" min="1" max="5" step="1" value="3">
+        </label>
+      </div>
+      <div class="toggle-row">
+        <button id="ww-play" class="on">⏸ pause</button>
+        <button id="ww-grid">▦ show microstate grid</button>
+        <button id="ww-clear">↺ clear trails</button>
+      </div>
+      <canvas id="ww-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="ww-readout"></div>
+      <p class="caption">A 3D view of the well, colored by depth (bright =
+        deep core, dark = shallow shelf). The blue sheet is the energy level
+        \(V=E\); particles move under it via energy-conserving dynamics, fast in
+        the deep core and slow at the turning ring. Lift \(E\) to watch a
+        particle climb out of the core onto the shelf. Turn on the grid to
+        discretize the surface into microstates and count the reachable ones.</p>
+    </div>
+
+    <div class="prose">
+      <p>
+        Now <strong>discretize</strong>. Lay a fine grid over the map: each cell
+        is one <em>single-particle state</em>. A cell is <em>accessible</em> if
+        it lies inside the energy contour (a particle could be there without
+        violating energy conservation). Call the number of accessible cells
+        \(M\). With a single particle there are \(M\) microstates and
+        \(S=\ln M\); the lone particle traces a thin ribbon, so turn up the
+        particle count or just wait to see the \(M\) cells really are all
+        available.
+      </p>
+      <p>
+        But with <strong>\(N\) particles</strong>, each free to occupy any of
+        the \(M\) cells, the system's microstates are the
+        <em>combinations</em> of those choices — exactly the
+        "\(N\) particles in \(M\) boxes" counting from earlier:
+      </p>
+      <p style="text-align:center">\[ \Omega = M^{N}, \qquad S = \ln\Omega = N\ln M. \]</p>
+      <p>
+        Here's the payoff that ties this page together: <mark>raising the energy
+        widens the basin, so \(M\) grows; and \(\Omega=M^N\) — hence
+        \(S=N\ln M\) — grows both with the energy and with every particle
+        added.</mark> That is "adding energy adds entropy," in continuous phase
+        space, before we abstract it. The next step strips the bowl away and
+        keeps only the count, as labeled quanta dropped into bins. (The grid
+        counter tracks \(M\) and the single-particle cells explored; \(\Omega\)
+        is then \(M^N\).)
+      </p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version</summary>
+      <div class="formal-body prose">
+        <p>
+          Each particle obeys Hamilton's equations for
+          \(H=\tfrac12|\mathbf p|^2 + V(\mathbf q)\) with the two-Gaussian
+          well \(V\); the integrator is velocity-Verlet (symplectic), so the
+          energy shell \(H=E\) is conserved up to \(O(\Delta t^2)\) bounded
+          error. The classically accessible region is \(\{\mathbf q : V(\mathbf
+          q)\le E\}\); discretized, it holds \(M(E)\) single-particle cells. For
+          \(N\) independent, distinguishable particles each on that shell the
+          joint count is \(\Omega = M^{N}\) and \(S = k_B\ln\Omega = N k_B\ln M\)
+          — extensive in \(N\), matching the "\(N\) in \(M\) boxes" counting used
+          earlier (identical particles would carry a Gibbs \(1/N!\); for
+          \(M\gg N\) this shifts \(S\) by a constant and doesn't change the
+          picture). Because \(V\) is confining, \(M(E)\) increases with \(E\), so
+          \(\partial S/\partial E = 1/T > 0\) recovers temperature from a purely
+          mechanical picture. Ergodicity is why a long single trajectory, or many
+          short ones, fill the accessible cells — the assumption underneath
+          equating time averages with the microstate count.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 4 (temperature) ===================== -->
+  <section class="concept-step" id="step-temp">
+    <p class="step-num">Step 4 · The hinge</p>
+    <h2>Temperature is the slope of entropy against energy</h2>
+    <div class="prose">
+      <p>
+        We now have the two players — energy, which systems shed, and entropy,
+        which they accumulate. The natural question is what couples them. The
+        answer is the most important and least intuitive idea on this page:
+        <strong>temperature is not "how hot something is." Temperature is
+        defined entirely in terms of entropy and energy</strong>, as the rate
+        one trades for the other:
+      </p>
+      <p style="text-align:center">\[ \frac{1}{T} \;\equiv\; \frac{\partial S}{\partial E}. \]</p>
+      <p>
+        Read it literally: \(\partial S/\partial E\) is "how many extra
+        arrangements you unlock per unit of energy you pour in." A system that
+        gains a lot of entropy from a little energy has a large
+        \(\partial S/\partial E\), hence a <em>small</em> \(T\) — it is cold,
+        and energy-hungry: feed it energy and its disorder shoots up. A system
+        that barely gains entropy from more energy has a small slope, hence a
+        <em>large</em> \(T\) — it is hot and energy-indifferent: it already has
+        so many arrangements that more energy hardly adds any.
+      </p>
+      <p>
+        So temperature is the <strong>local steepness of the \(S(E)\) curve</strong>,
+        flipped. Drag the point along the entropy curve below and watch the
+        slope — and therefore \(T\) — change. Notice the curve always bends the
+        same way: each extra unit of energy buys <em>fewer</em> new arrangements
+        than the last (the slope flattens). That single fact — \(S(E)\) is
+        concave — is why heating something always raises its temperature.
+      </p>
+      <p>
+        But before the curve, see <em>why</em> entropy rises at all. Below, the
+        six particles are drawn as <strong>bins</strong>, and the energy you add
+        as <strong>labeled quanta</strong> scattered among them. The point isn't
+        <em>where</em> any particular quantum lands — they carry no real
+        identity, the labels are just so you can watch them move. The point is
+        <em>how many ways</em> there are to scatter them. Each quantum can fall
+        into any of the six particles independently, so every quantum you add
+        multiplies the number of configurations by six: \( \Omega = 6^{E} \).
+        At zero energy there is one configuration and \(\Omega = 1\); add energy
+        and \(\Omega\) explodes. <strong>Entropy isn't poured in directly — it
+        is the ballooning count of ways to arrange the energy.</strong> Hit
+        resample to jump to another equally-likely scattering.
+      </p>
+    </div>
+
+    <div class="widget" id="wp">
+      <div class="widget-titlewrap"><div class="widget-title"><span class="wt-num">4</span>Adding energy adds entropy <span class="wt-sub">live · particle model</span></div></div>
+      <div class="widget-controls">
+        <label>energy added &nbsp;E = <span class="val" id="wp-eV">0</span> quanta &nbsp;·&nbsp; Ω = <span class="val" id="wp-omegaV">1</span> configs
+          <input type="range" id="wp-e" min="0" max="24" step="1" value="0">
+        </label>
+      </div>
+      <div class="toggle-row">
+        <button id="wp-shuffle" class="on">⟳ resample scattering</button>
+        <button id="wp-auto">▶ auto-shuffle</button>
+      </div>
+      <canvas id="wp-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="wp-readout"></div>
+      <p class="caption">Each particle is a bin, laid out on a flat 2D grid; the
+        numbered chips are the energy quanta currently sitting in it. "Resample"
+        scatters all the quanta into fresh random bins — every distinct
+        scattering is one more microstate, which is what \(\Omega\) counts. The
+        numbers and their order within a bin don't matter; only how the quanta
+        are split does.</p>
+    </div>
+
+    <div class="prose">
+      <p>
+        Counting this way, \(\ln\Omega = E\ln N\) grows in a perfectly straight
+        line — each quantum adds the same \(\ln N\) of entropy. The real story
+        has one subtle twist: energy quanta are genuinely
+        <strong>identical</strong>, so swapping two of them is not a new state
+        at all. That indistinguishability trims the count (from \(N^E\) down to
+        the number of distinct <em>splits</em>, \(\binom{E+N-1}{E}\)) just enough
+        to <strong>bend the straight line into a gently curving \(S(E)\)</strong>
+        — one whose slope shrinks as energy grows. That curvature is exactly
+        what makes temperature rise as you heat. Drag the point along the curve
+        and watch the slope — and therefore \(T\) — change.
+      </p>
+    </div>
+
+    <div class="widget" id="wt">
+      <div class="widget-titlewrap"><div class="widget-title"><span class="wt-num">5</span>Temperature is the slope of S(E) <span class="wt-sub">drag the point</span></div></div>
+      <div class="widget-controls">
+        <label>system energy &nbsp;E = <span class="val" id="wt-eV">3.0</span>
+          <input type="range" id="wt-e" min="0.4" max="9.6" step="0.05" value="3">
+        </label>
+      </div>
+      <canvas id="wt-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="wt-readout"></div>
+      <p class="caption">The curve is \(S(E)\). The white tangent is its slope
+        \(\partial S/\partial E = 1/T\) at the point you drag. Steep (left) =
+        cold and entropy-hungry; shallow (right) = hot and indifferent.</p>
+    </div>
+
+    <div class="prose">
+      <p>
+        Here's the payoff, and the reason this definition is the spine of
+        everything: that <em>one</em> slope does <strong>two jobs at once.</strong>
+      </p>
+      <p>
+        <strong>Job one — it governs a system's own response.</strong> The slope
+        at a system's current energy <em>is</em> its temperature. Nothing else
+        needed.
+      </p>
+      <p>
+        <strong>Job two — it sets the price of trading with a bath.</strong>
+        Put two systems in contact and let energy flow. Total entropy changes by
+        \( dS_\text{tot} = \big(\frac{1}{T_A}-\frac{1}{T_B}\big)\,dE_A \), so
+        energy flows from the shallower-slope system (small \(\partial S/\partial E\),
+        high \(T\)) into the steeper-slope one (low \(T\)) — because that move
+        creates more entropy than it destroys. <mark>Energy flows "hot to cold"
+        for no other reason than that it increases the total count of
+        arrangements.</mark> It stops exactly when the two slopes match:
+        \(T_A = T_B\). That equality <em>is</em> thermal equilibrium.
+      </p>
+      <p>
+        Below, two systems with adjustable starting energies are brought into
+        contact. Press play and watch energy flow until their \(S(E)\) slopes —
+        their temperatures — line up, while the total entropy climbs to its max.
+      </p>
+    </div>
+
+    <div class="widget" id="wt2">
+      <div class="widget-titlewrap"><div class="widget-title"><span class="wt-num">6</span>Two systems reaching equilibrium <span class="wt-sub">live · press play</span></div></div>
+      <div class="widget-controls">
+        <label>system A start = <span class="val" id="wt2-aV">7.0</span>
+          <input type="range" id="wt2-a" min="1" max="9" step="0.1" value="7">
+        </label>
+        <label>A's "size" \(N_A\) = <span class="val" id="wt2-nV">1.0</span>
+          <input type="range" id="wt2-n" min="0.4" max="3" step="0.1" value="1">
+        </label>
+      </div>
+      <div class="toggle-row">
+        <button id="wt2-play" class="on">⏸ pause</button>
+        <button id="wt2-reset">↺ reset</button>
+      </div>
+      <canvas id="wt2-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="wt2-readout"></div>
+      <p class="caption">Two entropy curves; dots mark each system's energy. The
+        tangents are their temperatures. Energy flows down the
+        \(\partial S/\partial E\) gradient until the slopes match — equilibrium.
+        \(N_A\) changes A's curvature, so a "bigger" A barely changes temperature
+        as it gives up energy.</p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version</summary>
+      <div class="formal-body prose">
+        <p>
+          The thermodynamic definition is \(\frac{1}{T} =
+          \left(\frac{\partial S}{\partial E}\right)_{N,V}\), with the
+          derivatives of \(S=k_B\ln\Omega\) taken at fixed particle number and
+          volume. For two systems exchanging energy at fixed total
+          \(E=E_A+E_B\), maximizing \(S_A(E_A)+S_B(E_B)\) gives
+          \(\frac{\partial S_A}{\partial E_A}=\frac{\partial S_B}{\partial E_B}\),
+          i.e. \(T_A=T_B\). Concavity of \(S(E)\) (equivalently, positive heat
+          capacity \(C=\partial E/\partial T>0\)) guarantees this is a maximum,
+          not a saddle, and that the equilibrium is stable. The quanta-exchange
+          simulation a couple of steps down is this exact argument realized
+          microscopically: the bath's near-constant slope \(-1/T\) is what makes
+          \(\ln\Omega_\text{bath}\) linear in the system's energy, which is the
+          origin of the Boltzmann factor \(e^{-E/k_BT}\).
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 4 (motivation) ===================== -->
+  <section class="concept-step" id="step-3">
+    <p class="step-num">Step 5 · The resolution</p>
+    <h2>Where \(F = E - TS\) actually comes from</h2>
+    <div class="prose">
+      <p>
+        It's tempting to present \(F = E - TS\) as a clever definition: put
+        energy and entropy on one ledger, weight entropy by temperature, done.
+        But that just relabels the mystery — <em>why</em> that combination,
+        <em>why</em> multiply by \(T\), <em>why</em> subtract? None of it is a
+        choice. Every piece is forced by a single fact we've been ignoring:
+        <strong>the system is never alone.</strong>
+      </p>
+      <p>
+        A protein in water, a gas in a room, a spin in a magnet — each sits in
+        contact with a vast <strong>bath</strong> (a "reservoir") that it freely
+        trades energy with. The second law doesn't say the <em>system's</em>
+        entropy increases. It says the <strong>total</strong> entropy of
+        everything — system plus bath — increases. So the quantity nature
+        actually maximizes is
+      </p>
+      <p style="text-align:center">\[ S_\text{tot} = S_\text{sys} + S_\text{bath}. \]</p>
+
+      <p><strong>This is the whole derivation, and it's three short steps:</strong></p>
+      <p>
+        <strong>1 — The bath's entropy depends only on the energy it has left.</strong>
+        Suppose the system grabs energy \(E\) for itself. That energy comes out
+        of the bath, so the bath now has \(E\) less. How much entropy does the
+        bath lose? By the <em>definition</em> of temperature,
+        \( \frac{1}{T} \equiv \frac{\partial S_\text{bath}}{\partial E_\text{bath}} \) —
+        temperature just <em>is</em> "how much bath entropy you gain per unit of
+        energy you hand the bath." Removing \(E\) from the bath therefore costs it
+      </p>
+      <p style="text-align:center">\[ \Delta S_\text{bath} = -\frac{E}{T}. \]</p>
+      <p>
+        <strong>There is your \(T\), and there is your minus sign — neither was a
+        modeling choice.</strong> The \(1/T\) is the bath's exchange rate between
+        energy and entropy; the minus sign is because energy the system takes is
+        energy the bath loses.
+      </p>
+      <p>
+        <strong>2 — Add up the total.</strong> Substitute into \(S_\text{tot}\):
+      </p>
+      <p style="text-align:center">\[ S_\text{tot} = S_\text{sys} - \frac{E}{T}. \]</p>
+      <p>
+        <strong>3 — Repackage from the system's point of view.</strong> The
+        system can't see the bath's internal states; it only knows its own
+        \(E\) and \(S_\text{sys}\). Multiply the line above by \(-T\) (a positive
+        number, so it flips "maximize" into "minimize"):
+      </p>
+      <p style="text-align:center">\[ -T\,S_\text{tot} = E - T\,S_\text{sys} \;\equiv\; F. \]</p>
+      <p>
+        So \(F = E - TS\) is <mark>nothing but the total entropy of the universe,
+        rewritten in energy units and with its sign flipped</mark>. Maximizing
+        \(S_\text{tot}\) and minimizing \(F\) are the <em>same statement</em>.
+        The two questions answer themselves:
+      </p>
+      <p>
+        <strong>Why multiply entropy by \(T\)?</strong> Because the bath converts
+        energy into entropy at rate \(1/T\). To compare the system's own entropy
+        against the energy it borrows from the bath, you must run that entropy
+        back through the same exchange rate — multiplying \(S\) by \(T\) puts it
+        in energy units. A hot bath (\(T\) large) barely gains entropy from extra
+        energy, so the energy term dominates; a cold bath (\(T\) small) gains a
+        lot, so even tiny energy savings matter enormously.
+      </p>
+      <p>
+        <strong>Why subtract?</strong> Because energy the system hoards is entropy
+        the bath loses. The system's gain (\(E\)) and the universe's loss
+        (\(E/T\) of bath entropy) pull in opposite directions, so they enter with
+        opposite signs.
+      </p>
+      <p>
+        The intuition builder below makes this concrete. It plots the
+        <em>universe's</em> entropy as the system's energy varies, built from its
+        two pieces — and shows that the peak of total entropy sits exactly where
+        \(F\) is smallest. Reveal the layers, then drag the bath temperature and
+        watch the balance point move.
+      </p>
+    </div>
+
+    <div class="widget" id="w3">
+      <div class="widget-titlewrap"><div class="widget-title"><span class="wt-num">7</span>Why F = E − TS: the universe’s entropy <span class="wt-sub">staged · drag T</span></div></div>
+      <div class="widget-controls">
+        <label>bath temperature &nbsp;T = <span class="val" id="w3-tV">1.5</span>
+          <input type="range" id="w3-t" min="0.3" max="3" step="0.05" value="1.5">
+        </label>
+      </div>
+      <canvas id="w3-canvas" class="widget-stage"></canvas>
+      <div class="reveal-bar">
+        <button id="w3-back" disabled>&larr; Back</button>
+        <span class="reveal-caption" id="w3-caption"></span>
+        <button id="w3-next">Now add the bath &rarr;</button>
+      </div>
+      <div class="readout" id="w3-readout"></div>
+      <p class="caption">x-axis: how much energy \(E\) the system holds. The
+        system alone wants more energy (more arrangements); the bath wants the
+        system to give energy back. Nature maximizes the <em>sum</em> — and that
+        peak is exactly where \(F=E-TS\) bottoms out.</p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version</summary>
+      <div class="formal-body prose">
+        <p>
+          Expand \(S_\text{bath}(E_\text{bath})\) to first order around the
+          system's typical energy: \(S_\text{bath}(E_0 - E) \approx
+          S_\text{bath}(E_0) - E\,\partial S_\text{bath}/\partial E_\text{bath}
+          = \text{const} - E/T\). The linear term is all that survives because
+          the bath is enormous (its second derivative \(\propto 1/C_\text{bath}\)
+          vanishes as the heat capacity \(\to\infty\)) — this is exactly what
+          "reservoir" means. Then \(S_\text{tot}=S_\text{sys}-E/T+\text{const}\),
+          and \(F=-T\,S_\text{tot}\) up to that constant.
+        </p>
+        <p>
+          Maximizing \(S_\text{tot}\) over the system's energy gives
+          \(\partial S_\text{sys}/\partial E = 1/T\) — i.e. the system's own
+          temperature equals the bath's. That stationarity condition is the
+          equilibrium the widget's peak is tracking. Formally, \(F = U-TS\) is
+          the Legendre transform of \(U\) swapping \(S\) for its conjugate \(T\),
+          and the whole construction is just \(\Delta S_\text{universe}\ge 0\)
+          written from the system's chair: a process is spontaneous iff
+          \(\Delta F \le 0\). At constant pressure the same argument with the
+          bath also exchanging volume gives \(G = H - TS\).
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 4 (mechanism) ===================== -->
+  <section class="concept-step" id="step-3b">
+    <p class="step-num">Step 6 · Watch it happen</p>
+    <h2>The second law, live: a system trading quanta with a bath</h2>
+    <div class="prose">
+      <p>
+        Everything so far has been curves and formulas. Here is the actual
+        mechanism — no equations driving it, just random energy exchange and
+        counting. We'll use the simplest exactly-countable model: a
+        <strong>small system</strong> (a few oscillators, on the left) and a
+        <strong>large bath</strong> (many oscillators, on the right). Energy
+        comes in indivisible <strong>quanta</strong>. There is a fixed total
+        number of quanta, and at every tick one quantum hops to a uniformly
+        random oscillator anywhere in the combined pool.
+      </p>
+      <p>
+        That single rule — <em>energy wanders blindly</em> — is the entire
+        engine. Nothing in it "wants" anything. Yet watch what happens to the
+        bars at the bottom: the system doesn't drift to zero energy (lowest
+        energy) and it doesn't hog everything (highest energy). It settles into
+        a steady share, fluctuating around a value, while the
+        <strong>total entropy climbs and then plateaus at its maximum</strong>.
+        That plateau is equilibrium, and it is nothing but
+        <em>the most probable way to spread the quanta</em>.
+      </p>
+      <p>
+        The reason is pure counting. For an Einstein solid of \(N\) oscillators
+        holding \(q\) quanta, the number of arrangements is
+        \( \Omega(N,q) = \binom{q+N-1}{q} \). The total number of ways for the
+        universe is \( \Omega_\text{sys}(q_s)\,\Omega_\text{bath}(q-q_s) \), and
+        the system spends time in each split in proportion to that product. The
+        product is overwhelmingly peaked — so the system is found near the peak
+        not by force but by sheer weight of numbers. Press play and watch the
+        microstate count, the entropies, and the running histogram of where the
+        system's energy lives.
+      </p>
+    </div>
+
+    <div class="widget" id="w34">
+      <div class="widget-titlewrap"><div class="widget-title"><span class="wt-num">8</span>The second law, live: quanta exchange <span class="wt-sub">live simulation</span></div></div>
+      <div class="widget-controls">
+        <label>bath size (relative) = <span class="val" id="w34-bV">8×</span>
+          <input type="range" id="w34-b" min="2" max="20" step="1" value="8">
+        </label>
+        <label>total energy quanta = <span class="val" id="w34-qV">40</span>
+          <input type="range" id="w34-q" min="10" max="120" step="1" value="40">
+        </label>
+        <label>speed = <span class="val" id="w34-sV">fast</span>
+          <input type="range" id="w34-s" min="1" max="60" step="1" value="40">
+        </label>
+      </div>
+      <div class="toggle-row">
+        <button id="w34-play" class="on">⏸ pause</button>
+        <button id="w34-reset">↺ reset (all energy in system)</button>
+      </div>
+      <canvas id="w34-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w34-readout"></div>
+      <p class="caption">Top: each column is one oscillator; stacked dots are its
+        quanta (green = system, amber = bath). Bottom-left: live system /
+        bath / total entropy. Bottom-right: histogram of the system's energy
+        over time — the distribution it visits. Start it from "all energy in the
+        system" and watch entropy flow downhill into equilibrium.</p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version</summary>
+      <div class="formal-body prose">
+        <p>
+          The equilibrium split maximizes
+          \( S_\text{tot}=k_B[\ln\Omega_\text{sys}(q_s)+\ln\Omega_\text{bath}(q-q_s)] \),
+          giving \( \partial_{q_s}\ln\Omega_\text{sys} =
+          \partial_{q_s}\ln\Omega_\text{bath} \) — the two temperatures equalize,
+          since \(1/T \equiv k_B\,\partial(\ln\Omega)/\partial E\). For a large
+          bath, \(\ln\Omega_\text{bath}(q-q_s)\approx \text{const} - q_s/ (k_BT)\)
+          is linear in the system's energy with slope \(-1/T\) — exactly the
+          straight bath line from the previous step, now emerging from a real
+          counting argument. The probability the system holds energy \(E_s\) is
+          \(P(E_s)\propto \Omega_\text{sys}(E_s)\,e^{-E_s/k_BT}\); divide out the
+          system's own degeneracy and you have the Boltzmann factor
+          \(e^{-E_s/k_BT}\) that the next step builds on. The histogram the
+          widget accumulates is a Monte Carlo estimate of exactly this \(P(E_s)\).
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 5 ===================== -->
+  <section class="concept-step" id="step-4">
+    <p class="step-num">Step 7 · Where it comes from</p>
+    <h2>The Boltzmann distribution makes it precise</h2>
+    <div class="prose">
+      <p>
+        Why <em>that</em> formula and not some other combination? Because of one
+        fact about how nature distributes probability over states. A system in
+        contact with a heat bath at temperature \(T\) occupies a microstate of
+        energy \(E_i\) with probability proportional to the
+        <strong>Boltzmann factor</strong>:
+      </p>
+      <p style="text-align:center">\[ p_i = \frac{e^{-E_i/k_BT}}{Z}, \qquad Z = \sum_i e^{-E_i/k_BT} \]</p>
+      <p>
+        The normalizer \(Z\) — the <strong>partition function</strong> — is the
+        whole story in one number: it sums the Boltzmann factor over every
+        microstate, automatically counting low-energy states heavily and
+        high-energy ones faintly. And here is the punchline that ties everything
+        together:
+      </p>
+      <p style="text-align:center">\[ F = -k_B T \ln Z \]</p>
+      <p>
+        The free energy is just the log of that sum. Below, build the partition
+        function up term by term and watch how \(Z\), and therefore \(F\),
+        emerges from summing over states — and how raising \(T\) lets
+        high-energy states start to count.
+      </p>
+    </div>
+
+    <div class="widget" id="w4">
+      <div class="widget-titlewrap"><div class="widget-title"><span class="wt-num">9</span>Building the partition function Z <span class="wt-sub">staged · drag T</span></div></div>
+      <div class="widget-controls">
+        <label>temperature &nbsp;T = <span class="val" id="w4-tV">1.0</span>
+          <input type="range" id="w4-t" min="0.2" max="4" step="0.05" value="1">
+        </label>
+      </div>
+      <canvas id="w4-canvas" class="widget-stage"></canvas>
+      <div class="reveal-bar">
+        <button id="w4-back" disabled>&larr; Back</button>
+        <span class="reveal-caption" id="w4-caption"></span>
+        <button id="w4-next">Add next state &rarr;</button>
+      </div>
+      <div class="readout" id="w4-readout"></div>
+      <p class="caption">Each bar is a microstate's Boltzmann weight
+        \(e^{-E_i/k_BT}\). Reveal them one at a time to build \(Z\); the slider
+        re-weights every revealed state live.</p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version</summary>
+      <div class="formal-body prose">
+        <p>
+          From \(F=-k_BT\ln Z\) everything thermodynamic falls out by
+          differentiation: \(S=-\partial F/\partial T\),
+          \(\langle E\rangle = -\partial \ln Z/\partial\beta\) with
+          \(\beta = 1/k_BT\), and pressure \(p=-\partial F/\partial V\).
+          Substituting the Boltzmann \(p_i\) into \(F = \langle E\rangle - TS\)
+          recovers \(-k_BT\ln Z\) exactly — the two definitions of \(F\) are the
+          same object. The relation \(F=-k_BT\ln Z\) is also why \(F\) is the
+          natural target for sampling methods: differences in \(F\) are
+          differences in log-normalizers, i.e. log-ratios of partition
+          functions.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 5 ===================== -->
+  <section class="concept-step" id="step-5">
+    <p class="step-num">Step 8 · The landscape</p>
+    <h2>Along a coordinate, it becomes a surface</h2>
+    <div class="prose">
+      <p>
+        In practice we rarely care about the single global \(F\). We care how
+        free energy varies along some coordinate we can interpret — a
+        reaction's progress, a protein's fraction folded, a distance between two
+        atoms. Call it \(x\). Integrate out everything else and you get a
+        <strong>free energy surface</strong>, or potential of mean force:
+      </p>
+      <p style="text-align:center">\[ F(x) = -k_B T \ln p(x) \]</p>
+      <p>
+        Read this backwards and it's intuitive: states the system visits often
+        (high \(p\)) are low in free energy; states it almost never visits are
+        high. <strong>Valleys are stable states; barriers are what the system
+        must climb to get between them.</strong> The depth of a basin sets how
+        populated it is; the height of a barrier sets how slowly the system
+        crosses.
+      </p>
+      <p>
+        Reshape the landscape below. The cloud of samples is the equilibrium
+        distribution \(p(x)\propto e^{-F(x)/k_BT}\) — deepen a basin and watch
+        samples pile into it; raise the temperature and watch them spill over
+        the barrier.
+      </p>
+    </div>
+
+    <div class="widget" id="w5">
+      <div class="widget-titlewrap"><div class="widget-title"><span class="wt-num">10</span>The free energy landscape <span class="wt-sub">reshape & sample</span></div></div>
+      <div class="widget-controls">
+        <label>left basin depth = <span class="val" id="w5-dV">2.0</span>
+          <input type="range" id="w5-d" min="0" max="4" step="0.1" value="2">
+        </label>
+        <label>barrier height = <span class="val" id="w5-bV">3.0</span>
+          <input type="range" id="w5-b" min="0.2" max="5" step="0.1" value="3">
+        </label>
+        <label>temperature &nbsp;T = <span class="val" id="w5-tV">1.0</span>
+          <input type="range" id="w5-t" min="0.2" max="3" step="0.05" value="1">
+        </label>
+      </div>
+      <div class="toggle-row">
+        <button id="w5-toggle" class="on">showing: F(x) &amp; samples</button>
+      </div>
+      <canvas id="w5-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w5-readout"></div>
+      <p class="caption">White curve: the free energy surface \(F(x)\). Green
+        cloud: where the system actually spends its time. Deep, narrow basins
+        trap; low \(T\) sharpens the contrast.</p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version</summary>
+      <div class="formal-body prose">
+        <p>
+          \(F(x) = -k_BT\ln\!\int \delta(\xi(\mathbf r)-x)\,
+          e^{-E(\mathbf r)/k_BT}\,d\mathbf r + \text{const}\), the marginal of
+          the Boltzmann density along a collective variable \(\xi\). The
+          gradient \(-\nabla F(x)\) is the mean force on \(x\) (hence "potential
+          of mean force"). Free energy <em>differences</em> between basins —
+          \(\Delta F = -k_BT\ln(p_A/p_B)\) — are observable and reproducible
+          even when absolute \(F\) is not, because the unknown constant and
+          \(Z\) cancel. Estimating these differences when barriers make direct
+          sampling of \(p(x)\) intractable is the entire job of enhanced
+          sampling and free energy methods (umbrella sampling, metadynamics,
+          thermodynamic integration, and their learned-sampler descendants).
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== RECAP ===================== -->
+  <section class="recap prose">
+    <h2>Putting it together</h2>
+    <p>
+      Start from the puzzle: systems don't just minimize energy, or ice would
+      never melt. The missing ingredient is <strong>counting</strong> — the
+      number of arrangements, named entropy, \(S=k_B\ln\Omega\). Temperature is
+      the exchange rate that lets us weigh energy against entropy on one ledger,
+      giving the free energy \(F = E - TS\): <mark>energy discounted by how many
+      ways there are to arrange it.</mark>
+    </p>
+    <p>
+      That trade-off isn't a guess — it falls straight out of the Boltzmann
+      distribution, where \(F = -k_BT\ln Z\) is just the log of the sum over all
+      states. And projected onto a coordinate we can interpret, \(F(x) =
+      -k_BT\ln p(x)\) turns into a landscape of valleys and barriers that
+      explains both what's stable and how fast things change.
+    </p>
+    <p class="lede">
+      Where it shows up: every protein-folding free energy surface, every
+      binding affinity \(\Delta G\), every phase transition, and — closer to
+      home — every method that estimates \(\Delta F\) by reweighting or biased
+      sampling is, at bottom, trying to compute a ratio of partition functions
+      that brute-force sampling can't reach.
+    </p>
+  </section>
+
+</div>
+
+<script>
+function setupCanvas(canvas, cssW, cssH) {
+  const dpr = window.devicePixelRatio || 1;
+  canvas.style.width = cssW + 'px';
+  canvas.style.maxWidth = '100%';
+  canvas.style.height = cssH + 'px';
+  canvas.width = cssW * dpr;
+  canvas.height = cssH * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  canvas._cssW = cssW; canvas._cssH = cssH;
+  return ctx;
+}
+function makeView(canvas, b) {
+  const w = canvas._cssW, h = canvas._cssH;
+  return {
+    ...b, w, h,
+    x: mx => (mx - b.xmin) / (b.xmax - b.xmin) * w,
+    y: my => h - (my - b.ymin) / (b.ymax - b.ymin) * h
+  };
+}
+const CSS = getComputedStyle(document.documentElement);
+const C = {
+  accent:  CSS.getPropertyValue('--accent').trim(),
+  accent2: CSS.getPropertyValue('--accent-2').trim(),
+  accent3: CSS.getPropertyValue('--accent-3').trim(),
+  axis:    CSS.getPropertyValue('--axis-c').trim(),
+  ink:     CSS.getPropertyValue('--ink').trim(),
+  inkSoft: CSS.getPropertyValue('--ink-soft').trim(),
+  line:    CSS.getPropertyValue('--line').trim()
+};
+function typeset(el){ if(window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([el]); }
+
+/* =========================================================================
+   STEP 1 — particles in a well vs spread out (entropy-vs-energy intuition)
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('w1-canvas');
+  const ctx = setupCanvas(canvas, 760, 300);
+  const W = canvas._cssW, H = canvas._cssH;
+  const tEl = document.getElementById('w1-t');
+  const N = 26;
+  // two regions: a narrow low-energy well (left-center) and the broad box
+  let parts = [];
+  for (let i=0;i<N;i++) parts.push({x: W*0.5, y: H*0.62, tx: W*0.5, ty: H*0.62});
+
+  function frac(T){ // fraction of particles spread out (higher T -> more spread)
+    // simple two-state: spread costs energy dE=1 but gains entropy via many slots
+    const dE = 1.0, lnW = 2.3; // ln of slot ratio
+    const pSpread = 1/(1+Math.exp(dE/T - lnW)); // logistic in 1/T
+    return pSpread;
+  }
+  function reseed(T){
+    const f = frac(T);
+    const nSpread = Math.round(N*f);
+    for (let i=0;i<N;i++){
+      if (i < nSpread){
+        parts[i].tx = W*0.08 + Math.random()*W*0.84;
+        parts[i].ty = H*0.14 + Math.random()*H*0.78;
+      } else {
+        // huddle in the well
+        parts[i].tx = W*0.5 + (Math.random()-0.5)*W*0.13;
+        parts[i].ty = H*0.66 + (Math.random()-0.5)*H*0.16;
+      }
+    }
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    // energy well sketch (a dip in the middle)
+    ctx.strokeStyle = C.line; ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    for(let px=0;px<=W;px++){
+      const xx=(px/W-0.5);
+      const yy = H*0.30 + H*0.55*(1 - Math.exp(-(xx*xx)/0.012));
+      px===0?ctx.moveTo(px,yy):ctx.lineTo(px,yy);
+    }
+    ctx.stroke();
+    ctx.fillStyle='rgba(98,210,162,0.06)';
+    ctx.beginPath();
+    for(let px=0;px<=W;px++){
+      const xx=(px/W-0.5);
+      const yy = H*0.30 + H*0.55*(1 - Math.exp(-(xx*xx)/0.012));
+      px===0?ctx.moveTo(px,yy):ctx.lineTo(px,yy);
+    }
+    ctx.lineTo(W,H); ctx.lineTo(0,H); ctx.closePath(); ctx.fill();
+    // particles
+    parts.forEach(p=>{
+      p.x += (p.tx-p.x)*0.12; p.y += (p.ty-p.y)*0.12;
+      const inWell = p.ty > H*0.5 && Math.abs(p.tx-W*0.5)<W*0.16;
+      ctx.fillStyle = inWell ? C.accent : C.accent2;
+      ctx.beginPath(); ctx.arc(p.x,p.y,4.5,0,Math.PI*2); ctx.fill();
+    });
+  }
+  let raf;
+  function loop(){ draw(); raf=requestAnimationFrame(loop); }
+  function update(){
+    const T = parseFloat(tEl.value);
+    document.getElementById('w1-tV').textContent = T.toFixed(2);
+    reseed(T);
+    const f = frac(T);
+    const out = document.getElementById('w1-readout');
+    out.innerHTML = `At \\(T=${T.toFixed(2)}\\): about <b style="color:${C.accent2}">${Math.round(f*100)}%</b> of particles pay the energy cost to spread out, because the spread-out region offers far more arrangements. Low \\(T\\) → they huddle in the <b style="color:${C.accent}">low-energy well</b>.`;
+    typeset(out);
+  }
+  tEl.addEventListener('input', update);
+  update(); loop();
+})();
+
+/* =========================================================================
+   STEP 2 — Omega = M^N explodes, ln Omega grows linearly
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('w2b-canvas');
+  const ctx = setupCanvas(canvas, 760, 300);
+  const view = makeView(canvas, {xmin:0, xmax:14, ymin:0, ymax:1});
+  const nEl = document.getElementById('w2b-n');
+  const mEl = document.getElementById('w2b-m');
+
+  function draw(){
+    const N = parseInt(nEl.value), M = parseInt(mEl.value);
+    document.getElementById('w2b-nV').textContent = N;
+    document.getElementById('w2b-mV').textContent = M;
+    ctx.clearRect(0,0,view.w,view.h);
+
+    // compute ln Omega across n=1..14 for current M, and the running Omega at N
+    const lnOmega = n => n*Math.log(M);
+    const maxLn = 14*Math.log(M);
+    const yv = makeView(canvas, {xmin:0,xmax:14,ymin:0,ymax:maxLn*1.05});
+
+    // axes
+    ctx.strokeStyle=C.axis; ctx.lineWidth=1;
+    ctx.beginPath();
+    ctx.moveTo(yv.x(0),yv.y(0)); ctx.lineTo(yv.x(14),yv.y(0));
+    ctx.moveTo(yv.x(0),yv.y(0)); ctx.lineTo(yv.x(0),yv.y(maxLn*1.05));
+    ctx.stroke();
+    ctx.fillStyle=C.inkSoft; ctx.font='12px JetBrains Mono';
+    ctx.fillText('ln Ω', yv.x(0)+6, 16);
+    ctx.fillText('N (particles)', yv.x(11), yv.y(0)+18);
+
+    // ln Omega line (the gentle, additive currency)
+    ctx.strokeStyle=C.accent3; ctx.lineWidth=2.6;
+    ctx.beginPath();
+    for(let n=0;n<=14;n++){ const X=yv.x(n),Y=yv.y(lnOmega(n)); n===0?ctx.moveTo(X,Y):ctx.lineTo(X,Y); }
+    ctx.stroke();
+    // marker at N
+    ctx.fillStyle=C.accent;
+    ctx.beginPath(); ctx.arc(yv.x(N),yv.y(lnOmega(N)),6,0,Math.PI*2); ctx.fill();
+
+    // Omega value as text (formatted)
+    const Omega = Math.pow(M,N);
+    let omegaStr;
+    if (Omega < 1e6) omegaStr = Omega.toLocaleString('en-US');
+    else { const e = Math.floor(Math.log10(Omega)); const m = Omega/Math.pow(10,e); omegaStr = m.toFixed(2)+' × 10^'+e; }
+    const out = document.getElementById('w2b-readout');
+    out.innerHTML = `\\(\\Omega = ${M}^{${N}} = \\) <b style="color:${C.accent}">${omegaStr}</b> arrangements, but \\(\\ln\\Omega = ${lnOmega(N).toFixed(2)}\\) — the blue curve. The count is astronomical; its logarithm is tame and grows by the same step for each added particle.`;
+    typeset(out);
+  }
+  nEl.addEventListener('input', draw);
+  mEl.addEventListener('input', draw);
+  draw();
+})();
+
+/* =========================================================================
+   STEP 3 (well) — energy as room to roam, on a SOLID 3D surface (not a
+   wireframe). Potential = two stacked isotropic Gaussian wells:
+     V(r) = -A1 exp(-r^2/2 s1^2) - A2 exp(-r^2/2 s2^2).
+   The surface z = V is rendered once into an offscreen buffer as shaded,
+   depth-sorted, Lambert-lit quads (painter's algorithm — solid, occluding,
+   no see-through). Particles obey velocity-Verlet Hamiltonian dynamics pinned
+   to the shell H=E. A translucent "water line" at z=E shows the energy level;
+   the particle swims below it, and as E rises it climbs out of the deep narrow
+   core onto the wide shallow shelf — a lower-energy basin opening into a
+   higher-energy region. Grid toggle counts accessible cells: Omega, S=lnOmega.
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('ww-canvas');
+  const ctx = setupCanvas(canvas, 760, 460);
+  const W = canvas._cssW, H = canvas._cssH;
+  const eEl = document.getElementById('ww-e');
+  const nEl = document.getElementById('ww-n');
+  const playBtn = document.getElementById('ww-play');
+  const gridBtn = document.getElementById('ww-grid');
+  const clearBtn = document.getElementById('ww-clear');
+  const eValEl = document.getElementById('ww-eV');
+  const nValEl = document.getElementById('ww-nV');
+  const outEl  = document.getElementById('ww-readout');
+  let lastReadout = '';
+
+  const L = 3.0;
+  const A1 = 0.8, s1 = 1.8;            // wide shallow
+  const A2 = 1.6, s2 = 0.45;           // narrow steep
+  const V  = (x,y) => { const r2=x*x+y*y; return -A1*Math.exp(-r2/(2*s1*s1)) - A2*Math.exp(-r2/(2*s2*s2)); };
+  const Vx = (x,y) => { const r2=x*x+y*y; return A1*(x/(s1*s1))*Math.exp(-r2/(2*s1*s1)) + A2*(x/(s2*s2))*Math.exp(-r2/(2*s2*s2)); };
+  const Vy = (x,y) => { const r2=x*x+y*y; return A1*(y/(s1*s1))*Math.exp(-r2/(2*s1*s1)) + A2*(y/(s2*s2))*Math.exp(-r2/(2*s2*s2)); };
+  const Vmin = -(A1+A2);
+  const zEx = 1.5;                      // vertical exaggeration for visibility
+
+  let playing = true, showGrid = false;
+  let parts = [];
+  let visited = new Set();
+  const GN = 30, cell = (2*L)/GN;
+
+  // ---------- 3D camera (orthographic, rotatable) ----------
+  let az = 0.70, el = 0.86;
+  let view, rt, up, SCALE=50, CX=W*0.42, CY=H*0.52;
+  function recomputeCamera(){
+    view = [Math.cos(el)*Math.cos(az), Math.cos(el)*Math.sin(az), Math.sin(el)];
+    rt = [-view[1], view[0], 0]; { const m=Math.hypot(rt[0],rt[1],rt[2])||1e-6; rt=[rt[0]/m,rt[1]/m,rt[2]/m]; }
+    up = [ view[1]*rt[2]-view[2]*rt[1], view[2]*rt[0]-view[0]*rt[2], view[0]*rt[1]-view[1]*rt[0] ];
+    // autofit scale + offset so the surface fills the canvas at this angle
+    let minX=1e9,maxX=-1e9,minY=1e9,maxY=-1e9;
+    for(let i=0;i<=12;i++)for(let j=0;j<=12;j++){
+      const x=-L+(2*L)*i/12, y=-L+(2*L)*j/12;
+      for(const z of [0, Vmin]){ const [rx,ry]=rawProj(x,y,z); minX=Math.min(minX,rx);maxX=Math.max(maxX,rx);minY=Math.min(minY,ry);maxY=Math.max(maxY,ry); }
+    }
+    const padL=70, padR=90, padT=24, padB=24;
+    const availW=W-padL-padR, availH=H-padT-padB;
+    SCALE=Math.min(availW/(maxX-minX), availH/(maxY-minY))*0.96;
+    CX=padL + (availW-(maxX+minX)*SCALE)/2;
+    CY=padT + availH - ( -minY*SCALE ) - (availH-(maxY-minY)*SCALE)/2;
+  }
+  function rawProj(x,y,z){ const Z=z*zEx; return [ x*rt[0]+y*rt[1]+Z*rt[2], x*up[0]+y*up[1]+Z*up[2], x*view[0]+y*view[1]+Z*view[2] ]; }
+  function proj(x,y,z){ const [rx,ry,d]=rawProj(x,y,z); return [CX+rx*SCALE, CY-ry*SCALE, d]; }
+
+  // ---------- colormap (deep -> hot/bright, shallow -> deep indigo) high contrast ----------
+  function color(t){
+    const stops=[[0.0,[255,248,150]],[0.22,[255,176,59]],[0.45,[120,225,165]],[0.70,[33,128,140]],[1.0,[16,20,46]]];
+    t=Math.max(0,Math.min(1,t));
+    for(let i=0;i<stops.length-1;i++){ const [a,ca]=stops[i],[b,cb]=stops[i+1];
+      if(t<=b){ const u=(t-a)/(b-a); return [ca[0]+(cb[0]-ca[0])*u, ca[1]+(cb[1]-ca[1])*u, ca[2]+(cb[2]-ca[2])*u]; } }
+    return stops[stops.length-1][1];
+  }
+
+  // ---------- (re)build the shaded surface into an offscreen buffer ----------
+  const off = document.createElement('canvas'); off.width=W; off.height=H;
+  function buildSurface(){
+    const o=off.getContext('2d');
+    o.clearRect(0,0,W,H);
+    const M=46, Ld=[0.32,-0.42,0.85]; { const m=Math.hypot(...Ld); Ld[0]/=m;Ld[1]/=m;Ld[2]/=m; }
+    const quads=[];
+    for(let i=0;i<M;i++){ for(let j=0;j<M;j++){
+      const x0=-L+(2*L)*i/M, x1=-L+(2*L)*(i+1)/M, y0=-L+(2*L)*j/M, y1=-L+(2*L)*(j+1)/M;
+      const c00=[x0,y0,V(x0,y0)], c10=[x1,y0,V(x1,y0)], c11=[x1,y1,V(x1,y1)], c01=[x0,y1,V(x0,y1)];
+      const e1=[c11[0]-c00[0], c11[1]-c00[1], (c11[2]-c00[2])*zEx];
+      const e2=[c01[0]-c10[0], c01[1]-c10[1], (c01[2]-c10[2])*zEx];
+      let n=[e1[1]*e2[2]-e1[2]*e2[1], e1[2]*e2[0]-e1[0]*e2[2], e1[0]*e2[1]-e1[1]*e2[0]];
+      const nm=Math.hypot(...n)||1; n=[n[0]/nm,n[1]/nm,n[2]/nm]; if(n[2]<0) n=[-n[0],-n[1],-n[2]];
+      const shade=0.40+0.60*Math.max(0, n[0]*Ld[0]+n[1]*Ld[1]+n[2]*Ld[2]);
+      const Vavg=(c00[2]+c10[2]+c11[2]+c01[2])/4;
+      const base=color((Vavg-Vmin)/(0-Vmin));
+      const p00=proj(...c00), p10=proj(...c10), p11=proj(...c11), p01=proj(...c01);
+      const depth=(p00[2]+p10[2]+p11[2]+p01[2])/4;
+      quads.push({pts:[p00,p10,p11,p01], depth, col:`rgb(${(base[0]*shade)|0},${(base[1]*shade)|0},${(base[2]*shade)|0})`});
+    }}
+    quads.sort((a,b)=>a.depth-b.depth);
+    for(const q of quads){
+      o.beginPath(); o.moveTo(q.pts[0][0],q.pts[0][1]);
+      for(let k=1;k<4;k++) o.lineTo(q.pts[k][0],q.pts[k][1]); o.closePath();
+      o.fillStyle=q.col; o.fill(); o.strokeStyle=q.col; o.lineWidth=0.6; o.stroke();
+    }
+    // static colorbar (baked once, not redrawn every frame)
+    const cbX=W-46, cbY=40, cbW=15, cbH=H-90;
+    for(let k=0;k<cbH;k++){ const c=color(k/cbH); o.fillStyle=`rgb(${c[0]|0},${c[1]|0},${c[2]|0})`; o.fillRect(cbX,cbY+k,cbW,1); }
+    o.strokeStyle=C.line; o.lineWidth=1; o.strokeRect(cbX,cbY,cbW,cbH);
+    o.fillStyle=C.inkSoft; o.font='10px JetBrains Mono'; o.textAlign='right';
+    o.fillText('deep', cbX-4, cbY+8); o.fillText('shallow', cbX-4, cbY+cbH);
+    o.textAlign='left';
+  }
+  const CB={x:W-46,y:40,w:15,h:H-90};
+  recomputeCamera(); buildSurface();
+
+  function radiusAt(E){ if(E<=Vmin) return 0; if(E>=0) return L*1.5; let lo=0,hi=L*1.5; for(let k=0;k<28;k++){const m=(lo+hi)/2;(V(m,0)<=E)?lo=m:hi=m;} return lo; }
+
+  function spawn(E){
+    const rmax=radiusAt(E); let x,y,t=0;
+    do{ const rr=Math.sqrt(Math.random())*rmax*0.98, th=Math.random()*Math.PI*2; x=rr*Math.cos(th); y=rr*Math.sin(th); t++; }
+    while(V(x,y)>E-1e-3 && t<200);
+    const ke=Math.max(0,E-V(x,y)); const sp=Math.sqrt(2*ke), th=Math.random()*Math.PI*2;
+    return { x,y, vx:sp*Math.cos(th), vy:sp*Math.sin(th), trail:[] };
+  }
+  function reseed(){ const E=parseFloat(eEl.value), n=parseInt(nEl.value); parts=[]; for(let i=0;i<n;i++) parts.push(spawn(E)); }
+
+  function stepDynamics(E){
+    const dt=0.008, sub=3;
+    for(let it=0;it<sub;it++) for(const p of parts){
+      let ax=-Vx(p.x,p.y), ay=-Vy(p.x,p.y);
+      p.x+=p.vx*dt+0.5*ax*dt*dt; p.y+=p.vy*dt+0.5*ay*dt*dt;
+      const ax2=-Vx(p.x,p.y), ay2=-Vy(p.x,p.y);
+      p.vx+=0.5*(ax+ax2)*dt; p.vy+=0.5*(ay+ay2)*dt;
+      const v=V(p.x,p.y);
+      if(v>=E){ p.x*=0.985; p.y*=0.985; p.vx*=0.4; p.vy*=0.4; }
+      else { const keNow=0.5*(p.vx*p.vx+p.vy*p.vy), keT=E-v; if(keNow>1e-9){ const sc=Math.sqrt(keT/keNow); p.vx*=sc; p.vy*=sc; } }
+    }
+    for(const p of parts){ const i=Math.floor((p.x+L)/cell), j=Math.floor((p.y+L)/cell);
+      if(i>=0&&i<GN&&j>=0&&j<GN){
+        // mark visited only if this is a counted accessible cell (center V<=E),
+        // so the visited tally can never exceed the true Omega
+        const mx=-L+(i+0.5)*cell, my=-L+(j+0.5)*cell;
+        if(V(mx,my)<=E) visited.add(i+','+j);
+      }
+      p.trail.push([p.x,p.y]); if(p.trail.length>90) p.trail.shift(); }
+  }
+
+  function render(){
+    const E=parseFloat(eEl.value);
+    ctx.clearRect(0,0,W,H);
+    ctx.drawImage(off,0,0);                       // static shaded surface
+
+    const rmax=radiusAt(E);
+
+    // microstate grid: highlight accessible single-particle cells on the surface
+    let M=0;
+    if(showGrid){
+      for(let i=0;i<GN;i++)for(let j=0;j<GN;j++){
+        const cx0=-L+i*cell, cy0=-L+j*cell, mx=cx0+cell/2, my=cy0+cell/2;
+        if(V(mx,my)<=E){ M++;
+          const a=proj(cx0,cy0,V(cx0,cy0)), b=proj(cx0+cell,cy0,V(cx0+cell,cy0)),
+                c=proj(cx0+cell,cy0+cell,V(cx0+cell,cy0+cell)), d=proj(cx0,cy0+cell,V(cx0,cy0+cell));
+          ctx.beginPath(); ctx.moveTo(a[0],a[1]); ctx.lineTo(b[0],b[1]); ctx.lineTo(c[0],c[1]); ctx.lineTo(d[0],d[1]); ctx.closePath();
+          ctx.fillStyle = visited.has(i+','+j) ? 'rgba(255,255,255,0.34)' : 'rgba(255,255,255,0.10)';
+          ctx.fill();
+        }
+      }
+    } else { for(let i=0;i<GN;i++)for(let j=0;j<GN;j++){const mx=-L+(i+0.5)*cell,my=-L+(j+0.5)*cell; if(V(mx,my)<=E)M++;} }
+
+    // translucent "water" cap at z=E over the accessible disk
+    if(rmax>0.01){
+      ctx.beginPath();
+      for(let k=0;k<=72;k++){ const th=k/72*Math.PI*2; const [sx,sy]=proj(rmax*Math.cos(th), rmax*Math.sin(th), E); k===0?ctx.moveTo(sx,sy):ctx.lineTo(sx,sy); }
+      ctx.closePath();
+      ctx.fillStyle='rgba(106,163,255,0.20)'; ctx.fill();
+      ctx.strokeStyle=C.accent2; ctx.lineWidth=2.4; ctx.stroke();
+    }
+
+    // trails
+    ctx.lineWidth=1.2; ctx.strokeStyle='rgba(10,12,20,0.55)';
+    for(const p of parts){ if(p.trail.length>1){ ctx.beginPath();
+      p.trail.forEach((t,k)=>{ const [sx,sy]=proj(t[0],t[1],V(t[0],t[1])); k===0?ctx.moveTo(sx,sy):ctx.lineTo(sx,sy); }); ctx.stroke(); } }
+    // particles (sorted by depth so nearer draw last)
+    const drawn=parts.map(p=>({p, s:proj(p.x,p.y,V(p.x,p.y))})).sort((a,b)=>a.s[2]-b.s[2]);
+    const R=parts.length>40?2.6:4.5;
+    for(const {s} of drawn){
+      ctx.fillStyle='#0b0e14'; ctx.beginPath(); ctx.arc(s[0],s[1],R+1.6,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle='#ffffff'; ctx.beginPath(); ctx.arc(s[0],s[1],R,0,Math.PI*2); ctx.fill();
+    }
+
+    // colorbar: gradient is baked into the offscreen image; draw only the live E marker
+    const tE=Math.max(0,Math.min(1,(E-Vmin)/(0-Vmin)));
+    ctx.fillStyle=C.accent2; ctx.beginPath();
+    ctx.moveTo(CB.x+CB.w+2, CB.y+tE*CB.h); ctx.lineTo(CB.x+CB.w+9, CB.y+tE*CB.h-5); ctx.lineTo(CB.x+CB.w+9, CB.y+tE*CB.h+5); ctx.closePath(); ctx.fill();
+
+    // readout: plain Unicode (no MathJax) so it can update every frame cheaply
+    const N=parts.length;
+    const lnOmega = M>0 ? N*Math.log(M) : 0;          // Ω = M^N  ⇒  S = ln Ω = N ln M
+    const Omega = Math.exp(lnOmega);
+    const omegaStr = (!isFinite(Omega)||Omega>=1e6) ? Omega.toExponential(2) : Math.round(Omega).toLocaleString('en-US');
+    const eStr=(E<0?'−':'')+Math.abs(E).toFixed(2);
+    eValEl.textContent = eStr;
+    nValEl.textContent = N;
+    const html = showGrid
+      ? `<b style="color:${C.accent}">M = ${M}</b> accessible single-particle cells. With <b>N = ${N}</b> particle${N>1?'s':''}, each free to sit in any of them, the configuration space is <b>Ω = M<sup>N</sup> = ${M}<sup>${N}</sup> = ${omegaStr}</b>, so <b>S = ln Ω = N ln M = ${lnOmega.toFixed(2)}</b>. Explored <b>${visited.size} of ${M}</b> cells so far. Raise E: M grows as the basin opens, and Ω — hence S — grows with it (and with every added particle).`
+      : `Energy <b>E = ${eStr}</b>. The blue sheet is the energy level; particles speed through the deep core and slow at the turning ring V = E. Lift E above the steep core and they spill into the wide shallow basin — visibly more room. Turn on the grid to count the microstates of all ${N} particle${N>1?'s':''}.`;
+    if(html!==lastReadout){ outEl.innerHTML = html; lastReadout = html; }
+  }
+
+  let raf;
+  function loop(){
+    const E=parseFloat(eEl.value);
+    if(needsRebuild){ recomputeCamera(); buildSurface(); needsRebuild=false; }
+    if(playing){ stepDynamics(E); }
+    render();
+    raf=requestAnimationFrame(loop);
+  }
+
+  playBtn.addEventListener('click', ()=>{ playing=!playing; playBtn.classList.toggle('on',playing); playBtn.textContent=playing?'⏸ pause':'▶ play'; });
+  gridBtn.addEventListener('click', ()=>{ showGrid=!showGrid; gridBtn.classList.toggle('on',showGrid); gridBtn.textContent=showGrid?'▦ hide microstate grid':'▦ show microstate grid'; render(); });
+  clearBtn.addEventListener('click', ()=>{ visited.clear(); parts.forEach(p=>p.trail=[]); render(); });
+  eEl.addEventListener('input', ()=>{ visited.clear(); reseed(); render(); });
+
+  // ---------- drag to orbit (rotate the camera) ----------
+  let dragging=false, lastX=0, lastY=0, needsRebuild=false;
+  function ptr(ev){ const t=ev.touches?ev.touches[0]:ev; return [t.clientX, t.clientY]; }
+  function onDown(ev){ dragging=true; [lastX,lastY]=ptr(ev); ev.preventDefault(); }
+  function onMove(ev){
+    if(!dragging) return;
+    const [x,y]=ptr(ev);
+    az -= (x-lastX)*0.010;
+    el += (y-lastY)*0.008;
+    el = Math.max(0.18, Math.min(1.45, el));   // clamp elevation (avoid flipping)
+    lastX=x; lastY=y;
+    needsRebuild = true;                         // coalesce rebuilds to one per frame
+    ev.preventDefault();
+  }
+  function onUp(){ dragging=false; }
+  canvas.style.cursor='grab';
+  canvas.addEventListener('mousedown', e=>{ canvas.style.cursor='grabbing'; onDown(e); });
+  window.addEventListener('mousemove', onMove);
+  window.addEventListener('mouseup', ()=>{ canvas.style.cursor='grab'; onUp(); });
+  canvas.addEventListener('touchstart', onDown, {passive:false});
+  canvas.addEventListener('touchmove', onMove, {passive:false});
+  canvas.addEventListener('touchend', onUp);
+  nEl.addEventListener('input', ()=>{ reseed(); });
+
+  reseed(); render(); loop();
+})();
+
+/* =========================================================================
+   STEP 4 (particles) — adding energy adds entropy, shown as labeled quanta
+   scattered into bins. There are N particles (bins) and E DISTINGUISHABLE
+   quanta, each independently dropped into a uniformly random bin. A microstate
+   is one such assignment, so Omega = N^E (Maxwell-Boltzmann counting) — the
+   count consistent with treating the labeled quanta as distinct. Each added
+   quantum multiplies the configurations by N. (The bridge prose then notes
+   that real, indistinguishable quanta bend this straight log into the concave
+   S(E) of the next widget.)
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('wp-canvas');
+  const ctx = setupCanvas(canvas, 760, 380);
+  const W = canvas._cssW, H = canvas._cssH;
+  const eEl = document.getElementById('wp-e');
+  const shuffleBtn = document.getElementById('wp-shuffle');
+  const autoBtn = document.getElementById('wp-auto');
+
+  const N = 6;                 // particles (bins)
+  let bins = [];               // bins[i] = array of quantum labels in bin i
+  let auto = false, frameCt = 0;
+
+  // assign each labeled quantum (1..E) independently to a uniformly random bin,
+  // then shuffle order within each bin (quanta carry no implicit ordering).
+  function resample(){
+    const E = parseInt(eEl.value);
+    bins = Array.from({length:N}, ()=>[]);
+    for(let q=1;q<=E;q++){ bins[Math.floor(Math.random()*N)].push(q); }
+    bins.forEach(b=>{ for(let i=b.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [b[i],b[j]]=[b[j],b[i]]; } });
+  }
+
+  function draw(){
+    const E = parseInt(eEl.value);
+    document.getElementById('wp-eV').textContent = E;
+    ctx.clearRect(0,0,W,H);
+
+    // flat 2D grid of bins: COLS x ROWS = N cells (no height map)
+    const COLS=3, ROWS=Math.ceil(N/COLS);
+    const padX=18, top=40, gapX=12, gapY=40;
+    const cellW=(W-2*padX-(COLS-1)*gapX)/COLS;
+    const cellH=(H-top-28-(ROWS-1)*gapY)/ROWS;
+
+    // header
+    ctx.fillStyle=C.inkSoft; ctx.font='12px JetBrains Mono'; ctx.textAlign='left';
+    ctx.fillText('6 particles laid out as a grid of bins ·  '+E+' labeled energy quanta scattered among them', padX, 24);
+
+    function drawBin(i){
+      const col=i%COLS, row=Math.floor(i/COLS);
+      const x=padX+col*(cellW+gapX), y=top+row*(cellH+gapY);
+      // flat cell container
+      ctx.fillStyle='rgba(98,210,162,0.05)';
+      ctx.strokeStyle=C.line; ctx.lineWidth=1.2;
+      roundRect(x, y, cellW, cellH, 9); ctx.fill(); ctx.stroke();
+
+      const list=bins[i]||[];
+      const chipR=Math.min(14, Math.max(9, cellW*0.075));
+      const cols=Math.max(1, Math.floor((cellW-14)/(chipR*2+6)));
+      const stepX=chipR*2+6, stepY=chipR*2+6;
+      const rowsUsed=Math.ceil(Math.min(list.length, cols*Math.floor((cellH-22)/stepY))/cols)||1;
+      const startX=x+(cellW-(Math.min(cols,Math.max(1,list.length))*stepX-6))/2+chipR;
+      const startY=y+14+chipR;
+      let shown=0;
+      const maxFit=cols*Math.max(1,Math.floor((cellH-22)/stepY));
+      list.forEach((label,k)=>{
+        if(k>=maxFit) return;
+        const cxx=startX+(k%cols)*stepX, cyy=startY+Math.floor(k/cols)*stepY;
+        ctx.fillStyle=C.accent;
+        ctx.beginPath(); ctx.arc(cxx,cyy,chipR,0,Math.PI*2); ctx.fill();
+        ctx.fillStyle='#06120c'; ctx.font=(chipR*0.95|0)+'px JetBrains Mono';
+        ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillText(String(label), cxx, cyy+0.5);
+        ctx.textBaseline='alphabetic'; ctx.textAlign='left';
+        shown++;
+      });
+      if(list.length>maxFit){
+        ctx.fillStyle=C.ink; ctx.font='10px JetBrains Mono'; ctx.textAlign='center';
+        ctx.fillText('+'+(list.length-maxFit)+' more', x+cellW/2, y+cellH-7);
+        ctx.textAlign='left';
+      }
+      // label + count below the cell
+      ctx.textAlign='center';
+      ctx.fillStyle=C.inkSoft; ctx.font='11px JetBrains Mono';
+      ctx.fillText('p'+(i+1), x+cellW/2, y+cellH+15);
+      ctx.fillStyle=C.accent; ctx.font='12px JetBrains Mono';
+      ctx.fillText(list.length+(list.length===1?' quantum':' quanta'), x+cellW/2, y+cellH+29);
+      ctx.textAlign='left';
+    }
+    for(let i=0;i<N;i++) drawBin(i);
+
+    // counts
+    const lnOmega = E*Math.log(N);     // ln(N^E)
+    const Omega = Math.exp(lnOmega);
+    let omegaStr = Omega<1e6 ? Math.round(Omega).toLocaleString('en-US') : Omega.toExponential(2);
+    document.getElementById('wp-omegaV').textContent = omegaStr;
+
+    const out=document.getElementById('wp-readout');
+    out.innerHTML = E===0
+      ? `Zero energy: nothing to place, so there's exactly <b style="color:${C.accent}">one</b> configuration and \\(\\Omega = ${N}^{0}=1\\). No quanta ⇒ no freedom to arrange ⇒ no entropy.`
+      : `Each of the <b>${E}</b> quanta lands in any of the <b>${N}</b> particles independently, so there are \\(\\Omega = ${N}^{${E}} = ${omegaStr}\\) distinct scatterings. Every quantum you add <b>multiplies</b> the configuration count by ${N}. The entropy is \\(S=\\ln\\Omega = ${lnOmega.toFixed(2)}\\). Hit resample to jump to another equally-likely scattering — the labels carry no real meaning, they just let you watch the quanta move.`;
+    typeset(out);
+  }
+
+  function roundRect(x,y,w,h,r){
+    ctx.beginPath();
+    ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r);
+    ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
+  }
+
+  shuffleBtn.addEventListener('click', ()=>{ resample(); draw(); });
+  autoBtn.addEventListener('click', ()=>{
+    auto=!auto; autoBtn.classList.toggle('on',auto);
+    autoBtn.textContent = auto?'⏸ auto-shuffle':'▶ auto-shuffle';
+  });
+  eEl.addEventListener('input', ()=>{ resample(); draw(); });
+
+  let raf;
+  function loop(){
+    if(auto){ frameCt++; if(frameCt%24===0){ resample(); draw(); } }
+    raf=requestAnimationFrame(loop);
+  }
+  resample(); draw(); loop();
+})();
+
+/* =========================================================================
+   STEP 3a — temperature as the slope of S(E). Draggable point on a concave
+   entropy curve; the live tangent's slope is read off as 1/T. Shows steep =
+   cold/hungry, shallow = hot/indifferent, and that concavity => heating warms.
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('wt-canvas');
+  const ctx = setupCanvas(canvas, 760, 320);
+  const eEl = document.getElementById('wt-e');
+  const Emin = 0.2, Emax = 10;
+  // concave increasing entropy: S(E) = a*ln(1+E)  => dS/dE = a/(1+E)
+  const a = 3.0;
+  const S = E => a * Math.log(1 + E);
+  const dS = E => a / (1 + E);             // = 1/T
+  const ymax = S(Emax) * 1.08;
+  const view = makeView(canvas, { xmin: 0, xmax: Emax, ymin: 0, ymax });
+
+  function draw() {
+    const E = parseFloat(eEl.value);
+    document.getElementById('wt-eV').textContent = E.toFixed(2);
+    const slope = dS(E), T = 1 / slope;
+    ctx.clearRect(0, 0, view.w, view.h);
+
+    // axes
+    ctx.strokeStyle = C.axis; ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(view.x(0), view.y(0)); ctx.lineTo(view.x(Emax), view.y(0));
+    ctx.moveTo(view.x(0), view.y(0)); ctx.lineTo(view.x(0), view.y(ymax));
+    ctx.stroke();
+    ctx.fillStyle = C.inkSoft; ctx.font = '12px JetBrains Mono';
+    ctx.fillText('S (entropy)', view.x(0) + 6, view.y(ymax) + 12);
+    ctx.fillText('E (energy) →', view.x(Emax) - 96, view.y(0) - 8);
+
+    // S(E) curve
+    ctx.strokeStyle = C.accent; ctx.lineWidth = 2.6;
+    ctx.beginPath();
+    for (let px = 0; px <= view.w; px++) {
+      const e = px / view.w * Emax;
+      const Y = view.y(S(e));
+      px === 0 ? ctx.moveTo(px, Y) : ctx.lineTo(px, Y);
+    }
+    ctx.stroke();
+
+    // tangent line at E (the slope = 1/T)
+    const x0 = view.x(E), y0 = view.y(S(E));
+    const dx = 2.6; // energy half-width of drawn tangent
+    const xa = E - dx, xb = E + dx;
+    ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(view.x(xa), view.y(S(E) + slope * (xa - E)));
+    ctx.lineTo(view.x(xb), view.y(S(E) + slope * (xb - E)));
+    ctx.stroke();
+
+    // slope triangle (rise/run) to make 1/T visible
+    ctx.strokeStyle = 'rgba(255,255,255,0.4)'; ctx.lineWidth = 1; ctx.setLineDash([3,3]);
+    ctx.beginPath();
+    ctx.moveTo(view.x(E), view.y(S(E)));
+    ctx.lineTo(view.x(E + 1.4), view.y(S(E)));
+    ctx.lineTo(view.x(E + 1.4), view.y(S(E) + slope * 1.4));
+    ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = C.inkSoft; ctx.font = '11px JetBrains Mono';
+    ctx.fillText('ΔE', view.x(E + 0.55), view.y(S(E)) + 14);
+    ctx.fillText('ΔS', view.x(E + 1.5), view.y(S(E) + slope * 0.7));
+
+    // draggable point
+    ctx.fillStyle = C.accent3;
+    ctx.beginPath(); ctx.arc(x0, y0, 7, 0, Math.PI * 2); ctx.fill();
+
+    const verdict = T < 0.7 ? 'cold — energy buys a lot of entropy'
+                  : T > 2.2 ? 'hot — energy buys almost no entropy'
+                  : 'warm — a middling exchange rate';
+    const out = document.getElementById('wt-readout');
+    out.innerHTML = `At \\(E=${E.toFixed(2)}\\): slope \\(\\partial S/\\partial E = ${slope.toFixed(3)}\\), so \\(T = 1/\\text{slope} = ${T.toFixed(2)}\\) — <b style="color:${C.accent3}">${verdict}</b>. Slide right and the curve flattens: same energy, less new entropy, higher \\(T\\).`;
+    typeset(out);
+  }
+
+  // allow dragging the point directly on the canvas, in addition to the slider
+  function eFromMouse(ev) {
+    const r = canvas.getBoundingClientRect();
+    const px = (ev.touches ? ev.touches[0].clientX : ev.clientX) - r.left;
+    const e = (px / r.width) * Emax;
+    return Math.min(Emax - 0.05, Math.max(0.4, e));
+  }
+  let dragging = false;
+  canvas.addEventListener('mousedown', e => { dragging = true; eEl.value = eFromMouse(e).toFixed(2); draw(); });
+  window.addEventListener('mousemove', e => { if (dragging) { eEl.value = eFromMouse(e).toFixed(2); draw(); } });
+  window.addEventListener('mouseup', () => dragging = false);
+  eEl.addEventListener('input', draw);
+  draw();
+})();
+
+/* =========================================================================
+   STEP 3b — two systems exchanging energy until their S(E) slopes (temps)
+   match. Live animation: dE flows down the (1/T_A - 1/T_B) gradient; total
+   entropy climbs to its max at T_A = T_B. The "two jobs of one slope."
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('wt2-canvas');
+  const ctx = setupCanvas(canvas, 760, 340);
+  const W = canvas._cssW, H = canvas._cssH;
+  const aEl = document.getElementById('wt2-a');
+  const nEl = document.getElementById('wt2-n');
+  const playBtn = document.getElementById('wt2-play');
+  const resetBtn = document.getElementById('wt2-reset');
+  let lastReadout = '';
+
+  const Etot = 10;
+  let nA = 1.0;                 // curvature scale of A
+  const aB = 3.0;              // B's prefactor
+  const SA = (E) => 3.0 * nA * Math.log(1 + E / nA);
+  const dSA = (E) => 3.0 / (1 + E / nA);
+  const SB = (E) => aB * Math.log(1 + E);
+  const dSB = (E) => aB / (1 + E);
+  let EA, playing = true;
+
+  function reset() {
+    nA = parseFloat(nEl.value);
+    EA = parseFloat(aEl.value);
+    document.getElementById('wt2-aV').textContent = EA.toFixed(1);
+    document.getElementById('wt2-nV').textContent = nA.toFixed(1);
+  }
+
+  function panel(x0, y0, w, h, Sfn, E, color, label) {
+    const Emax = Etot, ymax = Math.max(Sfn(Etot), 0.1) * 1.1;
+    ctx.strokeStyle = C.axis; ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(x0, y0 + h); ctx.lineTo(x0 + w, y0 + h);
+    ctx.moveTo(x0, y0 + h); ctx.lineTo(x0, y0);
+    ctx.stroke();
+    const X = e => x0 + (e / Emax) * w;
+    const Y = s => y0 + h - (s / ymax) * h;
+    // curve
+    ctx.strokeStyle = color; ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    for (let p = 0; p <= w; p++) { const e = p / w * Emax; p === 0 ? ctx.moveTo(X(e), Y(Sfn(e))) : ctx.lineTo(X(e), Y(Sfn(e))); }
+    ctx.stroke();
+    // tangent at E
+    const slope = (Sfn === SA ? dSA(E) : dSB(E));
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 1.8;
+    const seg = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(X(E - seg), Y(Sfn(E) + slope * (-seg)));
+    ctx.lineTo(X(E + seg), Y(Sfn(E) + slope * (seg)));
+    ctx.stroke();
+    // point
+    ctx.fillStyle = color; ctx.beginPath(); ctx.arc(X(E), Y(Sfn(E)), 6, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = C.inkSoft; ctx.font = '12px JetBrains Mono';
+    ctx.fillText(label + '   T=' + (1 / slope).toFixed(2), x0 + 4, y0 - 6);
+  }
+
+  function frame() {
+    if (playing) {
+      const EB = Etot - EA;
+      const grad = dSA(EA) - dSB(EB); // dS_tot/dE_A
+      // move energy to increase total entropy; step proportional to gradient
+      EA += 0.08 * grad;
+      EA = Math.min(Etot - 0.05, Math.max(0.05, EA));
+    }
+    render();
+    raf = requestAnimationFrame(frame);
+  }
+
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    const EB = Etot - EA;
+    const pad = 24, pw = (W - 3 * pad) / 2, ph = 150, py = 18;
+    panel(pad, py, pw, ph, SA, EA, C.accent, 'System A');
+    panel(2 * pad + pw, py, pw, ph, SB, EB, C.accent2, 'System B');
+
+    // total entropy bar / climb
+    const Stot = SA(EA) + SB(EB);
+    // find max possible Stot by scanning
+    let best = -1e9, bestEA = 0;
+    for (let e = 0.05; e < Etot; e += 0.02) { const s = SA(e) + SB(Etot - e); if (s > best) { best = s; bestEA = e; } }
+    const by0 = py + ph + 46, bw = W - 2 * pad, bh = 16;
+    ctx.fillStyle = C.line; ctx.fillRect(pad, by0, bw, bh);
+    ctx.fillStyle = '#fff'; ctx.fillRect(pad, by0, bw * (Stot / best), bh);
+    ctx.fillStyle = C.inkSoft; ctx.font = '12px JetBrains Mono';
+    ctx.fillText('total entropy  S_A + S_B  (vs. its maximum)', pad, by0 - 8);
+
+    const TA = 1 / dSA(EA), TB = 1 / dSB(EB);
+    const out = document.getElementById('wt2-readout');
+    const eq = Math.abs(TA - TB) < 0.03;
+    const html = eq
+      ? `Equilibrium reached: T_A = T_B = ${TA.toFixed(2)}. Energy stopped flowing because the slopes matched — total entropy is at its peak.`
+      : `T_A = ${TA.toFixed(2)}, T_B = ${TB.toFixed(2)}. Energy flows ${TA > TB ? 'A → B' : 'B → A'} (hot → cold) because that raises S_tot. It halts when the tangent slopes are equal.`;
+    if (html !== lastReadout) { out.textContent = html; lastReadout = html; }
+  }
+
+  let raf;
+  playBtn.addEventListener('click', () => {
+    playing = !playing;
+    playBtn.classList.toggle('on', playing);
+    playBtn.textContent = playing ? '⏸ pause' : '▶ play';
+  });
+  resetBtn.addEventListener('click', () => { reset(); render(); });
+  aEl.addEventListener('input', () => { reset(); render(); });
+  nEl.addEventListener('input', () => { reset(); render(); });
+  reset(); frame();
+})();
+
+/* =========================================================================
+   STEP 4 — universe-entropy intuition builder.
+   Plots S_sys(E), S_bath(E) = const - E/T, and their sum S_tot, revealing
+   them one layer at a time. The peak of S_tot sits exactly where F = E - T S
+   is minimized — showing WHY the equation is built the way it is. The bath
+   line's slope is -1/T, which is the visual origin of the temperature factor.
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('w3-canvas');
+  const ctx = setupCanvas(canvas, 760, 340);
+  const W = canvas._cssW, H = canvas._cssH;
+  const tEl = document.getElementById('w3-t');
+  const backBtn = document.getElementById('w3-back');
+  const nextBtn = document.getElementById('w3-next');
+  const caption = document.getElementById('w3-caption');
+
+  const Emin = 0.0, Emax = 10.0;
+  const c = 1.8;                       // S_sys(E) = c*sqrt(E)  (concave, rising)
+  const Ssys  = E => c * Math.sqrt(Math.max(E, 0));
+  const Sbath = (E, T) => 4.2 - E / T; // const chosen for a nice on-screen line
+  const Stot  = (E, T) => Ssys(E) + Sbath(E, T);
+  const Estar = T => Math.pow(c * T / 2, 2);   // argmax S_tot = argmin F
+
+  // y-range generous enough to hold all three curves across the T range
+  const ymin = -3.5, ymax = 6.2;
+  const view = makeView(canvas, { xmin: Emin, xmax: Emax, ymin, ymax });
+
+  function curve(fn, color, width, dash) {
+    ctx.strokeStyle = color; ctx.lineWidth = width;
+    ctx.setLineDash(dash || []);
+    ctx.beginPath();
+    for (let px = 0; px <= W; px++) {
+      const E = Emin + (Emax - Emin) * px / W;
+      const Y = view.y(fn(E));
+      px === 0 ? ctx.moveTo(px, Y) : ctx.lineTo(px, Y);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  const stages = [
+    { next: 'Now add the bath →',
+      cap: 'The system alone: more energy → more arrangements → higher S. On its own it would grab all the energy it can.' },
+    { next: 'Add them up →',
+      cap: 'The bath: every unit of energy the system takes is one the bath loses, at rate 1/T. Its entropy falls along a line of slope −1/T.' },
+    { next: 'Mark the peak →',
+      cap: 'Total entropy = system + bath. Neither extreme wins; the sum has an interior peak.' },
+    { next: null,
+      cap: 'That peak is exactly where F = E − TS is smallest. Maximizing universe entropy ⇔ minimizing F.' }
+  ];
+  let stage = 0;
+
+  function draw() {
+    const T = parseFloat(tEl.value);
+    document.getElementById('w3-tV').textContent = T.toFixed(2);
+    ctx.clearRect(0, 0, W, H);
+
+    // axes
+    ctx.strokeStyle = C.axis; ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(view.x(Emin), view.y(0)); ctx.lineTo(view.x(Emax), view.y(0));
+    ctx.moveTo(view.x(Emin), view.y(ymin)); ctx.lineTo(view.x(Emin), view.y(ymax));
+    ctx.stroke();
+    ctx.fillStyle = C.inkSoft; ctx.font = '12px JetBrains Mono';
+    ctx.fillText('entropy', view.x(Emin) + 6, view.y(ymax) + 12);
+    ctx.fillText('E held by system →', view.x(Emax) - 150, view.y(0) - 8);
+
+    // Stage 0+: system entropy (green)
+    if (stage >= 0) {
+      curve(E => Ssys(E), C.accent, 2.6);
+      ctx.fillStyle = C.accent; ctx.font = '12px JetBrains Mono';
+      ctx.fillText('S_sys', view.x(Emax) - 60, view.y(Ssys(Emax)) - 8);
+    }
+    // Stage 1+: bath entropy (orange line, slope -1/T)
+    if (stage >= 1) {
+      curve(E => Sbath(E, T), C.accent2, 2.4, [6, 4]);
+      ctx.fillStyle = C.accent2;
+      ctx.fillText('S_bath  (slope −1/T)', view.x(Emin) + 8, view.y(Sbath(0.4, T)) - 8);
+    }
+    // Stage 2+: total entropy (white)
+    if (stage >= 2) {
+      curve(E => Stot(E, T), '#ffffff', 3.0);
+      ctx.fillStyle = '#fff';
+      ctx.fillText('S_tot = S_sys + S_bath', view.x(2.0), view.y(Stot(Estar(T), T)) + 22);
+    }
+    // Stage 3: mark the peak and the equivalent F-minimum
+    if (stage >= 3) {
+      const Ep = Math.min(Math.max(Estar(T), Emin), Emax);
+      const yp = Stot(Ep, T);
+      // vertical guide
+      ctx.strokeStyle = 'rgba(255,255,255,0.35)'; ctx.lineWidth = 1; ctx.setLineDash([3, 4]);
+      ctx.beginPath(); ctx.moveTo(view.x(Ep), view.y(yp)); ctx.lineTo(view.x(Ep), view.y(ymin)); ctx.stroke();
+      ctx.setLineDash([]);
+      // peak dot
+      ctx.fillStyle = C.accent3;
+      ctx.beginPath(); ctx.arc(view.x(Ep), view.y(yp), 6, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = C.accent3; ctx.font = '12px JetBrains Mono'; ctx.textAlign = 'center';
+      ctx.fillText('max S_tot = min F', view.x(Ep), view.y(ymin) + 16);
+      ctx.textAlign = 'left';
+    }
+
+    caption.textContent = stages[stage].cap;
+    backBtn.disabled = stage === 0;
+    if (stages[stage].next) { nextBtn.style.display = ''; nextBtn.textContent = stages[stage].next; }
+    else nextBtn.style.display = 'none';
+
+    // readout
+    const out = document.getElementById('w3-readout');
+    const Ep = Estar(T);
+    const F = Ep - T * Ssys(Ep);
+    if (stage < 3) {
+      out.innerHTML = `Bath temperature \\(T=${T.toFixed(2)}\\). The bath line has slope \\(-1/T = ${(-1/T).toFixed(2)}\\): a colder bath (small \\(T\\)) is a steeper line — it punishes the system for hoarding energy far harder.`;
+    } else {
+      out.innerHTML = `Peak at \\(E^\\* = ${Ep.toFixed(2)}\\), where \\(\\partial S_\\text{sys}/\\partial E = 1/T\\) — the system's own temperature has matched the bath's. The same \\(E^\\*\\) minimizes \\(F = E - TS_\\text{sys} = ${F.toFixed(2)}\\). Drag \\(T\\): a hotter bath shifts the balance toward holding more energy.`;
+    }
+    typeset(out);
+  }
+
+  nextBtn.addEventListener('click', () => { if (stage < stages.length - 1) { stage++; draw(); } });
+  backBtn.addEventListener('click', () => { if (stage > 0) { stage--; draw(); } });
+  tEl.addEventListener('input', draw);
+  draw();
+})();
+
+/* =========================================================================
+   STEP 4 (mechanism) — live quanta-exchange simulation (Einstein solids).
+   A small system + large bath share a fixed number of energy quanta. Each
+   tick moves one quantum to a uniformly random oscillator. Exact entropies
+   from Omega = C(q+N-1, q); a live histogram accumulates the system's energy
+   distribution. Shows the second law and Boltzmann's P(E) emerging mechanically.
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('w34-canvas');
+  const ctx = setupCanvas(canvas, 760, 440);
+  const W = canvas._cssW, H = canvas._cssH;
+  const bEl = document.getElementById('w34-b');
+  const qEl = document.getElementById('w34-q');
+  const sEl = document.getElementById('w34-s');
+  const playBtn = document.getElementById('w34-play');
+  const resetBtn = document.getElementById('w34-reset');
+
+  const NS = 4;              // system oscillators (kept small & visible)
+  let NB, Ntot, Qtot;       // bath count, total oscillators, total quanta
+  let occ;                  // quanta per oscillator
+  let hist;                 // histogram of system energy
+  let histTot;
+  let playing = true;
+  let sTrace = [];          // running total-entropy trace for the climb plot
+  let lastReadout = '';
+
+  // ln of binomial coefficient via lgamma (Lanczos) for exact-ish entropy
+  function lgamma(z){
+    const g=7, c=[0.99999999999980993,676.5203681218851,-1259.1392167224028,
+      771.32342877765313,-176.61502916214059,12.507343278686905,
+      -0.13857109526572012,9.9843695780195716e-6,1.5056327351493116e-7];
+    if(z<0.5) return Math.log(Math.PI/Math.sin(Math.PI*z))-lgamma(1-z);
+    z-=1; let x=c[0]; for(let i=1;i<g+2;i++) x+=c[i]/(z+i);
+    const t=z+g+0.5;
+    return 0.5*Math.log(2*Math.PI)+(z+0.5)*Math.log(t)-t+Math.log(x);
+  }
+  function lnOmega(N,q){ // ln C(q+N-1, q)
+    if(N<=0) return 0;
+    return lgamma(q+N)-lgamma(q+1)-lgamma(N);
+  }
+
+  function init(){
+    NB = NS * parseInt(bEl.value);
+    Qtot = parseInt(qEl.value);
+    Ntot = NS + NB;
+    occ = new Array(Ntot).fill(0);
+    // start with ALL energy in the system (max disequilibrium) -> entropy will climb
+    let left = Qtot;
+    let i = 0;
+    while(left>0){ occ[i % NS] += 1; left--; i++; }
+    hist = new Array(Qtot+1).fill(0);
+    histTot = 0;
+    sTrace = [];
+    document.getElementById('w34-bV').textContent = parseInt(bEl.value)+'×';
+    document.getElementById('w34-qV').textContent = Qtot;
+  }
+
+  function step(){
+    // move one quantum: pick a source oscillator that has >=1 quantum (uniform
+    // over quanta = pick a random quantum), send it to a uniform random oscillator.
+    // pick random quantum by walking weighted by occ
+    let r = Math.floor(Math.random()*Qtot);
+    let src = 0;
+    for(let i=0;i<Ntot;i++){ if(r < occ[i]){ src=i; break; } r -= occ[i]; }
+    const dst = Math.floor(Math.random()*Ntot);
+    occ[src]--; occ[dst]++;
+  }
+  function systemEnergy(){ let s=0; for(let i=0;i<NS;i++) s+=occ[i]; return s; }
+
+  function drawOscillators(qs){
+    const padX=16, top=14, colH=150;
+    const colW=(W-2*padX)/Ntot;
+    const dotR=Math.max(1.6, Math.min(4.5, colW*0.30));
+    const maxStack = Math.max(6, Math.ceil(Qtot/Ntot*4));
+    const dotGap = Math.min(7, (colH-10)/maxStack);
+    // divider system|bath
+    const divX = padX + colW*NS;
+    ctx.fillStyle='rgba(98,210,162,0.07)';
+    ctx.fillRect(padX, top-4, colW*NS, colH+8);
+    ctx.strokeStyle=C.line; ctx.setLineDash([4,4]); ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(divX, top-6); ctx.lineTo(divX, top+colH+6); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle=C.accent; ctx.font='12px JetBrains Mono'; ctx.textAlign='left';
+    ctx.fillText('SYSTEM ('+NS+')', padX+2, top+colH+22);
+    ctx.fillStyle=C.accent2; ctx.textAlign='right';
+    ctx.fillText('BATH ('+NB+')', W-padX-2, top+colH+22);
+    ctx.textAlign='left';
+    // columns
+    for(let i=0;i<Ntot;i++){
+      const x=padX+colW*i+colW/2;
+      const sys=i<NS;
+      // baseline
+      ctx.strokeStyle=C.line; ctx.lineWidth=1;
+      ctx.beginPath(); ctx.moveTo(x-colW*0.32, top+colH); ctx.lineTo(x+colW*0.32, top+colH); ctx.stroke();
+      const n=Math.min(occ[i], maxStack);
+      ctx.fillStyle = sys ? C.accent : C.accent2;
+      for(let k=0;k<n;k++){
+        const y=top+colH-6-k*dotGap;
+        ctx.beginPath(); ctx.arc(x, y, dotR, 0, Math.PI*2); ctx.fill();
+      }
+      if(occ[i]>maxStack){
+        ctx.fillStyle=C.ink; ctx.font='9px JetBrains Mono'; ctx.textAlign='center';
+        ctx.fillText('+'+(occ[i]-maxStack), x, top+colH-6-maxStack*dotGap-4);
+        ctx.textAlign='left';
+      }
+    }
+  }
+
+  function drawEntropyClimb(){
+    const x0=16, y0=H-130, w=W*0.46, h=104;
+    ctx.strokeStyle=C.axis; ctx.lineWidth=1;
+    ctx.strokeRect(x0,y0,w,h);
+    ctx.fillStyle=C.inkSoft; ctx.font='11px JetBrains Mono';
+    ctx.fillText('total entropy over time →', x0+6, y0-6);
+    if(sTrace.length<2) return;
+    const smin=Math.min(...sTrace), smax=Math.max(...sTrace);
+    const span=(smax-smin)||1;
+    ctx.strokeStyle='#ffffff'; ctx.lineWidth=2;
+    ctx.beginPath();
+    const n=sTrace.length;
+    for(let i=0;i<n;i++){
+      const X=x0+ w*(i/(n-1));
+      const Y=y0+h - (h-8)*((sTrace[i]-smin)/span) - 4;
+      i===0?ctx.moveTo(X,Y):ctx.lineTo(X,Y);
+    }
+    ctx.stroke();
+    // peak line (theoretical max S_tot over splits)
+  }
+
+  function drawHistogram(qs){
+    const x0=W*0.52, y0=H-130, w=W*0.44, h=104;
+    ctx.strokeStyle=C.axis; ctx.lineWidth=1; ctx.strokeRect(x0,y0,w,h);
+    ctx.fillStyle=C.inkSoft; ctx.font='11px JetBrains Mono';
+    ctx.fillText('P(system energy) — visited', x0+6, y0-6);
+    if(histTot<1) return;
+    const hmax=Math.max(...hist)||1;
+    const bw=w/(Qtot+1);
+    ctx.fillStyle=C.accent;
+    for(let e=0;e<=Qtot;e++){
+      const bh=(h-6)*(hist[e]/hmax);
+      ctx.fillRect(x0+bw*e+0.5, y0+h-bh, Math.max(1,bw-0.8), bh);
+    }
+    // current energy marker
+    ctx.strokeStyle=C.accent3; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(x0+bw*qs+bw/2, y0); ctx.lineTo(x0+bw*qs+bw/2, y0+h); ctx.stroke();
+    ctx.fillStyle=C.accent3; ctx.font='10px JetBrains Mono'; ctx.textAlign='center';
+    ctx.fillText('now', x0+bw*qs+bw/2, y0+10);
+    ctx.textAlign='left';
+  }
+
+  function frame(){
+    if(playing){
+      const perFrame = parseInt(sEl.value);
+      document.getElementById('w34-sV').textContent =
+        perFrame<8?'slow':perFrame<30?'medium':'fast';
+      for(let k=0;k<perFrame;k++){ step(); }
+      const qs=systemEnergy();
+      hist[qs]++; histTot++;
+      const Ssys=lnOmega(NS,qs), Sbath=lnOmega(NB,Qtot-qs);
+      sTrace.push(Ssys+Sbath);
+      if(sTrace.length>240) sTrace.shift();
+    }
+    render();
+    raf=requestAnimationFrame(frame);
+  }
+
+  function render(){
+    ctx.clearRect(0,0,W,H);
+    const qs=systemEnergy();
+    drawOscillators(qs);
+    drawEntropyClimb();
+    drawHistogram(qs);
+
+    const Ssys=lnOmega(NS,qs), Sbath=lnOmega(NB,Qtot-qs), Stot=Ssys+Sbath;
+    // equilibrium expected system energy ~ Qtot * NS/Ntot
+    const qEq=Qtot*NS/Ntot;
+    const out=document.getElementById('w34-readout');
+    const html =
+      `System holds <b style="color:${C.accent}">${qs}</b> / ${Qtot} quanta `+
+      `(equipartition expects ≈ ${qEq.toFixed(1)}). `+
+      `ln Ω_sys = ${Ssys.toFixed(2)}, ln Ω_bath = ${Sbath.toFixed(2)}, `+
+      `<b style="color:#fff">S_tot / k_B = ${Stot.toFixed(2)}</b>. `+
+      `Starting from all energy in the system, S_tot climbs to its plateau — that's the second law, happening by counting alone.`;
+    if (html !== lastReadout) { out.innerHTML = html; lastReadout = html; }
+  }
+
+  let raf;
+  playBtn.addEventListener('click', ()=>{
+    playing=!playing;
+    playBtn.classList.toggle('on', playing);
+    playBtn.textContent = playing ? '⏸ pause' : '▶ play';
+  });
+  resetBtn.addEventListener('click', ()=>{ init(); render(); });
+  bEl.addEventListener('input', ()=>{ init(); render(); });
+  qEl.addEventListener('input', ()=>{ init(); render(); });
+  sEl.addEventListener('input', ()=>{
+    const v=parseInt(sEl.value);
+    document.getElementById('w34-sV').textContent = v<8?'slow':v<30?'medium':'fast';
+  });
+
+  init();
+  frame();
+})();
+
+
+/* =========================================================================
+   STEP 5 — partition function build-up (staged reveal + live T slider)
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('w4-canvas');
+  const ctx = setupCanvas(canvas, 760, 320);
+  const W=canvas._cssW, H=canvas._cssH;
+  const tEl=document.getElementById('w4-t');
+  const energies=[0.3, 0.9, 1.6, 2.4, 3.3, 4.3]; // 6 microstates
+  let stage=0; // number of states revealed - 1
+  const backBtn=document.getElementById('w4-back');
+  const nextBtn=document.getElementById('w4-next');
+  const caption=document.getElementById('w4-caption');
+
+  function draw(){
+    const T=parseFloat(tEl.value);
+    document.getElementById('w4-tV').textContent=T.toFixed(1);
+    ctx.clearRect(0,0,W,H);
+    const nShown=stage+1;
+    const weights=energies.map(E=>Math.exp(-E/T));
+    const Zfull=weights.reduce((a,b)=>a+b,0);
+    const Zpartial=weights.slice(0,nShown).reduce((a,b)=>a+b,0);
+    const wmax=Math.max(...weights);
+
+    const padL=60, padB=50, padT=30;
+    const plotW=W-padL-30, plotH=H-padB-padT;
+    const bw=plotW/energies.length*0.6;
+    const gap=plotW/energies.length;
+
+    // axes
+    ctx.strokeStyle=C.axis; ctx.lineWidth=1;
+    ctx.beginPath();
+    ctx.moveTo(padL,padT); ctx.lineTo(padL,padT+plotH); ctx.lineTo(padL+plotW,padT+plotH);
+    ctx.stroke();
+    ctx.fillStyle=C.inkSoft; ctx.font='12px JetBrains Mono';
+    ctx.save(); ctx.translate(18,padT+plotH/2); ctx.rotate(-Math.PI/2);
+    ctx.textAlign='center'; ctx.fillText('weight  e^(-E/kT)',0,0); ctx.restore();
+    ctx.textAlign='center';
+    ctx.fillText('microstates (increasing energy →)', padL+plotW/2, H-12);
+    ctx.textAlign='left';
+
+    energies.forEach((E,i)=>{
+      const x=padL+gap*i+gap*0.2;
+      const wt=weights[i];
+      const bh=plotH*(wt/wmax);
+      const revealed = i<nShown;
+      ctx.fillStyle = revealed ? (i===nShown-1 ? C.accent3 : C.accent) : 'rgba(255,255,255,0.06)';
+      ctx.fillRect(x, padT+plotH-bh, bw, bh);
+      ctx.fillStyle = revealed ? C.ink : C.inkSoft;
+      ctx.font='11px JetBrains Mono'; ctx.textAlign='center';
+      ctx.fillText('E='+E.toFixed(1), x+bw/2, padT+plotH+16);
+      if(revealed) ctx.fillText(wt.toFixed(2), x+bw/2, padT+plotH-bh-6);
+      ctx.textAlign='left';
+    });
+
+    const F=-T*Math.log(Zpartial);
+    const out=document.getElementById('w4-readout');
+    out.innerHTML = `Summing the <b style="color:${C.accent}">${nShown}</b> revealed weight${nShown>1?'s':''}: \\(Z = ${Zpartial.toFixed(3)}\\), giving \\(F = -k_BT\\ln Z = ${F.toFixed(3)}\\). Raise \\(T\\) and the tall low-energy bar shrinks relative to the others — high-energy states start to count.`;
+    typeset(out);
+    caption.textContent = nShown<energies.length
+      ? `${nShown} of ${energies.length} states summed into Z.`
+      : `All ${energies.length} states summed — that's the full partition function.`;
+    backBtn.disabled = stage===0;
+    nextBtn.style.display = stage<energies.length-1 ? '' : 'none';
+  }
+  nextBtn.addEventListener('click',()=>{ if(stage<energies.length-1){stage++;draw();} });
+  backBtn.addEventListener('click',()=>{ if(stage>0){stage--;draw();} });
+  tEl.addEventListener('input',draw);
+  draw();
+})();
+
+/* =========================================================================
+   STEP 5 — free energy surface F(x) and Boltzmann samples
+   ========================================================================= */
+(function () {
+  const canvas=document.getElementById('w5-canvas');
+  const ctx=setupCanvas(canvas,760,330);
+  const W=canvas._cssW,H=canvas._cssH;
+  const dEl=document.getElementById('w5-d'), bEl=document.getElementById('w5-b'), tEl=document.getElementById('w5-t');
+  const toggle=document.getElementById('w5-toggle');
+  let showSamples=true;
+
+  function Fx(x,d,b){
+    // double well: left basin shifted down by d, barrier height b near center
+    const left = (x+1.4)*(x+1.4);
+    const right= (x-1.4)*(x-1.4);
+    // smooth double well via quartic-ish
+    let f = 0.6*(x*x-1.9)*(x*x-1.9); // base double well
+    f = f*(b/2.2);                   // scale barrier
+    f += -d*Math.exp(-((x+1.35)**2)/0.6); // deepen left basin
+    return f;
+  }
+  function draw(){
+    const d=parseFloat(dEl.value), b=parseFloat(bEl.value), T=parseFloat(tEl.value);
+    document.getElementById('w5-dV').textContent=d.toFixed(1);
+    document.getElementById('w5-bV').textContent=b.toFixed(1);
+    document.getElementById('w5-tV').textContent=T.toFixed(1);
+    ctx.clearRect(0,0,W,H);
+
+    const xmin=-3, xmax=3;
+    // sample F to find range
+    let fmin=1e9,fmax=-1e9; const xs=[],fs=[];
+    for(let i=0;i<=400;i++){ const x=xmin+(xmax-xmin)*i/400; const f=Fx(x,d,b); xs.push(x); fs.push(f); if(f<fmin)fmin=f; if(f>fmax)fmax=f; }
+    const view=makeView(canvas,{xmin,xmax,ymin:fmin-0.5,ymax:fmax+1.2});
+
+    // axis
+    ctx.strokeStyle=C.axis; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(view.x(xmin),view.y(fmin-0.5)); ctx.lineTo(view.x(xmax),view.y(fmin-0.5)); ctx.stroke();
+    ctx.fillStyle=C.inkSoft; ctx.font='12px JetBrains Mono';
+    ctx.fillText('x (coordinate)', view.x(xmax)-110, view.y(fmin-0.5)+18);
+    ctx.save(); ctx.translate(14,view.y((fmin+fmax)/2)); ctx.rotate(-Math.PI/2);
+    ctx.textAlign='center'; ctx.fillText('F(x)',0,0); ctx.restore();
+
+    // Boltzmann density p(x) ~ exp(-F/T), drawn as filled area + sample cloud
+    const dens=fs.map(f=>Math.exp(-(f-fmin)/T));
+    const dmax=Math.max(...dens);
+    if(showSamples){
+      // shaded density under axis-ish (overlay translucent)
+      ctx.fillStyle='rgba(98,210,162,0.10)';
+      ctx.beginPath();
+      ctx.moveTo(view.x(xmin),view.y(fmin-0.5));
+      for(let i=0;i<=400;i++){
+        const x=xs[i]; const yval=fmin-0.5 + (dens[i]/dmax)*(fmax-fmin+1.0)*0.9;
+        ctx.lineTo(view.x(x), view.y(yval));
+      }
+      ctx.lineTo(view.x(xmax),view.y(fmin-0.5)); ctx.closePath(); ctx.fill();
+      // sample dots scattered by rejection sampling, placed on the F curve
+      ctx.fillStyle=C.accent;
+      let placed=0, tries=0;
+      while(placed<220 && tries<4000){
+        tries++;
+        const x=xmin+Math.random()*(xmax-xmin);
+        const f=Fx(x,d,b);
+        const p=Math.exp(-(f-fmin)/T)/dmax;
+        if(Math.random()<p){
+          const jitter=(Math.random()-0.5)*0.25;
+          ctx.globalAlpha=0.5;
+          ctx.beginPath(); ctx.arc(view.x(x), view.y(f+jitter+0.18), 2.6,0,Math.PI*2); ctx.fill();
+          placed++;
+        }
+      }
+      ctx.globalAlpha=1;
+    }
+
+    // F(x) curve
+    ctx.strokeStyle='#fff'; ctx.lineWidth=2.6;
+    ctx.beginPath();
+    for(let i=0;i<=400;i++){ const X=view.x(xs[i]),Y=view.y(fs[i]); i===0?ctx.moveTo(X,Y):ctx.lineTo(X,Y); }
+    ctx.stroke();
+
+    const out=document.getElementById('w5-readout');
+    out.innerHTML = `Lower \\(T\\) sharpens \\(p(x)\\propto e^{-F(x)/k_BT}\\) into the deepest basin; higher \\(T\\) and a lower barrier let samples cross. The basin populations give \\(\\Delta F = -k_BT\\ln(p_A/p_B)\\).`;
+    typeset(out);
+  }
+  toggle.addEventListener('click',()=>{
+    showSamples=!showSamples;
+    toggle.classList.toggle('on',showSamples);
+    toggle.textContent = showSamples? 'showing: F(x) & samples':'showing: F(x) only';
+    draw();
+  });
+  [dEl,bEl,tEl].forEach(el=>el.addEventListener('input',draw));
+  draw();
+})();
+
+/* =========================================================================
+   READING PROGRESS BAR
+   ========================================================================= */
+(function () {
+  const bar=document.getElementById('progress');
+  function update(){ const h=document.documentElement; const max=h.scrollHeight-h.clientHeight; bar.style.width=(max>0?(h.scrollTop/max)*100:0)+'%'; }
+  window.addEventListener('scroll',update,{passive:true});
+  window.addEventListener('resize',update);
+  update();
+})();
+</script>
+</body>
+</html>

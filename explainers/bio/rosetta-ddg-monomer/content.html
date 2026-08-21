@@ -1,0 +1,1578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inside a ΔΔG prediction — Rosetta ddg_monomer</title>
+
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg:       #0c1413;
+    --bg-2:     #111c1b;
+    --surface:  #142020;
+    --ink:      #e6f2ef;
+    --ink-soft: #92a8a4;
+    --accent:   #f2a541;   /* mutant / energy        */
+    --accent-2: #5ad2c0;   /* wild type / reference  */
+    --accent-3: #ef6f6c;   /* clash / repulsion      */
+    --line:     #21332f;
+    --axis:     #3c534e;
+    --radius: 14px;
+    --measure: 70ch;
+    --font-display: 'Space Grotesk', system-ui, sans-serif;
+    --font-body:    'Newsreader', Georgia, serif;
+    --font-mono:    'JetBrains Mono', ui-monospace, Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background:
+      radial-gradient(1000px 600px at 8% -6%, #14282a 0%, rgba(20,40,42,0) 60%),
+      radial-gradient(880px 520px at 95% 4%, #24211a 0%, rgba(36,33,26,0) 58%),
+      var(--bg);
+    background-attachment: fixed;
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 18.5px;
+    line-height: 1.72;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #progress {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+    background: linear-gradient(90deg, var(--accent-2), var(--accent));
+    z-index: 100; transition: width 0.1s linear;
+  }
+
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 26px 130px; }
+  .prose { max-width: var(--measure); }
+  .prose p { margin: 0 0 1.1em; }
+
+  header { padding: 100px 0 30px; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--accent-2); margin: 0 0 20px;
+  }
+  h1 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(2.5rem, 6.4vw, 4.1rem); line-height: 1.02;
+    margin: 0 0 24px; letter-spacing: -0.035em;
+  }
+  h1 em { font-style: normal; color: var(--accent); }
+  .promise { font-size: 1.18rem; color: var(--ink-soft); max-width: var(--measure); }
+  .sourceline {
+    font-family: var(--font-mono); font-size: 0.76rem; color: var(--ink-soft);
+    margin-top: 26px; opacity: 0.85;
+  }
+
+  .kernel {
+    position: relative;
+    background: linear-gradient(150deg, #16302c 0%, #1d2620 100%);
+    border: 1px solid var(--line); border-left: 3px solid var(--accent);
+    border-radius: var(--radius); padding: 36px 40px; margin: 52px 0 34px;
+  }
+  .kernel .label {
+    font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--accent); opacity: 0.9; margin: 0 0 14px;
+  }
+  .kernel .sentence {
+    font-family: var(--font-display); font-weight: 400;
+    font-size: 1.38rem; line-height: 1.45; margin: 0; letter-spacing: -0.01em;
+  }
+
+  .aside {
+    border: 1px dashed var(--line); border-radius: 12px;
+    background: rgba(90,210,192,0.05);
+    padding: 22px 26px; margin: 0 0 34px; max-width: var(--measure);
+    font-size: 0.96rem;
+  }
+  .aside h4 {
+    font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--accent-2); margin: 0 0 12px; font-weight: 600;
+  }
+  .aside p { margin: 0 0 0.8em; }
+  .aside p:last-child { margin-bottom: 0; }
+  .aside .term { font-family: var(--font-mono); font-size: 0.9em; color: var(--accent); font-weight: 600; }
+
+  .pipeline {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px; margin: 34px 0 60px;
+  }
+  .pipeline .box {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 12px; padding: 16px 18px;
+  }
+  .pipeline .box .n {
+    font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.16em;
+    color: var(--accent); text-transform: uppercase;
+  }
+  .pipeline .box .t {
+    font-family: var(--font-display); font-size: 0.98rem; font-weight: 500;
+    margin: 6px 0 4px; letter-spacing: -0.01em;
+  }
+  .pipeline .box .d { font-size: 0.85rem; color: var(--ink-soft); line-height: 1.5; }
+
+  .concept-step { margin: 0 0 92px; scroll-margin-top: 40px; }
+  .step-num {
+    font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600;
+    color: var(--accent-2); letter-spacing: 0.2em; text-transform: uppercase;
+    margin: 0 0 10px;
+  }
+  .concept-step h2 {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: clamp(1.65rem, 3.5vw, 2.3rem); line-height: 1.14;
+    margin: 0 0 22px; letter-spacing: -0.03em;
+  }
+
+  details.formal {
+    border: 1px solid var(--line); border-radius: 10px;
+    background: var(--bg-2); margin: 26px 0; max-width: var(--measure);
+  }
+  details.formal summary {
+    cursor: pointer; padding: 14px 18px; font-family: var(--font-mono);
+    font-size: 0.8rem; letter-spacing: 0.04em; color: var(--ink-soft);
+    list-style: none; user-select: none;
+  }
+  details.formal summary::-webkit-details-marker { display: none; }
+  details.formal summary::before { content: '▸ '; color: var(--accent); }
+  details.formal[open] summary::before { content: '▾ '; }
+  details.formal .formal-body { padding: 0 18px 6px; font-size: 0.95rem; }
+
+  .widget {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 20px 20px 16px; margin: 30px 0;
+  }
+  .widget-titlewrap {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 14px; flex-wrap: wrap; margin-bottom: 16px;
+    border-bottom: 1px solid var(--line); padding-bottom: 12px;
+  }
+  .widget-title {
+    font-family: var(--font-display); font-weight: 500; font-size: 1.02rem;
+    margin: 0; letter-spacing: -0.01em;
+  }
+  .widget-tag {
+    font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--accent-2); opacity: 0.9;
+  }
+  .widget-controls {
+    display: flex; flex-wrap: wrap; gap: 14px 28px; margin-bottom: 16px;
+    align-items: flex-end;
+  }
+  .widget-controls label {
+    display: flex; flex-direction: column; gap: 6px;
+    font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.02em;
+    color: var(--ink-soft); min-width: 210px;
+  }
+  .widget-controls .val { color: var(--accent); font-weight: 600; }
+  input[type=range] { accent-color: var(--accent-2); cursor: pointer; width: 100%; }
+  .btnrow { flex-direction: row !important; gap: 10px !important; min-width: 0 !important; flex-wrap: wrap; }
+  .widget button {
+    font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.03em;
+    background: var(--bg-2); color: var(--ink); border: 1px solid var(--line);
+    padding: 8px 14px; border-radius: 8px; cursor: pointer;
+  }
+  .widget button:hover:not(:disabled) { background: var(--accent-2); color: #0c1413; border-color: var(--accent-2); }
+  .widget button:disabled { opacity: 0.3; cursor: default; }
+  .widget-stage { display: block; width: 100%; border-radius: 10px; background: var(--bg); }
+  .readout {
+    margin-top: 12px; font-family: var(--font-mono); font-size: 0.78rem;
+    line-height: 1.8; color: var(--ink-soft); min-height: 1.5em; white-space: pre-wrap;
+  }
+  .readout b { color: var(--accent); font-weight: 600; }
+  .reveal-bar { display: flex; align-items: center; gap: 16px; margin-top: 14px; flex-wrap: wrap; }
+  .reveal-caption { flex: 1; min-width: 220px; font-size: 0.9rem; color: var(--ink-soft); font-style: italic; }
+  .caption { font-size: 0.85rem; color: var(--ink-soft); opacity: 0.85; margin-top: 10px; }
+
+  .recap { border-top: 1px solid var(--line); padding-top: 44px; margin-top: 30px; }
+  .recap h2 { font-family: var(--font-display); font-size: 1.95rem; margin: 0 0 18px; letter-spacing: -0.03em; font-weight: 500; }
+  .recap h3 { font-family: var(--font-display); font-size: 1.2rem; margin: 38px 0 12px; letter-spacing: -0.02em; font-weight: 500; }
+  .recap ul { max-width: var(--measure); padding-left: 1.1em; }
+  .recap li { margin-bottom: 0.6em; }
+
+  mark { background: linear-gradient(transparent 58%, rgba(242,165,65,0.26) 58%); color: inherit; }
+  a { color: var(--accent-2); text-decoration-color: rgba(90,210,192,0.4); }
+  code { font-family: var(--font-mono); font-size: 0.86em; color: var(--accent); }
+  @media (max-width: 620px) {
+    body { font-size: 17px; }
+    .wrap { padding: 0 16px 80px; }
+    .kernel { padding: 26px 22px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">A step-by-step explainer · Rosetta <code>ddg_monomer</code></p>
+    <h1>Inside a <em>ΔΔG</em> prediction</h1>
+    <p class="promise">
+      Bench's DDG tool takes a structure and a point mutation and hands back one
+      number. This page opens up the four things that happen in between —
+      repacking, the ramped repulsion, fifty repeats averaged three at a time,
+      and the honest meaning of "r = 0.73" — because every one of them is a
+      decision that changes the answer.
+    </p>
+    <p class="sourceline">
+      Companion to the Levitate Bench <a href="https://support.levitate.bio/bench/ddg/">DDG documentation</a>.
+      For what ΔG and ΔΔG <em>are</em>, start with
+      <a href="delta-g-and-ddg.html">ΔG and ΔΔG</a>.
+    </p>
+  </header>
+
+  <div class="kernel">
+    <p class="label">The whole thing in one sentence</p>
+    <p class="sentence">
+      A predicted ΔΔG is <mark>the difference between two scores of the same
+      protein</mark> — and because no single score means anything on its own,
+      the entire method is machinery for making sure
+      <mark>both structures were relaxed equally hard</mark> before you subtract.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      Everything below is one pipeline. Rosetta's <code>ddg_monomer</code>
+      application (driven by <code>ddGMover</code>) takes your PDB and a
+      mutation, produces a relaxed model of each sequence, scores both, and
+      reports the difference in Rosetta Energy Units:
+    </p>
+  </div>
+
+  <div class="pipeline">
+    <div class="box">
+      <div class="n">Input</div>
+      <div class="t">Structure + mutation</div>
+      <div class="d">One PDB, one substitution such as <code>A26W</code>.</div>
+    </div>
+    <div class="box">
+      <div class="n">Step 1</div>
+      <div class="t">Repack side chains</div>
+      <div class="d">Monte-Carlo search over a rotamer library, in both sequences.</div>
+    </div>
+    <div class="box">
+      <div class="n">Step 2</div>
+      <div class="t">Minimize ×3</div>
+      <div class="d">Gradient minimization at 10%, then 33%, then 100% repulsive weight.</div>
+    </div>
+    <div class="box">
+      <div class="n">Step 3</div>
+      <div class="t">50 repeats</div>
+      <div class="d">Same starting structure, different random seeds; average the best three.</div>
+    </div>
+    <div class="box">
+      <div class="n">Output</div>
+      <div class="t">ΔΔG in REU</div>
+      <div class="d">Positive = destabilizing. Not kcal/mol without a fitted rescaling.</div>
+    </div>
+  </div>
+
+  <div class="aside">
+    <h4>Before anything else — the two energies that are missing</h4>
+    <p>
+      ΔΔG of folding is defined from <em>four</em> free energies: folded and
+      unfolded, wild type and mutant. <code>ddg_monomer</code> computes
+      <strong>two</strong>. It never builds an unfolded state at all. The entire
+      method rests on the approximation that a single substitution changes the
+      unfolded ensemble's energy by the same amount in both sequences, so that
+      term subtracts away:
+    </p>
+    \[ \Delta\Delta G \;=\;
+       \underbrace{\big(G^{\text{mut}}_{\text{folded}}-G^{\text{WT}}_{\text{folded}}\big)}_{\text{what Rosetta scores}}
+       \;-\;
+       \underbrace{\big(G^{\text{mut}}_{\text{unfolded}}-G^{\text{WT}}_{\text{unfolded}}\big)}_{\text{assumed}\;\approx\;0} \]
+    <p>
+      As the Bench docs put it: <em>"the energy of an unfolded protein is nearly
+      identical with a single point mutation, so the dominant factor in DDG is
+      the energy difference of the folded state."</em> That is usually true and
+      occasionally badly false — proline substitutions restrict the unfolded
+      chain, glycine substitutions loosen it, and charge changes alter unfolded-state
+      electrostatics. When a ddg_monomer prediction is spectacularly wrong for a
+      proline or glycine mutation, this cancelled term is the first suspect. The
+      four-corner cycle this comes from is
+      <a href="delta-g-and-ddg.html#step-4">step 4 of the companion page</a>.
+    </p>
+  </div>
+
+  <div class="aside">
+    <h4>A sign-convention collision worth catching now</h4>
+    <p>
+      The Bench documentation writes free energy in the <em>unfolding</em>
+      direction:
+      \(\Delta G_{\text{folding}} = (H_{\text{unf}} - H_{\text{fold}}) - T(S_{\text{unf}} - S_{\text{fold}})\).
+      That is \(G_{\text{unfolded}} - G_{\text{folded}}\), so
+      <strong>larger = more stable</strong>. To keep "positive ΔΔG =
+      destabilizing" with that sign, the subtraction has to run wild type minus
+      mutant — which is exactly what the docs write:
+      \(\Delta G_{\text{mutation}} = (\Delta G_{\text{folding}})_{\text{WT}} - (\Delta G_{\text{folding}})_{\text{mutant}}\).
+    </p>
+    <p>
+      The companion page uses the opposite ΔG sign
+      (\(G_{\text{folded}} - G_{\text{unfolded}}\), negative = stable) and
+      therefore the opposite subtraction order, mutant minus wild type. Both
+      land on the same convention for the headline number:
+      <mark>positive ΔΔG means the mutation made the protein worse</mark>, which
+      is also what <code>ddg_monomer</code> prints. Two flipped signs cancelling
+      is not a coincidence — it is people insisting on that one shared meaning.
+    </p>
+  </div>
+
+  <!-- ===================== STEP 1 ===================== -->
+  <section class="concept-step" id="step-1">
+    <p class="step-num">Step 1</p>
+    <h2>You cannot just swap the side chain</h2>
+    <div class="prose">
+      <p>
+        The naive way to score a mutation: delete the wild-type side chain, graft
+        the new one on in the same orientation, score. This fails immediately,
+        and it fails in a way that always points the same direction.
+      </p>
+      <p>
+        A protein core is packed at roughly the density of an organic crystal.
+        Drop a tryptophan where an alanine was and its atoms land <em>on top of</em>
+        the neighbours. The repulsive term explodes — tens of Rosetta Energy Units
+        from a handful of atom pairs that are 0.5 Å too close. Nature's answer to
+        that is not "this mutation is impossible"; it is that the surrounding side
+        chains rotate a little and make room. So the score you want is not the
+        score of the naive graft, but the score <em>after</em> the neighbourhood
+        has re-accommodated.
+      </p>
+      <p>
+        That re-accommodation is <strong>repacking</strong>. Side chains are not
+        allowed to bend arbitrarily: Rosetta uses a discrete
+        <em>rotamer library</em>, the handful of torsion angles each amino acid
+        actually adopts in known structures, each carrying a small penalty for how
+        rare it is. Choosing one rotamer per residue to minimize the total score is
+        a combinatorial problem — with 7 residues and 9 rotamers each there are
+        \(9^7 \approx 4.8\) million states — so Rosetta searches it with Monte
+        Carlo simulated annealing rather than enumeration.
+      </p>
+      <p>
+        The widget runs that actual search. Seven residues sit around a small
+        pocket; each has nine rotamers; the score is a real pairwise sum of a
+        repulsive term (quadratic in overlap) plus a contact bonus plus the
+        rotamer penalties. Mutate the amber site from Ala to Trp and watch the
+        clash appear — then repack, and watch three quarters of it disappear.
+      </p>
+    </div>
+
+    <div class="widget" id="w1">
+      <div class="widget-titlewrap">
+        <h3 class="widget-title">A seven-residue pocket, repacked by simulated annealing</h3>
+        <span class="widget-tag">live search · press the stages in order</span>
+      </div>
+      <div class="widget-controls">
+        <label class="btnrow">
+          <button id="w1-mut">① Mutate Ala → Trp</button>
+          <button id="w1-self" disabled>② Repack the new side chain</button>
+          <button id="w1-full" disabled>③ Repack the neighbourhood</button>
+          <button id="w1-reset">Reset to wild type</button>
+        </label>
+      </div>
+      <canvas id="w1-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w1-readout"></div>
+      <p class="caption">
+        Red bonds are steric overlaps — pairs of atoms closer than their contact
+        distance. A well-packed core still carries a small repulsive term, so the
+        wild-type baseline is not zero; what matters is how the term
+        <em>changes</em>. The ΔΔG on the right is measured against the packed
+        wild-type score, so it is the same quantity
+        <code>ddg_monomer</code> reports. Note
+        what changes it: not the mutation, but <em>how much of the structure you
+        let move afterwards</em>.
+      </p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version — the packer, and why annealing rather than enumeration</summary>
+      <div class="formal-body prose">
+        <p>
+          Fix the backbone. Each residue \(i\) is assigned a rotamer \(r_i\) from
+          its library, and the score decomposes into one-body and two-body terms:
+        </p>
+        \[ E(\mathbf{r}) \;=\; \sum_i E_1(r_i) \;+\; \sum_{i<j} E_2(r_i, r_j) \]
+        <p>
+          \(E_1\) collects the rotamer's intrinsic probability penalty and its
+          interaction with the fixed backbone; \(E_2\) is the pairwise atom-atom
+          energy between two side chains. Because the backbone is fixed, every
+          \(E_2(r_i,r_j)\) can be precomputed into a table once, after which
+          evaluating a candidate assignment is table lookups rather than geometry.
+        </p>
+        <p>
+          Minimizing \(E\) over \(\mathbf{r}\) is NP-hard in general (it is a
+          discrete Markov-random-field labelling problem), so Rosetta anneals:
+          propose a single-residue rotamer substitution, accept it with
+          probability \(\min(1, e^{-\Delta E/T})\), and lower \(T\) geometrically
+          from a high starting value to near zero. High \(T\) early lets the
+          search cross barriers; low \(T\) late makes it settle. The widget uses
+          the same acceptance rule with \(T\) falling from 3.0 to 0.02.
+        </p>
+        <p>
+          Kellogg et al. found the best-performing protocol repacks with a
+          <em>softened</em> repulsive term and only then minimizes with the hard
+          one — which is the subject of the next step.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 2 ===================== -->
+  <section class="concept-step" id="step-2">
+    <p class="step-num">Step 2</p>
+    <h2>Why the repulsion is turned down to 10% first</h2>
+    <div class="prose">
+      <p>
+        After repacking, <code>ddg_monomer</code> minimizes: it follows the
+        gradient of the score downhill, letting side-chain torsions and small
+        backbone motions relax continuously. The Bench docs describe the
+        distinctive part precisely — it minimizes <em>three times</em>, with the
+        repulsion term weighted at <strong>10%, then 33%, then 100%</strong>.
+      </p>
+      <p>
+        This looks like a fudge and is not. Gradient minimization can only go
+        downhill; it stops at the first local minimum it reaches. In a packed
+        protein the walls between one packing arrangement and a better one are
+        made almost entirely of the repulsive term — two atoms that would have to
+        pass through each other to reach the better arrangement. At full weight,
+        those walls are hundreds of REU tall and utterly impassable. Structures
+        get pinned wherever the mutation dropped them.
+      </p>
+      <p>
+        Scaling the repulsion to 10% flattens the walls without touching the
+        attractive landscape, so the structure can slide across a barrier it would
+        otherwise never cross. Restoring the weight to 33% and then 100% then
+        re-imposes real sterics <em>from the better side of the wall</em>. It is
+        the same trick as annealing, run on a continuous coordinate: soften,
+        move, re-harden.
+      </p>
+      <p>
+        Below, one coordinate stands for the whole conformational change. The
+        smooth part of the score (a broad attractive well, minimum on the right)
+        is what the structure wants; two narrow spikes are steric clashes in the
+        way. The teal ball minimizes at 100% weight throughout. The amber ball
+        follows the ramp. Same start, same gradient descent, same final energy
+        function — different answers.
+      </p>
+    </div>
+
+    <div class="widget" id="w2">
+      <div class="widget-titlewrap">
+        <h3 class="widget-title">Gradient minimization through a steric wall: hard-only vs. 10 → 33 → 100%</h3>
+        <span class="widget-tag">staged · drag the starting point</span>
+      </div>
+      <div class="widget-controls">
+        <label>starting conformation &nbsp;x₀ = <span class="val" id="w2-x0V">1.00</span>
+          <input type="range" id="w2-x0" min="0.3" max="3.6" step="0.05" value="1.0">
+        </label>
+      </div>
+      <canvas id="w2-canvas" class="widget-stage"></canvas>
+      <div class="reveal-bar">
+        <button id="w2-back" disabled>← Back</button>
+        <span class="reveal-caption" id="w2-caption"></span>
+        <button id="w2-next">Soften repulsion to 10% →</button>
+      </div>
+      <div class="readout" id="w2-readout"></div>
+      <p class="caption">
+        The drawn curve is the score the minimizer currently feels, so it visibly
+        flattens and re-sharpens as the ramp advances. Both balls are scored on
+        the <em>same</em> 100%-weight function at the end — the ramp is a search
+        strategy, not a different energy.
+      </p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version — soft-rep, and what the ramp is really approximating</summary>
+      <div class="formal-body prose">
+        <p>
+          Rosetta's full-atom repulsion <code>fa_rep</code> is a Lennard-Jones-like
+          term that rises steeply inside the pair's contact distance. Write the
+          total score as
+        </p>
+        \[ E_w(\mathbf{x}) \;=\; E_{\text{attr}}(\mathbf{x}) \;+\; w\,E_{\text{rep}}(\mathbf{x}), \]
+        <p>
+          with \(w\) the repulsive weight. Every \(E_w\) has the same global
+          structure of attractive basins; what \(w\) controls is the height of the
+          barriers between them. Minimizing at \(w = 0.1\) is therefore a
+          <em>homotopy</em>: you solve an easy, smooth problem first and use its
+          solution to initialize the next, harder one — the same idea as
+          continuation methods in optimization or graduated non-convexity in
+          vision.
+        </p>
+        <p>
+          The reason it is 10 → 33 → 100 rather than one jump from 10 to 100 is
+          that each intermediate keeps the structure inside the basin found at the
+          previous weight. Jump straight to full repulsion and a structure sitting
+          in a mildly overlapped arrangement gets a huge gradient kick that can
+          throw it back out.
+        </p>
+        <p>
+          In the Kellogg et al. row-16 protocol the repack uses a soft-repulsive
+          score function and the subsequent quasi-Newton minimization uses the
+          hard one, with harmonic distance restraints tethering the model to the
+          input structure so that "minimization" cannot quietly drift into a
+          different fold.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 3 ===================== -->
+  <section class="concept-step" id="step-3">
+    <p class="step-num">Step 3</p>
+    <h2>Fifty repeats, and why the answer is the average of the best three</h2>
+    <div class="prose">
+      <p>
+        Repacking is stochastic. Minimization inherits that randomness through its
+        starting point. Run the pipeline twice on the same input and you get two
+        different scores. So <code>ddg_monomer</code> runs it
+        <strong>50 times</strong> from the same original structure and — this is
+        the part worth dwelling on — reports the <strong>average of the best
+        three</strong>.
+      </p>
+      <p>
+        Why not the average of all 50? Because a failed trajectory, one that got
+        stuck in a bad packing, produces a score that is too high, and there is no
+        corresponding failure mode that produces a score that is too low. The
+        distribution has a sharp lower edge near the true minimum and a long
+        upper tail. Averaging everything averages in the failures.
+      </p>
+      <p>
+        Why not simply the single best of 50, then? Because the minimum of 50
+        noisy draws is itself a very noisy statistic: it is determined by one
+        trajectory, so it inherits that trajectory's full variance, and it
+        systematically chases whichever run got the luckiest noise. <mark>The mean
+        of the best three is the compromise: it discards the failures like the
+        minimum does, but averages three draws instead of trusting one.</mark>
+      </p>
+      <p>
+        And this matters twice over, because ΔΔG is a difference of two such
+        estimates — the noise in the wild-type run and the noise in the mutant run
+        both land in the final number.
+      </p>
+      <p>
+        The widget runs the whole experiment. Each trajectory is a real noisy
+        descent on a rugged landscape, and the true answer is known (it is the
+        difference of the two landscapes' global minima, 0.954), so bias and
+        spread can be measured rather than asserted.
+      </p>
+    </div>
+
+    <div class="widget" id="w3">
+      <div class="widget-titlewrap">
+        <h3 class="widget-title">Three estimators of the same ΔΔG, measured against the truth</h3>
+        <span class="widget-tag">staged · runs real stochastic trajectories</span>
+      </div>
+      <canvas id="w3-canvas" class="widget-stage"></canvas>
+      <div class="reveal-bar">
+        <button id="w3-back" disabled>← Back</button>
+        <span class="reveal-caption" id="w3-caption"></span>
+        <button id="w3-next">Run 50 wild-type trajectories →</button>
+      </div>
+      <div class="readout" id="w3-readout"></div>
+      <p class="caption">
+        Stage 3 repeats the entire 100-trajectory experiment 30 times and plots
+        where each estimator's ΔΔG lands relative to the truth. Root-mean-square
+        error is the honest summary: it charges an estimator for bias and for
+        scatter at once.
+      </p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version — bias, variance, and why three</summary>
+      <div class="formal-body prose">
+        <p>
+          Let \(E_1,\dots,E_{50}\) be the trajectory scores, independent draws
+          from a distribution that piles up just above the true minimum
+          \(E^\star\) and trails off upward. Three estimators of \(E^\star\):
+        </p>
+        \[ \hat E_{\text{mean}} = \tfrac{1}{50}\textstyle\sum_i E_i, \qquad
+           \hat E_{\min} = \min_i E_i, \qquad
+           \hat E_{3} = \tfrac{1}{3}\textstyle\sum_{k=1}^{3} E_{(k)} \]
+        <p>
+          where \(E_{(k)}\) is the \(k\)-th order statistic. \(\hat E_{\text{mean}}\)
+          is biased upward by the full mean of the failure tail and that bias does
+          <em>not</em> shrink with more samples. \(\hat E_{\min}\) is
+          asymptotically unbiased for \(E^\star\) but has variance set by a single
+          extreme draw; extreme-value statistics converge slowly, so its spread
+          stays stubbornly wide. \(\hat E_3\) averages three order statistics: the
+          variance falls roughly like the average of three correlated extremes
+          while the bias picks up only the small gap between the first and third
+          best.
+        </p>
+        <p>
+          For ΔΔG the relevant quantity is the difference
+          \(\hat E^{\text{mut}} - \hat E^{\text{WT}}\). Biases partially cancel
+          when the two landscapes are similarly rugged — but a mutation that makes
+          the local packing problem <em>harder</em> raises the mutant's failure
+          rate, so the cancellation is imperfect, and that residue is a genuine
+          systematic error in the method, not sampling noise you can average away.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 4 ===================== -->
+  <section class="concept-step" id="step-4">
+    <p class="step-num">Step 4</p>
+    <h2>What "REU" and "r = 0.73" actually entitle you to say</h2>
+    <div class="prose">
+      <p>
+        The number that comes out is in <strong>Rosetta Energy Units</strong>. The
+        Bench docs are careful here, and the care is the point: REUs "are not
+        directly convertible to kcal/mol", though "a conversion factor has been
+        determined that can be used for approximation."
+      </p>
+      <p>
+        The reason is structural, not a missing calibration. A Rosetta score is a
+        weighted sum of empirical terms — van der Waals attraction and repulsion,
+        implicit solvation, hydrogen bonding, rotamer probability, a reference
+        energy per amino-acid type — whose weights were <em>fitted</em>, largely to
+        reproduce native structures and rankings. Nothing in that procedure forces
+        the sum onto a calorimetric scale. Any REU→kcal/mol factor is a regression
+        slope fitted on a benchmark set, and it is only valid for the score
+        function, protocol, and kind of mutation it was fitted on. Kellogg et al.
+        got theirs by re-training the reference energies against experimental ΔΔG
+        data, which is what put that particular energy function on a
+        kcal/mol-matched scale in the first place.
+      </p>
+      <p>
+        Then the accuracy claim. The Bench docs quote <strong>r = 0.73 across
+        1,210 mutations</strong>, citing Kellogg et al. 2011. In that paper the
+        best sampling protocol reaches r = 0.69 on those 1,210 mutations, rising to
+        0.73 once the score function's reference weights are re-trained on ΔΔG
+        data. Either number is genuinely good for a structure-based predictor.
+        Neither means what people usually hear.
+      </p>
+      <p>
+        A correlation of 0.73 explains \(r^2 \approx 53\%\) of the variance. The
+        remaining half is spread across individual predictions — the exact things
+        you use the tool for. The widget makes that concrete: it draws a synthetic
+        benchmark with the correlation you dial in, then lets you set the
+        threshold at which you would call a mutation destabilizing and counts how
+        often that call is wrong.
+      </p>
+    </div>
+
+    <div class="widget" id="w4">
+      <div class="widget-titlewrap">
+        <h3 class="widget-title">What a correlation of r = 0.73 does to individual decisions</h3>
+        <span class="widget-tag">synthetic data · drag r and the threshold</span>
+      </div>
+      <div class="widget-controls">
+        <label>correlation &nbsp;r = <span class="val" id="w4-rV">0.73</span>
+          <input type="range" id="w4-r" min="0.30" max="0.95" step="0.01" value="0.73">
+        </label>
+        <label>"destabilizing" threshold = <span class="val" id="w4-tV">1.00</span> kcal/mol
+          <input type="range" id="w4-t" min="0" max="3" step="0.05" value="1.0">
+        </label>
+      </div>
+      <canvas id="w4-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w4-readout"></div>
+      <p class="caption">
+        The 1,210 points are <em>generated</em>, not the Kellogg benchmark — only
+        the correlation and the set size are borrowed, so that the decision
+        arithmetic below is arithmetic you can trust rather than a real result
+        being re-plotted. The Pearson r printed on the canvas is recomputed from
+        the generated points.
+      </p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version — from r to the error rate on one prediction</summary>
+      <div class="formal-body prose">
+        <p>
+          Model predicted and experimental values as jointly normal with
+          correlation \(r\), both standardized. Conditioned on the experimental
+          value \(t\), the prediction is
+        </p>
+        \[ p \mid t \;\sim\; \mathcal{N}\!\big(r\,t,\; 1-r^2\big), \]
+        <p>
+          so the residual standard deviation of a single prediction is
+          \(\sqrt{1-r^2}\). At \(r = 0.73\) that is \(0.68\) — you have removed
+          about a third of the uncertainty in any individual value, not
+          three-quarters. In the widget's units, where experimental ΔΔG has a
+          spread of 1.53 kcal/mol, a single prediction carries 1.04 kcal/mol of
+          irreducible scatter — the same size as the effect most single mutations
+          have.
+        </p>
+        <p>
+          This is why ΔΔG predictors are used the way they are: to
+          <em>rank and triage</em> a library of candidate mutations, where errors
+          on individual entries wash out across the set, rather than to decide the
+          fate of one specific substitution. Ranking is a far weaker demand on the
+          model than valuation, and \(r = 0.73\) supports it comfortably.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== RECAP ===================== -->
+  <section class="recap prose">
+    <h2>Putting it together</h2>
+    <p>
+      Return to the kernel: a ΔΔG prediction is a difference of two scores of the
+      same protein. Every step of <code>ddg_monomer</code> is machinery in service
+      of making that subtraction fair.
+    </p>
+    <ul>
+      <li>
+        <strong>Two energies, not four.</strong> The unfolded state is never
+        modelled; it is assumed to cancel. That assumption is where proline,
+        glycine, and charge-changing mutations go wrong.
+      </li>
+      <li>
+        <strong>Repacking</strong> exists because a naive side-chain graft scores
+        the clash rather than the mutation. Let more of the neighbourhood move and
+        the number falls by a factor of several — how much you let move
+        <em>is</em> part of the prediction.
+      </li>
+      <li>
+        <strong>The 10 / 33 / 100% ramp</strong> is a homotopy. Soft repulsion
+        lets a structure cross steric walls that full repulsion makes infinite;
+        re-hardening scores it honestly on the other side.
+      </li>
+      <li>
+        <strong>Best three of fifty</strong> is a bias–variance compromise
+        between a mean that averages in failed trajectories and a minimum that
+        trusts a single lucky one.
+      </li>
+      <li>
+        <strong>REU are not kcal/mol</strong>, and r = 0.73 leaves about half the
+        variance unexplained — enough to rank a mutation library well, not enough
+        to adjudicate one substitution.
+      </li>
+    </ul>
+
+    <h3>Where to go next</h3>
+    <p>
+      The companion page <a href="delta-g-and-ddg.html">ΔG and ΔΔG</a> covers what
+      these numbers mean thermodynamically — populations, sign conventions, and
+      why the difference of differences is the only trustworthy quantity.
+      <a href="../physics/free-energy-perturbation.html">Free energy perturbation</a>
+      covers the other computational route to the same number: instead of scoring
+      two relaxed structures, morph one amino acid into the other and integrate
+      the work.
+    </p>
+    <p class="sourceline">
+      Source for the protocol described here: the Levitate Bench
+      <a href="https://support.levitate.bio/bench/ddg/">DDG documentation</a> and
+      Kellogg EH, Leaver-Fay A, Baker D, <em>Role of conformational sampling in
+      computing mutation-induced changes in protein structure and stability</em>,
+      Proteins 2011;79(3):830–8.
+    </p>
+  </section>
+
+</div>
+
+<script>
+/* =========================================================================
+   SHARED HELPERS
+   ========================================================================= */
+const RENDER_SCALE = Math.max((window.devicePixelRatio || 1) * 2.5, 3);
+function setupCanvas(canvas, cssW, cssH) {
+  canvas.style.width = cssW + 'px';
+  canvas.style.maxWidth = '100%';
+  canvas.style.height = cssH + 'px';
+  canvas.width  = Math.round(cssW * RENDER_SCALE);
+  canvas.height = Math.round(cssH * RENDER_SCALE);
+  const ctx = canvas.getContext('2d');
+  ctx.scale(RENDER_SCALE, RENDER_SCALE);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  canvas._cssW = cssW; canvas._cssH = cssH;
+  return ctx;
+}
+function makeView(canvas, b) {
+  const w = canvas._cssW, h = canvas._cssH;
+  return { ...b, w, h,
+    x: mx => (mx - b.xmin) / (b.xmax - b.xmin) * w,
+    y: my => h - (my - b.ymin) / (b.ymax - b.ymin) * h };
+}
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function gauss(rng) {
+  let u = 0, v = 0;
+  while (u === 0) u = rng();
+  while (v === 0) v = rng();
+  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+const CSSV = getComputedStyle(document.documentElement);
+const C_ACC  = CSSV.getPropertyValue('--accent').trim();
+const C_ACC2 = CSSV.getPropertyValue('--accent-2').trim();
+const C_ACC3 = CSSV.getPropertyValue('--accent-3').trim();
+const C_INK  = CSSV.getPropertyValue('--ink').trim();
+const C_SOFT = CSSV.getPropertyValue('--ink-soft').trim();
+const C_AXIS = CSSV.getPropertyValue('--axis').trim();
+const C_LINE = CSSV.getPropertyValue('--line').trim();
+const MONO = '"JetBrains Mono", ui-monospace, Menlo, monospace';
+
+/* =========================================================================
+   WIDGET 1 — rotamer repacking by simulated annealing
+   ========================================================================= */
+(function () {
+  const NRES = 7, NROT = 9, BOND = 1.15, RAD = 3.2, CX = 5, CY = 5;
+  const FAN = 0.26, RREP = 1.70, WREP = 14.0, WATR = 0.5, DATR = 1.85;
+  const ROTPEN = [0.6, 0.3, 0.1, 0.0, 0.0, 0.0, 0.1, 0.3, 0.6];
+  const NAMES  = ['Ala', 'Leu', 'Ile', 'Ser', 'Phe', 'Met', 'Gly'];
+  const SIZES_WT  = [1, 2, 2, 1, 2, 2, 1];
+  const SIZES_MUT = [3, 2, 2, 1, 2, 2, 1];
+
+  const S = [];
+  for (let i = 0; i < NRES; i++) {
+    const a = -Math.PI / 2 + i * (2 * Math.PI / NRES);
+    S.push({ x: CX + RAD * Math.cos(a), y: CY + RAD * Math.sin(a), inward: a + Math.PI });
+  }
+  function beads(st, size, rot) {
+    const th = st.inward + (rot - (NROT - 1) / 2) * FAN;
+    const o = [];
+    for (let j = 1; j <= size; j++) o.push([st.x + j * BOND * Math.cos(th), st.y + j * BOND * Math.sin(th)]);
+    return o;
+  }
+  function atoms(sizes, rots) {
+    const all = [];
+    for (let i = 0; i < NRES; i++) {
+      all.push({ x: S[i].x, y: S[i].y, r: i, bb: true });
+      beads(S[i], sizes[i], rots[i]).forEach(p => all.push({ x: p[0], y: p[1], r: i, bb: false }));
+    }
+    return all;
+  }
+  function energy(sizes, rots) {
+    const all = atoms(sizes, rots);
+    let e = 0;
+    for (let a = 0; a < all.length; a++) for (let b = a + 1; b < all.length; b++) {
+      if (all[a].r === all[b].r) continue;
+      const d = Math.hypot(all[a].x - all[b].x, all[a].y - all[b].y);
+      const ov = RREP - d;
+      if (ov > 0) e += WREP * ov * ov;
+      e -= WATR * Math.exp(-((d - DATR) * (d - DATR)) / 0.30);
+    }
+    for (let i = 0; i < NRES; i++) e += ROTPEN[rots[i]];
+    return e;
+  }
+  function clashes(sizes, rots) {
+    const all = atoms(sizes, rots), out = [];
+    for (let a = 0; a < all.length; a++) for (let b = a + 1; b < all.length; b++) {
+      if (all[a].r === all[b].r) continue;
+      const d = Math.hypot(all[a].x - all[b].x, all[a].y - all[b].y);
+      if (d < RREP) out.push([all[a], all[b], RREP - d]);
+    }
+    return out;
+  }
+  // Total repulsive contribution — the part of the score that is pure overlap.
+  function repulsion(sizes, rots) {
+    return clashes(sizes, rots).reduce((s, c) => s + WREP * c[2] * c[2], 0);
+  }
+  // Anneal in slices so the search can be animated. Returns a stepper.
+  function annealer(seed, sizes, rots0, movable, steps) {
+    const rng = mulberry32(seed);
+    let rots = [...rots0], e = energy(sizes, rots);
+    let bestR = [...rots], bestE = e, s = 0;
+    return {
+      done: () => s >= steps,
+      progress: () => s / steps,
+      cur: () => rots, curE: () => e, best: () => bestR, bestE: () => bestE,
+      run(n) {
+        for (let k = 0; k < n && s < steps; k++, s++) {
+          const T = 3.0 * Math.pow(0.02 / 3.0, s / (steps - 1));
+          const i = movable[Math.floor(rng() * movable.length)];
+          const old = rots[i], nw = Math.floor(rng() * NROT);
+          if (nw === old) continue;
+          rots[i] = nw;
+          const en = energy(sizes, rots);
+          if (en <= e || rng() < Math.exp(-(en - e) / T)) {
+            e = en;
+            if (e < bestE) { bestE = e; bestR = [...rots]; }
+          } else rots[i] = old;
+        }
+      }
+    };
+  }
+
+  const canvas = document.getElementById('w1-canvas');
+  const ctx = setupCanvas(canvas, 760, 400);
+  const view = makeView(canvas, { xmin: -0.4, xmax: 10.4, ymin: 0.2, ymax: 9.8 });
+  const readout = document.getElementById('w1-readout');
+  const bMut  = document.getElementById('w1-mut');
+  const bSelf = document.getElementById('w1-self');
+  const bFull = document.getElementById('w1-full');
+  const bRst  = document.getElementById('w1-reset');
+
+  // Wild-type packed state: computed once, deterministically.
+  const wtAnn = annealer(11, SIZES_WT, [4, 4, 4, 4, 4, 4, 4], [0, 1, 2, 3, 4, 5, 6], 8000);
+  wtAnn.run(8000);
+  const WT_ROTS = wtAnn.best(), WT_E = wtAnn.bestE();
+
+  let state = { sizes: SIZES_WT, rots: WT_ROTS, phase: 'wt', running: null, note: '' };
+
+  function draw() {
+    ctx.clearRect(0, 0, view.w, view.h);
+    const sizes = state.sizes, rots = state.rots;
+
+    // pocket hint
+    ctx.strokeStyle = C_LINE; ctx.lineWidth = 1; ctx.setLineDash([3, 5]);
+    ctx.beginPath();
+    ctx.arc(view.x(CX), view.y(CY), (view.x(CX + RAD) - view.x(CX)), 0, Math.PI * 2);
+    ctx.stroke(); ctx.setLineDash([]);
+
+    // clashes first, underneath
+    const cl = clashes(sizes, rots);
+    cl.forEach(([a, b, ov]) => {
+      ctx.strokeStyle = C_ACC3;
+      ctx.globalAlpha = Math.min(1, 0.35 + ov * 1.6);
+      ctx.lineWidth = 2 + 7 * Math.min(0.6, ov);
+      ctx.beginPath(); ctx.moveTo(view.x(a.x), view.y(a.y)); ctx.lineTo(view.x(b.x), view.y(b.y)); ctx.stroke();
+      ctx.globalAlpha = 1;
+    });
+
+    // residues
+    for (let i = 0; i < NRES; i++) {
+      const isSite = i === 0;
+      const col = isSite ? C_ACC : C_ACC2;
+      const bs = beads(S[i], sizes[i], rots[i]);
+      ctx.strokeStyle = col; ctx.lineWidth = 3; ctx.globalAlpha = 0.75;
+      ctx.beginPath(); ctx.moveTo(view.x(S[i].x), view.y(S[i].y));
+      bs.forEach(p => ctx.lineTo(view.x(p[0]), view.y(p[1])));
+      ctx.stroke(); ctx.globalAlpha = 1;
+      bs.forEach(p => {
+        ctx.fillStyle = col; ctx.globalAlpha = 0.9;
+        ctx.beginPath(); ctx.arc(view.x(p[0]), view.y(p[1]), 10, 0, Math.PI * 2); ctx.fill();
+        ctx.globalAlpha = 1;
+      });
+      // backbone Ca
+      ctx.fillStyle = '#0c1413'; ctx.strokeStyle = C_SOFT; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(view.x(S[i].x), view.y(S[i].y), 8, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      // label
+      const lx = CX + (S[i].x - CX) * 1.40, ly = CY + (S[i].y - CY) * 1.40;
+      ctx.fillStyle = isSite ? C_ACC : C_SOFT;
+      ctx.font = (isSite ? 'bold ' : '') + '13px ' + MONO;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      const nm = isSite ? (sizes[0] === 1 ? 'Ala 26' : 'Trp 26') : NAMES[i];
+      ctx.fillText(nm, view.x(lx), view.y(ly));
+    }
+
+    // legend
+    ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    ctx.font = '12px ' + MONO; ctx.fillStyle = C_SOFT;
+    ctx.fillText('○ backbone Cα    ● side-chain atom', 14, view.h - 14);
+    ctx.fillStyle = C_ACC3;
+    ctx.fillText('steric overlap', 300, view.h - 14);
+  }
+
+  function report() {
+    const e = energy(state.sizes, state.rots);
+    const rep = repulsion(state.sizes, state.rots);
+    const dd = e - WT_E;
+    let l1 = `packed wild type   score = ${WT_E.toFixed(2)} REU     steric penalty = ${repulsion(SIZES_WT, WT_ROTS).toFixed(2)} REU`;
+    let l2 = `current            score = ${e.toFixed(2)} REU     steric penalty = ${rep.toFixed(2)} REU`;
+    let l3 = state.phase === 'wt'
+      ? 'ΔΔG                —  (this is the reference)'
+      : `ΔΔG                <b>${dd >= 0 ? '+' : ''}${dd.toFixed(2)} REU</b>   ${state.note}`;
+    readout.innerHTML = l1 + '\n' + l2 + '\n' + l3;
+  }
+
+  function animate(ann, onDone) {
+    if (state.running) cancelAnimationFrame(state.running);
+    [bMut, bSelf, bFull, bRst].forEach(b => b.disabled = true);
+    function frame() {
+      ann.run(160);
+      state.rots = ann.cur();
+      draw(); report();
+      if (!ann.done()) state.running = requestAnimationFrame(frame);
+      else {
+        state.rots = ann.best();
+        state.running = null;
+        draw(); report();
+        onDone();
+      }
+    }
+    frame();
+  }
+
+  bMut.addEventListener('click', () => {
+    state.sizes = SIZES_MUT; state.rots = WT_ROTS; state.phase = 'mut';
+    state.note = '← the naive graft: almost all of this is clash';
+    draw(); report();
+    bMut.disabled = true; bSelf.disabled = false; bFull.disabled = true;
+  });
+  bSelf.addEventListener('click', () => {
+    state.phase = 'self'; state.note = '← only the mutated side chain was allowed to move';
+    const ann = annealer(12, SIZES_MUT, state.rots, [0], 3000);
+    animate(ann, () => { bSelf.disabled = true; bFull.disabled = false; bRst.disabled = false; });
+  });
+  bFull.addEventListener('click', () => {
+    state.phase = 'full'; state.note = '← all seven side chains repacked';
+    const ann = annealer(13, SIZES_MUT, state.rots, [0, 1, 2, 3, 4, 5, 6], 8000);
+    animate(ann, () => { bFull.disabled = true; bRst.disabled = false; });
+  });
+  bRst.addEventListener('click', () => {
+    if (state.running) { cancelAnimationFrame(state.running); state.running = null; }
+    state = { sizes: SIZES_WT, rots: WT_ROTS, phase: 'wt', running: null, note: '' };
+    bMut.disabled = false; bSelf.disabled = true; bFull.disabled = true; bRst.disabled = false;
+    draw(); report();
+  });
+
+  draw(); report();
+})();
+
+/* =========================================================================
+   WIDGET 2 — ramped repulsion vs. hard-only minimization
+   ========================================================================= */
+(function () {
+  const XMIN = 7.4;
+  const SPIKES = [[4.2, 3.5, 0.35], [6.0, 2.0, 0.25]];
+  const A  = x => 0.16 * (x - XMIN) * (x - XMIN);
+  const dA = x => 0.32 * (x - XMIN);
+  function R(x)  { let s = 0; for (const [c, h, w] of SPIKES) s += h * Math.exp(-((x - c) * (x - c)) / w); return s; }
+  function dR(x) { let s = 0; for (const [c, h, w] of SPIKES) s += h * Math.exp(-((x - c) * (x - c)) / w) * (-2 * (x - c) / w); return s; }
+  const E  = (x, w) => A(x) + w * R(x);
+  const dE = (x, w) => dA(x) + w * dR(x);
+  function minimize(x, w, steps, eta) {
+    for (let i = 0; i < steps; i++) {
+      let g = dE(x, w);
+      if (g > 20) g = 20; if (g < -20) g = -20;
+      x -= eta * g;
+      if (x < 0.05) x = 0.05; if (x > 9.95) x = 9.95;
+    }
+    return x;
+  }
+
+  const canvas = document.getElementById('w2-canvas');
+  const ctx = setupCanvas(canvas, 760, 360);
+  const view = makeView(canvas, { xmin: 0, xmax: 10, ymin: -1.2, ymax: 11 });
+  const slider = document.getElementById('w2-x0');
+  const x0V = document.getElementById('w2-x0V');
+  const readout = document.getElementById('w2-readout');
+  const backBtn = document.getElementById('w2-back');
+  const nextBtn = document.getElementById('w2-next');
+  const capt = document.getElementById('w2-caption');
+
+  const STAGES = [
+    { w: 1.00, next: 'Soften repulsion to 10% →',
+      caption: 'The score at full repulsion. Both balls start together; the two spikes are steric clashes.' },
+    { w: 0.10, next: 'Restore to 33% →',
+      caption: 'Repulsion at 10%: the walls collapse to bumps and the amber ball slides straight over both.' },
+    { w: 0.33, next: 'Restore to 100% →',
+      caption: 'Back to 33%: the walls return, but the amber ball is already on the far side of them.' },
+    { w: 1.00, next: null,
+      caption: 'Full repulsion restored. Both balls are now scored on the same function — from different basins.' }
+  ];
+
+  let stage = 0;
+  function compute() {
+    const x0 = parseFloat(slider.value);
+    const hard = minimize(x0, 1.0, 1200, 0.05);
+    const p = [x0];
+    p.push(minimize(p[0], 0.10, 1200, 0.05));
+    p.push(minimize(p[1], 0.33, 1200, 0.05));
+    p.push(minimize(p[2], 1.00, 1200, 0.05));
+    return { x0, hard, ramp: p };
+  }
+
+  function drawCurve(w, style, alpha, width) {
+    ctx.strokeStyle = style; ctx.globalAlpha = alpha; ctx.lineWidth = width;
+    ctx.beginPath();
+    for (let px = 0; px <= view.w; px++) {
+      const mx = view.xmin + px / view.w * (view.xmax - view.xmin);
+      const my = Math.min(E(mx, w), view.ymax + 2);
+      px === 0 ? ctx.moveTo(px, view.y(my)) : ctx.lineTo(px, view.y(my));
+    }
+    ctx.stroke(); ctx.globalAlpha = 1;
+  }
+  function ball(x, w, color, label) {
+    const y = E(x, w);
+    ctx.fillStyle = color;
+    ctx.beginPath(); ctx.arc(view.x(x), view.y(y) - 8, 9, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#0c1413'; ctx.font = 'bold 11px ' + MONO;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(label, view.x(x), view.y(y) - 8);
+    ctx.textBaseline = 'alphabetic';
+  }
+
+  function render() {
+    const st = STAGES[stage];
+    const r = compute();
+    ctx.clearRect(0, 0, view.w, view.h);
+
+    // axes
+    ctx.strokeStyle = C_AXIS; ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, view.y(0)); ctx.lineTo(view.w, view.y(0));
+    ctx.stroke();
+    ctx.fillStyle = C_SOFT; ctx.font = '12px ' + MONO; ctx.textAlign = 'left';
+    ctx.fillText('conformational coordinate  →', 12, view.h - 10);
+    ctx.save();
+    ctx.translate(14, 26); ctx.fillText('score (REU)', 0, 0); ctx.restore();
+
+    // ghost of the full-weight curve for reference
+    if (st.w !== 1.0) drawCurve(1.0, C_LINE, 1, 1.5);
+    drawCurve(st.w, C_INK, 0.85, 2.4);
+
+    // the attractive-only part, faint
+    ctx.strokeStyle = C_ACC2; ctx.globalAlpha = 0.25; ctx.setLineDash([4, 5]); ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    for (let px = 0; px <= view.w; px++) {
+      const mx = view.xmin + px / view.w * (view.xmax - view.xmin);
+      px === 0 ? ctx.moveTo(px, view.y(A(mx))) : ctx.lineTo(px, view.y(A(mx)));
+    }
+    ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha = 1;
+
+    // positions: hard-only ball is released at stage >= 1
+    const hardX = stage === 0 ? r.x0 : r.hard;
+    const rampX = r.ramp[stage];
+    ball(hardX, st.w, C_ACC2, 'H');
+    ball(rampX, st.w, C_ACC, 'R');
+
+    // weight badge
+    ctx.fillStyle = C_ACC; ctx.font = 'bold 15px ' + MONO; ctx.textAlign = 'right';
+    ctx.fillText('repulsive weight = ' + Math.round(st.w * 100) + '%', view.w - 14, 26);
+
+    capt.textContent = st.caption;
+    backBtn.disabled = stage === 0;
+    if (st.next) { nextBtn.style.display = ''; nextBtn.textContent = st.next; }
+    else nextBtn.style.display = 'none';
+
+    const eh = E(r.hard, 1.0), er = E(r.ramp[3], 1.0);
+    readout.innerHTML =
+      `H  hard repulsion throughout   final x = ${r.hard.toFixed(2)}   score at 100% = ${eh.toFixed(2)} REU\n` +
+      `R  ramped 10 → 33 → 100%       final x = ${r.ramp[3].toFixed(2)}   score at 100% = ${er.toFixed(2)} REU\n` +
+      `difference the search strategy alone is worth: <b>${(eh - er).toFixed(2)} REU</b>`;
+  }
+
+  slider.addEventListener('input', () => { x0V.textContent = parseFloat(slider.value).toFixed(2); render(); });
+  nextBtn.addEventListener('click', () => { if (stage < STAGES.length - 1) { stage++; render(); } });
+  backBtn.addEventListener('click', () => { if (stage > 0) { stage--; render(); } });
+  x0V.textContent = parseFloat(slider.value).toFixed(2);
+  render();
+})();
+
+/* =========================================================================
+   WIDGET 3 — 50 trajectories, three estimators
+   ========================================================================= */
+(function () {
+  function U(x, mut) {
+    let u = 0.10 * (x - 6) * (x - 6) + 1.5 * Math.sin(2.3 * x) + 1.1 * Math.sin(4.1 * x + 1.0) + 0.7 * Math.sin(7.3 * x + 0.4);
+    if (mut) u += 1.10 + 0.6 * Math.sin(5.7 * x + 2.0);
+    return u;
+  }
+  function dU(x, mut) {
+    let d = 0.20 * (x - 6) + 1.5 * 2.3 * Math.cos(2.3 * x) + 1.1 * 4.1 * Math.cos(4.1 * x + 1.0) + 0.7 * 7.3 * Math.cos(7.3 * x + 0.4);
+    if (mut) d += 0.6 * 5.7 * Math.cos(5.7 * x + 2.0);
+    return d;
+  }
+  const N = 40, T0 = 0.9, T1 = 0.05, ETA = 0.03, NOISE = 0.35;
+  function trajectory(rng, mut) {
+    let x = rng() * 10;
+    for (let i = 0; i < N; i++) {
+      const T = T0 * Math.pow(T1 / T0, i / (N - 1));
+      let g = dU(x, mut); if (g > 30) g = 30; if (g < -30) g = -30;
+      x += -ETA * g + Math.sqrt(2 * ETA * T) * gauss(rng);
+      if (x < 0) x = 0; if (x > 10) x = 10;
+    }
+    for (let i = 0; i < 40; i++) {
+      let g = dU(x, mut); if (g > 30) g = 30; if (g < -30) g = -30;
+      x -= ETA * g; if (x < 0) x = 0; if (x > 10) x = 10;
+    }
+    return { x, E: U(x, mut) + NOISE * gauss(rng) };
+  }
+  function globalMin(mut) {
+    let b = 1e9;
+    for (let i = 0; i <= 40000; i++) { const u = U(i / 4000, mut); if (u < b) b = u; }
+    return b;
+  }
+  const G_WT = globalMin(false), G_MU = globalMin(true), TRUE_DDG = G_MU - G_WT;
+  const mean = a => a.reduce((s, v) => s + v, 0) / a.length;
+  function est(scores) {
+    const t = [...scores].sort((a, b) => a - b);
+    return { mean: mean(t), min: t[0], best3: mean(t.slice(0, 3)) };
+  }
+
+  const canvas = document.getElementById('w3-canvas');
+  const ctx = setupCanvas(canvas, 760, 452);
+  const readout = document.getElementById('w3-readout');
+  const backBtn = document.getElementById('w3-back');
+  const nextBtn = document.getElementById('w3-next');
+  const capt = document.getElementById('w3-caption');
+
+  // Deterministic batches so the numbers in the prose stay true.
+  function batch(seed, mut, n) {
+    const rng = mulberry32(seed), out = [];
+    for (let i = 0; i < n; i++) out.push(trajectory(rng, mut));
+    return out;
+  }
+  // Independent streams so this single experiment is clearly its own draw,
+  // not secretly the first of the 30 replicates computed in stage 3.
+  const rngWT = mulberry32(7), rngMU = mulberry32(8);
+  const WT = [], MU = [];
+  for (let i = 0; i < 50; i++) WT.push(trajectory(rngWT, false));
+  for (let i = 0; i < 50; i++) MU.push(trajectory(rngMU, true));
+  const eWT = est(WT.map(d => d.E)), eMU = est(MU.map(d => d.E));
+
+  // Stage 3: 30 replicate experiments, computed lazily once.
+  let REPS = null;
+  function computeReps() {
+    if (REPS) return REPS;
+    const out = { mean: [], min: [], best3: [] };
+    for (let r = 0; r < 30; r++) {
+      const rng = mulberry32(1000 + r);
+      const w = [], m = [];
+      for (let i = 0; i < 50; i++) w.push(trajectory(rng, false).E);
+      for (let i = 0; i < 50; i++) m.push(trajectory(rng, true).E);
+      const a = est(w), b = est(m);
+      out.mean.push(b.mean - a.mean);
+      out.min.push(b.min - a.min);
+      out.best3.push(b.best3 - a.best3);
+    }
+    REPS = out; return out;
+  }
+  const rmse = a => Math.sqrt(mean(a.map(v => (v - TRUE_DDG) * (v - TRUE_DDG))));
+  const sdev = a => { const m = mean(a); return Math.sqrt(mean(a.map(v => (v - m) * (v - m)))); };
+
+  // ---- drawing ----------------------------------------------------------
+  const PAD = 46;
+  const landV = { x0: PAD, x1: 760 - PAD, y0: 22, y1: 150 };   // landscape panel
+  const histV = { x0: PAD, x1: 760 - PAD, y0: 186, y1: 300 };  // histogram panel
+  const repV  = { x0: PAD, x1: 760 - PAD, y0: 330, y1: 412 };  // replicate panel
+
+  function lx(x) { return landV.x0 + x / 10 * (landV.x1 - landV.x0); }
+  function ly(u) { const lo = -2.6, hi = 4.2; return landV.y1 - (u - lo) / (hi - lo) * (landV.y1 - landV.y0); }
+
+  function drawLandscape(showWT, showMU) {
+    ctx.strokeStyle = C_LINE; ctx.lineWidth = 1;
+    ctx.strokeRect(landV.x0, landV.y0, landV.x1 - landV.x0, landV.y1 - landV.y0);
+    ctx.font = '11px ' + MONO; ctx.fillStyle = C_SOFT; ctx.textAlign = 'left';
+    ctx.fillText('score landscape · dots = where each trajectory stopped', landV.x0, landV.y0 - 7);
+    [[false, C_ACC2, showWT], [true, C_ACC, showMU]].forEach(([mut, col, on]) => {
+      if (!on) return;
+      ctx.strokeStyle = col; ctx.globalAlpha = 0.75; ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      for (let px = 0; px <= landV.x1 - landV.x0; px++) {
+        const x = px / (landV.x1 - landV.x0) * 10;
+        const y = ly(Math.max(-2.6, Math.min(4.2, U(x, mut))));
+        px === 0 ? ctx.moveTo(lx(x), y) : ctx.lineTo(lx(x), y);
+      }
+      ctx.stroke(); ctx.globalAlpha = 1;
+      const set = mut ? MU : WT;
+      set.forEach(d => {
+        ctx.fillStyle = col; ctx.globalAlpha = 0.55;
+        ctx.beginPath(); ctx.arc(lx(d.x), ly(Math.max(-2.6, Math.min(4.2, U(d.x, mut)))), 3.2, 0, Math.PI * 2); ctx.fill();
+        ctx.globalAlpha = 1;
+      });
+    });
+  }
+
+  const HLO = -3.3, HHI = 3.6;
+  const hx = e => histV.x0 + (Math.max(HLO, Math.min(HHI, e)) - HLO) / (HHI - HLO) * (histV.x1 - histV.x0);
+  function drawHist(sets) {
+    ctx.strokeStyle = C_AXIS; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(histV.x0, histV.y1); ctx.lineTo(histV.x1, histV.y1); ctx.stroke();
+    ctx.font = '11px ' + MONO; ctx.fillStyle = C_SOFT; ctx.textAlign = 'left';
+    ctx.fillText('distribution of the 50 trajectory scores', histV.x0, histV.y0 - 7);
+    ctx.textAlign = 'center';
+    for (let v = -3; v <= 3; v++) { ctx.fillText(String(v), hx(v), histV.y1 + 15); }
+    const NB = 34, bw = (histV.x1 - histV.x0) / NB;
+    sets.forEach(({ data, col, e }) => {
+      const bins = new Array(NB).fill(0);
+      data.forEach(v => { let b = Math.floor((Math.max(HLO, Math.min(HHI - 1e-9, v)) - HLO) / (HHI - HLO) * NB); bins[b]++; });
+      const mx = Math.max(...bins, 1);
+      bins.forEach((c, i) => {
+        if (!c) return;
+        const h = c / mx * (histV.y1 - histV.y0 - 26);
+        ctx.fillStyle = col; ctx.globalAlpha = 0.35;
+        ctx.fillRect(histV.x0 + i * bw + 1, histV.y1 - h, bw - 2, h);
+        ctx.globalAlpha = 1;
+      });
+      // estimator markers
+      const marks = [['mean', e.mean, 6], ['min', e.min, 6], ['best3', e.best3, 6]];
+      marks.forEach(([nm, v], k) => {
+        ctx.strokeStyle = col; ctx.lineWidth = nm === 'best3' ? 2.6 : 1.2;
+        ctx.setLineDash(nm === 'best3' ? [] : [3, 3]);
+        ctx.beginPath(); ctx.moveTo(hx(v), histV.y0 + 4); ctx.lineTo(hx(v), histV.y1); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = col; ctx.font = '10px ' + MONO; ctx.textAlign = 'center';
+        ctx.fillText(nm, hx(v), histV.y0 + (k * 11) + 2);
+      });
+    });
+  }
+
+  function drawReps(R) {
+    const rows = [['mean of 50', R.mean, C_SOFT], ['min of 50', R.min, C_ACC2], ['mean of best 3', R.best3, C_ACC]];
+    const lo = 0.2, hi = 1.9;
+    const rx = v => repV.x0 + 150 + (Math.max(lo, Math.min(hi, v)) - lo) / (hi - lo) * (repV.x1 - repV.x0 - 160);
+    ctx.font = '11px ' + MONO; ctx.fillStyle = C_SOFT; ctx.textAlign = 'left';
+    ctx.fillText('30 replicate experiments · each dot is one ΔΔG estimate', repV.x0, repV.y0 - 7);
+    // truth line
+    ctx.strokeStyle = C_INK; ctx.globalAlpha = 0.6; ctx.setLineDash([4, 4]); ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.moveTo(rx(TRUE_DDG), repV.y0); ctx.lineTo(rx(TRUE_DDG), repV.y1 + 4); ctx.stroke();
+    ctx.setLineDash([]); ctx.globalAlpha = 1;
+    ctx.fillStyle = C_INK; ctx.font = '11px ' + MONO; ctx.textAlign = 'center';
+    ctx.fillText('true ΔΔG = ' + TRUE_DDG.toFixed(2), rx(TRUE_DDG), repV.y1 + 18);
+    rows.forEach(([nm, arr, col], i) => {
+      const y = repV.y0 + 16 + i * 22;
+      ctx.fillStyle = C_SOFT; ctx.font = '12px ' + MONO; ctx.textAlign = 'left';
+      ctx.fillText(nm, repV.x0, y + 4);
+      arr.forEach(v => {
+        ctx.fillStyle = col; ctx.globalAlpha = 0.6;
+        ctx.beginPath(); ctx.arc(rx(v), y, 3.4, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1;
+      });
+      ctx.fillStyle = col; ctx.font = 'bold 11px ' + MONO; ctx.textAlign = 'right';
+      ctx.fillText('rmse ' + rmse(arr).toFixed(3), repV.x1, y + 4);
+    });
+  }
+
+  const STAGES = [
+    { next: 'Run 50 wild-type trajectories →', caption: 'Two landscapes: wild type in teal, mutant in amber. Nothing has been sampled yet.' },
+    { next: 'Run 50 mutant trajectories →',    caption: '50 wild-type trajectories. Most miss the global minimum; the distribution has a floor and a long upper tail.' },
+    { next: 'Repeat the whole experiment 30× →', caption: 'Both sets sampled. Three vertical markers per colour: the mean, the min, and the mean of the best three.' },
+    { next: null, caption: 'The payoff: mean-of-50 is biased high, min-of-50 is unbiased but scattered, mean-of-best-3 has the lowest error overall.' }
+  ];
+  let stage = 0;
+
+  function render() {
+    ctx.clearRect(0, 0, 760, 452);
+    drawLandscape(stage >= 1, stage >= 2);
+    if (stage >= 1) {
+      const sets = [{ data: WT.map(d => d.E), col: C_ACC2, e: eWT }];
+      if (stage >= 2) sets.push({ data: MU.map(d => d.E), col: C_ACC, e: eMU });
+      drawHist(sets);
+    }
+    if (stage >= 3) drawReps(computeReps());
+
+    capt.textContent = STAGES[stage].caption;
+    backBtn.disabled = stage === 0;
+    if (STAGES[stage].next) { nextBtn.style.display = ''; nextBtn.textContent = STAGES[stage].next; }
+    else nextBtn.style.display = 'none';
+
+    if (stage === 0) {
+      readout.innerHTML = `true global minima:  wild type = ${G_WT.toFixed(3)}   mutant = ${G_MU.toFixed(3)}   →  true ΔΔG = <b>${TRUE_DDG.toFixed(3)}</b>`;
+    } else if (stage === 1) {
+      readout.innerHTML =
+        `wild type, 50 trajectories:  mean = ${eWT.mean.toFixed(3)}   min = ${eWT.min.toFixed(3)}   mean of best 3 = ${eWT.best3.toFixed(3)}\n` +
+        `true minimum = ${G_WT.toFixed(3)} — the mean sits far above it because a failed trajectory can only score too high, never too low.`;
+    } else if (stage === 2) {
+      readout.innerHTML =
+        `ΔΔG from mean of 50      = ${(eMU.mean - eWT.mean).toFixed(3)}     (truth ${TRUE_DDG.toFixed(3)})\n` +
+        `ΔΔG from min of 50       = ${(eMU.min - eWT.min).toFixed(3)}\n` +
+        `ΔΔG from mean of best 3  = <b>${(eMU.best3 - eWT.best3).toFixed(3)}</b>\n` +
+        `This is one experiment. Stage 3 runs thirty more.`;
+    } else {
+      const R = computeReps();
+      const fmt = (nm, a) => `${nm.padEnd(16)} bias = ${(mean(a) - TRUE_DDG >= 0 ? '+' : '') + (mean(a) - TRUE_DDG).toFixed(3)}   sd = ${sdev(a).toFixed(3)}   rmse = ${rmse(a).toFixed(3)}`;
+      readout.innerHTML =
+        fmt('mean of 50', R.mean) + '\n' +
+        fmt('min of 50', R.min) + '\n' +
+        '<b>' + fmt('mean of best 3', R.best3) + '</b>';
+    }
+  }
+  nextBtn.addEventListener('click', () => { if (stage < STAGES.length - 1) { stage++; render(); } });
+  backBtn.addEventListener('click', () => { if (stage > 0) { stage--; render(); } });
+  render();
+})();
+
+/* =========================================================================
+   WIDGET 4 — what r = 0.73 buys you
+   ========================================================================= */
+(function () {
+  const NPT = 1210;
+  // Draw the experimental values once; the predicted values are re-drawn from
+  // a fixed noise stream whenever r changes, so the cloud morphs smoothly.
+  const rngT = mulberry32(42);
+  const T = [], Z = [];
+  for (let i = 0; i < NPT; i++) {
+    const z = gauss(rngT);
+    T.push(0.85 + 1.35 * z + (rngT() < 0.13 ? 2.2 * Math.abs(gauss(rngT)) : 0));
+  }
+  const rngZ = mulberry32(99);
+  for (let i = 0; i < NPT; i++) Z.push(gauss(rngZ));
+  const mean = a => a.reduce((s, v) => s + v, 0) / a.length;
+  const mT = mean(T);
+  const sT = Math.sqrt(mean(T.map(v => (v - mT) * (v - mT))));
+  // Standardized experimental values, and a noise stream made exactly
+  // orthogonal to them so the cloud's empirical r equals the slider value
+  // rather than wobbling around it by a couple of hundredths.
+  const ZT = T.map(v => (v - mT) / sT);
+  (function orthonormalize() {
+    const dot = ZT.reduce((s, v, i) => s + v * Z[i], 0) / NPT;
+    for (let i = 0; i < NPT; i++) Z[i] -= dot * ZT[i];
+    const mZ = mean(Z);
+    const sZ = Math.sqrt(mean(Z.map(v => (v - mZ) * (v - mZ))));
+    for (let i = 0; i < NPT; i++) Z[i] = (Z[i] - mZ) / sZ;
+  })();
+
+  const canvas = document.getElementById('w4-canvas');
+  const ctx = setupCanvas(canvas, 760, 444);
+  const rS = document.getElementById('w4-r'), tS = document.getElementById('w4-t');
+  const rV = document.getElementById('w4-rV'), tV = document.getElementById('w4-tV');
+  const readout = document.getElementById('w4-readout');
+
+  const LO = -4, HI = 7;
+  const P0 = { x0: 56, x1: 430, y0: 24, y1: 396 };
+  const sx = v => P0.x0 + (Math.max(LO, Math.min(HI, v)) - LO) / (HI - LO) * (P0.x1 - P0.x0);
+  const sy = v => P0.y1 - (Math.max(LO, Math.min(HI, v)) - LO) / (HI - LO) * (P0.y1 - P0.y0);
+
+  function predicted(r) {
+    const k = Math.sqrt(1 - r * r);
+    return ZT.map((zt, i) => mT + sT * (r * zt + k * Z[i]));
+  }
+  function pearson(P) {
+    const mP = mean(P);
+    let a = 0, b = 0, c = 0;
+    for (let i = 0; i < NPT; i++) { a += (T[i] - mT) * (P[i] - mP); b += (T[i] - mT) * (T[i] - mT); c += (P[i] - mP) * (P[i] - mP); }
+    return a / Math.sqrt(b * c);
+  }
+
+  function draw() {
+    const r = parseFloat(rS.value), th = parseFloat(tS.value);
+    rV.textContent = r.toFixed(2); tV.textContent = th.toFixed(2);
+    const P = predicted(r);
+    const rEmp = pearson(P);
+
+    let TP = 0, FP = 0, FN = 0, TN = 0;
+    for (let i = 0; i < NPT; i++) {
+      const truth = T[i] > th, pred = P[i] > th;
+      if (truth && pred) TP++; else if (!truth && pred) FP++; else if (truth && !pred) FN++; else TN++;
+    }
+
+    ctx.clearRect(0, 0, 760, 444);
+
+    // quadrant shading
+    ctx.fillStyle = C_ACC3; ctx.globalAlpha = 0.06;
+    ctx.fillRect(sx(LO), sy(HI), sx(th) - sx(LO), sy(th) - sy(HI));   // pred high, exp low  → FP region
+    ctx.fillRect(sx(th), sy(th), sx(HI) - sx(th), sy(LO) - sy(th));   // pred low, exp high  → FN region
+    ctx.globalAlpha = 1;
+
+    // frame + diagonal
+    ctx.strokeStyle = C_LINE; ctx.lineWidth = 1;
+    ctx.strokeRect(P0.x0, P0.y0, P0.x1 - P0.x0, P0.y1 - P0.y0);
+    ctx.strokeStyle = C_AXIS; ctx.setLineDash([4, 4]);
+    ctx.beginPath(); ctx.moveTo(sx(LO), sy(LO)); ctx.lineTo(sx(HI), sy(HI)); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // points
+    for (let i = 0; i < NPT; i++) {
+      const truth = T[i] > th, pred = P[i] > th;
+      ctx.fillStyle = (truth === pred) ? C_ACC2 : C_ACC3;
+      ctx.globalAlpha = (truth === pred) ? 0.28 : 0.55;
+      ctx.beginPath(); ctx.arc(sx(T[i]), sy(P[i]), 2.1, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    // threshold lines
+    ctx.strokeStyle = C_ACC; ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.moveTo(sx(th), P0.y0); ctx.lineTo(sx(th), P0.y1);
+    ctx.moveTo(P0.x0, sy(th)); ctx.lineTo(P0.x1, sy(th));
+    ctx.stroke();
+
+    // axes labels
+    ctx.fillStyle = C_SOFT; ctx.font = '11px ' + MONO; ctx.textAlign = 'center';
+    for (let v = -4; v <= 6; v += 2) {
+      ctx.fillText(String(v), sx(v), P0.y1 + 15);
+      ctx.textAlign = 'right'; ctx.fillText(String(v), P0.x0 - 6, sy(v) + 4); ctx.textAlign = 'center';
+    }
+    ctx.fillText('experimental ΔΔG  (kcal/mol)', (P0.x0 + P0.x1) / 2, P0.y1 + 32);
+    ctx.save(); ctx.translate(16, (P0.y0 + P0.y1) / 2); ctx.rotate(-Math.PI / 2);
+    ctx.fillText('predicted ΔΔG', 0, 0); ctx.restore();
+
+    // SYNTHETIC stamp
+    ctx.fillStyle = C_SOFT; ctx.globalAlpha = 0.55; ctx.font = 'bold 11px ' + MONO;
+    ctx.textAlign = 'left';
+    ctx.fillText('SYNTHETIC DATA — 1,210 generated points', P0.x0 + 8, P0.y0 + 16);
+    ctx.globalAlpha = 1;
+
+    // ---- right panel: the numbers ----
+    const RX = 470;
+    ctx.textAlign = 'left';
+    ctx.fillStyle = C_INK; ctx.font = 'bold 14px ' + MONO;
+    ctx.fillText('measured on the cloud', RX, 44);
+    ctx.font = '13px ' + MONO; ctx.fillStyle = C_SOFT;
+    ctx.fillText('Pearson r', RX, 72);
+    ctx.fillStyle = C_ACC; ctx.font = 'bold 15px ' + MONO;
+    ctx.fillText(rEmp.toFixed(3), RX + 170, 72);
+    ctx.fillStyle = C_SOFT; ctx.font = '13px ' + MONO;
+    ctx.fillText('variance explained r²', RX, 94);
+    ctx.fillStyle = C_ACC; ctx.font = 'bold 15px ' + MONO;
+    ctx.fillText((rEmp * rEmp * 100).toFixed(0) + '%', RX + 170, 94);
+    ctx.fillStyle = C_SOFT; ctx.font = '13px ' + MONO;
+    ctx.fillText('residual sd  √(1−r²)', RX, 116);
+    ctx.fillStyle = C_ACC; ctx.font = 'bold 15px ' + MONO;
+    ctx.fillText((Math.sqrt(1 - rEmp * rEmp) * sT).toFixed(2), RX + 170, 116);
+
+    // confusion matrix
+    ctx.fillStyle = C_INK; ctx.font = 'bold 14px ' + MONO;
+    ctx.fillText('calling ΔΔG > ' + th.toFixed(2) + ' destabilizing', RX, 156);
+    const cells = [
+      ['true positive', TP, C_ACC2], ['false positive', FP, C_ACC3],
+      ['false negative', FN, C_ACC3], ['true negative', TN, C_ACC2]
+    ];
+    cells.forEach(([nm, v, col], i) => {
+      const cx = RX + (i % 2) * 130, cy = 176 + Math.floor(i / 2) * 62;
+      ctx.strokeStyle = col; ctx.globalAlpha = 0.5; ctx.lineWidth = 1.2;
+      ctx.strokeRect(cx, cy, 120, 52); ctx.globalAlpha = 1;
+      ctx.fillStyle = C_SOFT; ctx.font = '10px ' + MONO; ctx.textAlign = 'center';
+      ctx.fillText(nm, cx + 60, cy + 15);
+      ctx.fillStyle = col; ctx.font = 'bold 20px ' + MONO;
+      ctx.fillText(String(v), cx + 60, cy + 40);
+      ctx.textAlign = 'left';
+    });
+    const prec = TP + FP > 0 ? TP / (TP + FP) : NaN;
+    const rec  = TP + FN > 0 ? TP / (TP + FN) : NaN;
+    ctx.fillStyle = C_SOFT; ctx.font = '13px ' + MONO;
+    ctx.fillText('precision', RX, 322);
+    ctx.fillStyle = C_ACC; ctx.font = 'bold 15px ' + MONO;
+    ctx.fillText(isNaN(prec) ? '—' : (prec * 100).toFixed(1) + '%', RX + 170, 322);
+    ctx.fillStyle = C_SOFT; ctx.font = '13px ' + MONO;
+    ctx.fillText('recall', RX, 344);
+    ctx.fillStyle = C_ACC; ctx.font = 'bold 15px ' + MONO;
+    ctx.fillText(isNaN(rec) ? '—' : (rec * 100).toFixed(1) + '%', RX + 170, 344);
+
+    const wrong = FP + FN;
+    readout.innerHTML =
+      `at r = ${rEmp.toFixed(2)}, calling every prediction above ${th.toFixed(2)} kcal/mol destabilizing gets ` +
+      `<b>${wrong} of ${NPT}</b> mutations wrong (${(wrong / NPT * 100).toFixed(1)}%) — ` +
+      `${FP} called destabilizing that are not, ${FN} missed.`;
+  }
+  rS.addEventListener('input', draw);
+  tS.addEventListener('input', draw);
+  draw();
+})();
+
+/* =========================================================================
+   READING PROGRESS
+   ========================================================================= */
+(function () {
+  const bar = document.getElementById('progress');
+  function update() {
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%';
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+})();
+</script>
+</body>
+</html>
