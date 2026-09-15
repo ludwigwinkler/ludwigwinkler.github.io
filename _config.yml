@@ -14,6 +14,11 @@ defaults:
       permalink: "/blog/:title/"
       layout: post
       author:
+  - scope:
+      path: "blogposts/_posts/html"
+      type: posts
+    values:
+      published: false
 
 # Jekyll
 permalink: /blog/:title/

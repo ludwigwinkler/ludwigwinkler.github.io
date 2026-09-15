@@ -13,6 +13,8 @@ This is a Jekyll-based static site, primarily for technical blogging and documen
 - Posts use extended Markdown, with MathJax blocks for equations and `<div style="overflow-x: auto;">` for wide math/code
 - Python code is often shown for ML examples; use `torch` for softmax/logsumexp demos
 - When editing Markdown, preserve MathJax formatting and code block styles
+- Keep article prose in Markdown and post-specific HTML/CSS/JavaScript in `blogposts/_posts/html/<post-basename>.html`, using the same basename (including the date) as the post.
+- Insert HTML fragments with `{% include_relative html/<post-basename>.html %}`. When a post has multiple fragments, select conditional blocks in that file with an `include_relative` parameter such as `widget="name"`. Scope widget styles and script selectors to their container and reuse the post's MathJax include.
 - Use line comments `// ...existing code...` when editing files to avoid repeating unchanged content
 - For new files, place them inside `/Users/ludwigwinkler/Work/ludwigwinkler.github.io`
 

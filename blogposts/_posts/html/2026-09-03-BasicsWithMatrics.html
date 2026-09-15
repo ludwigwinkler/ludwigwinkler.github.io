@@ -1,0 +1,3742 @@
+{% if include.widget == "scaling" %}
+<style>
+  #matrix-scaling-widget{
+    --line:#e2e6e9;
+    --ink:#212931;
+    --dim:#626d78;
+    --teal:#147f7a;
+    --amber:#a96100;
+    --purple:#7153b8;
+    margin:26px 0;
+    color:var(--ink);
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:8px;
+    font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size:14px;
+    font-weight:400;
+    letter-spacing:0;
+    line-height:1.5;
+    text-align:left;
+    text-transform:none;
+  }
+  #matrix-scaling-widget,
+  #matrix-scaling-widget *{box-sizing:border-box;}
+  #matrix-scaling-widget h4,
+  #matrix-scaling-widget h5{
+    margin:0;
+    color:var(--ink);
+    font:600 17px/1.35 "Helvetica Neue",Helvetica,Arial,sans-serif;
+    letter-spacing:0;
+    text-transform:none;
+  }
+  #matrix-scaling-widget h5{font-size:16px;}
+  #matrix-scaling-widget p{margin:5px 0 0; font-size:13px; line-height:1.5; text-align:left;}
+  #matrix-scaling-widget .scaling-head{padding:18px 20px; border-bottom:1px solid var(--line);}
+  #matrix-scaling-widget .scaling-panels{display:grid; grid-template-columns:repeat(2,minmax(0,1fr));}
+  #matrix-scaling-widget .scaling-panel{min-width:0; padding:20px;}
+  #matrix-scaling-widget .scaling-panel + .scaling-panel{border-left:1px solid var(--line);}
+  #matrix-scaling-widget .first{color:var(--teal);}
+  #matrix-scaling-widget .second{color:var(--purple);}
+  #matrix-scaling-widget .scaling-calculation{
+    display:grid;
+    grid-template-columns:max-content max-content;
+    align-items:center;
+    justify-content:center;
+    gap:8px 6px;
+    margin:14px 0 12px;
+    font:13px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;
+  }
+  #matrix-scaling-widget .scaling-equation-label{grid-column:1 / -1; justify-self:center;}
+  #matrix-scaling-widget .scaling-equals{justify-self:end;}
+  #matrix-scaling-widget .scaling-operands,
+  #matrix-scaling-widget .scaling-output,
+  #matrix-scaling-widget .scaling-expansion{
+    display:flex;
+    flex:0 0 auto;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    min-height:57px;
+    font:13px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;
+    font-variant-numeric:tabular-nums;
+  }
+  #matrix-scaling-widget .scaling-expansion{justify-content:flex-start; gap:4px;}
+  #matrix-scaling-widget .scaling-scaled-column{display:flex; align-items:center; gap:3px;}
+  #matrix-scaling-widget .scaling-operand{text-align:center;}
+  #matrix-scaling-widget .scaling-bracket{
+    position:relative;
+    display:grid;
+    gap:2px 12px;
+    padding:4px 7px;
+    font:13px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;
+  }
+  #matrix-scaling-widget .scaling-matrix{grid-template-columns:repeat(2,1fr);}
+  #matrix-scaling-widget .scaling-bracket::before,
+  #matrix-scaling-widget .scaling-bracket::after{
+    content:"";
+    position:absolute;
+    top:0;
+    bottom:0;
+    width:5px;
+    border-top:1px solid #89939e;
+    border-bottom:1px solid #89939e;
+  }
+  #matrix-scaling-widget .scaling-bracket::before{left:0; border-left:1px solid #89939e;}
+  #matrix-scaling-widget .scaling-bracket::after{right:0; border-right:1px solid #89939e;}
+  #matrix-scaling-widget .scaling-zero{color:#89939e;}
+  #matrix-scaling-widget .scaling-times{color:var(--dim);}
+  #matrix-scaling-widget .scaling-operand > .scaling-bracket{min-height:57px; align-content:center;}
+  #matrix-scaling-widget .scaling-column-collection{grid-template-columns:repeat(2,1fr); gap:6px; padding:4px 6px;}
+  #matrix-scaling-widget .scaling-column-collection > .scaling-bracket::before,
+  #matrix-scaling-widget .scaling-column-collection > .scaling-bracket::after,
+  #matrix-scaling-widget .scaling-scaled-column > .scaling-bracket::before,
+  #matrix-scaling-widget .scaling-scaled-column > .scaling-bracket::after{border-color:currentColor;}
+  #matrix-scaling-widget .scaling-answer{color:var(--amber);}
+  #matrix-scaling-widget .scaling-answer::before,
+  #matrix-scaling-widget .scaling-answer::after{border-color:var(--amber);}
+  #matrix-scaling-widget figure{margin:0;}
+  #matrix-scaling-widget svg{display:block; width:100%; max-width:340px; height:auto; margin:0 auto; background:#fff;}
+  #matrix-scaling-widget svg text{font-family:inherit; font-size:11px;}
+  #matrix-scaling-widget .scaling-vector-label{paint-order:stroke; stroke:#fff; stroke-width:3px; stroke-linejoin:round;}
+  #matrix-scaling-widget .scaling-legend{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    gap:4px 12px;
+    color:var(--dim);
+    font-size:11px;
+  }
+  #matrix-scaling-widget .scaling-legend .legend-fixed::before{
+    content:"";
+    display:inline-block;
+    width:18px;
+    margin-right:5px;
+    vertical-align:middle;
+    border-top:2px dashed #89939e;
+  }
+  #matrix-scaling-widget .legend-result{color:var(--amber);}
+  #matrix-scaling-widget .scaling-controls{display:grid; gap:8px; margin-top:12px;}
+  #matrix-scaling-widget .scaling-control{display:grid; grid-template-columns:2.2em minmax(0,1fr) 3.6em; align-items:center; gap:8px; min-width:0; color:var(--teal);}
+  #matrix-scaling-widget .scaling-control + .scaling-control{color:var(--purple);}
+  #matrix-scaling-widget .control-heading{display:contents;}
+  #matrix-scaling-widget label{grid-column:1; grid-row:1; margin:0; color:inherit; font-family:inherit; font-size:14px; font-weight:600; letter-spacing:0; text-transform:none;}
+  #matrix-scaling-widget output{grid-column:3; grid-row:1; text-align:right; font:600 13px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;}
+  #matrix-scaling-widget input[type="range"]{
+    display:block;
+    grid-column:2;
+    grid-row:1;
+    width:100%;
+    min-width:0;
+    height:28px;
+    margin:0;
+    padding:0;
+    accent-color:var(--teal);
+    cursor:pointer;
+  }
+  #matrix-scaling-widget .scaling-control + .scaling-control input{accent-color:var(--purple);}
+  #matrix-scaling-widget input:focus-visible{outline:2px solid currentColor; outline-offset:2px; border-radius:3px;}
+  #matrix-scaling-widget .scaling-comparison{padding:15px 20px; border-top:1px solid var(--line);}
+  #matrix-scaling-widget .scaling-equivalence{font-size:12px;}
+  #matrix-scaling-widget .scaling-equivalence[data-matched="true"]{color:var(--teal);}
+  @media (max-width:760px){
+    #matrix-scaling-widget .scaling-panels{grid-template-columns:1fr;}
+    #matrix-scaling-widget .scaling-panel + .scaling-panel{border-left:0; border-top:1px solid var(--line);}
+  }
+  @media (max-width:400px){
+    #matrix-scaling-widget .scaling-head,
+    #matrix-scaling-widget .scaling-panel,
+    #matrix-scaling-widget .scaling-comparison{padding:16px 12px;}
+    #matrix-scaling-widget svg text{font-size:13px;}
+  }
+</style>
+<div id="matrix-scaling-widget" role="group" aria-labelledby="scaling-title">
+  <div class="scaling-head">
+    <h4 id="scaling-title">02 · Scaling a diagonal matrix-vector product</h4>
+  </div>
+  <div class="scaling-panels">
+    <section class="scaling-panel" data-scaling-panel="left" aria-labelledby="scaling-left-title">
+      <h5 id="scaling-left-title">Vary A · fixed x</h5>
+      <div class="scaling-calculation" data-left-operands role="img" aria-label="y = Ax, expanded as the two diagonal entries scaling the fixed all-ones vector">
+        <div class="scaling-equation-label" aria-hidden="true"><b>y</b> = <b>A</b><b>x</b></div>
+        <div class="scaling-output" aria-hidden="true">
+          <span class="scaling-operand">
+            <span class="scaling-bracket scaling-answer" data-left-readout>
+              <span>1.00</span><span>1.00</span>
+            </span>
+          </span>
+          <span>=</span>
+        </div>
+        <div class="scaling-operands" aria-hidden="true">
+          <div class="scaling-operand">
+            <span class="scaling-bracket scaling-matrix">
+              <span class="first" data-left-cell="a1">1.00</span><span class="scaling-zero">0</span>
+              <span class="scaling-zero">0</span><span class="second" data-left-cell="a2">1.00</span>
+            </span>
+          </div>
+          <span class="scaling-times">×</span>
+          <div class="scaling-operand">
+            <span class="scaling-bracket"><span class="first">1</span><span class="second">1</span></span>
+          </div>
+        </div>
+        <span class="scaling-equals" aria-hidden="true">=</span>
+        <div class="scaling-expansion" data-row-expansion aria-hidden="true">
+          <span class="scaling-bracket">
+            <span class="first" data-left-expansion="0">1.00 × 1</span>
+            <span class="second" data-left-expansion="1">1.00 × 1</span>
+          </span>
+        </div>
+      </div>
+      <figure>
+        <svg viewBox="0 0 320 300" role="img" aria-label="The separately scaled coordinates of fixed input x locate output y = Ax" data-left-plot></svg>
+        <figcaption class="scaling-legend"><span class="legend-fixed">fixed x</span><span class="legend-result">↗ Ax</span></figcaption>
+      </figure>
+      <div class="scaling-controls">
+        <div class="scaling-control">
+          <div class="control-heading">
+            <label for="scaling-a11">a₁₁</label>
+            <output for="scaling-a11" data-left-output="a1">1.00</output>
+          </div>
+          <input id="scaling-a11" data-left-control="a1" type="range" min="-2" max="2" step="0.05" value="1" aria-label="a₁₁: scale input component x₁" aria-describedby="scaling-left-product1">
+          <div id="scaling-left-product1" hidden>y₁ = <span data-left-product="0">1.00 × 1 = 1.00</span></div>
+        </div>
+        <div class="scaling-control">
+          <div class="control-heading">
+            <label for="scaling-a22">a₂₂</label>
+            <output for="scaling-a22" data-left-output="a2">1.00</output>
+          </div>
+          <input id="scaling-a22" data-left-control="a2" type="range" min="-2" max="2" step="0.05" value="1" aria-label="a₂₂: scale input component x₂" aria-describedby="scaling-left-product2">
+          <div id="scaling-left-product2" hidden>y₂ = <span data-left-product="1">1.00 × 1 = 1.00</span></div>
+        </div>
+      </div>
+    </section>
+    <section class="scaling-panel" data-scaling-panel="right" aria-labelledby="scaling-right-title">
+      <h5 id="scaling-right-title">Fixed A · vary x</h5>
+      <div class="scaling-calculation" data-right-operands role="img" aria-label="y = Ax, expanded as column a₁ times x₁ plus column a₂ times x₂, with A fixed at the identity">
+        <div class="scaling-equation-label" aria-hidden="true"><b>y</b> = <b>A</b><b>x</b></div>
+        <div class="scaling-output" aria-hidden="true">
+          <span class="scaling-operand">
+            <span class="scaling-bracket scaling-answer" data-right-readout>
+              <span>1.00</span><span>1.00</span>
+            </span>
+          </span>
+          <span>=</span>
+        </div>
+        <div class="scaling-operands" aria-hidden="true">
+          <div class="scaling-operand">
+            <span class="scaling-bracket scaling-column-collection" data-fixed-column-matrix>
+              <span class="scaling-bracket first" data-column-coordinates="a1"><span>1</span><span>0</span></span>
+              <span class="scaling-bracket second" data-column-coordinates="a2"><span>0</span><span>1</span></span>
+            </span>
+          </div>
+          <span class="scaling-times">×</span>
+          <div class="scaling-operand">
+            <span class="scaling-bracket" data-variable-input>
+              <span class="first" data-right-cell="x1">1.00</span>
+              <span class="second" data-right-cell="x2">1.00</span>
+            </span>
+          </div>
+        </div>
+        <span class="scaling-equals" aria-hidden="true">=</span>
+        <div class="scaling-expansion" data-column-expansion aria-hidden="true">
+          <span class="scaling-scaled-column first">
+            <span class="scaling-bracket" data-expansion-column="a1"><span>1</span><span>0</span></span>
+            <span>×</span><span data-right-expansion="0">1.00</span>
+          </span>
+          <span>+</span>
+          <span class="scaling-scaled-column second">
+            <span class="scaling-bracket" data-expansion-column="a2"><span>0</span><span>1</span></span>
+            <span>×</span><span data-right-expansion="1">1.00</span>
+          </span>
+        </div>
+      </div>
+      <figure>
+        <svg viewBox="0 0 320 300" role="img" aria-label="Scaled columns a₁x₁ and a₂x₂ adding to Ax" data-right-plot></svg>
+        <figcaption class="scaling-legend"><span class="legend-fixed">fixed columns</span><span class="legend-result">Ax = a₁x₁ + a₂x₂</span></figcaption>
+      </figure>
+      <div class="scaling-controls">
+        <div class="scaling-control">
+          <div class="control-heading">
+            <label for="scaling-x1">x₁</label>
+            <output for="scaling-x1" data-right-output="x1">1.00</output>
+          </div>
+          <input id="scaling-x1" data-right-control="x1" type="range" min="-2" max="2" step="0.05" value="1" aria-label="x₁: weight of the first column" aria-describedby="scaling-right-product1">
+          <div id="scaling-right-product1" hidden>a₁x₁ = <span data-right-product="0">(1.00, 0.00)</span></div>
+        </div>
+        <div class="scaling-control">
+          <div class="control-heading">
+            <label for="scaling-x2">x₂</label>
+            <output for="scaling-x2" data-right-output="x2">1.00</output>
+          </div>
+          <input id="scaling-x2" data-right-control="x2" type="range" min="-2" max="2" step="0.05" value="1" aria-label="x₂: weight of the second column" aria-describedby="scaling-right-product2">
+          <div id="scaling-right-product2" hidden>a₂x₂ = <span data-right-product="1">(0.00, 1.00)</span></div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <div class="scaling-comparison">
+    <div class="scaling-equivalence" data-scaling-equivalence role="status" aria-live="polite" aria-atomic="true"></div>
+  </div>
+  <noscript><p>Enable JavaScript to explore the four sliders.</p></noscript>
+</div>
+<script>
+(function(){
+  const root = document.getElementById('matrix-scaling-widget');
+  const fixed = [1, 1], origin = [160, 150], plotScale = 40;
+  const colors = {first:'#147f7a', second:'#7153b8', result:'#a96100', fixed:'#89939e'};
+  const select = selector => root.querySelector(selector);
+  const equivalence = root.querySelector('[data-scaling-equivalence]');
+  const fmt = value => (Math.abs(value) < 1e-9 ? 0 : value).toFixed(2);
+  const formatVector = vector => '('+vector.map(fmt).join(', ')+')';
+  const point = vector => [origin[0]+vector[0]*plotScale, origin[1]-vector[1]*plotScale];
+
+  function element(tag, attributes, parent, text){
+    const node = document.createElementNS('http://www.w3.org/2000/svg',tag);
+    Object.entries(attributes).forEach(([key,value])=>node.setAttribute(key,value));
+    if(text !== undefined) node.textContent = text;
+    parent.appendChild(node);
+    return node;
+  }
+
+  function segment(line, from, to){
+    const start = point(from), end = point(to);
+    ['x1','y1','x2','y2'].forEach((key,index)=>line.setAttribute(key,[...start,...end][index]));
+    // A zero-length SVG line can still paint its marker; hide it when the component vanishes.
+    line.setAttribute('visibility',from.every((value,index)=>Math.abs(value-to[index])<1e-9) ? 'hidden' : 'visible');
+  }
+
+  function makePanel(side, keys){
+    const svg = select('[data-'+side+'-plot]');
+    const defs = element('defs',{},svg);
+    Object.entries(colors).forEach(([name,color])=>{
+      const marker = element('marker',{id:'scaling-'+side+'-'+name,viewBox:'0 0 10 10',refX:9,refY:5,markerWidth:7,markerHeight:7,markerUnits:'userSpaceOnUse',orient:'auto'},defs);
+      element('path',{d:'M0 0L10 5L0 10z',fill:color},marker);
+    });
+    const grid = element('g',{stroke:'#edf0f2','stroke-width':1},svg);
+    for(let tick=-3;tick<=3;tick++){
+      const [x,y] = point([tick,tick]);
+      element('path',{d:'M'+x+' 30V270 M40 '+y+'H280'},grid);
+      if(tick && Math.abs(tick)<3){
+        element('text',{x,y:origin[1]+17,fill:'#89939e','text-anchor':'middle',stroke:'none'},grid,tick);
+        element('text',{x:origin[0]-9,y:y+4,fill:'#89939e','text-anchor':'end',stroke:'none'},grid,tick);
+      }
+    }
+    element('path',{d:'M30 150H290 M160 20V280',stroke:'#c4cbd1','stroke-width':1},svg);
+    element('text',{x:151,y:167,fill:'#89939e','text-anchor':'end'},svg,'0');
+    element('text',{x:289,y:166,fill:'#89939e','text-anchor':'end'},svg,'y₁');
+    element('text',{x:170,y:23,fill:'#89939e'},svg,'y₂');
+
+    const guides = element('path',{fill:'none',stroke:'#d9dee5','stroke-dasharray':'3 4'},svg);
+    const arrow = (name, attributes) => element('line',{
+      stroke:colors[name],'stroke-width':2.5,'marker-end':'url(#scaling-'+side+'-'+name+')',...attributes
+    },svg);
+    const first = arrow('first',{['data-'+side+'-segment']:'x1','stroke-width':4,'stroke-opacity':0.5});
+    const second = arrow('second',{['data-'+side+'-segment']:'x2','stroke-width':4,'stroke-opacity':0.5});
+    if(side === 'left'){
+      const [x,y] = point(fixed);
+      element('path',{d:'M'+x+' 150V'+y+'H160',fill:'none',stroke:'#c4cbd1','stroke-dasharray':'3 4','data-fixed-input-guides':''},svg);
+      const input = arrow('fixed',{'data-left-vector':'x','stroke-dasharray':'4 4','stroke-width':1.8});
+      segment(input,[0,0],fixed);
+      element('circle',{cx:x,cy:y,r:3,fill:'#fff',stroke:colors.fixed},svg);
+      element('text',{x:x-5,y:y-10,fill:'#626d78','text-anchor':'end'},svg,'fixed x');
+    }else{
+      // Hollow tips keep the fixed columns identifiable even when a scaled arrow overlaps them.
+      [[fixed[0],0],[0,fixed[1]]].forEach((vector,index)=>{
+        const name = index ? 'second' : 'first';
+        const column = arrow(name,{'data-fixed-column':index,'stroke-dasharray':'3 4','stroke-width':1.5});
+        segment(column,[0,0],vector);
+        const [x,y] = point(vector);
+        element('circle',{cx:x,cy:y,r:3.5,fill:'#fff',stroke:colors[name],'stroke-width':1.5},svg);
+        element('text',{x:x+(index ? -10 : 3),y:y+(index ? -8 : 32),fill:colors[name],'text-anchor':index ? 'end' : 'start'},svg,index ? 'a₂' : 'a₁');
+      });
+    }
+    const result = arrow('result',{['data-'+side+'-vector']:'y','stroke-width':2.5});
+    const tip = element('circle',{r:3.5,fill:colors.result,['data-'+side+'-tip']:''},svg);
+    const firstLabel = element('text',{fill:colors.first,'text-anchor':'middle',class:'scaling-vector-label'},svg,side === 'left' ? 'a₁₁x₁' : 'a₁x₁');
+    const secondLabel = element('text',{fill:colors.second,class:'scaling-vector-label'},svg,side === 'left' ? 'a₂₂x₂' : 'a₂x₂');
+    return {
+      side, svg, guides, first, second, result, tip, firstLabel, secondLabel,
+      controls:keys.map(key=>select('[data-'+side+'-control="'+key+'"]')),
+      outputs:keys.map(key=>select('[data-'+side+'-output="'+key+'"]')),
+      cells:keys.map(key=>select('[data-'+side+'-cell="'+key+'"]')),
+      expansions:keys.map((key,index)=>select('[data-'+side+'-expansion="'+index+'"]')),
+      products:keys.map((key,index)=>select('[data-'+side+'-product="'+index+'"]')),
+      operands:select('[data-'+side+'-operands]'),
+      readout:select('[data-'+side+'-readout]')
+    };
+  }
+  const left = makePanel('left',['a1','a2']), right = makePanel('right',['x1','x2']);
+
+  function drawPanel(panel){
+    const values = panel.controls.map(control=>Number(control.value));
+    const result = values.map((value,index)=>value*fixed[index]);
+    const elbow = [result[0],0], [x,y] = point(result);
+    const componentView = panel.side === 'left';
+    segment(panel.first,[0,0],elbow);
+    segment(panel.second,componentView ? [0,0] : elbow,componentView ? [0,result[1]] : result);
+    segment(panel.result,[0,0],result);
+    panel.guides.setAttribute('d',componentView ? 'M'+x+' 150V'+y+'H160' : 'M160 '+y+'H'+x);
+    panel.tip.setAttribute('cx',x); panel.tip.setAttribute('cy',y);
+    panel.firstLabel.setAttribute('x',origin[0]+Math.sign(result[0])*24);
+    panel.firstLabel.setAttribute('y',origin[1]+(result[1]>=0 ? 32 : -10));
+    panel.firstLabel.setAttribute('visibility',Math.abs(result[0])>=1 ? 'visible' : 'hidden');
+    panel.secondLabel.setAttribute('x',componentView ? origin[0]+(result[0]>=0 ? -26 : 26) : x+(result[0]>=0 ? 10 : -10));
+    panel.secondLabel.setAttribute('y',(origin[1]+y)/2+4);
+    panel.secondLabel.setAttribute('text-anchor',(componentView ? result[0]>=0 : result[0]<0) ? 'end' : 'start');
+    panel.secondLabel.setAttribute('visibility',Math.abs(result[1])>=0.5 ? 'visible' : 'hidden');
+    values.forEach((value,index)=>{
+      const contribution = index === 0 ? [result[0],0] : [0,result[1]];
+      const rowProduct = fmt(value)+' × '+fixed[index];
+      panel.outputs[index].value = fmt(value);
+      panel.cells[index].textContent = fmt(value);
+      panel.readout.children[index].textContent = fmt(result[index]);
+      panel.expansions[index].textContent = componentView ? rowProduct : fmt(value);
+      panel.products[index].textContent = componentView
+        ? rowProduct+' = '+fmt(result[index])
+        : formatVector(contribution);
+      panel.controls[index].setAttribute('aria-valuetext',fmt(value)+(componentView
+        ? '; output component '+fmt(result[index])
+        : '; scaled column '+formatVector(contribution)));
+    });
+    const description = panel.side === 'left'
+      ? 'Variable A = diag'+formatVector(values)+' times fixed x = '+formatVector(fixed)+', the all-ones column vector'
+      : 'Fixed A = diag'+formatVector(fixed)+', the identity I, times variable x = '+formatVector(values);
+    const interpretation = componentView
+      ? ' Row-wise dot products: '+panel.expansions.map(node=>node.textContent).join('; ')+'.'
+      : ' Column combination: (1, 0) times '+fmt(values[0])+' plus (0, 1) times '+fmt(values[1])+'.';
+    panel.operands.setAttribute('aria-label',description+'. Output Ax = '+formatVector(result)+'.'+interpretation);
+    panel.svg.setAttribute('aria-label',description+'. Output y = Ax = '+formatVector(result)+(componentView
+      ? '. Teal and purple arrows independently scale the input coordinates; projection guides locate the output.'
+      : '. Teal a₁x₁ followed head to tail by purple a₂x₂; the amber arrow is their vector sum.'));
+    return values;
+  }
+
+  function draw(){
+    const diagonal = drawPanel(left), input = drawPanel(right);
+    const matches = diagonal.every((value,index)=>Math.abs(value-input[index])<1e-9);
+    equivalence.dataset.matched = String(matches);
+    equivalence.textContent = matches
+      ? 'Same output: a₁₁ = x₁ and a₂₂ = x₂.'
+      : 'Different outputs. Match a₁₁ = x₁ and a₂₂ = x₂.';
+  }
+  [...left.controls,...right.controls].forEach(control=>control.addEventListener('input',draw));
+  draw();
+})();
+</script>
+{% elsif include.widget == "directions" %}
+<style>
+  #matrix-directions-widget{
+    --line:#dfe5e8;
+    --ink:#212931;
+    --dim:#65717c;
+    --teal:#147f7a;
+    --teal-soft:#edf7f6;
+    --amber:#a96100;
+    --amber-soft:#fff6e8;
+    margin:26px 0;
+    overflow:hidden;
+    color:var(--ink);
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:8px;
+    font:400 14px/1.5 "Helvetica Neue",Helvetica,Arial,sans-serif;
+    text-align:left;
+  }
+  #matrix-directions-widget,
+  #matrix-directions-widget *{box-sizing:border-box;}
+  #matrix-directions-widget .directions-head{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px 20px;
+    padding:18px 20px;
+    border-bottom:1px solid var(--line);
+  }
+  #matrix-directions-widget .directions-heading{display:grid; gap:3px;}
+  #matrix-directions-widget .directions-kicker{
+    color:var(--teal);
+    font:600 10px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+  }
+  #matrix-directions-widget h4{
+    margin:0;
+    color:var(--ink);
+    font:600 17px/1.35 "Helvetica Neue",Helvetica,Arial,sans-serif;
+    letter-spacing:0;
+    text-transform:none;
+  }
+  #matrix-directions-widget .directions-matrix{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    color:#37444e;
+    font:500 13px/1.35 ui-monospace,SFMono-Regular,Consolas,monospace;
+  }
+  #matrix-directions-widget .directions-matrix-grid{
+    position:relative;
+    display:grid;
+    grid-template-columns:repeat(2,2.2em);
+    gap:2px 8px;
+    padding:3px 8px;
+    text-align:center;
+    font-variant-numeric:tabular-nums;
+  }
+  #matrix-directions-widget .directions-matrix-grid::before,
+  #matrix-directions-widget .directions-matrix-grid::after{
+    content:"";
+    position:absolute;
+    top:0;
+    bottom:0;
+    width:5px;
+    border:1px solid currentColor;
+  }
+  #matrix-directions-widget .directions-matrix-grid::before{left:0; border-right:0;}
+  #matrix-directions-widget .directions-matrix-grid::after{right:0; border-left:0;}
+  #matrix-directions-widget .directions-body{padding:18px 20px 20px;}
+  #matrix-directions-widget .directions-story{
+    margin:0 0 12px;
+    color:#485761;
+    font-size:13px;
+  }
+  #matrix-directions-widget .directions-presets{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+    margin-bottom:12px;
+  }
+  #matrix-directions-widget button{
+    min-height:0;
+    padding:7px 11px;
+    color:var(--teal) !important;
+    background:#fff;
+    border:1px solid #b9cfcc;
+    border-radius:6px;
+    box-shadow:none;
+    font:600 11px/1.25 "Helvetica Neue",Helvetica,Arial,sans-serif;
+    letter-spacing:0;
+    text-transform:none;
+  }
+  #matrix-directions-widget button:hover,
+  #matrix-directions-widget button[aria-pressed="true"]{
+    color:#fff !important;
+    background:var(--teal);
+    border-color:var(--teal);
+  }
+  #matrix-directions-widget button:focus-visible{
+    outline:3px solid rgba(20,127,122,0.22);
+    outline-offset:2px;
+  }
+  #matrix-directions-widget .directions-plot-shell{
+    overflow:hidden;
+    background:#fbfdfd;
+    border:1px solid #dfe8e7;
+    border-radius:8px;
+  }
+  #matrix-directions-widget .directions-legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px 16px;
+    padding:9px 12px;
+    color:var(--dim);
+    background:#fff;
+    border-bottom:1px solid #e7ecee;
+    font-size:11px;
+  }
+  #matrix-directions-widget .directions-key{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+  }
+  #matrix-directions-widget .directions-key::before{
+    content:"";
+    width:18px;
+    border-top:3px solid var(--teal);
+  }
+  #matrix-directions-widget .directions-key.actual::before{border-color:var(--amber); border-top-width:5px;}
+  #matrix-directions-widget .directions-key.grid::before{border-color:#8db8b4; border-top-width:1px;}
+  #matrix-directions-widget .directions-key.home::before{
+    width:10px;
+    height:10px;
+    background:#eef3f7;
+    border:2px solid #536b7a;
+    border-radius:2px;
+  }
+  #matrix-directions-widget .directions-plot{
+    display:block;
+    width:100%;
+    height:auto;
+    touch-action:none;
+    user-select:none;
+  }
+  #matrix-directions-widget .directions-plot text{
+    font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    paint-order:stroke;
+    stroke:#fff;
+    stroke-width:3px;
+    stroke-linejoin:round;
+  }
+  #matrix-directions-widget [data-directions-handle]{cursor:grab; outline:none;}
+  #matrix-directions-widget [data-directions-handle]:active{cursor:grabbing;}
+  #matrix-directions-widget [data-directions-handle]:focus-visible .directions-handle-ring{
+    stroke:#172129;
+    stroke-width:3;
+  }
+  #matrix-directions-widget .directions-readout{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:8px;
+    margin-top:12px;
+  }
+  #matrix-directions-widget .directions-metric{
+    min-width:0;
+    padding:10px 12px;
+    background:#fafcfc;
+    border:1px solid #e1e7e9;
+    border-radius:7px;
+  }
+  #matrix-directions-widget .directions-metric-label{
+    display:block;
+    margin-bottom:3px;
+    color:#77828c;
+    font:600 9px/1.3 ui-monospace,SFMono-Regular,Consolas,monospace;
+    letter-spacing:0.07em;
+    text-transform:uppercase;
+  }
+  #matrix-directions-widget .directions-metric strong{
+    display:block;
+    overflow-wrap:anywhere;
+    color:var(--ink);
+    font:600 14px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;
+    font-variant-numeric:tabular-nums;
+  }
+  #matrix-directions-widget .directions-metric.instructions strong{color:var(--teal);}
+  #matrix-directions-widget .directions-metric.actual strong{color:var(--amber);}
+  #matrix-directions-widget .directions-footer{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-top:12px;
+    padding:10px 12px;
+    color:#5d4a2d;
+    background:var(--amber-soft);
+    border:1px solid #efdfc3;
+    border-radius:7px;
+  }
+  #matrix-directions-widget .directions-message{margin:0; font-size:12px;}
+  #matrix-directions-widget .directions-sr-only{
+    position:absolute;
+    width:1px;
+    height:1px;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    white-space:nowrap;
+  }
+  @media (max-width:620px){
+    #matrix-directions-widget .directions-readout{grid-template-columns:1fr;}
+    #matrix-directions-widget .directions-footer{align-items:flex-start; flex-direction:column;}
+  }
+  @media (max-width:420px){
+    #matrix-directions-widget .directions-head,
+    #matrix-directions-widget .directions-body{padding:14px 12px;}
+    #matrix-directions-widget .directions-matrix{width:100%; justify-content:flex-start;}
+    #matrix-directions-widget .directions-presets{display:grid; grid-template-columns:1fr;}
+    #matrix-directions-widget button{width:100%;}
+    #matrix-directions-widget .directions-legend{gap:6px 10px;}
+  }
+</style>
+<div id="matrix-directions-widget" role="group" aria-labelledby="directions-title">
+  <div class="directions-head">
+    <div class="directions-heading">
+      <span class="directions-kicker">Directions home, after last call</span>
+      <h4 id="directions-title">01 · A matrix warps a direction</h4>
+    </div>
+    <div class="directions-matrix" role="img" data-directions-matrix-label>
+      <span><i>A</i> =</span>
+      <span class="directions-matrix-grid" aria-hidden="true">
+        <span data-directions-cell="0">1</span><span data-directions-cell="1">1</span>
+        <span data-directions-cell="2">0</span><span data-directions-cell="3">1</span>
+      </span>
+    </div>
+  </div>
+  <div class="directions-body">
+    <p class="directions-story">The house is two blocks right and one block up. Drag the teal direction to the house, then swap the matrix to see where the street map actually sends you.</p>
+    <div class="directions-presets" role="group" aria-label="Choose how the street map transforms the directions">
+      <button type="button" data-directions-preset="identity" aria-pressed="false">No warp</button>
+      <button type="button" data-directions-preset="slope" aria-pressed="true">Sloped streets</button>
+      <button type="button" data-directions-preset="rotation" aria-pressed="false">Turn everything 90°</button>
+    </div>
+    <div class="directions-plot-shell">
+      <div class="directions-legend">
+        <span class="directions-key">directions <i>x</i></span>
+        <span class="directions-key actual">actual route <i>Ax</i></span>
+        <span class="directions-key grid">warped street grid</span>
+        <span class="directions-key home">home</span>
+      </div>
+      <svg class="directions-plot" viewBox="0 0 680 420" data-directions-plot role="application" aria-label="Drag the directions vector to compare it with the transformed route" aria-describedby="directions-keyboard"></svg>
+    </div>
+    <div class="directions-readout" aria-live="polite">
+      <div class="directions-metric instructions">
+        <span class="directions-metric-label">Directions you were given</span>
+        <strong data-directions-input></strong>
+      </div>
+      <div class="directions-metric actual">
+        <span class="directions-metric-label">Where the map sends you</span>
+        <strong data-directions-output></strong>
+      </div>
+      <div class="directions-metric">
+        <span class="directions-metric-label">What the matrix did</span>
+        <strong data-directions-effect></strong>
+      </div>
+    </div>
+    <div class="directions-footer">
+      <p class="directions-message" data-directions-message></p>
+      <button type="button" data-directions-reset>Reset directions</button>
+    </div>
+  </div>
+  <div id="directions-keyboard" class="directions-sr-only">Focus the draggable point and use the arrow keys to move it. Hold Shift for larger steps.</div>
+  <div class="directions-sr-only" data-directions-status role="status" aria-live="polite" aria-atomic="true"></div>
+</div>
+<script>
+(function(){
+  const root=document.getElementById('matrix-directions-widget');
+  const svg=root.querySelector('[data-directions-plot]');
+  const cells=[...root.querySelectorAll('[data-directions-cell]')];
+  const matrixLabel=root.querySelector('[data-directions-matrix-label]');
+  const inputReadout=root.querySelector('[data-directions-input]');
+  const outputReadout=root.querySelector('[data-directions-output]');
+  const effectReadout=root.querySelector('[data-directions-effect]');
+  const message=root.querySelector('[data-directions-message]');
+  const status=root.querySelector('[data-directions-status]');
+  const reset=root.querySelector('[data-directions-reset]');
+  const presetButtons=[...root.querySelectorAll('[data-directions-preset]')];
+  const matrices={
+    identity:{values:[1,0,0,1],effect:'unchanged',message:'With the identity matrix, the directions and the actual route coincide.'},
+    slope:{values:[1,1,0,1],effect:'sheared by 45°',message:'Each block upward also drifts one full block to the right.'},
+    rotation:{values:[0,-1,1,0],effect:'rotated 90°',message:'The matrix turns the entire direction 90° counterclockwise.'}
+  };
+  let mode='slope';
+  const home=[2,1];
+  const initial=[0.8,0.2];
+  const input=initial.slice();
+  let dragging=null;
+  let hintVisible=true;
+
+  const frame={left:40,right:640,top:30,bottom:390};
+  const plot={minX:-5,maxX:5,minY:-3,maxY:3,scale:60};
+  const dragBounds={minX:-3.2,maxX:3.2,minY:-2.5,maxY:2.5};
+  const colors={input:'#147f7a',output:'#a96100'};
+
+  function element(tag,attributes,parent,text){
+    const node=document.createElementNS('http://www.w3.org/2000/svg',tag);
+    Object.entries(attributes).forEach(([key,value])=>node.setAttribute(key,value));
+    if(text!==undefined) node.textContent=text;
+    parent.appendChild(node);
+    return node;
+  }
+
+  const defs=element('defs',{},svg);
+  const clip=element('clipPath',{id:'directions-plot-clip'},defs);
+  element('rect',{x:frame.left,y:frame.top,width:frame.right-frame.left,height:frame.bottom-frame.top},clip);
+  function marker(id,color,size){
+    const node=element('marker',{
+      id,viewBox:'0 0 10 10',refX:8,refY:5,markerWidth:size,markerHeight:size,orient:'auto-start-reverse'
+    },defs);
+    element('path',{d:'M 0 0 L 10 5 L 0 10 z',fill:color},node);
+  }
+  marker('directions-input-arrow',colors.input,7);
+  marker('directions-output-arrow',colors.output,7);
+
+  const baseGrid=element('g',{'clip-path':'url(#directions-plot-clip)'},svg);
+  const warpGrid=element('g',{'clip-path':'url(#directions-plot-clip)','data-directions-warp-grid':''},svg);
+  const routes=element('g',{},svg);
+
+  function toScreen(point){
+    return [frame.left+(point[0]-plot.minX)*plot.scale,frame.bottom-(point[1]-plot.minY)*plot.scale];
+  }
+  function fromScreen(point){
+    return [plot.minX+(point.x-frame.left)/plot.scale,plot.minY+(frame.bottom-point.y)/plot.scale];
+  }
+  function apply(point){
+    const [a11,a12,a21,a22]=matrices[mode].values;
+    return [a11*point[0]+a12*point[1],a21*point[0]+a22*point[1]];
+  }
+  function fmt(value){
+    const clean=Math.abs(value)<1e-9?0:value;
+    return clean.toFixed(2).replace(/\.00$/,'').replace(/(\.\d)0$/,'$1');
+  }
+  function vector(point){return '('+fmt(point[0])+', '+fmt(point[1])+')';}
+
+  for(let x=Math.ceil(plot.minX);x<=plot.maxX;x++){
+    const [sx]=toScreen([x,0]);
+    element('line',{x1:sx,y1:frame.top,x2:sx,y2:frame.bottom,stroke:x===0?'#aeb8bf':'#e8edef','stroke-width':x===0?1.3:1},baseGrid);
+    if(x!==0) element('text',{x:sx,y:408,fill:'#7b8790','font-size':10,'text-anchor':'middle'},svg,x);
+  }
+  for(let y=Math.ceil(plot.minY);y<=plot.maxY;y++){
+    const [,sy]=toScreen([0,y]);
+    element('line',{x1:frame.left,y1:sy,x2:frame.right,y2:sy,stroke:y===0?'#aeb8bf':'#e8edef','stroke-width':y===0?1.3:1},baseGrid);
+    if(y!==0) element('text',{x:31,y:sy+4,fill:'#7b8790','font-size':10,'text-anchor':'end'},svg,y);
+  }
+  element('circle',{cx:toScreen([0,0])[0],cy:toScreen([0,0])[1],r:6,fill:'#26343c'},routes);
+  element('text',{x:toScreen([0,0])[0]+10,y:toScreen([0,0])[1]-10,fill:'#26343c','font-size':11,'font-weight':700},routes,'BAR');
+
+  const homeTip=toScreen(home);
+  element('line',{
+    x1:toScreen([0,0])[0],y1:toScreen([0,0])[1],x2:homeTip[0],y2:homeTip[1],
+    stroke:'#788a96','stroke-width':1.4,'stroke-dasharray':'5 5'
+  },routes);
+  const difference=element('line',{stroke:'#7f8991','stroke-width':1.5,'stroke-dasharray':'5 5'},routes);
+  const outputArrow=element('line',{stroke:colors.output,'stroke-width':5,'stroke-linecap':'round','marker-end':'url(#directions-output-arrow)'},routes);
+  const inputArrow=element('line',{stroke:colors.input,'stroke-width':3,'stroke-linecap':'round','marker-end':'url(#directions-input-arrow)'},routes);
+  const outputPoint=element('circle',{r:5.5,fill:colors.output,stroke:'#fff','stroke-width':2},routes);
+  const inputHandle=element('g',{'data-directions-handle':'',role:'button',tabindex:0,'aria-describedby':'directions-keyboard'},routes);
+  element('circle',{r:18,fill:'transparent'},inputHandle);
+  element('circle',{r:8,fill:'#fff',stroke:colors.input,'stroke-width':3,class:'directions-handle-ring'},inputHandle);
+  const inputLabel=element('text',{fill:colors.input,'font-size':12,'font-weight':700},routes,'x');
+  const outputLabel=element('text',{fill:colors.output,'font-size':12,'font-weight':700},routes,'Ax');
+  const hint=element('g',{'aria-hidden':'true'},inputHandle);
+  const hintBox=element('rect',{width:118,height:21,rx:5,fill:'rgba(255,255,255,0.96)',stroke:colors.input},hint);
+  const hintText=element('text',{fill:colors.input,'font-size':9,'font-weight':600,stroke:'none'},hint,'Drag me to the house!');
+  const house=element('g',{
+    transform:'translate('+homeTip[0]+' '+homeTip[1]+')',
+    'data-directions-home':'',
+    'pointer-events':'none',
+    'aria-hidden':'true'
+  },routes);
+  const houseCircle=element('circle',{r:17,fill:'#f5f8fa',stroke:'#536b7a','stroke-width':2},house);
+  element('path',{d:'M -10 0 L 0 -10 L 10 0',fill:'none',stroke:'#405866','stroke-width':2.2,'stroke-linecap':'round','stroke-linejoin':'round'},house);
+  element('rect',{x:-7,y:0,width:14,height:10,rx:1,fill:'#fff',stroke:'#405866','stroke-width':1.8},house);
+  element('rect',{x:-2,y:4,width:4,height:6,fill:'#a96100'},house);
+  element('text',{x:0,y:30,fill:'#405866','font-size':9,'font-weight':700,'text-anchor':'middle'},house,'HOME');
+
+  function drawWarpGrid(){
+    warpGrid.replaceChildren();
+    const style={stroke:'#65aaa4','stroke-width':1,'stroke-opacity':0.42};
+    for(let x=-5;x<=5;x++){
+      const start=toScreen(apply([x,-3]));
+      const end=toScreen(apply([x,3]));
+      element('line',{x1:start[0],y1:start[1],x2:end[0],y2:end[1],...style},warpGrid);
+    }
+    for(let y=-3;y<=3;y++){
+      const start=toScreen(apply([-5,y]));
+      const end=toScreen(apply([5,y]));
+      element('line',{x1:start[0],y1:start[1],x2:end[0],y2:end[1],...style},warpGrid);
+    }
+  }
+
+  function placeLabel(label,point,preferAbove){
+    const screen=toScreen(point);
+    const anchor=screen[0]>590?'end':'start';
+    label.setAttribute('x',screen[0]+(anchor==='end'?-10:10));
+    label.setAttribute('y',screen[1]+(preferAbove?-12:18));
+    label.setAttribute('text-anchor',anchor);
+  }
+
+  function draw(){
+    const output=apply(input);
+    drawWarpGrid();
+    const origin=toScreen([0,0]);
+    const inputTip=toScreen(input);
+    const outputTip=toScreen(output);
+    [inputArrow,outputArrow].forEach(line=>{
+      line.setAttribute('x1',origin[0]);
+      line.setAttribute('y1',origin[1]);
+    });
+    inputArrow.setAttribute('x2',inputTip[0]);
+    inputArrow.setAttribute('y2',inputTip[1]);
+    outputArrow.setAttribute('x2',outputTip[0]);
+    outputArrow.setAttribute('y2',outputTip[1]);
+    difference.setAttribute('x1',inputTip[0]);
+    difference.setAttribute('y1',inputTip[1]);
+    difference.setAttribute('x2',outputTip[0]);
+    difference.setAttribute('y2',outputTip[1]);
+    outputPoint.setAttribute('cx',outputTip[0]);
+    outputPoint.setAttribute('cy',outputTip[1]);
+    outputPoint.setAttribute('data-y1',output[0]);
+    outputPoint.setAttribute('data-y2',output[1]);
+    inputHandle.setAttribute('transform','translate('+inputTip[0]+' '+inputTip[1]+')');
+    inputHandle.setAttribute('data-x1',input[0]);
+    inputHandle.setAttribute('data-x2',input[1]);
+    inputHandle.setAttribute('aria-label','Directions x equal '+vector(input)+'. Drag to change the direction.');
+    hint.style.display=hintVisible?'':'none';
+    const hintX=inputTip[0]>340?-122:14;
+    const hintY=inputTip[1]>345?-35:16;
+    hintBox.setAttribute('x',hintX);
+    hintBox.setAttribute('y',hintY);
+    hintText.setAttribute('x',hintX+6);
+    hintText.setAttribute('y',hintY+14);
+    placeLabel(inputLabel,input,true);
+    placeLabel(outputLabel,output,false);
+
+    const homeReached=Math.hypot(input[0]-home[0],input[1]-home[1])<1e-8;
+    const distanceFromHome=Math.hypot(output[0]-home[0],output[1]-home[1]);
+    root.setAttribute('data-directions-home-reached',String(homeReached));
+    houseCircle.setAttribute('fill',homeReached?'#e7f4f2':'#f5f8fa');
+    houseCircle.setAttribute('stroke',homeReached?colors.input:'#536b7a');
+    const values=matrices[mode].values;
+    root.setAttribute('data-directions-mode',mode);
+    values.forEach((value,index)=>{cells[index].textContent=fmt(value);});
+    matrixLabel.setAttribute('aria-label','A equals the matrix with rows '+fmt(values[0])+', '+fmt(values[1])+' and '+fmt(values[2])+', '+fmt(values[3]));
+    presetButtons.forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.directionsPreset===mode)));
+    inputReadout.textContent='x = '+vector(input);
+    outputReadout.textContent='Ax = '+vector(output);
+    effectReadout.textContent=homeReached
+      ? (distanceFromHome<0.05?'arrived home':'missed by '+fmt(distanceFromHome)+' blocks')
+      : matrices[mode].effect;
+    message.textContent=homeReached
+      ? (distanceFromHome<0.05
+        ? 'Your directions point home, and this matrix lands you there.'
+        : 'Your directions point home, but this matrix warps the route away from it.')
+      : matrices[mode].message;
+  }
+
+  function localPoint(event){
+    const point=svg.createSVGPoint();
+    point.x=event.clientX;
+    point.y=event.clientY;
+    return point.matrixTransform(svg.getScreenCTM().inverse());
+  }
+  function move(next){
+    const wasHome=Math.hypot(input[0]-home[0],input[1]-home[1])<1e-8;
+    let clamped=[
+      Math.max(dragBounds.minX,Math.min(dragBounds.maxX,next[0])),
+      Math.max(dragBounds.minY,Math.min(dragBounds.maxY,next[1]))
+    ];
+    if(!wasHome&&Math.hypot(clamped[0]-home[0],clamped[1]-home[1])<0.18){
+      clamped=home.slice();
+      hintVisible=false;
+    }
+    input[0]=clamped[0];
+    input[1]=clamped[1];
+    draw();
+  }
+
+  inputHandle.addEventListener('pointerdown',event=>{
+    if(dragging||event.button!==0) return;
+    const cursor=fromScreen(localPoint(event));
+    dragging={pointerId:event.pointerId,offset:[input[0]-cursor[0],input[1]-cursor[1]]};
+    inputHandle.setPointerCapture(event.pointerId);
+    inputHandle.focus({preventScroll:true});
+    event.preventDefault();
+  });
+  svg.addEventListener('pointermove',event=>{
+    if(!dragging||dragging.pointerId!==event.pointerId) return;
+    const cursor=fromScreen(localPoint(event));
+    move([cursor[0]+dragging.offset[0],cursor[1]+dragging.offset[1]]);
+    event.preventDefault();
+  });
+  function stopDragging(event){
+    if(!dragging||dragging.pointerId!==event.pointerId) return;
+    if(inputHandle.hasPointerCapture(event.pointerId)) inputHandle.releasePointerCapture(event.pointerId);
+    dragging=null;
+    status.textContent='Directions '+vector(input)+' transform to '+vector(apply(input))+'.';
+  }
+  svg.addEventListener('pointerup',stopDragging);
+  svg.addEventListener('pointercancel',stopDragging);
+  window.addEventListener('pointerup',stopDragging);
+  inputHandle.addEventListener('keydown',event=>{
+    const step=event.shiftKey?0.5:0.1;
+    const next=input.slice();
+    if(event.key==='ArrowLeft') next[0]-=step;
+    else if(event.key==='ArrowRight') next[0]+=step;
+    else if(event.key==='ArrowDown') next[1]-=step;
+    else if(event.key==='ArrowUp') next[1]+=step;
+    else return;
+    move(next);
+    status.textContent='Directions '+vector(input)+' transform to '+vector(apply(input))+'.';
+    event.preventDefault();
+  });
+  presetButtons.forEach(button=>button.addEventListener('click',()=>{
+    mode=button.dataset.directionsPreset;
+    draw();
+    status.textContent=matrices[mode].message;
+  }));
+  reset.addEventListener('click',()=>{
+    input[0]=initial[0];
+    input[1]=initial[1];
+    hintVisible=true;
+    draw();
+  });
+  draw();
+})();
+</script>
+{% elsif include.widget == "rank" %}
+<style>
+  #matrix-rank-widget{
+    --line:#e2e6e9;
+    --ink:#212931;
+    --dim:#626d78;
+    --teal:#147f7a;
+    --purple:#7153b8;
+    --blue:#2f6fad;
+    --amber:#a96100;
+    margin:26px 0;
+    border:1px solid var(--line);
+    border-radius:8px;
+    background:#fff;
+    color:var(--ink);
+    font:400 14px/1.5 "Helvetica Neue",Helvetica,Arial,sans-serif;
+    letter-spacing:0;
+    text-align:left;
+    text-transform:none;
+  }
+  #matrix-rank-widget,
+  #matrix-rank-widget *{box-sizing:border-box;}
+  #matrix-rank-widget h4,
+  #matrix-rank-widget h5{margin:0; color:var(--ink); font:600 17px/1.35 "Helvetica Neue",Helvetica,Arial,sans-serif; letter-spacing:0; text-transform:none;}
+  #matrix-rank-widget h5{font-size:15px;}
+  #matrix-rank-widget .rank-head{padding:18px 20px; border-bottom:1px solid var(--line);}
+  #matrix-rank-widget .rank-panels{display:grid; grid-template-columns:repeat(2,minmax(0,1fr));}
+  #matrix-rank-widget .rank-panel{min-width:0; padding:18px;}
+  #matrix-rank-widget .rank-panel + .rank-panel{border-left:1px solid var(--line);}
+  #matrix-rank-widget .rank-panel-head{display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:4px 8px;}
+  #matrix-rank-widget .rank-badge{color:var(--amber); font:12px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;}
+  #matrix-rank-widget .rank-first{color:var(--teal);}
+  #matrix-rank-widget .rank-second{color:var(--purple);}
+  #matrix-rank-widget .rank-equation,
+  #matrix-rank-widget .rank-term{display:flex; align-items:center; justify-content:center; gap:4px;}
+  #matrix-rank-widget .rank-equation{margin:18px 0 8px; font:13px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace; font-variant-numeric:tabular-nums;}
+  #matrix-rank-widget .rank-bracket{position:relative; display:grid; gap:2px; padding:4px 7px; text-align:center;}
+  #matrix-rank-widget .rank-bracket::before,
+  #matrix-rank-widget .rank-bracket::after{content:""; position:absolute; top:0; bottom:0; width:5px; border-top:1px solid currentColor; border-bottom:1px solid currentColor;}
+  #matrix-rank-widget .rank-bracket::before{left:0; border-left:1px solid currentColor;}
+  #matrix-rank-widget .rank-bracket::after{right:0; border-right:1px solid currentColor;}
+  #matrix-rank-widget .rank-result{color:var(--amber);}
+  #matrix-rank-widget figure{margin:0;}
+  #matrix-rank-widget svg{display:block; width:100%; height:auto; max-width:410px; margin:0 auto;}
+  #matrix-rank-widget svg text{font-family:inherit; font-size:11px;}
+  #matrix-rank-widget .rank-legend{display:flex; flex-wrap:wrap; justify-content:center; gap:4px 12px; color:var(--dim); font-size:11px;}
+  #matrix-rank-widget .rank-key::before{content:""; display:inline-block; width:14px; margin-right:4px; vertical-align:middle; border-top:3px solid currentColor;}
+  #matrix-rank-widget .rank-key-fixed::before{border-top:2px dashed currentColor;}
+  #matrix-rank-widget .rank-dimension{margin:12px 0 0; color:var(--amber); font-size:12px; line-height:1.5; text-align:center;}
+  #matrix-rank-widget .rank-controls{padding:16px 20px; border-top:1px solid var(--line);}
+  #matrix-rank-widget .rank-input-head{display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:4px 12px; margin-bottom:10px;}
+  #matrix-rank-widget .rank-input-vector{font:13px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;}
+  #matrix-rank-widget .rank-sliders{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 24px;}
+  #matrix-rank-widget .rank-control{display:grid; grid-template-columns:1.8em minmax(0,1fr) 3.5em; align-items:center; gap:8px; min-width:0;}
+  #matrix-rank-widget label{margin:0; color:inherit; font:600 14px/1.5 "Helvetica Neue",Helvetica,Arial,sans-serif; letter-spacing:0; text-transform:none;}
+  #matrix-rank-widget input[type="range"]{display:block; width:100%; min-width:0; height:28px; margin:0; padding:0; accent-color:var(--teal); cursor:pointer;}
+  #matrix-rank-widget .rank-second input{accent-color:var(--purple);}
+  #matrix-rank-widget input:focus-visible{outline:2px solid currentColor; outline-offset:2px; border-radius:3px;}
+  #matrix-rank-widget output{font:600 13px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace; text-align:right;}
+  #matrix-rank-widget .rank-hint{margin:10px 0 0; color:var(--dim); font-size:11px; line-height:1.5; text-align:left;}
+  #matrix-rank-widget .rank-sr-only{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0;}
+  @media (max-width:760px){
+    #matrix-rank-widget .rank-panels,
+    #matrix-rank-widget .rank-sliders{grid-template-columns:1fr;}
+    #matrix-rank-widget .rank-panel + .rank-panel{border-left:0; border-top:1px solid var(--line);}
+  }
+  @media (max-width:400px){
+    #matrix-rank-widget .rank-head,
+    #matrix-rank-widget .rank-panel,
+    #matrix-rank-widget .rank-controls{padding:16px 12px;}
+    #matrix-rank-widget .rank-equation{font-size:12px;}
+    #matrix-rank-widget .rank-bracket{padding:4px 6px;}
+    #matrix-rank-widget svg text{font-size:13px;}
+  }
+</style>
+<div id="matrix-rank-widget" role="group" aria-labelledby="rank-title">
+  <div class="rank-head">
+    <h4 id="rank-title">03 · Rank: two directions or one?</h4>
+  </div>
+  <div class="rank-panels">
+    <section class="rank-panel" data-rank-panel="full" aria-labelledby="rank-full-title">
+      <div class="rank-panel-head">
+        <h5 id="rank-full-title">Independent columns</h5>
+        <span class="rank-badge">rank(A) = 2</span>
+      </div>
+      <div class="rank-equation" data-rank-equation role="img" aria-label="y = x₁(2.5, 0) + x₂(0, 0.5)">
+        <span class="rank-term rank-first">
+          <span data-rank-weight="0">1.00</span>
+          <span class="rank-bracket" data-rank-column="0"><span>2.5</span><span>0</span></span>
+        </span>
+        <span>+</span>
+        <span class="rank-term rank-second">
+          <span data-rank-weight="1">1.00</span>
+          <span class="rank-bracket" data-rank-column="1"><span>0</span><span>0.5</span></span>
+        </span>
+        <span>=</span>
+        <span class="rank-bracket rank-result" data-rank-result><span>2.50</span><span>0.50</span></span>
+      </div>
+      <figure>
+        <svg viewBox="0 0 360 224" data-rank-plot role="img" aria-label="Independent columns produce a two-dimensional region of outputs"></svg>
+        <figcaption class="rank-legend">
+          <span class="rank-key rank-key-fixed">fixed a₁, a₂</span>
+          <span class="rank-key rank-first">x₁a₁</span>
+          <span class="rank-key rank-second">x₂a₂</span>
+          <span class="rank-key rank-result">y</span>
+        </figcaption>
+      </figure>
+      <p class="rank-dimension" data-rank-dimension="2">Outputs fill an area.</p>
+    </section>
+    <section class="rank-panel" data-rank-panel="one" aria-labelledby="rank-one-title">
+      <div class="rank-panel-head">
+        <h5 id="rank-one-title">Collinear columns</h5>
+        <span class="rank-badge">rank(A) = 1</span>
+      </div>
+      <div class="rank-equation" data-rank-equation role="img" aria-label="y = x₁(2.5, 1) + x₂(0.5, 0.2)">
+        <span class="rank-term rank-first">
+          <span data-rank-weight="0">1.00</span>
+          <span class="rank-bracket" data-rank-column="0"><span>2.5</span><span>1</span></span>
+        </span>
+        <span>+</span>
+        <span class="rank-term rank-second">
+          <span data-rank-weight="1">1.00</span>
+          <span class="rank-bracket" data-rank-column="1"><span>0.5</span><span>0.2</span></span>
+        </span>
+        <span>=</span>
+        <span class="rank-bracket rank-result" data-rank-result><span>3.00</span><span>1.20</span></span>
+      </div>
+      <figure>
+        <svg viewBox="0 0 360 224" data-rank-plot role="img" aria-label="Collinear columns produce outputs on a single line"></svg>
+        <figcaption class="rank-legend">
+          <span class="rank-key rank-key-fixed">fixed a₁, a₂</span>
+          <span class="rank-key rank-first">x₁a₁</span>
+          <span class="rank-key rank-second">x₂a₂</span>
+          <span class="rank-key rank-result">y</span>
+        </figcaption>
+      </figure>
+      <p class="rank-dimension" data-rank-dimension="1">Outputs stay on a line.</p>
+    </section>
+  </div>
+  <div class="rank-controls">
+    <div class="rank-input-head">
+      <span>Shared input x</span>
+      <span class="rank-input-vector" data-rank-input>(1.00, 1.00)</span>
+    </div>
+    <div class="rank-sliders">
+      <div class="rank-control rank-first">
+        <label for="rank-x1">x₁</label>
+        <input id="rank-x1" type="range" min="-2" max="2" step="0.05" value="1" aria-label="Shared x₁: weight of the first column in both panels" aria-describedby="rank-input-description">
+        <output for="rank-x1" data-rank-control-output="0" aria-live="off">1.00</output>
+      </div>
+      <div class="rank-control rank-second">
+        <label for="rank-x2">x₂</label>
+        <input id="rank-x2" type="range" min="-2" max="2" step="0.05" value="1" aria-label="Shared x₂: weight of the second column in both panels" aria-describedby="rank-input-description">
+        <output for="rank-x2" data-rank-control-output="1" aria-live="off">1.00</output>
+      </div>
+    </div>
+    <p class="rank-hint" id="rank-input-description">Both panels use this x. Shading shows outputs for −2 ≤ x₁, x₂ ≤ 2.</p>
+  </div>
+  <div class="rank-sr-only" data-rank-status role="status" aria-live="polite" aria-atomic="true"></div>
+  <noscript><p>Enable JavaScript to explore the shared input.</p></noscript>
+</div>
+<script>
+(function(){
+  const root = document.getElementById('matrix-rank-widget');
+  const controls = [root.querySelector('#rank-x1'),root.querySelector('#rank-x2')];
+  const controlOutputs = [...root.querySelectorAll('[data-rank-control-output]')];
+  const inputReadout = root.querySelector('[data-rank-input]');
+  const status = root.querySelector('[data-rank-status]');
+  const origin = [180,116], scale = 24;
+  const colors = ['#147f7a','#7153b8','#a96100'];
+  const fmt = value => (Math.abs(value)<1e-9 ? 0 : value).toFixed(2);
+  const vector = values => '('+values.map(fmt).join(', ')+')';
+  const point = values => [origin[0]+scale*values[0],origin[1]-scale*values[1]];
+
+  function element(tag,attributes,parent,text){
+    const node = document.createElementNS('http://www.w3.org/2000/svg',tag);
+    Object.entries(attributes).forEach(([key,value])=>node.setAttribute(key,value));
+    if(text !== undefined) node.textContent = text;
+    parent.appendChild(node);
+    return node;
+  }
+
+  function setLine(line,from,to){
+    const coordinates = [...point(from),...point(to)];
+    ['x1','y1','x2','y2'].forEach((key,index)=>line.setAttribute(key,coordinates[index]));
+    line.setAttribute('visibility',from.every((value,index)=>Math.abs(value-to[index])<1e-9) ? 'hidden' : 'visible');
+  }
+
+  function makePanel(key,columns,rank){
+    const panel = root.querySelector('[data-rank-panel="'+key+'"]');
+    const svg = panel.querySelector('[data-rank-plot]');
+    const defs = element('defs',{},svg);
+    colors.forEach((color,index)=>{
+      const marker = element('marker',{id:'rank-'+key+'-'+index,viewBox:'0 0 10 10',refX:9,refY:5,markerWidth:index===2 ? 7 : 10,markerHeight:index===2 ? 7 : 10,markerUnits:'userSpaceOnUse',orient:'auto'},defs);
+      element('path',{d:'M0 0L10 5L0 10z',fill:color},marker);
+    });
+    if(rank === 2){
+      const [x,y] = point([-5,1]);
+      element('rect',{x,y,width:10*scale,height:2*scale,fill:'#fff8ed',stroke:'#ead7b7','stroke-dasharray':'3 4','data-rank-reachable':'area'},svg);
+    }else{
+      const start = point([-6,-2.4]), end = point([6,2.4]);
+      element('line',{x1:start[0],y1:start[1],x2:end[0],y2:end[1],stroke:'#f0dbb8','stroke-width':8,'data-rank-reachable':'line'},svg);
+    }
+    const grid = element('g',{stroke:'#edf0f2','stroke-width':1},svg);
+    for(let tick=-6;tick<=6;tick++){
+      const [x] = point([tick,0]);
+      element('path',{d:'M'+x+' 44V188'},grid);
+      if(tick && tick%2===0) element('text',{x,y:133,fill:'#89939e',stroke:'none','text-anchor':'middle'},grid,tick);
+    }
+    for(let tick=-3;tick<=3;tick++){
+      const y = point([0,tick])[1];
+      element('path',{d:'M24 '+y+'H336'},grid);
+      if(Math.abs(tick)===2) element('text',{x:170,y:y+4,fill:'#89939e',stroke:'none','text-anchor':'end'},grid,tick);
+    }
+    element('path',{d:'M24 116H336 M180 32V200',stroke:'#bdc6ce','stroke-width':1},svg);
+    element('text',{x:172,y:133,fill:'#89939e','text-anchor':'end'},svg,'0');
+    element('text',{x:346,y:133,fill:'#89939e','text-anchor':'end'},svg,'y₁');
+    element('text',{x:189,y:34,fill:'#89939e'},svg,'y₂');
+    const first = element('line',{stroke:colors[0],'stroke-width':7,'stroke-opacity':0.4,'marker-end':'url(#rank-'+key+'-0)','data-rank-vector':'first'},svg);
+    const second = element('line',{stroke:colors[1],'stroke-width':4,'stroke-opacity':0.75,'marker-end':'url(#rank-'+key+'-1)','data-rank-vector':'second'},svg);
+    const result = element('line',{stroke:colors[2],'stroke-width':2,'marker-end':'url(#rank-'+key+'-2)','data-rank-vector':'result'},svg);
+    const elbow = element('circle',{r:2.5,fill:colors[0],'data-rank-elbow':''},svg);
+    // Different stroke widths keep collinear contributions visible beneath the resultant.
+    columns.forEach((column,index)=>{
+      const line = element('line',{stroke:colors[index],'stroke-width':1.4,'stroke-dasharray':'3 3','data-rank-fixed':index},svg);
+      setLine(line,[0,0],column);
+      const [x,y] = point(column), vertical = column[1]!==0;
+      element('circle',{cx:x,cy:y,r:3.5,fill:'#fff',stroke:colors[index],'stroke-width':1.4},svg);
+      element('text',{x:x+(vertical ? -12 : 5),y:y+(vertical ? -8 : 31),fill:colors[index],'text-anchor':vertical ? 'end' : 'start'},svg,index ? 'a₂' : 'a₁');
+    });
+    const tip = element('circle',{r:3.5,fill:colors[2],'data-rank-tip':''},svg);
+    return {
+      columns, rank, svg, first, second, result, elbow, tip,
+      equation:panel.querySelector('[data-rank-equation]'),
+      weights:[...panel.querySelectorAll('[data-rank-weight]')],
+      resultCells:[...panel.querySelector('[data-rank-result]').children]
+    };
+  }
+
+  const panels = [
+    makePanel('full',[[2.5,0],[0,0.5]],2),
+    makePanel('one',[[2.5,1],[0.5,0.2]],1)
+  ];
+
+  function draw(){
+    const input = controls.map(control=>Number(control.value));
+    inputReadout.textContent = vector(input);
+    input.forEach((value,index)=>{
+      controlOutputs[index].value = fmt(value);
+      controls[index].setAttribute('aria-valuetext',fmt(value));
+    });
+    const outputs = panels.map(panel=>{
+      const first = panel.columns[0].map(value=>input[0]*value);
+      const second = panel.columns[1].map(value=>input[1]*value);
+      const result = first.map((value,index)=>value+second[index]);
+      setLine(panel.first,[0,0],first);
+      setLine(panel.second,first,result);
+      setLine(panel.result,[0,0],result);
+      const join = point(first), end = point(result);
+      panel.elbow.setAttribute('cx',join[0]); panel.elbow.setAttribute('cy',join[1]);
+      panel.elbow.setAttribute('visibility',Math.abs(input[0])<1e-9 ? 'hidden' : 'visible');
+      panel.tip.setAttribute('cx',end[0]); panel.tip.setAttribute('cy',end[1]);
+      panel.weights.forEach((node,index)=>node.textContent=fmt(input[index]));
+      panel.resultCells.forEach((node,index)=>node.textContent=fmt(result[index]));
+      const equation = 'x₁a₁ + x₂a₂ = '+fmt(input[0])+' times '+vector(panel.columns[0])+' plus '+fmt(input[1])+' times '+vector(panel.columns[1])+'. Output y = '+vector(result)+'.';
+      panel.equation.setAttribute('aria-label',equation);
+      panel.svg.setAttribute('aria-label',equation+(panel.rank===2
+        ? ' Independent columns: rank 2. The reachable outputs form an area.'
+        : ' Collinear columns: rank 1. All outputs remain on the line y₂ = 0.4 y₁.'));
+      return result;
+    });
+    status.textContent = 'Shared x = '+vector(input)+'. Rank 2 output '+vector(outputs[0])+'. Rank 1 output '+vector(outputs[1])+'.';
+  }
+  controls.forEach(control=>control.addEventListener('input',draw));
+  draw();
+})();
+</script>
+{% elsif include.widget == "rank-projection" %}
+<style>
+  #rank-projection-widget{
+    --line:#e2e6e9;
+    --ink:#212931;
+    --dim:#626d78;
+    --teal:#147f7a;
+    --purple:#7153b8;
+    --amber:#a96100;
+    margin:26px 0;
+    border:1px solid var(--line);
+    border-radius:8px;
+    background:#fff;
+    color:var(--ink);
+    font:400 14px/1.5 "Helvetica Neue",Helvetica,Arial,sans-serif;
+    text-align:left;
+  }
+  #rank-projection-widget,
+  #rank-projection-widget *{box-sizing:border-box;}
+  #rank-projection-widget .projection-head{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    gap:6px 12px;
+    padding:18px 20px;
+    border-bottom:1px solid var(--line);
+  }
+  #rank-projection-widget h4,
+  #rank-projection-widget h5{
+    margin:0;
+    color:var(--ink);
+    font:600 17px/1.35 "Helvetica Neue",Helvetica,Arial,sans-serif;
+    letter-spacing:0;
+    text-transform:none;
+  }
+  #rank-projection-widget h5{font-size:15px;}
+  #rank-projection-widget .projection-matrix{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:var(--dim);
+    font-size:14px;
+    font-variant-numeric:tabular-nums;
+  }
+  #rank-projection-widget .projection-matrix-entries{
+    position:relative;
+    display:grid;
+    grid-template-columns:repeat(2,auto);
+    gap:1px 12px;
+    padding:2px 8px;
+    text-align:center;
+  }
+  #rank-projection-widget .projection-matrix-entries::before,
+  #rank-projection-widget .projection-matrix-entries::after{
+    content:"";
+    position:absolute;
+    top:0;
+    bottom:0;
+    width:5px;
+    border:1px solid currentColor;
+  }
+  #rank-projection-widget .projection-matrix-entries::before{left:0; border-right:0;}
+  #rank-projection-widget .projection-matrix-entries::after{right:0; border-left:0;}
+  #rank-projection-widget sup,
+  #rank-projection-widget sub{font-size:0.75em;}
+  #rank-projection-widget .projection-coordinates{
+    font-variant-numeric:tabular-nums;
+    white-space:nowrap;
+  }
+  #rank-projection-widget .projection-body{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 34px minmax(0,1fr);
+    align-items:start;
+    gap:8px;
+    padding:18px;
+  }
+  #rank-projection-widget .projection-panel{min-width:0;}
+  #rank-projection-widget .projection-panel-head{
+    min-height:46px;
+    margin-bottom:8px;
+  }
+  #rank-projection-widget .projection-note{
+    display:block;
+    margin-top:3px;
+    color:var(--dim);
+    font-size:12px;
+  }
+  #rank-projection-widget svg{
+    display:block;
+    width:100%;
+    height:auto;
+    border:1px solid var(--line);
+    border-radius:4px;
+    background:#fff;
+  }
+  #rank-projection-widget svg text{
+    font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size:13px;
+    paint-order:stroke;
+    stroke:#fff;
+    stroke-width:3px;
+    stroke-linejoin:round;
+  }
+  #rank-projection-widget .projection-move-hint text{
+    font-size:9px;
+    stroke:none;
+  }
+  #rank-projection-widget [data-projection-handle]{cursor:grab; touch-action:none; outline:none;}
+  #rank-projection-widget [data-projection-handle]:active{cursor:grabbing;}
+  #rank-projection-widget [data-projection-handle]:focus-visible .projection-handle-shape{stroke-width:5;}
+  #rank-projection-widget .projection-legend{
+    display:flex;
+    align-items:baseline;
+    gap:8px;
+    min-height:42px;
+    margin-top:10px;
+    color:var(--dim);
+    font-size:12px;
+  }
+  #rank-projection-widget .projection-line-key{
+    flex:0 0 20px;
+    border-top:2px dashed #7e8791;
+    transform:translateY(-3px);
+  }
+  #rank-projection-widget .projection-column-key{border-top:2px solid var(--amber);}
+  #rank-projection-widget .projection-map{
+    align-self:center;
+    color:var(--amber);
+    font:600 20px/1 ui-monospace,SFMono-Regular,Consolas,monospace;
+    text-align:center;
+  }
+  #rank-projection-widget .projection-map span{
+    display:block;
+    margin-top:5px;
+    color:var(--dim);
+    font-size:11px;
+  }
+  #rank-projection-widget .projection-readout{
+    min-width:0;
+    padding:10px 12px;
+    border:1px solid var(--line);
+    border-radius:4px;
+    font-size:14px;
+    line-height:1.8;
+  }
+  #rank-projection-widget .projection-input-readout{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:baseline;
+    gap:0 8px;
+  }
+  #rank-projection-widget .projection-first{color:var(--teal);}
+  #rank-projection-widget .projection-second{color:var(--purple);}
+  #rank-projection-widget .projection-third{color:var(--blue);}
+  #rank-projection-widget .projection-message{
+    margin:0;
+    font-size:13px;
+  }
+  #rank-projection-widget .projection-actions{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    border-top:1px solid var(--line);
+    padding:14px 18px;
+  }
+  #rank-projection-widget button{
+    height:auto;
+    padding:7px 12px;
+    color:var(--teal) !important;
+    background:#fff;
+    border:1px solid #8ebfbc;
+    border-radius:4px;
+    box-shadow:none;
+    font:400 12px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;
+    letter-spacing:0;
+    text-transform:none;
+  }
+  #rank-projection-widget button:hover{
+    color:#fff !important;
+    background:var(--teal);
+    box-shadow:none;
+  }
+  #rank-projection-widget .projection-sr-only{
+    position:absolute;
+    width:1px;
+    height:1px;
+    padding:0;
+    margin:-1px;
+    overflow:hidden;
+    clip-path:inset(50%);
+    white-space:nowrap;
+    border:0;
+  }
+  @media (max-width:760px){
+    #rank-projection-widget .projection-body{grid-template-columns:1fr;}
+    #rank-projection-widget .projection-map{font-size:0; padding:2px 0;}
+    #rank-projection-widget .projection-map::before{content:"↓"; font-size:22px;}
+    #rank-projection-widget .projection-map span{display:none;}
+    #rank-projection-widget .projection-panel-head{min-height:0;}
+    #rank-projection-widget .projection-legend{min-height:0; margin-bottom:10px;}
+  }
+  @media (max-width:480px){
+    #rank-projection-widget .projection-head,
+    #rank-projection-widget .projection-body{padding:14px 12px;}
+    #rank-projection-widget .projection-actions{padding:12px;}
+  }
+</style>
+<div id="rank-projection-widget" role="group" aria-labelledby="rank-projection-title">
+  <div class="projection-head">
+    <h4 id="rank-projection-title">04 · A rank-one matrix forgets one direction</h4>
+    <span class="projection-matrix" role="img" aria-label="A equals the matrix with rows 2.5, 0.5 and 1, 0.2">
+      <span aria-hidden="true"><i>A</i> =</span>
+      <span class="projection-matrix-entries" aria-hidden="true"><span>2.5</span><span>0.5</span><span>1</span><span>0.2</span></span>
+    </span>
+  </div>
+  <div class="projection-body">
+    <section class="projection-panel" aria-labelledby="rank-input-plane-title">
+      <div class="projection-panel-head">
+        <h5 id="rank-input-plane-title">Input space</h5>
+        <span class="projection-note" id="rank-projection-help">Drag the first two points along the dashed line. Move the third freely.</span>
+      </div>
+      <svg viewBox="0 0 320 320" data-projection-input role="group" aria-label="Two inputs constrained to a same-output line and one freely draggable input" aria-describedby="rank-projection-help rank-projection-keyboard"></svg>
+      <div class="projection-legend">
+        <span class="projection-line-key" aria-hidden="true"></span>
+        <span><strong>Same-output line (fiber):</strong> every point on the dashed line maps to the same <i>y</i>.<br>It is a shifted null space: <i>A</i><sup>−1</sup>(<i>y</i>) = <i>x</i><sup>(1)</sup> + ker(<i>A</i>).</span>
+      </div>
+      <div class="projection-readout">
+        <div class="projection-input-readout projection-first"><span><i>x</i><sup>(1)</sup> =</span> <span class="projection-coordinates" data-projection-readout="0"></span></div>
+        <div class="projection-input-readout projection-second"><span><i>x</i><sup>(2)</sup> =</span> <span class="projection-coordinates" data-projection-readout="1"></span></div>
+        <div class="projection-input-readout projection-third"><span><i>x</i><sup>(3)</sup> =</span> <span class="projection-coordinates" data-projection-readout="2"></span></div>
+      </div>
+    </section>
+    <div class="projection-map" aria-hidden="true">→<span><i>A</i></span></div>
+    <section class="projection-panel" aria-labelledby="rank-output-line-title">
+      <div class="projection-panel-head">
+        <h5 id="rank-output-line-title">Output space</h5>
+        <span class="projection-note">The first two outputs coincide; the free point still lands on the same line.</span>
+      </div>
+      <svg viewBox="0 0 320 320" data-projection-output role="img" aria-label="Three transformed outputs constrained to the column-space line, with the first two coinciding"></svg>
+      <div class="projection-legend">
+        <span class="projection-line-key projection-column-key" aria-hidden="true"></span>
+        <span>Column space: the line through <i>a</i><sub>1</sub>.<br><i>a</i><sub>2</sub> = 0.2<i>a</i><sub>1</sub> · rank(<i>A</i>) = 1</span>
+      </div>
+      <div class="projection-readout">
+        <div class="projection-input-readout projection-first"><span><i>y</i><sup>(1)</sup> =</span> <span class="projection-coordinates" data-projection-output-readout="0"></span></div>
+        <div class="projection-input-readout projection-second"><span><i>y</i><sup>(2)</sup> =</span> <span class="projection-coordinates" data-projection-output-readout="1"></span></div>
+        <div class="projection-input-readout projection-third"><span><i>y</i><sup>(3)</sup> =</span> <span class="projection-coordinates" data-projection-output-readout="2"></span></div>
+        <div class="projection-note" data-projection-collision-note></div>
+      </div>
+    </section>
+  </div>
+  <div class="projection-actions">
+    <p class="projection-message">Only the combination <i>x</i><sub>1</sub> + 0.2<i>x</i><sub>2</sub> survives the transformation.<br><strong>The output can move only along one line, so the map cannot be uniquely inverted.</strong></p>
+    <button type="button" data-projection-reset>Reset inputs</button>
+  </div>
+  <div class="projection-sr-only" id="rank-projection-keyboard">Focus an input and use the arrow keys to move it. The first two stay on the dashed line; the third moves freely. Hold Shift for larger steps.</div>
+  <div class="projection-sr-only" data-projection-status role="status" aria-live="polite" aria-atomic="true"></div>
+</div>
+<script>
+(function(){
+  const root = document.getElementById('rank-projection-widget');
+  const inputSvg = root.querySelector('[data-projection-input]');
+  const outputSvg = root.querySelector('[data-projection-output]');
+  const inputReadouts = [...root.querySelectorAll('[data-projection-readout]')];
+  const outputReadouts = [...root.querySelectorAll('[data-projection-output-readout]')];
+  const collisionNote = root.querySelector('[data-projection-collision-note]');
+  const status = root.querySelector('[data-projection-status]');
+  const reset = root.querySelector('[data-projection-reset]');
+  const colors = ['#147f7a','#7153b8','#2f6fad'];
+  const initial = [[1,0],[0,5],[2,2]];
+  const points = initial.map(point=>point.slice());
+  let dragging = null;
+
+  const frame = {left:38,right:302,top:26,bottom:290};
+  const inputPlot = {min:[-1,-1],max:[6,6],scale:(302-38)/7};
+  const outputPlot = {min:[-5,-5],max:[20,20],scale:(302-38)/25};
+  const fmt = value => (Math.abs(value)<1e-9 ? 0 : value).toFixed(2);
+  const vector = values => '('+values.map(fmt).join(', ')+')';
+  const transform = point => {
+    const coordinate = point[0]+0.2*point[1];
+    return [2.5*coordinate,coordinate];
+  };
+  const linePoint = parameter => [1-0.2*parameter,parameter];
+  const screen = (plot,point) => [
+    frame.left+(point[0]-plot.min[0])*plot.scale,
+    frame.bottom-(point[1]-plot.min[1])*plot.scale
+  ];
+  const inputScreen = point => screen(inputPlot,point);
+  const outputScreen = point => screen(outputPlot,point);
+
+  function element(tag,attributes,parent,text){
+    const node = document.createElementNS('http://www.w3.org/2000/svg',tag);
+    Object.entries(attributes).forEach(([key,value])=>node.setAttribute(key,value));
+    if(text!==undefined) node.textContent=text;
+    parent.appendChild(node);
+    return node;
+  }
+
+  function indexedLabel(parent,symbol,index,attributes){
+    const label=element('text',attributes,parent);
+    element('tspan',{},label,symbol);
+    element('tspan',{'baseline-shift':'super','font-size':9},label,'('+(index+1)+')');
+    return label;
+  }
+
+  function moveHint(parent,index){
+    const positions=[
+      {x:16,y:-31},
+      {x:16,y:14},
+      {x:16,y:-31}
+    ];
+    const position=positions[index];
+    const hint=element('g',{
+      transform:'translate('+position.x+' '+position.y+')',
+      class:'projection-move-hint',
+      'data-projection-move-hint':index,
+      'aria-hidden':'true'
+    },parent);
+    element('rect',{
+      x:0,y:0,width:96,height:20,rx:5,
+      fill:'rgba(255,255,255,0.96)',stroke:colors[index],'stroke-width':1
+    },hint);
+    element('text',{
+      x:6,y:13.5,fill:colors[index],'font-size':8.5,'font-weight':600,
+      stroke:'none'
+    },hint,'Drag & Move Me!');
+    return hint;
+  }
+
+  function drawAxes(svg,plot,toScreen,xLabel,yLabel,step){
+    const grid = element('g',{'data-projection-grid':'',stroke:'#eef0f2','stroke-width':1},svg);
+    const firstX=Math.ceil(plot.min[0]/step)*step;
+    const firstY=Math.ceil(plot.min[1]/step)*step;
+    for(let tick=firstX;tick<=plot.max[0];tick+=step){
+      const x=toScreen([tick,0])[0];
+      if(tick!==0) element('line',{x1:x,y1:frame.top,x2:x,y2:frame.bottom},grid);
+      element('text',{x,y:309,fill:'#76818c','text-anchor':'middle'},svg,tick);
+    }
+    for(let tick=firstY;tick<=plot.max[1];tick+=step){
+      const y=toScreen([0,tick])[1];
+      if(tick!==0) element('line',{x1:frame.left,y1:y,x2:frame.right,y2:y},grid);
+      element('text',{x:29,y:y+4,fill:'#76818c','text-anchor':'end'},svg,tick);
+    }
+    const origin=toScreen([0,0]);
+    element('line',{x1:frame.left,y1:origin[1],x2:frame.right,y2:origin[1],stroke:'#aeb7c0','data-projection-axis':'x'},svg);
+    element('line',{x1:origin[0],y1:frame.top,x2:origin[0],y2:frame.bottom,stroke:'#aeb7c0','data-projection-axis':'y'},svg);
+    element('text',{x:302,y:309,fill:'#626d78','text-anchor':'end'},svg,xLabel);
+    element('text',{x:29,y:16,fill:'#626d78','text-anchor':'end'},svg,yLabel);
+  }
+
+  drawAxes(inputSvg,inputPlot,inputScreen,'x₁','x₂',1);
+  drawAxes(outputSvg,outputPlot,outputScreen,'y₁','y₂',5);
+
+  const sameOutputStart=inputScreen(linePoint(inputPlot.min[1]));
+  const sameOutputEnd=inputScreen(linePoint(inputPlot.max[1]));
+  element('line',{
+    x1:sameOutputStart[0],y1:sameOutputStart[1],x2:sameOutputEnd[0],y2:sameOutputEnd[1],
+    stroke:'#7e8791','stroke-width':1.5,'stroke-dasharray':'5 5','data-projection-same-output-line':''
+  },inputSvg);
+
+  const inputMoveHints=[];
+  const inputHandles = points.map((point,index)=>{
+    const group = element('g',{
+      'data-projection-handle':index,role:'button',tabindex:0,
+      'aria-label':'Move input x superscript '+(index+1)+' in two dimensions',
+      'aria-describedby':'rank-projection-keyboard'
+    },inputSvg);
+    element('circle',{r:18,fill:'transparent'},group);
+    if(index===0){
+      element('circle',{r:9,fill:'#fff',stroke:colors[index],'stroke-width':3,class:'projection-handle-shape'},group);
+    }else if(index===1){
+      element('path',{d:'M 0 -8 L 8 0 L 0 8 L -8 0 Z',fill:'#fff',stroke:colors[index],'stroke-width':3,class:'projection-handle-shape'},group);
+    }else{
+      element('path',{d:'M 0 -9 L 9 7 L -9 7 Z',fill:'#fff',stroke:colors[index],'stroke-width':3,class:'projection-handle-shape'},group);
+    }
+    indexedLabel(group,'x',index,{
+      x:index===1?-16:16,y:index===2?20:-12,fill:colors[index],'font-weight':600,
+      'text-anchor':index===1?'end':'start'
+    });
+    inputMoveHints[index]=moveHint(group,index);
+    return group;
+  });
+
+  const lineStart = outputScreen([outputPlot.min[0],0.4*outputPlot.min[0]]);
+  const lineEnd = outputScreen([outputPlot.max[0],0.4*outputPlot.max[0]]);
+  element('line',{
+    x1:lineStart[0],y1:lineStart[1],x2:lineEnd[0],y2:lineEnd[1],
+    stroke:'#a96100','stroke-width':1.8,'data-projection-column-space':''
+  },outputSvg);
+  const outputHandles = points.map((point,index)=>{
+    const group=element('g',{'data-projection-output-point':index},outputSvg);
+    if(index===0){
+      element('circle',{r:10,fill:'#fff',stroke:colors[index],'stroke-width':3},group);
+    }else if(index===1){
+      element('path',{d:'M 0 -7 L 7 0 L 0 7 L -7 0 Z',fill:'#fff',stroke:colors[index],'stroke-width':3},group);
+    }else{
+      element('path',{d:'M 0 -9 L 9 7 L -9 7 Z',fill:'#fff',stroke:colors[index],'stroke-width':3},group);
+    }
+    indexedLabel(group,'y',index,{
+      x:index===1?-14:14,y:index===0?-12:index===1?18:-12,fill:colors[index],'font-weight':600,
+      'text-anchor':index===1?'end':'start'
+    });
+    return group;
+  });
+
+  function draw(){
+    const outputs=points.map(transform);
+    points.forEach((point,index)=>{
+      const [x,y] = inputScreen(point);
+      inputHandles[index].setAttribute('transform','translate('+x+' '+y+')');
+      inputHandles[index].setAttribute('data-x1',point[0]);
+      inputHandles[index].setAttribute('data-x2',point[1]);
+      inputHandles[index].setAttribute('aria-label','Input x superscript '+(index+1)+' at '+vector(point));
+      inputReadouts[index].textContent=vector(point);
+
+      const output=outputs[index];
+      const [outputX,outputY]=outputScreen(output);
+      outputHandles[index].setAttribute('transform','translate('+outputX+' '+outputY+')');
+      outputHandles[index].setAttribute('data-y1',output[0]);
+      outputHandles[index].setAttribute('data-y2',output[1]);
+      outputReadouts[index].textContent=vector(output);
+    });
+    const thirdSeparation=Math.hypot(outputs[0][0]-outputs[2][0],outputs[0][1]-outputs[2][1]);
+    collisionNote.textContent=thirdSeparation<1e-8
+      ? 'All three outputs coincide at this position.'
+      : 'The first two outputs coincide; the free point produces another point on the same line.';
+  }
+
+  function announce(){
+    status.textContent='Input 1: '+inputReadouts[0].textContent+', output 1: '+outputReadouts[0].textContent+
+      '. Input 2: '+inputReadouts[1].textContent+', output 2: '+outputReadouts[1].textContent+
+      '. Input 3: '+inputReadouts[2].textContent+', output 3: '+outputReadouts[2].textContent+'.';
+  }
+
+  function moveFree(index,point){
+    const next=[
+      Math.max(inputPlot.min[0],Math.min(inputPlot.max[0],point[0])),
+      Math.max(inputPlot.min[1],Math.min(inputPlot.max[1],point[1]))
+    ];
+    if(Math.hypot(next[0]-points[index][0],next[1]-points[index][1])>1e-9){
+      inputMoveHints[index].style.display='none';
+    }
+    points[index][0]=next[0];
+    points[index][1]=next[1];
+    draw();
+  }
+
+  function moveOnLine(index,parameter){
+    const clamped=Math.max(inputPlot.min[1],Math.min(inputPlot.max[1],parameter));
+    if(Math.abs(clamped-points[index][1])>1e-9){
+      inputMoveHints[index].style.display='none';
+    }
+    points[index]=linePoint(clamped);
+    draw();
+  }
+
+  function plotPoint(cursor){
+    return [
+      inputPlot.min[0]+(cursor.x-frame.left)/inputPlot.scale,
+      inputPlot.min[1]+(frame.bottom-cursor.y)/inputPlot.scale
+    ];
+  }
+
+  function parameterAt(point){
+    return (-0.2*(point[0]-1)+point[1])/1.04;
+  }
+
+  function localPoint(event){
+    const point = inputSvg.createSVGPoint();
+    point.x=event.clientX;
+    point.y=event.clientY;
+    return point.matrixTransform(inputSvg.getScreenCTM().inverse());
+  }
+
+  inputHandles.forEach((handle,index)=>{
+    handle.addEventListener('pointerdown',event=>{
+      if(dragging||event.button!==0) return;
+      const cursor=plotPoint(localPoint(event));
+      dragging=index<2
+        ? {index,pointerId:event.pointerId,mode:'line',offset:points[index][1]-parameterAt(cursor)}
+        : {index,pointerId:event.pointerId,mode:'free',offset:[points[index][0]-cursor[0],points[index][1]-cursor[1]]};
+      handle.setPointerCapture(event.pointerId);
+      handle.focus({preventScroll:true});
+      event.preventDefault();
+    });
+    handle.addEventListener('keydown',event=>{
+      const step=event.shiftKey?0.5:0.1;
+      if(index<2){
+        if(event.key==='ArrowUp'||event.key==='ArrowLeft') moveOnLine(index,points[index][1]+step);
+        else if(event.key==='ArrowDown'||event.key==='ArrowRight') moveOnLine(index,points[index][1]-step);
+        else return;
+      }else{
+        const next=points[index].slice();
+        if(event.key==='ArrowUp') next[1]+=step;
+        else if(event.key==='ArrowDown') next[1]-=step;
+        else if(event.key==='ArrowLeft') next[0]-=step;
+        else if(event.key==='ArrowRight') next[0]+=step;
+        else return;
+        moveFree(index,next);
+      }
+      announce();
+      event.preventDefault();
+    });
+  });
+
+  inputSvg.addEventListener('pointermove',event=>{
+    if(!dragging||dragging.pointerId!==event.pointerId) return;
+    const cursor=plotPoint(localPoint(event));
+    if(dragging.mode==='line'){
+      moveOnLine(dragging.index,parameterAt(cursor)+dragging.offset);
+    }else{
+      moveFree(dragging.index,[cursor[0]+dragging.offset[0],cursor[1]+dragging.offset[1]]);
+    }
+    event.preventDefault();
+  });
+
+  function stopDragging(event){
+    if(!dragging||dragging.pointerId!==event.pointerId) return;
+    const handle=inputHandles[dragging.index];
+    if(handle.hasPointerCapture(event.pointerId)) handle.releasePointerCapture(event.pointerId);
+    dragging=null;
+    announce();
+  }
+
+  inputSvg.addEventListener('pointerup',stopDragging);
+  inputSvg.addEventListener('pointercancel',stopDragging);
+  window.addEventListener('pointerup',stopDragging);
+  window.addEventListener('pointercancel',stopDragging);
+
+  reset.addEventListener('click',()=>{
+    initial.forEach((point,index)=>{
+      points[index][0]=point[0];
+      points[index][1]=point[1];
+    });
+    draw();
+    announce();
+  });
+  draw();
+})();
+</script>
+{% elsif include.widget == "eigenvector" %}
+<style>
+  #eigenvector-widget{
+    --line:#dce5e3;
+    --ink:#212931;
+    --dim:#626d78;
+    --teal:#147f7a;
+    --teal-soft:#e8f5f2;
+    --amber:#a96100;
+    --amber-soft:#fff5df;
+    margin:26px 0;
+    overflow:hidden;
+    color:var(--ink);
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:12px;
+    box-shadow:0 14px 34px rgba(33,41,49,0.07);
+    font:400 14px/1.5 "Helvetica Neue",Helvetica,Arial,sans-serif;
+    text-align:left;
+  }
+  #eigenvector-widget,
+  #eigenvector-widget *{box-sizing:border-box;}
+  #eigenvector-widget .eigen-head{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px 18px;
+    padding:18px 20px 17px;
+    background:linear-gradient(135deg,#fff 0%,#f6faf9 100%);
+    border-bottom:1px solid #e3ebe9;
+  }
+  #eigenvector-widget .eigen-heading{display:grid; min-width:0; gap:4px;}
+  #eigenvector-widget .eigen-kicker{
+    color:var(--teal);
+    font:600 10px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;
+    letter-spacing:0.11em;
+    text-transform:uppercase;
+  }
+  #eigenvector-widget h4{
+    margin:0;
+    color:#172129;
+    font:600 17px/1.4 "Helvetica Neue",Helvetica,Arial,sans-serif;
+    letter-spacing:0;
+    text-transform:none;
+  }
+  #eigenvector-widget .eigen-matrix{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    color:#52616a;
+    font:500 12px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;
+    font-variant-numeric:tabular-nums;
+  }
+  #eigenvector-widget .eigen-matrix-grid{
+    position:relative;
+    display:grid;
+    grid-template-columns:repeat(2,2.5em);
+    gap:1px 5px;
+    padding:3px 8px;
+    text-align:center;
+  }
+  #eigenvector-widget .eigen-matrix-grid::before,
+  #eigenvector-widget .eigen-matrix-grid::after{
+    content:"";
+    position:absolute;
+    top:0;
+    bottom:0;
+    width:5px;
+    border:1px solid currentColor;
+  }
+  #eigenvector-widget .eigen-matrix-grid::before{left:0; border-right:0;}
+  #eigenvector-widget .eigen-matrix-grid::after{right:0; border-left:0;}
+  #eigenvector-widget .eigen-body{padding:20px;}
+  #eigenvector-widget .eigen-plot-shell{
+    overflow:hidden;
+    background:#fbfdfc;
+    border:1px solid var(--line);
+    border-radius:9px;
+  }
+  #eigenvector-widget .eigen-legend{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:7px 16px;
+    min-height:40px;
+    padding:9px 12px;
+    color:#5a6871;
+    background:#f8fbfa;
+    border-bottom:1px solid #e2eae8;
+    font:500 11px/1.35 ui-monospace,SFMono-Regular,Consolas,monospace;
+  }
+  #eigenvector-widget .eigen-key{display:inline-flex; align-items:center; gap:6px;}
+  #eigenvector-widget .eigen-key::before{
+    content:"";
+    width:18px;
+    border-top:3px solid var(--teal);
+    border-radius:2px;
+  }
+  #eigenvector-widget .eigen-key.output::before{border-color:var(--amber);}
+  #eigenvector-widget .eigen-key.guide::before{
+    border-top-width:1px;
+    border-top-style:dashed;
+    border-color:#8f9a9d;
+  }
+  #eigenvector-widget .eigen-plot{
+    display:block;
+    width:100%;
+    height:auto;
+    max-height:520px;
+    background:#fbfdfc;
+    touch-action:none;
+    user-select:none;
+  }
+  #eigenvector-widget .eigen-plot text{
+    font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    paint-order:stroke;
+    stroke:#fbfdfc;
+    stroke-width:5px;
+    stroke-linejoin:round;
+  }
+  #eigenvector-widget [data-eigen-handle]{
+    cursor:grab;
+    outline:none;
+  }
+  #eigenvector-widget [data-eigen-handle]:active{cursor:grabbing;}
+  #eigenvector-widget [data-eigen-handle]:focus-visible .eigen-handle-ring{
+    stroke:#172129;
+    stroke-width:3;
+  }
+  #eigenvector-widget .eigen-readout{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:10px;
+    margin-top:12px;
+  }
+  #eigenvector-widget .eigen-metric{
+    min-width:0;
+    padding:12px 13px 11px;
+    background:#fbfdfc;
+    border:1px solid var(--line);
+    border-radius:8px;
+  }
+  #eigenvector-widget .eigen-metric[data-active="true"]{
+    background:var(--teal-soft);
+    border-color:#b7d7d3;
+  }
+  #eigenvector-widget .eigen-metric-label{
+    display:block;
+    margin-bottom:4px;
+    color:#69757d;
+    font:600 9.5px/1.3 ui-monospace,SFMono-Regular,Consolas,monospace;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+  }
+  #eigenvector-widget .eigen-metric strong{
+    display:block;
+    overflow-wrap:anywhere;
+    color:#172129;
+    font:600 16px/1.35 ui-monospace,SFMono-Regular,Consolas,monospace;
+    font-variant-numeric:tabular-nums;
+  }
+  #eigenvector-widget .eigen-metric.input strong{color:var(--teal);}
+  #eigenvector-widget .eigen-metric.output strong{color:var(--amber);}
+  #eigenvector-widget .eigen-actions{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-top:12px;
+    padding:11px 12px;
+    color:#42515a;
+    background:#fffaf0;
+    border:1px solid #f0dfbd;
+    border-radius:8px;
+  }
+  #eigenvector-widget .eigen-feedback{
+    flex:1 1 auto;
+    margin:0;
+    color:#85520b;
+    font-size:12.5px;
+    line-height:1.5;
+  }
+  #eigenvector-widget .eigen-feedback[data-found="true"]{
+    color:#0f6e69;
+    font-weight:600;
+  }
+  #eigenvector-widget .eigen-buttons{display:flex; flex:0 0 auto; gap:8px;}
+  #eigenvector-widget button{
+    height:auto;
+    padding:7px 11px;
+    color:var(--teal) !important;
+    background:#fff;
+    border:1px solid #adcac5;
+    border-radius:6px;
+    box-shadow:none;
+    font:500 11px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;
+    letter-spacing:0;
+    text-transform:none;
+    cursor:pointer;
+  }
+  #eigenvector-widget button:hover{color:#fff !important; background:var(--teal);}
+  #eigenvector-widget button:focus-visible{
+    outline:3px solid rgba(15,118,110,0.22);
+    outline-offset:2px;
+  }
+  #eigenvector-widget .eigen-sr-only{
+    position:absolute;
+    width:1px;
+    height:1px;
+    padding:0;
+    margin:-1px;
+    overflow:hidden;
+    clip-path:inset(50%);
+    white-space:nowrap;
+    border:0;
+  }
+  @media (max-width:680px){
+    #eigenvector-widget .eigen-readout{grid-template-columns:repeat(2,minmax(0,1fr));}
+  }
+  @media (max-width:480px){
+    #eigenvector-widget .eigen-head,
+    #eigenvector-widget .eigen-body{padding:14px 12px;}
+    #eigenvector-widget h4{font-size:15px;}
+    #eigenvector-widget .eigen-matrix{font-size:11px;}
+    #eigenvector-widget .eigen-legend{gap:6px 12px; padding:8px 9px; font-size:10px;}
+    #eigenvector-widget .eigen-plot{min-height:300px;}
+    #eigenvector-widget .eigen-actions{align-items:flex-start; flex-direction:column;}
+    #eigenvector-widget .eigen-buttons,
+    #eigenvector-widget button{width:100%;}
+    #eigenvector-widget .eigen-buttons button{width:auto; flex:1 1 0;}
+  }
+</style>
+<div id="eigenvector-widget" role="group" aria-labelledby="eigenvector-title">
+  <div class="eigen-head">
+    <div class="eigen-heading">
+      <span class="eigen-kicker">Find the direction the matrix preserves</span>
+      <h4 id="eigenvector-title">07 · Eigenvector direction hunt</h4>
+    </div>
+    <span class="eigen-matrix" role="img" aria-label="A equals the matrix with rows 1.2, 0.8 and 0.8, 1.2">
+      <span aria-hidden="true"><i>A</i> =</span>
+      <span class="eigen-matrix-grid" aria-hidden="true">
+        <span>1.2</span><span>0.8</span><span>0.8</span><span>1.2</span>
+      </span>
+    </span>
+  </div>
+  <div class="eigen-body">
+    <div class="eigen-plot-shell">
+      <div class="eigen-legend" aria-hidden="true">
+        <span class="eigen-key">input x · drag its tip</span>
+        <span class="eigen-key output">transformed Ax</span>
+        <span class="eigen-key guide">eigendirection hint</span>
+      </div>
+      <svg class="eigen-plot" data-eigen-plot viewBox="0 0 680 500" role="application" aria-label="Interactive coordinate plane comparing x and A x." aria-describedby="eigenvector-help"></svg>
+    </div>
+    <div class="eigen-readout" aria-live="polite">
+      <div class="eigen-metric input">
+        <span class="eigen-metric-label">Input x</span>
+        <strong data-eigen-x>—</strong>
+      </div>
+      <div class="eigen-metric output">
+        <span class="eigen-metric-label">Output Ax</span>
+        <strong data-eigen-ax>—</strong>
+      </div>
+      <div class="eigen-metric">
+        <span class="eigen-metric-label">Misalignment</span>
+        <strong data-eigen-angle>—</strong>
+      </div>
+      <div class="eigen-metric" data-eigen-lambda-card>
+        <span class="eigen-metric-label">Inferred scale λ</span>
+        <strong data-eigen-lambda>not aligned</strong>
+      </div>
+    </div>
+    <div class="eigen-actions">
+      <p class="eigen-feedback" data-eigen-feedback>Move the teal tip. Most directions turn under the transformation.</p>
+      <div class="eigen-buttons">
+        <button type="button" data-eigen-hint aria-pressed="false">Show hint</button>
+        <button type="button" data-eigen-reset>Reset</button>
+      </div>
+    </div>
+    <p id="eigenvector-help" class="eigen-sr-only">Drag the teal input tip. With the tip focused, use the arrow keys to move it, or hold Shift for larger steps. The input cannot be moved onto the zero vector.</p>
+    <div class="eigen-sr-only" data-eigen-status role="status" aria-live="polite" aria-atomic="true"></div>
+  </div>
+</div>
+<script>
+(function(){
+  const root=document.getElementById('eigenvector-widget');
+  const svg=root.querySelector('[data-eigen-plot]');
+  const xReadout=root.querySelector('[data-eigen-x]');
+  const axReadout=root.querySelector('[data-eigen-ax]');
+  const angleReadout=root.querySelector('[data-eigen-angle]');
+  const lambdaReadout=root.querySelector('[data-eigen-lambda]');
+  const lambdaCard=root.querySelector('[data-eigen-lambda-card]');
+  const feedback=root.querySelector('[data-eigen-feedback]');
+  const status=root.querySelector('[data-eigen-status]');
+  const hintButton=root.querySelector('[data-eigen-hint]');
+  const resetButton=root.querySelector('[data-eigen-reset]');
+  const NS='http://www.w3.org/2000/svg';
+  const frame={left:44,right:636,top:28,bottom:472};
+  const origin={x:340,y:250};
+  const scale=72;
+  const maxRadius=1.72;
+  const minRadius=0.28;
+  const initial={x:1.28,y:0.42};
+  const colors={input:'#147f7a',output:'#a96100'};
+  let vector={x:initial.x,y:initial.y};
+  let dragging=false;
+  let pointerId=null;
+  let hintVisible=false;
+  let hasMoved=false;
+  let lastAnnounced='';
+
+  function make(tag,attributes,parent,text){
+    const node=document.createElementNS(NS,tag);
+    Object.entries(attributes||{}).forEach(([key,value])=>node.setAttribute(key,value));
+    if(text!==undefined) node.textContent=text;
+    (parent||svg).appendChild(node);
+    return node;
+  }
+
+  const defs=make('defs');
+  Object.entries(colors).forEach(([name,color])=>{
+    const marker=make('marker',{
+      id:'eigen-arrow-'+name,viewBox:'0 0 10 10',refX:8.5,refY:5,
+      markerWidth:8,markerHeight:8,markerUnits:'userSpaceOnUse',orient:'auto'
+    },defs);
+    make('path',{d:'M0 0L10 5L0 10z',fill:color},marker);
+  });
+
+  const grid=make('g',{'aria-hidden':'true'});
+  for(let tick=-4;tick<=4;tick++){
+    const x=origin.x+tick*scale;
+    if(x>=frame.left&&x<=frame.right) make('line',{x1:x,y1:frame.top,x2:x,y2:frame.bottom,stroke:'#edf1f1','stroke-width':1},grid);
+  }
+  for(let tick=-3;tick<=3;tick++){
+    const y=origin.y-tick*scale;
+    if(y>=frame.top&&y<=frame.bottom) make('line',{x1:frame.left,y1:y,x2:frame.right,y2:y,stroke:'#edf1f1','stroke-width':1},grid);
+  }
+  make('line',{x1:frame.left,y1:origin.y,x2:frame.right,y2:origin.y,stroke:'#aeb9bd','stroke-width':1.2},grid);
+  make('line',{x1:origin.x,y1:frame.top,x2:origin.x,y2:frame.bottom,stroke:'#aeb9bd','stroke-width':1.2},grid);
+  make('text',{x:frame.right-3,y:origin.y-9,fill:'#758187','font-size':12,'text-anchor':'end'},grid,'x₁');
+  make('text',{x:origin.x+10,y:frame.top+14,fill:'#758187','font-size':12},grid,'x₂');
+  make('text',{x:origin.x-9,y:origin.y+17,fill:'#758187','font-size':11,'text-anchor':'end'},grid,'0');
+
+  const guides=make('g',{'aria-hidden':'true','data-eigen-guides':''});
+  const guideLines=[
+    make('line',{stroke:'#7f918f','stroke-width':1.4,'stroke-dasharray':'6 7'},guides),
+    make('line',{stroke:'#7f918f','stroke-width':1.4,'stroke-dasharray':'6 7'},guides)
+  ];
+  const guideLabels=[
+    make('text',{fill:'#687875','font-size':11,'font-weight':600},guides,'preserved line'),
+    make('text',{fill:'#687875','font-size':11,'font-weight':600},guides,'preserved line')
+  ];
+
+  const outputLine=make('line',{
+    stroke:colors.output,'stroke-width':4,'stroke-linecap':'round',
+    'marker-end':'url(#eigen-arrow-output)'
+  });
+  const inputLine=make('line',{
+    stroke:colors.input,'stroke-width':3,'stroke-linecap':'round',
+    'marker-end':'url(#eigen-arrow-input)'
+  });
+  const outputLabel=make('text',{fill:colors.output,'font-size':14,'font-weight':600},svg,'Ax');
+  const inputLabel=make('text',{fill:colors.input,'font-size':14,'font-weight':600},svg,'x');
+
+  const handle=make('g',{
+    'data-eigen-handle':'',tabindex:0,role:'button',
+    'aria-label':'Move input vector x in two dimensions',
+    'aria-describedby':'eigenvector-help'
+  });
+  make('circle',{r:16,fill:'transparent'},handle);
+  make('circle',{r:7,fill:colors.input,stroke:'#fff','stroke-width':2,class:'eigen-handle-ring'},handle);
+
+  const moveHint=make('g',{'aria-hidden':'true'});
+  make('rect',{x:0,y:0,width:112,height:25,rx:12.5,fill:'rgba(255,255,255,0.97)',stroke:colors.input,'stroke-width':1},moveHint);
+  make('text',{x:56,y:16.5,fill:colors.input,'font-size':10,'font-weight':600,'text-anchor':'middle',stroke:'none'},moveHint,'Drag x’s tip');
+
+  function point(value){
+    return {x:origin.x+value.x*scale,y:origin.y-value.y*scale};
+  }
+
+  function fmt(value){
+    const clean=Math.abs(value)<0.005?0:value;
+    return clean.toFixed(2);
+  }
+
+  function coordinates(value){
+    return '('+fmt(value.x)+', '+fmt(value.y)+')';
+  }
+
+  function transformed(value){
+    return {x:1.2*value.x+0.8*value.y,y:0.8*value.x+1.2*value.y};
+  }
+
+  function clampVector(candidate,fallback){
+    let length=Math.hypot(candidate.x,candidate.y);
+    if(length>maxRadius){
+      candidate={x:candidate.x*maxRadius/length,y:candidate.y*maxRadius/length};
+      length=maxRadius;
+    }
+    if(length<minRadius){
+      const base=length>1e-6?candidate:fallback;
+      const baseLength=Math.hypot(base.x,base.y)||1;
+      candidate={x:base.x*minRadius/baseLength,y:base.y*minRadius/baseLength};
+    }
+    return candidate;
+  }
+
+  function lineInFrame(direction){
+    const dx=direction.x;
+    const dy=-direction.y;
+    const limits=[];
+    if(Math.abs(dx)>1e-8){
+      limits.push((frame.left-origin.x)/dx,(frame.right-origin.x)/dx);
+    }
+    if(Math.abs(dy)>1e-8){
+      limits.push((frame.top-origin.y)/dy,(frame.bottom-origin.y)/dy);
+    }
+    const negative=Math.max(...limits.filter(value=>value<0));
+    const positive=Math.min(...limits.filter(value=>value>0));
+    return {
+      start:{x:origin.x+negative*dx,y:origin.y+negative*dy},
+      end:{x:origin.x+positive*dx,y:origin.y+positive*dy}
+    };
+  }
+
+  const directions=[{x:1,y:1},{x:1,y:-1}];
+  directions.forEach((direction,index)=>{
+    const segment=lineInFrame(direction);
+    guideLines[index].setAttribute('x1',segment.start.x);
+    guideLines[index].setAttribute('y1',segment.start.y);
+    guideLines[index].setAttribute('x2',segment.end.x);
+    guideLines[index].setAttribute('y2',segment.end.y);
+    const labelPoint=index===0?segment.end:segment.start;
+    guideLabels[index].setAttribute('x',labelPoint.x+(index===0?-8:8));
+    guideLabels[index].setAttribute('y',labelPoint.y+(index===0?16:-9));
+    guideLabels[index].setAttribute('text-anchor',index===0?'end':'start');
+  });
+
+  function directionDistance(value,direction){
+    const angle=Math.atan2(value.y,value.x);
+    const target=Math.atan2(direction.y,direction.x);
+    let distance=Math.abs(angle-target)%Math.PI;
+    if(distance>Math.PI/2) distance=Math.PI-distance;
+    return distance*180/Math.PI;
+  }
+
+  function setLine(line,end){
+    const tip=point(end);
+    line.setAttribute('x1',origin.x);
+    line.setAttribute('y1',origin.y);
+    line.setAttribute('x2',tip.x);
+    line.setAttribute('y2',tip.y);
+    return tip;
+  }
+
+  function placeLabel(label,tip,value,side){
+    const length=Math.hypot(value.x,value.y)||1;
+    const ux=value.x/length;
+    const uy=-value.y/length;
+    const normal={x:-uy*side,y:ux*side};
+    let x=tip.x+normal.x*19+ux*7;
+    let y=tip.y+normal.y*19+uy*7;
+    x=Math.max(frame.left+21,Math.min(frame.right-21,x));
+    y=Math.max(frame.top+16,Math.min(frame.bottom-12,y));
+    label.setAttribute('x',x);
+    label.setAttribute('y',y);
+    label.setAttribute('text-anchor',ux<-.2?'end':ux>.2?'start':'middle');
+  }
+
+  function announce(message){
+    if(message===lastAnnounced) return;
+    status.textContent=message;
+    lastAnnounced=message;
+  }
+
+  function markMoved(){
+    if(hasMoved) return;
+    hasMoved=true;
+    moveHint.setAttribute('display','none');
+  }
+
+  function draw(shouldAnnounce){
+    const output=transformed(vector);
+    const inputTip=setLine(inputLine,vector);
+    const outputTip=setLine(outputLine,output);
+    handle.setAttribute('transform','translate('+inputTip.x+' '+inputTip.y+')');
+    handle.setAttribute('aria-label','Move input vector x. Current x is '+coordinates(vector)+'.');
+    placeLabel(inputLabel,inputTip,vector,1);
+    placeLabel(outputLabel,outputTip,output,-1);
+
+    if(!hasMoved){
+      const hintX=Math.max(frame.left+4,Math.min(frame.right-116,inputTip.x+13));
+      const hintY=Math.max(frame.top+4,Math.min(frame.bottom-29,inputTip.y+13));
+      moveHint.setAttribute('transform','translate('+hintX+' '+hintY+')');
+    }
+
+    const inputLength=Math.hypot(vector.x,vector.y);
+    const outputLength=Math.hypot(output.x,output.y);
+    const cosine=Math.max(-1,Math.min(1,(vector.x*output.x+vector.y*output.y)/(inputLength*outputLength)));
+    const angle=Math.acos(cosine)*180/Math.PI;
+    const lambda=(vector.x*output.x+vector.y*output.y)/(inputLength*inputLength);
+    const nearest=Math.min(...directions.map(direction=>directionDistance(vector,direction)));
+    const found=angle<=2.25;
+    const near=!found&&nearest<=10;
+    const showGuides=hintVisible||near||found;
+    guides.setAttribute('opacity',showGuides?(hintVisible?'0.7':'0.48'):'0');
+
+    xReadout.textContent=coordinates(vector);
+    axReadout.textContent=coordinates(output);
+    angleReadout.textContent=angle.toFixed(1)+'°';
+    lambdaReadout.textContent=found?'≈ '+lambda.toFixed(2):'not aligned';
+    lambdaCard.dataset.active=String(found);
+    feedback.dataset.found=String(found);
+
+    let message;
+    if(found){
+      message='Eigenvector direction found — the arrows align, with λ ≈ '+lambda.toFixed(2)+'.';
+    }else if(near){
+      message='Almost aligned — keep nudging the teal tip along the revealed line.';
+    }else{
+      message='The matrix turns this direction by '+angle.toFixed(1)+'°. Hunt for an alignment.';
+    }
+    feedback.textContent=message;
+    svg.setAttribute('aria-label','Interactive coordinate plane. Input x is '+coordinates(vector)+
+      ', transformed A x is '+coordinates(output)+', and their misalignment is '+angle.toFixed(1)+
+      ' degrees.'+(found?' Eigenvector direction found with scale '+lambda.toFixed(2)+'.':''));
+    if(shouldAnnounce) announce(message);
+  }
+
+  function clientPoint(event){
+    const svgPoint=svg.createSVGPoint();
+    svgPoint.x=event.clientX;
+    svgPoint.y=event.clientY;
+    return svgPoint.matrixTransform(svg.getScreenCTM().inverse());
+  }
+
+  function vectorFromEvent(event){
+    const location=clientPoint(event);
+    return clampVector({
+      x:(location.x-origin.x)/scale,
+      y:(origin.y-location.y)/scale
+    },vector);
+  }
+
+  handle.addEventListener('pointerdown',event=>{
+    if(dragging) return;
+    dragging=true;
+    pointerId=event.pointerId;
+    handle.setPointerCapture(pointerId);
+    event.preventDefault();
+  });
+  svg.addEventListener('pointermove',event=>{
+    if(!dragging||event.pointerId!==pointerId) return;
+    const next=vectorFromEvent(event);
+    if(Math.hypot(next.x-vector.x,next.y-vector.y)>0.002) markMoved();
+    vector=next;
+    draw(false);
+    event.preventDefault();
+  });
+  function stopDragging(event){
+    if(!dragging||event.pointerId!==pointerId) return;
+    dragging=false;
+    if(handle.hasPointerCapture(pointerId)) handle.releasePointerCapture(pointerId);
+    pointerId=null;
+    draw(true);
+  }
+  handle.addEventListener('pointerup',stopDragging);
+  handle.addEventListener('pointercancel',stopDragging);
+  handle.addEventListener('lostpointercapture',event=>{
+    if(dragging&&event.pointerId===pointerId){
+      dragging=false;
+      pointerId=null;
+      draw(true);
+    }
+  });
+  handle.addEventListener('keydown',event=>{
+    const delta=(event.shiftKey?0.15:0.05);
+    const movement={ArrowLeft:[-delta,0],ArrowRight:[delta,0],ArrowUp:[0,delta],ArrowDown:[0,-delta]}[event.key];
+    if(!movement) return;
+    vector=clampVector({x:vector.x+movement[0],y:vector.y+movement[1]},vector);
+    markMoved();
+    draw(true);
+    event.preventDefault();
+  });
+  hintButton.addEventListener('click',()=>{
+    hintVisible=!hintVisible;
+    hintButton.setAttribute('aria-pressed',String(hintVisible));
+    hintButton.textContent=hintVisible?'Hide hint':'Show hint';
+    draw(true);
+  });
+  resetButton.addEventListener('click',()=>{
+    vector={x:initial.x,y:initial.y};
+    hintVisible=false;
+    hintButton.setAttribute('aria-pressed','false');
+    hintButton.textContent='Show hint';
+    draw(true);
+    handle.focus();
+  });
+  draw(false);
+})();
+</script>
+{% elsif include.widget == "determinant-diagonal" or include.widget == "determinant" %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  .determinant-widget{
+    --bg: #ffffff;
+    --bg2: #ffffff;
+    --panel: #ffffff;
+    --panel-line: #d9dee5;
+    --ink: #212931;
+    --ink-dim: #626d78;
+    --amber: #b66a00;
+    --teal: #147f7a;
+    --teal-dim: #8ebfbc;
+    --rose: #c43b54;
+    --paper: #212931;
+    --serif-body: 'Source Serif 4', serif;
+    --mono: 'IBM Plex Mono', monospace;
+    margin:26px 0;
+    color:var(--ink);
+    font-family:var(--serif-body);
+    font-size:18px;
+    font-weight:400;
+    line-height:1.65;
+    text-align:left;
+    -webkit-font-smoothing:antialiased;
+    background:var(--panel);
+    border:1px solid var(--panel-line);
+    border-radius:6px;
+    overflow:hidden;
+  }
+  .determinant-widget,
+  .determinant-widget *{box-sizing:border-box;}
+  .determinant-widget .widget-titlewrap{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+    padding:14px 18px;
+    border-bottom:1px solid var(--panel-line);
+    background:var(--bg2);
+  }
+  .determinant-widget .widget-title{font-family:var(--mono); font-size:13.5px; color:var(--paper); font-weight:500;}
+  .determinant-widget .wt-sub{font-family:var(--mono); font-size:11px; color:var(--ink-dim); text-transform:uppercase; letter-spacing:0.06em;}
+  .determinant-widget .widget-body{padding:18px;}
+  .determinant-widget canvas{
+    display:block;
+    width:100%;
+    height:auto;
+    aspect-ratio:680 / 420;
+    background:var(--bg2);
+    border-radius:3px;
+    border:1px solid var(--panel-line);
+    cursor:grab;
+    touch-action:none;
+  }
+  .determinant-widget canvas.is-dragging{cursor:grabbing;}
+  .determinant-widget .btnrow{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;}
+  .determinant-widget button.step-btn{
+    font-family:var(--mono);
+    font-size:12.5px;
+    font-weight:400;
+    height:auto;
+    line-height:normal;
+    letter-spacing:0.03em;
+    text-transform:none;
+    white-space:normal;
+    box-shadow:none;
+    background:transparent;
+    border:1px solid var(--teal-dim);
+    /* The site's button colors also use !important. */
+    color:var(--teal) !important;
+    padding:8px 14px;
+    border-radius:4px;
+    cursor:pointer;
+    transition:background .15s, color .15s;
+  }
+  .determinant-widget button.step-btn:hover{background:var(--teal); color:var(--bg2) !important;}
+  .determinant-widget button.step-btn:disabled{opacity:0.35; cursor:default;}
+  .determinant-widget .caption{
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:var(--amber);
+    margin-top:12px;
+    min-height:18px;
+  }
+  .determinant-widget .readout{
+    font-family:var(--mono);
+    font-size:14px;
+    color:var(--paper);
+    margin-top:10px;
+    background:var(--bg2);
+    border:1px solid var(--panel-line);
+    border-radius:4px;
+    padding:10px 14px;
+  }
+  .determinant-widget .readout .neg{color:var(--rose);}
+  .determinant-widget .readout .pos{color:var(--teal);}
+  .determinant-widget .w2-equation{
+    margin-top:14px;
+    padding:20px 18px;
+    background:var(--bg2);
+    border:1px solid var(--panel-line);
+    border-radius:4px;
+  }
+  .determinant-widget .w2-equation p{margin:0 0 16px; text-align:left;}
+  .determinant-widget .w2-equation .eq-label{
+    margin-bottom:16px;
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--teal);
+  }
+  .determinant-widget .w2-equation .eq-step{
+    display:none;
+    margin:0 0 16px;
+    color:var(--ink);
+  }
+  .determinant-widget .w2-equation .eq-step.is-revealed{display:block;}
+  .determinant-widget .w2-equation .eq-note{
+    color:var(--ink-dim);
+    font-size:0.92em;
+    line-height:1.45;
+  }
+  .determinant-widget .w2-equation .eq-step > p:not(.eq-note){
+    max-width:100%;
+    overflow-x:auto;
+    overflow-y:hidden;
+  }
+  .determinant-widget ::selection{background:var(--amber); color:var(--bg2);}
+  .determinant-widget mjx-container{max-width:100%;}
+  .determinant-widget mjx-container[display="true"]{
+    overflow-x:auto;
+    overflow-y:hidden;
+    padding:2px 0 6px;
+  }
+</style>
+{% if include.widget == "determinant-diagonal" %}
+<style>
+  #determinant-diagonal-widget{
+    --d1-teal:#0f766e;
+    --d1-teal-soft:#e8f5f2;
+    --d1-gold:#a76108;
+    --d1-gold-soft:#fff5df;
+    --d1-rose:#b8324b;
+    --d1-rose-soft:#fff0f2;
+    border-color:#dce5e3;
+    border-radius:12px;
+    box-shadow:0 14px 34px rgba(33,41,49,0.07);
+  }
+  #determinant-diagonal-widget .widget-titlewrap{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    align-items:start;
+    padding:18px 20px 17px;
+    background:linear-gradient(135deg,#ffffff 0%,#f6faf9 100%);
+    border-bottom-color:#e3ebe9;
+  }
+  #determinant-diagonal-widget .d1-heading{display:grid; min-width:0; gap:4px;}
+  #determinant-diagonal-widget .d1-kicker{
+    color:var(--d1-teal);
+    font:600 10px/1.2 var(--mono);
+    letter-spacing:0.11em;
+    text-transform:uppercase;
+  }
+  #determinant-diagonal-widget .widget-title{
+    display:block;
+    color:#172129;
+    font-size:15px;
+    font-weight:600;
+    line-height:1.45;
+    overflow-wrap:anywhere;
+  }
+  #determinant-diagonal-widget .wt-sub{
+    margin-top:1px;
+    padding:5px 9px;
+    color:#52616a;
+    background:rgba(255,255,255,0.82);
+    border:1px solid #dbe5e3;
+    border-radius:999px;
+    letter-spacing:0.04em;
+    text-transform:none;
+  }
+  #determinant-diagonal-widget .widget-body{padding:20px;}
+  #determinant-diagonal-widget .d1-plot-shell{
+    overflow:hidden;
+    background:#fbfdfc;
+    border:1px solid #dce5e3;
+    border-radius:9px;
+  }
+  #determinant-diagonal-widget .d1-plot-key{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:7px 14px;
+    min-height:40px;
+    padding:9px 12px;
+    color:#5a6871;
+    background:#f8fbfa;
+    border-bottom:1px solid #e2eae8;
+    font:500 10.5px/1.35 var(--mono);
+  }
+  #determinant-diagonal-widget .d1-key-item{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    white-space:nowrap;
+  }
+  #determinant-diagonal-widget .d1-key-item:last-child{margin-left:auto;}
+  #determinant-diagonal-widget .d1-swatch{
+    width:16px;
+    height:9px;
+    border-radius:3px;
+    background:var(--d1-teal-soft);
+    border:1.5px solid var(--d1-teal);
+  }
+  #determinant-diagonal-widget .d1-swatch.unit{
+    background:#fff;
+    border-color:#839099;
+    border-style:dashed;
+  }
+  #determinant-diagonal-widget .d1-handle-icon{
+    width:11px;
+    height:11px;
+    border:3px solid #fff;
+    border-radius:50%;
+    background:var(--d1-gold);
+    box-shadow:0 0 0 1px var(--d1-gold);
+  }
+  #determinant-diagonal-widget canvas{
+    height:clamp(230px,61.75vw,420px);
+    aspect-ratio:auto;
+    background:#fbfdfc;
+    border:0;
+    border-radius:0;
+  }
+  #determinant-diagonal-widget canvas:focus-visible{
+    outline:3px solid rgba(15,118,110,0.28);
+    outline-offset:-3px;
+  }
+  #determinant-diagonal-widget canvas.is-hovering{cursor:pointer;}
+  #determinant-diagonal-widget .readout{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:10px;
+    margin-top:12px;
+    padding:0;
+    background:transparent;
+    border:0;
+  }
+  #determinant-diagonal-widget .d1-metric{
+    min-width:0;
+    padding:13px 15px 12px;
+    background:#fbfdfc;
+    border:1px solid #dce5e3;
+    border-radius:8px;
+  }
+  #determinant-diagonal-widget .d1-metric.det{
+    background:#f6faf9;
+    border-color:#cddfdb;
+  }
+  #determinant-diagonal-widget .d1-metric-label{
+    display:block;
+    margin-bottom:4px;
+    color:#69757d;
+    font:600 9.5px/1.3 var(--mono);
+    letter-spacing:0.09em;
+    text-transform:uppercase;
+  }
+  #determinant-diagonal-widget .d1-metric strong{
+    display:block;
+    overflow-wrap:anywhere;
+    color:#172129;
+    font:600 20px/1.25 var(--mono);
+    font-variant-numeric:tabular-nums;
+  }
+  #determinant-diagonal-widget .d1-metric.det strong{color:var(--d1-teal);}
+  #determinant-diagonal-widget .d1-metric.det strong.neg{color:var(--d1-rose);}
+  #determinant-diagonal-widget .d1-metric-detail{
+    display:block;
+    margin-top:4px;
+    color:#69757d;
+    font:400 10.5px/1.4 var(--mono);
+  }
+  #determinant-diagonal-widget .d1-actions{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-top:12px;
+    padding:11px 12px;
+    color:#42515a;
+    background:#fffaf0;
+    border:1px solid #f0dfbd;
+    border-radius:8px;
+  }
+  #determinant-diagonal-widget .caption{
+    flex:1 1 auto;
+    margin:0;
+    min-height:0;
+    color:#85520b;
+    font-size:11.5px;
+    line-height:1.5;
+  }
+  #determinant-diagonal-widget .btnrow{flex:0 0 auto; margin:0;}
+  #determinant-diagonal-widget button.step-btn{
+    padding:7px 11px;
+    background:#fff;
+    border-color:#adcac5;
+    border-radius:6px;
+    font-size:11px;
+    font-weight:500;
+  }
+  #determinant-diagonal-widget button.step-btn:hover{
+    background:var(--d1-teal);
+    color:#fff !important;
+  }
+  #determinant-diagonal-widget button.step-btn:focus-visible{
+    outline:3px solid rgba(15,118,110,0.22);
+    outline-offset:2px;
+  }
+  @media (max-width:520px){
+    #determinant-diagonal-widget .widget-titlewrap,
+    #determinant-diagonal-widget .widget-body{padding:14px;}
+    #determinant-diagonal-widget .widget-titlewrap{gap:10px;}
+    #determinant-diagonal-widget .widget-titlewrap{grid-template-columns:1fr;}
+    #determinant-diagonal-widget .widget-title{font-size:13px;}
+    #determinant-diagonal-widget .wt-sub{justify-self:start; font-size:9.5px;}
+    #determinant-diagonal-widget .d1-plot-key{gap:6px 10px; padding:8px 9px;}
+    #determinant-diagonal-widget .d1-key-item:last-child{width:100%; margin-left:0;}
+    #determinant-diagonal-widget .readout{grid-template-columns:1fr;}
+    #determinant-diagonal-widget .d1-actions{align-items:flex-start; flex-direction:column;}
+    #determinant-diagonal-widget .btnrow,
+    #determinant-diagonal-widget button.step-btn{width:100%;}
+  }
+</style>
+<div id="determinant-diagonal-widget" class="widget determinant-widget">
+  <div class="widget-titlewrap">
+    <div class="d1-heading">
+      <span class="d1-kicker">From square to rectangle</span>
+      <span class="widget-title">05 · Diagonal scaling: rectangle area \(=|a_{11}|\,|a_{22}|\)</span>
+    </div>
+    <span class="wt-sub">drag along the axes</span>
+  </div>
+  <div class="widget-body">
+    <div class="d1-plot-shell">
+      <div class="d1-plot-key" aria-hidden="true">
+        <span class="d1-key-item"><i class="d1-swatch unit"></i>unit square</span>
+        <span class="d1-key-item"><i class="d1-swatch"></i>scaled rectangle</span>
+        <span class="d1-key-item"><i class="d1-handle-icon"></i>drag either handle</span>
+      </div>
+      <canvas id="d1canvas" width="680" height="420" tabindex="0" role="application" aria-describedby="d1help d1caption" aria-label="Interactive diagonal matrix. Use left and right arrows to change a 11, and up and down arrows to change a 22."></canvas>
+    </div>
+    <div class="readout" aria-live="polite">
+      <div class="d1-metric">
+        <span class="d1-metric-label">Geometric area · always non-negative</span>
+        <strong id="d1area">—</strong>
+        <span class="d1-metric-detail"><span id="d1width">—</span> × <span id="d1height">—</span> = \(|a_{11}|\,|a_{22}|=|a_{11}a_{22}|\)</span>
+      </div>
+      <div class="d1-metric det">
+        <span class="d1-metric-label">Signed area · determinant</span>
+        <strong id="d1det">—</strong>
+        <span class="d1-metric-detail">\(\det(\mathbf A)=a_{11}a_{22}\) · <span id="d1orientation">—</span></span>
+      </div>
+    </div>
+    <div class="d1-actions">
+      <div class="caption" id="d1caption">The columns stay on the coordinate axes, so the unit square can only stretch into a rectangle.</div>
+      <div class="btnrow">
+        <button class="step-btn" id="d1reset">Reset rectangle</button>
+      </div>
+    </div>
+    <p id="d1help" hidden>Drag the teal horizontal handle and gold vertical handle. With the plot focused, the left and right arrow keys change a 11, and the up and down arrow keys change a 22. Hold Shift for larger steps.</p>
+  </div>
+</div>
+<script>
+(function(){
+  const root = document.getElementById('determinant-diagonal-widget');
+  const canvas = root.querySelector('#d1canvas');
+  const ctx = canvas.getContext('2d');
+  const areaEl = root.querySelector('#d1area');
+  const detEl = root.querySelector('#d1det');
+  const widthEl = root.querySelector('#d1width');
+  const heightEl = root.querySelector('#d1height');
+  const orientationEl = root.querySelector('#d1orientation');
+  const captionEl = root.querySelector('#d1caption');
+  const resetBtn = root.querySelector('#d1reset');
+  const limits = {a:[-4.5,4.5], d:[-2.8,2.8]};
+  const initial = {a:2.8,d:2};
+  let W = Number(canvas.getAttribute('width'));
+  let H = Number(canvas.getAttribute('height'));
+  let ox = W/2;
+  let oy = H/2;
+  let scale = 58;
+  let a = initial.a;
+  let d = initial.d;
+  let dragging = null;
+  let dragPointerId = null;
+
+  function fmt(value){
+    return (Math.abs(value)<1e-9?0:value).toFixed(2);
+  }
+
+  function toScreen(point){
+    return [ox+point.x*scale,oy-point.y*scale];
+  }
+
+  function resizeCanvas(){
+    const pixelRatio = Math.max(1,window.devicePixelRatio||1);
+    const cssWidth = Math.max(1,Math.round(canvas.clientWidth));
+    const cssHeight = Math.max(1,Math.round(canvas.clientHeight));
+    const width = Math.round(cssWidth*pixelRatio);
+    const height = Math.round(cssHeight*pixelRatio);
+    if(canvas.width===width && canvas.height===height) return false;
+    canvas.width = width;
+    canvas.height = height;
+    W=cssWidth;
+    H=cssHeight;
+    ox=W/2;
+    oy=H/2;
+    scale=Math.min(
+      (W-56)/(limits.a[1]-limits.a[0]),
+      (H-48)/(limits.d[1]-limits.d[0])
+    );
+    ctx.setTransform(pixelRatio,0,0,pixelRatio,0,0);
+    return true;
+  }
+
+  function polygon(points,fill,stroke,dash,lineWidth){
+    ctx.save();
+    ctx.setLineDash(dash||[]);
+    ctx.beginPath();
+    points.forEach((point,index)=>{
+      const [x,y] = toScreen(point);
+      if(index===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    });
+    ctx.closePath();
+    if(fill){ctx.fillStyle=fill;ctx.fill();}
+    if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=lineWidth||1.7;ctx.stroke();}
+    ctx.restore();
+  }
+
+  function roundedRect(x,y,width,height,radius){
+    const r=Math.min(radius,width/2,height/2);
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);
+    ctx.arcTo(x+width,y,x+width,y+height,r);
+    ctx.arcTo(x+width,y+height,x,y+height,r);
+    ctx.arcTo(x,y+height,x,y,r);
+    ctx.arcTo(x,y,x+width,y,r);
+    ctx.closePath();
+  }
+
+  function pill(text,x,y,color){
+    ctx.save();
+    ctx.font='600 11px "IBM Plex Mono", monospace';
+    const width=ctx.measureText(text).width+14;
+    const height=23;
+    const left=Math.max(5,Math.min(W-width-5,x-width/2));
+    const top=Math.max(5,Math.min(H-height-5,y-height/2));
+    ctx.shadowColor='rgba(33,41,49,0.08)';
+    ctx.shadowBlur=6;
+    ctx.shadowOffsetY=2;
+    ctx.fillStyle='rgba(255,255,255,0.96)';
+    roundedRect(left,top,width,height,6);
+    ctx.fill();
+    ctx.shadowColor='transparent';
+    ctx.strokeStyle=color;
+    ctx.lineWidth=1;
+    ctx.stroke();
+    ctx.fillStyle=color;
+    ctx.textBaseline='middle';
+    ctx.fillText(text,left+7,top+height/2+0.5);
+    ctx.restore();
+  }
+
+  function arrow(point,color,label){
+    const [x,y] = toScreen(point);
+    const angle = Math.atan2(y-oy,x-ox);
+    ctx.save();
+    ctx.lineCap='round';
+    ctx.strokeStyle=color;
+    ctx.fillStyle=color;
+    ctx.lineWidth=3;
+    ctx.beginPath();
+    ctx.moveTo(ox,oy);
+    ctx.lineTo(x,y);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(x,y);
+    ctx.lineTo(x-10*Math.cos(angle-0.3),y-10*Math.sin(angle-0.3));
+    ctx.lineTo(x-10*Math.cos(angle+0.3),y-10*Math.sin(angle+0.3));
+    ctx.closePath();
+    ctx.fill();
+    ctx.globalAlpha=0.13;
+    ctx.beginPath();
+    ctx.arc(x,y,13,0,Math.PI*2);
+    ctx.fill();
+    ctx.globalAlpha=1;
+    ctx.fillStyle='#ffffff';
+    ctx.beginPath();
+    ctx.arc(x,y,9,0,Math.PI*2);
+    ctx.fill();
+    ctx.strokeStyle='#ffffff';
+    ctx.lineWidth=4;
+    ctx.stroke();
+    ctx.fillStyle=color;
+    ctx.beginPath();
+    ctx.arc(x,y,5.5,0,Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+    const labelX=x+(point.x<0?-54:54);
+    const labelY=y+(point.y<0?20:-20);
+    pill(label,labelX,labelY,color);
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='#fbfdfc';
+    ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle='rgba(52,72,78,0.075)';
+    ctx.lineWidth=1;
+    for(let x=Math.ceil(limits.a[0]);x<=Math.floor(limits.a[1]);x++){
+      const [sx] = toScreen({x:x,y:0});
+      ctx.beginPath();
+      ctx.moveTo(sx,12);
+      ctx.lineTo(sx,H-12);
+      ctx.stroke();
+    }
+    for(let y=Math.ceil(limits.d[0]);y<=Math.floor(limits.d[1]);y++){
+      const [,sy] = toScreen({x:0,y:y});
+      ctx.beginPath();
+      ctx.moveTo(12,sy);
+      ctx.lineTo(W-12,sy);
+      ctx.stroke();
+    }
+
+    ctx.strokeStyle='rgba(33,41,49,0.42)';
+    ctx.lineWidth=1.35;
+    ctx.beginPath();
+    ctx.moveTo(12,oy);
+    ctx.lineTo(W-12,oy);
+    ctx.moveTo(ox,12);
+    ctx.lineTo(ox,H-12);
+    ctx.stroke();
+
+    ctx.fillStyle='#69757d';
+    ctx.font='500 10px "IBM Plex Mono", monospace';
+    ctx.fillText('x',W-20,oy-8);
+    ctx.fillText('y',ox+8,19);
+
+    const det = a*d;
+    const positive = det>=0;
+    const rectangleFill=positive?'rgba(15,118,110,0.16)':'rgba(184,50,75,0.14)';
+    const rectangleStroke=positive?'#0f766e':'#b8324b';
+    polygon(
+      [{x:0,y:0},{x:a,y:0},{x:a,y:d},{x:0,y:d}],
+      rectangleFill,
+      rectangleStroke,
+      [],
+      2.2
+    );
+
+    polygon(
+      [{x:0,y:0},{x:1,y:0},{x:1,y:1},{x:0,y:1}],
+      'rgba(255,255,255,0.12)',
+      'rgba(80,95,103,0.72)',
+      [5,4],
+      1.35
+    );
+    const [unitX,unitY] = toScreen({x:1,y:1});
+    pill('1 × 1',unitX+21,unitY-14,'#687780');
+
+    ctx.fillStyle='#26343c';
+    ctx.beginPath();
+    ctx.arc(ox,oy,3,0,Math.PI*2);
+    ctx.fill();
+
+    arrow({x:a,y:0},'#0f766e','a₁');
+    arrow({x:0,y:d},'#a76108','a₂');
+
+    const [widthX] = toScreen({x:a/2,y:0});
+    const [,heightY] = toScreen({x:0,y:d/2});
+    pill('|a₁₁| '+fmt(Math.abs(a)),widthX,oy+(d>=0?27:-27),'#0f766e');
+    const heightLabelX=ox+(a>=0?-48:48);
+    pill('|a₂₂| '+fmt(Math.abs(d)),heightLabelX,heightY,'#a76108');
+
+    const area = Math.abs(det);
+    areaEl.textContent=fmt(area);
+    widthEl.textContent='|a₁₁| = '+fmt(Math.abs(a));
+    heightEl.textContent='|a₂₂| = '+fmt(Math.abs(d));
+    detEl.className=positive?'pos':'neg';
+    detEl.textContent=fmt(det);
+    orientationEl.textContent=Math.abs(det)<0.02
+      ? 'collapsed'
+      : (det<0?'orientation flipped':'orientation preserved');
+    canvas.setAttribute(
+      'aria-label',
+      'Interactive diagonal matrix. a 11 is '+fmt(a)+', a 22 is '+fmt(d)+
+      ', determinant is '+fmt(det)+'. Use left and right arrows to change a 11, and up and down arrows to change a 22.'
+    );
+    captionEl.textContent=Math.abs(det)<0.02
+      ? 'One side has collapsed to zero, so the rectangle has no area and the matrix loses a direction.'
+      : (det<0
+        ? 'The rectangle still has area |a₁₁a₂₂|, while the negative sign records the flipped orientation.'
+        : 'The axis-aligned sides make the rule visible immediately: width |a₁₁| × height |a₂₂| = area |a₁₁a₂₂|.');
+  }
+
+  function position(event){
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x:((event.clientX-rect.left)*(W/rect.width)-ox)/scale,
+      y:(oy-(event.clientY-rect.top)*(H/rect.height))/scale
+    };
+  }
+
+  canvas.addEventListener('pointerdown',(event)=>{
+    if(dragging) return;
+    const point = position(event);
+    const distanceA = Math.hypot(point.x-a,point.y);
+    const distanceD = Math.hypot(point.x,point.y-d);
+    if(distanceA<0.45 && distanceA<distanceD) dragging='a';
+    else if(distanceD<0.45) dragging='d';
+    if(!dragging) return;
+    dragPointerId=event.pointerId;
+    canvas.setPointerCapture(event.pointerId);
+    canvas.classList.add('is-dragging');
+    event.preventDefault();
+  });
+  canvas.addEventListener('pointermove',(event)=>{
+    const point = position(event);
+    if(!dragging){
+      const nearA=Math.hypot(point.x-a,point.y)<0.45;
+      const nearD=Math.hypot(point.x,point.y-d)<0.45;
+      canvas.classList.toggle('is-hovering',nearA||nearD);
+      return;
+    }
+    if(event.pointerId!==dragPointerId) return;
+    if(dragging==='a') a=Math.max(limits.a[0],Math.min(limits.a[1],point.x));
+    else d=Math.max(limits.d[0],Math.min(limits.d[1],point.y));
+    draw();
+    event.preventDefault();
+  });
+  function stopDragging(event){
+    if(event.pointerId!==dragPointerId) return;
+    dragging=null;
+    dragPointerId=null;
+    canvas.classList.remove('is-dragging');
+  }
+  canvas.addEventListener('pointerup',stopDragging);
+  canvas.addEventListener('pointercancel',stopDragging);
+  canvas.addEventListener('lostpointercapture',stopDragging);
+  canvas.addEventListener('pointerleave',()=>canvas.classList.remove('is-hovering'));
+  canvas.addEventListener('keydown',(event)=>{
+    const step=event.shiftKey?0.5:0.1;
+    if(event.key==='ArrowLeft') a=Math.max(limits.a[0],a-step);
+    else if(event.key==='ArrowRight') a=Math.min(limits.a[1],a+step);
+    else if(event.key==='ArrowDown') d=Math.max(limits.d[0],d-step);
+    else if(event.key==='ArrowUp') d=Math.min(limits.d[1],d+step);
+    else if(event.key==='Home'){
+      a=initial.a;
+      d=initial.d;
+    }else return;
+    draw();
+    event.preventDefault();
+  });
+  resetBtn.addEventListener('click',()=>{
+    a=initial.a;
+    d=initial.d;
+    draw();
+  });
+
+  resizeCanvas();
+  draw();
+  window.addEventListener('resize',()=>{if(resizeCanvas()) draw();});
+  if(window.ResizeObserver){
+    new ResizeObserver(()=>{if(resizeCanvas()) draw();}).observe(canvas);
+  }
+  if(document.fonts) document.fonts.ready.then(()=>{resizeCanvas();draw();});
+})();
+</script>
+{% else %}
+<style>
+  #determinant-area-widget{
+    --w2-teal:#0f766e;
+    --w2-teal-soft:#e8f5f2;
+    --w2-gold:#a76108;
+    --w2-gold-soft:#fff5df;
+    --w2-rose:#b8324b;
+    border-color:#dce5e3;
+    border-radius:12px;
+    box-shadow:0 14px 34px rgba(33,41,49,0.07);
+  }
+  #determinant-area-widget .widget-titlewrap{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    align-items:start;
+    padding:18px 20px 17px;
+    background:linear-gradient(135deg,#ffffff 0%,#f6faf9 100%);
+    border-bottom-color:#e3ebe9;
+  }
+  #determinant-area-widget .w2-heading{display:grid; min-width:0; gap:4px;}
+  #determinant-area-widget .w2-kicker{
+    color:var(--w2-teal);
+    font:600 10px/1.2 var(--mono);
+    letter-spacing:0.11em;
+    text-transform:uppercase;
+  }
+  #determinant-area-widget .widget-title{
+    display:block;
+    color:#172129;
+    font-size:15px;
+    font-weight:600;
+    line-height:1.45;
+    overflow-wrap:anywhere;
+  }
+  #determinant-area-widget .wt-sub{
+    margin-top:1px;
+    padding:5px 9px;
+    color:#52616a;
+    background:rgba(255,255,255,0.82);
+    border:1px solid #dbe5e3;
+    border-radius:999px;
+    letter-spacing:0.04em;
+    text-transform:none;
+  }
+  #determinant-area-widget .widget-body{padding:20px;}
+  #determinant-area-widget .w2-plot-shell{
+    overflow:hidden;
+    background:#fbfdfc;
+    border:1px solid #dce5e3;
+    border-radius:9px;
+  }
+  #determinant-area-widget .w2-plot-key{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:7px 14px;
+    min-height:40px;
+    padding:9px 12px;
+    color:#5a6871;
+    background:#f8fbfa;
+    border-bottom:1px solid #e2eae8;
+    font:500 10.5px/1.35 var(--mono);
+  }
+  #determinant-area-widget .w2-key-item{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    white-space:nowrap;
+  }
+  #determinant-area-widget .w2-key-item:last-child{margin-left:auto;}
+  #determinant-area-widget .w2-swatch{
+    width:16px;
+    height:3px;
+    border-radius:2px;
+    background:var(--w2-teal);
+  }
+  #determinant-area-widget .w2-swatch.gold{background:var(--w2-gold);}
+  #determinant-area-widget .w2-handle-icon{
+    width:11px;
+    height:11px;
+    border:3px solid #fff;
+    border-radius:50%;
+    background:var(--w2-gold);
+    box-shadow:0 0 0 1px var(--w2-gold);
+  }
+  #determinant-area-widget canvas{
+    height:clamp(270px,61.75vw,420px);
+    aspect-ratio:auto;
+    background:#fbfdfc;
+    border:0;
+    border-radius:0;
+  }
+  #determinant-area-widget canvas:focus-visible{
+    outline:3px solid rgba(15,118,110,0.28);
+    outline-offset:-3px;
+  }
+  #determinant-area-widget .w2-summary{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    align-items:center;
+    gap:12px;
+    margin-top:12px;
+    padding:12px 14px;
+    background:#f6faf9;
+    border:1px solid #cddfdb;
+    border-radius:8px;
+  }
+  #determinant-area-widget .w2-summary-label{
+    display:block;
+    margin-bottom:3px;
+    color:#69757d;
+    font:600 9.5px/1.3 var(--mono);
+    letter-spacing:0.09em;
+    text-transform:uppercase;
+  }
+  #determinant-area-widget .w2-summary-detail{
+    display:block;
+    color:#69757d;
+    font:400 10.5px/1.45 var(--mono);
+  }
+  #determinant-area-widget .readout{
+    min-width:112px;
+    margin:0;
+    padding:0;
+    color:var(--w2-teal);
+    background:transparent;
+    border:0;
+    font:600 22px/1.2 var(--mono);
+    text-align:right;
+    font-variant-numeric:tabular-nums;
+  }
+  #determinant-area-widget .readout .neg{color:var(--w2-rose);}
+  #determinant-area-widget .w2-actions{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    align-items:center;
+    gap:14px;
+    margin-top:12px;
+    padding:11px 12px;
+    background:#fffaf0;
+    border:1px solid #f0dfbd;
+    border-radius:8px;
+  }
+  #determinant-area-widget .w2-stage-copy{display:grid; gap:3px;}
+  #determinant-area-widget .w2-stage-label{
+    color:#85520b;
+    font:600 9.5px/1.3 var(--mono);
+    letter-spacing:0.09em;
+    text-transform:uppercase;
+  }
+  #determinant-area-widget .caption{
+    margin:0;
+    min-height:0;
+    color:#42515a;
+    font-family:var(--serif-body);
+    font-size:15px;
+    line-height:1.45;
+  }
+  #determinant-area-widget .btnrow{
+    display:grid;
+    grid-template-columns:auto auto;
+    gap:7px;
+    margin:0;
+  }
+  #determinant-area-widget button.step-btn{
+    padding:7px 10px;
+    background:#fff;
+    border-color:#adcac5;
+    border-radius:6px;
+    font-size:11px;
+    font-weight:500;
+  }
+  #determinant-area-widget button.step-btn:hover{
+    background:var(--w2-teal);
+    color:#fff !important;
+  }
+  #determinant-area-widget button.step-btn:focus-visible{
+    outline:3px solid rgba(15,118,110,0.22);
+    outline-offset:2px;
+  }
+  #determinant-area-widget #w2next{grid-column:1 / -1;}
+  #determinant-area-widget .w2-equation{
+    margin-top:12px;
+    padding:17px 18px;
+    background:#fff;
+    border-color:#dce5e3;
+    border-radius:8px;
+    font-size:16px;
+  }
+  #determinant-area-widget .w2-equation .eq-label{
+    margin-bottom:12px;
+    color:var(--w2-teal);
+    font-size:9.5px;
+  }
+  #determinant-area-widget .w2-equation .eq-step{
+    margin-bottom:14px;
+    padding-bottom:14px;
+    border-bottom:1px solid #edf1f0;
+  }
+  #determinant-area-widget .w2-equation .eq-step:last-child{
+    margin-bottom:0;
+    padding-bottom:0;
+    border-bottom:0;
+  }
+  #determinant-area-widget .w2-equation .eq-note{
+    margin-bottom:7px;
+    color:#5f6c74;
+    font-size:14px;
+  }
+  #determinant-area-widget .w2-vector-pair{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px 18px;
+  }
+  #determinant-area-widget .eq-math-stack{
+    display:grid;
+    gap:2px;
+    color:#172129;
+  }
+  #determinant-area-widget .eq-math-stack > span{
+    min-width:0;
+    overflow-x:auto;
+    overflow-y:hidden;
+  }
+  #determinant-area-widget .eq-math-stack mjx-container{margin:0.15em 0 !important;}
+  @media (max-width:520px){
+    #determinant-area-widget .widget-titlewrap,
+    #determinant-area-widget .widget-body{padding:14px;}
+    #determinant-area-widget .widget-titlewrap{
+      grid-template-columns:1fr;
+      gap:9px;
+      padding-right:58px;
+    }
+    #determinant-area-widget .widget-title{font-size:13px;}
+    #determinant-area-widget .wt-sub{justify-self:start; font-size:9.5px;}
+    #determinant-area-widget .w2-plot-key{gap:6px 10px; padding:8px 9px;}
+    #determinant-area-widget .w2-key-item:last-child{width:100%; margin-left:0;}
+    #determinant-area-widget .w2-summary{grid-template-columns:1fr; gap:6px;}
+    #determinant-area-widget .readout{min-width:0; text-align:left;}
+    #determinant-area-widget .w2-actions{grid-template-columns:1fr; align-items:start;}
+    #determinant-area-widget .btnrow{grid-template-columns:1fr 1fr; width:100%;}
+    #determinant-area-widget button.step-btn{width:100%;}
+    #determinant-area-widget .w2-equation{padding:14px 12px; font-size:14px;}
+    #determinant-area-widget .w2-equation .eq-note{font-size:13px;}
+    #determinant-area-widget .w2-vector-pair{grid-template-columns:1fr;}
+  }
+</style>
+<div id="determinant-area-widget" class="widget determinant-widget">
+  <div class="widget-titlewrap">
+    <div class="w2-heading">
+      <span class="w2-kicker">From rectangle to parallelogram</span>
+      <span class="widget-title">06 · Deriving \(a_{11}a_{22}-a_{12}a_{21}\) by cutting up a box</span>
+    </div>
+    <span class="wt-sub">staged · drag the arrow tips</span>
+  </div>
+  <div class="widget-body">
+    <div class="w2-plot-shell">
+      <div class="w2-plot-key" aria-hidden="true">
+        <span class="w2-key-item"><i class="w2-swatch"></i>column \(a_1\)</span>
+        <span class="w2-key-item"><i class="w2-swatch gold"></i>column \(a_2\)</span>
+        <span class="w2-key-item"><i class="w2-handle-icon"></i>drag either tip</span>
+      </div>
+      <canvas id="w2canvas" width="680" height="420" tabindex="0" role="application" aria-describedby="w2help w2caption" aria-label="Interactive determinant cut-up. Drag either column-vector tip."></canvas>
+    </div>
+    <div class="w2-summary" aria-live="polite">
+      <div>
+        <span class="w2-summary-label">Signed area · determinant</span>
+        <span class="w2-summary-detail">\(\det(\mathbf A)=a_{11}a_{22}-a_{12}a_{21}\) · <span id="w2orientation">orientation preserved</span></span>
+      </div>
+      <div class="readout" id="w2readout"><span id="w2area">—</span></div>
+    </div>
+    <div class="w2-actions">
+      <div class="w2-stage-copy">
+        <span class="w2-stage-label" id="w2stage">Stage 1 of 4</span>
+        <div class="caption" id="w2caption">The two column vectors are drawn as arrows from the origin.</div>
+      </div>
+      <div class="btnrow">
+        <button class="step-btn" id="w2next">Show the bounding box →</button>
+        <button class="step-btn" id="w2back">← Back</button>
+        <button class="step-btn" id="w2reset">Reset</button>
+      </div>
+    </div>
+    <aside class="w2-equation" aria-live="polite">
+      <div class="eq-label">The calculation</div>
+      <div class="eq-step is-revealed" data-w2-stage="0">
+        <p class="eq-note">The two arrows are the parallelogram's edges:</p>
+        <div class="w2-vector-pair">
+          <span>\(\mathbf a_1=(a_{11},a_{21})\)</span>
+          <span>\(\mathbf a_2=(a_{12},a_{22})\)</span>
+        </div>
+      </div>
+      <div class="eq-step" data-w2-stage="1">
+        <p class="eq-note">Start from the full bounding box:</p>
+        <div class="eq-math-stack">
+          <span>\(\text{box area}\)</span>
+          <span>\(=(a_{11}+a_{12})(a_{21}+a_{22})\)</span>
+        </div>
+      </div>
+      <div class="eq-step" data-w2-stage="2">
+        <p class="eq-note">Subtract the colored pieces shown above:</p>
+        <div class="eq-math-stack">
+          <span>\(\text{area}=(a_{11}+a_{12})(a_{21}+a_{22})\)</span>
+          <span>\(\quad-\color{#c43b54}{\left(\tfrac12a_{11}a_{21}+\tfrac12a_{11}a_{21}\right)}\)</span>
+          <span>\(\quad-\color{#147f7a}{\left(\tfrac12a_{12}a_{22}+\tfrac12a_{12}a_{22}\right)}\)</span>
+          <span>\(\quad-\color{#b66a00}{a_{12}a_{21}}-\color{#7153b8}{a_{12}a_{21}}.\)</span>
+        </div>
+      </div>
+      <div class="eq-step" data-w2-stage="3">
+        <p class="eq-note">Expand the box, then cancel matching terms:</p>
+        <div class="eq-math-stack">
+          <span>\(\text{area}=(a_{11}+a_{12})(a_{21}+a_{22})\)</span>
+          <span>\(\quad-\color{#c43b54}{a_{11}a_{21}}-\color{#147f7a}{a_{12}a_{22}}\)</span>
+          <span>\(\quad-\color{#b66a00}{a_{12}a_{21}}-\color{#7153b8}{a_{12}a_{21}}\)</span>
+          <span>\(=a_{11}a_{21}+a_{11}a_{22}\)</span>
+          <span>\(\quad+a_{12}a_{21}+a_{12}a_{22}\)</span>
+          <span>\(\quad-\color{#c43b54}{a_{11}a_{21}}-\color{#147f7a}{a_{12}a_{22}}\)</span>
+          <span>\(\quad-\color{#b66a00}{a_{12}a_{21}}-\color{#7153b8}{a_{12}a_{21}}\)</span>
+          <span>\(\boxed{\text{area}=a_{11}a_{22}-a_{12}a_{21}}\)</span>
+        </div>
+      </div>
+    </aside>
+    <p id="w2help" hidden>Drag the teal or gold tip to change either column vector. Use the stage controls to reveal the bounding-box cut-up.</p>
+  </div>
+</div>
+<script>
+(function(){
+  const root = document.getElementById('determinant-area-widget');
+  function fmt(x,n){ n=n===undefined?2:n; return (Math.abs(x)<1e-9?0:x).toFixed(n); }
+
+  const canvas = root.querySelector('#w2canvas');
+  const ctx = canvas.getContext('2d');
+  const BASE_W = 680, BASE_H = 420;
+  let W = BASE_W, H = BASE_H;
+  let ox = 70, oy = H-70, scale = 55;
+  const gridBounds = {left:20, right:BASE_W-20, top:20, bottom:BASE_H-20};
+  const gridCoordinates = {
+    minX:(gridBounds.left-ox)/scale,
+    maxX:(gridBounds.right-ox)/scale,
+    minY:(oy-gridBounds.bottom)/scale,
+    maxY:(oy-gridBounds.top)/scale
+  };
+  const dragBounds = {
+    minX:-0.5,
+    maxX:0.8*gridCoordinates.maxX,
+    minY:-0.5,
+    maxY:0.8*gridCoordinates.maxY
+  };
+  let u = {x:2.2, y:0.6};   // (a₁₁,a₂₁)
+  let v = {x:0.8, y:2.0};   // (a₁₂,a₂₂)
+  const showMoveHint = {u:true, v:true};
+  let stage = 0; // 0..3
+  const stages = [
+    'The two column vectors are drawn as arrows from the origin.',
+    'Enclose the vectors in their axis-aligned bounding box.',
+    'Subtract the four corner triangles and the two leftover rectangles.',
+    'What remains is the parallelogram: area = a₁₁a₂₂ − a₁₂a₂₁.'
+  ];
+  const capEl = root.querySelector('#w2caption');
+  const stageEl = root.querySelector('#w2stage');
+  const areaEl = root.querySelector('#w2area');
+  const orientationEl = root.querySelector('#w2orientation');
+  const equationSteps = root.querySelectorAll('[data-w2-stage]');
+  const nextBtn = root.querySelector('#w2next'), backBtn = root.querySelector('#w2back'), resetBtn = root.querySelector('#w2reset');
+  const nextLabels = ['Show the bounding box →', 'Subtract the outside pieces →', 'Simplify to a₁₁a₂₂ − a₁₂a₂₁ →'];
+
+  function resizeCanvas(){
+    const pixelRatio = Math.max(1, window.devicePixelRatio || 1);
+    const cssWidth = Math.max(1, Math.round(canvas.clientWidth));
+    const cssHeight = Math.max(1, Math.round(canvas.clientHeight));
+    const width = Math.round(cssWidth * pixelRatio);
+    const height = Math.round(cssHeight * pixelRatio);
+    if(canvas.width===width && canvas.height===height) return false;
+    canvas.width = width;
+    canvas.height = height;
+    W = cssWidth;
+    H = cssHeight;
+    const layoutScale = Math.min(1, W/BASE_W);
+    scale = 55*layoutScale;
+    ox = (W-BASE_W*layoutScale)/2 + 70*layoutScale;
+    oy = H-Math.max(30,70*layoutScale);
+    ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    return true;
+  }
+
+  function toScreen(p){ return [ox + p.x*scale, oy - p.y*scale]; }
+
+  let labelBoxes = [];
+  let pendingAxisLabels = [];
+
+  function roundedRect(x,y,width,height,radius){
+    const r=Math.min(radius,width/2,height/2);
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);
+    ctx.arcTo(x+width,y,x+width,y+height,r);
+    ctx.arcTo(x+width,y+height,x,y+height,r);
+    ctx.arcTo(x,y+height,x,y,r);
+    ctx.arcTo(x,y,x+width,y,r);
+    ctx.closePath();
+  }
+
+  function overlapArea(a,b){
+    const width=Math.max(0,Math.min(a.right,b.right)-Math.max(a.left,b.left));
+    const height=Math.max(0,Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top));
+    return width*height;
+  }
+
+  function placeBox(anchor,width,height,candidates){
+    let best=null;
+    candidates.forEach((offset,index)=>{
+      const left=Math.max(7,Math.min(W-width-7,anchor[0]+offset[0]));
+      const top=Math.max(7,Math.min(H-height-7,anchor[1]+offset[1]));
+      const box={left,top,right:left+width,bottom:top+height};
+      const overlap=labelBoxes.reduce((sum,other)=>sum+overlapArea(box,other),0);
+      const score=overlap*1000+index;
+      if(!best || score<best.score) best={box,score};
+    });
+    labelBoxes.push(best.box);
+    return best.box;
+  }
+
+  function drawPill(anchor,text,color,options){
+    const opts=options||{};
+    ctx.save();
+    ctx.font=opts.font||'600 italic 14px "Source Serif 4", Georgia, serif';
+    const width=Math.ceil(ctx.measureText(text).width)+(opts.paddingX||14);
+    const height=opts.height||25;
+    const box=placeBox(anchor,width,height,opts.candidates);
+    if(opts.connector){
+      const targetX=Math.max(box.left,Math.min(box.right,anchor[0]));
+      const targetY=Math.max(box.top,Math.min(box.bottom,anchor[1]));
+      ctx.strokeStyle=color;
+      ctx.globalAlpha=0.38;
+      ctx.lineWidth=1;
+      ctx.beginPath();
+      ctx.moveTo(anchor[0],anchor[1]);
+      ctx.lineTo(targetX,targetY);
+      ctx.stroke();
+      ctx.globalAlpha=1;
+    }
+    ctx.fillStyle=opts.fill||'rgba(255,255,255,0.94)';
+    roundedRect(box.left,box.top,width,height,opts.radius||5);
+    ctx.fill();
+    if(opts.border!==false){
+      ctx.strokeStyle=color;
+      ctx.globalAlpha=0.34;
+      ctx.lineWidth=1;
+      ctx.stroke();
+      ctx.globalAlpha=1;
+    }
+    ctx.fillStyle=color;
+    ctx.textBaseline='middle';
+    ctx.textAlign='left';
+    ctx.fillText(text,box.left+(opts.paddingX||14)/2,box.top+height/2+0.5);
+    ctx.restore();
+  }
+
+  function drawArrow(p, color, label){
+    const [sx,sy] = toScreen(p);
+    const angle = Math.atan2(sy-oy, sx-ox);
+    const leftOffset=label.length<=3?-35:-146;
+    ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 2.5;
+    ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(ox,oy); ctx.lineTo(sx,sy); ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(sx,sy);
+    ctx.lineTo(sx-10*Math.cos(angle-0.3), sy-10*Math.sin(angle-0.3));
+    ctx.lineTo(sx-10*Math.cos(angle+0.3), sy-10*Math.sin(angle+0.3));
+    ctx.closePath(); ctx.fill();
+    const rightward=Math.cos(angle)>=0;
+    const upward=Math.sin(angle)<=0;
+    drawPill([sx,sy],label,color,{
+      connector:true,
+      candidates:[
+        [rightward?12:leftOffset,upward?-34:10],
+        [rightward?leftOffset:12,upward?-34:10],
+        [rightward?12:leftOffset,upward?10:-34],
+        [leftOffset,-50],
+        [leftOffset,18]
+      ]
+    });
+  }
+
+  function drawMoveHint(p, color){
+    const [sx,sy] = toScreen(p);
+    drawPill([sx,sy],'drag tip',color,{
+      font:'500 10px "IBM Plex Mono", monospace',
+      height:21,
+      paddingX:12,
+      radius:10,
+      fill:'rgba(255,255,255,0.97)',
+      candidates:[[12,12],[-67,12],[12,-33],[-67,-33]]
+    });
+  }
+
+  function poly(pts, fill, stroke){
+    ctx.beginPath();
+    pts.forEach((p,i)=>{ const [sx,sy]=toScreen(p); i===0?ctx.moveTo(sx,sy):ctx.lineTo(sx,sy); });
+    ctx.closePath();
+    if(fill){ ctx.fillStyle=fill; ctx.fill(); }
+    if(stroke){ ctx.strokeStyle=stroke; ctx.lineWidth=1.5; ctx.stroke(); }
+  }
+
+  function axisMarker(value, axis, label, color){
+    const p = axis==='x' ? toScreen({x:value,y:0}) : toScreen({x:0,y:value});
+    ctx.strokeStyle=color; ctx.fillStyle=color; ctx.lineWidth=2;
+    if(axis==='x'){
+      ctx.beginPath(); ctx.moveTo(p[0],p[1]-5); ctx.lineTo(p[0],p[1]+5); ctx.stroke();
+    } else {
+      ctx.beginPath(); ctx.moveTo(p[0]-5,p[1]); ctx.lineTo(p[0]+5,p[1]); ctx.stroke();
+    }
+    pendingAxisLabels.push({point:p,axis,label,color});
+  }
+
+  function drawAxisLabel(item){
+    const xCandidates=item.axis==='x'
+      ? [[-18,8],[-18,-28],[6,8],[-42,8]]
+      : [[-43,-10],[8,-10],[-43,8],[8,8]];
+    drawPill(item.point,item.label,item.color,{
+      font:'600 italic 13px "Source Serif 4", Georgia, serif',
+      height:20,
+      paddingX:10,
+      radius:3,
+      border:false,
+      candidates:xCandidates
+    });
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='#fbfdfc';
+    ctx.fillRect(0,0,W,H);
+    labelBoxes=[];
+    pendingAxisLabels=[];
+    ctx.strokeStyle='rgba(33,41,49,0.12)'; ctx.lineWidth=1;
+    for(let i=-1;i<=10;i++){
+      const [sx]=toScreen({x:i,y:0});
+      if(sx<12 || sx>W-12) continue;
+      ctx.beginPath(); ctx.moveTo(sx,12); ctx.lineTo(sx,H-12); ctx.stroke();
+    }
+    for(let j=-1;j<=6;j++){
+      const [,sy]=toScreen({x:0,y:j});
+      if(sy<12 || sy>H-12) continue;
+      ctx.beginPath(); ctx.moveTo(12,sy); ctx.lineTo(W-12,sy); ctx.stroke();
+    }
+
+    const a=u.x, c=u.y, b=v.x, d=v.y;
+    const area = a*d-b*c;
+    const orientationColor = area>=0 ? '#b66a00' : '#c43b54';
+    axisMarker(a, 'x', 'a₁₁', '#147f7a');
+    axisMarker(c, 'y', 'a₂₁', '#147f7a');
+    axisMarker(b, 'x', 'a₁₂', '#b66a00');
+    axisMarker(d, 'y', 'a₂₂', '#b66a00');
+
+    if(stage>=1){
+      // bounding box
+      const minX = Math.min(0,a,b,a+b), maxX = Math.max(0,a,b,a+b);
+      const minY = Math.min(0,c,d,c+d), maxY = Math.max(0,c,d,c+d);
+      poly([{x:minX,y:minY},{x:maxX,y:minY},{x:maxX,y:maxY},{x:minX,y:maxY}], 'rgba(33,41,49,0.025)', 'rgba(33,41,49,0.35)');
+    }
+    if(stage>=2){
+      // Two ac/2 triangles
+      poly([{x:0,y:0},{x:a,y:0},{x:a,y:c}], 'rgba(196,59,84,0.16)', '#c43b54');
+      poly([{x:b,y:d},{x:b,y:c+d},{x:a+b,y:c+d}], 'rgba(196,59,84,0.16)', '#c43b54');
+      // Two bd/2 triangles
+      poly([{x:a,y:c},{x:a+b,y:c},{x:a+b,y:c+d}], 'rgba(20,127,122,0.14)', '#147f7a');
+      poly([{x:0,y:0},{x:0,y:d},{x:b,y:d}], 'rgba(20,127,122,0.14)', '#147f7a');
+      // Two bc corner rectangles
+      poly([{x:a,y:0},{x:a+b,y:0},{x:a+b,y:c},{x:a,y:c}], 'rgba(182,106,0,0.12)', '#b66a00');
+      poly([{x:0,y:d},{x:b,y:d},{x:b,y:c+d},{x:0,y:c+d}], 'rgba(113,83,184,0.12)', '#7153b8');
+    }
+    // parallelogram outline always on top (dashed until final stage, solid at stage 3)
+    ctx.setLineDash(stage>=3?[]:[5,4]);
+    poly(
+      [{x:0,y:0},{x:a,y:c},{x:a+b,y:c+d},{x:b,y:d}],
+      stage>=3 ? (area>=0?'rgba(182,106,0,0.18)':'rgba(196,59,84,0.18)') : (area<0?'rgba(196,59,84,0.09)':'transparent'),
+      orientationColor
+    );
+    ctx.setLineDash([]);
+
+    drawArrow(u, '#147f7a', 'a₁');
+    drawArrow(v, '#b66a00', 'a₂');
+
+    // draggable handles
+    [u,v].forEach((p,i)=>{
+      const [sx,sy]=toScreen(p);
+      ctx.beginPath(); ctx.arc(sx,sy,7,0,Math.PI*2);
+      ctx.fillStyle = i===0?'#147f7a':'#b66a00'; ctx.fill();
+      ctx.strokeStyle='#ffffff'; ctx.lineWidth=2; ctx.stroke();
+    });
+    pendingAxisLabels.forEach(drawAxisLabel);
+    if(stage===0 && W>=520 && showMoveHint.u) drawMoveHint(u, '#147f7a');
+    if(stage===0 && W>=520 && showMoveHint.v) drawMoveHint(v, '#b66a00');
+
+    stageEl.textContent='Stage '+(stage+1)+' of 4';
+    capEl.textContent=stages[stage];
+    areaEl.innerHTML = '<span class="'+(area>=0?'pos':'neg')+'">'+fmt(area)+'</span>';
+    orientationEl.textContent=Math.abs(area)<0.02
+      ? 'collapsed'
+      : (area<0?'orientation flipped':'orientation preserved');
+    canvas.setAttribute(
+      'aria-label',
+      'Interactive determinant cut-up. a 11 is '+fmt(a)+', a 21 is '+fmt(c)+
+      ', a 12 is '+fmt(b)+', a 22 is '+fmt(d)+', determinant is '+fmt(area)+'.'
+    );
+    equationSteps.forEach(step => step.classList.toggle('is-revealed', Number(step.dataset.w2Stage) <= stage));
+    backBtn.disabled = stage===0;
+    nextBtn.disabled = stage===3;
+    nextBtn.textContent = stage===3 ? 'Derivation complete' : nextLabels[stage];
+  }
+
+  nextBtn.addEventListener('click', ()=>{ if(stage<3){stage++; draw();} });
+  backBtn.addEventListener('click', ()=>{ if(stage>0){stage--; draw();} });
+  resetBtn.addEventListener('click', ()=>{ stage=0; draw(); });
+
+  // dragging
+  let dragging = null, dragPointerId = null;
+  function pos(evt){
+    const r = canvas.getBoundingClientRect();
+    const cxp = evt.clientX - r.left;
+    const cyp = evt.clientY - r.top;
+    return { x:(cxp*(W/r.width) - ox)/scale, y:(oy - cyp*(H/r.height))/scale };
+  }
+  canvas.addEventListener('pointerdown', (e)=>{
+    if(dragging) return;
+    const m = pos(e);
+    const du = Math.hypot(m.x-u.x,m.y-u.y), dv = Math.hypot(m.x-v.x,m.y-v.y);
+    if(du<0.4 && du<dv) dragging='u'; else if(dv<0.4) dragging='v';
+    if(!dragging) return;
+    dragPointerId = e.pointerId;
+    canvas.setPointerCapture(e.pointerId);
+    canvas.classList.add('is-dragging');
+    e.preventDefault();
+  });
+  canvas.addEventListener('pointermove',(e)=>{
+    if(!dragging || e.pointerId!==dragPointerId) return;
+    const m = pos(e);
+    const other = dragging==='u' ? v : u;
+    const minX = Math.max(dragBounds.minX, gridCoordinates.minX-other.x);
+    const maxX = Math.min(dragBounds.maxX, gridCoordinates.maxX-other.x);
+    const minY = Math.max(dragBounds.minY, gridCoordinates.minY-other.y);
+    const maxY = Math.min(dragBounds.maxY, gridCoordinates.maxY-other.y);
+    const next = {
+      x:Math.max(minX,Math.min(maxX,m.x)),
+      y:Math.max(minY,Math.min(maxY,m.y))
+    };
+    if(dragging==='u') {
+      u = next;
+      showMoveHint.u = false;
+    }
+    else {
+      v = next;
+      showMoveHint.v = false;
+    }
+    draw();
+    e.preventDefault();
+  });
+  function stopDragging(e){
+    if(e.pointerId!==dragPointerId) return;
+    dragging = null;
+    dragPointerId = null;
+    canvas.classList.remove('is-dragging');
+  }
+  canvas.addEventListener('pointerup', stopDragging);
+  canvas.addEventListener('pointercancel', stopDragging);
+  canvas.addEventListener('lostpointercapture', stopDragging);
+
+  resizeCanvas();
+  draw();
+  window.addEventListener('resize', ()=>{ if(resizeCanvas()) draw(); });
+  if(document.fonts) document.fonts.ready.then(()=>{ resizeCanvas(); draw(); });
+})();
+</script>
+{% endif %}
+{% endif %}
