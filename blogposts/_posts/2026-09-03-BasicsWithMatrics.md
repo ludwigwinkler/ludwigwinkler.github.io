@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "The Basics with Matric<span style='color:#9aa0a6;'>e</span>s"
+title:  "Basics with Matric<span style='color:#9aa0a6;background:linear-gradient(135deg,transparent 47%,#6b7280 48%,#6b7280 52%,transparent 53%) center/100% 0.8em no-repeat;'>e</span>s"
 category: blog
 date:   2026-09-03
 excerpt: "Back to University Math 101"
@@ -1077,7 +1077,7 @@ The matrix gradient collects the entry-wise derivatives into a matrix with the s
 
 
 $$
-\frac{\partial \operatorname{Tr}(\mathbf{A}\mathbf{B}\mathbf{C})}{\partial \mathbf B_{pq}}.
+\frac{\partial \operatorname{Tr}(\mathbf{A}\mathbf{B}\mathbf{C})}{\partial \mathbf B_{pq}.
 $$
 
 How do we differentiate with respect to the middle entry $B_{pq}$, and how do we collect the result into the matrix gradient?
