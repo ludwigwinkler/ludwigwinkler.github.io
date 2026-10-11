@@ -1,0 +1,2018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Triton — GPU programming in tiles</title>
+
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg:        #0f1419;
+    --bg-2:      #141a22;
+    --surface:   #1a2028;
+    --surface-2: #232a34;
+    --ink:       #e8e6e1;
+    --ink-soft:  #8a8377;
+    --ink-dim:   #5c5d63;
+    --accent:    #ff7a55;     /* coral */
+    --accent-2:  #5ec8c8;     /* teal  */
+    --accent-3:  #e8c66a;     /* gold  */
+    --accent-4:  #b48ee0;     /* lilac */
+    --line:      #2a323d;
+    --axis:      #4a525c;
+    --kernel-bg: #ff7a55;
+    --radius: 14px;
+    --measure: 78ch;
+    --font-display: 'Space Grotesk', system-ui, sans-serif;
+    --font-body:    'Inter', system-ui, sans-serif;
+    --font-mono:    'JetBrains Mono', ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  #progress {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+    background: var(--accent); z-index: 100; transition: width 0.1s linear;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px 120px; }
+  .prose { max-width: var(--measure); }
+  .prose p { margin: 0 0 1.1em; color: var(--ink); }
+  .prose code {
+    font-family: var(--font-mono); font-size: 0.88em;
+    background: var(--surface); padding: 1px 6px; border-radius: 4px;
+    color: var(--accent-3); border: 1px solid var(--line);
+  }
+
+  header { padding: 96px 0 24px; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.26em;
+    text-transform: uppercase; color: var(--accent); margin: 0 0 22px;
+  }
+  h1 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(2.6rem, 6vw, 4.2rem); line-height: 1.02;
+    margin: 0 0 26px; letter-spacing: -0.03em;
+  }
+  h1 .accent { color: var(--accent); font-style: italic; font-weight: 500; }
+  .promise {
+    font-size: 1.18rem; color: var(--ink-soft);
+    max-width: var(--measure); font-weight: 400;
+  }
+
+  .kernel {
+    background: var(--kernel-bg); color: #1a0e08;
+    border-radius: var(--radius); padding: 36px 40px; margin: 48px 0 72px;
+    box-shadow: 0 30px 60px -30px rgba(255,122,85,0.4);
+  }
+  .kernel .label {
+    font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.22em;
+    text-transform: uppercase; opacity: 0.55; margin: 0 0 14px;
+  }
+  .kernel .sentence {
+    font-family: var(--font-display); font-weight: 500;
+    font-size: 1.45rem; line-height: 1.4; margin: 0; letter-spacing: -0.01em;
+  }
+  .kernel .sentence em { font-style: normal; font-weight: 700; background: rgba(26,14,8,0.12); padding: 1px 6px; border-radius: 4px; }
+
+  .concept-step { margin: 0 0 88px; scroll-margin-top: 40px; }
+  .step-num {
+    font-family: var(--font-mono); font-size: 0.78rem; font-weight: 500;
+    color: var(--accent); letter-spacing: 0.18em; margin: 0 0 8px;
+    text-transform: uppercase;
+  }
+  .concept-step h2 {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(1.7rem, 3.5vw, 2.3rem); line-height: 1.15;
+    margin: 0 0 22px; letter-spacing: -0.02em; color: var(--ink);
+  }
+
+  pre.code {
+    font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.65;
+    background: var(--bg-2); border: 1px solid var(--line);
+    border-radius: 10px; padding: 18px 20px; overflow-x: auto;
+    color: var(--ink); margin: 18px 0;
+  }
+  pre.code .k { color: var(--accent-4); }    /* keyword */
+  pre.code .d { color: var(--accent-2); }    /* decorator / triton */
+  pre.code .n { color: var(--accent-3); }    /* number */
+  pre.code .s { color: #98c379; }            /* string */
+  pre.code .c { color: var(--ink-dim); font-style: italic; }
+  pre.code .f { color: var(--accent); }      /* fn name */
+  pre.code .v { color: var(--ink); }
+  pre.code .hl { background: rgba(255,122,85,0.12); display: block; margin: 0 -20px; padding: 0 20px; border-left: 2px solid var(--accent); }
+
+  .widget {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 22px; margin: 28px 0;
+  }
+  .widget-titlewrap {
+    display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px;
+    border-bottom: 1px solid var(--line); padding-bottom: 12px;
+  }
+  .widget-title {
+    font-family: var(--font-display); font-weight: 600; font-size: 1.0rem;
+    color: var(--ink); margin: 0;
+  }
+  .widget-title .num {
+    font-family: var(--font-mono); color: var(--accent); font-weight: 500;
+    margin-right: 10px; font-size: 0.92rem;
+  }
+  .widget-tag {
+    font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.14em;
+    color: var(--accent-2); text-transform: uppercase;
+  }
+  .widget-controls {
+    display: flex; flex-wrap: wrap; gap: 18px 28px; margin: 6px 0 16px;
+    align-items: end;
+  }
+  .widget-controls label {
+    display: flex; flex-direction: column; gap: 7px;
+    font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-soft);
+    min-width: 160px; letter-spacing: 0.02em;
+  }
+  .widget-controls .val { color: var(--accent); font-weight: 500; }
+  input[type=range] { accent-color: var(--accent); cursor: pointer; }
+  .widget button {
+    font-family: var(--font-mono); font-size: 0.82rem;
+    background: var(--surface-2); color: var(--ink); border: 1px solid var(--line);
+    padding: 8px 16px; border-radius: 7px; cursor: pointer;
+    letter-spacing: 0.04em;
+  }
+  .widget button:hover { background: var(--accent); color: #1a0e08; border-color: var(--accent); }
+  .widget button:disabled { opacity: 0.3; cursor: default; }
+  .widget button.primary { background: var(--accent); color: #1a0e08; border-color: var(--accent); }
+  .widget-stage {
+    display: block; width: 100%; border-radius: 8px; background: var(--bg-2);
+  }
+  .readout {
+    margin-top: 14px; font-size: 0.88rem; color: var(--ink-soft);
+    min-height: 1.4em; font-family: var(--font-mono);
+  }
+  .readout .num { color: var(--accent); font-weight: 500; }
+  .readout .num2 { color: var(--accent-2); font-weight: 500; }
+  .reveal-bar {
+    display: flex; align-items: center; gap: 14px; margin-top: 14px;
+    flex-wrap: wrap;
+  }
+  .reveal-caption {
+    flex: 1; min-width: 200px; font-size: 0.88rem;
+    color: var(--ink-soft); font-style: italic;
+  }
+  .caption {
+    font-size: 0.82rem; color: var(--ink-soft); font-style: italic;
+    margin-top: 10px;
+  }
+  .toggle-group { display: flex; gap: 0; border-radius: 7px; overflow: hidden; border: 1px solid var(--line); }
+  .toggle-group button {
+    border: none; border-radius: 0; background: var(--surface-2);
+    color: var(--ink-soft); padding: 8px 14px;
+  }
+  .toggle-group button.active { background: var(--accent); color: #1a0e08; }
+
+  details.formal {
+    border: 1px solid var(--line); border-radius: 10px;
+    background: var(--bg-2); margin: 24px 0; max-width: var(--measure);
+  }
+  details.formal summary {
+    cursor: pointer; padding: 14px 18px; font-family: var(--font-mono);
+    font-size: 0.82rem; letter-spacing: 0.06em; color: var(--ink-soft);
+    list-style: none; user-select: none;
+  }
+  details.formal summary::before { content: '▸ '; color: var(--accent); }
+  details.formal[open] summary::before { content: '▾ '; }
+  details.formal .formal-body { padding: 0 18px 18px; }
+  details.formal .formal-body p { font-size: 0.95rem; }
+
+  .recap {
+    border-top: 1px solid var(--line); padding-top: 40px; margin-top: 24px;
+  }
+  .recap h2 { font-family: var(--font-display); font-size: 2rem; margin: 0 0 18px; letter-spacing: -0.02em; }
+  mark { background: rgba(232,198,106,0.18); color: var(--accent-3); padding: 0 4px; border-radius: 3px; }
+  a { color: var(--accent); }
+
+  @media (max-width: 600px) {
+    body { font-size: 16px; }
+    .wrap { padding: 0 18px 80px; }
+    .kernel { padding: 26px 24px; }
+    pre.code { font-size: 0.74rem; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">A step-by-step explainer · GPU programming</p>
+    <h1>Triton: <span class="accent">programming the GPU<br/>in tiles, not threads</span></h1>
+    <p class="promise">
+      By the end of this page you'll understand what Triton actually is, why it
+      exists, the one paradigm shift that makes it work, and how the same idea
+      becomes vector-add, fused softmax, and a tiled matmul.
+    </p>
+  </header>
+
+  <div class="kernel">
+    <p class="label">The whole idea, in one sentence</p>
+    <p class="sentence">
+      A Triton kernel is a piece of Python that says <em>what happens to one
+      block of data</em> — and the compiler turns that single block-level
+      description into the per-thread instructions, memory coalescing, and
+      shared-memory choreography that CUDA would force you to write by hand.
+    </p>
+  </div>
+
+  <!-- ============ STEP 1 — Why CUDA hurts ============ -->
+  <section class="concept-step" id="step-1">
+    <p class="step-num">Step 1 — the problem</p>
+    <h2>CUDA makes you think one thread at a time</h2>
+    <div class="prose">
+      <p>
+        A modern NVIDIA GPU has tens of thousands of threads running at once.
+        CUDA — the standard way to program them — asks you to write code from
+        the point of view of <em>one</em> of those threads. Every thread reads
+        its own ID, figures out which slice of memory it owns, and you, the
+        programmer, are responsible for making the choices that decide whether
+        the kernel runs at 5% or 95% of peak throughput: how to group threads
+        into warps, which loads will <em>coalesce</em> into a single memory
+        transaction, when to stage data in the on-chip scratchpad
+        (<code>__shared__</code>), how to avoid bank conflicts.
+      </p>
+      <p>
+        None of that work is about your algorithm. It's bookkeeping that exists
+        because the model is per-thread. Drag the slider below to grow the
+        vector and watch the per-thread bookkeeping multiply — every cell is a
+        thread that has to compute its own index.
+      </p>
+    </div>
+
+    <div class="widget" id="w1">
+      <div class="widget-titlewrap">
+        <span class="widget-tag">live · drag the slider · toggle view</span>
+        <p class="widget-title"><span class="num">Widget 1</span>A vector, seen by CUDA (one thread per element) vs by Triton (one program per tile)</p>
+      </div>
+      <div class="widget-controls">
+        <label>vector length &nbsp;N = <span class="val" id="w1-nv">32</span>
+          <input type="range" id="w1-n" min="8" max="64" step="1" value="32">
+        </label>
+        <label>tile size &nbsp;BLOCK = <span class="val" id="w1-bv">8</span>
+          <input type="range" id="w1-b" min="2" max="16" step="1" value="8">
+        </label>
+        <div class="toggle-group" id="w1-toggle">
+          <button class="active" data-m="cuda">CUDA view</button>
+          <button data-m="triton">Triton view</button>
+        </div>
+      </div>
+      <canvas id="w1-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w1-readout"></div>
+      <p class="caption">CUDA mode labels every cell with its thread ID — that's
+        what your code has to reason about. Triton mode groups cells into tiles
+        and labels each tile with one program ID — that's all your code sees.</p>
+    </div>
+  </section>
+
+  <!-- ============ STEP 2 — The Triton paradigm ============ -->
+  <section class="concept-step" id="step-2">
+    <p class="step-num">Step 2 — the paradigm shift</p>
+    <h2>A Triton kernel runs once per tile, and works on whole arrays</h2>
+    <div class="prose">
+      <p>
+        Triton flips the unit of programming. Where CUDA gives each thread a
+        scalar ID and asks it to fetch one element, Triton gives each
+        <em>program</em> (a block of threads) a single ID and asks it to
+        operate on a whole array — a tile — at once.
+      </p>
+      <p>
+        Inside a Triton kernel, when you write <code>x + y</code>, those aren't
+        two numbers — they're two tiles, say of shape <code>(BLOCK_SIZE,)</code>.
+        Loads, stores, reductions, even matrix multiplications operate on
+        tiles. The compiler is the one that decides how those tile operations
+        get mapped down to individual threads, warp shuffles, and shared
+        memory. You write the math; it writes the choreography.
+      </p>
+      <p>
+        Two ingredients make this work. First, every program asks the runtime
+        which tile it owns:
+      </p>
+      <pre class="code"><span class="v">pid </span>= <span class="d">tl</span>.<span class="f">program_id</span>(<span class="n">0</span>)              <span class="c"># which tile am I?</span>
+<span class="v">offsets </span>= <span class="v">pid </span>* <span class="v">BLOCK_SIZE </span>+ <span class="d">tl</span>.<span class="f">arange</span>(<span class="n">0</span>, <span class="v">BLOCK_SIZE</span>)</pre>
+      <p>
+        <code>offsets</code> is a vector of <code>BLOCK_SIZE</code> indices —
+        the row of cells this program is responsible for. Second, because the
+        last tile may run off the end of the data, a boolean mask is
+        passed to every load and store:
+      </p>
+      <pre class="code"><span class="v">mask </span>= <span class="v">offsets </span>&lt; <span class="v">N</span>
+<span class="v">x </span>= <span class="d">tl</span>.<span class="f">load</span>(<span class="v">x_ptr </span>+ <span class="v">offsets</span>, <span class="v">mask</span>=<span class="v">mask</span>)</pre>
+      <p>
+        The masked load reads valid entries and pretends the rest are zero.
+        That's enough to handle any <code>N</code>. Play with the widget below
+        — change <code>N</code> and <code>BLOCK_SIZE</code> and watch the tile
+        partition reshape. The faint cells in the last tile are the ones the
+        mask filters out.
+      </p>
+    </div>
+
+    <div class="widget" id="w2">
+      <div class="widget-titlewrap">
+        <span class="widget-tag">live · two sliders · highlight a program</span>
+        <p class="widget-title"><span class="num">Widget 2</span>How <code>pid</code>, <code>offsets</code>, and the mask carve a vector into tiles</p>
+      </div>
+      <div class="widget-controls">
+        <label>N = <span class="val" id="w2-nv">22</span>
+          <input type="range" id="w2-n" min="6" max="40" step="1" value="22">
+        </label>
+        <label>BLOCK_SIZE = <span class="val" id="w2-bv">8</span>
+          <input type="range" id="w2-b" min="2" max="16" step="1" value="8">
+        </label>
+        <label>highlight program &nbsp;pid = <span class="val" id="w2-pv">0</span>
+          <input type="range" id="w2-p" min="0" max="2" step="1" value="0">
+        </label>
+      </div>
+      <canvas id="w2-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w2-readout"></div>
+      <p class="caption">The highlighted program's <code>offsets</code> are the
+        indices in its tile; faint cells beyond N are masked out so the load
+        treats them as zero.</p>
+    </div>
+  </section>
+
+  <!-- ============ STEP 3 — The grid ============ -->
+  <section class="concept-step" id="step-3">
+    <p class="step-num">Step 3 — launching in parallel</p>
+    <h2>The grid: how many programs, and on what axes</h2>
+    <div class="prose">
+      <p>
+        A Triton kernel is launched by handing it a <em>grid</em> — the number
+        of programs to run, possibly across multiple axes. Each program reads
+        its coordinate via <code>tl.program_id(axis)</code>. The runtime
+        schedules them on the GPU's streaming multiprocessors in whatever order
+        it pleases, in parallel, with no ordering guarantees.
+      </p>
+      <p>
+        For a 1D problem like vector add, the grid is one-dimensional:
+        <code>grid = (cdiv(N, BLOCK_SIZE),)</code>. For a 2D problem like
+        matmul, the grid is two-dimensional —
+        <code>(cdiv(M, BLOCK_M), cdiv(N, BLOCK_N))</code> — and each program
+        produces one tile of the output. The visualization below shows programs
+        firing concurrently and finishing on their own schedule.
+      </p>
+    </div>
+
+    <div class="widget" id="w3">
+      <div class="widget-titlewrap">
+        <span class="widget-tag">animated · play · drag the speed</span>
+        <p class="widget-title"><span class="num">Widget 3</span>A grid of programs all working in parallel on their own tiles</p>
+      </div>
+      <div class="widget-controls">
+        <label>data size &nbsp;N = <span class="val" id="w3-nv">32</span>
+          <input type="range" id="w3-n" min="8" max="64" step="1" value="32">
+        </label>
+        <label>BLOCK_SIZE = <span class="val" id="w3-bv">8</span>
+          <input type="range" id="w3-b" min="2" max="16" step="1" value="8">
+        </label>
+        <label>speed = <span class="val" id="w3-sv">1.0×</span>
+          <input type="range" id="w3-s" min="0.2" max="3" step="0.1" value="1.0">
+        </label>
+        <button id="w3-play" class="primary">▶ Run grid</button>
+        <button id="w3-reset">Reset</button>
+      </div>
+      <canvas id="w3-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w3-readout"></div>
+      <p class="caption">Thin cells are the underlying N×N data; thick coral
+        borders are the BLOCK_SIZE × BLOCK_SIZE tiles, each owned by one
+        program. Last row/column of blocks may be partial — the mask handles
+        the overflow. Programs start together but finish at unpredictable
+        times as the GPU schedules them across its SMs.</p>
+    </div>
+  </section>
+
+  <!-- ============ STEP 4 — Vector add ============ -->
+  <section class="concept-step" id="step-4">
+    <p class="step-num">Step 4 — your first kernel</p>
+    <h2>Vector add, end to end</h2>
+    <div class="prose">
+      <p>
+        Everything in the steps above fits in twenty lines of code. Here is the
+        complete kernel for <code>z = x + y</code>. Step through it with the
+        widget — each press highlights one line of the kernel and shows the
+        memory region it touches.
+      </p>
+      <pre class="code" id="vadd-code"><span class="d">@triton.jit</span>
+<span class="k">def </span><span class="f">add_kernel</span>(<span class="v">x_ptr</span>, <span class="v">y_ptr</span>, <span class="v">z_ptr</span>, <span class="v">N</span>, <span class="v">BLOCK_SIZE</span>: <span class="d">tl</span>.<span class="d">constexpr</span>):
+<span data-line="1">    <span class="v">pid </span>    = <span class="d">tl</span>.<span class="f">program_id</span>(<span class="n">0</span>)</span>
+<span data-line="2">    <span class="v">offsets </span>= <span class="v">pid </span>* <span class="v">BLOCK_SIZE </span>+ <span class="d">tl</span>.<span class="f">arange</span>(<span class="n">0</span>, <span class="v">BLOCK_SIZE</span>)</span>
+<span data-line="3">    <span class="v">mask </span>   = <span class="v">offsets </span>&lt; <span class="v">N</span></span>
+<span data-line="4">    <span class="v">x </span>      = <span class="d">tl</span>.<span class="f">load</span>(<span class="v">x_ptr </span>+ <span class="v">offsets</span>, <span class="v">mask</span>=<span class="v">mask</span>)</span>
+<span data-line="5">    <span class="v">y </span>      = <span class="d">tl</span>.<span class="f">load</span>(<span class="v">y_ptr </span>+ <span class="v">offsets</span>, <span class="v">mask</span>=<span class="v">mask</span>)</span>
+<span data-line="6">    <span class="v">z </span>      = <span class="v">x </span>+ <span class="v">y</span></span>
+<span data-line="7">    <span class="d">tl</span>.<span class="f">store</span>(<span class="v">z_ptr </span>+ <span class="v">offsets</span>, <span class="v">z</span>, <span class="v">mask</span>=<span class="v">mask</span>)</span>
+
+<span class="c"># Launching it:</span>
+<span class="v">N </span>= <span class="n">100_000</span>
+<span class="v">grid </span>= <span class="k">lambda </span><span class="v">meta</span>: (<span class="f">triton</span>.<span class="f">cdiv</span>(<span class="v">N</span>, <span class="v">meta</span>[<span class="s">'BLOCK_SIZE'</span>]),)
+<span class="f">add_kernel</span>[<span class="v">grid</span>](<span class="v">x</span>, <span class="v">y</span>, <span class="v">z</span>, <span class="v">N</span>, <span class="v">BLOCK_SIZE</span>=<span class="n">1024</span>)</pre>
+      <p>
+        The kernel never mentions threads, warps, shared memory, or coalescing.
+        It says: <em>this program owns tile <code>pid</code>; load its slice
+        from x and y, add them, store the result.</em> The compiler does the rest.
+      </p>
+    </div>
+
+    <div class="widget" id="w4">
+      <div class="widget-titlewrap">
+        <span class="widget-tag">staged · click Next · 7 stages</span>
+        <p class="widget-title"><span class="num">Widget 4</span>Walking the vector-add kernel one line at a time</p>
+      </div>
+      <canvas id="w4-canvas" class="widget-stage"></canvas>
+      <div class="reveal-bar">
+        <button id="w4-back" disabled>← Back</button>
+        <span class="reveal-caption" id="w4-caption"></span>
+        <button id="w4-next" class="primary">Next line →</button>
+      </div>
+      <p class="caption">Each click executes one more line of the kernel and
+        draws what changed in memory.</p>
+    </div>
+  </section>
+
+  <!-- ============ STEP 5 — Fused softmax ============ -->
+  <section class="concept-step" id="step-5">
+    <p class="step-num">Step 5 — the fusion advantage</p>
+    <h2>Fused softmax: many ops, one kernel launch</h2>
+    <div class="prose">
+      <p>
+        Softmax over a row is four operations: subtract the max for numerical
+        stability, exponentiate, sum, divide. In PyTorch each of these can run
+        as a separate kernel, and the intermediate results travel through the
+        GPU's main memory (HBM) between kernels. HBM bandwidth is the
+        bottleneck of nearly every deep-learning op — a round-trip costs orders
+        of magnitude more than the arithmetic itself.
+      </p>
+      <p>
+        In Triton you write the whole softmax as one kernel. The intermediate
+        tile lives in registers / on-chip SRAM the entire time. The row is
+        loaded once, the result is stored once, and the four math operations
+        happen in between for free.
+      </p>
+      <pre class="code" id="softmax-code"><span class="c"># Input X has shape (n_rows, N).  Launch with grid = (n_rows,) — one program per row.</span>
+<span class="c"># BLOCK is a compile-time power-of-two ≥ N, so a whole row fits in one tile.</span>
+<span class="d">@triton.jit</span>
+<span class="k">def </span><span class="f">softmax_row</span>(<span class="v">x_ptr</span>, <span class="v">y_ptr</span>, <span class="v">stride</span>, <span class="v">N</span>, <span class="v">BLOCK</span>: <span class="d">tl</span>.<span class="d">constexpr</span>):
+<span data-line="1">    <span class="v">row </span>    = <span class="d">tl</span>.<span class="f">program_id</span>(<span class="n">0</span>)                       <span class="c"># scalar : which row this program owns</span></span>
+<span data-line="2">    <span class="v">cols </span>   = <span class="d">tl</span>.<span class="f">arange</span>(<span class="n">0</span>, <span class="v">BLOCK</span>)                     <span class="c"># tile   : (BLOCK,)  = [0, 1, …, BLOCK-1]</span></span>
+<span data-line="3">    <span class="v">mask </span>   = <span class="v">cols </span>&lt; <span class="v">N</span>                              <span class="c"># tile   : (BLOCK,)  bool — True where col is in range</span></span>
+<span data-line="4">    <span class="v">x </span>      = <span class="d">tl</span>.<span class="f">load</span>(<span class="v">x_ptr </span>+ <span class="v">row</span>*<span class="v">stride </span>+ <span class="v">cols</span>,        <span class="c"># tile   : (BLOCK,)  one full row in SRAM</span>
+                       <span class="v">mask</span>=<span class="v">mask</span>, <span class="v">other</span>=<span class="n">-float</span>(<span class="s">'inf'</span>))   <span class="c">#          out-of-range lanes → -∞ so max ignores them</span></span>
+<span data-line="5">    <span class="v">x </span>      = <span class="v">x </span>- <span class="d">tl</span>.<span class="f">max</span>(<span class="v">x</span>, <span class="v">axis</span>=<span class="n">0</span>)                  <span class="c"># tile   : (BLOCK,)  — broadcast subtract of a scalar max</span></span>
+<span data-line="6">    <span class="v">num </span>    = <span class="d">tl</span>.<span class="f">exp</span>(<span class="v">x</span>)                              <span class="c"># tile   : (BLOCK,)  numerator of softmax</span></span>
+<span data-line="7">    <span class="v">y </span>      = <span class="v">num </span>/ <span class="d">tl</span>.<span class="f">sum</span>(<span class="v">num</span>, <span class="v">axis</span>=<span class="n">0</span>)                <span class="c"># tile   : (BLOCK,)  — divide by scalar sum</span></span>
+<span data-line="8">    <span class="d">tl</span>.<span class="f">store</span>(<span class="v">y_ptr </span>+ <span class="v">row</span>*<span class="v">stride </span>+ <span class="v">cols</span>, <span class="v">y</span>, <span class="v">mask</span>=<span class="v">mask</span>) <span class="c"># write the row back to HBM (mask drops the tail)</span></span></pre>
+      <p>
+        Before stepping through the code, one piece of background that the
+        walkthrough leans on. A matrix in memory is not actually a
+        two-dimensional thing — HBM is a single flat array of bytes. The 2D
+        view <code>X[row, col]</code> is a fiction we maintain by storing the
+        rows back-to-back in one long vector, then computing the address as
+        <code>row · stride + col</code>, where <code>stride</code> is the
+        number of elements between the start of consecutive rows (usually
+        just the row width, in elements). This is called <em>row-major</em>
+        layout and it's the standard in PyTorch, NumPy, and Triton. It
+        matters here for two reasons. First, it's why the kernel can compute
+        addresses with a single multiply-add — no nested index, just one
+        pointer. Second, the rows being contiguous means lanes
+        <code>0..BLOCK-1</code> of one program touch <code>BLOCK</code>
+        consecutive bytes, which is what lets the GPU coalesce them into one
+        wide memory transaction. The flat layout and the load throughput are
+        the same fact.
+      </p>
+      <p>
+        Walk through the kernel below. The widget after that races the
+        timelines to make the bandwidth win concrete.
+      </p>
+    </div>
+
+    <div class="widget" id="w5b">
+      <div class="widget-titlewrap">
+        <span class="widget-tag">staged · click Next · 8 stages</span>
+        <p class="widget-title"><span class="num">Widget 5</span>Walking the fused-softmax kernel one line at a time</p>
+      </div>
+      <canvas id="w5b-canvas" class="widget-stage"></canvas>
+      <div class="reveal-bar">
+        <button id="w5b-back" disabled>← Back</button>
+        <span class="reveal-caption" id="w5b-caption"></span>
+        <button id="w5b-next" class="primary">Next line →</button>
+      </div>
+      <p class="caption">Each click executes one more line of the kernel and
+        redraws state. Pay attention to stage&nbsp;4 — the address
+        <code>row*stride + cols</code> is what turns a 2D row coordinate into
+        a 1D pointer; the mask is what keeps lanes past N from silently
+        reading the next row.</p>
+    </div>
+
+    <div class="widget" id="w5">
+      <div class="widget-titlewrap">
+        <span class="widget-tag">animated · race two timelines</span>
+        <p class="widget-title"><span class="num">Widget 6</span>PyTorch (4 kernels, 5 HBM trips) vs Triton (1 kernel, 2 HBM trips)</p>
+      </div>
+      <div class="widget-controls">
+        <label>row width &nbsp;N = <span class="val" id="w5-nv">1024</span>
+          <input type="range" id="w5-n" min="128" max="4096" step="128" value="1024">
+        </label>
+        <button id="w5-play" class="primary">▶ Race them</button>
+        <button id="w5-reset">Reset</button>
+      </div>
+      <canvas id="w5-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w5-readout"></div>
+      <p class="caption">Compute cost grows with N; HBM cost grows with N too,
+        but at a much steeper real-world rate. Triton wins because it pays the
+        HBM cost once instead of five times.</p>
+    </div>
+    <details class="formal">
+      <summary>Where the numbers come from</summary>
+      <div class="formal-body prose">
+        <p>
+          A row of <code>N</code> floats is <code>4N</code> bytes. The
+          unfused softmax in PyTorch reads the row, writes it, reads it,
+          writes it, reads it, writes it, reads it, writes it, reads it,
+          writes it — five round-trips of <code>4N</code> bytes each, or
+          <code>40N</code> bytes total. The fused Triton kernel reads it once,
+          writes it once: <code>8N</code> bytes. At ~2&nbsp;TB/s of HBM, that's
+          a 5× reduction in memory-bound time. The arithmetic — a max, a
+          subtract, an exp, a sum, a divide per element — is comparatively
+          free.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ STEP 6 — Matmul ============ -->
+  <section class="concept-step" id="step-6">
+    <p class="step-num">Step 6 — the payoff</p>
+    <h2>Tiled matmul: one program per output tile</h2>
+    <div class="prose">
+      <p>
+        Matmul is the canonical GPU kernel — the one where every
+        bandwidth-vs-compute decision shows up. Before the code, the symbols:
+      </p>
+      <ul>
+        <li><code>A</code>, <code>B</code>, <code>C</code> — pointers to the
+          three matrices in HBM. We are computing <code>C = A @ B</code>.</li>
+        <li><code>M</code>, <code>N</code>, <code>K</code> — the matrix shapes:
+          <code>A</code> is <code>M × K</code>, <code>B</code> is
+          <code>K × N</code>, so <code>C</code> is <code>M × N</code>. The
+          recipe is \( C_{ij} = \sum_{k} A_{ik}\,B_{kj} \).</li>
+        <li><code>K</code> is the <em>contraction axis</em> — the dimension
+          shared by both inputs that gets summed away. <code>M</code> and
+          <code>N</code> are the <em>outer</em> dimensions that survive into
+          the output.</li>
+        <li><code>BM</code>, <code>BN</code>, <code>BK</code> — compile-time
+          tile sizes. Each program writes one <code>BM × BN</code> tile of
+          <code>C</code> and scans across <code>K</code> in chunks of
+          <code>BK</code>, accumulating <code>BK</code>-wide outer products
+          into a register-resident accumulator.</li>
+        <li><code>stride_am</code>, <code>stride_ak</code>, etc. — bytes (or
+          elements) to step in memory to advance one row vs one column of
+          each matrix. Same role as <code>row*stride</code> in the softmax
+          kernel, generalized to 2D.</li>
+      </ul>
+      <p>
+        The Triton recipe is the same idea as before, in two dimensions:
+        launch a 2D grid where each program owns one
+        <code>BM × BN</code> tile of <code>C</code>, and inside the program,
+        march across <code>K</code> a tile at a time, accumulating partial
+        products into a register-resident accumulator.
+      </p>
+      <pre class="code"><span class="d">@triton.jit</span>
+<span class="k">def </span><span class="f">matmul_kernel</span>(<span class="v">A</span>, <span class="v">B</span>, <span class="v">C</span>, <span class="v">M</span>, <span class="v">N</span>, <span class="v">K</span>,
+                  <span class="v">stride_am</span>, <span class="v">stride_ak</span>, <span class="v">stride_bk</span>, <span class="v">stride_bn</span>, <span class="v">stride_cm</span>, <span class="v">stride_cn</span>,
+                  <span class="v">BM</span>: <span class="d">tl</span>.<span class="d">constexpr</span>, <span class="v">BN</span>: <span class="d">tl</span>.<span class="d">constexpr</span>, <span class="v">BK</span>: <span class="d">tl</span>.<span class="d">constexpr</span>):
+    <span class="v">pid_m </span>= <span class="d">tl</span>.<span class="f">program_id</span>(<span class="n">0</span>)
+    <span class="v">pid_n </span>= <span class="d">tl</span>.<span class="f">program_id</span>(<span class="n">1</span>)
+
+    <span class="v">offs_m </span>= <span class="v">pid_m</span>*<span class="v">BM </span>+ <span class="d">tl</span>.<span class="f">arange</span>(<span class="n">0</span>, <span class="v">BM</span>)
+    <span class="v">offs_n </span>= <span class="v">pid_n</span>*<span class="v">BN </span>+ <span class="d">tl</span>.<span class="f">arange</span>(<span class="n">0</span>, <span class="v">BN</span>)
+    <span class="v">offs_k </span>= <span class="d">tl</span>.<span class="f">arange</span>(<span class="n">0</span>, <span class="v">BK</span>)
+
+    <span class="v">acc </span>= <span class="d">tl</span>.<span class="f">zeros</span>((<span class="v">BM</span>, <span class="v">BN</span>), <span class="d">tl</span>.<span class="d">float32</span>)
+    <span class="k">for </span><span class="v">k </span><span class="k">in </span><span class="f">range</span>(<span class="n">0</span>, <span class="v">K</span>, <span class="v">BK</span>):
+        <span class="v">a </span>= <span class="d">tl</span>.<span class="f">load</span>(<span class="v">A </span>+ <span class="v">offs_m</span>[:, <span class="d">None</span>]*<span class="v">stride_am </span>+ (<span class="v">k</span>+<span class="v">offs_k</span>)[<span class="d">None</span>, :]*<span class="v">stride_ak</span>)
+        <span class="v">b </span>= <span class="d">tl</span>.<span class="f">load</span>(<span class="v">B </span>+ (<span class="v">k</span>+<span class="v">offs_k</span>)[:, <span class="d">None</span>]*<span class="v">stride_bk </span>+ <span class="v">offs_n</span>[<span class="d">None</span>, :]*<span class="v">stride_bn</span>)
+        <span class="v">acc </span>+= <span class="d">tl</span>.<span class="f">dot</span>(<span class="v">a</span>, <span class="v">b</span>)            <span class="c"># this lowers to tensor cores</span>
+
+    <span class="d">tl</span>.<span class="f">store</span>(<span class="v">C </span>+ <span class="v">offs_m</span>[:, <span class="d">None</span>]*<span class="v">stride_cm </span>+ <span class="v">offs_n</span>[<span class="d">None</span>, :]*<span class="v">stride_cn</span>, <span class="v">acc</span>)</pre>
+      <p>
+        The two parts to internalize. (1) Each program writes one tile of
+        <code>C</code>; the grid covers the output. (2) The K-loop streams
+        narrow tiles of <code>A</code> and <code>B</code> through the program,
+        feeding the accumulator. <code>tl.dot</code> lowers to NVIDIA's tensor
+        cores — the same instructions cuBLAS uses. Drag the sliders and watch
+        the program that owns the highlighted output tile do its work.
+      </p>
+    </div>
+
+    <div class="widget" id="w6">
+      <div class="widget-titlewrap">
+        <span class="widget-tag">animated · play the K-loop · drag tile sizes</span>
+        <p class="widget-title"><span class="num">Widget 7</span>One program filling one C-tile by sweeping across K</p>
+      </div>
+      <div class="widget-controls">
+        <label>BM = <span class="val" id="w6-bmv">32</span>
+          <input type="range" id="w6-bm" min="16" max="64" step="16" value="32">
+        </label>
+        <label>BN = <span class="val" id="w6-bnv">32</span>
+          <input type="range" id="w6-bn" min="16" max="64" step="16" value="32">
+        </label>
+        <label>BK = <span class="val" id="w6-bkv">16</span>
+          <input type="range" id="w6-bk" min="8" max="32" step="8" value="16">
+        </label>
+        <label>highlighted program &nbsp;(pid_m, pid_n) = <span class="val" id="w6-pv">(1, 1)</span>
+          <input type="range" id="w6-p" min="0" max="3" step="1" value="0">
+        </label>
+        <button id="w6-play" class="primary">▶ Run the K-loop</button>
+        <button id="w6-reset">Reset</button>
+      </div>
+      <canvas id="w6-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w6-readout"></div>
+      <p class="caption">Each step of the K-loop loads a new strip of A and B
+        into the program and adds the outer product into the accumulator.
+        Bigger tiles = more reuse per byte loaded = closer to the tensor-core
+        peak.</p>
+    </div>
+    <details class="formal">
+      <summary>Why tile sizes matter — the arithmetic intensity</summary>
+      <div class="formal-body prose">
+        <p>
+          A program with tiles <code>(BM, BK)</code> and <code>(BK, BN)</code>
+          loads <code>(BM·BK + BK·BN)·4</code> bytes from HBM and performs
+          <code>2·BM·BN·BK</code> floating-point operations. The arithmetic
+          intensity — flops per byte loaded — is
+          <code>BM·BN / (2·(BM+BN))</code>. With <code>BM=BN=128</code> that's
+          32 flops per byte — comfortably above the ~10 flops/byte that an A100
+          needs to be compute-bound. With <code>BM=BN=16</code> it's only 4 —
+          memory-bound, leaving the tensor cores idle. Tile size is the single
+          biggest knob you have.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ============ RECAP ============ -->
+  <section class="recap prose">
+    <h2>Putting it together</h2>
+    <p>
+      Triton's whole pitch is the kernel sentence at the top of this page:
+      describe what happens to <em>one tile</em>, and let the compiler turn
+      that description into the per-thread machine code, shared-memory plan,
+      and tensor-core schedule that the GPU actually executes. Vector add,
+      fused softmax, and tiled matmul are all the same recipe — get your
+      <code>program_id</code>, compute your tile's offsets, mask, load, math,
+      store — applied at one, two, and two-with-a-loop dimensions of
+      parallelism.
+    </p>
+    <p>
+      The reason this matters for deep learning is that the model itself isn't
+      the bottleneck — memory bandwidth is. PyTorch's eager mode pays HBM round
+      trips for every primitive op; Triton lets you fuse arbitrary chains of
+      ops into one kernel that reads inputs once and writes outputs once. Every
+      modern training stack — FlashAttention, RMSNorm fusions, custom MoE
+      gating, fused optimizers — is written this way.
+    </p>
+    <p>
+      What you don't have to write: the warp-level GEMM, the shared-memory
+      double-buffer, the <code>cp.async</code> pipelined loads, the bank-conflict
+      avoidance. What you do get to write: the algorithm, in Python, in tiles.
+    </p>
+  </section>
+
+</div>
+
+<script>
+/* =========================================================================
+   SHARED HELPERS
+   ========================================================================= */
+// Render at a higher backing-store resolution so the canvas stays sharp under
+// browser zoom. We oversample to ~3× the device pixel ratio (clamped), which
+// covers zoom levels up to ~300% without re-sizing.
+const RENDER_SCALE = Math.max((window.devicePixelRatio || 1) * 2.5, 3);
+function setupCanvas(canvas, cssW, cssH) {
+  canvas.style.width = cssW + 'px';
+  canvas.style.maxWidth = '100%';
+  canvas.style.height = cssH + 'px';
+  canvas.width  = Math.round(cssW * RENDER_SCALE);
+  canvas.height = Math.round(cssH * RENDER_SCALE);
+  const ctx = canvas.getContext('2d');
+  ctx.scale(RENDER_SCALE, RENDER_SCALE);
+  // Sharper text + crisper line endings at small sizes.
+  ctx.textBaseline = 'alphabetic';
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  canvas._cssW = cssW; canvas._cssH = cssH;
+  return ctx;
+}
+const CSS = getComputedStyle(document.documentElement);
+const C = {
+  bg:      CSS.getPropertyValue('--bg').trim(),
+  bg2:     CSS.getPropertyValue('--bg-2').trim(),
+  surface: CSS.getPropertyValue('--surface').trim(),
+  surface2:CSS.getPropertyValue('--surface-2').trim(),
+  ink:     CSS.getPropertyValue('--ink').trim(),
+  inkSoft: CSS.getPropertyValue('--ink-soft').trim(),
+  inkDim:  CSS.getPropertyValue('--ink-dim').trim(),
+  accent:  CSS.getPropertyValue('--accent').trim(),
+  accent2: CSS.getPropertyValue('--accent-2').trim(),
+  accent3: CSS.getPropertyValue('--accent-3').trim(),
+  accent4: CSS.getPropertyValue('--accent-4').trim(),
+  line:    CSS.getPropertyValue('--line').trim(),
+  axis:    CSS.getPropertyValue('--axis').trim(),
+};
+
+/* =========================================================================
+   STEP 1 — CUDA per-thread vs Triton per-tile view
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('w1-canvas');
+  const ctx = setupCanvas(canvas, 1000, 220);
+  const W = canvas._cssW, H = canvas._cssH;
+  const nSlider = document.getElementById('w1-n');
+  const bSlider = document.getElementById('w1-b');
+  const nv = document.getElementById('w1-nv');
+  const bv = document.getElementById('w1-bv');
+  const ro = document.getElementById('w1-readout');
+  const toggle = document.getElementById('w1-toggle');
+  let mode = 'cuda';
+  toggle.querySelectorAll('button').forEach(b => {
+    b.addEventListener('click', () => {
+      toggle.querySelectorAll('button').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      mode = b.dataset.m;
+      draw();
+    });
+  });
+
+  function draw() {
+    const N = parseInt(nSlider.value), B = parseInt(bSlider.value);
+    nv.textContent = N; bv.textContent = B;
+    ctx.clearRect(0, 0, W, H);
+
+    const pad = 18;
+    const usableW = W - 2*pad;
+    const cellW = Math.min(usableW / N, 38);
+    const cellH = 40;
+    const totalW = cellW * N;
+    const x0 = (W - totalW) / 2;
+    const y0 = 70;
+
+    // top label
+    ctx.fillStyle = C.inkSoft;
+    ctx.font = '12px JetBrains Mono';
+    ctx.textAlign = 'center';
+    ctx.fillText(mode === 'cuda' ? 'Each cell is one thread; your code reasons per-thread' :
+                                    'Each tile is one program; your code reasons per-tile',
+                 W/2, 30);
+
+    if (mode === 'cuda') {
+      // every cell is a separate thread
+      for (let i = 0; i < N; i++) {
+        const x = x0 + i*cellW;
+        ctx.fillStyle = C.surface2;
+        ctx.strokeStyle = C.accent;
+        ctx.lineWidth = 1;
+        ctx.fillRect(x, y0, cellW-2, cellH);
+        ctx.strokeRect(x, y0, cellW-2, cellH);
+        // thread ID
+        ctx.fillStyle = C.accent;
+        ctx.font = '10px JetBrains Mono';
+        ctx.textAlign = 'center';
+        if (cellW > 18) ctx.fillText('t'+i, x + (cellW-2)/2, y0 + cellH/2 + 4);
+      }
+      ctx.fillStyle = C.inkSoft;
+      ctx.font = '11px JetBrains Mono';
+      ctx.fillText(`${N} threads · ${N} index computations · ${N} memory addresses`, W/2, y0 + cellH + 28);
+      ro.innerHTML = `mode = <span class="num">CUDA</span> · <span class="num">${N}</span> threads, each owning one element`;
+    } else {
+      // grouped into tiles
+      const nTiles = Math.ceil(N/B);
+      const palette = [C.accent, C.accent2, C.accent3, C.accent4];
+      for (let i = 0; i < N; i++) {
+        const tile = Math.floor(i/B);
+        const x = x0 + i*cellW;
+        const col = palette[tile % palette.length];
+        ctx.fillStyle = col + '33';
+        ctx.strokeStyle = col;
+        ctx.lineWidth = 1;
+        ctx.fillRect(x, y0, cellW-2, cellH);
+        ctx.strokeRect(x, y0, cellW-2, cellH);
+      }
+      // tile labels
+      for (let t = 0; t < nTiles; t++) {
+        const start = t*B;
+        const end = Math.min(start + B, N);
+        const xs = x0 + start*cellW;
+        const xe = x0 + end*cellW - 2;
+        const col = palette[t % palette.length];
+        ctx.fillStyle = col;
+        ctx.font = 'bold 11px JetBrains Mono';
+        ctx.textAlign = 'center';
+        ctx.fillText('pid='+t, (xs+xe)/2, y0 - 8);
+      }
+      ctx.fillStyle = C.inkSoft;
+      ctx.font = '11px JetBrains Mono';
+      ctx.fillText(`${nTiles} programs · each owns a tile of up to ${B} elements`, W/2, y0 + cellH + 28);
+      ro.innerHTML = `mode = <span class="num2">Triton</span> · <span class="num">${nTiles}</span> programs, each handling a tile of <span class="num">${B}</span>`;
+    }
+  }
+  nSlider.addEventListener('input', draw);
+  bSlider.addEventListener('input', draw);
+  draw();
+})();
+
+/* =========================================================================
+   STEP 2 — pid / offsets / mask
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('w2-canvas');
+  const ctx = setupCanvas(canvas, 1000, 240);
+  const W = canvas._cssW, H = canvas._cssH;
+  const nS = document.getElementById('w2-n');
+  const bS = document.getElementById('w2-b');
+  const pS = document.getElementById('w2-p');
+  const nv = document.getElementById('w2-nv');
+  const bv = document.getElementById('w2-bv');
+  const pv = document.getElementById('w2-pv');
+  const ro = document.getElementById('w2-readout');
+
+  function draw() {
+    const N = parseInt(nS.value), B = parseInt(bS.value);
+    const nTiles = Math.ceil(N/B);
+    pS.max = nTiles - 1;
+    if (parseInt(pS.value) > nTiles - 1) pS.value = nTiles - 1;
+    const PID = parseInt(pS.value);
+
+    nv.textContent = N; bv.textContent = B; pv.textContent = PID;
+    ctx.clearRect(0, 0, W, H);
+
+    // we show a virtual length of nTiles*B so we can render the mask tail
+    const virt = nTiles * B;
+    const pad = 22;
+    const cellW = Math.min((W - 2*pad)/virt, 36);
+    const cellH = 42;
+    const totalW = cellW * virt;
+    const x0 = (W - totalW)/2;
+    const y0 = 80;
+
+    ctx.fillStyle = C.inkSoft;
+    ctx.font = '12px JetBrains Mono';
+    ctx.textAlign = 'left';
+    ctx.fillText(`pid=${PID}: offsets = [${PID*B}, ${PID*B+1}, …, ${PID*B+B-1}]`, pad, 28);
+    ctx.fillText(`mask    = offsets < N (N=${N})`, pad, 48);
+
+    for (let i = 0; i < virt; i++) {
+      const tile = Math.floor(i/B);
+      const x = x0 + i*cellW;
+      const inHighlight = tile === PID;
+      const beyondN = i >= N;
+      let fill, stroke;
+      if (inHighlight && beyondN) {
+        fill = C.accent + '22'; stroke = C.accent;
+      } else if (inHighlight) {
+        fill = C.accent + '55'; stroke = C.accent;
+      } else if (beyondN) {
+        fill = 'transparent'; stroke = C.line;
+      } else {
+        fill = C.surface2; stroke = C.line;
+      }
+      ctx.fillStyle = fill;
+      ctx.strokeStyle = stroke;
+      ctx.lineWidth = inHighlight ? 2 : 1;
+      ctx.fillRect(x, y0, cellW-2, cellH);
+      ctx.strokeRect(x, y0, cellW-2, cellH);
+
+      ctx.fillStyle = beyondN ? C.inkDim : (inHighlight ? C.accent : C.inkSoft);
+      ctx.font = '10px JetBrains Mono';
+      ctx.textAlign = 'center';
+      if (cellW > 18) ctx.fillText(i, x + (cellW-2)/2, y0 + cellH/2 + 4);
+
+      if (inHighlight && beyondN) {
+        // dashed cross indicating mask = false
+        ctx.strokeStyle = C.accent;
+        ctx.lineWidth = 1;
+        ctx.setLineDash([3,3]);
+        ctx.beginPath();
+        ctx.moveTo(x+2, y0+2); ctx.lineTo(x+cellW-4, y0+cellH-2);
+        ctx.moveTo(x+cellW-4, y0+2); ctx.lineTo(x+2, y0+cellH-2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+    }
+
+    // N marker
+    if (N < virt) {
+      const xN = x0 + N*cellW;
+      ctx.strokeStyle = C.accent3;
+      ctx.lineWidth = 2;
+      ctx.setLineDash([5,4]);
+      ctx.beginPath();
+      ctx.moveTo(xN, y0 - 10); ctx.lineTo(xN, y0 + cellH + 10);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = C.accent3;
+      ctx.font = '11px JetBrains Mono';
+      ctx.textAlign = 'center';
+      ctx.fillText(`N=${N}`, xN, y0 + cellH + 26);
+    }
+
+    // tile labels
+    for (let t = 0; t < nTiles; t++) {
+      const start = t*B;
+      const xs = x0 + start*cellW;
+      const xe = x0 + Math.min(start+B, virt)*cellW - 2;
+      ctx.fillStyle = t === PID ? C.accent : C.inkDim;
+      ctx.font = t === PID ? 'bold 11px JetBrains Mono' : '11px JetBrains Mono';
+      ctx.textAlign = 'center';
+      ctx.fillText('pid='+t, (xs+xe)/2, y0 - 8);
+    }
+
+    const validInTile = Math.max(0, Math.min(B, N - PID*B));
+    ro.innerHTML = `program <span class="num">pid=${PID}</span> · valid lanes: <span class="num2">${validInTile}</span> / ${B}` +
+      (validInTile < B ? ` · last <span class="num">${B-validInTile}</span> lanes masked off` : '');
+  }
+  nS.addEventListener('input', draw);
+  bS.addEventListener('input', draw);
+  pS.addEventListener('input', draw);
+  draw();
+})();
+
+/* =========================================================================
+   STEP 3 — grid of programs running in parallel over an N×N data grid
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('w3-canvas');
+  const ctx = setupCanvas(canvas, 1000, 380);
+  const W = canvas._cssW, H = canvas._cssH;
+  const nS = document.getElementById('w3-n');
+  const bS = document.getElementById('w3-b');
+  const sS = document.getElementById('w3-s');
+  const nv = document.getElementById('w3-nv');
+  const bv = document.getElementById('w3-bv');
+  const sv = document.getElementById('w3-sv');
+  const playBtn = document.getElementById('w3-play');
+  const resetBtn = document.getElementById('w3-reset');
+  const ro = document.getElementById('w3-readout');
+
+  let programs = []; // each {row, col, rStart, cStart, rEnd, cEnd, duration, startStagger}
+  let running = false;
+  let t0 = 0, simT = 0;
+  let raf = null;
+
+  function hash(i) { let x = (i+1)*2654435761 % 2147483647; return (x % 1000) / 1000; }
+
+  function init() {
+    const N = parseInt(nS.value), B = parseInt(bS.value);
+    nv.textContent = N; bv.textContent = B;
+    const GR = Math.ceil(N/B), GC = Math.ceil(N/B);
+    programs = [];
+    for (let r = 0; r < GR; r++) {
+      for (let c = 0; c < GC; c++) {
+        const idx = r*GC + c;
+        programs.push({
+          row: r, col: c,
+          rStart: r*B, cStart: c*B,
+          rEnd: Math.min((r+1)*B, N), cEnd: Math.min((c+1)*B, N),
+          duration: 600 + hash(idx)*1800,
+          startStagger: hash(idx*7+13)*200,
+        });
+      }
+    }
+    simT = 0;
+    drawFrame();
+  }
+
+  function drawFrame() {
+    const N = parseInt(nS.value), B = parseInt(bS.value);
+    const GR = Math.ceil(N/B), GC = Math.ceil(N/B);
+    ctx.clearRect(0, 0, W, H);
+
+    const pad = 24, topReserve = 56, bottomReserve = 40;
+    const cellPx = Math.min((W - 2*pad)/N, (H - topReserve - bottomReserve)/N);
+    const dataW = cellPx * N;
+    const x0 = (W - dataW)/2;
+    const y0 = topReserve;
+
+    // header
+    ctx.fillStyle = C.inkSoft;
+    ctx.font = '12px JetBrains Mono';
+    ctx.textAlign = 'center';
+    ctx.fillText(`N=${N} data grid · BLOCK=${B} → grid=(${GR},${GC}) = ${GR*GC} programs`, W/2, 22);
+
+    // Per-program states
+    let nRunning = 0, nDone = 0, nQueued = 0;
+    const stateOf = [];
+    for (const p of programs) {
+      let state = 'queued', prog = 0;
+      if (simT > p.startStagger) {
+        const elapsed = simT - p.startStagger;
+        if (elapsed >= p.duration) { state = 'done'; prog = 1; }
+        else { state = 'run'; prog = elapsed / p.duration; }
+      }
+      stateOf.push({state, prog});
+      if (state === 'queued') nQueued++;
+      else if (state === 'run') nRunning++;
+      else nDone++;
+    }
+
+    // Layer 1: underlying N×N data grid — fill each cell colored by its program's state
+    for (let i = 0; i < programs.length; i++) {
+      const p = programs[i];
+      const st = stateOf[i];
+      const fill = st.state === 'done' ? C.accent2 + '40' :
+                   st.state === 'run'  ? C.accent  + '30' :
+                                          C.surface2;
+      ctx.fillStyle = fill;
+      const px = x0 + p.cStart * cellPx;
+      const py = y0 + p.rStart * cellPx;
+      const pw = (p.cEnd - p.cStart) * cellPx;
+      const ph = (p.rEnd - p.rStart) * cellPx;
+      ctx.fillRect(px, py, pw, ph);
+
+      // running progress sweep fills cell-by-cell within the block
+      if (st.state === 'run') {
+        const blockCells = (p.cEnd - p.cStart) * (p.rEnd - p.rStart);
+        const filled = Math.floor(blockCells * st.prog);
+        ctx.fillStyle = C.accent + '88';
+        let drawn = 0;
+        const bw = p.cEnd - p.cStart;
+        for (let k = 0; k < filled; k++) {
+          const cc = k % bw, rr = Math.floor(k / bw);
+          ctx.fillRect(x0 + (p.cStart+cc)*cellPx, y0 + (p.rStart+rr)*cellPx, cellPx, cellPx);
+        }
+      }
+    }
+
+    // Layer 2: fine grid lines for individual data cells
+    ctx.strokeStyle = C.line;
+    ctx.lineWidth = 0.5;
+    ctx.beginPath();
+    for (let i = 0; i <= N; i++) {
+      const x = x0 + i*cellPx;
+      ctx.moveTo(x, y0); ctx.lineTo(x, y0 + N*cellPx);
+      const y = y0 + i*cellPx;
+      ctx.moveTo(x0, y); ctx.lineTo(x0 + N*cellPx, y);
+    }
+    ctx.stroke();
+
+    // Layer 3: block boundaries overlaid (thick coral)
+    ctx.strokeStyle = C.accent;
+    ctx.lineWidth = 2;
+    for (let i = 0; i < programs.length; i++) {
+      const p = programs[i];
+      const px = x0 + p.cStart * cellPx;
+      const py = y0 + p.rStart * cellPx;
+      const pw = (p.cEnd - p.cStart) * cellPx;
+      const ph = (p.rEnd - p.rStart) * cellPx;
+      ctx.strokeRect(px + 0.5, py + 0.5, pw - 1, ph - 1);
+
+      // checkmark for done programs (if block big enough)
+      const st = stateOf[i];
+      if (st.state === 'done' && pw > 18) {
+        ctx.strokeStyle = C.accent2;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(px + pw*0.25, py + ph*0.55);
+        ctx.lineTo(px + pw*0.42, py + ph*0.72);
+        ctx.lineTo(px + pw*0.75, py + ph*0.32);
+        ctx.stroke();
+        ctx.strokeStyle = C.accent;
+        ctx.lineWidth = 2;
+      }
+      // pid label (top-left of block)
+      if (pw > 26 && ph > 18) {
+        ctx.fillStyle = st.state === 'done' ? C.accent2 : (st.state === 'run' ? C.accent : C.inkSoft);
+        ctx.font = '9px JetBrains Mono';
+        ctx.textAlign = 'left';
+        ctx.fillText(`${p.row},${p.col}`, px + 3, py + 10);
+      }
+    }
+
+    // outer N×N border
+    ctx.strokeStyle = C.inkSoft;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(x0, y0, N*cellPx, N*cellPx);
+
+    // axis labels
+    ctx.fillStyle = C.inkDim;
+    ctx.font = '10px JetBrains Mono';
+    ctx.textAlign = 'left';
+    ctx.fillText('0', x0 - 2, y0 - 4);
+    ctx.textAlign = 'right';
+    ctx.fillText(`N=${N}`, x0 + N*cellPx, y0 - 4);
+
+    ro.innerHTML = `t = <span class="num">${(simT/1000).toFixed(2)}s</span> · ` +
+      `queued <span>${nQueued}</span> · running <span class="num">${nRunning}</span> · done <span class="num2">${nDone}</span> / ${programs.length}`;
+  }
+
+  function loop(now) {
+    if (!running) return;
+    const dt = (now - t0); t0 = now;
+    const speed = parseFloat(sS.value);
+    simT += dt * speed;
+    drawFrame();
+    if (programs.every(p => simT > p.startStagger + p.duration)) {
+      running = false;
+      playBtn.textContent = '▶ Run grid';
+      return;
+    }
+    raf = requestAnimationFrame(loop);
+  }
+
+  playBtn.addEventListener('click', () => {
+    if (running) {
+      running = false; playBtn.textContent = '▶ Run grid';
+      if (raf) cancelAnimationFrame(raf);
+    } else {
+      if (programs.every(p => simT > p.startStagger + p.duration)) init();
+      running = true; playBtn.textContent = '⏸ Pause';
+      t0 = performance.now();
+      raf = requestAnimationFrame(loop);
+    }
+  });
+  resetBtn.addEventListener('click', () => {
+    running = false; playBtn.textContent = '▶ Run grid';
+    if (raf) cancelAnimationFrame(raf);
+    init();
+  });
+  nS.addEventListener('input', () => { running = false; playBtn.textContent = '▶ Run grid'; if (raf) cancelAnimationFrame(raf); init(); });
+  bS.addEventListener('input', () => { running = false; playBtn.textContent = '▶ Run grid'; if (raf) cancelAnimationFrame(raf); init(); });
+  sS.addEventListener('input', () => { sv.textContent = parseFloat(sS.value).toFixed(1) + '×'; });
+  sv.textContent = parseFloat(sS.value).toFixed(1) + '×';
+  init();
+})();
+
+/* =========================================================================
+   STEP 4 — Vector add staged walkthrough
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('w4-canvas');
+  const ctx = setupCanvas(canvas, 1000, 340);
+  const W = canvas._cssW, H = canvas._cssH;
+  const backBtn = document.getElementById('w4-back');
+  const nextBtn = document.getElementById('w4-next');
+  const captionEl = document.getElementById('w4-caption');
+
+  const N = 18;
+  const BLOCK = 8;
+  const PID = 1;
+  const offsets = Array.from({length: BLOCK}, (_, i) => PID*BLOCK + i);
+  const mask = offsets.map(o => o < N);
+
+  // sample data
+  const xData = Array.from({length: N}, (_, i) => 1 + (i % 5));
+  const yData = Array.from({length: N}, (_, i) => 2 + ((i*3) % 4));
+  const zData = xData.map((v, i) => v + yData[i]);
+
+  const stages = [
+    { line: 1, caption: 'pid = tl.program_id(0) — this program reads its tile index (pid=1).' },
+    { line: 2, caption: 'offsets = pid·BLOCK + arange(0, BLOCK) — the indices into the vector.' },
+    { line: 3, caption: 'mask = offsets < N — last 6 lanes overflow and will be masked.' },
+    { line: 4, caption: 'x = tl.load(x_ptr + offsets, mask) — pull this tile of x into registers.' },
+    { line: 5, caption: 'y = tl.load(y_ptr + offsets, mask) — and the matching tile of y.' },
+    { line: 6, caption: 'z = x + y — add the two tiles together, in registers.' },
+    { line: 7, caption: 'tl.store(z_ptr + offsets, z, mask) — write the valid lanes back to z.' },
+  ];
+  let stage = 0;
+
+  function drawArrayRow(label, data, y, highlight, color, opts={}) {
+    const pad = 30, labelW = 32;
+    const usableW = W - 2*pad - labelW - 100; // leave room for cell highlight panel
+    const cellW = Math.min(usableW / N, 32);
+    const cellH = 30;
+    const x0 = pad + labelW;
+    ctx.fillStyle = C.inkSoft;
+    ctx.font = '12px JetBrains Mono';
+    ctx.textAlign = 'right';
+    ctx.fillText(label, pad + labelW - 8, y + cellH/2 + 4);
+
+    for (let i = 0; i < N; i++) {
+      const x = x0 + i*cellW;
+      const isHi = highlight && highlight.includes(i);
+      ctx.fillStyle = isHi ? color + '55' : C.bg2;
+      ctx.strokeStyle = isHi ? color : C.line;
+      ctx.lineWidth = isHi ? 1.5 : 1;
+      ctx.fillRect(x, y, cellW-2, cellH);
+      ctx.strokeRect(x, y, cellW-2, cellH);
+      if (data && data[i] !== null && data[i] !== undefined && (!opts.maskMap || opts.maskMap[i])) {
+        ctx.fillStyle = isHi ? color : C.inkSoft;
+        ctx.font = '11px JetBrains Mono';
+        ctx.textAlign = 'center';
+        ctx.fillText(data[i], x + (cellW-2)/2, y + cellH/2 + 4);
+      }
+    }
+    return { x0, cellW, cellH };
+  }
+
+  function drawTile(label, tileData, maskArr, y, color) {
+    const pad = 30, labelW = 80;
+    const cellW = 32, cellH = 30;
+    const x0 = pad + labelW;
+    ctx.fillStyle = C.inkSoft;
+    ctx.font = '12px JetBrains Mono';
+    ctx.textAlign = 'right';
+    ctx.fillText(label, pad + labelW - 8, y + cellH/2 + 4);
+
+    for (let i = 0; i < BLOCK; i++) {
+      const x = x0 + i*cellW;
+      const valid = !maskArr || maskArr[i];
+      ctx.fillStyle = valid ? color + '55' : color + '15';
+      ctx.strokeStyle = valid ? color : color + '66';
+      ctx.lineWidth = 1.5;
+      ctx.fillRect(x, y, cellW-2, cellH);
+      ctx.strokeRect(x, y, cellW-2, cellH);
+      ctx.fillStyle = valid ? color : C.inkDim;
+      ctx.font = '11px JetBrains Mono';
+      ctx.textAlign = 'center';
+      if (tileData[i] !== null && tileData[i] !== undefined) {
+        ctx.fillText(valid ? tileData[i] : '·', x + (cellW-2)/2, y + cellH/2 + 4);
+      }
+    }
+  }
+
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    const st = stages[stage];
+
+    ctx.fillStyle = C.accent;
+    ctx.font = 'bold 12px JetBrains Mono';
+    ctx.textAlign = 'left';
+    ctx.fillText(`▸ executing line ${st.line}`, 30, 24);
+
+    // Top: HBM arrays x, y, z (z gets written progressively)
+    const hi = stage >= 1 ? offsets.filter((o, i) => mask[i]) : null;
+
+    const yShow = (stage >= 4) ? yData.slice() : yData.map(() => null);
+    // (we always show x; we hide y until loaded)
+    drawArrayRow('x[N]', xData, 50, hi, C.accent);
+    drawArrayRow('y[N]', stage >= 4 ? yData : yData.map(() => null), 90, stage >= 4 ? hi : null, C.accent2);
+    const zShown = zData.map((v, i) => (stage >= 6 && offsets.includes(i) && mask[offsets.indexOf(i)]) ? v : null);
+    drawArrayRow('z[N]', zShown, 130, stage >= 6 ? hi : null, C.accent3);
+
+    // Tile registers
+    const xTile = stage >= 3 ? offsets.map((o, i) => mask[i] ? xData[o] : 0) : Array(BLOCK).fill(null);
+    const yTile = stage >= 4 ? offsets.map((o, i) => mask[i] ? yData[o] : 0) : Array(BLOCK).fill(null);
+    const zTile = stage >= 5 ? offsets.map((o, i) => mask[i] ? xData[o]+yData[o] : 0) : Array(BLOCK).fill(null);
+
+    ctx.fillStyle = C.inkDim;
+    ctx.font = '11px JetBrains Mono';
+    ctx.textAlign = 'left';
+    ctx.fillText('Registers (this program\'s tile, BLOCK=8):', 30, 192);
+
+    drawTile('x tile', xTile, mask, 205, C.accent);
+    drawTile('y tile', yTile, mask, 245, C.accent2);
+    drawTile('z tile', zTile, mask, 285, C.accent3);
+
+    // offset/mask labels above x array
+    if (stage >= 1) {
+      const x0 = 30 + 32; const cellW = Math.min((W - 60 - 32 - 100) / N, 32);
+      ctx.fillStyle = C.accent;
+      ctx.font = '9px JetBrains Mono';
+      ctx.textAlign = 'center';
+      for (let i = 0; i < N; i++) {
+        if (offsets.includes(i)) {
+          const x = x0 + i*cellW + (cellW-2)/2;
+          ctx.fillText(mask[offsets.indexOf(i)] ? '✓' : '✗', x, 44);
+        }
+      }
+    }
+
+    captionEl.textContent = st.caption;
+    backBtn.disabled = stage === 0;
+    nextBtn.disabled = stage === stages.length - 1;
+    nextBtn.textContent = (stage === stages.length - 1) ? '✓ Done' : 'Next line →';
+
+    // highlight code line
+    const codeBlock = document.getElementById('vadd-code');
+    if (codeBlock) {
+      codeBlock.querySelectorAll('[data-line]').forEach(el => {
+        el.classList.toggle('hl', parseInt(el.dataset.line) === st.line);
+      });
+    }
+  }
+
+  nextBtn.addEventListener('click', () => { if (stage < stages.length-1) { stage++; render(); } });
+  backBtn.addEventListener('click', () => { if (stage > 0) { stage--; render(); } });
+  render();
+})();
+
+/* =========================================================================
+   STEP 5a — Fused-softmax kernel walkthrough, line by line
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('w5b-canvas');
+  const ctx = setupCanvas(canvas, 1000, 740);
+  const W = canvas._cssW, H = canvas._cssH;
+  const backBtn = document.getElementById('w5b-back');
+  const nextBtn = document.getElementById('w5b-next');
+  const captionEl = document.getElementById('w5b-caption');
+
+  // Problem setup
+  const ROWS = 4, N = 12, BLOCK = 16;
+  const PID  = 2;                        // which row this program handles
+  const STRIDE = N;                      // contiguous row-major: stride between rows = N
+  // Sample data — distinct values across rows so the "wrong row" mistake is visible
+  const X = [
+    [0.1, 0.4, 0.2, 0.1, 0.3, 0.5, 0.2, 0.6, 0.1, 0.3, 0.2, 0.4],   // row 0
+    [2.1, 0.3, 0.7, 0.4, 1.1, 0.5, 0.2, 0.8, 0.3, 0.1, 0.6, 0.4],   // row 1
+    [1.0, 2.5, 0.5, 3.0, 1.2, 2.0, 0.8, 2.2, 1.5, 0.3, 2.8, 1.7],   // row 2  ← PID
+    [0.4, 0.2, 0.5, 0.7, 0.3, 0.8, 0.6, 0.4, 0.5, 0.7, 0.3, 0.2],   // row 3
+  ];
+  const row = X[PID];
+
+  // Compute the softmax in stages (so we can show partials)
+  const cols    = Array.from({length: BLOCK}, (_, i) => i);
+  const mask    = cols.map(c => c < N);
+  const loaded  = cols.map(c => c < N ? row[c] : -Infinity);
+  const mx      = Math.max(...row);
+  const shifted = loaded.map(v => v === -Infinity ? -Infinity : v - mx);
+  const numer   = shifted.map(v => v === -Infinity ? 0 : Math.exp(v));
+  const sm      = numer.reduce((s, v) => s + v, 0);
+  const y       = numer.map(v => v / sm);
+
+  const stages = [
+    { line: 1, caption: `row = tl.program_id(0)  →  row = ${PID}.  This program owns row ${PID} of X.` },
+    { line: 2, caption: `cols = tl.arange(0, BLOCK)  →  the 16-wide tile [0, 1, …, 15] of column indices.` },
+    { line: 3, caption: `mask = cols < N  (N=${N})  →  the last 4 lanes are False; they will be skipped at the loads/stores.` },
+    { line: 4, caption: `x = tl.load(x_ptr + row*stride + cols, mask, other=-inf).  Address = ${PID}·${STRIDE} + cols = [${PID*STRIDE}, …, ${PID*STRIDE+BLOCK-1}].  Without the mask, lanes 12–15 would silently pull from row 3 — the mask is what makes that safe.` },
+    { line: 5, caption: `x = x - tl.max(x, axis=0)  →  reduce the tile to a scalar max (${mx.toFixed(1)}) and broadcast-subtract it. Masked lanes were -inf, so they don't affect the max.` },
+    { line: 6, caption: `num = tl.exp(x)  →  elementwise exp on the shifted tile. The -inf lanes go to 0.` },
+    { line: 7, caption: `y = num / tl.sum(num, axis=0)  →  reduce to scalar sum (${sm.toFixed(2)}) and broadcast-divide. y now sums to 1 over the valid lanes.` },
+    { line: 8, caption: `tl.store(y_ptr + row*stride + cols, y, mask) → write the 12 valid lanes back to row ${PID} of Y. Done — one kernel, one HBM round trip.` },
+  ];
+  let stage = 0;
+
+  // -------- drawing helpers --------
+  // Layout:
+  //   y = 22       header
+  //   y = 40-130   input matrix X (ROWS × N) with row PID highlighted
+  //   y = 152-176  linearized memory strip showing row*stride math
+  //   y = 200-242  tile register (BLOCK cells) — evolves through stages
+  //   y = 260-300  scalar readouts (max, sum)
+  //   y = 320-410  output matrix Y (filled at stage 8)
+  function drawMatrix(x, y, rows, cols, cellW, cellH, label, data, opts={}) {
+    ctx.fillStyle = C.inkSoft;
+    ctx.font = '13px JetBrains Mono';
+    ctx.textAlign = 'left';
+    ctx.fillText(label, x, y - 8);
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const px = x + c*cellW, py = y + r*cellH;
+        const isHi = opts.highlightRow === r;
+        const val = data && data[r] && data[r][c];
+        const filled = val !== undefined && val !== null;
+        ctx.fillStyle = isHi ? C.accent + '33' : (filled ? C.surface2 : C.bg2);
+        ctx.strokeStyle = isHi ? C.accent : C.line;
+        ctx.lineWidth = isHi ? 1.6 : 0.8;
+        ctx.fillRect(px, py, cellW-1, cellH-1);
+        ctx.strokeRect(px, py, cellW-1, cellH-1);
+        if (filled) {
+          ctx.fillStyle = isHi ? C.accent : C.ink;
+          ctx.font = '13px JetBrains Mono';
+          ctx.textAlign = 'center';
+          ctx.fillText(val.toFixed(1), px + (cellW-1)/2, py + cellH/2 + 5);
+        }
+      }
+    }
+    // row labels
+    ctx.fillStyle = C.inkDim;
+    ctx.font = '11px JetBrains Mono';
+    ctx.textAlign = 'right';
+    for (let r = 0; r < rows; r++) {
+      ctx.fillText('r='+r, x - 6, y + r*cellH + cellH/2 + 4);
+    }
+  }
+
+  function drawTile(x, y, label, values, mask2, color, opts={}) {
+    const cellW = 58, cellH = 52;
+    ctx.fillStyle = C.inkSoft;
+    ctx.font = '13px JetBrains Mono';
+    ctx.textAlign = 'left';
+    ctx.fillText(label, x, y - 8);
+    for (let i = 0; i < BLOCK; i++) {
+      const px = x + i*cellW;
+      const valid = !mask2 || mask2[i];
+      const v = values[i];
+      const isInf = v === -Infinity;
+      const show = v !== null && v !== undefined && !isInf;
+      ctx.fillStyle = valid ? color + '33' : color + '12';
+      ctx.strokeStyle = valid ? color : color + '55';
+      ctx.lineWidth = 1.4;
+      ctx.fillRect(px, y, cellW-2, cellH);
+      ctx.strokeRect(px, y, cellW-2, cellH);
+
+      ctx.fillStyle = valid ? color : C.inkDim;
+      ctx.font = 'bold 14px JetBrains Mono';
+      ctx.textAlign = 'center';
+      if (isInf) ctx.fillText('-∞', px + (cellW-2)/2, y + cellH/2 + 5);
+      else if (show) ctx.fillText(typeof v === 'number' ? v.toFixed(opts.decimals ?? 2) : v, px + (cellW-2)/2, y + cellH/2 + 5);
+      // index above
+      ctx.fillStyle = C.inkDim;
+      ctx.font = '10px JetBrains Mono';
+      ctx.fillText(i, px + (cellW-2)/2, y - 4);
+    }
+    return BLOCK * cellW;
+  }
+
+  function drawScalar(x, y, label, value, color) {
+    ctx.fillStyle = C.inkSoft;
+    ctx.font = '13px JetBrains Mono';
+    ctx.textAlign = 'left';
+    ctx.fillText(label, x, y - 8);
+    ctx.fillStyle = color + '33';
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.6;
+    ctx.fillRect(x, y, 90, 44);
+    ctx.strokeRect(x, y, 90, 44);
+    ctx.fillStyle = color;
+    ctx.font = 'bold 17px JetBrains Mono';
+    ctx.textAlign = 'center';
+    ctx.fillText(typeof value === 'number' ? value.toFixed(2) : value, x + 45, y + 28);
+  }
+
+  function render() {
+    const st = stages[stage];
+    ctx.clearRect(0, 0, W, H);
+
+    // header — which line
+    ctx.fillStyle = C.accent;
+    ctx.font = 'bold 14px JetBrains Mono';
+    ctx.textAlign = 'left';
+    ctx.fillText(`▸ executing line ${st.line}`, 24, 22);
+
+    // === Input matrix X (ROWS × N) ===
+    const mat0x = 70, mat0y = 60, mcW = 48, mcH = 36;
+    drawMatrix(mat0x, mat0y, ROWS, N, mcW, mcH, 'X  (HBM, shape = 4 × N=12)', X,
+               { highlightRow: stage >= 1 ? PID : -1 });
+
+    // === Linearized memory strip — to show row*stride + cols (line 4 = stage 3) ===
+    if (stage >= 3) {
+      const stripY = 220;
+      const sw = 19;
+      const total = ROWS * STRIDE;       // 48 elements physically in memory
+      ctx.fillStyle = C.inkSoft;
+      ctx.font = '12px JetBrains Mono';
+      ctx.textAlign = 'left';
+      ctx.fillText('Memory is row-major: X is laid out as 48 contiguous floats.', 24, stripY - 8);
+      const stripX = 24;
+      for (let k = 0; k < total; k++) {
+        const r = Math.floor(k/STRIDE), c = k - r*STRIDE;
+        const px = stripX + k*sw;
+        const addrLo = PID*STRIDE, addrHi = PID*STRIDE + BLOCK - 1;
+        const inLoadRange = k >= addrLo && k <= addrHi;
+        const inValidLane = k >= addrLo && k < addrLo + N;
+        const inMaskedLane = k >= addrLo + N && k <= addrHi;
+        let fill, stroke;
+        if (inValidLane)        { fill = C.accent2 + '55'; stroke = C.accent2; }
+        else if (inMaskedLane)  { fill = '#ff000022';      stroke = '#ff5252'; }
+        else if (r === PID)     { fill = C.accent + '14';  stroke = C.line; }
+        else                    { fill = C.bg2;            stroke = C.line; }
+        ctx.fillStyle = fill; ctx.strokeStyle = stroke; ctx.lineWidth = inLoadRange ? 1.4 : 0.6;
+        ctx.fillRect(px, stripY, sw-1, 30);
+        ctx.strokeRect(px, stripY, sw-1, 30);
+        if (c === 0) {
+          ctx.fillStyle = C.inkDim;
+          ctx.font = '10px JetBrains Mono';
+          ctx.textAlign = 'left';
+          ctx.fillText('r='+r, px, stripY + 44);
+        }
+      }
+      const addrLo = PID*STRIDE;
+      ctx.fillStyle = C.accent;
+      ctx.font = '12px JetBrains Mono';
+      ctx.textAlign = 'left';
+      const annotX = 24 + ROWS*STRIDE*sw + 24;
+      ctx.fillText(`row·stride + cols`, annotX, stripY + 4);
+      ctx.fillStyle = C.inkSoft;
+      ctx.fillText(`= ${PID}·${STRIDE} + [0..15]`, annotX, stripY + 20);
+      ctx.fillText(`= [${addrLo}..${addrLo+BLOCK-1}]`, annotX, stripY + 36);
+      ctx.fillStyle = '#ff7878';
+      ctx.fillText(`addrs ${addrLo+N}..${addrLo+BLOCK-1}: row ${PID+1} — masked ✓`, annotX, stripY + 56);
+    }
+
+    // === Tile register row (evolves with stage) ===
+    // NOTE: `stage` is 0-based; stage=k means line (k+1) has just executed.
+    let tileLabel = '';
+    let tileVals  = Array(BLOCK).fill(null);
+    let tileMask  = null;
+    let tileColor = C.accent2;
+    let dec = 2;
+    if (stage === 1)      { tileLabel = 'cols  (tile, shape=(16,))'; tileVals = cols.slice(); dec = 0; tileColor = C.accent4; }
+    else if (stage === 2) { tileLabel = 'mask  (tile, shape=(16,))'; tileVals = mask.map(m => m ? 'T' : 'F'); tileColor = C.accent3; }
+    else if (stage === 3) { tileLabel = 'x  (tile, shape=(16,))'; tileVals = loaded.slice(); tileMask = mask; tileColor = C.accent2; dec = 1; }
+    else if (stage === 4) { tileLabel = 'x - max(x)  (tile, shape=(16,))'; tileVals = shifted.slice(); tileMask = mask; tileColor = C.accent2; dec = 1; }
+    else if (stage === 5) { tileLabel = 'num = exp(x)  (tile, shape=(16,))'; tileVals = numer.slice(); tileMask = mask; tileColor = C.accent3; }
+    else if (stage >= 6)  { tileLabel = 'y = num / sum(num)  (tile, shape=(16,))'; tileVals = y.slice(); tileMask = mask; tileColor = C.accent; }
+
+    if (stage >= 1) drawTile(24, 360, tileLabel, tileVals, tileMask, tileColor, {decimals: dec});
+
+    // === Scalar readouts ===
+    if (stage >= 4) drawScalar(24,  450, 'max(x)  (scalar)',   mx, C.accent2);
+    if (stage >= 6) drawScalar(140, 450, 'sum(num)  (scalar)', sm, C.accent3);
+
+    // === Output matrix Y — populated when line 8 (tl.store) runs (stage===7) ===
+    const Y = [[],[],[],[]];
+    for (let r = 0; r < ROWS; r++) for (let c = 0; c < N; c++) Y[r][c] = null;
+    if (stage >= 7) {
+      for (let c = 0; c < N; c++) Y[PID][c] = y[c];
+    }
+    drawMatrix(70, 570, ROWS, N, mcW, mcH, 'Y  (HBM, output) ', Y,
+               { highlightRow: stage >= 7 ? PID : -1 });
+
+    // === Caption + buttons ===
+    captionEl.textContent = st.caption;
+    backBtn.disabled = stage === 0;
+    nextBtn.disabled = stage === stages.length - 1;
+    nextBtn.textContent = (stage === stages.length - 1) ? '✓ Done' : 'Next line →';
+
+    // === Highlight the line in the code block ===
+    const codeBlock = document.getElementById('softmax-code');
+    if (codeBlock) {
+      codeBlock.querySelectorAll('[data-line]').forEach(el => {
+        el.classList.toggle('hl', parseInt(el.dataset.line) === st.line);
+      });
+    }
+  }
+
+  nextBtn.addEventListener('click', () => { if (stage < stages.length-1) { stage++; render(); } });
+  backBtn.addEventListener('click', () => { if (stage > 0) { stage--; render(); } });
+  render();
+})();
+
+/* =========================================================================
+   STEP 5 — Fused vs unfused softmax race
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('w5-canvas');
+  const ctx = setupCanvas(canvas, 1000, 320);
+  const W = canvas._cssW, H = canvas._cssH;
+  const nS = document.getElementById('w5-n');
+  const nv = document.getElementById('w5-nv');
+  const playBtn = document.getElementById('w5-play');
+  const resetBtn = document.getElementById('w5-reset');
+  const ro = document.getElementById('w5-readout');
+
+  // simplified cost model: each "op" takes computeTime + 2*hbmTime (read + write)
+  // launchOverhead per kernel. Triton fuses all into one kernel with 1 read + 1 write.
+  let running = false, raf = null, t0 = 0, simT = 0;
+
+  const torchOps = ['max(x)', 'x - m', 'exp(x)', 'sum(e)', 'e / s'];
+  // For PyTorch: 5 kernels in series. Each: launch + read + compute + write
+  // For Triton: 1 kernel: launch + read + (5 micro-ops) + write
+
+  function timing() {
+    const N = parseInt(nS.value);
+    nv.textContent = N;
+    const launch = 8;                 // ms equivalent units per kernel launch
+    const hbm = N / 256;              // each HBM trip cost scales with N
+    const compute = N / 4096;         // arithmetic per element, very cheap
+    const torchKernels = torchOps.map(label => ({
+      label, launch, read: hbm, compute, write: hbm,
+      total: launch + hbm + compute + hbm
+    }));
+    const torchTotal = torchKernels.reduce((s,k)=>s+k.total, 0);
+    const tritonRead = hbm, tritonWrite = hbm, tritonCompute = compute*5;
+    const tritonKernel = {
+      label: 'fused softmax',
+      launch, read: tritonRead, compute: tritonCompute, write: tritonWrite,
+      total: launch + tritonRead + tritonCompute + tritonWrite
+    };
+    return { torchKernels, torchTotal, tritonKernel, totalTime: Math.max(torchTotal, tritonKernel.total) };
+  }
+
+  function drawBar(x, y, w, h, segments) {
+    // segments: [{w, color, label}]
+    let cx = x;
+    for (const seg of segments) {
+      ctx.fillStyle = seg.color;
+      ctx.fillRect(cx, y, seg.w, h);
+      if (seg.w > 26 && seg.label) {
+        ctx.fillStyle = '#1a0e08';
+        ctx.font = '10px JetBrains Mono';
+        ctx.textAlign = 'center';
+        ctx.fillText(seg.label, cx + seg.w/2, y + h/2 + 4);
+      }
+      cx += seg.w;
+    }
+    // border
+    ctx.strokeStyle = C.line;
+    ctx.strokeRect(x, y, cx - x, h);
+    return cx;
+  }
+
+  function render() {
+    const tm = timing();
+    ctx.clearRect(0, 0, W, H);
+    const pad = 22;
+    const labelW = 100;
+    const trackW = W - 2*pad - labelW;
+    const scale = trackW / tm.totalTime;
+    const progress = simT / tm.totalTime;
+
+    // titles
+    ctx.fillStyle = C.inkSoft;
+    ctx.font = '12px JetBrains Mono';
+    ctx.textAlign = 'left';
+    ctx.fillText('PyTorch — 5 kernel launches, 5 HBM round-trips', pad, 30);
+
+    // PyTorch timeline
+    let cursor = pad + labelW;
+    let cumul = 0;
+    const py0 = 50;
+    const barH = 36;
+    for (let i = 0; i < tm.torchKernels.length; i++) {
+      const k = tm.torchKernels[i];
+      const segs = [
+        { w: k.launch*scale, color: C.inkDim, label: '' },
+        { w: k.read*scale,   color: C.accent + 'bb', label: '' },
+        { w: k.compute*scale,color: C.accent3 + 'cc', label: '' },
+        { w: k.write*scale,  color: C.accent + 'bb', label: '' },
+      ];
+      const endX = drawBar(cursor, py0, segs.reduce((s,x)=>s+x.w,0), barH, segs);
+      // label
+      ctx.fillStyle = C.inkSoft;
+      ctx.font = '10px JetBrains Mono';
+      ctx.textAlign = 'center';
+      ctx.fillText(k.label, (cursor + endX)/2, py0 - 4);
+      cursor = endX;
+      cumul += k.total;
+    }
+    // playhead
+    if (running || simT > 0) {
+      const phX = pad + labelW + Math.min(simT, tm.torchTotal) * scale;
+      ctx.strokeStyle = C.accent;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(phX, py0 - 8); ctx.lineTo(phX, py0 + barH + 8);
+      ctx.stroke();
+    }
+    ctx.fillStyle = C.inkSoft;
+    ctx.font = '11px JetBrains Mono';
+    ctx.textAlign = 'right';
+    ctx.fillText(`total: ${tm.torchTotal.toFixed(1)} units`, pad + labelW + trackW, py0 + barH + 18);
+
+    // Triton timeline
+    const tr0 = 170;
+    ctx.fillStyle = C.inkSoft;
+    ctx.textAlign = 'left';
+    ctx.fillText('Triton — 1 fused kernel, 1 HBM round-trip', pad, tr0 - 12);
+
+    const k = tm.tritonKernel;
+    const tsegs = [
+      { w: k.launch*scale,  color: C.inkDim, label: '' },
+      { w: k.read*scale,    color: C.accent2 + 'bb', label: 'load' },
+      { w: k.compute*scale, color: C.accent3 + 'dd', label: 'max-sub-exp-sum-div' },
+      { w: k.write*scale,   color: C.accent2 + 'bb', label: 'store' },
+    ];
+    const trEnd = drawBar(pad + labelW, tr0, tsegs.reduce((s,x)=>s+x.w,0), barH, tsegs);
+    ctx.fillStyle = C.inkSoft;
+    ctx.font = '10px JetBrains Mono';
+    ctx.textAlign = 'center';
+    ctx.fillText(k.label, (pad + labelW + trEnd)/2, tr0 - 4);
+
+    if (running || simT > 0) {
+      const phX = pad + labelW + Math.min(simT, tm.tritonKernel.total) * scale;
+      ctx.strokeStyle = C.accent2;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(phX, tr0 - 8); ctx.lineTo(phX, tr0 + barH + 8);
+      ctx.stroke();
+    }
+    ctx.fillStyle = C.inkSoft;
+    ctx.font = '11px JetBrains Mono';
+    ctx.textAlign = 'right';
+    ctx.fillText(`total: ${tm.tritonKernel.total.toFixed(1)} units`, pad + labelW + trackW, tr0 + barH + 18);
+
+    // legend
+    const ly = 260;
+    const items = [
+      { c: C.inkDim,            l: 'kernel launch' },
+      { c: C.accent + 'bb',     l: 'HBM read/write (PyTorch)' },
+      { c: C.accent2 + 'bb',    l: 'HBM read/write (Triton)' },
+      { c: C.accent3 + 'cc',    l: 'compute' },
+    ];
+    let lx = pad;
+    ctx.font = '10px JetBrains Mono';
+    ctx.textAlign = 'left';
+    for (const it of items) {
+      ctx.fillStyle = it.c; ctx.fillRect(lx, ly, 14, 12);
+      ctx.fillStyle = C.inkSoft; ctx.fillText(it.l, lx + 18, ly + 10);
+      lx += ctx.measureText(it.l).width + 50;
+    }
+
+    const speedup = tm.torchTotal / tm.tritonKernel.total;
+    ro.innerHTML = `N=<span class="num">${nv.textContent}</span> · ` +
+      `PyTorch <span class="num">${tm.torchTotal.toFixed(1)}u</span> ` +
+      `vs Triton <span class="num2">${tm.tritonKernel.total.toFixed(1)}u</span> ` +
+      `→ <span class="num2">${speedup.toFixed(2)}×</span> faster`;
+  }
+
+  function loop(now) {
+    if (!running) return;
+    const dt = now - t0; t0 = now;
+    simT += dt * 0.15;
+    render();
+    const tm = timing();
+    if (simT >= tm.totalTime) {
+      running = false; playBtn.textContent = '▶ Race them';
+      return;
+    }
+    raf = requestAnimationFrame(loop);
+  }
+
+  playBtn.addEventListener('click', () => {
+    if (running) {
+      running = false; playBtn.textContent = '▶ Race them';
+      if (raf) cancelAnimationFrame(raf);
+    } else {
+      const tm = timing();
+      if (simT >= tm.totalTime) simT = 0;
+      running = true; playBtn.textContent = '⏸ Pause';
+      t0 = performance.now();
+      raf = requestAnimationFrame(loop);
+    }
+  });
+  resetBtn.addEventListener('click', () => {
+    running = false; playBtn.textContent = '▶ Race them';
+    if (raf) cancelAnimationFrame(raf);
+    simT = 0; render();
+  });
+  nS.addEventListener('input', () => { simT = 0; render(); });
+  render();
+})();
+
+/* =========================================================================
+   STEP 6 — Tiled matmul, K-loop animation
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('w6-canvas');
+  const ctx = setupCanvas(canvas, 1000, 560);
+  const W = canvas._cssW, H = canvas._cssH;
+  const bmS = document.getElementById('w6-bm');
+  const bnS = document.getElementById('w6-bn');
+  const bkS = document.getElementById('w6-bk');
+  const pS  = document.getElementById('w6-p');
+  const bmv = document.getElementById('w6-bmv');
+  const bnv = document.getElementById('w6-bnv');
+  const bkv = document.getElementById('w6-bkv');
+  const pv  = document.getElementById('w6-pv');
+  const playBtn = document.getElementById('w6-play');
+  const resetBtn = document.getElementById('w6-reset');
+  const ro = document.getElementById('w6-readout');
+
+  const M = 128, N = 128, K = 128;          // global matrix dimensions
+
+  let kStep = 0;
+  let running = false, raf = null, t0 = 0, lastStep = 0;
+
+  function nTiles() {
+    const BM = parseInt(bmS.value), BN = parseInt(bnS.value), BK = parseInt(bkS.value);
+    return { TM: Math.ceil(M/BM), TN: Math.ceil(N/BN), TK: Math.ceil(K/BK), BM, BN, BK };
+  }
+
+  // -------- layout: canonical block-matmul diagram --------
+  //                       ┌── B ──┐
+  //                       │ K × N │
+  //                       └───────┘
+  //   ┌── A ──┐           ┌── C ──┐    ┌── acc ──┐
+  //   │ M × K │           │ M × N │    │ BM × BN │
+  //   └───────┘           └───────┘    └─────────┘
+  // A and C share rows (M); B and C share columns (N); A and B share K.
+  const matSize = 200;
+  const Bx = 460, By = 60;                         // B top-right
+  const Ax = 60,  Ay = 320;                        // A bottom-left
+  const Cx = 460, Cy = 320;                        // C bottom-right
+  const accX = 760, accY = 320;                    // accumulator panel
+
+  function drawMatBox(x, y, label, rows, cols) {
+    ctx.fillStyle = C.bg2;
+    ctx.strokeStyle = C.line;
+    ctx.lineWidth = 1;
+    ctx.fillRect(x, y, matSize, matSize);
+    ctx.strokeRect(x, y, matSize, matSize);
+    const tw = matSize / cols, th = matSize / rows;
+    ctx.strokeStyle = C.line;
+    ctx.lineWidth = 0.5;
+    ctx.beginPath();
+    for (let i = 1; i < cols; i++) { ctx.moveTo(x + i*tw, y); ctx.lineTo(x + i*tw, y + matSize); }
+    for (let i = 1; i < rows; i++) { ctx.moveTo(x, y + i*th); ctx.lineTo(x + matSize, y + i*th); }
+    ctx.stroke();
+    ctx.fillStyle = C.ink;
+    ctx.font = 'bold 15px Space Grotesk';
+    ctx.textAlign = 'left';
+    ctx.fillText(label, x, y - 12);
+    return { tw, th };
+  }
+
+  function drawAxisLabel(x, y, text, color) {
+    ctx.fillStyle = color || C.inkSoft;
+    ctx.font = '11px JetBrains Mono';
+    ctx.textAlign = 'center';
+    ctx.fillText(text, x, y);
+  }
+
+  function render() {
+    const t = nTiles();
+    bmv.textContent = t.BM; bnv.textContent = t.BN; bkv.textContent = t.BK;
+    const nProg = t.TM * t.TN;
+    pS.max = nProg - 1;
+    if (parseInt(pS.value) > nProg-1) pS.value = nProg-1;
+    const PID = parseInt(pS.value);
+    const pm = Math.floor(PID / t.TN), pn = PID % t.TN;
+    pv.textContent = `(${pm}, ${pn})`;
+
+    ctx.clearRect(0, 0, W, H);
+
+    // === Header ===
+    ctx.fillStyle = C.ink;
+    ctx.font = 'bold 14px Space Grotesk';
+    ctx.textAlign = 'left';
+    ctx.fillText(`C  =  A  ·  B`, 60, 28);
+    ctx.fillStyle = C.inkSoft;
+    ctx.font = '12px JetBrains Mono';
+    ctx.fillText(`shapes: A=(M=${M}, K=${K})  ·  B=(K=${K}, N=${N})  →  C=(M=${M}, N=${N})`, 60, 48);
+
+    // === The three matrix boxes ===
+    const dimA = drawMatBox(Ax, Ay, 'A    (M × K)', t.TM, t.TK);
+    const dimB = drawMatBox(Bx, By, 'B    (K × N)', t.TK, t.TN);
+    const dimC = drawMatBox(Cx, Cy, 'C    (M × N)', t.TM, t.TN);
+
+    // === Axis labels on the outside edges (M, N, K) ===
+    drawAxisLabel(Ax + matSize/2, Ay + matSize + 26, `K = ${K}  →  ${t.TK} tiles of BK=${t.BK}`);
+    drawAxisLabel(Ax - 26, Ay + matSize/2, ``);  // placeholder
+    ctx.save(); ctx.translate(Ax - 32, Ay + matSize/2); ctx.rotate(-Math.PI/2);
+    ctx.fillStyle = C.inkSoft; ctx.font = '11px JetBrains Mono'; ctx.textAlign = 'center';
+    ctx.fillText(`M = ${M}  →  ${t.TM} tiles of BM=${t.BM}`, 0, 0);
+    ctx.restore();
+    // C axes
+    drawAxisLabel(Cx + matSize/2, Cy + matSize + 26, `N = ${N}  →  ${t.TN} tiles of BN=${t.BN}`);
+    ctx.save(); ctx.translate(Cx - 28, Cy + matSize/2); ctx.rotate(-Math.PI/2);
+    ctx.fillStyle = C.inkSoft; ctx.font = '11px JetBrains Mono'; ctx.textAlign = 'center';
+    ctx.fillText(`M`, 0, 0);
+    ctx.restore();
+    // B axes
+    drawAxisLabel(Bx + matSize/2, By - 26, `N`);
+    ctx.save(); ctx.translate(Bx - 28, By + matSize/2); ctx.rotate(-Math.PI/2);
+    ctx.fillStyle = C.inkSoft; ctx.font = '11px JetBrains Mono'; ctx.textAlign = 'center';
+    ctx.fillText(`K  (contraction axis)`, 0, 0);
+    ctx.restore();
+
+    // === Fade past K-strips as a thin tinted overlay on A's row and B's col ===
+    if (kStep > 0) {
+      ctx.fillStyle = C.accent2 + '20';
+      // A row pm, columns 0..kStep-1
+      ctx.fillRect(Ax, Ay + pm*dimA.th, kStep*dimA.tw, dimA.th);
+      // B col pn, rows 0..kStep-1
+      ctx.fillRect(Bx + pn*dimB.tw, By, dimB.tw, kStep*dimB.th);
+    }
+
+    // === C tile owned by this program (highlight outline always) ===
+    ctx.fillStyle = C.accent + '22';
+    ctx.fillRect(Cx + pn*dimC.tw, Cy + pm*dimC.th, dimC.tw, dimC.th);
+    ctx.strokeStyle = C.accent;
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(Cx + pn*dimC.tw, Cy + pm*dimC.th, dimC.tw, dimC.th);
+
+    // === Current k-step: bold coral on the A tile and B tile ===
+    if (kStep < t.TK) {
+      // A tile at (pm, kStep)
+      ctx.fillStyle = C.accent + '88';
+      ctx.fillRect(Ax + kStep*dimA.tw, Ay + pm*dimA.th, dimA.tw, dimA.th);
+      ctx.strokeStyle = C.accent;
+      ctx.lineWidth = 2.5;
+      ctx.strokeRect(Ax + kStep*dimA.tw, Ay + pm*dimA.th, dimA.tw, dimA.th);
+      // B tile at (kStep, pn)
+      ctx.fillStyle = C.accent + '88';
+      ctx.fillRect(Bx + pn*dimB.tw, By + kStep*dimB.th, dimB.tw, dimB.th);
+      ctx.strokeStyle = C.accent;
+      ctx.lineWidth = 2.5;
+      ctx.strokeRect(Bx + pn*dimB.tw, By + kStep*dimB.th, dimB.tw, dimB.th);
+    }
+
+    // === Accumulator panel: a BM × BN tile filling up as K progresses ===
+    const accW = 130, accH = 130;
+    ctx.fillStyle = C.bg2;
+    ctx.strokeStyle = C.line;
+    ctx.lineWidth = 1;
+    ctx.fillRect(accX, accY, accW, accH);
+    ctx.strokeRect(accX, accY, accW, accH);
+    ctx.fillStyle = C.ink;
+    ctx.font = 'bold 13px Space Grotesk';
+    ctx.textAlign = 'left';
+    ctx.fillText('acc   (registers)', accX, accY - 12);
+    ctx.fillStyle = C.inkSoft;
+    ctx.font = '10px JetBrains Mono';
+    ctx.fillText(`shape (${t.BM} × ${t.BN}), in regs`, accX, accY + accH + 16);
+
+    // accumulator fill — intensity grows with kStep / TK
+    const progress = Math.min(kStep, t.TK) / t.TK;
+    ctx.fillStyle = C.accent + Math.round(progress * 200).toString(16).padStart(2, '0');
+    ctx.fillRect(accX + 4, accY + 4, accW - 8, accH - 8);
+    // progress bar at the bottom
+    ctx.fillStyle = C.accent;
+    ctx.fillRect(accX, accY + accH - 4, accW * progress, 4);
+    // numeric progress
+    ctx.fillStyle = C.accent;
+    ctx.font = 'bold 24px JetBrains Mono';
+    ctx.textAlign = 'center';
+    ctx.fillText(`${Math.min(kStep, t.TK)} / ${t.TK}`, accX + accW/2, accY + accH/2 + 4);
+    ctx.fillStyle = C.ink;
+    ctx.font = '10px JetBrains Mono';
+    ctx.fillText('K-loop iterations', accX + accW/2, accY + accH/2 + 24);
+
+    // === Status text below ===
+    ctx.fillStyle = C.inkSoft;
+    ctx.font = '12px JetBrains Mono';
+    ctx.textAlign = 'left';
+    const y0 = 540;
+    const curK = Math.min(kStep, t.TK - 1);
+    ctx.fillText(`Program (pid_m=${pm}, pid_n=${pn}) is computing C[${pm}, ${pn}]  using  acc += A[${pm}, ${curK}] · B[${curK}, ${pn}]`, 60, y0);
+
+    const ai = (t.BM * t.BN) / (2 * (t.BM + t.BN));
+    ro.innerHTML = `tile shapes: A=(${t.BM},${t.BK}) B=(${t.BK},${t.BN}) C=(${t.BM},${t.BN}) · ` +
+      `arithmetic intensity ≈ <span class="num">${ai.toFixed(1)}</span> flops/byte ` +
+      (ai > 10 ? '<span class="num2">(compute-bound)</span>' : '<span class="num">(memory-bound)</span>');
+  }
+
+  function loop(now) {
+    if (!running) return;
+    const dt = now - t0; t0 = now;
+    lastStep += dt / 350;
+    if (lastStep >= 1) {
+      const t = nTiles();
+      kStep = (kStep + 1);
+      lastStep = 0;
+      if (kStep >= t.TK) {
+        running = false; playBtn.textContent = '▶ Run the K-loop';
+        kStep = t.TK; render(); return;
+      }
+      render();
+    }
+    raf = requestAnimationFrame(loop);
+  }
+
+  playBtn.addEventListener('click', () => {
+    const t = nTiles();
+    if (running) {
+      running = false; playBtn.textContent = '▶ Run the K-loop';
+      if (raf) cancelAnimationFrame(raf);
+    } else {
+      if (kStep >= t.TK) kStep = 0;
+      running = true; playBtn.textContent = '⏸ Pause';
+      t0 = performance.now(); lastStep = 0;
+      raf = requestAnimationFrame(loop);
+    }
+  });
+  resetBtn.addEventListener('click', () => {
+    running = false; playBtn.textContent = '▶ Run the K-loop';
+    if (raf) cancelAnimationFrame(raf);
+    kStep = 0; render();
+  });
+  [bmS, bnS, bkS, pS].forEach(s => s.addEventListener('input', () => { kStep = 0; render(); }));
+  render();
+})();
+
+/* =========================================================================
+   READING PROGRESS BAR
+   ========================================================================= */
+(function () {
+  const bar = document.getElementById('progress');
+  function update() {
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%';
+  }
+  window.addEventListener('scroll', update, {passive:true});
+  window.addEventListener('resize', update);
+  update();
+})();
+</script>
+</body>
+</html>

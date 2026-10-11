@@ -1,0 +1,2025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Energy Ledger — enthalpy, entropy, and free energy</title>
+
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Spectral:ital,wght@0,300;0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  /* ---- THEME: cold iron & copper heat -----------------------------------
+     A pressure-vessel instrument panel. Heat is copper, entropy is ice-cyan,
+     PV work is brass, and the free energies are the violet that mixes them. */
+  :root {
+    --bg:        #0d1317;
+    --surface:   #141d23;
+    --surface-2: #1b262d;
+    --ink:       #e9f0f3;
+    --ink-soft:  #8fa3ae;
+    --heat:      #ef8a45;   /* energy, heat, enthalpy      */
+    --cold:      #4fc3d9;   /* entropy                     */
+    --brass:     #d6b36a;   /* pressure-volume work        */
+    --violet:    #a98cd8;   /* free energy (the mixture)   */
+    --line:      #24333c;
+    --axis:      #3b4d58;
+    --kernel-bg: #05080a;
+    --radius: 4px;
+    --measure: 70ch;
+    --font-display: 'Instrument Serif', Georgia, serif;
+    --font-body:    'Spectral', Georgia, serif;
+    --font-mono:    'IBM Plex Mono', ui-monospace, Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg:#f2f0ea; --surface:#ffffff; --surface-2:#eae7de; --ink:#141b20;
+      --ink-soft:#5b6a74; --line:#d5d0c4; --axis:#a9b2b8; --kernel-bg:#141b20;
+      --heat:#c85f18; --cold:#1a8399; --brass:#9a7a24; --violet:#6f4fb0;
+    }
+  }
+  :root[data-theme="light"] {
+    --bg:#f2f0ea; --surface:#ffffff; --surface-2:#eae7de; --ink:#141b20;
+    --ink-soft:#5b6a74; --line:#d5d0c4; --axis:#a9b2b8; --kernel-bg:#141b20;
+    --heat:#c85f18; --cold:#1a8399; --brass:#9a7a24; --violet:#6f4fb0;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--font-body); font-weight: 300;
+    font-size: 19px; line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #progress {
+    position: fixed; top: 0; left: 0; height: 2px; width: 0%;
+    background: var(--heat); z-index: 100;
+  }
+
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 26px 140px; }
+  .prose { max-width: var(--measure); }
+  .prose p { margin: 0 0 1.15em; }
+  strong { font-weight: 600; }
+  em.term { font-style: normal; font-weight: 600; color: var(--heat); }
+
+  /* ---- HEADER ----------------------------------------------------------- */
+  header { padding: 104px 0 8px; }
+  .gauge {
+    font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.28em;
+    text-transform: uppercase; color: var(--ink-soft);
+    border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+    padding: 9px 0; margin: 0 0 34px;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+  }
+  .gauge b { color: var(--heat); font-weight: 500; }
+  h1 {
+    font-family: var(--font-display); font-weight: 400;
+    font-size: clamp(3rem, 8.5vw, 5.4rem); line-height: 0.98;
+    margin: 0 0 26px; letter-spacing: -0.015em;
+  }
+  h1 i { font-style: italic; color: var(--heat); }
+  .promise { font-size: 1.18rem; color: var(--ink-soft); max-width: 62ch; }
+
+  /* ---- THE KERNEL ------------------------------------------------------- */
+  .kernel {
+    background: var(--kernel-bg); color: #f2f5f6;
+    border-left: 2px solid var(--heat);
+    padding: 34px 38px; margin: 56px 0 40px;
+  }
+  .kernel .label {
+    font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.24em;
+    text-transform: uppercase; color: #7d8f99; margin: 0 0 16px;
+  }
+  .kernel .sentence {
+    font-family: var(--font-display); font-weight: 400;
+    font-size: 1.72rem; line-height: 1.32; margin: 0;
+  }
+  .kernel .sentence mark {
+    background: none; color: var(--heat); font-style: italic;
+  }
+
+  /* ---- SIGNATURE: THE DOUBLE-ENTRY LEDGER STRIP ------------------------- */
+  .ledger {
+    font-family: var(--font-mono); font-size: 0.83rem; line-height: 1.5;
+    border: 1px solid var(--line); background: var(--surface);
+    margin: 26px 0; max-width: var(--measure);
+  }
+  .ledger .lhead {
+    display: grid; grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .ledger .lhead div { padding: 8px 16px; }
+  .ledger .lhead div:first-child { border-right: 1px solid var(--line); }
+  .ledger .lrow {
+    display: grid; grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid var(--line);
+  }
+  .ledger .lrow:last-child { border-bottom: none; }
+  .ledger .lrow div { padding: 9px 16px; }
+  .ledger .lrow div:first-child { border-right: 1px solid var(--line); }
+  .ledger .neg { color: var(--cold); }
+  .ledger .pos { color: var(--heat); }
+  .ledger .zero { color: var(--ink-soft); }
+
+  /* ---- STEPS ------------------------------------------------------------ */
+  .concept-step { margin: 0 0 92px; scroll-margin-top: 30px; }
+  .step-tag {
+    font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--ink-soft);
+    border-top: 1px solid var(--line); padding-top: 10px; margin: 0 0 18px;
+    display: flex; gap: 14px; align-items: baseline;
+  }
+  .step-tag b { color: var(--heat); font-weight: 500; }
+  .concept-step h2 {
+    font-family: var(--font-display); font-weight: 400;
+    font-size: clamp(1.95rem, 4.4vw, 2.85rem); line-height: 1.1;
+    margin: 0 0 22px; letter-spacing: -0.01em; max-width: 22ch;
+  }
+
+  /* ---- FORMAL BLOCK ----------------------------------------------------- */
+  details.formal {
+    border: 1px solid var(--line); background: var(--surface);
+    margin: 26px 0; max-width: var(--measure);
+  }
+  details.formal summary {
+    cursor: pointer; padding: 13px 18px; font-family: var(--font-mono);
+    font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--ink-soft); list-style: none; user-select: none;
+  }
+  details.formal summary::-webkit-details-marker { display: none; }
+  details.formal summary::before { content: '+  '; color: var(--heat); }
+  details.formal[open] summary::before { content: '\2212  '; }
+  details.formal .formal-body { padding: 0 18px 14px; font-size: 0.95rem; }
+
+  /* ---- WIDGETS ---------------------------------------------------------- */
+  .widget {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 20px 20px 16px; margin: 30px 0;
+  }
+  .widget-titlewrap { margin-bottom: 16px; }
+  .widget-titlewrap h3 {
+    font-family: var(--font-body); font-weight: 600; font-size: 1.02rem;
+    margin: 0 0 4px; letter-spacing: 0.01em;
+  }
+  .widget-titlewrap .mode {
+    font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--ink-soft);
+  }
+  .widget-controls { display: flex; flex-wrap: wrap; gap: 16px 30px; margin-bottom: 16px; }
+  .widget-controls label {
+    display: flex; flex-direction: column; gap: 6px;
+    font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-soft);
+    letter-spacing: 0.06em; min-width: 190px;
+  }
+  .widget-controls .val { color: var(--heat); font-weight: 500; }
+  input[type=range] { accent-color: var(--heat); cursor: pointer; width: 100%; }
+  .widget button {
+    font-family: var(--font-mono); font-size: 0.76rem; letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: var(--surface-2); color: var(--ink);
+    border: 1px solid var(--line); padding: 8px 15px;
+    border-radius: var(--radius); cursor: pointer;
+  }
+  .widget button:hover:not(:disabled) { border-color: var(--heat); color: var(--heat); }
+  .widget button:disabled { opacity: 0.3; cursor: default; }
+  .widget button.on { background: var(--heat); color: var(--bg); border-color: var(--heat); }
+  .widget-stage { display: block; width: 100%; background: transparent; }
+  .readout {
+    margin-top: 12px; font-family: var(--font-mono); font-size: 0.79rem;
+    line-height: 1.75; color: var(--ink-soft); min-height: 1.6em;
+  }
+  .readout b { color: var(--ink); font-weight: 500; }
+  .reveal-bar { display: flex; align-items: center; gap: 14px; margin-top: 14px; flex-wrap: wrap; }
+  .reveal-caption {
+    flex: 1; min-width: 220px; font-size: 0.88rem; color: var(--ink-soft);
+  }
+  .caption { font-size: 0.82rem; color: var(--ink-soft); margin-top: 10px; font-style: italic; }
+  .btnrow { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+  /* ---- TABLES ----------------------------------------------------------- */
+  table.map {
+    width: 100%; border-collapse: collapse; font-family: var(--font-mono);
+    font-size: 0.79rem; margin: 26px 0;
+  }
+  table.map th, table.map td {
+    border: 1px solid var(--line); padding: 10px 12px; text-align: left;
+    vertical-align: top;
+  }
+  table.map th {
+    font-weight: 500; font-size: 0.66rem; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--ink-soft); background: var(--surface);
+  }
+  table.map td.name { color: var(--heat); }
+  .scrollx { overflow-x: auto; max-width: 100%; }
+
+  .recap { border-top: 1px solid var(--heat); padding-top: 44px; margin-top: 20px; }
+  .recap h2 { font-family: var(--font-display); font-weight: 400; font-size: 2.4rem; margin: 0 0 20px; }
+
+  a { color: var(--heat); }
+  mark { background: none; color: var(--heat); }
+  @media (max-width: 620px) {
+    body { font-size: 17px; }
+    .wrap { padding: 0 16px 90px; }
+    .kernel { padding: 24px 22px; }
+    .kernel .sentence { font-size: 1.35rem; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<div class="wrap">
+
+  <!-- ===================== HEADER ===================== -->
+  <header>
+    <p class="gauge">
+      <span>Physics &middot; Thermodynamics</span>
+      <span>Seven steps &middot; seven instruments</span>
+      <span><b>U &nbsp; H &nbsp; F &nbsp; G &nbsp; &mu;</b></span>
+    </p>
+    <h1>The energy <i>ledger</i></h1>
+    <p class="promise">
+      Thermodynamics hands you four different &ldquo;energies&rdquo; &mdash; internal energy,
+      enthalpy, Helmholtz free energy, Gibbs free energy &mdash; and never quite says
+      why there are four. This page builds them one at a time, out of a single
+      accounting problem, using one running example: a cylinder of water sitting
+      in a room.
+    </p>
+  </header>
+
+  <div class="kernel">
+    <p class="label">The whole idea, in one sentence</p>
+    <p class="sentence">
+      You are always just <mark>maximising the entropy of the entire universe</mark> &mdash;
+      and the different &ldquo;energies&rdquo; are that one rule rewritten so you never
+      have to look outside your own cylinder.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      Here is the running example. A sealed cylinder holds some water. It sits in
+      a room. The room is enormous compared to the cylinder: it holds the
+      temperature at \(T\) no matter how much heat the water dumps into it, and it
+      presses on the cylinder&rsquo;s piston with a pressure \(P\) no matter how much
+      the water expands. Everything below is about one question &mdash;
+      <strong>which way will the water go, and what will it do on the way?</strong>
+    </p>
+    <p>
+      Two vocabulary items before we start, both defined properly as they come up.
+      <em class="term">Internal energy</em> \(U\) is all the energy stored inside the
+      cylinder: the kinetic energy of the molecules plus the energy in the bonds
+      between them. <em class="term">Entropy</em> \(S\) counts how many distinct
+      microscopic arrangements of those molecules look identical from outside;
+      \(S = k_B \ln \Omega\), where \(\Omega\) is that count and \(k_B\) is
+      Boltzmann&rsquo;s constant, a fixed conversion factor between counting and
+      the units we happen to measure temperature in.
+    </p>
+  </div>
+
+  <!-- ===================== STEP 1 ===================== -->
+  <section class="concept-step" id="step-1">
+    <p class="step-tag"><b>Step 1</b><span>The only law there is</span></p>
+    <h2>Nature does not minimise energy. It maximises count.</h2>
+    <div class="prose">
+      <p>
+        A widespread half-truth says systems &ldquo;seek the lowest energy state.&rdquo;
+        If that were true, every room-temperature glass of water would already be
+        ice, since ice is the lower-energy arrangement. It is not, so something
+        else is being optimised.
+      </p>
+      <p>
+        The actual law is about counting. Energy moves around blindly, and every
+        microscopic arrangement consistent with the total energy is equally
+        likely. So the system spends almost all its time in whatever
+        <em>macroscopic</em> situation has the most microscopic arrangements
+        behind it. Written with \(S = k_B \ln \Omega\), that is the second law:
+      </p>
+      <p style="text-align:center">\[ \Delta S_{\text{universe}} = \Delta S_{\text{system}} + \Delta S_{\text{surroundings}} \;\ge\; 0. \]</p>
+      <p>
+        The words <em>system</em> and <em>surroundings</em> just mean the cylinder
+        and the room. And notice what the inequality does <strong>not</strong> say:
+        it does not say \(\Delta S_{\text{system}} \ge 0\). The water is entirely
+        free to become more ordered, as long as the room becomes disordered by
+        more than it gains. Freezing does exactly this.
+      </p>
+      <p>
+        The widget below is the smallest honest model of that trade. A tiny
+        &ldquo;droplet&rdquo; of 12 oscillators passes quanta of energy back and
+        forth with a &ldquo;room&rdquo; of 200 that already holds 70 quanta of its
+        own. We cram 60 more into the droplet and let energy hop at random. Watch
+        which entropy goes down.
+      </p>
+    </div>
+
+    <div class="widget" id="w1">
+      <div class="widget-titlewrap">
+        <h3>A hot droplet dumping its energy into a cold room</h3>
+        <p class="mode">live simulation &middot; press run &middot; energy is exactly conserved</p>
+      </div>
+      <canvas id="w1-canvas" class="widget-stage"></canvas>
+      <div class="btnrow" style="margin-top:12px">
+        <button id="w1-run">Run</button>
+        <button id="w1-reset">Reset</button>
+        <button id="w1-step">Step &times;200</button>
+      </div>
+      <div class="readout" id="w1-readout"></div>
+      <p class="caption">
+        Every hop moves one quantum from a randomly chosen oscillator to another
+        randomly chosen oscillator &mdash; no rule tells energy to leave the droplet.
+        It leaves because there are overwhelmingly more ways to arrange it once it has.
+      </p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version</summary>
+      <div class="formal-body prose">
+        <p>
+          Each solid is an <strong>Einstein solid</strong>: \(N\) identical quantum
+          oscillators sharing \(q\) indistinguishable quanta of energy. The number
+          of ways to distribute them is the number of ways to place \(q\) balls in
+          \(N\) boxes,
+          \[ \Omega(N,q) = \binom{q+N-1}{q}. \]
+          Sanity check by hand: for \(N=3,\,q=3\) this gives \(\binom{5}{3}=10\).
+          Two such solids with \(N_A=N_B=3\) sharing \(q=6\) quanta have
+          \(\Omega_A\Omega_B = 10\times 10 = 100\) at the even split, and
+          \(\sum_{q_A} \Omega_A \Omega_B = \binom{11}{6} = 462\) in total &mdash; so
+          the single most likely split already holds 22% of everything.
+          The widget uses \(N_A = 12\) and \(N_B = 200\) sharing 130 quanta, 60 of
+          which start in the droplet. The entropy maximum sits at \(q_A = 6\),
+          where \(\Omega_A = \binom{17}{6} = 12376\). Along the way
+          \(S_A/k_B\) falls by \(19.15\) and \(S_B/k_B\) rises by \(60.69\), for a
+          net gain of \(41.54\) &mdash; a decrease in the droplet, an increase in
+          the universe.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 2 ===================== -->
+  <section class="concept-step" id="step-2">
+    <p class="step-tag"><b>Step 2</b><span>Eliminating the room</span></p>
+    <h2>A big room has a boring entropy: a straight line.</h2>
+    <div class="prose">
+      <p>
+        Step 1 leaves us with an impractical law. To predict what the water does,
+        we apparently have to count arrangements of the entire room too. Nobody
+        wants to do that.
+      </p>
+      <p>
+        We get away with not doing it because of one fact: <strong>a large
+        reservoir&rsquo;s entropy is a straight line in the energy it gives away.</strong>
+        The room is so big that handing over a droplet&rsquo;s worth of energy barely
+        changes its temperature, and a function whose slope does not change is a
+        line. That slope has a name. Define
+      </p>
+      <p style="text-align:center">\[ \frac{1}{T} \;\equiv\; \left(\frac{\partial S}{\partial U}\right)_{V,N}, \]</p>
+      <p>
+        which is what temperature actually <em>is</em>: how much entropy you buy per
+        unit of energy you take in. A cold thing has a steep slope &mdash; energy is
+        precious to it, each joule unlocks a lot of new arrangements. A hot thing
+        has a shallow slope. Energy flows from shallow to steep because that is
+        where the same joule buys more count, and that is the whole content of
+        &ldquo;heat flows from hot to cold.&rdquo;
+      </p>
+      <p>
+        Now the bookkeeping collapses. If the cylinder absorbs energy \(U\), the
+        room loses exactly that much, so along its straight line
+        \(\Delta S_{\text{room}} = -U/T\), and
+      </p>
+      <p style="text-align:center">\[ S_{\text{univ}}(U) \;=\; S_{\text{sys}}(U) \;-\; \frac{U}{T}. \]</p>
+      <p>
+        Multiply by \(-T\) &mdash; a negative number, so maxima become minima &mdash;
+        and the right-hand side turns into a quantity built only from the
+        cylinder&rsquo;s own variables:
+      </p>
+      <p style="text-align:center">\[ -T\,S_{\text{univ}} \;=\; U - T S_{\text{sys}} \;\equiv\; F, \qquad \textbf{the Helmholtz free energy.} \]</p>
+      <p>
+        \(F\) is not a new physical quantity. It is \(S_{\text{univ}}\) written
+        upside down and rescaled. <strong>Minimising \(F\) is maximising the entropy
+        of the universe</strong>, and you never once had to look at the room. Build
+        the picture below layer by layer and watch the two maxima land on the same
+        spot.
+      </p>
+    </div>
+
+    <div class="widget" id="w2">
+      <div class="widget-titlewrap">
+        <h3>Why the room&rsquo;s entropy curve straightens out</h3>
+        <p class="mode">staged reveal &middot; drag the room size</p>
+      </div>
+      <div class="widget-controls">
+        <label>room size &nbsp; N<sub>room</sub> = <span class="val" id="w2-nbV">200</span>
+          <input type="range" id="w2-nb" min="14" max="4000" step="1" value="200">
+        </label>
+      </div>
+      <canvas id="w2-canvas" class="widget-stage"></canvas>
+      <div class="reveal-bar">
+        <button id="w2-back" disabled>&larr; Back</button>
+        <span class="reveal-caption" id="w2-caption"></span>
+        <button id="w2-next">Add the room &rarr;</button>
+      </div>
+      <div class="readout" id="w2-readout"></div>
+      <p class="caption">
+        Horizontal axis: how many of the 60 quanta sit in the droplet. Shrink the
+        room and its entropy curve visibly bends &mdash; and once it bends, \(F\)
+        and \(S_{\text{univ}}\) stop agreeing about where equilibrium is. The
+        straight line, the fixed \(T\), and the right to use \(F\) at all are one
+        privilege that a reservoir <em>earns</em> by being large.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== STEP 3 ===================== -->
+  <section class="concept-step" id="step-3">
+    <p class="step-tag"><b>Step 3</b><span>The move, named</span></p>
+    <h2>Trading a variable you cannot hold for one you can.</h2>
+    <div class="prose">
+      <p>
+        Step 2 did something worth naming, because we are about to do it twice
+        more. Look at what changed. Before, the natural description of the
+        cylinder was \(U(S)\): tell me its entropy and I will tell you its energy.
+        But in a lab you cannot dial in entropy. You can dial in
+        <em>temperature</em> &mdash; you set the thermostat and wait.
+      </p>
+      <p>
+        So we swapped the variable. \(F(T) = U - TS\) contains exactly the same
+        information as \(U(S)\), re-indexed by the slope \(T = \partial U/\partial S\)
+        instead of by the position \(S\). That swap is called a
+        <em class="term">Legendre transform</em>, and it has a picture: instead of
+        describing a convex curve by its points, describe it by its tangent
+        lines &mdash; each tangent labelled by its slope, and recorded by where it
+        crosses the axis.
+      </p>
+      <p>
+        That crossing <em>is</em> the free energy. Roll the tangent along the curve
+        below and watch \(F(T)\) get traced out one intercept at a time. Nothing
+        is lost: from the family of tangents you can rebuild the original curve as
+        their envelope.
+      </p>
+      <div class="ledger">
+        <div class="lhead"><div>you cannot set</div><div>you can set</div></div>
+        <div class="lrow"><div>entropy&nbsp; S</div><div class="pos">temperature&nbsp; T &nbsp;= &nbsp;&part;U/&part;S</div></div>
+        <div class="lrow"><div>volume&nbsp; V</div><div class="pos">pressure&nbsp; P &nbsp;= &nbsp;&minus;&part;U/&part;V</div></div>
+        <div class="lrow"><div>particle number&nbsp; N</div><div class="pos">chem. potential&nbsp; &mu; &nbsp;= &nbsp;&part;U/&part;N</div></div>
+      </div>
+      <p>
+        Each row is a <em class="term">conjugate pair</em>: an amount, and the price
+        of one more unit of it. Every thermodynamic potential in this article is
+        made by trading some of the left column for the right. That is the entire
+        family tree.
+      </p>
+    </div>
+
+    <div class="widget" id="w3">
+      <div class="widget-titlewrap">
+        <h3>Rolling a tangent along U(S) to trace out F(T)</h3>
+        <p class="mode">live &middot; drag the temperature slider</p>
+      </div>
+      <div class="widget-controls">
+        <label>temperature &nbsp; T = <span class="val" id="w3-tV">2.00</span>
+          <input type="range" id="w3-t" min="0.45" max="4.5" step="0.01" value="2">
+        </label>
+        <label style="justify-content:flex-end">
+          <button id="w3-clear">Clear the traced curve</button>
+        </label>
+      </div>
+      <canvas id="w3-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w3-readout"></div>
+      <p class="caption">
+        Model curve: \(U(S) = e^{S}\) in units where \(N k_B = 1\) &mdash; the
+        energy&ndash;entropy relation of a simple solid. Then \(T = dU/dS = e^S\),
+        so \(S = \ln T\), \(U = T\), and \(F = T - T\ln T\). At \(T = 2\) the
+        intercept should read \(2 - 2\ln 2 = 0.614\).
+      </p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version, and a sign trap</summary>
+      <div class="formal-body prose">
+        <p>
+          For a convex \(U(S)\), the Legendre transform is
+          \(U^\star(T) = \sup_S \,[\,TS - U(S)\,]\), and the physicists&rsquo;
+          free energy is its negative: \(F = -U^\star = U - TS\). This sign flip is
+          why \(F\) is <em>minimised</em> rather than maximised, and the reliable
+          check is the derivative. From \(dU = T\,dS\) we get
+          \[ dF = dU - T\,dS - S\,dT = -S\,dT \quad\Longrightarrow\quad \left(\frac{\partial F}{\partial T}\right)_V = -S. \]
+          Every potential below can be checked the same way: the variable you
+          traded away reappears as a derivative, with a sign set by whether it was
+          added or subtracted. With volume in play, \(dU = T\,dS - P\,dV\) and
+          \((\partial F/\partial V)_T = -P\), \((\partial G/\partial P)_T = +V\).
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 4 ===================== -->
+  <section class="concept-step" id="step-4">
+    <p class="step-tag"><b>Step 4</b><span>The second tax</span></p>
+    <h2>Making room costs energy. That is enthalpy.</h2>
+    <div class="prose">
+      <p>
+        So far the cylinder had a fixed volume. Now unlock the piston. The room
+        does not only supply heat &mdash; it also presses down with pressure \(P\),
+        and if the water wants to expand it must shove the atmosphere out of the
+        way. Pushing a piston of area \(A\) a distance \(d\) against pressure \(P\)
+        costs \(P A d = P\,\Delta V\) of energy, handed to the room and gone.
+      </p>
+      <p>
+        This wrecks the simplest measurement in the lab. Put a flame under the
+        cylinder and count the joules you deliver. If the piston is bolted shut,
+        every joule lands in \(U\). If the piston is free, some of them leave again
+        as shoving-work, and \(U\) rises by less. Same flame, same temperature
+        rise, different bill.
+      </p>
+      <p>
+        So define the bill. <em class="term">Enthalpy</em> is the internal energy
+        plus the energy it took to clear a space of size \(V\) in a world at
+        pressure \(P\):
+      </p>
+      <p style="text-align:center">\[ H \;\equiv\; U + PV. \]</p>
+      <p>
+        Then at constant pressure, energy conservation \(\Delta U = Q - P\Delta V\)
+        rearranges to \(\;Q = \Delta U + P\Delta V = \Delta H\). <strong>Enthalpy is
+        the heat you actually have to pay at constant pressure</strong>, which is why
+        every chemistry table lists \(\Delta H\) and not \(\Delta U\): reactions in
+        open beakers happen at the atmosphere&rsquo;s pressure, not at fixed volume.
+        (The identity \(Q_P = \Delta H\) assumes the only work is the
+        \(P\,dV\) kind &mdash; no electrical leads, no stirrer.)
+      </p>
+      <p>
+        Note the shape of \(H = U + PV\): it is the same Legendre move as \(F\),
+        trading volume for pressure, just with the opposite sign because \(P\) is
+        defined as \(-\partial U/\partial V\). Below, two identical gases are heated
+        by identical amounts. One piston is bolted, one is free.
+      </p>
+      <div class="ledger">
+        <div class="lhead"><div>1 mol of argon, 300 K &rarr; 400 K</div><div>where the joules go</div></div>
+        <div class="lrow"><div>rise in internal energy &nbsp;&Delta;U = 3/2 R&Delta;T</div><div class="pos">+1247 J</div></div>
+        <div class="lrow"><div>shoved into the atmosphere &nbsp;P&Delta;V = R&Delta;T</div><div class="neg">&nbsp;&nbsp;831 J</div></div>
+        <div class="lrow"><div>heat you must supply &nbsp;&Delta;H = 5/2 R&Delta;T</div><div class="pos">+2078 J</div></div>
+      </div>
+    </div>
+
+    <div class="widget" id="w4">
+      <div class="widget-titlewrap">
+        <h3>Two cylinders, one bolted shut &mdash; heated side by side</h3>
+        <p class="mode">live molecular dynamics &middot; drag the thermostat</p>
+      </div>
+      <div class="widget-controls">
+        <label>thermostat &nbsp; T<sub>set</sub> = <span class="val" id="w4-tV">1.00</span>
+          <input type="range" id="w4-t" min="0.6" max="1.4" step="0.01" value="1">
+        </label>
+        <label>outside pressure &nbsp; P = <span class="val" id="w4-pV">2.50</span>
+          <input type="range" id="w4-p" min="2" max="4" step="0.02" value="2.5">
+        </label>
+      </div>
+      <canvas id="w4-canvas" class="widget-stage"></canvas>
+      <div class="btnrow" style="margin-top:12px">
+        <button id="w4-exp">Run the experiment: heat both by 0.4, slowly</button>
+        <button id="w4-run" class="on">Pause</button>
+        <button id="w4-zero">Zero the meters</button>
+      </div>
+      <div class="readout" id="w4-readout"></div>
+      <p class="caption">
+        Real 2-D molecular dynamics: 250 particles per cylinder bouncing off a
+        moving wall, with a velocity-rescaling thermostat whose every injection is
+        metered. The piston is held at mechanical equilibrium rather than left to
+        rattle freely &mdash; a rattling piston pumps energy into the gas and
+        corrupts the meters &mdash; but every joule in the ledger is measured, not
+        assumed: <em>work counted at the piston</em> is summed collision by
+        collision as the kinetic energy each particle loses to the moving wall.
+      </p>
+    </div>
+
+    <details class="formal">
+      <summary>What number should the meters converge to?</summary>
+      <div class="formal-body prose">
+        <p>
+          A 2-D ideal gas has two translational degrees of freedom per particle, so
+          \(U = N k_B T\) and \(C_V = N k_B\). At constant pressure the ideal gas
+          law \(PV = N k_B T\) forces \(P\,\Delta V = N k_B \Delta T\), so
+          \(C_P = C_V + N k_B = 2 N k_B\). The heat ratio for the same temperature
+          rise should therefore settle near
+          \[ \frac{C_P}{C_V} = 2.0 \qquad (\text{2-D}), \]
+          and in general \(C_P - C_V = N k_B\), which for a mole is the familiar
+          \(C_P - C_V = R\).
+        </p>
+        <p>
+          Press the experiment button and the widget ramps both thermostats from
+          \(T = 1.0\) to \(1.4\) over about ten seconds &mdash; slowly enough that
+          the piston stays near mechanical balance. It then reports
+          \(\Delta U = 100.0\) and \(P\,\Delta V = 100.0\), each exactly the
+          predicted \(N\,\Delta T = 250 \times 0.4\), and a ratio near \(1.9\).
+        </p>
+        <p>
+          The honest check is the pair of work rows, because they reach the same
+          quantity by unrelated routes. \(P\,\Delta V\) is computed from how far
+          the piston travelled. <em>Work counted at the piston</em> never looks at
+          the piston&rsquo;s position at all: it sums, collision by collision, the
+          kinetic energy each individual particle is measured to lose to the
+          moving wall. The two agree to within 5&ndash;10%, and it is that
+          agreement, not any single meter, that says the simulation is doing
+          mechanics rather than arithmetic.
+        </p>
+        <p>
+          The residual gap is a consistent shortfall in the collision-counted
+          figure, and \(Q_P\) inherits it, which is why the ratio reads about
+          \(1.9\) instead of \(2.0\). It is small, it is reproducible across every
+          slider setting, and it has not been pinned down &mdash; discretising a
+          moving wall into finite timesteps is the obvious suspect, but the
+          simple lag argument predicts a surplus rather than a shortfall, so that
+          explanation does not yet hold together. The <em>books</em> row, by
+          contrast, proves nothing about the physics: heat in, energy stored and
+          work out are the only three channels in the code, so it reads \(0.00\)
+          by construction. Keep it as a regression check on the metering, not as
+          evidence.
+        </p>
+        <p>
+          The three-dimensional argon numbers in the ledger above give
+          \(2078/1247 = 5/3\), the 3-D version of the same statement.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 5 ===================== -->
+  <section class="concept-step" id="step-5">
+    <p class="step-tag"><b>Step 5</b><span>Both taxes at once</span></p>
+    <h2>Gibbs free energy is the full bill for existing.</h2>
+    <div class="prose">
+      <p>
+        Now run the argument of step 2 again, with the piston unlocked. The room
+        supplies heat <em>and</em> absorbs shoving-work, so it changes entropy on
+        two counts. When the cylinder absorbs \(\Delta H\) worth of heat at
+        constant \(P\), the room loses that much, and
+        \(\Delta S_{\text{room}} = -\Delta H / T\). Therefore
+      </p>
+      <p style="text-align:center">\[ \Delta S_{\text{univ}} = \Delta S_{\text{sys}} - \frac{\Delta H}{T} \;=\; -\frac{1}{T}\Big(\underbrace{\Delta H - T\,\Delta S_{\text{sys}}}_{\textstyle \Delta G}\Big). \]</p>
+      <p>
+        So <em class="term">Gibbs free energy</em>
+        \(G \equiv H - TS = U + PV - TS\) is the second law for anything sitting in
+        an ordinary room: it falls, and it stops falling at equilibrium. Every
+        term is a tax. \(U\) is what you store, \(+PV\) is rent paid to the
+        atmosphere for the space you occupy, \(-TS\) is the rebate you get for
+        being spread out over many arrangements.
+      </p>
+      <p>
+        The competition between those last two is the whole story of phases. Ice
+        has low \(H\) (strong hydrogen bonds, so the energy term likes it) and low
+        \(S\) (a rigid lattice, few arrangements). Steam is the opposite. Since
+        \(G = H - TS\), plotting \(G\) against temperature gives each phase a
+        <strong>line whose slope is \(-S\)</strong>: high-entropy phases dive
+        steeply. Whichever line is lowest is the phase you get, so the steep lines
+        must eventually win, and the crossings are melting and boiling.
+      </p>
+      <p>
+        Every number in the widget below is real: \(\Delta H_{\text{fus}} = 6.01\)
+        kJ/mol, \(\Delta H_{\text{vap}} = 40.66\) kJ/mol, and the standard entropy
+        of ice, 41 J/mol&middot;K. The crossings are not fitted &mdash; they fall out
+        at 273.15 K and 373.15 K.
+      </p>
+    </div>
+
+    <div class="widget" id="w5">
+      <div class="widget-titlewrap">
+        <h3>Three straight lines deciding whether you have ice, water or steam</h3>
+        <p class="mode">staged reveal &middot; drag T and the outside pressure</p>
+      </div>
+      <div class="widget-controls">
+        <label>temperature &nbsp; T = <span class="val" id="w5-tV">300</span> K
+          <input type="range" id="w5-t" min="230" max="430" step="0.5" value="300">
+        </label>
+        <label>outside pressure &nbsp; P = <span class="val" id="w5-pV">1.00</span> atm
+          <input type="range" id="w5-p" min="0.15" max="2.5" step="0.01" value="1">
+        </label>
+      </div>
+      <canvas id="w5-canvas" class="widget-stage"></canvas>
+      <div class="reveal-bar">
+        <button id="w5-back" disabled>&larr; Back</button>
+        <span class="reveal-caption" id="w5-caption"></span>
+        <button id="w5-next">Add liquid water &rarr;</button>
+      </div>
+      <div class="readout" id="w5-readout"></div>
+      <p class="caption">
+        Lowering the pressure only moves the steam line, because only steam has
+        enough volume for \(PV\) to matter. Drop to 0.5 atm and water boils at
+        81 &deg;C &mdash; which is roughly Everest, and why tea is bad up there.
+      </p>
+    </div>
+
+    <details class="formal">
+      <summary>Where the pressure term and the straight lines come from</summary>
+      <div class="formal-body prose">
+        <p>
+          For a condensed phase, \(V\) is tiny and nearly constant, so
+          \((\partial G/\partial P)_T = V\) barely moves the ice and water lines. For
+          the vapour, treating it as ideal gives
+          \(\int V\,dP = \int (RT/P)\,dP = RT\ln(P/P^\circ)\), so
+          \(G_{\text{gas}}(T,P) = H_g - T S_g + RT\ln(P/P^\circ)\).
+          Setting \(G_{\text{gas}} = G_{\text{liq}}\) gives the boiling point
+          \[ T_b = \frac{\Delta H_{\text{vap}}}{\Delta S_{\text{vap}} - R\ln(P/P^\circ)}, \]
+          which at \(P = 0.5\) atm evaluates to
+          \(40660 / (108.97 + 5.76) = 354.4\) K \(= 81.3\)&nbsp;&deg;C. The measured
+          value is 81.3&nbsp;&deg;C.
+        </p>
+        <p>
+          The lines are drawn straight, which assumes each phase&rsquo;s entropy is
+          constant over the plotted range. In truth
+          \((\partial^2 G/\partial T^2)_P = -C_P/T\), so each line is gently concave.
+          Over 200 K that curvature shifts things by a few percent and moves no
+          crossing appreciably; it is left out so the slope-is-entropy reading
+          stays exact.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 6 ===================== -->
+  <section class="concept-step" id="step-6">
+    <p class="step-tag"><b>Step 6</b><span>The word &ldquo;free&rdquo;</span></p>
+    <h2>Free means extractable. The rest belongs to the bath.</h2>
+    <div class="prose">
+      <p>
+        Nothing so far explains why \(F\) and \(G\) are called <em>free</em>
+        energies. Here is the reason, and it is the sharpest thing on this page.
+      </p>
+      <p>
+        Take the cylinder, hold it at temperature \(T\), and try to get useful
+        work out of it. You have \(U\) joules stored. You cannot have them all.
+        Extracting work means changing the system&rsquo;s state, which generally
+        lowers its entropy, and the second law will not permit that unless you pay
+        the room off in heat. The size of that unavoidable payment is \(T\,\Delta S\).
+        What is left over is what you may keep:
+      </p>
+      <p style="text-align:center">\[ W_{\text{out}} \;\le\; -\Delta F = -( \Delta U - T\Delta S ), \]</p>
+      <p>
+        with equality only for a reversible &mdash; infinitely patient &mdash; process.
+        <strong>\(-\Delta F\) is the maximum work a system at constant \(T\) can
+        deliver</strong>; \(T\Delta S\) is the tax, and \(\Delta U\) is only the gross.
+        \(G\) plays the same role once the atmosphere is also in the picture:
+        \(-\Delta G\) is the maximum <em>non-expansion</em> work, because the
+        \(P\,\Delta V\) part is already spoken for by shoving the air. That is the
+        number a battery chemist or a biochemist quotes, and it is why ATP
+        hydrolysis is advertised as \(\Delta G \approx -30\) kJ/mol rather than by
+        its enthalpy.
+      </p>
+      <p>
+        The widget below expands one mole of gas isothermally from 1 to 2 litres
+        and lets you choose how hard to push back. \(\Delta F\) does not care about
+        your choice &mdash; it is a state function, fixed by the endpoints. Your
+        <em>winnings</em> care enormously.
+      </p>
+    </div>
+
+    <div class="widget" id="w6">
+      <div class="widget-titlewrap">
+        <h3>The same expansion, run greedily or patiently</h3>
+        <p class="mode">live &middot; set the load, then release the piston</p>
+      </div>
+      <div class="widget-controls">
+        <label>load on the piston &nbsp; = <span class="val" id="w6-aV">100</span>% of gas pressure
+          <input type="range" id="w6-a" min="0" max="100" step="1" value="100">
+        </label>
+      </div>
+      <canvas id="w6-canvas" class="widget-stage"></canvas>
+      <div class="btnrow" style="margin-top:12px">
+        <button id="w6-run">Release the piston</button>
+        <button id="w6-reset">Reset to 1 L</button>
+      </div>
+      <div class="readout" id="w6-readout"></div>
+      <p class="caption">
+        At 100% the load balances the gas exactly, the piston creeps, and you
+        collect the full 1729 J. At 50% the piston lurches out and you collect
+        864 J &mdash; the missing 865 J was never destroyed, it simply arrived in the
+        room as heat instead of in your hands as work.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== STEP 7 ===================== -->
+  <section class="concept-step" id="step-7">
+    <p class="step-tag"><b>Step 7</b><span>The third conjugate pair</span></p>
+    <h2>When molecules can leave, they carry a price tag.</h2>
+    <div class="prose">
+      <p>
+        One column of the ledger in step 3 is still unused. We have traded entropy
+        for temperature and volume for pressure. The last row trades
+        <em>particle number</em> for its price:
+      </p>
+      <p style="text-align:center">\[ \mu \;\equiv\; \left(\frac{\partial G}{\partial N}\right)_{T,P} \]</p>
+      <p>
+        &mdash; the <em class="term">chemical potential</em>, the Gibbs free energy
+        cost of adding one more molecule. Particles flow from high \(\mu\) to low
+        \(\mu\) for exactly the reason heat flows from hot to cold: it raises the
+        total count. Equilibrium is not equal numbers, it is <strong>equal
+        \(\mu\)</strong>.
+      </p>
+      <p>
+        And \(\mu\) has the same two-part structure as everything else on this page.
+        For a dilute species,
+      </p>
+      <p style="text-align:center">\[ \mu = \underbrace{\varepsilon}_{\text{energy per molecule}} + \underbrace{k_B T \ln n}_{\text{crowding}}, \]</p>
+      <p>
+        an energy term that pulls molecules toward the comfortable phase, and an
+        entropy term that punishes crowding. Setting \(\mu_{\text{liquid}} =
+        \mu_{\text{vapour}}\) and solving gives \(n_{\text{vap}}/n_{\text{liq}} =
+        e^{-\Delta\varepsilon/k_B T}\) &mdash; the vapour pressure of a liquid,
+        derived from a ledger.
+      </p>
+      <p>
+        Below, molecules hop at random between the liquid and the vapour above it.
+        Nothing pushes them; each move is accepted or rejected by the Metropolis
+        rule alone. Raise \(T\) and watch the population, and then the two \(\mu\)
+        bars, find their own level.
+      </p>
+    </div>
+
+    <div class="widget" id="w7">
+      <div class="widget-titlewrap">
+        <h3>Molecules hopping between liquid and vapour until the prices match</h3>
+        <p class="mode">live Monte Carlo &middot; drag T and the binding energy</p>
+      </div>
+      <div class="widget-controls">
+        <label>temperature &nbsp; k<sub>B</sub>T = <span class="val" id="w7-tV">1.00</span>
+          <input type="range" id="w7-t" min="0.25" max="4" step="0.01" value="1">
+        </label>
+        <label>binding energy &nbsp; &Delta;&epsilon; = <span class="val" id="w7-eV">1.00</span>
+          <input type="range" id="w7-e" min="0" max="4" step="0.01" value="1">
+        </label>
+      </div>
+      <canvas id="w7-canvas" class="widget-stage"></canvas>
+      <div class="btnrow" style="margin-top:12px">
+        <button id="w7-run" class="on">Pause</button>
+        <button id="w7-dump">Put all 200 in the liquid</button>
+      </div>
+      <div class="readout" id="w7-readout"></div>
+      <p class="caption">
+        With \(\Delta\varepsilon / k_B T = 1\) the equilibrium split of 200
+        molecules is 146 liquid / 54 vapour, since
+        \(200/(1+e^{-1}) = 146.2\). Push \(T\) up and the entropy term wins:
+        the liquid boils away.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== RECAP ===================== -->
+  <section class="recap prose">
+    <h2>Putting it together</h2>
+    <p>
+      There is one law &mdash; the universe maximises its arrangement count &mdash;
+      and there is one problem with it, which is that you cannot audit the whole
+      universe. Every potential in thermodynamics is a solution to that one
+      problem: fold the surroundings into a correction term, then work with the
+      system alone.
+    </p>
+    <p>
+      Which correction you need depends only on <strong>what the surroundings are
+      allowed to supply</strong>. If they supply nothing, use \(U\) and maximise the
+      system&rsquo;s own entropy. If they supply heat at fixed \(T\), subtract the
+      heat tax \(TS\) and minimise \(F\). If they supply room at fixed \(P\), add
+      the space rent \(PV\) and you get \(H\). If they supply both, you get \(G\).
+      If they also supply molecules, add \(-\mu N\).
+    </p>
+    <div class="scrollx">
+      <table class="map">
+        <thead>
+          <tr><th>Held fixed</th><th>Minimise</th><th>Definition</th><th>Natural variables</th><th>Where you meet it</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>U, V, N</td><td class="name">&minus;S</td><td>S = k ln &Omega;</td><td>U, V, N</td><td>isolated systems, the raw second law</td></tr>
+          <tr><td>S, V, N</td><td class="name">U</td><td>U</td><td>S, V, N</td><td>insulated, rigid box</td></tr>
+          <tr><td>S, P, N</td><td class="name">H</td><td>U + PV</td><td>S, P, N</td><td>heats of reaction, calorimetry, flow</td></tr>
+          <tr><td>T, V, N</td><td class="name">F</td><td>U &minus; TS</td><td>T, V, N</td><td>statistical mechanics, F = &minus;kT ln Z</td></tr>
+          <tr><td>T, P, N</td><td class="name">G</td><td>U + PV &minus; TS</td><td>T, P, N</td><td>chemistry, phase diagrams, biology</td></tr>
+          <tr><td>T, V, &mu;</td><td class="name">&Omega;<sub>gr</sub></td><td>U &minus; TS &minus; &mu;N</td><td>T, V, &mu;</td><td>open systems, adsorption, quantum gases</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>
+      Read the table as one sentence repeated six times. Each row swaps an amount
+      you cannot control for the price of that amount, which you can &mdash; the
+      Legendre transform of step 3 &mdash; and each swap adds one term to the ledger.
+      \(H\), \(F\) and \(G\) are not three energies. They are one entropy, seen
+      through three different windows onto the room.
+    </p>
+    <p style="color:var(--ink-soft); font-size:0.92rem; border-top:1px solid var(--line); padding-top:20px; margin-top:34px">
+      Step 1 and step 2 are covered much more slowly, with the microstate counting
+      done from scratch, in the companion page
+      <a href="free-energy.html">Free Energy</a>. If the entropy-as-counting move
+      went by too fast here, start there.
+    </p>
+  </section>
+
+</div>
+
+<script>
+/* =========================================================================
+   SHARED HELPERS
+   ========================================================================= */
+const RENDER_SCALE = Math.max((window.devicePixelRatio || 1) * 2.5, 3);
+function setupCanvas(canvas, cssW, cssH) {
+  canvas.style.width = cssW + 'px';
+  canvas.style.maxWidth = '100%';
+  canvas.style.height = cssH + 'px';
+  canvas.width  = Math.round(cssW * RENDER_SCALE);
+  canvas.height = Math.round(cssH * RENDER_SCALE);
+  const ctx = canvas.getContext('2d');
+  ctx.scale(RENDER_SCALE, RENDER_SCALE);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  canvas._cssW = cssW; canvas._cssH = cssH;
+  return ctx;
+}
+function makeView(canvas, b) {
+  const w = canvas._cssW, h = canvas._cssH;
+  return {
+    ...b, w, h,
+    x: mx => b.padL + (mx - b.xmin) / (b.xmax - b.xmin) * (w - b.padL - b.padR),
+    y: my => h - b.padB - (my - b.ymin) / (b.ymax - b.ymin) * (h - b.padT - b.padB)
+  };
+}
+const CSSV = getComputedStyle(document.documentElement);
+const C = {
+  ink:   CSSV.getPropertyValue('--ink').trim(),
+  soft:  CSSV.getPropertyValue('--ink-soft').trim(),
+  heat:  CSSV.getPropertyValue('--heat').trim(),
+  cold:  CSSV.getPropertyValue('--cold').trim(),
+  brass: CSSV.getPropertyValue('--brass').trim(),
+  violet:CSSV.getPropertyValue('--violet').trim(),
+  line:  CSSV.getPropertyValue('--line').trim(),
+  axis:  CSSV.getPropertyValue('--axis').trim(),
+  surf:  CSSV.getPropertyValue('--surface-2').trim()
+};
+const MONO = 'IBM Plex Mono, ui-monospace, Menlo, monospace';
+function fnt(px, w) { return (w ? w + ' ' : '') + px + 'px ' + MONO; }
+
+/* log-gamma (Lanczos) -> log-binomial, for entropies of large solids */
+function lgamma(x) {
+  const g = [676.5203681218851, -1259.1392167224028, 771.32342877765313,
+             -176.61502916214059, 12.507343278686905, -0.13857109526572012,
+             9.9843695780195716e-6, 1.5056327351493116e-7];
+  if (x < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * x)) - lgamma(1 - x);
+  x -= 1; let a = 0.99999999999980993; const t = x + 7.5;
+  for (let i = 0; i < 8; i++) a += g[i] / (x + i + 1);
+  return 0.5 * Math.log(2 * Math.PI) + (x + 0.5) * Math.log(t) - t + Math.log(a);
+}
+function lnBinom(n, k) { return lgamma(n + 1) - lgamma(k + 1) - lgamma(n - k + 1); }
+/* Entropy of an Einstein solid: S/k = ln C(q+N-1, q) */
+function einS(N, q) { return lnBinom(q + N - 1, q); }
+
+/* =========================================================================
+   W1 — droplet + room exchanging quanta (live Monte Carlo, exact conservation)
+   ========================================================================= */
+(function () {
+  // Droplet of 12 oscillators holding 60 quanta, dropped into a room of 200
+  // oscillators that already holds 70 of its own — a room at a real temperature,
+  // not at absolute zero. Same system as the widget in step 2.
+  const NA = 12, NB = 200, QDROP = 60, QROOM = 70, QALL = QDROP + QROOM, NT = NA + NB;
+  const canvas = document.getElementById('w1-canvas');
+  const ctx = setupCanvas(canvas, 760, 360);
+  const readout = document.getElementById('w1-readout');
+  const runBtn = document.getElementById('w1-run');
+  const resetBtn = document.getElementById('w1-reset');
+  const stepBtn = document.getElementById('w1-step');
+
+  let q = new Int32Array(NT);
+  const HIST = 420;
+  let hist = [];          // bounded ring of {a,b,t}
+  let running = false, raf = null, lastStr = '';
+
+  const S_A0 = einS(NA, QDROP), S_B0 = einS(NB, QROOM);
+  function reset() {
+    q.fill(0);
+    for (let i = 0; i < QDROP; i++) q[i % NA] += 1;        // 60 quanta in the droplet
+    for (let i = 0; i < QROOM; i++) q[NA + ((i * 7) % NB)] += 1;  // 70 spread through the room
+    hist = [];
+    record();
+  }
+  /* traces are CHANGES since the start, so all three begin at zero */
+  function record() {
+    const qa = qA();
+    hist.push({ a: einS(NA, qa) - S_A0, b: einS(NB, QALL - qa) - S_B0 });
+    if (hist.length > HIST) hist.shift();
+  }
+  function qA() { let s = 0; for (let i = 0; i < NA; i++) s += q[i]; return s; }
+
+  function mc(n) {
+    for (let k = 0; k < n; k++) {
+      const i = (Math.random() * NT) | 0, j = (Math.random() * NT) | 0;
+      if (q[i] > 0 && i !== j) { q[i]--; q[j]++; }
+    }
+    record();
+  }
+
+  /* ---- drawing ---- */
+  const DX = 24, DY = 34, DW = 300;             // droplet panel
+  const RX = 356, RY = 34, RW = 380;            // room panel
+  const PY = 196, PH = 148;                     // entropy trace panel
+
+  function draw() {
+    ctx.clearRect(0, 0, 760, 360);
+    const qa = qA();
+
+    // panel labels
+    ctx.font = fnt(11, '500'); ctx.textAlign = 'left'; ctx.fillStyle = C.soft;
+    ctx.fillText('DROPLET   N = 12 oscillators', DX, DY - 12);
+    ctx.fillText('ROOM   N = 200 oscillators', RX, RY - 12);
+
+    // --- droplet: 12 columns of stacked quanta ---
+    const colW = DW / NA;
+    for (let i = 0; i < NA; i++) {
+      const x = DX + i * colW;
+      ctx.strokeStyle = C.line; ctx.lineWidth = 1;
+      ctx.strokeRect(x + 1, DY, colW - 3, 128);
+      for (let k = 0; k < Math.min(q[i], 15); k++) {
+        ctx.fillStyle = C.heat;
+        ctx.beginPath();
+        ctx.arc(x + colW / 2 - 0.5, DY + 122 - k * 8, 3, 0, 6.2832);
+        ctx.fill();
+      }
+      if (q[i] > 15) {
+        ctx.fillStyle = C.heat; ctx.font = fnt(9, '600'); ctx.textAlign = 'center';
+        ctx.fillText('+' + (q[i] - 15), x + colW / 2, DY + 10);
+        ctx.textAlign = 'left';
+      }
+    }
+
+    // --- room: 200 cells, brightness = quanta held ---
+    const cols = 20, rows = 10, cw = RW / cols, ch = 128 / rows;
+    for (let i = 0; i < NB; i++) {
+      const cx = RX + (i % cols) * cw, cy = RY + ((i / cols) | 0) * ch;
+      const n = q[NA + i];
+      ctx.fillStyle = n === 0 ? C.surf : C.heat;
+      ctx.globalAlpha = n === 0 ? 1 : Math.min(0.28 + 0.3 * n, 1);
+      ctx.fillRect(cx + 1, cy + 1, cw - 2, ch - 2);
+      ctx.globalAlpha = 1;
+    }
+
+    // --- entropy traces ---
+    const SLO = -32, SHI = 70;
+    const px = i => DX + (i / (HIST - 1)) * (736 - DX);
+    const py = s => PY + PH - (s - SLO) / (SHI - SLO) * PH;
+    ctx.strokeStyle = C.axis; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(DX, PY); ctx.lineTo(DX, PY + PH); ctx.stroke();
+
+    ctx.font = fnt(10); ctx.textAlign = 'right';
+    for (const v of [-20, 0, 20, 40, 60]) {
+      ctx.fillStyle = C.soft;
+      ctx.fillText(String(v), DX - 6, py(v) + 3);
+      ctx.strokeStyle = v === 0 ? C.axis : C.line; ctx.beginPath();
+      ctx.moveTo(DX, py(v)); ctx.lineTo(736, py(v)); ctx.stroke();
+    }
+    ctx.fillStyle = C.soft; ctx.textAlign = 'left';
+    ctx.save(); ctx.translate(DX - 38, PY + PH / 2); ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'center'; ctx.fillText('change in S / k', 0, 0); ctx.restore();
+
+    const series = [
+      { key: 'a', col: C.cold,   lab: 'ΔS droplet' },
+      { key: 'b', col: C.brass,  lab: 'ΔS room' },
+      { key: 't', col: C.violet, lab: 'ΔS total' }
+    ];
+    for (const s of series) {
+      ctx.strokeStyle = s.col; ctx.lineWidth = 2; ctx.beginPath();
+      for (let i = 0; i < hist.length; i++) {
+        const v = s.key === 't' ? hist[i].a + hist[i].b : hist[i][s.key];
+        i === 0 ? ctx.moveTo(px(i), py(v)) : ctx.lineTo(px(i), py(v));
+      }
+      ctx.stroke();
+    }
+    // legend
+    ctx.font = fnt(10, '500'); ctx.textAlign = 'left';
+    let lx = DX + 8;
+    for (const s of series) {
+      ctx.fillStyle = s.col; ctx.fillRect(lx, PY + 8, 14, 3);
+      ctx.fillText(s.lab, lx + 20, PY + 12);
+      lx += 20 + ctx.measureText(s.lab).width + 22;
+    }
+
+    const h = hist[hist.length - 1];
+    const str = 'quanta in the droplet: <b>' + qa + '</b> of 130 in play (it started with 60)' +
+      ' &nbsp;|&nbsp; ΔS_droplet/k = <b>' + h.a.toFixed(2) + '</b>' +
+      ' &nbsp; ΔS_room/k = <b>' + h.b.toFixed(2) + '</b>' +
+      ' &nbsp; ΔS_total/k = <b>' + (h.a + h.b).toFixed(2) + '</b><br>' +
+      'heading for a 6/124 split, at which the droplet has <b>lost</b> 19.15 of entropy, the room has gained ' +
+      '60.69, and the universe is up 41.54. The droplet gets more ordered. The law is still obeyed.';
+    if (str !== lastStr) { readout.innerHTML = str; lastStr = str; }
+  }
+
+  function loop() { if (!running) return; mc(300); draw(); raf = requestAnimationFrame(loop); }
+  runBtn.addEventListener('click', () => {
+    running = !running;
+    runBtn.textContent = running ? 'Pause' : 'Run';
+    runBtn.classList.toggle('on', running);
+    if (running) loop(); else if (raf) cancelAnimationFrame(raf);
+  });
+  stepBtn.addEventListener('click', () => { mc(200); draw(); });
+  resetBtn.addEventListener('click', () => { reset(); draw(); });
+  reset(); draw();
+})();
+
+/* =========================================================================
+   W2 — staged: why a large reservoir has a straight-line entropy
+   ========================================================================= */
+(function () {
+  const NA = 12, QTOT = 60;
+  const canvas = document.getElementById('w2-canvas');
+  const ctx = setupCanvas(canvas, 760, 380);
+  const nb = document.getElementById('w2-nb');
+  const nbV = document.getElementById('w2-nbV');
+  const readout = document.getElementById('w2-readout');
+  const backBtn = document.getElementById('w2-back');
+  const nextBtn = document.getElementById('w2-next');
+  const capEl = document.getElementById('w2-caption');
+  let stage = 0, lastStr = '';
+
+  const stages = [
+    { next: 'Add the room &rarr;',
+      cap: 'The droplet on its own: more energy means more ways to hold it, but with diminishing returns — the curve bends over.' },
+    { next: 'Straighten it &rarr;',
+      cap: 'The room, giving up whatever the droplet takes. Over this range its entropy loss is almost perfectly proportional to the energy handed over.' },
+    { next: 'Add them up &rarr;',
+      cap: 'A straight line through it, with the shortfall shaded. The slope is −1/T, and calling the room a thermostat at a fixed T is exactly the claim that this shading is negligible. Shrink the room and watch it stop being.' },
+    { next: 'Flip it into F &rarr;',
+      cap: 'Their sum: the entropy of the universe. It has a clear maximum — that split is equilibrium.' },
+    { next: null,
+      cap: 'F = U − T·S_droplet, on its own scale. Its minimum sits on the same vertical line as the maximum above. Same statement, no room required.' }
+  ];
+
+  /* geometry of the plot box */
+  const B = { padL: 62, padR: 138, padT: 30, padB: 40 };
+
+  function model() {
+    const NB = parseInt(nb.value);
+    // A reservoir must be large in ENERGY as well as in size, or it just runs
+    // cold. The room carries its own 0.35 quanta per oscillator, so growing NB
+    // grows its heat capacity while leaving its temperature alone.
+    const QB0 = Math.round(0.35 * NB);
+    const sSys = [], sRoom = [];
+    const s0 = einS(NA, QTOT), r0 = einS(NB, QB0);
+    for (let qa = 0; qa <= QTOT; qa++) {
+      sSys.push(einS(NA, qa) - s0);
+      sRoom.push(einS(NB, QB0 + QTOT - qa) - r0);
+    }
+    // equilibrium split
+    let best = -1e9, bq = 0;
+    for (let qa = 0; qa <= QTOT; qa++) {
+      const v = sSys[qa] + sRoom[qa];
+      if (v > best) { best = v; bq = qa; }
+    }
+    // room temperature from its own slope at equilibrium: dS/dq = ln((q+N)/q)
+    const qb = QB0 + QTOT - bq;
+    const invT = Math.log((qb + NB) / qb);
+    const T = 1 / invT;
+    // F on quanta units (energy of droplet = qa, since one quantum = 1)
+    const F = [];
+    for (let qa = 0; qa <= QTOT; qa++) F.push(qa - T * (sSys[qa] + s0));
+    let fmin = 1e9, fq = 0;
+    F.forEach((v, i) => { if (v < fmin) { fmin = v; fq = i; } });
+    return { NB, QB0, sSys, sRoom, T, bq, best, F, fq, fmin };
+  }
+
+  function draw() {
+    const m = model();
+    nbV.textContent = m.NB;
+    ctx.clearRect(0, 0, 760, 380);
+
+    // y-range across whatever is revealed
+    let lo = 0, hi = 0;
+    const consider = a => a.forEach(v => { if (v < lo) lo = v; if (v > hi) hi = v; });
+    consider(m.sSys);
+    if (stage >= 1) consider(m.sRoom);
+    if (stage >= 3) consider(m.sSys.map((v, i) => v + m.sRoom[i]));
+    const pad = (hi - lo) * 0.12 + 1;
+    const view = makeView(canvas, { ...B, xmin: 0, xmax: QTOT, ymin: lo - pad, ymax: hi + pad });
+
+    /* axes */
+    ctx.strokeStyle = C.axis; ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(view.x(0), view.y(view.ymin)); ctx.lineTo(view.x(0), view.y(view.ymax));
+    ctx.moveTo(view.x(0), view.y(0)); ctx.lineTo(view.x(QTOT), view.y(0));
+    ctx.stroke();
+    ctx.font = fnt(10); ctx.fillStyle = C.soft;
+    ctx.textAlign = 'center';
+    for (let q = 0; q <= QTOT; q += 10) {
+      ctx.fillText(String(q), view.x(q), 380 - B.padB + 16);
+    }
+    ctx.fillText('quanta held by the droplet', (view.x(0) + view.x(QTOT)) / 2, 380 - 8);
+    ctx.save(); ctx.translate(16, (view.y(view.ymin) + view.y(view.ymax)) / 2);
+    ctx.rotate(-Math.PI / 2); ctx.fillText('change in S / k since the start', 0, 0); ctx.restore();
+
+    function curve(arr, col, w) {
+      ctx.strokeStyle = col; ctx.lineWidth = w || 2.2; ctx.beginPath();
+      for (let q = 0; q <= QTOT; q++) q === 0 ? ctx.moveTo(view.x(q), view.y(arr[q])) : ctx.lineTo(view.x(q), view.y(arr[q]));
+      ctx.stroke();
+    }
+    function tag(text, q, val, col) {
+      ctx.fillStyle = col; ctx.font = fnt(11, '600'); ctx.textAlign = 'left';
+      ctx.fillText(text, view.x(q) + 8, view.y(val) + 4);
+    }
+
+    curve(m.sSys, C.cold);
+    tag('S droplet', QTOT - 14, m.sSys[QTOT - 14], C.cold);
+
+    if (stage >= 1) { curve(m.sRoom, C.brass); tag('S room', 3, m.sRoom[3], C.brass); }
+
+    if (stage >= 2) {
+      // straight line of slope -1/T through the room curve at the equilibrium split
+      const slope = -1 / m.T;
+      const anchor = m.sRoom[m.bq];
+      const lineAt = q => anchor + slope * (q - m.bq);
+      // shade the gap between the real curve and that straight line: at a big
+      // room it is a sliver, at a small one it is unmissable
+      ctx.fillStyle = C.heat; ctx.globalAlpha = 0.3;
+      ctx.beginPath();
+      for (let q = 0; q <= QTOT; q++) ctx.lineTo(view.x(q), view.y(m.sRoom[q]));
+      for (let q = QTOT; q >= 0; q--) ctx.lineTo(view.x(q), view.y(lineAt(q)));
+      ctx.closePath(); ctx.fill(); ctx.globalAlpha = 1;
+      ctx.strokeStyle = C.ink; ctx.lineWidth = 1.4; ctx.setLineDash([6, 5]);
+      ctx.beginPath();
+      ctx.moveTo(view.x(0), view.y(anchor + slope * (0 - m.bq)));
+      ctx.lineTo(view.x(QTOT), view.y(anchor + slope * (QTOT - m.bq)));
+      ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = C.ink; ctx.font = fnt(10, '500'); ctx.textAlign = 'left';
+      ctx.fillText('slope = −1/T = −' + (1 / m.T).toFixed(3),
+        view.x(QTOT * 0.42), view.y(anchor + slope * (QTOT * 0.42 - m.bq)) - 8);
+    }
+
+    if (stage >= 3) {
+      const tot = m.sSys.map((v, i) => v + m.sRoom[i]);
+      curve(tot, C.violet, 2.8);
+      tag('S total', m.bq + 8, tot[Math.min(m.bq + 8, QTOT)], C.violet);
+      ctx.strokeStyle = C.violet; ctx.lineWidth = 1; ctx.setLineDash([3, 4]);
+      ctx.beginPath(); ctx.moveTo(view.x(m.bq), view.y(view.ymin)); ctx.lineTo(view.x(m.bq), view.y(view.ymax)); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = C.violet; ctx.beginPath(); ctx.arc(view.x(m.bq), view.y(tot[m.bq]), 5, 0, 6.2832); ctx.fill();
+    }
+
+    if (stage >= 4) {
+      // F on its own vertical scale, drawn into the right margin band
+      let fl = Math.min(...m.F), fh = Math.max(...m.F);
+      const fy = v => (380 - B.padB) - (v - fl) / (fh - fl + 1e-9) * (380 - B.padT - B.padB);
+      ctx.strokeStyle = C.heat; ctx.lineWidth = 2.6; ctx.beginPath();
+      for (let q = 0; q <= QTOT; q++) q === 0 ? ctx.moveTo(view.x(q), fy(m.F[q])) : ctx.lineTo(view.x(q), fy(m.F[q]));
+      ctx.stroke();
+      ctx.fillStyle = C.heat; ctx.beginPath(); ctx.arc(view.x(m.fq), fy(m.F[m.fq]), 5, 0, 6.2832); ctx.fill();
+      ctx.font = fnt(11, '600'); ctx.textAlign = 'left';
+      ctx.fillText('F = U − T·S  (own scale)', view.x(m.fq) + 10, fy(m.F[m.fq]) + 16);
+    }
+
+    capEl.innerHTML = stages[stage].cap;
+    backBtn.disabled = stage === 0;
+    if (stages[stage].next) { nextBtn.style.display = ''; nextBtn.innerHTML = stages[stage].next; }
+    else nextBtn.style.display = 'none';
+
+    const str = 'room: <b>' + m.NB + '</b> oscillators holding <b>' + m.QB0 + '</b> quanta of its own, ' +
+      'temperature from its own slope <b>T = ' + m.T.toFixed(3) + '</b> ' +
+      '&nbsp;|&nbsp; S_universe peaks at <b>q = ' + m.bq + '</b>, F is smallest at <b>q = ' + m.fq + '</b>' +
+      (m.bq === m.fq
+        ? ' &mdash; <b>the same split</b>.'
+        : ' &mdash; <b>not the same split</b>: this room is too small to hold a steady T, so F is not yet a valid stand-in.');
+    if (str !== lastStr) { readout.innerHTML = str; lastStr = str; }
+  }
+
+  nextBtn.addEventListener('click', () => { if (stage < stages.length - 1) { stage++; draw(); } });
+  backBtn.addEventListener('click', () => { if (stage > 0) { stage--; draw(); } });
+  nb.addEventListener('input', draw);
+  draw();
+})();
+
+/* =========================================================================
+   W3 — Legendre transform: roll the tangent along U(S), collect intercepts
+   U(S) = e^S  =>  T = e^S,  S = ln T,  U = T,  F = T - T ln T
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('w3-canvas');
+  const ctx = setupCanvas(canvas, 760, 340);
+  const tS = document.getElementById('w3-t');
+  const tV = document.getElementById('w3-tV');
+  const clearBtn = document.getElementById('w3-clear');
+  const readout = document.getElementById('w3-readout');
+  let visited = new Set(), lastStr = '';
+
+  const LP = { padL: 46, padR: 20, padT: 24, padB: 40 };   // left panel insets
+  const halfW = 368;
+  function panel(x0, b, dom) {
+    return {
+      x: v => x0 + b.padL + (v - dom.xmin) / (dom.xmax - dom.xmin) * (halfW - b.padL - b.padR),
+      y: v => 340 - b.padB - (v - dom.ymin) / (dom.ymax - dom.ymin) * (340 - b.padT - b.padB),
+      dom
+    };
+  }
+  const L = panel(0,   LP, { xmin: 0, xmax: 1.62, ymin: -2.6, ymax: 5.6 });
+  const R = panel(392, LP, { xmin: 0.4, xmax: 4.6, ymin: -2.6, ymax: 1.35 });
+
+  const F = T => T - T * Math.log(T);
+
+  function frame(p, title, xlab, ylab, xticks, yticks) {
+    ctx.strokeStyle = C.axis; ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(p.x(p.dom.xmin), p.y(p.dom.ymin)); ctx.lineTo(p.x(p.dom.xmax), p.y(p.dom.ymin));
+    ctx.moveTo(p.x(p.dom.xmin), p.y(p.dom.ymin)); ctx.lineTo(p.x(p.dom.xmin), p.y(p.dom.ymax));
+    ctx.stroke();
+    // zero line
+    ctx.strokeStyle = C.line; ctx.beginPath();
+    ctx.moveTo(p.x(p.dom.xmin), p.y(0)); ctx.lineTo(p.x(p.dom.xmax), p.y(0)); ctx.stroke();
+    ctx.font = fnt(10); ctx.fillStyle = C.soft; ctx.textAlign = 'center';
+    xticks.forEach(v => ctx.fillText(String(v), p.x(v), 340 - LP.padB + 15));
+    ctx.textAlign = 'right';
+    yticks.forEach(v => ctx.fillText(String(v), p.x(p.dom.xmin) - 6, p.y(v) + 3));
+    ctx.textAlign = 'center';
+    ctx.fillText(xlab, (p.x(p.dom.xmin) + p.x(p.dom.xmax)) / 2, 340 - 8);
+    ctx.font = fnt(11, '600'); ctx.fillStyle = C.ink; ctx.textAlign = 'left';
+    ctx.fillText(title, p.x(p.dom.xmin), 16);
+    ctx.font = fnt(10); ctx.fillStyle = C.soft;
+    ctx.fillText(ylab, p.x(p.dom.xmin) - 38, 16);
+  }
+
+  function draw() {
+    const T = parseFloat(tS.value);
+    const Sstar = Math.log(T), Ustar = T, Fval = F(T);
+    visited.add(Math.round(T * 50));
+    if (visited.size > 500) visited = new Set([Math.round(T * 50)]);
+    ctx.clearRect(0, 0, 760, 340);
+
+    /* ---------- LEFT: U(S) with a rolling tangent ---------- */
+    frame(L, 'U(S) = e^S, and its tangent of slope T', 'entropy  S', 'U', [0, 0.5, 1, 1.5], [-2, 0, 2, 4]);
+    ctx.strokeStyle = C.ink; ctx.lineWidth = 2.4; ctx.beginPath();
+    for (let i = 0; i <= 200; i++) {
+      const s = L.dom.xmin + i / 200 * (L.dom.xmax - L.dom.xmin);
+      i === 0 ? ctx.moveTo(L.x(s), L.y(Math.exp(s))) : ctx.lineTo(L.x(s), L.y(Math.exp(s)));
+    }
+    ctx.stroke();
+    // tangent: U = T(S - S*) + T
+    ctx.strokeStyle = C.heat; ctx.lineWidth = 2;
+    const tl = s => T * (s - Sstar) + Ustar;
+    ctx.beginPath();
+    ctx.moveTo(L.x(L.dom.xmin), L.y(tl(L.dom.xmin)));
+    ctx.lineTo(L.x(L.dom.xmax), L.y(tl(L.dom.xmax)));
+    ctx.stroke();
+    // touch point
+    ctx.fillStyle = C.ink; ctx.beginPath(); ctx.arc(L.x(Sstar), L.y(Ustar), 4.5, 0, 6.2832); ctx.fill();
+    // intercept at S = 0  ->  F
+    ctx.fillStyle = C.violet;
+    ctx.beginPath(); ctx.arc(L.x(0), L.y(Fval), 6, 0, 6.2832); ctx.fill();
+    ctx.strokeStyle = C.violet; ctx.lineWidth = 1; ctx.setLineDash([3, 4]);
+    ctx.beginPath(); ctx.moveTo(L.x(0), L.y(Fval)); ctx.lineTo(L.x(0), L.y(0)); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = C.violet; ctx.font = fnt(11, '600'); ctx.textAlign = 'left';
+    ctx.fillText('F = ' + Fval.toFixed(3), L.x(0) + 9, L.y(Fval) - 9);
+    ctx.fillStyle = C.heat; ctx.font = fnt(10, '500');
+    ctx.fillText('slope T = ' + T.toFixed(2), L.x(Sstar) + 10, L.y(Ustar) + 18);
+
+    /* ---------- RIGHT: the collected intercepts, F(T) ---------- */
+    frame(R, 'every intercept collected: F(T)', 'temperature  T', 'F', [1, 2, 3, 4], [-2, -1, 0, 1]);
+    ctx.fillStyle = C.violet;
+    visited.forEach(k => {
+      const t = k / 50;
+      ctx.beginPath(); ctx.arc(R.x(t), R.y(F(t)), 2.2, 0, 6.2832); ctx.fill();
+    });
+    ctx.fillStyle = C.heat;
+    ctx.beginPath(); ctx.arc(R.x(T), R.y(Fval), 6, 0, 6.2832); ctx.fill();
+    ctx.font = fnt(10); ctx.fillStyle = C.soft; ctx.textAlign = 'left';
+    ctx.fillText('sweep T to fill this in', R.x(0.55), R.y(1.15));
+
+    tV.textContent = T.toFixed(2);
+    const str = 'touch point: S = ln T = <b>' + Sstar.toFixed(3) + '</b>, U = <b>' + Ustar.toFixed(3) +
+      '</b> &nbsp;|&nbsp; intercept F = U − T·S = <b>' + Fval.toFixed(3) + '</b>' +
+      ' &nbsp;|&nbsp; check: −dF/dT = ln T = <b>' + Sstar.toFixed(3) + '</b> = S. ' +
+      'The variable we traded away comes back as a slope.';
+    if (str !== lastStr) { readout.innerHTML = str; lastStr = str; }
+  }
+  tS.addEventListener('input', draw);
+  clearBtn.addEventListener('click', () => { visited = new Set(); draw(); });
+  draw();
+})();
+
+/* =========================================================================
+   W4 — two cylinders of gas, one bolted shut, both thermostatted
+   Real 2-D MD. Ledger: Q (thermostat injections), W = P dV, dU, piston KE.
+   ========================================================================= */
+(function () {
+  const N = 250, LX = 10, DT = 0.01, HMAX = 26, HMIN = 1.5, VMAX = 0.05, RAMP = 12000;
+  const canvas = document.getElementById('w4-canvas');
+  const ctx = setupCanvas(canvas, 760, 430);
+  const tS = document.getElementById('w4-t'), pS = document.getElementById('w4-p');
+  const tV = document.getElementById('w4-tV'), pV = document.getElementById('w4-pV');
+  const runBtn = document.getElementById('w4-run'), zeroBtn = document.getElementById('w4-zero');
+  const expBtn = document.getElementById('w4-exp');
+  const readout = document.getElementById('w4-readout');
+  let running = true, raf = null, lastStr = '', ramp = null;
+
+  function makeBox(locked, h0) {
+    const b = { locked, h: h0, vp: 0, x: [], y: [], vx: [], vy: [], Q: 0, W: 0, Wg: 0, K0: 0 };
+    for (let i = 0; i < N; i++) {
+      b.x.push(Math.random() * LX);
+      b.y.push(Math.random() * h0 * 0.9);
+      const s = Math.sqrt(-2 * Math.log(Math.random() + 1e-12));
+      const a = Math.random() * 6.2832;
+      b.vx.push(s * Math.cos(a)); b.vy.push(s * Math.sin(a));
+    }
+    return b;
+  }
+  let A = makeBox(true, 10), B = makeBox(false, 10);
+  function ke(b) { let k = 0; for (let i = 0; i < N; i++) k += 0.5 * (b.vx[i] * b.vx[i] + b.vy[i] * b.vy[i]); return k; }
+  function zero() { A.Q = 0; A.W = 0; A.Wg = 0; A.K0 = ke(A); B.Q = 0; B.W = 0; B.Wg = 0; B.K0 = ke(B); }
+  zero();
+
+  function stepBox(b, Tset, P) {
+    for (let i = 0; i < N; i++) {
+      b.x[i] += b.vx[i] * DT; b.y[i] += b.vy[i] * DT;
+      if (b.x[i] < 0) { b.x[i] = -b.x[i]; b.vx[i] = -b.vx[i]; }
+      else if (b.x[i] > LX) { b.x[i] = 2 * LX - b.x[i]; b.vx[i] = -b.vx[i]; }
+      if (b.y[i] < 0) { b.y[i] = -b.y[i]; b.vy[i] = -b.vy[i]; }
+      if (b.y[i] > b.h) {
+        const v = b.vy[i];
+        if (v > b.vp) {
+          // bounce off a wall that is itself moving at vp: v -> 2vp - v.
+          // The kinetic energy the particle loses is energy handed to the piston,
+          // so we can METER the work instead of assuming it.
+          const vn = 2 * b.vp - v;
+          b.Wg += 0.5 * (v * v - vn * vn);
+          b.vy[i] = vn;
+          b.y[i] = Math.min(Math.max(2 * b.h - b.y[i], 0.01), b.h - 1e-4);
+        } else {
+          b.y[i] = b.h - 1e-4;             // piston swept past it; no collision
+        }
+      }
+    }
+    if (!b.locked) {
+      // The piston is held at mechanical equilibrium: it drifts, slowly and with
+      // a capped speed, toward the height where the gas pressure it currently
+      // has would balance the atmosphere. A free massive piston is the more
+      // literal picture, but it rattles hard enough to pump the gas, which would
+      // corrupt the very meters this widget exists to read.
+      const hOld = b.h;
+      const hTarget = Math.max(HMIN, Math.min(HMAX, ke(b) / (LX * P)));
+      const want = Math.max(-VMAX, Math.min(VMAX, 0.10 * (hTarget - b.h)));
+      b.vp += (want - b.vp) * 0.004;
+      b.h += b.vp * DT;
+      if (b.h < HMIN) { b.h = HMIN; b.vp = 0; }
+      if (b.h > HMAX) { b.h = HMAX; b.vp = 0; }
+      b.W += P * LX * (b.h - hOld);        // work handed to the atmosphere
+    } else b.vp = 0;
+    // thermostat, metered.  2-D:  U = N kT  =>  T = KE / N
+    const kBefore = ke(b);
+    const Tcur = kBefore / N;
+    const lam = Math.sqrt(Math.max(1 + 0.02 * (Tset / Tcur - 1), 0.5));
+    for (let i = 0; i < N; i++) { b.vx[i] *= lam; b.vy[i] *= lam; }
+    b.Q += ke(b) - kBefore;
+  }
+
+  /* ---- rendering ---- */
+  const SCL = 10.6, FLOOR = 300, TOPY = FLOOR - HMAX * SCL;
+  function drawBox(b, x0, label) {
+    const w = LX * SCL, hp = b.h * SCL;
+    ctx.fillStyle = C.soft; ctx.font = fnt(10, '500'); ctx.textAlign = 'left';
+    ctx.fillText(label, x0, TOPY - 12);
+    // vessel walls
+    ctx.strokeStyle = C.line; ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(x0, TOPY - 4); ctx.lineTo(x0, FLOOR); ctx.lineTo(x0 + w, FLOOR); ctx.lineTo(x0 + w, TOPY - 4);
+    ctx.stroke();
+    // gas
+    ctx.fillStyle = C.heat;
+    for (let i = 0; i < N; i++) ctx.fillRect(x0 + b.x[i] * SCL - 1, FLOOR - b.y[i] * SCL - 1, 2, 2);
+    // piston
+    ctx.fillStyle = b.locked ? C.soft : C.brass;
+    ctx.fillRect(x0 - 4, FLOOR - hp - 7, w + 8, 7);
+    if (b.locked) {
+      ctx.strokeStyle = C.soft; ctx.lineWidth = 2;
+      for (const dx of [10, w - 10]) {
+        ctx.beginPath(); ctx.moveTo(x0 + dx, FLOOR - hp - 7); ctx.lineTo(x0 + dx, TOPY - 4); ctx.stroke();
+      }
+      ctx.font = fnt(9); ctx.fillStyle = C.soft; ctx.textAlign = 'center';
+      ctx.fillText('BOLTED', x0 + w / 2, TOPY + 10);
+    } else {
+      // arrows: the atmosphere pressing down
+      ctx.strokeStyle = C.brass; ctx.lineWidth = 1.2;
+      for (let k = 0; k < 4; k++) {
+        const ax = x0 + w * (0.2 + 0.2 * k), ay = FLOOR - hp - 12;
+        ctx.beginPath(); ctx.moveTo(ax, ay - 16); ctx.lineTo(ax, ay);
+        ctx.moveTo(ax - 3, ay - 4); ctx.lineTo(ax, ay); ctx.lineTo(ax + 3, ay - 4); ctx.stroke();
+      }
+    }
+    ctx.font = fnt(10); ctx.fillStyle = C.soft; ctx.textAlign = 'center';
+    ctx.fillText('V = ' + (LX * b.h).toFixed(1), x0 + w / 2, FLOOR + 16);
+  }
+
+  function meterRow(x, y, label, val, col, unit) {
+    ctx.font = fnt(10); ctx.fillStyle = C.soft; ctx.textAlign = 'left';
+    ctx.fillText(label, x, y);
+    ctx.font = fnt(14, '600'); ctx.fillStyle = col; ctx.textAlign = 'right';
+    ctx.fillText(val, x + 168, y);
+    ctx.font = fnt(9); ctx.fillStyle = C.soft; ctx.textAlign = 'left';
+    if (unit) ctx.fillText(unit, x + 174, y);
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, 760, 430);
+    drawBox(A, 40, 'FIXED VOLUME');
+    drawBox(B, 210, 'FIXED PRESSURE');
+
+    const dUB = ke(B) - B.K0;
+    ctx.font = fnt(11, '600'); ctx.fillStyle = C.ink; ctx.textAlign = 'left';
+    ctx.fillText('METERS  (since you last zeroed)', 400, TOPY - 12);
+    let y = TOPY + 24;
+    meterRow(400, y, 'heat in, bolted   Q_V', A.Q.toFixed(1), C.heat); y += 32;
+    meterRow(400, y, 'heat in, free     Q_P', B.Q.toFixed(1), C.heat); y += 32;
+    meterRow(400, y, '  of which stored   ΔU', dUB.toFixed(1), C.cold); y += 32;
+    meterRow(400, y, '  of which shoved   P·ΔV', B.W.toFixed(1), C.brass); y += 32;
+    meterRow(400, y, 'work counted at the piston', B.Wg.toFixed(1), C.brass); y += 40;
+    const ratio = Math.abs(A.Q) > 8 ? (B.Q / A.Q) : NaN;
+    meterRow(400, y, 'ratio  Q_P / Q_V', isNaN(ratio) ? '—' : ratio.toFixed(2), C.violet, 'expect ≈ 2'); y += 32;
+    const resid = B.Q - dUB - B.Wg;
+    meterRow(400, y, 'books:  Q − ΔU − W', resid.toFixed(2), C.soft, 'expect 0');
+
+    // temperatures
+    ctx.font = fnt(10); ctx.fillStyle = C.soft; ctx.textAlign = 'center';
+    ctx.fillText('T = ' + (ke(A) / N).toFixed(2), 40 + LX * SCL / 2, FLOOR + 32);
+    ctx.fillText('T = ' + (ke(B) / N).toFixed(2), 210 + LX * SCL / 2, FLOOR + 32);
+
+    const str = 'Zero the meters, then nudge the thermostat up and wait. The bolted cylinder banks every joule ' +
+      'as internal energy; the free one spends part of each joule pushing the atmosphere back, so it needs about ' +
+      '<b>twice</b> as much heat for the same temperature rise. That gap is the difference between ΔU and ΔH.<br>' +
+      'The last two rows are the honesty check: <b>P·ΔV</b> is the work predicted from the piston&rsquo;s travel, ' +
+      '<b>work counted at the piston</b> is the energy the particles were individually measured to lose there, ' +
+      'and the books line is heat in minus energy accounted for.';
+    if (str !== lastStr) { readout.innerHTML = str; lastStr = str; }
+  }
+
+  function loop() {
+    if (!running) return;
+    const P = parseFloat(pS.value);
+    let Tset = parseFloat(tS.value);
+    for (let s = 0; s < 20; s++) {
+      if (ramp) {
+        if (ramp.phase === 'settle') {
+          Tset = ramp.from;
+          if (++ramp.i >= 2500) { zero(); ramp.phase = 'ramp'; ramp.i = 0; }
+        } else {
+          Tset = ramp.from + (ramp.to - ramp.from) * (ramp.i / RAMP);
+          if (++ramp.i >= RAMP) { tS.value = ramp.to; ramp = null; expBtn.classList.remove('on'); }
+        }
+      }
+      stepBox(A, Tset, P); stepBox(B, Tset, P);
+    }
+    tV.textContent = Tset.toFixed(2); pV.textContent = P.toFixed(2);
+    draw();
+    raf = requestAnimationFrame(loop);
+  }
+  runBtn.addEventListener('click', () => {
+    running = !running;
+    runBtn.textContent = running ? 'Pause' : 'Run';
+    runBtn.classList.toggle('on', running);
+    if (running) loop(); else if (raf) cancelAnimationFrame(raf);
+  });
+  zeroBtn.addEventListener('click', zero);
+  // Put a box exactly at temperature T and at the piston height that balances P,
+  // so the experiment always starts from a clean, known baseline no matter what
+  // the reader was fiddling with beforehand.
+  function prime(b, T, P) {
+    const lam = Math.sqrt(T / (ke(b) / N));
+    for (let i = 0; i < N; i++) { b.vx[i] *= lam; b.vy[i] *= lam; }
+    if (!b.locked) b.h = Math.max(HMIN, Math.min(HMAX, N * T / (LX * P)));
+    b.vp = 0;
+  }
+  expBtn.addEventListener('click', () => {
+    const from = Math.min(parseFloat(tS.value), 1.0), P = parseFloat(pS.value);
+    tS.value = from; tV.textContent = from.toFixed(2);
+    prime(A, from, P); prime(B, from, P);
+    // settle first, zero the meters only once the gas has actually relaxed,
+    // and only then start the ramp
+    ramp = { phase: 'settle', from, to: Math.min(from + 0.4, 1.4), i: 0 };
+    expBtn.classList.add('on');
+    if (!running) runBtn.click();
+  });
+  tS.addEventListener('input', () => { ramp = null; expBtn.classList.remove('on'); tV.textContent = parseFloat(tS.value).toFixed(2); });
+  pS.addEventListener('input', () => { pV.textContent = parseFloat(pS.value).toFixed(2); });
+  draw(); loop();
+})();
+
+/* =========================================================================
+   W5 — G(T) for ice / water / steam. Real enthalpies and entropies.
+   ========================================================================= */
+(function () {
+  const R = 8.314462618;
+  const H = { s: 0, l: 6010, g: 6010 + 40660 };
+  const S = { s: 41.0, l: 41.0 + 6010 / 273.15, g: 41.0 + 6010 / 273.15 + 40660 / 373.15 };
+  const canvas = document.getElementById('w5-canvas');
+  const ctx = setupCanvas(canvas, 760, 400);
+  const tS = document.getElementById('w5-t'), pS = document.getElementById('w5-p');
+  const tV = document.getElementById('w5-tV'), pV = document.getElementById('w5-pV');
+  const readout = document.getElementById('w5-readout');
+  const backBtn = document.getElementById('w5-back'), nextBtn = document.getElementById('w5-next');
+  const capEl = document.getElementById('w5-caption');
+  let stage = 0, lastStr = '';
+
+  const stages = [
+    { next: 'Add liquid water &rarr;',
+      cap: 'Ice alone. G = H − T·S, so it is a straight line, and its downward slope is exactly minus its entropy: −41 J/mol·K. Shallow, because a crystal has few arrangements.' },
+    { next: 'Add steam &rarr;',
+      cap: 'Liquid water starts higher (you must pay 6.01 kJ to break the lattice) but falls faster, because it has more entropy. The lines cross at 273.15 K.' },
+    { next: 'Show the winner &rarr;',
+      cap: 'Steam starts far higher — 46.7 kJ of bonds to break — but its slope is −172 J/mol·K, so it eventually dives under everything. Now drag the pressure slider: only this line moves.' },
+    { next: null,
+      cap: 'The lower envelope is the phase you actually get. Melting and boiling are not events in the substance; they are two lines crossing.' }
+  ];
+
+  function Gof(ph, T, P) {
+    let g = H[ph] - T * S[ph];
+    if (ph === 'g') g += R * T * Math.log(P);
+    return g;
+  }
+  const Tm = () => (H.l - H.s) / (S.l - S.s);
+  const Tb = P => (H.g - H.l) / ((S.g - S.l) - R * Math.log(P));
+
+  const B = { padL: 66, padR: 168, padT: 24, padB: 42, xmin: 230, xmax: 430, ymin: -37000, ymax: 10000 };
+
+  function draw() {
+    const T = parseFloat(tS.value), P = parseFloat(pS.value);
+    tV.textContent = T.toFixed(0); pV.textContent = P.toFixed(2);
+    const view = makeView(canvas, B);
+    ctx.clearRect(0, 0, 760, 400);
+
+    // axes
+    ctx.strokeStyle = C.axis; ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(view.x(230), view.y(B.ymin)); ctx.lineTo(view.x(230), view.y(B.ymax));
+    ctx.moveTo(view.x(230), view.y(B.ymin)); ctx.lineTo(view.x(430), view.y(B.ymin));
+    ctx.stroke();
+    ctx.font = fnt(10); ctx.fillStyle = C.soft; ctx.textAlign = 'center';
+    for (let t = 250; t <= 430; t += 50) ctx.fillText(t + ' K', view.x(t), 400 - B.padB + 16);
+    ctx.fillText('temperature', (view.x(230) + view.x(430)) / 2, 400 - 10);
+    ctx.textAlign = 'right';
+    for (let g = -30000; g <= 10000; g += 10000) {
+      ctx.fillText((g / 1000) + ' kJ', view.x(230) - 6, view.y(g) + 3);
+      ctx.strokeStyle = C.line; ctx.beginPath();
+      ctx.moveTo(view.x(230), view.y(g)); ctx.lineTo(view.x(430), view.y(g)); ctx.stroke();
+    }
+    ctx.save(); ctx.translate(16, 200); ctx.rotate(-Math.PI / 2);
+    ctx.textAlign = 'center'; ctx.fillStyle = C.soft; ctx.fillText('Gibbs free energy  G  (per mole)', 0, 0); ctx.restore();
+
+    const phases = [
+      { k: 's', col: C.cold,   lab: 'ice' },
+      { k: 'l', col: C.violet, lab: 'liquid water' },
+      { k: 'g', col: C.heat,   lab: 'steam' }
+    ];
+    const shown = phases.slice(0, Math.min(stage + 1, 3));
+
+    // stage 3: shade the lower envelope
+    if (stage >= 3) {
+      ctx.globalAlpha = 0.13;
+      for (let px = view.x(230); px <= view.x(430); px += 2) {
+        const t = 230 + (px - view.x(230)) / (view.x(430) - view.x(230)) * 200;
+        let bestK = 's', bestG = 1e18;
+        for (const p of phases) { const g = Gof(p.k, t, P); if (g < bestG) { bestG = g; bestK = p.k; } }
+        ctx.fillStyle = phases.find(p => p.k === bestK).col;
+        ctx.fillRect(px, view.y(bestG), 2, view.y(B.ymin) - view.y(bestG));
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    for (const p of shown) {
+      ctx.strokeStyle = p.col; ctx.lineWidth = 2.6;
+      ctx.beginPath();
+      ctx.moveTo(view.x(230), view.y(Gof(p.k, 230, P)));
+      ctx.lineTo(view.x(430), view.y(Gof(p.k, 430, P)));
+      ctx.stroke();
+      ctx.fillStyle = p.col; ctx.font = fnt(11, '600'); ctx.textAlign = 'left';
+      const gy = Gof(p.k, 428, P);
+      ctx.fillText(p.lab, view.x(430) + 8, Math.max(view.y(gy) + 4, 20));
+      ctx.font = fnt(9); ctx.fillStyle = C.soft;
+      ctx.fillText('slope −' + S[p.k].toFixed(0) + ' J/K', view.x(430) + 8, Math.max(view.y(gy) + 18, 34));
+    }
+
+    // crossing markers
+    if (stage >= 2) {
+      [[Tm(), 'melts'], [Tb(P), 'boils']].forEach(([tc, lab]) => {
+        if (tc < 230 || tc > 430) return;
+        const g = Gof(lab === 'melts' ? 'l' : 'g', tc, P);
+        ctx.strokeStyle = C.ink; ctx.lineWidth = 1; ctx.setLineDash([3, 4]);
+        ctx.beginPath(); ctx.moveTo(view.x(tc), view.y(g)); ctx.lineTo(view.x(tc), view.y(B.ymin)); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = C.ink; ctx.beginPath(); ctx.arc(view.x(tc), view.y(g), 4.5, 0, 6.2832); ctx.fill();
+        ctx.font = fnt(10, '600'); ctx.textAlign = 'center';
+        ctx.fillText(lab + ' ' + tc.toFixed(1) + ' K', view.x(tc), view.y(B.ymin) + 30);
+      });
+    }
+
+    // the T cursor
+    ctx.strokeStyle = C.brass; ctx.lineWidth = 1.6;
+    ctx.beginPath(); ctx.moveTo(view.x(T), view.y(B.ymax)); ctx.lineTo(view.x(T), view.y(B.ymin)); ctx.stroke();
+    for (const p of shown) {
+      ctx.fillStyle = p.col;
+      ctx.beginPath(); ctx.arc(view.x(T), view.y(Gof(p.k, T, P)), 4, 0, 6.2832); ctx.fill();
+    }
+
+    // which phase wins
+    let win = 's', wg = 1e18;
+    for (const p of shown) { const g = Gof(p.k, T, P); if (g < wg) { wg = g; win = p.k; } }
+    const name = { s: 'ICE', l: 'LIQUID WATER', g: 'STEAM' }[win];
+    ctx.fillStyle = phases.find(p => p.k === win).col;
+    ctx.font = fnt(13, '600'); ctx.textAlign = 'left';
+    ctx.fillText(name, view.x(430) + 8, 380);
+    ctx.font = fnt(9); ctx.fillStyle = C.soft;
+    ctx.fillText('lowest G at ' + T.toFixed(0) + ' K', view.x(430) + 8, 394);
+
+    capEl.textContent = stages[stage].cap;
+    backBtn.disabled = stage === 0;
+    if (stages[stage].next) { nextBtn.style.display = ''; nextBtn.innerHTML = stages[stage].next; }
+    else nextBtn.style.display = 'none';
+
+    const str = 'at T = ' + T.toFixed(0) + ' K, P = ' + P.toFixed(2) + ' atm &nbsp;|&nbsp; ' +
+      'G_ice = <b>' + (Gof('s', T, P) / 1000).toFixed(2) + '</b> &nbsp; G_water = <b>' + (Gof('l', T, P) / 1000).toFixed(2) +
+      '</b> &nbsp; G_steam = <b>' + (Gof('g', T, P) / 1000).toFixed(2) + '</b> kJ/mol<br>' +
+      'melting point <b>' + Tm().toFixed(2) + ' K</b> &nbsp;|&nbsp; boiling point <b>' + Tb(P).toFixed(1) +
+      ' K = ' + (Tb(P) - 273.15).toFixed(1) + ' °C</b>';
+    if (str !== lastStr) { readout.innerHTML = str; lastStr = str; }
+  }
+  nextBtn.addEventListener('click', () => { if (stage < stages.length - 1) { stage++; draw(); } });
+  backBtn.addEventListener('click', () => { if (stage > 0) { stage--; draw(); } });
+  tS.addEventListener('input', draw);
+  pS.addEventListener('input', draw);
+  draw();
+})();
+
+/* =========================================================================
+   W6 — the same isothermal expansion, run greedily or patiently.
+   1 mol, T = 300 K, 1 L -> 2 L.  nRT = 2494.2 J,  -dF = nRT ln2 = 1728.9 J.
+   ========================================================================= */
+(function () {
+  const RGAS = 8.314462618, T0 = 300, nRT = RGAS * T0, V0 = 1, V1 = 2;
+  const DFMAX = nRT * Math.log(V1 / V0);          // 1728.9 J
+  const canvas = document.getElementById('w6-canvas');
+  const ctx = setupCanvas(canvas, 760, 320);
+  const aS = document.getElementById('w6-a'), aV = document.getElementById('w6-aV');
+  const runBtn = document.getElementById('w6-run'), resetBtn = document.getElementById('w6-reset');
+  const readout = document.getElementById('w6-readout');
+  let V = V0, running = false, raf = null, last = 0, lastStr = '';
+
+  function alpha() { return parseFloat(aS.value) / 100; }
+
+  function bar(x, y, w, frac, col, label, valTxt) {
+    ctx.font = fnt(10); ctx.fillStyle = C.soft; ctx.textAlign = 'left';
+    ctx.fillText(label, x, y - 8);
+    ctx.fillStyle = C.surf; ctx.fillRect(x, y, w, 22);
+    ctx.fillStyle = col; ctx.fillRect(x, y, w * Math.max(0, Math.min(frac, 1)), 22);
+    ctx.font = fnt(12, '600'); ctx.fillStyle = C.ink; ctx.textAlign = 'right';
+    ctx.fillText(valTxt, x + w, y - 8);
+  }
+
+  function draw() {
+    const a = alpha();
+    const lnv = Math.log(V / V0);
+    const W = a * nRT * lnv;                 // work you actually collect
+    const wasted = (1 - a) * nRT * lnv;      // dissipated in the load, ends up in the room
+    const dSuniv = (1 - a) * RGAS * lnv;     // J/K created
+    const dF = -nRT * lnv;                   // the gas's own free-energy change
+    ctx.clearRect(0, 0, 760, 320);
+
+    /* ---- cylinder ---- */
+    const CX = 40, CW = 130, FLOOR = 268, TOP = 40;
+    const frac = (V - V0) / (V1 - V0);
+    const hp = 90 + frac * 150;
+    ctx.strokeStyle = C.line; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(CX, TOP); ctx.lineTo(CX, FLOOR); ctx.lineTo(CX + CW, FLOOR); ctx.lineTo(CX + CW, TOP); ctx.stroke();
+    ctx.fillStyle = C.heat; ctx.globalAlpha = 0.16;
+    ctx.fillRect(CX + 1, FLOOR - hp, CW - 2, hp); ctx.globalAlpha = 1;
+    ctx.fillStyle = C.brass; ctx.fillRect(CX - 5, FLOOR - hp - 9, CW + 10, 9);
+    // load blocks stacked on the piston, proportional to alpha
+    const nb = Math.round(a * 6);
+    for (let i = 0; i < nb; i++) {
+      ctx.fillStyle = C.soft; ctx.globalAlpha = 0.5;
+      ctx.fillRect(CX + 22 + (i % 3) * 30, FLOOR - hp - 9 - 14 * (1 + Math.floor(i / 3)), 26, 12);
+      ctx.globalAlpha = 1;
+    }
+    ctx.font = fnt(10); ctx.fillStyle = C.soft; ctx.textAlign = 'center';
+    ctx.fillText('V = ' + V.toFixed(3) + ' L', CX + CW / 2, FLOOR + 18);
+    ctx.fillText('P_gas = ' + (nRT / V).toFixed(0) + ' kPa', CX + CW / 2, FLOOR + 32);
+    ctx.font = fnt(10, '500'); ctx.fillStyle = C.brass;
+    ctx.fillText('load = ' + (a * 100).toFixed(0) + '%', CX + CW / 2, TOP - 12);
+
+    /* ---- ledger bars ---- */
+    const BX = 250, BW = 400;
+    bar(BX, 60, BW, W / DFMAX, C.brass, 'work you collect', W.toFixed(0) + ' J');
+    // the ceiling marker
+    ctx.strokeStyle = C.ink; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(BX + BW, 54); ctx.lineTo(BX + BW, 88); ctx.stroke();
+    ctx.font = fnt(9); ctx.fillStyle = C.ink; ctx.textAlign = 'right';
+    ctx.fillText('ceiling: −ΔF = 1729 J', BX + BW - 4, 100);
+
+    bar(BX, 130, BW, wasted / DFMAX, C.heat, 'lost to the room as heat instead', wasted.toFixed(0) + ' J');
+    bar(BX, 200, BW, dSuniv / (RGAS * Math.log(2)), C.cold, 'entropy created in the universe', dSuniv.toFixed(2) + ' J/K');
+    ctx.font = fnt(9); ctx.fillStyle = C.soft; ctx.textAlign = 'left';
+    ctx.fillText('0 only for a perfectly balanced, infinitely slow expansion', BX, 240);
+
+    ctx.font = fnt(11, '600'); ctx.fillStyle = C.violet; ctx.textAlign = 'left';
+    ctx.fillText('ΔF of the gas = ' + dF.toFixed(0) + ' J', BX, 275);
+    ctx.font = fnt(9); ctx.fillStyle = C.soft;
+    ctx.fillText('— identical whatever load you chose. It depends only on where the gas started and stopped.', BX, 290);
+
+    aV.textContent = (a * 100).toFixed(0);
+    const str = 'collected <b>' + W.toFixed(0) + ' J</b> of the <b>' + (nRT * lnv).toFixed(0) +
+      ' J</b> the gas gave up &nbsp;|&nbsp; efficiency <b>' + (lnv > 1e-6 ? (100 * W / (nRT * lnv)).toFixed(0) : '—') +
+      '%</b> &nbsp;|&nbsp; ΔS_universe = <b>' + dSuniv.toFixed(2) + ' J/K</b> ≥ 0, as required.';
+    if (str !== lastStr) { readout.innerHTML = str; lastStr = str; }
+  }
+
+  function loop(ts) {
+    if (!running) return;
+    const dt = Math.min((ts - last) / 1000 || 0.016, 0.05); last = ts;
+    const a = alpha();
+    // piston speed is driven by the pressure the load fails to match
+    const rate = 4e-4 * (1 - a) * nRT / V + 0.15;
+    V = Math.min(V1, V + rate * dt);
+    draw();
+    if (V >= V1) { running = false; runBtn.textContent = 'Released'; runBtn.classList.remove('on'); return; }
+    raf = requestAnimationFrame(loop);
+  }
+  runBtn.addEventListener('click', () => {
+    if (V >= V1) return;
+    running = !running; last = performance.now();
+    runBtn.textContent = running ? 'Hold' : 'Release the piston';
+    runBtn.classList.toggle('on', running);
+    if (running) raf = requestAnimationFrame(loop); else if (raf) cancelAnimationFrame(raf);
+  });
+  resetBtn.addEventListener('click', () => {
+    running = false; if (raf) cancelAnimationFrame(raf);
+    V = V0; runBtn.textContent = 'Release the piston'; runBtn.classList.remove('on'); draw();
+  });
+  aS.addEventListener('input', draw);
+  draw();
+})();
+
+/* =========================================================================
+   W7 — chemical potential: molecules hopping between liquid and vapour.
+   Metropolis on a two-level system => N_vap/N_liq = exp(-de/T) at equilibrium.
+   ========================================================================= */
+(function () {
+  const NTOT = 200;
+  const canvas = document.getElementById('w7-canvas');
+  const ctx = setupCanvas(canvas, 760, 340);
+  const tS = document.getElementById('w7-t'), eS = document.getElementById('w7-e');
+  const tV = document.getElementById('w7-tV'), eV = document.getElementById('w7-eV');
+  const runBtn = document.getElementById('w7-run'), dumpBtn = document.getElementById('w7-dump');
+  const readout = document.getElementById('w7-readout');
+  let running = true, raf = null, lastStr = '';
+
+  const VX = 34, VW = 400, VTOP = 30, VBOT = 296;      // vessel box
+  const mol = [];
+  for (let i = 0; i < NTOT; i++) {
+    mol.push({
+      x: VX + Math.random() * VW, y: VBOT - Math.random() * 60,
+      vx: (Math.random() - 0.5) * 90, vy: (Math.random() - 0.5) * 90, liq: true
+    });
+  }
+  function counts() { let l = 0; for (const m of mol) if (m.liq) l++; return { l, v: NTOT - l }; }
+  function poolTop(nl) { return VBOT - 20 - 100 * (nl / NTOT); }
+
+  function mc(T, de) {
+    for (let k = 0; k < 40; k++) {
+      const m = mol[(Math.random() * NTOT) | 0];
+      if (m.liq) { if (Math.random() < Math.exp(-de / T)) { m.liq = false; m.vy = -Math.abs(m.vy) - 20; } }
+      else { m.liq = true; }
+    }
+  }
+  function move(dt, nl) {
+    const pt = poolTop(nl);
+    for (const m of mol) {
+      m.x += m.vx * dt; m.y += m.vy * dt;
+      if (m.x < VX + 3) { m.x = VX + 3; m.vx = Math.abs(m.vx); }
+      if (m.x > VX + VW - 3) { m.x = VX + VW - 3; m.vx = -Math.abs(m.vx); }
+      const lo = m.liq ? pt : VTOP + 3, hi = m.liq ? VBOT - 3 : pt;
+      if (m.y < lo) { m.y = lo; m.vy = Math.abs(m.vy); }
+      if (m.y > hi) { m.y = hi; m.vy = -Math.abs(m.vy); }
+    }
+  }
+
+  function draw(T, de) {
+    const c = counts(), pt = poolTop(c.l);
+    ctx.clearRect(0, 0, 760, 340);
+    // vessel
+    ctx.strokeStyle = C.line; ctx.lineWidth = 1.5;
+    ctx.strokeRect(VX, VTOP, VW, VBOT - VTOP);
+    // liquid pool
+    ctx.fillStyle = C.cold; ctx.globalAlpha = 0.12;
+    ctx.fillRect(VX + 1, pt, VW - 2, VBOT - pt - 1); ctx.globalAlpha = 1;
+    ctx.strokeStyle = C.cold; ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.moveTo(VX + 1, pt); ctx.lineTo(VX + VW - 1, pt); ctx.stroke();
+    // molecules
+    for (const m of mol) {
+      ctx.fillStyle = m.liq ? C.cold : C.heat;
+      ctx.beginPath(); ctx.arc(m.x, m.y, m.liq ? 3 : 2.4, 0, 6.2832); ctx.fill();
+    }
+    ctx.font = fnt(10, '500'); ctx.textAlign = 'left';
+    ctx.fillStyle = C.heat; ctx.fillText('VAPOUR   ' + c.v, VX + 8, VTOP + 16);
+    ctx.fillStyle = C.cold; ctx.fillText('LIQUID   ' + c.l, VX + 8, VBOT - 8);
+    ctx.font = fnt(9); ctx.fillStyle = C.soft; ctx.textAlign = 'center';
+    ctx.fillText('a molecule in the vapour costs Δε more energy, but has far more room to be in',
+      VX + VW / 2, VBOT + 18);
+
+    /* ---- chemical potential levels ---- */
+    const MX = 486, MW = 240, MTOP = 46, MBOT = 260;
+    const muL = 0 + T * Math.log(Math.max(c.l, 1) / NTOT);
+    const muV = de + T * Math.log(Math.max(c.v, 1) / NTOT);
+    const lo = Math.min(muL, muV, -0.2) - 1.2, hi = Math.max(muL, muV, de, 0.2) + 1.2;
+    const my = v => MBOT - (v - lo) / (hi - lo) * (MBOT - MTOP);
+    ctx.strokeStyle = C.axis; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(MX, MTOP - 10); ctx.lineTo(MX, MBOT); ctx.stroke();
+    ctx.font = fnt(11, '600'); ctx.fillStyle = C.ink; ctx.textAlign = 'left';
+    ctx.fillText('chemical potential μ', MX, MTOP - 22);
+    // zero line
+    ctx.strokeStyle = C.line; ctx.setLineDash([2, 4]);
+    ctx.beginPath(); ctx.moveTo(MX, my(0)); ctx.lineTo(MX + MW, my(0)); ctx.stroke(); ctx.setLineDash([]);
+    function level(v, col, lab) {
+      ctx.strokeStyle = col; ctx.lineWidth = 3.5;
+      ctx.beginPath(); ctx.moveTo(MX + 14, my(v)); ctx.lineTo(MX + MW - 66, my(v)); ctx.stroke();
+      ctx.font = fnt(11, '600'); ctx.fillStyle = col; ctx.textAlign = 'left';
+      ctx.fillText(lab + ' ' + v.toFixed(2), MX + MW - 60, my(v) + 4);
+    }
+    level(muL, C.cold, 'liq');
+    level(muV, C.heat, 'vap');
+    // the gap that drives the flow
+    const gap = muL - muV;
+    if (Math.abs(gap) > 0.02) {
+      ctx.strokeStyle = C.violet; ctx.lineWidth = 1.6;
+      const gx = MX + 30;
+      ctx.beginPath(); ctx.moveTo(gx, my(muL)); ctx.lineTo(gx, my(muV));
+      const tip = my(Math.min(muL, muV)), dir = muV < muL ? 1 : -1;
+      ctx.moveTo(gx - 4, tip + 6 * dir); ctx.lineTo(gx, tip); ctx.lineTo(gx + 4, tip + 6 * dir);
+      ctx.stroke();
+      ctx.font = fnt(9); ctx.fillStyle = C.violet; ctx.textAlign = 'left';
+      ctx.fillText('molecules flow this way', gx + 8, (my(muL) + my(muV)) / 2);
+    } else {
+      ctx.font = fnt(10, '600'); ctx.fillStyle = C.violet; ctx.textAlign = 'left';
+      ctx.fillText('μ matched — equilibrium', MX + 14, MBOT + 22);
+    }
+    ctx.font = fnt(9); ctx.fillStyle = C.soft; ctx.textAlign = 'left';
+    ctx.fillText('μ = ε + kT ln n     energy term + crowding term', MX, MBOT + 44);
+
+    const pred = NTOT / (1 + Math.exp(-de / T));
+    const str = 'liquid <b>' + c.l + '</b> / vapour <b>' + c.v + '</b> &nbsp;|&nbsp; ' +
+      'predicted by μ_liq = μ_vap: <b>' + pred.toFixed(0) + '</b> / <b>' + (NTOT - pred).toFixed(0) + '</b>' +
+      ' &nbsp;(ratio e^(−Δε/kT) = ' + Math.exp(-de / T).toFixed(3) + ')<br>' +
+      'μ_liq = <b>' + muL.toFixed(3) + '</b>, μ_vap = <b>' + muV.toFixed(3) +
+      '</b> — the split moves until these are equal, not until the numbers are.';
+    if (str !== lastStr) { readout.innerHTML = str; lastStr = str; }
+  }
+
+  function loop() {
+    if (!running) return;
+    const T = parseFloat(tS.value), de = parseFloat(eS.value);
+    tV.textContent = T.toFixed(2); eV.textContent = de.toFixed(2);
+    mc(T, de); move(0.016, counts().l); draw(T, de);
+    raf = requestAnimationFrame(loop);
+  }
+  runBtn.addEventListener('click', () => {
+    running = !running;
+    runBtn.textContent = running ? 'Pause' : 'Run';
+    runBtn.classList.toggle('on', running);
+    if (running) loop(); else if (raf) cancelAnimationFrame(raf);
+  });
+  dumpBtn.addEventListener('click', () => {
+    for (const m of mol) { m.liq = true; m.y = VBOT - Math.random() * 40; }
+    draw(parseFloat(tS.value), parseFloat(eS.value));
+  });
+  tS.addEventListener('input', () => { tV.textContent = parseFloat(tS.value).toFixed(2); });
+  eS.addEventListener('input', () => { eV.textContent = parseFloat(eS.value).toFixed(2); });
+  draw(parseFloat(tS.value), parseFloat(eS.value));
+  loop();
+})();
+
+/* =========================================================================
+   READING PROGRESS BAR
+   ========================================================================= */
+(function () {
+  const bar = document.getElementById('progress');
+  function update() {
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%';
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+})();
+</script>
+</body>
+</html>

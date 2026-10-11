@@ -7,22 +7,37 @@ sitemap:
     lastmod: 2017-11-02
     changefreq: weekly
 ---
-<!-- ## Some Info about Me -->
 
-A little nosy, aren't we? 
+Howdy ho, I'm Ludwig Winkler, a machine learner with a focus on stochastic processes and generative models.
 
-Shoot me an email =)
-<!-- <span class="image left"><img src="{{ "/images/LudwigWinkler_AlexSmall.jpg" | absolute_url }}" alt="" /></span> -->
+I defended my PhD at the <a href='https://web.ml.tu-berlin.de' style="color: blue; text-decoration: underline;text-decoration-style:">TU Berlin Machine Learning Group</a> under Klaus-Robert Müller and Manfred Opper in November 2024 and got a nice new hat 🎓.
+During my PhD I worked on time-reversible dynamics of deterministic and stochastic systems.
+I went deep down the rabbit hole on stochastic processes with stochastic differential equations, autograd functions and diffusion models on geometric manifolds.
+You can read up on that on my
+<a href="https://scholar.google.com/citations?hl=en&user=nu_vtVkAAAAJ&view_op=list_works&gmla=AH8HC4zHZJ3Z14D96SJvVcbAzVqP2X1y0Ql1My9Jm4wfFPfB1sTBNHdQj9JICXP8RA07rj8JHtK57BXxQhbcdCEJ" style="color: blue; text-decoration: underline;text-decoration-style:">Google scholar</a>.
 
-<!-- I spent my kindergarten and elementary school years in Austin, Texas where, among other things, I enjoyed the best BBQ west of the Mississippi.
-During high school I lived in Lille, France where I learned French and experienced superb food and the charming little differences between Germany and France.
-After graduating from high school I wanted to learn more about China and the Chinese language and did my volunteer community service in China, working as a volunteer teacher in a local kindergarten in the suburbs of Beijing.
 
-Before my graduate studies at the TU Berlin, I did my undergraduate studies in biomedical engineering at the [Pattern Recognition Lab](https://www5.cs.fau.de) at FAU Erlangen-Nurnberg.
-I mostly worked on machine learning for medical images and computer vision.
-On the side I was an assistant teacher for the 'Signals & Systems I/II' lectures for a year where I oversaw the exercises and tutored younger students taking the class.
+<!-- The title of my thesis was 'Time-Reversible Bridges of Data with Machine Learning'.
+In my PhD I considered different state spaces and trained neural networks to recreate time-reversible dynamics in these state spaces with boundary conditions.
+The dynamics in my PhD included continuous and deterministic, discrete and stochastic, and finally continuous and stochastic.
+The applications were modelling MD simulations and quantum chemical Hamiltonians with recurrent neural networks, discrete state space diffusion with birth-death processes, and solving the Schrödinger Bridge Problem with neural networks.
+A lot of the topics I spent time on can be found in generative models, e.g. velocities fields in flow matching (deterministic and continuous dynamics), SDE's in diffusion models (stochastic and continuous dynamics in Schrödinger Bridges) and Continuous Time Markov Chains (stochastic and discrete half bridges). -->
 
-It was in fact speech recognition that sparked my interest in machine learning and I am very grateful to [Elmar Nöth](https://www5.cs.fau.de/our-team/noeth-elmar) who introduced me to academic conferences as an undergraduate student and enabled me to be a volunteer at the [Interspeech conference](http://www.interspeech2016.org) in 2015 and 2016.
-Talking about machine learning, one could say that 'speech made me do it', since it still up to this day fascinates me how mathematicians, computational linguists and computer scientists are able to decode something seemingly so intricate as the human speech.
-Since then my interest has shifted to probabilistic modeling, neural networks for differential equations and graph processing with neural networks. -->
-<!-- After the 2016 Interspeech, I did a kick-ass road trip through the Western United States where we drove 7.000km from San Francisco, California through Austin, Texas and finishing in Ocean Isle Beach, North Carolina. -->
+Over the course of my studies I gravitated towards machine learning fields with rigorous mathematics.
+Before I knew it, I ended up working on stochastic processes and stochastic differential equations.
+In particular, I have trained neural networks in stochastic differential equations in order to solve optimal transport problems and infer the corresponding stochastic process.
+The stochastic processes I tackled include SDE's, CTMC's, the connection between SDE's and CTMC's in generative modelling and the Schrödinger Bridge Problem.
+I especially enjoy the mathematical rigor of stochastic processes and probabilistic machine learning in general.
+
+I spent time at
+<a href="https://www.gene.com/scientists/our-scientists/prescient-design" style="color: blue; text-decoration: underline;text-decoration-style:">Prescient Design</a> within Genentech/Roche designing and implementing advanced sampling  and sample optimization schemes for protein generation and manipulation with machine learning models.
+
+Currently, I'm a senior research engineer with 
+<a href="https://www.microsoft.com/en-us/research/people/luwinkler/" style="color: blue; text-decoration: underline;text-decoration-style:">Microsoft Research</a>
+ in the AI4Science division. I'm part of the BioEmu team working on modelling the **equilibrium distribution** of biomolecules with generative machine learning models.
+
+Besides my research activity, history in conjunction with economics and politics has been a long standing interest of mine.
+As I grew older the link between economics and history became more evident to me and my focus shifted to economic and financial history which often does a superb job at explaining the latent forces that shape history.
+
+I have been remarkably lucky to be living in Berlin where I explore the multitude of different subcultures that exist so harmoniously in this city.
+Berlin represents something of an ideal city for me as its history has enabled subcultures to thrive while offering abundant intellectual goodies ranging from art&music, a lot of techno, to blockchain and machine learning.

@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Stochastic Thermodynamics — Energy bookkeeping for a noisy bead</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Literata:opsz,wght@7..72,400;7..72,500&display=swap" rel="stylesheet">
+<script>window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]}};</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+:root{--paper:#f4efe3;--card:#fffdf7;--ink:#182b36;--soft:#52646a;--line:#d7d2c5;--navy:#12384a;--sea:#26848d;--coral:#d65c45;--gold:#d49a35;--fog:#e4f0ed;--mono:"DM Mono",monospace;--body:Literata,Georgia,serif;--display:Fraunces,Georgia,serif}
+*{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;background:var(--paper);color:var(--ink);font:18px/1.7 var(--body)} .wrap{max-width:820px;margin:auto;padding:0 24px 110px} header{background:var(--navy);color:#f8f1e1;padding:82px 0 70px;overflow:hidden;position:relative} header:after{content:"";position:absolute;width:580px;height:580px;right:-210px;top:-310px;border:1px solid #75b9b922;border-radius:50%;box-shadow:0 0 0 70px #75b9b910,0 0 0 140px #75b9b90a} header .wrap{position:relative;z-index:1}.eyebrow,.step-no,.label{font:12px/1.2 var(--mono);letter-spacing:.16em;text-transform:uppercase}.eyebrow{color:#83d1ca;margin-bottom:20px}h1,h2{font-family:var(--display);line-height:1.1;margin:0}h1{font-size:clamp(42px,7vw,68px);max-width:720px;letter-spacing:-.03em}h1 em{color:#f3bb63;font-style:normal}.promise{color:#d3e1df;font-size:20px;max-width:660px;margin:24px 0 0}.kernel{background:var(--fog);border-left:5px solid var(--sea);padding:30px 34px;margin:52px 0 82px;border-radius:0 12px 12px 0}.kernel .label{color:var(--sea);margin-bottom:12px}.kernel p{font:22px/1.5 var(--display);margin:0}.step{margin:0 0 86px}.step-no{color:var(--coral);margin-bottom:10px}h2{font-size:clamp(29px,4.5vw,42px);letter-spacing:-.025em;margin-bottom:20px}p{max-width:68ch;margin:0 0 18px}strong{font-weight:500;color:#082c3b}.widget{background:var(--card);border:1px solid var(--line);border-radius:14px;margin:29px 0 24px;overflow:hidden;box-shadow:0 5px 18px #17323b08}.widget-titlewrap{display:flex;justify-content:space-between;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line);font:13px var(--mono)}.widget-title{color:var(--ink);font-weight:500}.widget-title b{color:var(--coral);margin-right:7px}.mode{color:var(--soft);font-size:11px;letter-spacing:.08em;text-transform:uppercase}.widget-body{padding:16px 18px 18px}.canvas{display:block;width:100%;height:auto;background:#f8f5ec;border-radius:8px;border:1px solid #e2ddd2;touch-action:none}.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}.controls label{font:12px var(--mono);color:var(--soft);display:flex;align-items:center;gap:7px}.controls output{color:var(--coral);min-width:31px}button{font:12px var(--mono);background:var(--navy);color:white;border:0;border-radius:6px;padding:9px 12px;cursor:pointer}button:hover{background:var(--sea)}button.ghost{background:transparent;color:var(--navy);border:1px solid var(--line)}button:disabled{opacity:.4;cursor:default}input[type=range]{accent-color:var(--coral);width:112px}.caption{color:var(--soft);font-size:14px;margin:12px 0 0;min-height:2.9em}.readout{font:12px/1.5 var(--mono);color:var(--soft);background:#f5f1e8;border-radius:6px;padding:8px 10px}.readout b{color:var(--coral);font-weight:500}details{border:1px solid var(--line);border-radius:10px;background:#fbf8ef;max-width:70ch;margin-top:22px}summary{cursor:pointer;padding:13px 16px;font:12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--sea)}details div{padding:0 18px 8px;color:var(--soft);font-size:16px}.connection{max-width:70ch;margin:34px 0 80px;padding:25px 28px;border:1px solid #bad6d1;border-radius:12px;background:#edf6f3}.connection .label{color:var(--sea);margin-bottom:11px}.connection p:last-child{margin-bottom:0}.recap{border-top:2px solid var(--navy);padding-top:36px;margin-top:16px}.where{margin-top:56px;padding:26px 30px;background:#e9efeb;border-radius:12px}.where h2{font-size:29px}.where ul{margin:12px 0 0;padding-left:22px}.where li{margin:8px 0}@media(max-width:560px){body{font-size:17px}.widget-titlewrap{align-items:flex-start;flex-direction:column}.kernel{padding:24px}.mode{font-size:10px}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="eyebrow">A noisy bead, a heat bath, and an honest ledger</div>
+  <h1>Stochastic <em>thermodynamics</em></h1>
+  <p class="promise">Follow one microscopic system as it is jostled by a warm environment. You will see exactly where heat, work, entropy, and irreversibility live: in a single noisy trajectory.</p>
+</div></header>
+<main class="wrap">
+<div class="kernel"><div class="label">The kernel</div><p>Stochastic thermodynamics is just <strong>energy bookkeeping for a system too small to be smooth</strong>: moving its energy landscape does work; random collisions trade heat; and entropy measures how much more plausible its movie is forward than backward.</p></div>
+
+<section class="step">
+<div class="step-no">Step 1 · the system is small enough to jitter</div>
+<h2>A bath does two things at once: it pulls back and it kicks</h2>
+<p>Our one example is a bead in water, held near the center of an optical trap. The trap pulls a displaced bead home. Meanwhile, water molecules hit it unpredictably. A large object averages those hits away; this bead cannot. Its position is therefore a jagged, random path.</p>
+<p>The two bath effects have names: <strong>friction</strong> is the systematic pull that removes motion, and <strong>thermal noise</strong> is the random kick that restores it. They must come together. A bath with drag but no kicks would cool the bead to a point; kicks with no drag would heat it forever.</p>
+<div class="widget"><div class="widget-titlewrap"><div class="widget-title"><b>W1</b>One bead, many water kicks</div><div class="mode">staged · play the trajectory</div></div><div class="widget-body">
+<canvas class="canvas" id="c1" height="285" role="img" aria-label="A bead makes a noisy path in a harmonic trap"></canvas>
+<div class="controls"><button id="w1next">Add the restoring pull →</button><button class="ghost" id="w1play">Play kicks</button><button class="ghost" id="w1reset">Reset</button></div>
+<p class="caption" id="w1cap">First, the bead receives random kicks. Without a restoring influence, its position wanders farther and farther.</p>
+</div></div>
+<details><summary>Formal version</summary><div><p>In the overdamped limit (inertia is negligible), position \(x\) follows the Langevin equation \(\dot x=-\mu\,\partial_xU(x)+\sqrt{2\mu k_BT}\,\xi(t)\). Here \(U\) is the trap energy, \(\mu\) is mobility, \(T\) is bath temperature, and \(\xi\) is idealized white noise. The linked strengths \(\mu\) and \(2\mu k_BT\) are the fluctuation–dissipation relation.</p></div></details>
+</section>
+
+<section class="step">
+<div class="step-no">Step 2 · equilibrium is a balance, not stillness</div>
+<h2>Warmth decides how widely the bead explores the landscape</h2>
+<p>Let the trap energy be a bowl, \(U(x)=\tfrac12kx^2\). Far from the middle costs more energy, so the pull favors the center. Noise keeps tossing the bead outward. At equilibrium, these opposing tendencies balance: the bead keeps moving, but its <em>distribution</em> stops changing.</p>
+<p>That settled distribution is the Boltzmann rule: a place costs energy \(U\), so it is weighted by \(e^{-U/(k_BT)}\). This is not an extra law pasted onto the motion. It is what the matched kicks and drag produce after a long time.</p>
+<div class="widget"><div class="widget-titlewrap"><div class="widget-title"><b>W2</b>A bowl filled by noisy trajectories</div><div class="mode">live · change the bath temperature</div></div><div class="widget-body">
+<canvas class="canvas" id="c2" height="310" role="img" aria-label="Samples in a harmonic trap and their Boltzmann distribution"></canvas>
+<div class="controls"><label>temperature <input id="temp" type="range" min="0.15" max="1.20" step="0.05" value="0.45"><output id="tempout">0.45</output></label><button class="ghost" id="w2sample">Let it wander</button></div>
+<p class="caption" id="w2cap">The curve is the predicted equilibrium density. The dots are positions generated by the actual noisy update; repeated wandering fills the curve.</p>
+</div></div>
+<details><summary>Why the exponential has this shape</summary><div><p>At equilibrium, probability cannot keep flowing from one position to another. The force \(-\partial_xU\) pulls probability downhill; diffusion pushes it from crowded to sparse places. Setting those two flows equal gives \(\partial_xp=-(\partial_xU/k_BT)p\). Dividing by \(p\) and integrating gives \(p(x)\propto e^{-U(x)/(k_BT)}\). For this widget's \(k=1\) and \(T=0.45\), the variance is \(k_BT/k=0.45\), so its standard deviation is \(\sqrt{0.45}=0.671\).</p></div></details>
+</section>
+
+<aside class="connection">
+<div class="label">The bridge: equilibrium → a driven trajectory</div>
+<p>The Boltzmann distribution answers a specific question: <strong>if the landscape stays fixed, how often will the bath leave the bead at each energy?</strong> High-energy positions are less common because the same heat exchange that occasionally kicks the bead uphill more often carries it back down.</p>
+<p>Now change the landscape by moving its center \(\lambda\). The Boltzmann rule is no longer the instantaneous answer: the distribution has not had time to catch up. The energy change separates by <em>what changed</em>:</p>
+\[
+dE = \underbrace{\partial_\lambda U(x,\lambda)\,d\lambda}_{\text{work: the hand moves the bowl}}
+   + \underbrace{\partial_x U(x,\lambda)\,dx}_{\text{heat: the bath moves the bead}}.
+\]
+<p>When the hand stops, the heat term is what relaxes the displaced distribution back to the new Boltzmann distribution. Work pushes a system away from equilibrium; heat is the route by which it explores and returns.</p>
+</aside>
+
+<section class="step">
+<div class="step-no">Step 3 · distinguish changing the bead from changing its world</div>
+<h2>Heat moves the bead; work moves the bowl</h2>
+<p>Now slide the trap center to the right. There are two ways the bead's energy can change. If the bead shifts around inside an unchanged bowl, energy crossed the bead–bath boundary: that is <strong>heat</strong>, \(Q\). If the bowl itself shifts while the bead is momentarily where it is, an external hand changed the energy landscape: that is <strong>work</strong>, \(W\).</p>
+<p>This distinction is the whole first law for one trajectory. It does not say each contribution is smooth or positive. It says the ledger closes exactly: \(\Delta U=W+Q\).</p>
+<div class="widget"><div class="widget-titlewrap"><div class="widget-title"><b>W3</b>Dragging a trap through warm water</div><div class="mode">simulate · choose protocol speed</div></div><div class="widget-body">
+<canvas class="canvas" id="c3" height="345" role="img" aria-label="A bead follows a moving harmonic trap while its work and heat are recorded"></canvas>
+<div class="controls"><label>number of moves <input id="speed" type="range" min="60" max="480" step="20" value="200"><output id="speedout">200</output></label><button id="w3run">Run one pull →</button><button class="ghost" id="w3reset">Reset</button><span class="readout" id="w3read"></span></div>
+<p class="caption">One stroke moves the bowl a tiny amount (work), then lets the bath jostle the bead inside that fixed bowl (heat). The separate columns add exactly to the bead’s energy change.</p>
+</div></div>
+<details><summary>The discrete ledger used by the simulation</summary><div><p>At each time step first change the center \(\lambda\) while holding \(x\) fixed: \(w=U(x,\lambda_{\rm new})-U(x,\lambda_{\rm old})\). Then update \(x\) in the fixed new bowl: \(q=U(x_{\rm new},\lambda_{\rm new})-U(x,\lambda_{\rm new})\). Adding those definitions telescopes over all steps, so \(W+Q=U_{\rm final}-U_{\rm initial}\) by construction—not approximately.</p></div></details>
+</section>
+
+<section class="step">
+<div class="step-no">Step 4 · irreversibility is a statistical arrow</div>
+<h2>A fast pull leaves a telltale lag</h2>
+<p>If the trap moves slowly, the bead has time to re-equilibrate and almost follows it. If it moves quickly, the bead lags behind. The extra work paid by that lag is called <strong>dissipation</strong>: energy that ends up as heat in the bath.</p>
+<p>At this scale, a strange thing becomes visible: occasionally a lucky sequence of kicks helps the pull, making the work unusually small. So the second law is not “negative entropy production never happens.” It is sharper: forward-looking movies are exponentially more likely than their time-reversed counterparts. Large systems hide these rare reversals; this bead lets you see why they are allowed.</p>
+<div class="widget"><div class="widget-titlewrap"><div class="widget-title"><b>W4</b>Many pulls: common work and rare lucky pulls</div><div class="mode">sampling · compare slow and fast protocols</div></div><div class="widget-body">
+<canvas class="canvas" id="c4" height="300" role="img" aria-label="Histogram of work over many noisy pulls at two protocol speeds"></canvas>
+<div class="controls"><button id="w4slow">Sample slow pulls</button><button id="w4fast">Sample fast pulls</button><button class="ghost" id="w4clear">Clear</button><span class="readout" id="w4read"></span></div>
+<p class="caption" id="w4cap">Each bar is a population of genuinely simulated trajectories. Try both speeds: the fast protocol shifts the work distribution right, because a lagging bead costs more to drag.</p>
+</div></div>
+<details><summary>The trajectory-level second law</summary><div><p>For a system starting in equilibrium, Jarzynski’s equality says \(\langle e^{-W/(k_BT)}\rangle=e^{-\Delta F/(k_BT)}\). Our shifted harmonic trap has the same shape before and after, so \(\Delta F=0\). Jensen’s inequality then gives \(\langle W\rangle\ge0\). The exponential average is sensitive to rare low-work trajectories—the very “lucky pulls” that make the equality compatible with a positive mean.</p></div></details>
+</section>
+
+<section class="recap">
+<div class="step-no">Putting it together</div><h2>The bookkeeping makes the arrow precise</h2>
+<p>The bath makes a trajectory noisy, not lawless. Its matched drag and kicks produce the Boltzmann distribution. When we move the landscape, the energy change separates cleanly into work from the hand and heat from the bath. A rushed change leaves extra heat behind, making the forward movie statistically easier to tell from its reverse. That is stochastic thermodynamics: ordinary thermodynamics, but with every fluctuation left in the frame.</p>
+</section>
+<section class="where"><h2>Where this shows up</h2><ul><li><strong>Molecular motors:</strong> ATP changes a protein’s energy landscape; stochastic work and heat decide how reliably it walks.</li><li><strong>Single-molecule pulling:</strong> optical tweezers pull DNA or proteins quickly, then use many noisy work measurements to infer equilibrium free-energy differences.</li></ul></section>
+</main>
+<script>
+(() => {
+  const S=Math.max((devicePixelRatio||1)*2.5,3);
+  function setup(c,h){const w=760;c.width=w*S;c.height=h*S;c.style.aspectRatio=`${w}/${h}`;const x=c.getContext("2d");x.scale(S,S);return [x,w,h]}
+  const rand=()=>{let a=0,b=0;while(!a)a=Math.random();while(!b)b=Math.random();return Math.sqrt(-2*Math.log(a))*Math.cos(2*Math.PI*b)};
+  const colors={ink:"#12384a",sea:"#26848d",coral:"#d65c45",gold:"#d49a35",soft:"#718188",line:"#d7d2c5",fog:"#e4f0ed"};
+  const line=(x,a,b,c,d,stroke=colors.ink,width=1)=>{x.strokeStyle=stroke;x.lineWidth=width;x.beginPath();x.moveTo(a,b);x.lineTo(c,d);x.stroke()};
+  const text=(x,s,a,b,fill=colors.soft,align="left")=>{x.fillStyle=fill;x.font="12px 'DM Mono'";x.textAlign=align;x.fillText(s,a,b)};
+  function normalPdf(x,T){return Math.exp(-x*x/(2*T))/Math.sqrt(2*Math.PI*T)}
+
+  // W1: exact same random kicks are shown before and after adding drag.
+  const [x1,w1,h1]=setup(document.querySelector("#c1"),285);let stage1=0,run1=false,pos1=0,path1=[0];
+  const cap1=document.querySelector("#w1cap"),next1=document.querySelector("#w1next"),play1=document.querySelector("#w1play");
+  function draw1(){
+    x1.clearRect(0,0,w1,h1);const mid=142,scale=115;
+    line(x1,32,mid,w1-25,mid,colors.line);text(x1,"position",w1-26,mid-9);
+    if(stage1){x1.fillStyle="#dff0eb";x1.fillRect(w1/2-100,35,200,78);x1.strokeStyle=colors.sea;x1.strokeRect(w1/2-100,35,200,78);text(x1,"harmonic trap: pull ∝ −x",w1/2,61,colors.sea,"center");}
+    x1.strokeStyle=colors.sea;x1.lineWidth=2;x1.beginPath();path1.forEach((p,i)=>{let px=35+i*(w1-70)/Math.max(80,path1.length-1),py=mid-p*scale;i?x1.lineTo(px,py):x1.moveTo(px,py)});x1.stroke();
+    const px=35+(path1.length-1)*(w1-70)/Math.max(80,path1.length-1),py=mid-pos1*scale;x1.fillStyle=colors.coral;x1.beginPath();x1.arc(Math.min(w1-25,px),py,10,0,7);x1.fill();
+    text(x1,stage1?"kicks spread; the pull keeps returning the bead":"kicks accumulate into an unbounded wander",36,h1-20);
+  }
+  function tick1(){if(!run1)return;pos1+=rand()*.11-(stage1?pos1*.075:0);pos1=Math.max(-1.15,Math.min(1.15,pos1));path1.push(pos1);if(path1.length>105)path1.shift();draw1();requestAnimationFrame(tick1)}
+  next1.onclick=()=>{stage1=1;next1.disabled=true;next1.textContent="Restoring pull added";cap1.textContent="Now every displacement produces a pull back toward the center. Kicks still matter, but the bead no longer escapes indefinitely.";draw1()};
+  play1.onclick=()=>{run1=!run1;play1.textContent=run1?"Pause":"Play kicks";if(run1)tick1()};document.querySelector("#w1reset").onclick=()=>{run1=false;play1.textContent="Play kicks";pos1=0;path1=[0];draw1()};draw1();
+
+  // W2: Euler-Maruyama samples; T is bounded positive and dt=0.03 keeps k dt < 1 at every value.
+  const [x2,w2,h2]=setup(document.querySelector("#c2"),310),temp=document.querySelector("#temp"),tempout=document.querySelector("#tempout");let samples=[];
+  function draw2(){
+    const T=+temp.value,base=230,sc=110;x2.clearRect(0,0,w2,h2);
+    x2.fillStyle="#f4eee1";x2.fillRect(0,base,w2,h2-base);line(x2,35,base,w2-25,base,colors.line);text(x2,"x",w2-23,base-9);
+    x2.strokeStyle=colors.sea;x2.lineWidth=2;x2.beginPath();for(let px=35;px<w2-25;px++){let q=(px-w2/2)/sc,y=base-normalPdf(q,T)*220;px===35?x2.moveTo(px,y):x2.lineTo(px,y)}x2.stroke();text(x2,"Boltzmann prediction",w2-27,30,colors.sea,"right");
+    x2.fillStyle="#d65c4588";samples.slice(-260).forEach((v,i)=>{let px=w2/2+v*sc+(i%5-2)*2;x2.fillRect(px,base+12+(i%6)*9,3,7)});
+    text(x2,`T = ${T.toFixed(2)}  ·  predicted spread σ = √T = ${Math.sqrt(T).toFixed(3)}`,35,h2-20);
+  }
+  function wander(){let T=+temp.value,x=0;for(let i=0;i<700;i++){x+=-x*.03+Math.sqrt(2*T*.03)*rand();if(i>120&&i%3===0)samples.push(x)}samples=samples.slice(-700);draw2()}
+  temp.oninput=()=>{tempout.textContent=(+temp.value).toFixed(2);samples=[];wander()};document.querySelector("#w2sample").onclick=wander;wander();
+
+  // W3: splitting the update into a landscape change (W) and bead change (Q) makes the first law exact.
+  const [x3,w3,h3]=setup(document.querySelector("#c3"),345),speed=document.querySelector("#speed"),speedout=document.querySelector("#speedout"),r3=document.querySelector("#w3read");let result3=null;
+  function pull(n,record=false){const T=.45,dt=.025,k=.8;let x=-1.2+Math.sqrt(T/k)*rand(),lam=-1.2,U0=.5*k*(x-lam)**2,W=0,Q=0,trace=[];for(let i=0;i<n;i++){const nl=-1.2+2.4*(i+1)/n,u0=.5*k*(x-lam)**2,uw=.5*k*(x-nl)**2;W+=uw-u0;lam=nl;const nx=x-k*(x-lam)*dt+Math.sqrt(2*T*dt)*rand(),un=.5*k*(nx-lam)**2;Q+=un-uw;x=nx;if(record&&i%Math.max(1,Math.floor(n/120))===0)trace.push([i/(n-1),x,lam])}return{W,Q,dU:.5*k*(x-lam)**2-U0,trace}}
+  function run3(){result3=pull(+speed.value,true);draw3()}
+  function draw3(){x3.clearRect(0,0,w3,h3);const base=210,sc=150;x3.fillStyle="#f4eee1";x3.fillRect(0,0,w3,base);line(x3,35,base,w3-25,base,colors.line);if(!result3){text(x3,"Press “Run one pull” to make a noisy energy ledger.",w3/2,120,colors.soft,"center");return}let tr=result3.trace;x3.strokeStyle=colors.sea;x3.lineWidth=2;x3.beginPath();tr.forEach((p,i)=>{let px=35+p[0]*(w3-70),py=base-p[1]*sc;i?x3.lineTo(px,py):x3.moveTo(px,py)});x3.stroke();x3.strokeStyle=colors.gold;x3.setLineDash([5,4]);x3.beginPath();tr.forEach((p,i)=>{let px=35+p[0]*(w3-70),py=base-p[2]*sc;i?x3.lineTo(px,py):x3.moveTo(px,py)});x3.stroke();x3.setLineDash([]);text(x3,"bead",44,28,colors.sea);text(x3,"bowl center",44,46,colors.gold);const vals=[["work W",result3.W,colors.coral],["heat Q",result3.Q,colors.sea],["ΔU",result3.W+result3.Q,colors.gold]];vals.forEach((v,i)=>{let yy=255+i*25;x3.fillStyle=v[2];x3.fillRect(36,yy-10,Math.min(430,Math.abs(v[1])*120),14);text(x3,`${v[0]} = ${v[1].toFixed(3)}`,w3-34,yy+1,v[2],"right")});r3.innerHTML=`<b>ledger check:</b> W + Q = ${(result3.W+result3.Q).toFixed(3)}`;}
+  speed.oninput=()=>speedout.textContent=speed.value;document.querySelector("#w3run").onclick=run3;document.querySelector("#w3reset").onclick=()=>{result3=null;r3.textContent="";draw3()};draw3();
+
+  // W4: same stable integrator. Work is sampled, not analytically drawn.
+  const [x4,w4,h4]=setup(document.querySelector("#c4"),300);let works=[],kind="";
+  function draw4(){x4.clearRect(0,0,w4,h4);const left=48,right=w4-25,base=244,lo=-1,hi=4,bins=22,counts=Array(bins).fill(0);works.forEach(v=>{let j=Math.floor((v-lo)/(hi-lo)*bins);if(j>=0&&j<bins)counts[j]++});let max=Math.max(1,...counts);line(x4,left,base,right,base,colors.line);for(let i=0;i<bins;i++){let bh=counts[i]/max*165,bw=(right-left)/bins-3;x4.fillStyle=kind==="fast"?colors.coral:colors.sea;x4.fillRect(left+i*(right-left)/bins+2,base-bh,bw,bh)}for(let t=0;t<=4;t++)text(x4,String(t),left+(t-lo)/(hi-lo)*(right-left),265,colors.soft,"center");text(x4,"work W",right,286);if(works.length){let mean=works.reduce((a,b)=>a+b,0)/works.length,jar=works.reduce((a,b)=>a+Math.exp(-b/.45),0)/works.length;document.querySelector("#w4read").innerHTML=`<b>${works.length} trajectories</b> · mean W = ${mean.toFixed(3)} · average exp(−W/T) = ${jar.toFixed(3)}`;document.querySelector("#w4cap").textContent=`${kind} protocol: bars left of W = 0 are rare bath-assisted pulls. Their weight matters disproportionately to the exponential average.`}else document.querySelector("#w4read").textContent=""}
+  function sample4(n,label){kind=label;works=[];for(let i=0;i<420;i++)works.push(pull(n,false).W);draw4()}document.querySelector("#w4slow").onclick=()=>sample4(480,"slow");document.querySelector("#w4fast").onclick=()=>sample4(60,"fast");document.querySelector("#w4clear").onclick=()=>{works=[];kind="";draw4()};draw4();
+})();
+</script>
+</body></html>

@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Jacobian — a local map of change</title>
+<script>
+window.MathJax={tex:{inlineMath:[['\\(','\\)']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#f7f4ed;--card:#fffdf8;--ink:#1d2a31;--soft:#607078;--line:#cfd9d5;--blue:#187c91;--gold:#d0782d;--coral:#bd4e52;--mint:#d9ebe4;--night:#19333b;--measure:70ch}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 90% 0,#dcece8 0,transparent 30rem),var(--paper);color:var(--ink);font:19px/1.65 "Source Serif 4",Georgia,serif}.wrap{max-width:900px;margin:auto;padding:0 24px 100px}header{padding:92px 0 38px}.eyebrow,.step-num,.tag{font:500 12px/1 "DM Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:var(--blue)}h1,h2,h3{line-height:1.08}h1{font-size:clamp(3rem,8vw,5.4rem);letter-spacing:-.055em;margin:18px 0 22px;max-width:11ch}h2{font-size:clamp(2rem,5vw,3rem);letter-spacing:-.04em;margin:8px 0 18px}.promise{font-size:1.3rem;color:var(--soft);max-width:54ch}.kernel{margin:40px 0 84px;background:var(--night);color:#f5f0e6;padding:32px 36px;border-radius:18px;box-shadow:10px 10px 0 #b9d3cb}.kernel p{font-size:1.5rem;line-height:1.35;margin:12px 0 0}.kernel .tag{color:#9ed3cc}.concept-step{margin:0 0 82px}.prose{max-width:var(--measure)}p{margin:0 0 1em}.widget{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;margin:28px 0 24px;box-shadow:0 8px 26px #17323b0d}.widget-titlewrap{display:flex;justify-content:space-between;align-items:baseline;gap:16px;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:15px}.widget-title{font-weight:700;font-size:1.08rem}.tag{white-space:nowrap;color:var(--soft)}canvas{display:block;width:100%;height:auto;border-radius:10px;background:#f2f6f3}.controls{display:flex;flex-wrap:wrap;gap:12px 22px;margin:0 0 16px}.controls label{font:12px/1.3 "DM Mono",monospace;color:var(--soft);min-width:145px}.controls input{display:block;width:100%;accent-color:var(--blue);margin-top:7px}.controls input[type=number]{background:#f2f6f3;border:1px solid var(--line);border-radius:6px;color:var(--ink);font:500 15px "DM Mono",monospace;padding:8px}.readout,.caption{margin-top:12px;color:var(--soft);font-size:.94rem}.readout strong{color:var(--ink)}button{border:0;border-radius:7px;background:var(--night);color:white;padding:9px 13px;cursor:pointer;font:12px "DM Mono",monospace}button:hover{background:var(--blue)}button:disabled{opacity:.4;cursor:default}.stagebar{display:flex;align-items:center;gap:12px;margin-top:14px}.stagebar .caption{flex:1;margin:0;font-style:italic}.formula{font:15px/1.5 "DM Mono",monospace;background:#ecf3f0;padding:10px 13px;border-radius:8px;overflow:auto}details{border:1px solid var(--line);border-radius:10px;background:var(--card);margin-top:20px}summary{cursor:pointer;padding:12px 16px;color:var(--soft)}details div{padding:0 16px 12px}.recap{border-top:2px solid var(--ink);padding-top:34px;margin-top:16px}.uses{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}.use{background:#e5f0ec;padding:18px;border-radius:12px}.use h3{margin:0 0 8px;font-size:1.3rem}@media(max-width:600px){body{font-size:18px}.kernel{padding:26px}.widget{padding:14px}.widget-titlewrap{align-items:flex-start;flex-direction:column;gap:7px}.stagebar{align-items:flex-start;flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<header>
+<div class="eyebrow">A visual guide to multivariable change</div>
+<h1>The Jacobian is a map’s local gearbox.</h1>
+<p class="promise">See how a nonlinear function locally becomes a matrix, why its determinant measures area change, and why this is exactly what gradients, probability densities, and machine-learning models need.</p>
+</header>
+
+<aside class="kernel"><div class="tag">The kernel</div><p>Stripped of formality, a Jacobian is the small, local instruction sheet telling us how every output direction moves when we nudge every input direction.</p></aside>
+
+<section class="concept-step">
+<div class="step-num">01 / Start with a nudge</div>
+<h2>A function bends space; nearby it acts like a matrix.</h2>
+<div class="prose">
+<p>For one input and one output, a derivative answers: “if I move right a tiny bit, how much does the output move?” With two inputs and two outputs, there are four such questions. Put their answers in a table:</p>
+<div class="formula">J<sub>f</sub>(x,y) = [ ∂f₁/∂x &nbsp; ∂f₁/∂y ; &nbsp; ∂f₂/∂x &nbsp; ∂f₂/∂y ]</div>
+<p>Here is a complete linear example. Let a map use the matrix</p>
+\[
+A=\begin{bmatrix}2&1\\-1&3\end{bmatrix}.
+\]
+<p>Applied to the point \(p=(2,1)\), matrix multiplication says</p>
+\[
+Ap=
+\begin{bmatrix}2&1\\-1&3\end{bmatrix}
+\begin{bmatrix}2\\1\end{bmatrix}
+=\begin{bmatrix}2\cdot2+1\cdot1\\-1\cdot2+3\cdot1\end{bmatrix}
+=\begin{bmatrix}5\\1\end{bmatrix}.
+\]
+<p>The first output coordinate is the first row’s weighted combination of the input coordinates; the second output coordinate is the second row’s combination. A linear map uses the same matrix everywhere. A nonlinear map needs a different best linear matrix at different points—<em>that</em> point-dependent matrix is the Jacobian.</p>
+<p>The first column is what a tiny step in input-\(x\) becomes; the second is what a tiny step in input-\(y\) becomes. In the widget, begin at <strong>identity</strong>: nothing moves. Then try <strong>stretch</strong>, <strong>shear</strong>, and <strong>flip</strong> one at a time. Finally type your own four values and watch the right-hand grid respond. This makes the entries of the matrix feel like instructions rather than a table to memorize.</p>
+</div>
+<div class="widget">
+<div class="widget-titlewrap"><span class="widget-title">A tiny square receiving local instructions</span><span class="tag">live · edit matrix entries</span></div>
+<div class="controls" id="local-controls"></div>
+<canvas id="local" width="760" height="340"></canvas>
+<div class="readout" id="local-out"></div>
+</div>
+<details><summary>Formal version: why a matrix appears</summary><div><p>For a differentiable map \(f:\mathbb R^n\to\mathbb R^m\), a small displacement \(\Delta x\) satisfies</p>\[f(x+\Delta x)\approx f(x)+J_f(x)\Delta x.\]<p>The approximation becomes exact relative to the size of \(\Delta x\) as the displacement shrinks. The Jacobian is the best linear local imitation of \(f\).</p></div></details>
+</section>
+
+<section class="concept-step">
+<div class="step-num">02 / Measure the stretch</div>
+<h2>The determinant is the area multiplier.</h2>
+<div class="prose"><p>A matrix sends the unit square’s two edge vectors to its two columns. Those columns make a parallelogram. Its signed area is \(\det J\): absolute value tells how much a tiny patch expands or shrinks; the sign says whether its orientation was flipped.</p><p>This is why a determinant matters only for square Jacobians: only then are input and output patches the same dimension, so “volume multiplier” makes sense.</p></div>
+<div class="widget">
+<div class="widget-titlewrap"><span class="widget-title">From unit square to signed area</span><span class="tag">staged · inspect each layer</span></div>
+<canvas id="det" width="760" height="330"></canvas>
+<div class="stagebar"><button id="det-back">← Back</button><span class="caption" id="det-cap"></span><button id="det-next">Map the edges →</button></div>
+<div class="readout" id="det-out"></div>
+</div>
+<details><summary>Derive the \(2\times2\) determinant</summary><div><p>Let the image edges be \(u=(a,c)\) and \(v=(b,d)\). The parallelogram splits into a signed horizontal-by-vertical contribution \(ad\), minus the overlap measured by \(bc\). So</p>\[\det\begin{bmatrix}a&b\\c&d\end{bmatrix}=ad-bc.\]<p>For the default map, \(\det J=(1.20)(0.90)-(0.35)(-0.25)=1.1675\): every sufficiently tiny area becomes about \(1.17\) times as large.</p></div></details>
+</section>
+
+<section class="concept-step">
+<div class="step-num">03 / Follow maps in sequence</div>
+<h2>Jacobians compose in the same order as local effects.</h2>
+<div class="prose"><p>Suppose \(x\) first passes through \(g\), then \(f\). A small arrow is first reshaped by \(J_g(x)\), then by \(J_f(g(x))\). Doing those two matrix actions gives the chain rule:</p>\[J_{f\circ g}(x)=J_f(g(x))\,J_g(x).\]<p>Backpropagation is this principle applied efficiently to a long chain of neural-network layers.</p></div>
+<div class="widget">
+<div class="widget-titlewrap"><span class="widget-title">A direction passing through two local maps</span><span class="tag">staged · compose transformations</span></div>
+<canvas id="chain" width="760" height="300"></canvas>
+<div class="stagebar"><button id="chain-back">← Back</button><span class="caption" id="chain-cap"></span><button id="chain-next">Apply J<sub>g</sub> →</button></div>
+</div>
+<details><summary>Why multiplication points right-to-left</summary><div><p>With a direction \(v\), the first map makes \(J_gv\). The second sees that new direction, so it makes \(J_f(J_gv)\). Parentheses say “do \(J_g\) first”; matrix notation compresses this to \((J_fJ_g)v\).</p></div></details>
+</section>
+
+<section class="concept-step">
+<div class="step-num">04 / Send directions, bring back questions</div>
+<h2>Pushforward moves arrows forward; pullback moves gradients backward.</h2>
+<div class="prose"><p>An ordinary tangent arrow \(v\) says “move this way in the input.” The map carries it forward: \(v\mapsto Jv\). This is the <strong>pushforward</strong>.</p><p>A gradient is different: it is a question that eats a direction and returns a rate of change. If the output has gradient \(a\), the input gradient must give the same rate to every input arrow. The unique answer is \(J^\mathsf{T}a\). Carrying that gradient back is the <strong>pullback</strong>.</p></div>
+<div class="widget">
+<div class="widget-titlewrap"><span class="widget-title">One matrix, two kinds of transport</span><span class="tag">live · choose a viewpoint</span></div>
+<div class="controls"><label>view<input id="transport-mode" type="range" min="0" max="1" step="1" value="0"></label></div>
+<canvas id="transport" width="760" height="330"></canvas>
+<div class="readout" id="transport-out"></div>
+</div>
+<details><summary>The identity that forces the transpose</summary><div><p>Let \(\alpha\) be an output gradient and \(v\) an input direction. “The rate agrees before and after mapping” means</p>\[\alpha^\mathsf{T}(Jv)=(J^\mathsf{T}\alpha)^\mathsf{T}v.\]<p>So the pullback is not a convention: the transpose is exactly what preserves the directional derivative.</p></div></details>
+</section>
+
+<section class="concept-step">
+<div class="step-num">05 / Why machine learning keeps asking for it</div>
+<h2>Gradients need the transpose; densities need the determinant.</h2>
+<div class="prose">
+<p>A model is a long composition: input \(\to\) layer 1 \(\to\) layer 2 \(\to\) prediction \(\to\) loss. Training asks one question at the end: <em>which earlier changes would lower this loss?</em> That is a pullback question. If a layer maps \(h\) to \(z\), and the downstream computation has already supplied the output gradient \(g_z=\nabla_z L\), then the gradient for the layer input is</p>
+\[\nabla_h L=J_{z}(h)^\mathsf{T}g_z.\]
+<p>Read this from right to left. \(g_z\) says which output changes matter to the loss; \(J_z^\mathsf{T}\) translates that concern into which input changes matter. Repeating this one layer at a time is <strong>backpropagation</strong>. It is the chain rule organized so shared intermediate computations are reused instead of rediscovered for every parameter.</p>
+<p>For the common affine layer \(z=Wh+b\), the Jacobian with respect to \(h\) is \(W\), so \(\nabla_hL=W^\mathsf{T}g_z\). The same local bookkeeping gives parameter gradients:</p>
+\[\nabla_W L=g_z h^\mathsf{T},\qquad \nabla_bL=g_z.\]
+<p>This outer product has a useful interpretation. A weight receives a large update only when its input feature was active <em>and</em> its output unit mattered to the loss. With an activation \(z=\sigma(Wh+b)\), the derivative of \(\sigma\) scales each output gradient before this pullback. Repeated derivatives smaller than \(1\) explain vanishing gradients; repeated large derivatives can explain exploding gradients.</p>
+<p>Frameworks almost never materialize the enormous Jacobian. A layer with \(m\) outputs and \(n\) inputs would have \(mn\) entries, while training only needs the single product \(J^\mathsf{T}g_z\). Reverse-mode automatic differentiation computes that product directly, at a cost comparable to another pass through the layer. Forward-mode differentiation instead computes \(Jv\), useful when one wants how a chosen input perturbation propagates—for example, sensitivity analysis or some scientific ML models.</p>
+<p>Generative <em>normalizing flows</em> need the other half of the Jacobian story. They start with an easy density \(p_X\), often a Gaussian, and learn an invertible warp \(y=f(x)\). A small input patch with probability mass \(p_X(x)\,d x\) becomes an output patch with area \(d y=|\det J_f(x)|\,d x\). Probability mass cannot be created, so the density must compensate:</p>
+\[p_Y(y)=p_X(x)\left|\det J_f(x)\right|^{-1},\qquad y=f(x).\]
+<p>Taking logs turns a product into an addition, which is how flows train with likelihood:</p>
+\[\log p_Y(y)=\log p_X(x)-\log|\det J_f(x)|.\]
+<p>For a chain of flow layers, their log-determinants simply add. A map must be invertible and have nonzero determinant everywhere used; otherwise distinct input patches collide and no single output density can be recovered. This requirement shapes flow architectures. They deliberately use transformations with cheap determinants—diagonal scalings, triangular Jacobians, or coupling layers—rather than an arbitrary neural network whose determinant would be expensive or whose inverse might not exist.</p>
+</div>
+<div class="widget">
+<div class="widget-titlewrap"><span class="widget-title">Probability mass conserved while area changes</span><span class="tag">live · scale an invertible flow</span></div>
+<div class="controls"><label>horizontal scale <span id="scale-val">1.50</span><input id="flow-scale" type="range" min="0.5" max="2.5" step="0.05" value="1.5"></label></div>
+<canvas id="flow" width="760" height="310"></canvas>
+<div class="readout" id="flow-out"></div>
+</div>
+<details><summary>Two practical Jacobian questions beyond training</summary><div><p><strong>Robustness.</strong> The Jacobian norm bounds local sensitivity: if \(\|J_f(x)\|\) is large, a tiny input perturbation can cause a large output change. This is why Jacobian penalties, spectral normalization, and adversarial-robustness analysis care about it.</p><p><strong>Optimization and inverse problems.</strong> When a model predicts residuals \(r(\theta)\), the Jacobian \(J_r\) tells an optimizer how parameter changes alter all residuals at once. Gauss–Newton and Levenberg–Marquardt methods use \(J_r^\mathsf{T}J_r\) as a locally informed curvature approximation.</p></div></details>
+</section>
+
+<section class="recap">
+<div class="step-num">Putting it together</div>
+<h2>One local object, four jobs.</h2>
+<p>The Jacobian turns an input nudge into an output nudge. Its columns show how basis directions move; its determinant says how local area or volume changes; multiplying Jacobians chains local maps; and transposing a Jacobian pulls gradients back. Those are not separate tricks: they are different questions asked of the same local linear map.</p>
+<div class="uses"><div class="use"><h3>Training</h3><p>Backprop computes Jacobian-transpose–vector products to assign credit through layers.</p></div><div class="use"><h3>Generative models</h3><p>Normalizing flows use log-determinants to keep density correct under a learned warp.</p></div><div class="use"><h3>Robustness & control</h3><p>Jacobian norms reveal sensitivity: how much a small input change can move an output.</p></div></div>
+</section>
+</main>
+<script>
+const C={ink:'#1d2a31',soft:'#607078',line:'#cfd9d5',blue:'#187c91',gold:'#d0782d',coral:'#bd4e52',mint:'#d9ebe4',paper:'#f2f6f3'};
+function ctxFor(id){const c=document.getElementById(id),x=c.getContext('2d');return [c,x];}
+function arrow(x,a,b,dx,dy,color,label){x.strokeStyle=x.fillStyle=color;x.lineWidth=3;x.beginPath();x.moveTo(a,b);x.lineTo(a+dx,b+dy);x.stroke();const L=Math.hypot(dx,dy)||1,ux=dx/L,uy=dy/L;x.beginPath();x.moveTo(a+dx,b+dy);x.lineTo(a+dx-10*ux+5*uy,b+dy-10*uy-5*ux);x.lineTo(a+dx-10*ux-5*uy,b+dy-10*uy+5*ux);x.closePath();x.fill();if(label){x.font='14px DM Mono';x.fillText(label,a+dx+7,b+dy-5);}}
+function grid(x,ox,oy,A,color){x.strokeStyle=color||C.line;x.lineWidth=1;for(let i=-3;i<=3;i++){for(let j=-3;j<=3;j++){const p=m2(A,[i,j]),q=m2(A,[i+1,j]),r=m2(A,[i,j+1]);x.beginPath();x.moveTo(ox+p[0]*25,oy-p[1]*25);x.lineTo(ox+q[0]*25,oy-q[1]*25);x.lineTo(ox+r[0]*25,oy-r[1]*25);x.stroke();}}}
+function m2(A,v){return[A[0]*v[0]+A[1]*v[1],A[2]*v[0]+A[3]*v[1]]}function det(A){return A[0]*A[3]-A[1]*A[2]}function clear(x,c){x.clearRect(0,0,c.width,c.height)}
+const A=[1.2,.35,-.25,.9];
+function matrixControls(){const host=document.getElementById('local-controls'), names=['a (row 1, col 1)','b (row 1, col 2)','c (row 2, col 1)','d (row 2, col 2)'],inputs=[];const update=()=>{inputs.forEach((input,i)=>input.value=A[i]);drawLocal();drawDet();drawTransport()};names.forEach((n,i)=>{const l=document.createElement('label');l.innerHTML=n+'<input type="number" step="0.05" value="'+A[i]+'" aria-label="'+n+'">';const input=l.querySelector('input');inputs.push(input);input.oninput=()=>{const value=Number(input.value);if(!Number.isFinite(value))return;A[i]=value;drawLocal();drawDet();drawTransport()};host.appendChild(l)});[['Identity',[1,0,0,1]],['Stretch',[1.7,0,0,.65]],['Shear',[1,.8,0,1]],['Flip',[-1,0,0,1]]].forEach(([name,values])=>{const button=document.createElement('button');button.type='button';button.textContent=name;button.onclick=()=>{A.splice(0,4,...values);update()};host.appendChild(button)})}
+function drawLocal(){const[c,x]=ctxFor('local');clear(x,c);grid(x,155,175,[1,0,0,1]);grid(x,585,175,A,C.blue);x.font='15px DM Mono';x.fillStyle=C.soft;x.fillText('input neighborhood',92,38);x.fillText('output neighborhood',515,38);arrow(x,155,175,45,0,C.coral,'e₁');arrow(x,155,175,0,-45,C.gold,'e₂');const u=m2(A,[1,0]),v=m2(A,[0,1]);arrow(x,585,175,u[0]*45,-u[1]*45,C.coral,'column 1');arrow(x,585,175,v[0]*45,-v[1]*45,C.gold,'column 2');document.getElementById('local-out').innerHTML='<strong>J = ['+A[0].toFixed(2)+' '+A[1].toFixed(2)+'; '+A[2].toFixed(2)+' '+A[3].toFixed(2)+']</strong>. Each colored input basis arrow becomes the matching column.'}
+let ds=0;const detCaps=['The pale square has area 1. Start with the thing whose fate we want to measure.','The red and gold edges are the Jacobian columns: the two tiny input directions after mapping.','Those edges enclose the output parallelogram. Its signed area is the determinant.'];
+function drawDet(){const[c,x]=ctxFor('det');clear(x,c);const ox=380,oy=195,u=m2(A,[1,0]),v=m2(A,[0,1]);x.font='14px DM Mono';x.fillStyle=C.soft;x.fillText('input',115,45);x.fillText('local output',535,45);x.fillStyle=C.mint;x.fillRect(90,145,70,70);x.strokeStyle=C.ink;x.strokeRect(90,145,70,70);if(ds>0){arrow(x,ox,oy,u[0]*70,-u[1]*70,C.coral,'J e₁');arrow(x,ox,oy,v[0]*70,-v[1]*70,C.gold,'J e₂')}if(ds>1){const pts=[[ox,oy],[ox+u[0]*70,oy-u[1]*70],[ox+(u[0]+v[0])*70,oy-(u[1]+v[1])*70],[ox+v[0]*70,oy-v[1]*70]];x.fillStyle='#187c9140';x.beginPath();pts.forEach((p,i)=>i?x.lineTo(...p):x.moveTo(...p));x.closePath();x.fill();x.strokeStyle=C.blue;x.stroke();}document.getElementById('det-cap').textContent=detCaps[ds];document.getElementById('det-back').disabled=ds===0;document.getElementById('det-next').style.display=ds===2?'none':'';document.getElementById('det-next').textContent=ds===0?'Map the edges →':'Fill the area →';document.getElementById('det-out').innerHTML='<strong>det J = '+det(A).toFixed(4)+'</strong> · |det J| = '+Math.abs(det(A)).toFixed(4)+' is the local area multiplier.'}
+document.getElementById('det-back').onclick=()=>{ds=Math.max(0,ds-1);drawDet()};document.getElementById('det-next').onclick=()=>{ds=Math.min(2,ds+1);drawDet()};
+let cs=0;const G=[1,.45,0,1],F=[.8,0,.3,1.1],v0=[1,.55];function drawChain(){const[c,x]=ctxFor('chain');clear(x,c);const pts=[130,380,630],labels=['input direction v','after Jg','after Jf Jg'];x.font='13px DM Mono';for(let i=0;i<3;i++){x.fillStyle=C.soft;x.fillText(labels[i],pts[i]-55,40);x.strokeStyle=C.line;x.beginPath();x.moveTo(pts[i],245);x.lineTo(pts[i],75);x.stroke();x.beginPath();x.moveTo(pts[i]-65,160);x.lineTo(pts[i]+65,160);x.stroke()}arrow(x,pts[0],160,v0[0]*55,-v0[1]*55,C.coral,'v');if(cs>0){const w=m2(G,v0);arrow(x,pts[1],160,w[0]*55,-w[1]*55,C.gold,'Jg v');arrow(x,205,160,110,0,C.soft,'g')}if(cs>1){const z=m2(F,m2(G,v0));arrow(x,pts[2],160,z[0]*55,-z[1]*55,C.blue,'Jf Jg v');arrow(x,455,160,110,0,C.soft,'f')}const caps=['One input direction is enough to see the local story.','First, g turns the direction into Jg v.','Then f acts on that already-turned direction. Matrix multiplication preserves this order.'];document.getElementById('chain-cap').textContent=caps[cs];document.getElementById('chain-back').disabled=cs===0;document.getElementById('chain-next').style.display=cs===2?'none':'';document.getElementById('chain-next').textContent=cs===0?'Apply Jg →':'Then apply Jf →'}
+document.getElementById('chain-back').onclick=()=>{cs=Math.max(0,cs-1);drawChain()};document.getElementById('chain-next').onclick=()=>{cs=Math.min(2,cs+1);drawChain()};
+function drawTransport(){const[c,x]=ctxFor('transport');clear(x,c);const mode=+document.getElementById('transport-mode').value,ox=220,oy=175,px=540,py=175;x.font='14px DM Mono';x.fillStyle=C.soft;x.fillText(mode?'output gradient α':'input direction v',110,42);x.fillText(mode?'pulled-back gradient Jᵀα':'pushed-forward direction Jv',440,42);if(!mode){const v=[1,.55],w=m2(A,v);arrow(x,ox,oy,v[0]*55,-v[1]*55,C.coral,'v');arrow(x,px,py,w[0]*55,-w[1]*55,C.blue,'Jv')}else{const a=[.65,1],b=[A[0]*a[0]+A[2]*a[1],A[1]*a[0]+A[3]*a[1]];arrow(x,px,py,a[0]*55,-a[1]*55,C.gold,'α');arrow(x,ox,oy,b[0]*55,-b[1]*55,C.blue,'Jᵀα')}arrow(x,330,175,95,0,C.soft,mode?'pull back':'push forward');document.getElementById('transport-out').innerHTML=mode?'<strong>Pullback:</strong> change the slider to 0 to see directions go forward. Gradients travel backward as Jᵀα.':'<strong>Pushforward:</strong> a real input displacement travels forward as Jv. Move the slider to see why gradients use a transpose.'}
+document.getElementById('transport-mode').oninput=drawTransport;
+function drawFlow(){const[c,x]=ctxFor('flow');clear(x,c);const s=+document.getElementById('flow-scale').value,cy=155;for(let i=-3;i<=3;i++)for(let j=-2;j<=2;j++){x.fillStyle='#187c9140';x.beginPath();x.arc(190+i*28,cy-j*28,9,0,7);x.fill()}for(let i=-3;i<=3;i++)for(let j=-2;j<=2;j++){x.fillStyle='#d0782d40';x.beginPath();x.ellipse(550+i*28*s,cy-j*28,9*s,9,0,7);x.fill()}x.font='14px DM Mono';x.fillStyle=C.soft;x.fillText('base density pX',115,38);x.fillText('transformed density pY',470,38);arrow(x,325,cy,100,0,C.soft,'y = f(x)');document.getElementById('scale-val').textContent=s.toFixed(2);document.getElementById('flow-out').innerHTML='<strong>|det J| = '+s.toFixed(2)+'</strong>. Each local patch has '+s.toFixed(2)+'× the area, so its density is <strong>1/'+s.toFixed(2)+'</strong> as high; total probability mass stays 1.'}
+document.getElementById('flow-scale').oninput=drawFlow;
+matrixControls();drawLocal();drawDet();drawChain();drawTransport();drawFlow();
+</script>
+</body>
+</html>

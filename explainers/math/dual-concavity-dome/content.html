@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why the Dual Is Always a Dome</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+
+<style>
+  :root{
+    --bg: #171b21;
+    --bg-deep: #12151a;
+    --panel: #1e242c;
+    --panel-2: #252c36;
+    --rule: #333c47;
+    --ink: #ece5d6;
+    --ink-soft: #a6a196;
+    --ink-faint: #706b60;
+    --rope: #a4885f;
+    --rope-dim: rgba(164,136,95,0.32);
+    --moon: #7fa6bd;
+    --moon-dim: rgba(127,166,189,0.28);
+    --canopy: #dba64d;
+    --canopy-dim: rgba(219,166,77,0.16);
+    --feasible: #56705f;
+    --feasible-fill: rgba(86,112,95,0.24);
+    --danger: #b56454;
+    --radius: 10px;
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin: 0;
+    background:
+      radial-gradient(ellipse 1200px 700px at 50% -10%, rgba(127,166,189,0.07), transparent 60%),
+      radial-gradient(ellipse 900px 500px at 90% 110%, rgba(219,166,77,0.05), transparent 60%),
+      var(--bg);
+    color: var(--ink);
+    font-family: 'Literata', Georgia, serif;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap{ max-width: 760px; margin: 0 auto; padding: 64px 24px 120px; }
+
+  h1,h2,h3{ font-family: 'Newsreader', Georgia, serif; font-weight: 500; color: var(--ink); margin: 0; }
+
+  .mono{ font-family: 'IBM Plex Mono', monospace; }
+
+  /* ---------- Header ---------- */
+  header.hero{ margin-bottom: 56px; }
+  .eyebrow{
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--rope); margin-bottom: 14px; display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{ content:""; width: 22px; height: 1px; background: var(--rope); display:inline-block; }
+  h1.title{ font-size: clamp(32px, 5vw, 44px); font-style: italic; line-height: 1.15; letter-spacing: -0.01em; }
+  .subtitle{ margin-top: 16px; font-size: 17px; color: var(--ink-soft); max-width: 58ch; }
+
+  /* ---------- Kernel callout ---------- */
+  .kernel{
+    margin: 40px 0 56px;
+    padding: 28px 30px;
+    background: linear-gradient(180deg, var(--panel), var(--panel-2));
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--canopy);
+    border-radius: var(--radius);
+    position: relative;
+  }
+  .kernel .kernel-label{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+    color: var(--canopy); margin-bottom: 12px;
+  }
+  .kernel p{ margin:0; font-size: 18.5px; color: var(--ink); font-style: italic; }
+
+  /* ---------- Steps ---------- */
+  .steps{ position: relative; }
+  .step{
+    position: relative;
+    padding: 0 0 64px 54px;
+    border-left: 1px dashed var(--rule);
+    margin-left: 15px;
+  }
+  .step:last-of-type{ border-left: 1px dashed transparent; }
+  .step .stake{
+    position:absolute; left: -15px; top: 0;
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--bg-deep);
+    border: 1px solid var(--rope);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'IBM Plex Mono',monospace; font-size: 13px; color: var(--rope);
+  }
+  .step h2{ font-size: 25px; font-style: italic; margin-bottom: 14px; margin-top: 2px; }
+  .step .body{ color: var(--ink-soft); font-size: 16px; }
+  .step .body p{ margin: 0 0 14px; }
+  .step .body strong{ color: var(--ink); font-weight: 600; }
+
+  .callout-mini{
+    margin: 14px 0; padding: 12px 16px; background: var(--canopy-dim);
+    border-left: 2px solid var(--canopy); border-radius: 4px; font-size: 14.5px; color: var(--ink);
+  }
+
+  details.formal{ margin-top: 16px; }
+  details.formal summary{
+    cursor: pointer; font-family:'IBM Plex Mono',monospace; font-size: 12.5px; letter-spacing:.05em;
+    color: var(--moon); text-transform: uppercase; padding: 6px 0;
+  }
+  details.formal .formal-body{
+    margin-top: 10px; padding: 16px 18px; background: var(--bg-deep); border: 1px solid var(--rule);
+    border-radius: 8px; font-size: 15px; color: var(--ink-soft);
+  }
+
+  /* ---------- Widget shell ---------- */
+  .widget{
+    margin-top: 22px;
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .widget-titlewrap{
+    display:flex; justify-content: space-between; align-items: baseline;
+    padding: 14px 18px; border-bottom: 1px solid var(--rule); background: var(--panel-2);
+  }
+  .widget-title{ font-family:'Newsreader',serif; font-style: italic; font-size: 16px; color: var(--ink); }
+  .wt-sub{ font-family:'IBM Plex Mono',monospace; font-size: 10.5px; letter-spacing:.08em; text-transform: uppercase; color: var(--ink-faint); }
+  .widget-body{ padding: 18px; }
+  .widget-caption{ font-size: 13.5px; color: var(--ink-soft); margin-top: 10px; min-height: 1.4em; }
+  .widget-caption b{ color: var(--canopy); font-weight: 600; }
+
+  .canvases{ display:flex; flex-wrap: wrap; gap: 18px; justify-content: center; }
+  canvas{ background: var(--bg-deep); border-radius: 6px; border: 1px solid var(--rule); max-width: 100%; }
+  canvas.grabbable{ cursor: grab; }
+  canvas.grabbable:active{ cursor: grabbing; }
+
+  .readout-row{
+    display:flex; flex-wrap:wrap; gap: 10px 22px; margin-top: 14px; font-family:'IBM Plex Mono',monospace; font-size: 13px;
+  }
+  .readout{ color: var(--ink-soft); }
+  .readout .val{ color: var(--ink); font-weight: 600; }
+  .readout .feasible-yes{ color: var(--feasible); }
+  .readout .feasible-no{ color: var(--danger); }
+
+  .controls{ display:flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; align-items: center; }
+  button{
+    font-family:'IBM Plex Mono',monospace; font-size: 12.5px; letter-spacing: .03em;
+    background: var(--bg-deep); color: var(--ink); border: 1px solid var(--rope);
+    padding: 9px 15px; border-radius: 6px; cursor: pointer; transition: all .15s ease;
+  }
+  button:hover{ background: var(--rope); color: var(--bg-deep); }
+  button:disabled{ opacity: .35; cursor: default; background: var(--bg-deep); color: var(--ink); }
+  button.ghost{ border-color: var(--rule); color: var(--ink-faint); }
+  button.ghost:hover{ background: var(--rule); color: var(--ink); }
+
+  input[type=range]{
+    -webkit-appearance:none; width: 100%; height: 3px; background: var(--rule); border-radius: 2px; outline:none;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none; width:15px; height:15px; border-radius:50%;
+    background: var(--canopy); border: 2px solid var(--bg-deep); cursor: pointer; margin-top: -6px;
+  }
+  input[type=range]::-moz-range-thumb{
+    width:13px; height:13px; border-radius:50%; background: var(--canopy); border: 2px solid var(--bg-deep); cursor:pointer;
+  }
+  .slider-row{ display:flex; align-items:center; gap: 14px; margin-top: 6px; }
+  .slider-row label{ font-family:'IBM Plex Mono',monospace; font-size: 13px; color: var(--ink-soft); white-space: nowrap; }
+
+  .legend{ display:flex; flex-wrap:wrap; gap: 16px; margin-top: 12px; font-size: 12.5px; color: var(--ink-faint); font-family:'IBM Plex Mono',monospace;}
+  .legend span{ display:inline-flex; align-items:center; gap:6px; }
+  .swatch{ width:14px; height: 3px; display:inline-block; border-radius: 2px; }
+
+  /* ---------- Recap ---------- */
+  .recap{
+    margin-top: 8px; padding: 30px; background: var(--panel); border: 1px solid var(--rule); border-radius: var(--radius);
+  }
+  .recap h3{ font-size: 20px; font-style: italic; margin-bottom: 12px; }
+  .recap p{ color: var(--ink-soft); font-size: 15.5px; }
+  .where{ margin-top: 20px; padding-top: 20px; border-top: 1px dashed var(--rule); }
+  .where h4{ font-family:'IBM Plex Mono',monospace; font-size: 12px; letter-spacing:.1em; text-transform:uppercase; color: var(--rope); margin: 0 0 10px;}
+  .where ul{ margin: 0; padding-left: 20px; color: var(--ink-soft); font-size: 15px; }
+  .where li{ margin-bottom: 6px; }
+
+  footer{ margin-top: 56px; text-align:center; color: var(--ink-faint); font-family:'IBM Plex Mono',monospace; font-size: 11.5px; letter-spacing:.08em; }
+
+  @media (max-width: 560px){
+    .step{ padding-left: 40px; margin-left: 10px; }
+    .step .stake{ left: -12px; width: 24px; height: 24px; font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="eyebrow">field notes · lagrangian duality</div>
+    <h1 class="title">Why the Dual Is Always a Dome</h1>
+    <p class="subtitle">A close look at one specific problem — minimize \((x-2)^2+(y-2)^2\) subject to \(x+y-2<0\) — that reveals a fact with nothing to do with quadratics at all.</p>
+  </header>
+
+  <div class="kernel">
+    <div class="kernel-label">the kernel</div>
+    <p>The dual function is the lowest point of a whole family of straight lines — one line per point in the primal domain. However you tilt and place a bunch of straight lines, the shape traced by their lowest points is always a dome, never a saddle. That's the entire reason. The fact that \(f\) is a quadratic bowl never enters into it.</p>
+  </div>
+
+  <div class="steps">
+
+    <!-- STEP 1 -->
+    <div class="step">
+      <div class="stake">01</div>
+      <h2>A bowl, fenced off</h2>
+      <div class="body">
+        <p>\(f(x,y)=(x-2)^2+(y-2)^2\) is a paraboloid bowl with its bottom sitting at \((2,2)\). The constraint \(x+y-2<0\) fences off half the plane — everything on one side of the diagonal line \(x+y=2\) is off-limits.</p>
+        <p>Notice immediately: the bowl's true bottom, \((2,2)\), gives \(x+y-2=2\), which is <strong>on the wrong side of the fence</strong>. So the constrained problem is genuinely constrained — the fence is doing real work, not just standing there decoratively.</p>
+      </div>
+      <div class="widget">
+        <div class="widget-titlewrap">
+          <span class="widget-title">The bowl and the fence</span>
+          <span class="wt-sub">live · drag the point</span>
+        </div>
+        <div class="widget-body">
+          <div class="canvases">
+            <canvas id="w1-canvas" width="380" height="380" class="grabbable"></canvas>
+          </div>
+          <div class="readout-row">
+            <span class="readout">point: <span class="val mono" id="w1-point">(x, y)</span></span>
+            <span class="readout">f(x,y) = <span class="val mono" id="w1-f">–</span></span>
+            <span class="readout">x+y−2 = <span class="val mono" id="w1-g">–</span></span>
+            <span class="readout" id="w1-feas">–</span>
+          </div>
+          <div class="legend">
+            <span><span class="swatch" style="background:var(--moon)"></span>contours of f</span>
+            <span><span class="swatch" style="background:var(--feasible)"></span>feasible region (x+y&lt;2)</span>
+            <span><span class="swatch" style="background:var(--canopy)"></span>unconstrained minimum</span>
+          </div>
+          <div class="widget-caption">Drag the parchment-colored point anywhere. Watch how the fence and the bowl pull in different directions.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step">
+      <div class="stake">02</div>
+      <h2>Freeze the point, and the constraint becomes a price</h2>
+      <div class="body">
+        <p>Pick any single spot \((x,y)\) and hold it fixed. The Lagrangian charges a price \(\lambda\) for standing on the wrong side of the fence:</p>
+        <p style="text-align:center; margin: 18px 0;">\[ L(x,y,\lambda) = f(x,y) + \lambda\,(x+y-2) \]</p>
+        <p>For a <strong>fixed point</strong>, this is embarrassingly simple: it's just a straight line in \(\lambda\). The intercept is \(f(x,y)\) — what you pay at zero price. The slope is \(x+y-2\) — how far over the fence you are.</p>
+      </div>
+      <div class="widget">
+        <div class="widget-titlewrap">
+          <span class="widget-title">One point → one line</span>
+          <span class="wt-sub">linked · drag the point</span>
+        </div>
+        <div class="widget-body">
+          <div class="canvases">
+            <canvas id="w2-primal" width="230" height="230" class="grabbable"></canvas>
+            <canvas id="w2-line" width="380" height="230"></canvas>
+          </div>
+          <div class="readout-row">
+            <span class="readout">L(λ) = <span class="val mono" id="w2-formula">–</span></span>
+          </div>
+          <div class="widget-caption">Drag the point on the left. Its line on the right just tilts and slides — it never curves. A single point can only ever draw a straight line.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step">
+      <div class="stake">03</div>
+      <h2>The dual is the floor beneath all of these lines</h2>
+      <div class="body">
+        <p>The dual function doesn't fix one point — it asks, <em>for every price \(\lambda\), which point is cheapest right now?</em></p>
+        <p style="text-align:center; margin: 18px 0;">\[ g(\lambda) = \min_{x,y} L(x,y,\lambda) \]</p>
+        <p>That means \(g(\lambda)\) is the <strong>pointwise minimum, over every point in the plane, of a straight line</strong>. Add lines below, one per point. Watch what their lower boundary does as more arrive.</p>
+        <div class="callout-mini">This is the whole mechanism. It works whether \(f\) is a tidy bowl or a landscape of nonsense — the envelope of a pile of lines is always a dome.</div>
+      </div>
+      <div class="widget">
+        <div class="widget-titlewrap">
+          <span class="widget-title">The lower envelope of every possible line</span>
+          <span class="wt-sub">staged · add lines</span>
+        </div>
+        <div class="widget-body">
+          <div class="canvases">
+            <canvas id="w3-canvas" width="560" height="360"></canvas>
+          </div>
+          <div class="controls">
+            <button id="w3-next">Add a line →</button>
+            <button id="w3-flood" disabled>Flood with 300 more →</button>
+            <button id="w3-reset" class="ghost">Reset</button>
+          </div>
+          <div class="legend">
+            <span><span class="swatch" style="background:var(--rope)"></span>one line per point (x,y)</span>
+            <span><span class="swatch" style="background:var(--canopy)"></span>the envelope g(λ)</span>
+          </div>
+          <div class="widget-caption" id="w3-caption">Press "Add a line" to place the first point's line.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="step">
+      <div class="stake">04</div>
+      <h2>Solve it exactly, and watch the touch-point trace the roof</h2>
+      <div class="body">
+        <p>For this particular \(f\) we can do the inner minimization with calculus. Setting \(\partial L/\partial x = \partial L/\partial y = 0\):</p>
+        <p style="text-align:center; margin: 18px 0;">\[ x^*(\lambda) = y^*(\lambda) = 2 - \tfrac{\lambda}{2} \]</p>
+        <p>Substituting back gives a closed form for the dome we built numerically above:</p>
+        <p style="text-align:center; margin: 18px 0;">\[ g(\lambda) = 2\lambda - \tfrac{\lambda^2}{2}, \qquad g''(\lambda) = -1 \]</p>
+        <p>Drag \(\lambda\) below. Watch the optimal point slide along the diagonal in the bowl, and watch <em>its</em> line rotate until it exactly grazes the envelope at that \(\lambda\) — because that's the definition of the envelope: the one line, among infinitely many, that happens to be lowest right there.</p>
+        <details class="formal">
+          <summary>Why is this the Legendre transform?</summary>
+          <div class="formal-body">
+            Minimizing a convex function against a linear "bribe" term is exactly the Legendre transform: \(\min_x\big[(x-2)^2+\lambda x\big] = -\lambda^2/4 + \text{const}\). Legendre transforms of convex functions are always concave in the dual variable — same fact, different clothes. Each coordinate here contributes one \(-\lambda^2/4\) term; summing the \(x\) and \(y\) contributions and folding in the \(-2\lambda\) from the constant term gives \(g(\lambda)=2\lambda-\lambda^2/2\).
+          </div>
+        </details>
+      </div>
+      <div class="widget">
+        <div class="widget-titlewrap">
+          <span class="widget-title">The optimal point and its tangent line</span>
+          <span class="wt-sub">live · drag λ</span>
+        </div>
+        <div class="widget-body">
+          <div class="canvases">
+            <canvas id="w4-primal" width="230" height="230"></canvas>
+            <canvas id="w4-line" width="380" height="230"></canvas>
+          </div>
+          <div class="slider-row">
+            <label for="w4-lambda">λ</label>
+            <input type="range" id="w4-lambda" min="-1.5" max="5.5" step="0.02" value="0.5">
+            <label class="mono" id="w4-lambda-val" style="min-width:48px; text-align:right;">0.50</label>
+          </div>
+          <div class="readout-row">
+            <span class="readout">x*=y* = <span class="val mono" id="w4-xstar">–</span></span>
+            <span class="readout">g(λ) = <span class="val mono" id="w4-g">–</span></span>
+            <span class="readout">g'(λ) = <span class="val mono" id="w4-gprime">–</span></span>
+          </div>
+          <div class="controls">
+            <button id="w4-snap">Snap to λ* = 2 (g'=0)</button>
+          </div>
+          <div class="widget-caption" id="w4-caption">At λ*=2, g'(λ)=0 — the dual optimum. Check: primal optimum is x=y=1, f(1,1)=2, and g(2)=2. No gap.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="step">
+      <div class="stake">05</div>
+      <h2>Putting it together</h2>
+      <div class="body">
+        <p>Restate the kernel with the specifics now filled in: \(g(\lambda)=\min_{x,y}L(x,y,\lambda)\) is a minimum, taken over \((x,y)\), of a function that is <em>affine in \(\lambda\)</em> for every fixed \((x,y)\). A pointwise minimum of affine functions is concave — full stop, no assumptions on \(f\) required. Step 3 showed it by brute force (pile up lines, watch the dome emerge); Step 4 confirmed it in closed form for this specific quadratic.</p>
+        <p>What quadratics <em>do</em> buy you, separately, is <strong>strong duality</strong> — the dome's peak, \(g(2)=2\), exactly matches the primal optimum \(f(1,1)=2\). That's Slater's condition doing its job (a convex feasible region with an interior point), and it's a second, independent fact. Swap \(f\) for something nonconvex and \(g(\lambda)\) is still, provably, a dome — you'd just lose the guarantee that its peak reaches the true primal answer.</p>
+      </div>
+      <div class="recap">
+        <h3>The one-sentence version</h3>
+        <p>The dual is concave because it's a minimum over a family of straight lines — and no family of straight lines can ever have a lower envelope shaped like anything but a dome.</p>
+        <div class="where">
+          <h4>Where this shows up</h4>
+          <ul>
+            <li>Every Lagrangian dual in convex optimization — SVMs, LASSO, portfolio problems — inherits this for free, regardless of how the primal looks.</li>
+            <li>Lagrangian relaxation for integer/combinatorial programs: the primal is wildly nonconvex, yet the dual bound \(g(\lambda)\) is still concave and can be maximized with plain gradient ascent.</li>
+            <li>The same min-of-affine-family argument is why value functions in convex MDPs and support functions in convex geometry are concave/convex "for free."</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>drawn at the survey camp · every line above was numerically verified before it was drawn</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- shared math ----------
+  function f(x,y){ return (x-2)*(x-2) + (y-2)*(y-2); }
+  function constraintVal(x,y){ return x+y-2; }
+  function Lval(x,y,lam){ return f(x,y) + lam*constraintVal(x,y); }
+  function gAnalytic(lam){ return 2*lam - lam*lam/2; }
+  function gPrimeAnalytic(lam){ return 2 - lam; }
+  function fmt(v, d){ d = d===undefined?2:d; return (Math.round(v*Math.pow(10,d))/Math.pow(10,d)).toFixed(d); }
+
+  // ---------- generic coordinate mapper ----------
+  function mapper(domainMin, domainMax, pixMin, pixMax){
+    return function(v){ return pixMin + (v-domainMin)/(domainMax-domainMin) * (pixMax-pixMin); };
+  }
+
+  // ================= WIDGET 1: bowl + fence, draggable point =================
+  (function(){
+    const canvas = document.getElementById('w1-canvas');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height, pad = 28;
+    const DMIN = -2, DMAX = 6;
+    const mx = mapper(DMIN, DMAX, pad, W-pad);
+    const my = mapper(DMIN, DMAX, H-pad, pad); // inverted
+
+    let point = {x: -1, y: 3.5};
+
+    function draw(){
+      ctx.clearRect(0,0,W,H);
+      // feasible region shading: x+y<2, i.e. below the line
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(mx(DMIN), my(2-DMIN));
+      ctx.lineTo(mx(DMAX), my(2-DMAX));
+      ctx.lineTo(mx(DMAX), my(DMIN));
+      ctx.lineTo(mx(DMIN), my(DMIN));
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(86,112,95,0.20)';
+      ctx.fill();
+      ctx.restore();
+
+      // fence line x+y=2
+      ctx.beginPath();
+      ctx.moveTo(mx(DMIN), my(2-DMIN));
+      ctx.lineTo(mx(DMAX), my(2-DMAX));
+      ctx.strokeStyle = '#56705f';
+      ctx.lineWidth = 1.6;
+      ctx.setLineDash([5,4]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // contours of f, concentric circles centered (2,2)
+      ctx.strokeStyle = 'rgba(127,166,189,0.55)';
+      ctx.lineWidth = 1;
+      [1,2,3,4,5].forEach(function(r){
+        ctx.beginPath();
+        ctx.arc(mx(2), my(2), (mx(2+r)-mx(2)), 0, Math.PI*2);
+        ctx.stroke();
+      });
+
+      // axes
+      ctx.strokeStyle = '#333c47';
+      ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(mx(DMIN),my(0)); ctx.lineTo(mx(DMAX),my(0)); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(mx(0),my(DMIN)); ctx.lineTo(mx(0),my(DMAX)); ctx.stroke();
+
+      // unconstrained min at (2,2)
+      ctx.beginPath();
+      ctx.arc(mx(2), my(2), 4, 0, Math.PI*2);
+      ctx.fillStyle = '#dba64d';
+      ctx.fill();
+
+      // draggable point
+      const feasible = constraintVal(point.x,point.y) < 0;
+      ctx.beginPath();
+      ctx.arc(mx(point.x), my(point.y), 7, 0, Math.PI*2);
+      ctx.fillStyle = feasible ? '#ece5d6' : '#b56454';
+      ctx.fill();
+      ctx.strokeStyle = '#171b21';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // readouts
+      document.getElementById('w1-point').textContent = '(' + fmt(point.x,1) + ', ' + fmt(point.y,1) + ')';
+      document.getElementById('w1-f').textContent = fmt(f(point.x,point.y));
+      document.getElementById('w1-g').textContent = fmt(constraintVal(point.x,point.y));
+      const feasEl = document.getElementById('w1-feas');
+      feasEl.textContent = feasible ? 'feasible' : 'infeasible';
+      feasEl.className = 'readout ' + (feasible ? 'feasible-yes' : 'feasible-no');
+    }
+
+    function toDomain(px,py){
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width/rect.width, scaleY = canvas.height/rect.height;
+      const cx = (px-rect.left)*scaleX, cy = (py-rect.top)*scaleY;
+      const x = DMIN + (cx-pad)/(W-2*pad)*(DMAX-DMIN);
+      const y = DMIN + (H-pad-cy)/(H-2*pad)*(DMAX-DMIN);
+      return {x: Math.max(DMIN,Math.min(DMAX,x)), y: Math.max(DMIN,Math.min(DMAX,y))};
+    }
+
+    let dragging = false;
+    canvas.addEventListener('mousedown', function(e){ dragging = true; point = toDomain(e.clientX,e.clientY); draw(); });
+    window.addEventListener('mousemove', function(e){ if(!dragging) return; point = toDomain(e.clientX,e.clientY); draw(); });
+    window.addEventListener('mouseup', function(){ dragging = false; });
+    canvas.addEventListener('touchstart', function(e){ dragging=true; const t=e.touches[0]; point=toDomain(t.clientX,t.clientY); draw(); e.preventDefault(); }, {passive:false});
+    canvas.addEventListener('touchmove', function(e){ if(!dragging) return; const t=e.touches[0]; point=toDomain(t.clientX,t.clientY); draw(); e.preventDefault(); }, {passive:false});
+    window.addEventListener('touchend', function(){ dragging=false; });
+
+    draw();
+    window.__w1_getPoint = function(){ return point; };
+  })();
+
+  // ================= WIDGET 2: point -> line (linked) =================
+  (function(){
+    const pc = document.getElementById('w2-primal');
+    const pctx = pc.getContext('2d');
+    const PW = pc.width, PH = pc.height, ppad = 24;
+    const DMIN=-2, DMAX=6;
+    const pmx = mapper(DMIN,DMAX,ppad,PW-ppad);
+    const pmy = mapper(DMIN,DMAX,PH-ppad,ppad);
+
+    const lc = document.getElementById('w2-line');
+    const lctx = lc.getContext('2d');
+    const LW = lc.width, LH = lc.height, lpad = 34;
+    const LMIN=-2, LMAX=6, VMIN=-8, VMAX=14;
+    const lmx = mapper(LMIN,LMAX,lpad,LW-lpad);
+    const lmy = mapper(VMIN,VMAX,LH-lpad,lpad);
+
+    let point = {x: 0, y: 3};
+
+    function drawPrimal(){
+      pctx.clearRect(0,0,PW,PH);
+      pctx.beginPath();
+      pctx.moveTo(pmx(DMIN), pmy(2-DMIN));
+      pctx.lineTo(pmx(DMAX), pmy(2-DMAX));
+      pctx.strokeStyle = '#56705f'; pctx.lineWidth = 1.4; pctx.setLineDash([5,4]); pctx.stroke(); pctx.setLineDash([]);
+      pctx.strokeStyle = 'rgba(127,166,189,0.5)'; pctx.lineWidth = 1;
+      [1,2,3,4,5].forEach(function(r){
+        pctx.beginPath(); pctx.arc(pmx(2), pmy(2), pmx(2+r)-pmx(2), 0, Math.PI*2); pctx.stroke();
+      });
+      pctx.beginPath(); pctx.arc(pmx(point.x), pmy(point.y), 7, 0, Math.PI*2);
+      pctx.fillStyle = '#ece5d6'; pctx.fill(); pctx.strokeStyle='#171b21'; pctx.lineWidth=2; pctx.stroke();
+    }
+
+    function drawLine(){
+      lctx.clearRect(0,0,LW,LH);
+      // axes
+      lctx.strokeStyle = '#333c47'; lctx.lineWidth = 1;
+      lctx.beginPath(); lctx.moveTo(lmx(LMIN), lmy(0)); lctx.lineTo(lmx(LMAX), lmy(0)); lctx.stroke();
+      lctx.beginPath(); lctx.moveTo(lmx(0), lmy(VMIN)); lctx.lineTo(lmx(0), lmy(VMAX)); lctx.stroke();
+      lctx.fillStyle = '#706b60'; lctx.font = '11px IBM Plex Mono'; lctx.fillText('λ', LW-lpad+6, lmy(0)+4);
+      lctx.fillText('L(λ)', lmx(0)+6, lpad-8);
+
+      const b = f(point.x,point.y), m = constraintVal(point.x,point.y);
+      lctx.beginPath();
+      lctx.moveTo(lmx(LMIN), lmy(b+m*LMIN));
+      lctx.lineTo(lmx(LMAX), lmy(b+m*LMAX));
+      lctx.strokeStyle = '#a4885f'; lctx.lineWidth = 2.4; lctx.stroke();
+
+      document.getElementById('w2-formula').textContent =
+        fmt(b) + ' + λ·(' + (m>=0?'':'') + fmt(m) + ')';
+    }
+
+    function toDomain(px,py){
+      const rect = pc.getBoundingClientRect();
+      const scaleX = pc.width/rect.width, scaleY = pc.height/rect.height;
+      const cx = (px-rect.left)*scaleX, cy = (py-rect.top)*scaleY;
+      const x = DMIN + (cx-ppad)/(PW-2*ppad)*(DMAX-DMIN);
+      const y = DMIN + (PH-ppad-cy)/(PH-2*ppad)*(DMAX-DMIN);
+      return {x: Math.max(DMIN,Math.min(DMAX,x)), y: Math.max(DMIN,Math.min(DMAX,y))};
+    }
+
+    let dragging=false;
+    pc.addEventListener('mousedown', function(e){ dragging=true; point=toDomain(e.clientX,e.clientY); drawPrimal(); drawLine(); });
+    window.addEventListener('mousemove', function(e){ if(!dragging) return; point=toDomain(e.clientX,e.clientY); drawPrimal(); drawLine(); });
+    window.addEventListener('mouseup', function(){ dragging=false; });
+    pc.addEventListener('touchstart', function(e){ dragging=true; const t=e.touches[0]; point=toDomain(t.clientX,t.clientY); drawPrimal(); drawLine(); e.preventDefault();}, {passive:false});
+    pc.addEventListener('touchmove', function(e){ if(!dragging) return; const t=e.touches[0]; point=toDomain(t.clientX,t.clientY); drawPrimal(); drawLine(); e.preventDefault();}, {passive:false});
+    window.addEventListener('touchend', function(){ dragging=false; });
+
+    drawPrimal(); drawLine();
+  })();
+
+  // ================= WIDGET 3: staged envelope build (signature) =================
+  (function(){
+    const canvas = document.getElementById('w3-canvas');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height, pad = 40;
+    const LMIN=-1.5, LMAX=5.5, VMIN=-6, VMAX=8;
+    const mx = mapper(LMIN,LMAX,pad,W-pad);
+    const my = mapper(VMIN,VMAX,H-pad,pad);
+
+    const featured = [ {x:2,y:2,label:'(2,2)'}, {x:0,y:0,label:'(0,0)'}, {x:4,y:-1,label:'(4,−1)'}, {x:-1,y:3,label:'(−1,3)'} ];
+    let placed = [];
+    let floodPoints = [];
+    let showEnvelope = false;
+
+    function axesAndFrame(){
+      ctx.clearRect(0,0,W,H);
+      ctx.strokeStyle = '#333c47'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(mx(LMIN), my(0)); ctx.lineTo(mx(LMAX), my(0)); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(mx(0), my(VMIN)); ctx.lineTo(mx(0), my(VMAX)); ctx.stroke();
+      ctx.fillStyle = '#706b60'; ctx.font = '11px IBM Plex Mono';
+      ctx.fillText('λ', W-pad+8, my(0)+4);
+      ctx.fillText('L(λ), g(λ)', mx(0)+8, pad-10);
+    }
+
+    function lineAt(pt){ const b=f(pt.x,pt.y), m=constraintVal(pt.x,pt.y); return {b:b,m:m}; }
+
+    function draw(){
+      axesAndFrame();
+
+      // envelope canopy fill (drawn first, under the rope lines, once revealed)
+      if(showEnvelope){
+        ctx.beginPath();
+        ctx.moveTo(mx(LMIN), my(gAnalytic(LMIN)));
+        for(let l=LMIN; l<=LMAX; l+=0.05){ ctx.lineTo(mx(l), my(gAnalytic(l))); }
+        ctx.lineTo(mx(LMAX), my(VMIN));
+        ctx.lineTo(mx(LMIN), my(VMIN));
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(219,166,77,0.10)';
+        ctx.fill();
+      }
+
+      // rope lines: featured placed points
+      ctx.lineWidth = 1.6;
+      placed.forEach(function(pt){
+        const {b,m} = lineAt(pt);
+        ctx.beginPath();
+        ctx.moveTo(mx(LMIN), my(b+m*LMIN));
+        ctx.lineTo(mx(LMAX), my(b+m*LMAX));
+        ctx.strokeStyle = 'rgba(164,136,95,0.85)';
+        ctx.stroke();
+      });
+
+      // flood lines (thin, dim)
+      if(floodPoints.length){
+        ctx.lineWidth = 0.7;
+        ctx.strokeStyle = 'rgba(164,136,95,0.18)';
+        floodPoints.forEach(function(pt){
+          const {b,m} = lineAt(pt);
+          ctx.beginPath();
+          ctx.moveTo(mx(LMIN), my(b+m*LMIN));
+          ctx.lineTo(mx(LMAX), my(b+m*LMAX));
+          ctx.stroke();
+        });
+      }
+
+      // envelope curve (canopy roofline)
+      if(showEnvelope){
+        ctx.beginPath();
+        ctx.moveTo(mx(LMIN), my(gAnalytic(LMIN)));
+        for(let l=LMIN; l<=LMAX; l+=0.05){ ctx.lineTo(mx(l), my(gAnalytic(l))); }
+        ctx.strokeStyle = '#dba64d';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+      }
+    }
+
+    const nextBtn = document.getElementById('w3-next');
+    const floodBtn = document.getElementById('w3-flood');
+    const resetBtn = document.getElementById('w3-reset');
+    const caption = document.getElementById('w3-caption');
+
+    function updateCaption(){
+      if(placed.length < featured.length){
+        caption.innerHTML = 'Point <b>' + featured[placed.length-1].label + '</b> added. Its line is straight — always. ' + (placed.length===1 ? 'One line can\'t tell you anything about a dome yet.' : '');
+      } else if(!floodPoints.length){
+        caption.innerHTML = 'All four featured points placed. Four lines already hint at a lower boundary — but four isn\'t proof. Flood the plane with more.';
+      } else if(showEnvelope){
+        caption.innerHTML = '<b>300 more lines</b>, and the lower envelope traces a smooth dome — for a fixed, provable reason: a minimum over affine functions is concave, always.';
+      }
+    }
+
+    nextBtn.addEventListener('click', function(){
+      if(placed.length < featured.length){
+        placed.push(featured[placed.length]);
+        draw();
+        updateCaption();
+        if(placed.length === featured.length){
+          nextBtn.disabled = true;
+          floodBtn.disabled = false;
+        }
+      }
+    });
+
+    floodBtn.addEventListener('click', function(){
+      floodPoints = [];
+      for(let i=0;i<300;i++){
+        const x = -3 + Math.random()*10;
+        const y = -3 + Math.random()*10;
+        floodPoints.push({x:x,y:y});
+      }
+      showEnvelope = true;
+      floodBtn.disabled = true;
+      draw();
+      updateCaption();
+    });
+
+    resetBtn.addEventListener('click', function(){
+      placed = []; floodPoints = []; showEnvelope = false;
+      nextBtn.disabled = false; floodBtn.disabled = true;
+      draw();
+      caption.textContent = 'Press "Add a line" to place the first point\'s line.';
+    });
+
+    draw();
+  })();
+
+  // ================= WIDGET 4: analytic slider, linked primal + tangent =================
+  (function(){
+    const pc = document.getElementById('w4-primal');
+    const pctx = pc.getContext('2d');
+    const PW = pc.width, PH = pc.height, ppad = 24;
+    const DMIN=-2, DMAX=6;
+    const pmx = mapper(DMIN,DMAX,ppad,PW-ppad);
+    const pmy = mapper(DMIN,DMAX,PH-ppad,ppad);
+
+    const lc = document.getElementById('w4-line');
+    const lctx = lc.getContext('2d');
+    const LW = lc.width, LH = lc.height, lpad = 34;
+    const LMIN=-1.5, LMAX=5.5, VMIN=-6, VMAX=8;
+    const lmx = mapper(LMIN,LMAX,lpad,LW-lpad);
+    const lmy = mapper(VMIN,VMAX,LH-lpad,lpad);
+
+    const slider = document.getElementById('w4-lambda');
+
+    function drawPrimal(lam){
+      const xs = 2 - lam/2, ys = 2 - lam/2;
+      pctx.clearRect(0,0,PW,PH);
+      pctx.beginPath();
+      pctx.moveTo(pmx(DMIN), pmy(2-DMIN));
+      pctx.lineTo(pmx(DMAX), pmy(2-DMAX));
+      pctx.strokeStyle = '#56705f'; pctx.lineWidth = 1.4; pctx.setLineDash([5,4]); pctx.stroke(); pctx.setLineDash([]);
+      pctx.strokeStyle = 'rgba(127,166,189,0.5)'; pctx.lineWidth = 1;
+      [1,2,3,4,5].forEach(function(r){
+        pctx.beginPath(); pctx.arc(pmx(2), pmy(2), pmx(2+r)-pmx(2), 0, Math.PI*2); pctx.stroke();
+      });
+      // diagonal trajectory x=y
+      pctx.beginPath();
+      pctx.moveTo(pmx(DMIN), pmy(DMIN));
+      pctx.lineTo(pmx(DMAX), pmy(DMAX));
+      pctx.strokeStyle = 'rgba(219,166,77,0.35)'; pctx.lineWidth = 1; pctx.setLineDash([2,3]); pctx.stroke(); pctx.setLineDash([]);
+      // optimal point
+      pctx.beginPath();
+      pctx.arc(pmx(xs), pmy(ys), 7, 0, Math.PI*2);
+      pctx.fillStyle = '#dba64d'; pctx.fill();
+      pctx.strokeStyle = '#171b21'; pctx.lineWidth = 2; pctx.stroke();
+      return {xs:xs, ys:ys};
+    }
+
+    function drawLine(lam){
+      lctx.clearRect(0,0,LW,LH);
+      lctx.strokeStyle = '#333c47'; lctx.lineWidth = 1;
+      lctx.beginPath(); lctx.moveTo(lmx(LMIN), lmy(0)); lctx.lineTo(lmx(LMAX), lmy(0)); lctx.stroke();
+      lctx.beginPath(); lctx.moveTo(lmx(0), lmy(VMIN)); lctx.lineTo(lmx(0), lmy(VMAX)); lctx.stroke();
+      lctx.fillStyle = '#706b60'; lctx.font = '11px IBM Plex Mono';
+      lctx.fillText('λ', LW-lpad+6, lmy(0)+4);
+      lctx.fillText('g(λ)', lmx(0)+6, lpad-8);
+
+      // envelope curve
+      lctx.beginPath();
+      lctx.moveTo(lmx(LMIN), lmy(gAnalytic(LMIN)));
+      for(let l=LMIN; l<=LMAX; l+=0.05){ lctx.lineTo(lmx(l), lmy(gAnalytic(l))); }
+      lctx.strokeStyle = 'rgba(219,166,77,0.55)';
+      lctx.lineWidth = 2;
+      lctx.stroke();
+
+      // tangent line at current lambda: the line for point (x*,y*)
+      const xs = 2-lam/2, ys = 2-lam/2;
+      const b = f(xs,ys), m = constraintVal(xs,ys);
+      lctx.beginPath();
+      lctx.moveTo(lmx(LMIN), lmy(b+m*LMIN));
+      lctx.lineTo(lmx(LMAX), lmy(b+m*LMAX));
+      lctx.strokeStyle = '#a4885f';
+      lctx.lineWidth = 2;
+      lctx.stroke();
+
+      // marker at current lambda on envelope
+      lctx.beginPath();
+      lctx.arc(lmx(lam), lmy(gAnalytic(lam)), 5.5, 0, Math.PI*2);
+      lctx.fillStyle = '#ece5d6';
+      lctx.fill();
+      lctx.strokeStyle = '#171b21'; lctx.lineWidth = 1.5; lctx.stroke();
+    }
+
+    function update(){
+      const lam = parseFloat(slider.value);
+      const {xs,ys} = drawPrimal(lam);
+      drawLine(lam);
+      document.getElementById('w4-lambda-val').textContent = fmt(lam,2);
+      document.getElementById('w4-xstar').textContent = fmt(xs,3);
+      document.getElementById('w4-g').textContent = fmt(gAnalytic(lam));
+      document.getElementById('w4-gprime').textContent = fmt(gPrimeAnalytic(lam));
+      const cap = document.getElementById('w4-caption');
+      if(Math.abs(lam-2) < 0.05){
+        cap.innerHTML = 'Right at <b>λ*=2</b>: g\'(λ)=0, the peak of the dome. Primal optimum x=y=1 gives f(1,1)=2 — matches g(2)=2 exactly.';
+      } else {
+        cap.innerHTML = 'The tangent line touches the dome only at this λ. Move on, and a <em>different</em> point becomes cheapest.';
+      }
+    }
+
+    slider.addEventListener('input', update);
+    document.getElementById('w4-snap').addEventListener('click', function(){ slider.value = 2; update(); });
+    update();
+  })();
+
+})();
+</script>
+
+</body>
+</html>

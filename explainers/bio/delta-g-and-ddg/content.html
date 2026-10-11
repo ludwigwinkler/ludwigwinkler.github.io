@@ -1,0 +1,1871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ΔG and ΔΔG</title>
+
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg:        #17141f;
+    --bg-2:      #1e1a2b;
+    --surface:   #221d31;
+    --ink:       #ece8f5;
+    --ink-soft:  #a49ebb;
+    --accent:    #ff7a6b;   /* folded / stabilizing        */
+    --accent-2:  #7fb2ff;   /* unfolded / free             */
+    --accent-3:  #ffc857;   /* ΔΔG, the headline quantity  */
+    --line:      #322b47;
+    --axis:      #574e73;
+    --radius: 14px;
+    --measure: 70ch;
+    --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+    --font-body:    'Literata', Georgia, serif;
+    --font-mono:    'IBM Plex Mono', ui-monospace, Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background:
+      radial-gradient(1100px 640px at 12% -8%, #241d3a 0%, rgba(36,29,58,0) 62%),
+      radial-gradient(900px 520px at 92% 6%, #1c2440 0%, rgba(28,36,64,0) 58%),
+      var(--bg);
+    background-attachment: fixed;
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 18.5px;
+    line-height: 1.72;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #progress {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent-3));
+    z-index: 100; transition: width 0.1s linear;
+  }
+
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 26px 130px; }
+  .prose { max-width: var(--measure); }
+  .prose p { margin: 0 0 1.1em; }
+
+  header { padding: 100px 0 34px; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.24em;
+    text-transform: uppercase; color: var(--accent-3); margin: 0 0 20px;
+  }
+  h1 {
+    font-family: var(--font-display); font-weight: 800;
+    font-size: clamp(2.7rem, 7vw, 4.4rem); line-height: 1.0;
+    margin: 0 0 24px; letter-spacing: -0.035em;
+  }
+  h1 em { font-style: normal; color: var(--accent-3); }
+  .promise {
+    font-size: 1.2rem; color: var(--ink-soft); max-width: var(--measure);
+  }
+
+  .kernel {
+    position: relative;
+    background: linear-gradient(150deg, #2a2140 0%, #1d2138 100%);
+    border: 1px solid var(--line); border-left: 3px solid var(--accent-3);
+    border-radius: var(--radius); padding: 38px 40px; margin: 52px 0 34px;
+  }
+  .kernel .label {
+    font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--accent-3); opacity: 0.85; margin: 0 0 14px;
+  }
+  .kernel .sentence {
+    font-family: var(--font-display); font-weight: 400;
+    font-size: 1.42rem; line-height: 1.42; margin: 0; letter-spacing: -0.01em;
+  }
+
+  .convention {
+    border: 1px dashed var(--line); border-radius: 12px;
+    background: rgba(255,200,87,0.04);
+    padding: 22px 26px; margin: 0 0 76px; max-width: var(--measure);
+    font-size: 0.96rem;
+  }
+  .convention h4 {
+    font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--accent-3); margin: 0 0 12px; font-weight: 600;
+  }
+  .convention p { margin: 0 0 0.7em; }
+  .convention p:last-child { margin-bottom: 0; }
+
+  .aside {
+    border: 1px dashed var(--line); border-radius: 12px;
+    background: rgba(127,178,255,0.045);
+    padding: 22px 26px; margin: 0 0 30px; max-width: var(--measure);
+    font-size: 0.96rem;
+  }
+  .aside h4 {
+    font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--accent-2); margin: 0 0 12px; font-weight: 600;
+  }
+  .aside p { margin: 0 0 0.8em; }
+  .aside p:last-child { margin-bottom: 0; }
+  .aside .term {
+    font-family: var(--font-mono); font-size: 0.9em; color: var(--accent-3); font-weight: 600;
+  }
+
+  .concept-step { margin: 0 0 92px; scroll-margin-top: 40px; }
+  .step-num {
+    font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600;
+    color: var(--accent); letter-spacing: 0.2em; text-transform: uppercase;
+    margin: 0 0 10px;
+  }
+  .concept-step h2 {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(1.7rem, 3.6vw, 2.35rem); line-height: 1.12;
+    margin: 0 0 22px; letter-spacing: -0.025em;
+  }
+
+  details.formal {
+    border: 1px solid var(--line); border-radius: 10px;
+    background: var(--bg-2); margin: 26px 0; max-width: var(--measure);
+  }
+  details.formal summary {
+    cursor: pointer; padding: 14px 18px; font-family: var(--font-mono);
+    font-size: 0.82rem; letter-spacing: 0.05em; color: var(--ink-soft);
+    list-style: none; user-select: none;
+  }
+  details.formal summary::-webkit-details-marker { display: none; }
+  details.formal summary::before { content: '▸ '; color: var(--accent-3); }
+  details.formal[open] summary::before { content: '▾ '; }
+  details.formal .formal-body { padding: 0 18px 6px; font-size: 0.95rem; }
+
+  .widget {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 20px 20px 16px; margin: 30px 0;
+  }
+  .widget-titlewrap {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 14px; flex-wrap: wrap; margin-bottom: 16px;
+    border-bottom: 1px solid var(--line); padding-bottom: 12px;
+  }
+  .widget-title {
+    font-family: var(--font-display); font-weight: 600; font-size: 1.02rem;
+    margin: 0; letter-spacing: -0.01em;
+  }
+  .widget-tag {
+    font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--accent-2); opacity: 0.9;
+  }
+  .widget-controls {
+    display: flex; flex-wrap: wrap; gap: 16px 30px; margin-bottom: 16px;
+    align-items: flex-end;
+  }
+  .widget-controls label {
+    display: flex; flex-direction: column; gap: 6px;
+    font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.03em;
+    color: var(--ink-soft); min-width: 200px;
+  }
+  .widget-controls .val { color: var(--accent-3); font-weight: 600; }
+  input[type=range] { accent-color: var(--accent); cursor: pointer; width: 100%; }
+  .btnrow { flex-direction: row !important; gap: 10px !important; min-width: 0 !important; }
+  .widget button {
+    font-family: var(--font-mono); font-size: 0.76rem; letter-spacing: 0.04em;
+    background: var(--bg-2); color: var(--ink); border: 1px solid var(--line);
+    padding: 8px 14px; border-radius: 8px; cursor: pointer;
+  }
+  .widget button:hover:not(:disabled) { background: var(--accent); color: #17141f; border-color: var(--accent); }
+  .widget button:disabled { opacity: 0.3; cursor: default; }
+  .widget-stage {
+    display: block; width: 100%; border-radius: 10px; background: var(--bg);
+  }
+  .readout {
+    margin-top: 12px; font-family: var(--font-mono); font-size: 0.8rem;
+    line-height: 1.75; color: var(--ink-soft); min-height: 1.5em;
+  }
+  .readout b { color: var(--accent-3); font-weight: 600; }
+  .reveal-bar {
+    display: flex; align-items: center; gap: 16px; margin-top: 14px; flex-wrap: wrap;
+  }
+  .reveal-caption {
+    flex: 1; min-width: 220px; font-size: 0.9rem; color: var(--ink-soft); font-style: italic;
+  }
+  .caption {
+    font-size: 0.85rem; color: var(--ink-soft); opacity: 0.8; margin-top: 10px;
+  }
+
+  .recap { border-top: 1px solid var(--line); padding-top: 44px; margin-top: 30px; }
+  .recap h2 { font-family: var(--font-display); font-size: 2rem; margin: 0 0 18px; letter-spacing: -0.025em; }
+  .recap h3 { font-family: var(--font-display); font-size: 1.25rem; margin: 40px 0 12px; letter-spacing: -0.02em; }
+  .recap ul { max-width: var(--measure); padding-left: 1.1em; }
+  .recap li { margin-bottom: 0.6em; }
+
+  mark { background: linear-gradient(transparent 58%, rgba(255,200,87,0.28) 58%); color: inherit; }
+  a { color: var(--accent-2); text-decoration-color: rgba(127,178,255,0.4); }
+  code { font-family: var(--font-mono); font-size: 0.86em; color: var(--accent-3); }
+  @media (max-width: 620px) {
+    body { font-size: 17px; }
+    .wrap { padding: 0 16px 80px; }
+    .kernel { padding: 26px 22px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">A step-by-step explainer · protein thermodynamics</p>
+    <h1>ΔG and <em>ΔΔG</em></h1>
+    <p class="promise">
+      The two numbers that every stability measurement, every binding assay and
+      every mutation-effect predictor in structural biology ultimately reports —
+      and why the second one is the one you can actually trust.
+    </p>
+  </header>
+
+  <div class="kernel">
+    <p class="label">The whole thing in one sentence</p>
+    <p class="sentence">
+      ΔG is nothing but <mark>a population ratio written on a logarithmic
+      ruler</mark> — and ΔΔG is what survives when you compare two of those
+      ratios and <mark>everything the change didn't touch cancels out</mark>.
+    </p>
+  </div>
+
+  <div class="convention">
+    <h4>Sign conventions used on this page — declared up front</h4>
+    <p>
+      Free energies are always differences between two states, so you must say
+      <em>which minus which</em>. Throughout this page:
+    </p>
+    <p>
+      \(\Delta G_{\text{fold}} = G_{\text{folded}} - G_{\text{unfolded}}\)
+      &nbsp;→&nbsp; <strong>negative means stable</strong> (the protein prefers to be folded).<br>
+      \(\Delta G_{\text{bind}} = G_{\text{bound}} - G_{\text{free}}\)
+      &nbsp;→&nbsp; <strong>negative means it binds</strong>.<br>
+      \(\Delta\Delta G = \Delta G(\text{mutant}) - \Delta G(\text{wild type})\)
+      &nbsp;→&nbsp; <strong>positive means the mutation made things worse</strong>
+      (less stable, or weaker binding). <span style="color:var(--ink-soft)">("Wild type"
+      and "mutant" are defined in <a href="#step-4">step 4</a>.)</span>
+    </p>
+    <p>
+      All three conventions are flipped somewhere in the literature — plenty of
+      papers and databases quote \(\Delta G_{\text{unfold}}\) (positive = stable),
+      and some define \(\Delta\Delta G\) the other way round so that positive means
+      stabilizing. A ΔΔG value with no stated convention is half a number. When you
+      pick up a dataset, always check its sign convention against a mutation whose
+      effect you already know rather than assuming.
+    </p>
+  </div>
+
+  <!-- ===================== STEP 1 ===================== -->
+  <section class="concept-step" id="step-1">
+    <p class="step-num">Step 1</p>
+    <h2>A protein is a crowd that splits between two states</h2>
+    <div class="prose">
+      <p>
+        Put a protein in water and you do not have <em>a</em> protein. You have
+        \(10^{15}\) copies of it, each jiggling independently, each at any moment
+        either folded up into its working shape or flopping around as a limp chain.
+        Molecules cross back and forth constantly. What is stable is not any one
+        molecule — it is <em>the proportion</em>.
+      </p>
+      <p>
+        So the honest measurement of "how stable is this protein" is a headcount:
+        of every 120 molecules, how many are folded right now? That ratio is the
+        physical fact. Everything else is bookkeeping.
+      </p>
+      <p>
+        The bookkeeping is this. Ratios are awkward: they run from 0 to ∞, they
+        multiply rather than add, and a ratio of 5,000 doesn't <em>look</em> five
+        times more impressive than 1,000 even though it is. So we take a logarithm
+        and scale it by the thermal energy \(RT\):
+      </p>
+      \[ \Delta G_{\text{fold}} \;=\; -RT\,\ln\!\frac{[\text{folded}]}{[\text{unfolded}]} \]
+      <p>
+        Read it right to left and nothing mysterious is happening. The fraction is
+        the headcount. The \(\ln\) turns a multiplying ratio into an adding one. The
+        \(RT\) puts it in energy units so it can be compared with, and added to,
+        other energies. The minus sign is the convention that makes "more folded"
+        come out negative. <mark>ΔG is a population ratio wearing energy
+        clothing.</mark>
+      </p>
+      <p>
+        In the box below, each dot is one molecule sitting in one of two wells. The
+        dots hop across on their own, accepting or rejecting each hop by the
+        Metropolis rule — downhill hops always, uphill hops with probability
+        \(e^{-\Delta G/RT}\). Nobody tells the crowd what ratio to settle at. Watch
+        it find one anyway, and watch ΔG get <em>read off the counts</em>.
+      </p>
+    </div>
+
+    <div class="widget" id="w1">
+      <div class="widget-titlewrap">
+        <h3 class="widget-title">120 molecules hopping between a folded and an unfolded well</h3>
+        <span class="widget-tag">live simulation · drag the well depth</span>
+      </div>
+      <div class="widget-controls">
+        <label>true well-depth difference &nbsp;ΔG<sub>fold</sub> = <span class="val" id="w1-dgV">−1.00</span> kcal/mol
+          <input type="range" id="w1-dg" min="-3" max="1.5" step="0.05" value="-1">
+        </label>
+        <label class="btnrow">
+          <button id="w1-play">Pause</button>
+          <button id="w1-reset">Reset counts</button>
+        </label>
+      </div>
+      <canvas id="w1-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w1-readout"></div>
+      <p class="caption">
+        The slider changes only the <em>microscopic</em> hop probabilities. The ΔG
+        printed on the right is computed from the observed headcount and nothing
+        else — it is a measurement, not a formula being echoed back at you.
+        Push the slider to −3 and watch the measurement break: when every molecule
+        is on one side there is no ratio left to see.
+      </p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version — detailed balance, and why the counts land there</summary>
+      <div class="formal-body prose">
+        <p>
+          The simulation proposes a hop and accepts it with probability
+          \(\min\!\left(1, e^{-(G_{\text{target}}-G_{\text{source}})/RT}\right)\).
+          Writing \(p_{F\to U}\) and \(p_{U\to F}\) for the two acceptance
+          probabilities, exactly one of them is 1 and the other is
+          \(e^{-|\Delta G|/RT}\), so their ratio is
+          \(p_{U\to F}/p_{F\to U} = e^{-\Delta G_{\text{fold}}/RT}\).
+        </p>
+        <p>
+          At steady state the traffic in each direction must balance,
+          \(N_F\,p_{F\to U} = N_U\,p_{U\to F}\), which rearranges to
+          \[ K = \frac{N_F}{N_U} = e^{-\Delta G_{\text{fold}}/RT}. \]
+          Taking logs gives back the definition above. Note the direction of
+          the logic: the equilibrium constant is the primitive object, and ΔG is
+          defined from it. This is also why ΔG is only ever defined for a pair
+          of states you have actually specified.
+        </p>
+        <p>
+          Where does \(RT\) itself come from, and why is free energy
+          \(E - TS\) rather than just \(E\)? That is a story about counting
+          microstates, told in full in the companion page
+          <a href="../physics/free-energy.html">Free Energy</a>.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 2 ===================== -->
+  <section class="concept-step" id="step-2">
+    <p class="step-num">Step 2</p>
+    <h2>Why the ratio is what it is: one good shape against a hundred thousand bad ones</h2>
+    <div class="prose">
+      <p>
+        Step 1 said ΔG <em>is</em> the ratio. It didn't say what sets the ratio.
+        That comes from a contest with two sides:
+      </p>
+      <p>
+        <strong>Energy</strong> favours the folded shape. Folding buries greasy
+        side chains away from water and packs atoms close enough to attract each
+        other. Every such contact lowers the energy.<br>
+        <strong>Counting</strong> favours the unfolded shape. There is essentially
+        one way to be correctly folded and an astronomical number of ways to be a
+        floppy chain. Even if each of those ways is individually unfavourable,
+        there are so many of them that collectively they are hard to beat.
+      </p>
+      <p>
+        That contest is exactly \( \Delta G = \Delta H - T\Delta S \): an energy
+        term and a counting term, weighed against each other with temperature as
+        the exchange rate.
+      </p>
+      <p>
+        We can do the contest honestly, with no hand-waving, on a toy protein: a
+        12-bead chain living on a square grid. The widget below enumerates
+        <em>every single one</em> of its 120,292 possible shapes — that is the
+        complete conformational ensemble, computed in your browser, not sampled or
+        estimated. Each shape gets an energy \(E = -\varepsilon H\), where \(H\) is
+        the number of bead pairs that touch on the grid without being chain
+        neighbours. Then:
+      </p>
+      \[ \Delta G_{\text{fold}} \;=\; -RT \ln \frac{Z_{\text{folded}}}{Z_{\text{unfolded}}},
+         \qquad Z = \sum_{\text{shapes}} e^{-E/RT} \]
+      <p>
+        Here \(Z\) is just a weighted headcount: every shape counted once, but
+        discounted by \(e^{-E/RT}\) according to how energetically expensive it is.
+        The folded state is the set of maximally compact shapes (a 3×4 block, 6
+        contacts); the unfolded state is everything else. Build the picture up:
+      </p>
+    </div>
+
+    <div class="widget" id="w2">
+      <div class="widget-titlewrap">
+        <h3 class="widget-title">Every shape a 12-bead chain can take, counted and weighed</h3>
+        <span class="widget-tag">staged · then drag T and ε</span>
+      </div>
+      <div class="widget-controls">
+        <label>temperature &nbsp;T = <span class="val" id="w2-tV">300</span> K
+          <input type="range" id="w2-t" min="200" max="600" step="2" value="300">
+        </label>
+        <label>contact strength &nbsp;ε = <span class="val" id="w2-eV">2.60</span> kcal/mol
+          <input type="range" id="w2-e" min="0.5" max="3.5" step="0.05" value="2.6">
+        </label>
+      </div>
+      <canvas id="w2-canvas" class="widget-stage"></canvas>
+      <div class="reveal-bar">
+        <button id="w2-back" disabled>← Back</button>
+        <span class="reveal-caption" id="w2-caption"></span>
+        <button id="w2-next">Show the other 120,044 →</button>
+      </div>
+      <div class="readout" id="w2-readout"></div>
+      <p class="caption">
+        Drag ε down and the folded block loses; drag T up and the sheer number of
+        floppy shapes wins. Nothing here is fitted — every number comes from the
+        exhaustive enumeration.
+      </p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version — where ΔH and TΔS in the readout come from</summary>
+      <div class="formal-body prose">
+        <p>
+          The widget computes \(\Delta G(T)\) exactly from the density of states
+          \(g(H)\) (the number of shapes with \(H\) contacts), which for this chain is
+          \(g = [29940, 36976, 27600, 15552, 6424, 3552, 248]\) for \(H = 0 \ldots 6\);
+          these sum to 120,292, the total number of 11-step self-avoiding walks on
+          the square lattice. Then
+          \(Z_{\text{folded}} = 248\,e^{6\varepsilon/RT}\) and
+          \(Z_{\text{unfolded}} = \sum_{H<6} g(H)\,e^{H\varepsilon/RT}\).
+        </p>
+        <p>
+          The entropy is obtained as \(\Delta S = -\,\partial \Delta G/\partial T\)
+          by numerical differentiation, and then \(\Delta H = \Delta G + T\Delta S\).
+          Note that \(\Delta H\) and \(\Delta S\) both drift with temperature — that
+          drift <em>is</em> the heat capacity change of unfolding, which is one of
+          the reasons real proteins can be denatured by cooling as well as heating.
+        </p>
+        <p>
+          The transition here is broad, and honestly so: with only 12 beads,
+          \(\ln(g_{\text{unfolded}}/g_{\text{folded}}) = 6.2\), so \(\Delta S\) is
+          small and the tug-of-war tips gently. A real 150-residue protein has an
+          entropy difference two orders of magnitude larger, which is why real
+          melting curves are sharp enough to look like a switch.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 3 ===================== -->
+  <section class="concept-step" id="step-3">
+    <p class="step-num">Step 3</p>
+    <h2>What one kcal/mol is worth, and why ΔG comes with an error bar</h2>
+    <div class="prose">
+      <p>
+        Before using these numbers, calibrate your intuition for the ruler. At
+        room temperature (298 K):
+      </p>
+      \[ RT = 0.592\ \text{kcal/mol}, \qquad RT\ln 10 = 1.364\ \text{kcal/mol} \]
+      <p>
+        So <mark>every 1.36 kcal/mol multiplies the folded-to-unfolded ratio by
+        ten</mark>. A typical small protein sits at \(\Delta G_{\text{fold}}\)
+        between −3 and −10 kcal/mol — which sounds like a lot until you notice
+        that it is the residue of hundreds of kcal/mol of favourable contacts
+        almost exactly cancelling hundreds of kcal/mol of lost chain entropy.
+        Protein stability is a small difference between two enormous numbers.
+        Hold on to that; it is the whole reason step 4 exists.
+      </p>
+      <p>
+        Now, how is ΔG actually obtained in a lab? You cannot count molecules.
+        What you can do is titrate in a denaturant like urea, which selectively
+        stabilises the unfolded state, and watch an optical signal (circular
+        dichroism, tryptophan fluorescence) track the shifting population. Over
+        the accessible range the effect of urea is empirically linear:
+      </p>
+      \[ \Delta G_{\text{fold}}([\text{urea}]) = \Delta G_{\text{fold}}^{\,\text{H}_2\text{O}} + m\,[\text{urea}] \]
+      <p>
+        The number everybody quotes, \(\Delta G^{\text{H}_2\text{O}}\), is therefore
+        not measured at all — it is an <em>extrapolation back to zero denaturant</em>
+        from the narrow window where both states are visible at once. Run the
+        experiment below a few times and watch how much that extrapolated number
+        moves between repeats.
+      </p>
+    </div>
+
+    <div class="widget" id="w3">
+      <div class="widget-titlewrap">
+        <h3 class="widget-title">A urea denaturation experiment, from raw signal to a quoted ΔG</h3>
+        <span class="widget-tag">staged · re-run for new noise</span>
+      </div>
+      <div class="widget-controls">
+        <label>instrument noise &nbsp;σ = <span class="val" id="w3-nV">0.07</span> signal units
+          <input type="range" id="w3-n" min="0.02" max="0.25" step="0.01" value="0.07">
+        </label>
+        <label class="btnrow">
+          <button id="w3-new">Run a new experiment</button>
+        </label>
+      </div>
+      <canvas id="w3-canvas" class="widget-stage"></canvas>
+      <div class="reveal-bar">
+        <button id="w3-back" disabled>← Back</button>
+        <span class="reveal-caption" id="w3-caption"></span>
+        <button id="w3-next">Fit the baselines →</button>
+      </div>
+      <div class="readout" id="w3-readout"></div>
+      <p class="caption">
+        The true answer built into the simulation is ΔG<sup>H₂O</sup> = −5.00
+        kcal/mol with m = 1.05 kcal/mol/M. Re-run the experiment repeatedly at
+        default noise: the recovered value wanders by about ±0.3 kcal/mol, which
+        is roughly the real-world reproducibility of this measurement. Push the
+        noise slider to the right and something worse than scatter happens — the
+        estimate also drifts systematically upwards, because noise scatters
+        near-baseline points <em>into</em> the usable window far more often than
+        it scatters them out. A long extrapolation punishes bad data twice.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===================== STEP 4 ===================== -->
+  <section class="concept-step" id="step-4">
+    <p class="step-num">Step 4</p>
+    <h2>ΔΔG: a difference of differences, and what it lets you throw away</h2>
+
+    <div class="aside">
+      <h4>Vocabulary first — wild type, mutant, and what kind of reference each is</h4>
+      <p>
+        The <span class="term">wild type</span> is the naturally occurring version of
+        the protein: the sequence the organism actually makes. In practice it is
+        whatever construct the lab or the database has designated as its baseline,
+        which is often <em>not</em> quite the organismal sequence — it may carry a
+        purification tag, a truncated terminus, or a stabilising background mutation
+        added to make the protein behave in a cuvette.
+      </p>
+      <p>
+        A <span class="term">mutant</span> is the same protein with one or a few
+        residues swapped. The notation you will meet everywhere is
+        <code>V54A</code> (or <code>Val54Ala</code>): the wild-type residue, its
+        position in the sequence, then what it was changed to. Read left to right
+        as "valine 54 became alanine". <code>V54A/L98F</code> is a double mutant.
+        The wild-type letter is written down precisely because the mutant is only
+        defined relative to a stated baseline.
+      </p>
+      <p>
+        And that is the distinction worth being careful about. Thermodynamics also
+        uses a reference — the <span class="term">standard state</span>,
+        \(c^{\circ} = 1\,\text{M}\), 1 bar, a fixed temperature — but that is a
+        <em>universal convention</em>: everyone on earth uses the same one, so two
+        labs' absolute \(\Delta G_{\text{bind}}\) values are directly comparable
+        (more on this at the end of <a href="#step-5">step 5</a>). Wild type is a
+        <em>local</em> reference, chosen per protein and per paper. Two groups can
+        report honest, correct, and different ΔΔG values for the same mutation if
+        their wild-type constructs were not the same molecule.
+      </p>
+      <p>
+        The good news is that re-referencing is just subtraction. If you have ΔΔG
+        for constructs B and C both measured against baseline A, then C measured
+        against B is
+        \(\Delta G_C - \Delta G_B = (\Delta G_C - \Delta G_A) - (\Delta G_B - \Delta G_A)\).
+        <mark>Which sequence you call "wild type" is a gauge choice: arbitrary,
+        harmless, and only dangerous when it goes unstated.</mark>
+      </p>
+    </div>
+
+    <div class="prose">
+      <p>
+        Here is the question people actually ask. Not "how stable is this
+        protein" but <em>"what did that mutation do to it?"</em> Take the
+        wild-type protein, mutate one residue, and compare:
+      </p>
+      \[ \Delta\Delta G \;=\; \Delta G_{\text{fold}}(\text{mutant}) - \Delta G_{\text{fold}}(\text{wild type}) \]
+      <p>
+        With our convention, <strong>positive ΔΔG = destabilising</strong>. That is
+        the definition, and it looks almost too trivial to name. Its importance is
+        not in the arithmetic — it is in what the arithmetic <em>deletes</em>.
+      </p>
+      <p>
+        Look at what these energies are made of. The absolute free energy of a
+        folded protein in water is a colossal number: every bond, every water
+        molecule, every ion in the box. Nobody can compute it and nobody can
+        measure it. When you subtract the unfolded state from the folded state
+        (a vertical step in the cycle below), almost all of that colossus
+        cancels — same molecule, same solvent, same everything except the shape.
+        You are left with a few kcal/mol.
+      </p>
+      <p>
+        Then you subtract wild type from mutant, and a <em>second</em> layer
+        cancels: every residue the mutation didn't touch, contributing identically
+        to both proteins, drops out. <mark>ΔΔG is what remains after two rounds of
+        cancellation — a number that depends only on the thing that changed.</mark>
+      </p>
+      <p>
+        The widget below makes this literal. It starts from four absolute free
+        energies, each a meaningless 5-digit number. Press the button to close
+        the thermodynamic cycle around them, and use <em>Shift the reference</em>
+        to add an arbitrary constant to all four — the absolute numbers scramble,
+        ΔΔG does not move.
+      </p>
+    </div>
+
+    <div class="widget" id="w4">
+      <div class="widget-titlewrap">
+        <h3 class="widget-title">The thermodynamic cycle: four absolute energies, one meaningful difference</h3>
+        <span class="widget-tag">staged · drag the mutant's stability</span>
+      </div>
+      <div class="widget-controls">
+        <label>mutant stability &nbsp;ΔG<sub>fold</sub>(mut) = <span class="val" id="w4-dgV">−3.20</span> kcal/mol
+          <input type="range" id="w4-dg" min="-7" max="0" step="0.05" value="-3.2">
+        </label>
+        <label class="btnrow">
+          <button id="w4-shift">Shift the reference</button>
+        </label>
+      </div>
+      <canvas id="w4-canvas" class="widget-stage"></canvas>
+      <div class="reveal-bar">
+        <button id="w4-back" disabled>← Back</button>
+        <span class="reveal-caption" id="w4-caption"></span>
+        <button id="w4-next">Subtract down each column →</button>
+      </div>
+      <div class="readout" id="w4-readout"></div>
+      <p class="caption">
+        Both routes around the square give the same ΔΔG — that identity is what
+        makes computational free-energy methods possible at all, because the
+        horizontal legs (turning one amino acid into another <em>in silico</em>)
+        are far easier to simulate than the vertical ones (folding a protein).
+      </p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version — why the cycle must close</summary>
+      <div class="formal-body prose">
+        <p>
+          Free energy is a state function: the difference between two states does
+          not depend on the path taken between them. Going around the square and
+          returning to the start must therefore accumulate zero:
+        </p>
+        \[ \Delta G_{\text{fold}}^{\text{WT}} + \Delta G_{\text{mut}}^{\text{folded}}
+           - \Delta G_{\text{fold}}^{\text{mut}} - \Delta G_{\text{mut}}^{\text{unfolded}} = 0 \]
+        <p>
+          Rearranged, this says the two definitions of ΔΔG agree:
+        </p>
+        \[ \underbrace{\Delta G_{\text{fold}}^{\text{mut}} - \Delta G_{\text{fold}}^{\text{WT}}}_{\text{what the experiment measures}}
+           = \underbrace{\Delta G_{\text{mut}}^{\text{folded}} - \Delta G_{\text{mut}}^{\text{unfolded}}}_{\text{what the simulation computes}} \]
+        <p>
+          The right-hand side is what alchemical free-energy calculations
+          evaluate: you never simulate folding, you gradually morph one side
+          chain into another in each state and take the difference. How that
+          morphing is done, and how it quietly fails when the two states are too
+          dissimilar, is the subject of
+          <a href="../physics/free-energy-perturbation.html">Free energy perturbation</a>.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== STEP 5 ===================== -->
+  <section class="concept-step" id="step-5">
+    <p class="step-num">Step 5</p>
+    <h2>Same two numbers, different two states: binding</h2>
+    <div class="prose">
+      <p>
+        Nothing in steps 1–4 was about folding specifically. All the machinery
+        needed was <em>two states and a ratio</em>. Swap in a different pair of
+        states — a drug free in solution versus bound in its target's pocket — and
+        every formula carries over:
+      </p>
+      \[ \Delta G_{\text{bind}} = RT \ln \frac{K_d}{c^{\circ}},
+         \qquad \Delta\Delta G_{\text{bind}} = RT \ln \frac{K_d^{\text{mut}}}{K_d^{\text{WT}}} \]
+      <p>
+        \(K_d\), the dissociation constant, is the ligand concentration at which
+        half the target sites are occupied — a concentration you can read straight
+        off a binding curve. Because it has units, it needs a reference
+        concentration \(c^{\circ} = 1\,\text{M}\) inside the logarithm to make
+        sense; more on that below. A \(K_d\) of 20 nM gives
+        \(\Delta G_{\text{bind}} = -10.5\) kcal/mol.
+      </p>
+      <p>
+        In the widget, 40 target sites bind and release ligand stochastically. No
+        binding curve is drawn for you — run the titration and it gets built out of
+        measured occupancies, one concentration at a time. Then mutate the
+        interface and watch the whole curve slide right.
+      </p>
+    </div>
+
+    <div class="widget" id="w5">
+      <div class="widget-titlewrap">
+        <h3 class="widget-title">40 binding sites, titrated with ligand</h3>
+        <span class="widget-tag">live simulation · sweep the concentration</span>
+      </div>
+      <div class="widget-controls">
+        <label>ligand concentration &nbsp;[L] = <span class="val" id="w5-cV">20 nM</span>
+          <input type="range" id="w5-c" min="-10" max="-5.3" step="0.02" value="-7.699">
+        </label>
+        <label class="btnrow">
+          <button id="w5-run">Run the titration →</button>
+          <button id="w5-mut">Mutate the interface</button>
+          <button id="w5-reset">Reset</button>
+        </label>
+      </div>
+      <canvas id="w5-canvas" class="widget-stage"></canvas>
+      <div class="readout" id="w5-readout"></div>
+      <p class="caption">
+        The sites never "know" the binding curve — each one just flips on and off.
+        The hyperbola on the right is assembled from occupancies you measured, and
+        K<sub>d</sub> is read off where it crosses one half.
+      </p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal version — the standard state, and why ΔΔG doesn't care about it</summary>
+      <div class="formal-body prose">
+        <p>
+          Folding is unimolecular: one molecule in, one molecule out, so the
+          equilibrium constant \(K = [F]/[U]\) is a pure number and
+          \(\Delta G = -RT\ln K\) is unambiguous.
+        </p>
+        <p>
+          Binding is bimolecular — \( \text{P} + \text{L} \rightleftharpoons \text{PL}\)
+          — so \(K_d = [\text{P}][\text{L}]/[\text{PL}]\) carries units of
+          concentration. You cannot take the logarithm of something with units, so
+          a reference concentration must be chosen. Convention picks
+          \(c^{\circ} = 1\ \text{M}\), giving
+          \(\Delta G^{\circ}_{\text{bind}} = RT\ln(K_d/c^{\circ})\). Choose
+          \(c^{\circ} = 1\ \text{mM}\) instead and every binding free energy on
+          earth shifts by \(RT\ln 1000 = 4.09\) kcal/mol.
+        </p>
+        <p>
+          And here is the payoff, one more instance of the theme of this page:
+          \(\Delta\Delta G_{\text{bind}} = RT\ln(K_d^{\text{mut}}/K_d^{\text{WT}})\)
+          contains a <em>ratio</em> of two concentrations, so \(c^{\circ}\)
+          cancels. The absolute number depends on a convention; the difference
+          does not. This is a large part of why predicted ΔΔG values are taken far
+          more seriously than predicted absolute binding affinities.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <!-- ===================== RECAP ===================== -->
+  <section class="recap prose">
+    <h2>Putting it together</h2>
+    <p>
+      Start with a crowd of molecules splitting between two states. The split is
+      a ratio; taking \(-RT\ln\) of it gives ΔG, which is the same information on
+      a ruler where "ten times more of it" is a fixed step of 1.36 kcal/mol
+      (step 1). What sets the ratio is a contest between energy, which likes the
+      one compact shape, and counting, which likes the hundred thousand floppy
+      ones — that contest, written out, is \(\Delta H - T\Delta S\) (step 2).
+      Measuring ΔG in practice means extrapolating from the narrow window where
+      both states are visible, which is why it carries a real error bar (step 3).
+    </p>
+    <p>
+      Then the move that makes the whole field work: don't ask for absolute free
+      energies at all. Ask for the difference between two of them. Every
+      contribution the mutation didn't touch appears identically in both terms and
+      vanishes — so ΔΔG is a small, robust, computable number where ΔG was a huge,
+      fragile, incomputable one (step 4). And because none of the reasoning ever
+      mentioned folding, the same two symbols describe binding just as well, with
+      the standard-state ambiguity cancelling in exactly the same way (step 5).
+    </p>
+    <p>
+      Which returns us to the kernel: <mark>ΔG is a population ratio on a
+      logarithmic ruler, and ΔΔG is what is left when everything unchanged cancels
+      out.</mark>
+    </p>
+
+    <h3>Where this shows up</h3>
+    <ul>
+      <li>
+        <strong>Protein engineering.</strong> Making an enzyme survive at 70 °C is
+        a search for mutations with negative ΔΔG, stacked until the total budget
+        buys enough stability.
+      </li>
+      <li>
+        <strong>Antibody affinity maturation.</strong> Each round of selection is
+        nature searching for negative ΔΔG<sub>bind</sub>; engineers do the same
+        thing deliberately, and a hundredfold affinity gain is
+        \(RT\ln 100 = 2.7\) kcal/mol.
+      </li>
+      <li>
+        <strong>Drug resistance.</strong> A resistance mutation is one with large
+        positive ΔΔG<sub>bind</sub> for the drug and near-zero ΔΔG for the
+        natural substrate — the target keeps working, the inhibitor falls off.
+      </li>
+      <li>
+        <strong>Variant-effect prediction.</strong> Machine-learning models of
+        mutation effects are trained and benchmarked on curated ΔΔG measurements.
+        Against the ~0.3–0.5 kcal/mol experimental reproducibility seen in step 3,
+        an honest way to read any reported accuracy is: how does the model's error
+        compare with the error in the labels it was scored against?
+      </li>
+      <li>
+        <strong>Physics-based calculation.</strong> Alchemical free-energy methods
+        compute the horizontal legs of step 4's cycle directly — see
+        <a href="../physics/free-energy-perturbation.html">Free energy perturbation</a>,
+        and <a href="../physics/free-energy.html">Free Energy</a> for where
+        \(F = E - TS\) comes from in the first place.
+      </li>
+      <li>
+        <strong>Structure-based prediction.</strong> Rosetta's
+        <code>ddg_monomer</code> — the engine behind tools like Levitate Bench's
+        DDG — estimates ΔΔG by scoring two relaxed structures and subtracting.
+        <a href="rosetta-ddg-monomer.html">Inside a ΔΔG prediction</a> takes that
+        pipeline apart: repacking, the ramped repulsion, fifty repeats averaged
+        three at a time, and what r = 0.73 does and does not license.
+      </li>
+    </ul>
+  </section>
+
+</div>
+
+<script>
+/* =========================================================================
+   SHARED HELPERS
+   ========================================================================= */
+const RENDER_SCALE = Math.max((window.devicePixelRatio || 1) * 2.5, 3);
+function setupCanvas(canvas, cssW, cssH) {
+  canvas.style.width = cssW + 'px';
+  canvas.style.maxWidth = '100%';
+  canvas.style.height = cssH + 'px';
+  canvas.width  = Math.round(cssW * RENDER_SCALE);
+  canvas.height = Math.round(cssH * RENDER_SCALE);
+  const ctx = canvas.getContext('2d');
+  ctx.scale(RENDER_SCALE, RENDER_SCALE);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  canvas._cssW = cssW; canvas._cssH = cssH;
+  return ctx;
+}
+const CSS = getComputedStyle(document.documentElement);
+const C = {
+  ink:    CSS.getPropertyValue('--ink').trim(),
+  soft:   CSS.getPropertyValue('--ink-soft').trim(),
+  acc:    CSS.getPropertyValue('--accent').trim(),
+  acc2:   CSS.getPropertyValue('--accent-2').trim(),
+  acc3:   CSS.getPropertyValue('--accent-3').trim(),
+  line:   CSS.getPropertyValue('--line').trim(),
+  axis:   CSS.getPropertyValue('--axis').trim(),
+  bg:     CSS.getPropertyValue('--bg').trim()
+};
+const R_GAS = 0.0019872041;          // kcal / (mol K)
+const T0 = 298.15;                   // K
+const RT0 = R_GAS * T0;              // 0.59248 kcal/mol
+const MONO = 'IBM Plex Mono, ui-monospace, Menlo, monospace';
+const fmt = (x, n) => (x < 0 ? '−' : '') + Math.abs(x).toFixed(n);
+
+function label(ctx, text, x, y, color, size, align, weight) {
+  ctx.fillStyle = color;
+  ctx.font = (weight || '') + ' ' + (size || 11) + 'px ' + MONO;
+  ctx.textAlign = align || 'left';
+  ctx.fillText(text, x, y);
+}
+function setText(el, html) { if (el._last !== html) { el._last = html; el.innerHTML = html; } }
+function arrow(ctx, x1, y1, x2, y2, color, w) {
+  ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = w || 1.6;
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+  const a = Math.atan2(y2 - y1, x2 - x1), s = 7;
+  ctx.beginPath();
+  ctx.moveTo(x2, y2);
+  ctx.lineTo(x2 - s * Math.cos(a - 0.42), y2 - s * Math.sin(a - 0.42));
+  ctx.lineTo(x2 - s * Math.cos(a + 0.42), y2 - s * Math.sin(a + 0.42));
+  ctx.closePath(); ctx.fill();
+}
+
+/* =========================================================================
+   STEP 1 — two-state Metropolis population
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('w1-canvas');
+  const ctx = setupCanvas(canvas, 760, 350);
+  const W = 760, H = 350;
+  const PANEL = 500;                       // landscape width; trace on the right
+  const N = 120;
+  const dgIn = document.getElementById('w1-dg');
+  const dgV  = document.getElementById('w1-dgV');
+  const readout = document.getElementById('w1-readout');
+  const playBtn = document.getElementById('w1-play');
+  const resetBtn = document.getElementById('w1-reset');
+
+  let dG = -1.0, playing = true;
+  let sumF = 0, sumU = 0, frames = 0;
+  // After a change the crowd needs a few relaxation times to re-equilibrate.
+  // Averaging through that transient biases the estimate towards 50/50 — and
+  // badly so when one state is rare, because the leftover molecules on the
+  // wrong side dominate the small denominator. So discard a burn-in.
+  const BURN = 200;
+  let burn = BURN;
+  const trace = [];                         // bounded history of ΔG estimates
+  const TRACE_MAX = 260;
+
+  // landscape:  x in [-3.4, 3.4];  G(-2.2) = dG (folded), G(+2.2) = 0
+  const a = 2.2, BAR = 2.0;
+  const Gof = x => BAR * Math.pow((x / a) * (x / a) - 1, 2) + dG * (1 - x / a) / 2;
+  const gmin = () => Math.min(dG, 0) - 0.8;
+  // The tilt raises one shoulder of the double well, so the vertical range has
+  // to follow the curve rather than assume the barrier is the highest point —
+  // otherwise the shoulder is drawn off the top of the canvas.
+  let gmaxCache = 5;
+  function recomputeGmax() {
+    let m = -1e9;
+    for (let i = 0; i <= 80; i++) m = Math.max(m, Gof(-3.4 + i / 80 * 6.8));
+    gmaxCache = m + 0.9;
+  }
+  const gmax = () => gmaxCache;
+  const px = mx => 40 + (mx + 3.4) / 6.8 * (PANEL - 70);
+  const py = my => H - 46 - (my - gmin()) / (gmax() - gmin()) * (H - 96);
+
+  // molecules: state 0 = folded (left well), 1 = unfolded (right well)
+  const mol = [];
+  for (let i = 0; i < N; i++) {
+    mol.push({
+      s: i < N / 2 ? 0 : 1,
+      u: (Math.random() - 0.5) * 1.30,      // lateral slot within the basin
+      v: Math.random() * 0.62,              // stacking height
+      hop: 0                                // 0 = resting, else animation progress
+    });
+  }
+  const centre = s => (s === 0 ? -a : a);
+
+  function step() {
+    for (const m of mol) {
+      // The hop animation is purely cosmetic and must NOT gate the dynamics:
+      // freezing a molecule mid-flight would lengthen its dwell time in
+      // whichever state it just entered, and since the rare state is entered
+      // and left quickly, that bias falls almost entirely on the rare state
+      // and skews the measured ratio. Decay the animation, then attempt
+      // the hop regardless.
+      if (m.hop > 0) { m.hop -= 0.075; if (m.hop < 0) m.hop = 0; }
+      if (Math.random() > 0.014) continue;
+      const gNow = m.s === 0 ? dG : 0;
+      const gNew = m.s === 0 ? 0 : dG;
+      const p = Math.min(1, Math.exp(-(gNew - gNow) / RT0));
+      if (Math.random() < p) { m.s = 1 - m.s; m.hop = 1; }
+    }
+  }
+
+  function counts() {
+    let nf = 0; for (const m of mol) if (m.s === 0) nf++;
+    return { nf, nu: N - nf };
+  }
+
+  function drawLandscape() {
+    ctx.strokeStyle = C.axis; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(38, py(gmin())); ctx.lineTo(PANEL - 26, py(gmin())); ctx.stroke();
+    // energy curve
+    ctx.strokeStyle = C.line; ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    for (let i = 0; i <= 240; i++) {
+      const mx = -3.4 + i / 240 * 6.8, X = px(mx), Y = py(Gof(mx));
+      i === 0 ? ctx.moveTo(X, Y) : ctx.lineTo(X, Y);
+    }
+    ctx.stroke();
+    // well-floor markers
+    ctx.setLineDash([3, 4]); ctx.lineWidth = 1;
+    ctx.strokeStyle = C.acc;
+    ctx.beginPath(); ctx.moveTo(px(-3.3), py(dG)); ctx.lineTo(px(-a), py(dG)); ctx.stroke();
+    ctx.strokeStyle = C.acc2;
+    ctx.beginPath(); ctx.moveTo(px(a), py(0)); ctx.lineTo(px(3.3), py(0)); ctx.stroke();
+    ctx.setLineDash([]);
+    label(ctx, 'FOLDED', px(-a), H - 22, C.acc, 11, 'center', '600');
+    label(ctx, 'UNFOLDED', px(a), H - 22, C.acc2, 11, 'center', '600');
+    label(ctx, 'free energy →', 12, 30, C.soft, 10, 'left');
+  }
+
+  function drawMolecules() {
+    for (const m of mol) {
+      let X, Y;
+      if (m.hop > 0) {
+        // travel along the landscape from the other well to this one
+        const from = centre(1 - m.s), to = centre(m.s);
+        const t = 1 - m.hop;
+        const mx = from + (to - from) * t;
+        X = px(mx); Y = py(Gof(mx) + 0.14) - 4;
+      } else {
+        const mx = centre(m.s) + m.u;
+        X = px(mx); Y = py(Gof(mx)) - 5 - m.v * 26;
+      }
+      ctx.beginPath(); ctx.arc(X, Y, 4.1, 0, 6.2832);
+      ctx.fillStyle = m.hop > 0 ? C.acc3 : (m.s === 0 ? C.acc : C.acc2);
+      ctx.globalAlpha = m.hop > 0 ? 1 : 0.86;
+      ctx.fill(); ctx.globalAlpha = 1;
+    }
+  }
+
+  function drawTrace() {
+    const x0 = PANEL + 22, x1 = W - 16, y0 = 46, y1 = H - 52;
+    const lo = -3.6, hi = 2.0;
+    const ty = v => y1 - (v - lo) / (hi - lo) * (y1 - y0);
+    ctx.strokeStyle = C.line; ctx.lineWidth = 1;
+    ctx.strokeRect(x0, y0, x1 - x0, y1 - y0);
+    label(ctx, 'measured ΔG', x0, y0 - 20, C.soft, 10, 'left');
+    label(ctx, 'over time', x0, y0 - 8, C.soft, 10, 'left');
+    for (const v of [-3, -2, -1, 0, 1, 2]) {
+      ctx.strokeStyle = 'rgba(87,78,115,0.35)'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(x0, ty(v)); ctx.lineTo(x1, ty(v)); ctx.stroke();
+      label(ctx, fmt(v, 0), x0 - 5, ty(v) + 3.5, C.soft, 9, 'right');
+    }
+    // the true value
+    ctx.strokeStyle = C.acc3; ctx.setLineDash([5, 4]); ctx.lineWidth = 1.4;
+    ctx.beginPath(); ctx.moveTo(x0, ty(dG)); ctx.lineTo(x1, ty(dG)); ctx.stroke();
+    ctx.setLineDash([]);
+    // the running estimate
+    ctx.strokeStyle = C.acc2; ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    let started = false;
+    for (let i = 0; i < trace.length; i++) {
+      const v = trace[i];
+      if (v === null) { started = false; continue; }
+      const X = x0 + i / (TRACE_MAX - 1) * (x1 - x0);
+      const Y = ty(Math.max(lo, Math.min(hi, v)));
+      started ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y);
+      started = true;
+    }
+    ctx.stroke();
+    label(ctx, 'true ΔG', x1 - 4, ty(dG) - 6, C.acc3, 9, 'right');
+  }
+
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    drawLandscape(); drawMolecules(); drawTrace();
+  }
+
+  function updateReadout() {
+    const { nf, nu } = counts();
+    if (nf === 0 || nu === 0) {
+      setText(readout,
+        '<b>' + nf + '</b> folded / <b>' + nu + '</b> unfolded &nbsp;→&nbsp; ' +
+        'the ratio is off the scale, so ΔG cannot be read off. ' +
+        'Very stable proteins have exactly this problem: you need to see both states at once.');
+      return;
+    }
+    const inst = -RT0 * Math.log(nf / nu);
+    const tail = burn > 0
+      ? 're-equilibrating…'
+      : 'time-averaged: <b>' + fmt(sumU > 0 ? -RT0 * Math.log(sumF / sumU) : inst, 2) +
+        '</b> &nbsp;·&nbsp; true value: ' + fmt(dG, 2) + ' &nbsp;(' + frames + ' samples)';
+    setText(readout,
+      '<b>' + nf + '</b> folded / <b>' + nu + '</b> unfolded &nbsp;→&nbsp; ratio K = ' +
+      (nf / nu).toFixed(2) + ' &nbsp;→&nbsp; ΔG = −RT·ln K = <b>' +
+      fmt(inst, 2) + '</b> kcal/mol &nbsp;·&nbsp; ' + tail);
+  }
+
+  let acc = 0;
+  function frame() {
+    if (playing) {
+      step();
+      const { nf, nu } = counts();
+      if (burn > 0) burn--; else { sumF += nf; sumU += nu; frames++; }
+      acc++;
+      if (acc >= 3) {
+        acc = 0;
+        trace.push(nf === 0 || nu === 0 ? null : -RT0 * Math.log(nf / nu));
+        while (trace.length > TRACE_MAX) trace.shift();
+      }
+    }
+    render();
+    updateReadout();
+    requestAnimationFrame(frame);
+  }
+
+  function resetStats() { sumF = 0; sumU = 0; frames = 0; burn = BURN; trace.length = 0; }
+  dgIn.addEventListener('input', () => {
+    dG = parseFloat(dgIn.value);
+    dgV.textContent = fmt(dG, 2);
+    recomputeGmax();
+    resetStats();
+  });
+  playBtn.addEventListener('click', () => {
+    playing = !playing; playBtn.textContent = playing ? 'Pause' : 'Play';
+  });
+  resetBtn.addEventListener('click', resetStats);
+  dgV.textContent = fmt(dG, 2);
+  recomputeGmax();
+  frame();
+})();
+
+/* =========================================================================
+   STEP 2 — exhaustive lattice-polymer ensemble (12 beads, 11 bonds)
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('w2-canvas');
+  const ctx = setupCanvas(canvas, 760, 460);
+  const W = 760, H = 460;
+  const NB = 12, GRID = 41, OFF = 20;
+
+  /* ---- enumerate every self-avoiding walk of 11 steps ------------------- */
+  const dos = new Array(NB).fill(0);      // shapes with H non-bonded contacts
+  const samples = [];                      // up to 30 example paths per H
+  const seen = new Array(NB).fill(0);
+  for (let i = 0; i < NB; i++) samples.push([]);
+  let MAXH = 0, TOTAL = 0;
+
+  (function enumerate() {
+    const occ = new Int16Array(GRID * GRID).fill(-1);
+    const xs = new Int8Array(NB), ys = new Int8Array(NB);
+    const key = (x, y) => (x + OFF) * GRID + (y + OFF);
+    const DX = [1, -1, 0, 0], DY = [0, 0, 1, -1];
+    xs[0] = 0; ys[0] = 0; occ[key(0, 0)] = 0;
+
+    function rec(k, h) {                   // k beads placed, h contacts so far
+      if (k === NB) {
+        TOTAL++; dos[h]++;
+        if (h > MAXH) MAXH = h;
+        seen[h]++;
+        const arr = samples[h];
+        if (arr.length < 30) arr.push(Int8Array.from([].concat(Array.from(xs), Array.from(ys))));
+        else { const j = Math.floor(Math.random() * seen[h]); if (j < 30) arr[j] = Int8Array.from([].concat(Array.from(xs), Array.from(ys))); }
+        return;
+      }
+      const x = xs[k - 1], y = ys[k - 1];
+      for (let d = 0; d < 4; d++) {
+        const nx = x + DX[d], ny = y + DY[d];
+        const kk = key(nx, ny);
+        if (occ[kk] >= 0) continue;
+        // contacts made by the new bead: lattice neighbours already placed,
+        // excluding its chain partner k-1
+        let add = 0;
+        for (let e = 0; e < 4; e++) {
+          const j = occ[key(nx + DX[e], ny + DY[e])];
+          if (j >= 0 && j !== k - 1) add++;
+        }
+        occ[kk] = k; xs[k] = nx; ys[k] = ny;
+        rec(k + 1, h + add);
+        occ[kk] = -1;
+      }
+    }
+    rec(1, 0);
+  })();
+
+  const G_NAT = dos[MAXH], G_UNF = TOTAL - G_NAT;
+
+  /* ---- thermodynamics from the density of states ----------------------- */
+  function dGfold(T, eps) {
+    const rt = R_GAS * T;
+    let zn = 0, zu = 0;
+    for (let h = 0; h <= MAXH; h++) {
+      if (!dos[h]) continue;
+      const w = dos[h] * Math.exp(eps * h / rt);
+      if (h === MAXH) zn += w; else zu += w;
+    }
+    return -rt * Math.log(zn / zu);
+  }
+  function fracFolded(T, eps) {
+    const g = dGfold(T, eps), rt = R_GAS * T;
+    return 1 / (1 + Math.exp(g / rt));
+  }
+  function thermo(T, eps) {
+    const g = dGfold(T, eps);
+    const dS = -(dGfold(T + 2, eps) - dGfold(T - 2, eps)) / 4;
+    return { dG: g, dS: dS, dH: g + T * dS };
+  }
+
+  /* ---- drawing a conformation ------------------------------------------ */
+  // fitW/fitH (optional): shrink `cell` so the drawn shape fits its slot. An
+  // 11-bond chain can span 11 lattice units, so a fixed cell size lets extended
+  // conformations run into their neighbours.
+  function drawShape(p, cx, cy, cell, colour, showContacts, fitW, fitH) {
+    const n = NB;
+    let minx = 99, maxx = -99, miny = 99, maxy = -99;
+    for (let i = 0; i < n; i++) {
+      minx = Math.min(minx, p[i]); maxx = Math.max(maxx, p[i]);
+      miny = Math.min(miny, p[n + i]); maxy = Math.max(maxy, p[n + i]);
+    }
+    if (fitW) cell = Math.min(cell, fitW / (maxx - minx + 1.1), fitH / (maxy - miny + 1.1));
+    const ox = cx - (minx + maxx) / 2 * cell, oy = cy + (miny + maxy) / 2 * cell;
+    const X = i => ox + p[i] * cell, Y = i => oy - p[n + i] * cell;
+    if (showContacts) {
+      ctx.strokeStyle = C.acc3; ctx.setLineDash([2, 3]); ctx.lineWidth = 1.4;
+      for (let i = 0; i < n; i++) for (let j = i + 2; j < n; j++) {
+        if (Math.abs(p[i] - p[j]) + Math.abs(p[n + i] - p[n + j]) === 1) {
+          ctx.beginPath(); ctx.moveTo(X(i), Y(i)); ctx.lineTo(X(j), Y(j)); ctx.stroke();
+        }
+      }
+      ctx.setLineDash([]);
+    }
+    ctx.strokeStyle = colour; ctx.lineWidth = 3; ctx.lineJoin = 'round';
+    ctx.beginPath(); ctx.moveTo(X(0), Y(0));
+    for (let i = 1; i < n; i++) ctx.lineTo(X(i), Y(i));
+    ctx.stroke();
+    for (let i = 0; i < n; i++) {
+      ctx.beginPath(); ctx.arc(X(i), Y(i), cell * 0.24, 0, 6.2832);
+      ctx.fillStyle = C.bg; ctx.fill();
+      ctx.strokeStyle = colour; ctx.lineWidth = 2; ctx.stroke();
+    }
+  }
+  function contactsOf(p) {
+    let h = 0;
+    for (let i = 0; i < NB; i++) for (let j = i + 2; j < NB; j++)
+      if (Math.abs(p[i] - p[j]) + Math.abs(p[NB + i] - p[NB + j]) === 1) h++;
+    return h;
+  }
+
+  /* ---- Boltzmann sampling from the UNFOLDED ensemble --------------------
+     Conditional on h < MAXH. Sampling the full ensemble would draw the native
+     block with probability equal to the folded fraction — 84% at the default
+     settings — in a panel captioned "the unfolded state". */
+  function sampleShape(T, eps) {
+    const rt = R_GAS * T;
+    let z = 0; const w = [];
+    for (let h = 0; h < MAXH; h++) { const v = dos[h] * Math.exp(eps * h / rt); w.push(v); z += v; }
+    let r = Math.random() * z, h = 0;
+    while (h < MAXH - 1 && r > w[h]) { r -= w[h]; h++; }
+    const arr = samples[h];
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  const tIn = document.getElementById('w2-t'), eIn = document.getElementById('w2-e');
+  const tV = document.getElementById('w2-tV'), eV = document.getElementById('w2-eV');
+  const readout = document.getElementById('w2-readout');
+  const backBtn = document.getElementById('w2-back'), nextBtn = document.getElementById('w2-next');
+  const capEl = document.getElementById('w2-caption');
+
+  let stage = 0, T = 300, eps = 2.6;
+  let shown = [sampleShape(300, 2.6), sampleShape(300, 2.6)];
+  let lastSwap = 0;
+
+  const stages = [
+    { next: 'Show the other 120,044 →',
+      cap: 'One shape wins on energy: the 3×4 block, with 6 contacts, E = −6ε.' },
+    { next: 'Count them all →',
+      cap: 'But it competes with 120,044 others. Two of them, resampled continuously.' },
+    { next: 'Weigh them by energy →',
+      cap: 'Sorted by contact count: good shapes are rare, bad shapes are legion. That imbalance is entropy.' },
+    { next: null,
+      cap: 'Weight each level by e^(−E/RT), divide, take −RT ln — the whole contest collapses to one ΔG.' }
+  ];
+
+  function drawNative() {
+    label(ctx, 'THE FOLDED STATE', 24, 26, C.acc, 11, 'left', '600');
+    drawShape(samples[MAXH][0], 108, 118, 26, C.acc, true);
+    label(ctx, MAXH + ' contacts · E = −' + MAXH + 'ε', 108, 196, C.soft, 11, 'center');
+    label(ctx, G_NAT.toLocaleString() + ' of 120,292 shapes', 108, 212, C.acc, 11, 'center', '600');
+    label(ctx, '(the same block in every', 108, 228, C.soft, 10, 'center');
+    label(ctx, 'rotation, flip and direction)', 108, 240, C.soft, 10, 'center');
+  }
+  function drawEnsemble() {
+    label(ctx, 'THE UNFOLDED STATE', 236, 26, C.acc2, 11, 'left', '600');
+    for (let i = 0; i < 2; i++) {
+      const cx = 299 + i * 126;
+      drawShape(shown[i], cx, 108, 16, C.acc2, false, 112, 104);
+      label(ctx, contactsOf(shown[i]) + ' contacts', cx, 178, C.soft, 10, 'center');
+    }
+    label(ctx, G_UNF.toLocaleString() + ' shapes — everything else', 236, 212, C.acc2, 11, 'left', '600');
+    label(ctx, 'resampled from the Boltzmann', 236, 228, C.soft, 10, 'left');
+    label(ctx, 'distribution at the current T and ε', 236, 240, C.soft, 10, 'left');
+  }
+  function drawDOS() {
+    const x0 = 500, xb = 528, bmax = 150, y0 = 34, bh = 21;
+    label(ctx, 'HOW MANY SHAPES HAVE H CONTACTS', x0, 24, C.acc3, 10, 'left', '600');
+    const maxLog = Math.log(dos[0] + 1);
+    for (let h = 0; h <= MAXH; h++) {
+      const y = y0 + h * (bh + 5);
+      const frac = Math.log(dos[h] + 1) / maxLog;
+      ctx.fillStyle = h === MAXH ? C.acc : 'rgba(127,178,255,0.55)';
+      ctx.fillRect(xb, y, Math.max(2, frac * bmax), bh - 6);
+      label(ctx, 'H=' + h, x0, y + 11, C.soft, 10, 'left');
+      label(ctx, dos[h].toLocaleString(), 744, y + 11, h === MAXH ? C.acc : C.soft, 10, 'right', '600');
+    }
+    label(ctx, 'bar length ∝ log(count)', x0, y0 + (MAXH + 1) * (bh + 5) + 8, C.soft, 10, 'left');
+  }
+  function drawCurve() {
+    const x0 = 60, x1 = 720, y0 = 292, y1 = 424;
+    const TX = t => x0 + (t - 200) / 400 * (x1 - x0);
+    const FY = f => y1 - f * (y1 - y0);
+    ctx.strokeStyle = C.axis; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x0, y1); ctx.lineTo(x1, y1); ctx.stroke();
+    for (const f of [0, 0.5, 1]) {
+      ctx.strokeStyle = 'rgba(87,78,115,0.3)';
+      ctx.beginPath(); ctx.moveTo(x0, FY(f)); ctx.lineTo(x1, FY(f)); ctx.stroke();
+      label(ctx, f.toFixed(1), x0 - 6, FY(f) + 3.5, C.soft, 10, 'right');
+    }
+    for (let t = 200; t <= 600; t += 100) label(ctx, t + ' K', TX(t), y1 + 15, C.soft, 10, 'center');
+    label(ctx, 'fraction folded', x0 - 6, y0 - 12, C.soft, 10, 'left');
+    ctx.strokeStyle = C.acc; ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    for (let i = 0; i <= 200; i++) {
+      const t = 200 + i * 2, X = TX(t), Y = FY(fracFolded(t, eps));
+      i === 0 ? ctx.moveTo(X, Y) : ctx.lineTo(X, Y);
+    }
+    ctx.stroke();
+    const f = fracFolded(T, eps);
+    ctx.strokeStyle = C.acc3; ctx.setLineDash([4, 4]); ctx.lineWidth = 1.2;
+    ctx.beginPath(); ctx.moveTo(TX(T), y0); ctx.lineTo(TX(T), y1); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.beginPath(); ctx.arc(TX(T), FY(f), 5, 0, 6.2832); ctx.fillStyle = C.acc3; ctx.fill();
+    const flip = TX(T) > 620;    // keep the marker label on-canvas at high T
+    label(ctx, 'f = ' + f.toFixed(3), TX(T) + (flip ? -9 : 9), FY(f) - 8,
+          C.acc3, 11, flip ? 'right' : 'left', '600');
+  }
+
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    if (stage >= 0) drawNative();
+    if (stage >= 1) drawEnsemble();
+    if (stage >= 2) drawDOS();
+    if (stage >= 3) drawCurve();
+    capEl.textContent = stages[stage].cap;
+    backBtn.disabled = stage === 0;
+    if (stages[stage].next) { nextBtn.style.display = ''; nextBtn.textContent = stages[stage].next; }
+    else nextBtn.style.display = 'none';
+
+    const th = thermo(T, eps);
+    if (stage >= 3) {
+      setText(readout,
+        'At T = <b>' + T + ' K</b>, ε = <b>' + eps.toFixed(2) + '</b> kcal/mol:&nbsp; ' +
+        'ΔG<sub>fold</sub> = ΔH − TΔS = (<b>' + fmt(th.dH, 2) + '</b>) − (<b>' +
+        fmt(T * th.dS, 2) + '</b>) = <b>' + fmt(th.dG, 2) + '</b> kcal/mol' +
+        ' &nbsp;→&nbsp; ' + (100 * fracFolded(T, eps)).toFixed(1) + '% folded');
+    } else {
+      setText(readout,
+        'Enumerated <b>' + TOTAL.toLocaleString() + '</b> shapes exhaustively — ' +
+        'every self-avoiding walk of 11 steps on the square lattice. ' +
+        'Maximum contacts: <b>' + MAXH + '</b>.');
+    }
+  }
+
+  function tick(now) {
+    if (stage >= 1 && now - lastSwap > 620) {
+      lastSwap = now;
+      shown = [sampleShape(T, eps), sampleShape(T, eps)];
+      render();
+    }
+    requestAnimationFrame(tick);
+  }
+
+  nextBtn.addEventListener('click', () => { if (stage < stages.length - 1) { stage++; render(); } });
+  backBtn.addEventListener('click', () => { if (stage > 0) { stage--; render(); } });
+  tIn.addEventListener('input', () => { T = parseInt(tIn.value); tV.textContent = T; render(); });
+  eIn.addEventListener('input', () => { eps = parseFloat(eIn.value); eV.textContent = eps.toFixed(2); render(); });
+  render();
+  requestAnimationFrame(tick);
+})();
+
+/* =========================================================================
+   STEP 3 — urea denaturation, raw signal to quoted ΔG
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('w3-canvas');
+  const ctx = setupCanvas(canvas, 760, 360);
+  const W = 760, H = 360;
+  const DG_TRUE = -5.0, M_TRUE = 1.05;
+  const UMAX = 8.8;
+  const UREA = []; for (let u = 0; u <= UMAX + 1e-6; u += 0.4) UREA.push(u);
+  const Y_F = u => -12 + 0.12 * u;        // folded baseline
+  const Y_U = u => -2.4 - 0.10 * u;       // unfolded baseline
+
+  const noiseIn = document.getElementById('w3-n'), noiseV = document.getElementById('w3-nV');
+  const newBtn = document.getElementById('w3-new');
+  const backBtn = document.getElementById('w3-back'), nextBtn = document.getElementById('w3-next');
+  const capEl = document.getElementById('w3-caption'), readout = document.getElementById('w3-readout');
+
+  let sigma = 0.07, stage = 0, data = [], history = [];
+
+  function generate() {
+    data = UREA.map(u => {
+      const dg = DG_TRUE + M_TRUE * u;
+      const f = 1 / (1 + Math.exp(dg / RT0));
+      const clean = f * Y_F(u) + (1 - f) * Y_U(u);
+      // Box-Muller
+      const n = Math.sqrt(-2 * Math.log(Math.random() + 1e-12)) * Math.cos(6.2832 * Math.random());
+      return { u: u, y: clean + sigma * n, fTrue: f };
+    });
+  }
+  function lineFit(pts) {
+    const n = pts.length;
+    if (n < 2) return { m: 0, b: 0, se: 0 };
+    let sx = 0, sy = 0, sxy = 0, sxx = 0;
+    for (const p of pts) { sx += p.x; sy += p.y; sxy += p.x * p.y; sxx += p.x * p.x; }
+    const den = n * sxx - sx * sx;
+    const m = (n * sxy - sx * sy) / den, b = (sy - m * sx) / n;
+    let ss = 0; for (const p of pts) { const r = p.y - (m * p.x + b); ss += r * r; }
+    const s2 = n > 2 ? ss / (n - 2) : 0;
+    const se = Math.sqrt(s2 * sxx / den);       // standard error of the intercept
+    return { m: m, b: b, se: se };
+  }
+  function baselines() {
+    const lo = data.slice(0, 4).map(d => ({ x: d.u, y: d.y }));
+    const hi = data.slice(-4).map(d => ({ x: d.u, y: d.y }));
+    return { f: lineFit(lo), u: lineFit(hi) };
+  }
+  function fractions() {
+    const bl = baselines();
+    return data.map(d => {
+      const yf = bl.f.m * d.u + bl.f.b, yu = bl.u.m * d.u + bl.u.b;
+      return { u: d.u, f: (d.y - yu) / (yf - yu) };
+    });
+  }
+  function dgPoints() {
+    return fractions()
+      .filter(p => p.f > 0.12 && p.f < 0.88)
+      .map(p => ({ x: p.u, y: -RT0 * Math.log(p.f / (1 - p.f)) }));
+  }
+
+  // --- panels -------------------------------------------------------------
+  const LX0 = 56, LX1 = 380, RX0 = 452, RX1 = 736, PY0 = 44, PY1 = 300;
+  const ux = (u, x0, x1) => x0 + u / UMAX * (x1 - x0);
+
+  function axes(x0, x1, ylab, ymin, ymax, ticks, title) {
+    ctx.strokeStyle = C.axis; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x0, PY0); ctx.lineTo(x0, PY1); ctx.lineTo(x1, PY1); ctx.stroke();
+    for (let u = 0; u <= 8; u += 2) label(ctx, u.toString(), ux(u, x0, x1), PY1 + 16, C.soft, 10, 'center');
+    label(ctx, '[urea] / M', (x0 + x1) / 2, PY1 + 32, C.soft, 10, 'center');
+    for (const t of ticks) {
+      const Y = PY1 - (t - ymin) / (ymax - ymin) * (PY1 - PY0);
+      ctx.strokeStyle = 'rgba(87,78,115,0.28)';
+      ctx.beginPath(); ctx.moveTo(x0, Y); ctx.lineTo(x1, Y); ctx.stroke();
+      label(ctx, (Math.abs(t) < 1e-9 ? '0' : fmt(t, ymax - ymin > 6 ? 0 : 1)), x0 - 6, Y + 3.5, C.soft, 10, 'right');
+    }
+    label(ctx, title, x0, PY0 - 20, C.acc3, 10.5, 'left', '600');
+    label(ctx, ylab, x0 - 6, PY0 - 6, C.soft, 10, 'left');
+  }
+
+  function drawLeft() {
+    const showFrac = stage >= 1;
+    const ymin = showFrac ? -0.12 : -13.4, ymax = showFrac ? 1.12 : -1.4;
+    const yy = v => PY1 - (v - ymin) / (ymax - ymin) * (PY1 - PY0);
+    axes(LX0, LX1, showFrac ? 'fraction folded' : 'CD signal',
+         ymin, ymax, showFrac ? [0, 0.5, 1] : [-12, -8, -4],
+         showFrac ? 'STEP 2 — BASELINES REMOVED' : 'STEP 1 — WHAT THE INSTRUMENT SEES');
+    if (!showFrac) {
+      ctx.strokeStyle = C.line; ctx.setLineDash([4, 4]); ctx.lineWidth = 1.3;
+      ctx.beginPath(); ctx.moveTo(LX0, yy(Y_F(0))); ctx.lineTo(LX1, yy(Y_F(UMAX))); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(LX0, yy(Y_U(0))); ctx.lineTo(LX1, yy(Y_U(UMAX))); ctx.stroke();
+      ctx.setLineDash([]);
+      for (const d of data) {
+        ctx.beginPath(); ctx.arc(ux(d.u, LX0, LX1), yy(d.y), 3.6, 0, 6.2832);
+        ctx.fillStyle = C.acc2; ctx.fill();
+      }
+      label(ctx, 'folded baseline', LX0 + 6, yy(Y_F(0)) - 7, C.soft, 9, 'left');
+      label(ctx, 'unfolded baseline', LX1 - 6, yy(Y_U(UMAX)) - 7, C.soft, 9, 'right');
+    } else {
+      const fr = fractions();
+      for (const p of fr) {
+        const inWindow = p.f > 0.12 && p.f < 0.88;
+        ctx.beginPath(); ctx.arc(ux(p.u, LX0, LX1), yy(Math.max(-0.12, Math.min(1.12, p.f))), 3.8, 0, 6.2832);
+        ctx.fillStyle = inWindow ? C.acc3 : 'rgba(164,158,187,0.5)';
+        ctx.fill();
+      }
+      ctx.strokeStyle = 'rgba(255,200,87,0.28)';
+      ctx.fillStyle = 'rgba(255,200,87,0.07)';
+      ctx.fillRect(LX0, yy(0.88), LX1 - LX0, yy(0.12) - yy(0.88));
+      ctx.strokeRect(LX0, yy(0.88), LX1 - LX0, yy(0.12) - yy(0.88));
+      label(ctx, 'only here are both states visible', LX0 + 8, yy(0.5) + 3, C.acc3, 10, 'left');
+    }
+  }
+
+  function drawRight() {
+    const ymin = -6.5, ymax = 4.0;
+    const yy = v => PY1 - (v - ymin) / (ymax - ymin) * (PY1 - PY0);
+    axes(RX0, RX1, 'ΔG / kcal mol⁻¹', ymin, ymax, [-6, -4, -2, 0, 2, 4],
+         stage >= 3 ? 'STEP 4 — EXTRAPOLATE TO ZERO UREA' : 'STEP 3 — EACH POINT BECOMES A ΔG');
+    ctx.strokeStyle = C.axis; ctx.setLineDash([2, 3]);
+    ctx.beginPath(); ctx.moveTo(RX0, yy(0)); ctx.lineTo(RX1, yy(0)); ctx.stroke();
+    ctx.setLineDash([]);
+    const pts = dgPoints();
+    for (const p of pts) {
+      ctx.beginPath(); ctx.arc(ux(p.x, RX0, RX1), yy(p.y), 3.8, 0, 6.2832);
+      ctx.fillStyle = C.acc3; ctx.fill();
+    }
+    if (stage >= 3 && pts.length >= 3) {
+      const fit = lineFit(pts);
+      ctx.strokeStyle = C.acc; ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(ux(0, RX0, RX1), yy(fit.b));
+      ctx.lineTo(ux(UMAX, RX0, RX1), yy(fit.m * UMAX + fit.b));
+      ctx.stroke();
+      ctx.beginPath(); ctx.arc(ux(0, RX0, RX1), yy(fit.b), 6, 0, 6.2832);
+      ctx.fillStyle = C.acc; ctx.fill();
+      label(ctx, 'ΔG(H₂O) = ' + fmt(fit.b, 2), ux(0, RX0, RX1) + 10, yy(fit.b) - 8, C.acc, 11.5, 'left', '600');
+      // history of previous runs, as ghost markers
+      for (let i = 0; i < history.length; i++) {
+        ctx.beginPath(); ctx.arc(ux(0, RX0, RX1), yy(history[i]), 3, 0, 6.2832);
+        ctx.fillStyle = 'rgba(255,122,107,0.35)'; ctx.fill();
+      }
+    }
+  }
+
+  const stages = [
+    { next: 'Fit the baselines →', cap: 'Raw signal. Two sloping baselines with an S-shaped transition between them.' },
+    { next: 'Convert each point to ΔG →', cap: 'Subtract the fitted baselines: now every point is a fraction folded.' },
+    { next: 'Fit and extrapolate →', cap: 'Only points between 12% and 88% folded survive — outside that window the log blows the noise up.' },
+    { next: null, cap: 'A straight line through the survivors, run back to zero urea. That intercept is the quoted ΔG.' }
+  ];
+
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    drawLeft();
+    if (stage >= 2) drawRight();
+    capEl.textContent = stages[stage].cap;
+    backBtn.disabled = stage === 0;
+    if (stages[stage].next) { nextBtn.style.display = ''; nextBtn.textContent = stages[stage].next; }
+    else nextBtn.style.display = 'none';
+
+    const pts = dgPoints();
+    if (stage >= 3 && pts.length >= 3) {
+      const fit = lineFit(pts);
+      const cm = -fit.b / fit.m;
+      let hist = '';
+      if (history.length) {
+        hist = ' &nbsp;·&nbsp; previous runs: ' + history.slice(-6).map(v => fmt(v, 2)).join(', ');
+      }
+      setText(readout,
+        'Recovered ΔG<sup>H₂O</sup> = <b>' + fmt(fit.b, 2) + ' ± ' + fit.se.toFixed(2) +
+        '</b> kcal/mol &nbsp;(true value −5.00) &nbsp;·&nbsp; m = <b>' + fit.m.toFixed(2) +
+        '</b> kcal/mol/M &nbsp;(true 1.05) &nbsp;·&nbsp; C<sub>m</sub> = <b>' + cm.toFixed(2) +
+        '</b> M &nbsp;from <b>' + pts.length + '</b> usable points' + hist);
+    } else {
+      setText(readout, UREA.length + ' concentrations from 0 to ' + UMAX + ' M, noise σ = ' + sigma.toFixed(2) +
+        ' signal units. Advance the stages to turn them into a number.');
+    }
+  }
+
+  nextBtn.addEventListener('click', () => { if (stage < stages.length - 1) { stage++; render(); } });
+  backBtn.addEventListener('click', () => { if (stage > 0) { stage--; render(); } });
+  noiseIn.addEventListener('input', () => {
+    sigma = parseFloat(noiseIn.value); noiseV.textContent = sigma.toFixed(2);
+    history.length = 0; generate(); render();
+  });
+  newBtn.addEventListener('click', () => {
+    const pts = dgPoints();
+    if (stage >= 3 && pts.length >= 3) {
+      history.push(lineFit(pts).b);
+      while (history.length > 12) history.shift();
+    }
+    generate(); render();
+  });
+  generate(); render();
+})();
+
+/* =========================================================================
+   STEP 4 — thermodynamic cycle and the cancellation
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('w4-canvas');
+  const ctx = setupCanvas(canvas, 760, 420);
+  const W = 760, H = 420;
+  const DG_WT = -5.0;
+  const G_ALCH_U = 41.83;                 // alchemical cost in the unfolded state
+  let base = -14203.7, dgMut = -3.2, stage = 0;
+
+  const dgIn = document.getElementById('w4-dg'), dgV = document.getElementById('w4-dgV');
+  const shiftBtn = document.getElementById('w4-shift');
+  const backBtn = document.getElementById('w4-back'), nextBtn = document.getElementById('w4-next');
+  const capEl = document.getElementById('w4-caption'), readout = document.getElementById('w4-readout');
+
+  const BW = 208, BH = 74;
+  const boxes = () => ({
+    uwt: { x: 62,  y: 54,  g: base,                       t: 'UNFOLDED · wild type', c: C.acc2 },
+    fwt: { x: 62,  y: 268, g: base + DG_WT,               t: 'FOLDED · wild type',   c: C.acc },
+    umu: { x: 490, y: 54,  g: base + G_ALCH_U,            t: 'UNFOLDED · mutant',    c: C.acc2 },
+    fmu: { x: 490, y: 268, g: base + G_ALCH_U + dgMut,    t: 'FOLDED · mutant',      c: C.acc }
+  });
+  const ddg = () => dgMut - DG_WT;
+
+  function drawBox(b) {
+    ctx.fillStyle = 'rgba(255,255,255,0.03)';
+    ctx.strokeStyle = b.c; ctx.lineWidth = 1.4;
+    ctx.fillRect(b.x, b.y, BW, BH); ctx.strokeRect(b.x, b.y, BW, BH);
+    label(ctx, b.t, b.x + BW / 2, b.y + 22, b.c, 10, 'center', '600');
+    label(ctx, 'G = ' + fmt(b.g, 1), b.x + BW / 2, b.y + 50, C.ink, 17, 'center', '600');
+  }
+  function pill(x, y, w, h, text, col, sub) {
+    ctx.fillStyle = 'rgba(0,0,0,0.35)';
+    ctx.strokeStyle = col; ctx.lineWidth = 1.4;
+    ctx.fillRect(x, y, w, h); ctx.strokeRect(x, y, w, h);
+    label(ctx, text, x + w / 2, y + (sub ? 24 : h / 2 + 5), col, 14, 'center', '600');
+    if (sub) label(ctx, sub, x + w / 2, y + 42, C.soft, 10, 'center');
+  }
+
+  const stages = [
+    { next: 'Subtract down each column →',
+      cap: 'Four states, four absolute free energies. Every one is an unmeasurable, uncomputable number.' },
+    { next: 'Take the difference of the differences →',
+      cap: 'Subtract down each column. The huge common part vanishes; these two you can measure.' },
+    { next: 'Now go around the other way →',
+      cap: 'ΔΔG is the difference of those two differences. Positive here: the mutation destabilises.' },
+    { next: 'Close the cycle →',
+      cap: 'The horizontal legs turn wild type into mutant in each state — big meaningless numbers again.' },
+    { next: null,
+      cap: 'But their difference is the same ΔΔG. Everything the mutation did not touch has cancelled.' }
+  ];
+
+  function render() {
+    ctx.clearRect(0, 0, W, H);
+    const b = boxes();
+    for (const k of ['uwt', 'fwt', 'umu', 'fmu']) drawBox(b[k]);
+
+    if (stage >= 1) {
+      arrow(ctx, b.uwt.x + BW / 2, b.uwt.y + BH + 6, b.fwt.x + BW / 2, b.fwt.y - 8, C.acc, 1.8);
+      arrow(ctx, b.umu.x + BW / 2, b.umu.y + BH + 6, b.fmu.x + BW / 2, b.fmu.y - 8, C.acc, 1.8);
+      pill(b.uwt.x + BW / 2 - 74, 168, 148, 40, fmt(DG_WT, 2), C.acc, 'ΔG_fold  wild type');
+      pill(b.umu.x + BW / 2 - 74, 168, 148, 40, fmt(dgMut, 2), C.acc, 'ΔG_fold  mutant');
+    }
+    if (stage >= 2) {
+      const d = ddg();
+      const col = d > 0 ? C.acc3 : C.acc2;
+      arrow(ctx, 296, 188, 350, 188, col, 1.6);
+      arrow(ctx, 464, 188, 410, 188, col, 1.6);
+      pill(322, 158, 116, 60, fmt(d, 2), col, d > 0 ? 'destabilising' : 'stabilising');
+      label(ctx, 'ΔΔG', 380, 152, col, 11, 'center', '600');
+    }
+    if (stage >= 3) {
+      arrow(ctx, b.uwt.x + BW + 8, b.uwt.y + BH / 2, b.umu.x - 8, b.umu.y + BH / 2, C.acc2, 1.6);
+      arrow(ctx, b.fwt.x + BW + 8, b.fwt.y + BH / 2, b.fmu.x - 8, b.fmu.y + BH / 2, C.acc2, 1.6);
+      label(ctx, '+' + G_ALCH_U.toFixed(2), 380, b.uwt.y + BH / 2 - 8, C.acc2, 12, 'center', '600');
+      label(ctx, 'mutate, unfolded', 380, b.uwt.y + BH / 2 + 18, C.soft, 10, 'center');
+      const gf = G_ALCH_U + ddg();
+      label(ctx, '+' + gf.toFixed(2), 380, b.fwt.y + BH / 2 - 8, C.acc2, 12, 'center', '600');
+      label(ctx, 'mutate, folded', 380, b.fwt.y + BH / 2 + 18, C.soft, 10, 'center');
+    }
+    if (stage >= 4) {
+      const gf = G_ALCH_U + ddg();
+      const col = ddg() > 0 ? C.acc3 : C.acc2;
+      // The identity is the point of the whole page — land it on a box that
+      // visually rhymes with the ΔΔG pill above, not on a line of small type.
+      arrow(ctx, 380, 220, 380, 234, col, 1.6);
+      pill(300, 236, 160, 46, fmt(ddg(), 2), col, 'the same number, other route');
+      label(ctx, '+' + gf.toFixed(2) + '  −  +' + G_ALCH_U.toFixed(2) + '  =  ' + fmt(ddg(), 2) +
+                 '      — the horizontal legs give back the vertical answer',
+            W / 2, 404, C.soft, 11.5, 'center');
+    }
+
+    capEl.textContent = stages[stage].cap;
+    backBtn.disabled = stage === 0;
+    if (stages[stage].next) { nextBtn.style.display = ''; nextBtn.textContent = stages[stage].next; }
+    else nextBtn.style.display = 'none';
+
+    const kWT = Math.exp(-DG_WT / RT0), kMut = Math.exp(-dgMut / RT0);
+    const fWT = kWT / (1 + kWT), fMut = kMut / (1 + kMut);
+    setText(readout,
+      'ΔΔG = ' + fmt(dgMut, 2) + ' − (' + fmt(DG_WT, 2) + ') = <b>' + fmt(ddg(), 2) +
+      '</b> kcal/mol &nbsp;·&nbsp; folded/unfolded ratio goes from <b>' + kWT.toFixed(0) +
+      '</b> to <b>' + kMut.toFixed(0) + '</b> — ' +
+      (kMut >= kWT ? 'up ×' + (kMut / kWT).toFixed(1) : 'down ×' + (kWT / kMut).toFixed(1)) +
+      ' &nbsp;·&nbsp; folded population ' + (100 * fWT).toFixed(2) + '% → ' + (100 * fMut).toFixed(2) + '%');
+  }
+
+  nextBtn.addEventListener('click', () => { if (stage < stages.length - 1) { stage++; render(); } });
+  backBtn.addEventListener('click', () => { if (stage > 0) { stage--; render(); } });
+  dgIn.addEventListener('input', () => {
+    dgMut = parseFloat(dgIn.value); dgV.textContent = fmt(dgMut, 2); render();
+  });
+  shiftBtn.addEventListener('click', () => {
+    base += (Math.random() - 0.5) * 18000; render();
+  });
+  dgV.textContent = fmt(dgMut, 2);
+  render();
+})();
+
+/* =========================================================================
+   STEP 5 — stochastic binding sites and a measured titration
+   ========================================================================= */
+(function () {
+  const canvas = document.getElementById('w5-canvas');
+  const ctx = setupCanvas(canvas, 760, 400);
+  const W = 760, H = 400;
+  const NSITE = 40, BASE = 0.0025;
+  const KD_WT = 20e-9, KD_MUT = 600e-9;
+
+  const cIn = document.getElementById('w5-c'), cV = document.getElementById('w5-cV');
+  const runBtn = document.getElementById('w5-run'), mutBtn = document.getElementById('w5-mut');
+  const resetBtn = document.getElementById('w5-reset'), readout = document.getElementById('w5-readout');
+
+  let L = Math.pow(10, -7.699), mutant = false, ema = 0.5;
+  let curveWT = [], curveMut = [];
+  // A titration point is only meaningful once the sites have relaxed to the
+  // new concentration, so each step of the sweep is settle-then-average:
+  // SETTLE frames discarded (≥ 2 relaxation times), then MEASURE frames
+  // block-averaged. Recording the running EMA instead would report a value
+  // still carrying memory of the previous concentration and pull the whole
+  // curve towards it — which shifts the apparent Kd by more than a decade.
+  let sweeping = false, sweepIdx = 0, sweepWait = 0, sweepSum = 0, sweepN = 0;
+  const SETTLE = 60, MEASURE = 70;
+  const SWEEP = [-9.5, -9.0, -8.5, -8.0, -7.5, -7.0, -6.5, -6.0, -5.5];
+  const sites = new Array(NSITE).fill(false);
+  const kd = () => (mutant ? KD_MUT : KD_WT);
+  const curve = () => (mutant ? curveMut : curveWT);
+
+  function conc(x) {
+    if (x >= 1e-6) return (x * 1e6).toFixed(1) + ' µM';
+    if (x >= 1e-9) return (x * 1e9).toFixed(1) + ' nM';
+    return (x * 1e12).toFixed(0) + ' pM';
+  }
+  function substep() {
+    const pOn = Math.min(0.5, BASE * L / kd()), pOff = BASE;
+    for (let i = 0; i < NSITE; i++) {
+      if (sites[i]) { if (Math.random() < pOff) sites[i] = false; }
+      else { if (Math.random() < pOn) sites[i] = true; }
+    }
+  }
+  function occupancy() { let n = 0; for (const s of sites) if (s) n++; return n / NSITE; }
+
+  function drawSites() {
+    label(ctx, mutant ? 'MUTATED BINDING SITES' : 'BINDING SITES', 26, 26, mutant ? C.acc3 : C.acc, 11, 'left', '600');
+    const cols = 5, cw = 46, ch = 34;
+    for (let i = 0; i < NSITE; i++) {
+      const r = Math.floor(i / cols), c = i % cols;
+      const x = 26 + c * (cw + 8), y = 44 + r * (ch + 7);
+      ctx.fillStyle = sites[i] ? (mutant ? 'rgba(255,200,87,0.30)' : 'rgba(255,122,107,0.30)') : 'rgba(255,255,255,0.03)';
+      ctx.strokeStyle = sites[i] ? (mutant ? C.acc3 : C.acc) : C.line;
+      ctx.lineWidth = 1.3;
+      ctx.fillRect(x, y, cw, ch); ctx.strokeRect(x, y, cw, ch);
+      if (sites[i]) {
+        ctx.beginPath(); ctx.arc(x + cw / 2, y + ch / 2, 7, 0, 6.2832);
+        ctx.fillStyle = mutant ? C.acc3 : C.acc; ctx.fill();
+      }
+    }
+    // free ligand haze, density set by log concentration
+    const nDots = Math.round(6 + 54 * (Math.log10(L) + 10) / 4.7);
+    ctx.fillStyle = 'rgba(127,178,255,0.5)';
+    for (let i = 0; i < nDots; i++) {
+      const a = (i * 2.399) % 6.2832, rr = 12 + ((i * 37) % 100) / 100 * 26;
+      const x = 296 + Math.cos(a) * rr * 1.4, y = 200 + Math.sin(a) * rr * 3.6;
+      ctx.beginPath(); ctx.arc(x, y, 3, 0, 6.2832); ctx.fill();
+    }
+    label(ctx, 'free', 296, 356, C.acc2, 10, 'center');
+    label(ctx, 'ligand', 296, 370, C.acc2, 10, 'center');
+    label(ctx, conc(L), 296, 388, C.acc2, 11, 'center', '600');
+  }
+
+  function drawCurve() {
+    const x0 = 376, x1 = 738, y0 = 52, y1 = 322;
+    const CX = lg => x0 + (lg + 10) / 4.7 * (x1 - x0);
+    const CY = f => y1 - f * (y1 - y0);
+    ctx.strokeStyle = C.axis; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x0, y1); ctx.lineTo(x1, y1); ctx.stroke();
+    for (const f of [0, 0.5, 1]) {
+      ctx.strokeStyle = f === 0.5 ? 'rgba(255,200,87,0.35)' : 'rgba(87,78,115,0.3)';
+      if (f === 0.5) ctx.setLineDash([4, 4]);
+      ctx.beginPath(); ctx.moveTo(x0, CY(f)); ctx.lineTo(x1, CY(f)); ctx.stroke();
+      ctx.setLineDash([]);
+      label(ctx, f.toFixed(1), x0 - 6, CY(f) + 3.5, C.soft, 10, 'right');
+    }
+    for (const lg of [-10, -9, -8, -7, -6]) {
+      label(ctx, '10' + ['⁻¹⁰', '⁻⁹', '⁻⁸', '⁻⁷', '⁻⁶'][lg + 10],
+            CX(lg), y1 + 16, C.soft, 10, 'center');
+    }
+    label(ctx, 'ligand concentration / M  (log scale)', (x0 + x1) / 2, y1 + 34, C.soft, 10, 'center');
+    label(ctx, 'fraction of sites occupied', x0 - 4, y0 - 12, C.soft, 10, 'left');
+
+    const drawPts = (pts, col) => {
+      ctx.strokeStyle = col; ctx.lineWidth = 2;
+      ctx.beginPath();
+      pts.forEach((p, i) => { const X = CX(p.lg), Y = CY(p.f); i === 0 ? ctx.moveTo(X, Y) : ctx.lineTo(X, Y); });
+      if (pts.length > 1) ctx.stroke();
+      for (const p of pts) {
+        ctx.beginPath(); ctx.arc(CX(p.lg), CY(p.f), 4, 0, 6.2832);
+        ctx.fillStyle = col; ctx.fill();
+      }
+    };
+    drawPts(curveWT, C.acc);
+    drawPts(curveMut, C.acc3);
+    if (curveWT.length > 1) label(ctx, 'wild type', CX(-9.6), CY(0.9), C.acc, 10, 'left', '600');
+    if (curveMut.length > 1) label(ctx, 'mutant', CX(-9.6), CY(0.78), C.acc3, 10, 'left', '600');
+
+    // live point
+    ctx.beginPath(); ctx.arc(CX(Math.log10(L)), CY(ema), 6, 0, 6.2832);
+    ctx.strokeStyle = C.ink; ctx.lineWidth = 1.6; ctx.stroke();
+  }
+
+  function readKd(pts) {
+    if (pts.length < 3) return null;
+    for (let i = 1; i < pts.length; i++) {
+      if ((pts[i - 1].f - 0.5) * (pts[i].f - 0.5) <= 0 && pts[i].f !== pts[i - 1].f) {
+        const t = (0.5 - pts[i - 1].f) / (pts[i].f - pts[i - 1].f);
+        return Math.pow(10, pts[i - 1].lg + t * (pts[i].lg - pts[i - 1].lg));
+      }
+    }
+    return null;
+  }
+
+  function update() {
+    const kdWT = readKd(curveWT), kdMu = readKd(curveMut);
+    let s = 'occupancy now: <b>' + (100 * occupancy()).toFixed(0) + '%</b> of 40 sites' +
+            ' &nbsp;·&nbsp; smoothed: <b>' + (100 * ema).toFixed(1) + '%</b>' +
+            ' &nbsp;·&nbsp; [L] = ' + conc(L);
+    if (kdWT) {
+      const dg = RT0 * Math.log(kdWT);
+      s += '<br>wild type: K<sub>d</sub> ≈ <b>' + conc(kdWT) + '</b> → ΔG<sub>bind</sub> = RT·ln(K<sub>d</sub>/1 M) = <b>' + fmt(dg, 2) + '</b> kcal/mol';
+    }
+    if (kdMu) {
+      const dg = RT0 * Math.log(kdMu);
+      s += '<br>mutant: K<sub>d</sub> ≈ <b>' + conc(kdMu) + '</b> → ΔG<sub>bind</sub> = <b>' + fmt(dg, 2) + '</b> kcal/mol';
+      if (kdWT) s += ' &nbsp;·&nbsp; <b>ΔΔG<sub>bind</sub> = ' + fmt(RT0 * Math.log(kdMu / kdWT), 2) + '</b> kcal/mol';
+    }
+    if (sweeping) s += ' &nbsp;·&nbsp; <b>measuring point ' + (sweepIdx + 1) + ' of ' + SWEEP.length + '</b>';
+    if (!kdWT && !kdMu) s += '<br>press <em>Run the titration</em> to sweep the concentration and build a binding curve.';
+    setText(readout, s);
+  }
+
+  function record(lg, f) {
+    const arr = curve();
+    const i = arr.findIndex(p => Math.abs(p.lg - lg) < 1e-6);
+    if (i >= 0) arr[i].f = f; else arr.push({ lg: lg, f: f });
+    arr.sort((a, b) => a.lg - b.lg);
+  }
+
+  function frame() {
+    for (let k = 0; k < 12; k++) substep();
+    ema += (occupancy() - ema) * 0.06;
+    if (sweeping) {
+      sweepWait++;
+      if (sweepWait > SETTLE) { sweepSum += occupancy(); sweepN++; }
+      if (sweepWait >= SETTLE + MEASURE) {
+        record(SWEEP[sweepIdx], sweepSum / sweepN);
+        sweepIdx++; sweepWait = 0; sweepSum = 0; sweepN = 0;
+        if (sweepIdx >= SWEEP.length) { sweeping = false; runBtn.disabled = false; mutBtn.disabled = false; runBtn.textContent = 'Run the titration →'; }
+        else { L = Math.pow(10, SWEEP[sweepIdx]); cIn.value = SWEEP[sweepIdx]; cV.textContent = conc(L); }
+      }
+    }
+    ctx.clearRect(0, 0, W, H);
+    drawSites(); drawCurve();
+    update();
+    requestAnimationFrame(frame);
+  }
+
+  cIn.addEventListener('input', () => {
+    if (sweeping) return;
+    L = Math.pow(10, parseFloat(cIn.value)); cV.textContent = conc(L);
+  });
+  runBtn.addEventListener('click', () => {
+    sweeping = true; sweepIdx = 0; sweepWait = 0; sweepSum = 0; sweepN = 0;
+    runBtn.disabled = true; mutBtn.disabled = true; runBtn.textContent = 'sweeping…';
+    sites.fill(false); ema = 0;                      // start every sweep from empty
+    L = Math.pow(10, SWEEP[0]); cIn.value = SWEEP[0]; cV.textContent = conc(L);
+  });
+  mutBtn.addEventListener('click', () => {
+    if (sweeping) return;              // flipping Kd mid-sweep would split one
+    mutant = !mutant;                  // titration across both curves
+    mutBtn.textContent = mutant ? 'Back to wild type' : 'Mutate the interface';
+  });
+  resetBtn.addEventListener('click', () => {
+    curveWT.length = 0; curveMut.length = 0;
+    sweeping = false; runBtn.disabled = false; mutBtn.disabled = false; runBtn.textContent = 'Run the titration →';
+  });
+  cV.textContent = conc(L);
+  frame();
+})();
+
+/* =========================================================================
+   READING PROGRESS
+   ========================================================================= */
+(function () {
+  const bar = document.getElementById('progress');
+  function update() {
+    const h = document.documentElement;
+    const max = h.scrollHeight - h.clientHeight;
+    bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + '%';
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+})();
+</script>
+</body>
+</html>

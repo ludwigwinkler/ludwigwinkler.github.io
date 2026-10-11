@@ -5,19 +5,7 @@ date:   2022-12-09
 excerpt: "Warning: May contain traces of nuts (and matrices)"
 image: "../../blog/blogthumbnails/stein.png"
 ---
-<head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+{% include mathjax3.html %}
 $$
  \def\tr#1{\text{Tr}\left[ #1 \right]}
  \def\Efunc#1{\mathbb{E}\left[ #1\right]}
@@ -100,7 +88,7 @@ $$
 &= -\frac{(x-\mu)}{\sigma^2} \frac{1}{\sqrt{2\pi} \sigma} e^{-\frac{(x-\mu)^2}{2\sigma^2}} \\
 &= - \frac{(x-\mu)}{\sigma^2} p(x).
 \end{align}$$
-Integration by parts (IbP) serves as a inverse of the product rule $\partial_x [u(x) v(x)] = \partial_x u(x) v(x) + u(x) \partial_x v(x)$ namely 
+Integration by parts (IbP) serves as an inverse of the product rule $\partial_x [u(x) v(x)] = \partial_x u(x) v(x) + u(x) \partial_x v(x)$ namely 
 $$\begin{align}
 [u(x)v(x)]_{x=-\infty}^{\infty} &= \int_{x=-\infty}^{\infty} u(x) \partial_x v(x) + \partial_x u(x) v(x) dx \\
 &= \int_{x=-\infty}^{\infty} u(x) \partial_x v(x) dx + \int_{x=-\infty}^{\infty} \partial_x u(x) v(x) dx
@@ -127,6 +115,8 @@ $$
 $$
 
 ### Trace Estimation with Stein's Lemma
+
+For a direct application of Hutchinson's trace estimator to the divergence of a vector field — used to compute log-likelihoods of diffusion models via the probability-flow ODE — see [Likelihood Calculations in Diffusion Models](https://ludwigwinkler.github.io/blog/DiffusionLikelihoods/).
 
 By choosing a perturbation $\epsilon \sim p(0, \sigma_\epsilon^2)$ with zero mean and a small variance $\sigma_\epsilon^2$ we can define a perturbed data point $x' \sim p(x,\sigma_\epsilon^2)$ via $x' = x + \epsilon$.
 This transforms Stein's lemma into

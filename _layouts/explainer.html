@@ -1,0 +1,59 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+	{% include head.html %}
+</head>
+
+<body class="is-loading">
+	<div id="wrapper" class="fade-in">
+		<header id="header">
+			<a href="{{ "/" | absolute_url }}" class="logo">{{site.title}}</a>
+		</header>
+
+		<nav id="nav">
+			{% include nav.html %}
+			<ul class="icons">
+				<li><a href="https://twitter.com/ludiXIVwinkler" class="icon fa-twitter" rel="nofollow"><span class="label">Twitter</span></a></li>
+				<li><a href="https://github.com/ludwigwinkler" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
+			</ul>
+		</nav>
+
+		<div id="main">
+			<section class="post">
+				<header class="major">
+					{% if page.date %}<span class="date">{{ page.date | date_to_string }}</span>{% endif %}
+					<h1>{{ page.title }}</h1>
+					{% if page.description %}<p>{{ page.description }}</p>{% endif %}
+				</header>
+				{{ content }}
+				<iframe
+					class="explainer-embed"
+					src="{{ page.embed | default: 'content.html' }}"
+					title="{{ page.title | escape }}"
+					loading="lazy"
+					scrolling="no"
+					style="border: 0; display: block; width: 100%;"
+				></iframe>
+			</section>
+		</div>
+	</div>
+	<script>
+		document.querySelectorAll('.explainer-embed').forEach((iframe) => {
+			iframe.addEventListener('load', () => {
+				const content = iframe.contentDocument;
+				const resize = () => {
+					iframe.style.height = `${Math.max(
+						content.body.scrollHeight,
+						content.documentElement.scrollHeight
+					)}px`;
+				};
+
+				resize();
+				new ResizeObserver(resize).observe(content.documentElement);
+			});
+		});
+	</script>
+</body>
+
+</html>

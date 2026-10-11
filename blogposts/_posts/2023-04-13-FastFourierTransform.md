@@ -5,28 +5,7 @@ date:   2023-04-11
 excerpt: "From Complex Exponentials to Frequencies in  O(N log N)"
 image: "../../blog/blogthumbnails/FFT.png"
 ---
-<head>
-<!-- <script type="text/x-mathjax-config">  -->
-  <!-- MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script> -->
-<!-- uncomment two lines above and remove the html css to svg lines -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    TeX: { equationNumbers: { autoNumber: "all" } },
-    tex2jax: {
-      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      displayMath: [['$$','$$'], ['\[' , '\]'], ['\\[', '\\]']],
-      processEscapes: true
-    },
-    "HTML-CSS": { linebreaks: { automatic: true } },
-    CommonHTML: { linebreaks: { automatic: true } },
-    SVG: { linebreaks: { automatic: true } }
-    });
-</script>
-<script type="text/javascript" async
-  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-</head>
+{% include mathjax3.html %}
 $$
  \def\tr#1{\text{Tr}\left[ #1 \right]}
  \def\Efunc#1{\mathPbb{E}\left[ #1\right]}
@@ -44,7 +23,7 @@ To quote 'What a Wonderful World' by Louis Armstrong:
 🎼 *'And I think to myself, what a wonderful (world) algorithm ...'*.
 
 But how does this apparently 'super-duper important algorithm' actually work?
-That's when I went down a rabbit whole full of complex exponentials, recursion and nifty tricks for periodic functions.
+That's when I went down a rabbit hole full of complex exponentials, recursion and nifty tricks for periodic functions.
 
 ### Why we're going to what we're going to do
 
@@ -55,7 +34,7 @@ So I'm going to skip the introduction on the continuous Fourier transformation a
 ### Euler's Identity
 
 It always amazes me how a few mathematicians 200-300 years ago laid the theoretical groundwork for so many ideas that we use today on a daily basis.
-The names of Gauss, Euler, Fourier and Laplace have appeared so many times in my studies and work that you tend to forgot that those people did their work with a candle on their desk because the use of electricity developed yet, while the fundamental basics of electrical engineering stands on the shoulders of their enormous mathematical contributions.
+The names of Gauss, Euler, Fourier and Laplace have appeared so many times in my studies and work that you tend to forget that those people did their work with a candle on their desk because the use of electricity hadn't developed yet, while the fundamental basics of electrical engineering stands on the shoulders of their enormous mathematical contributions.
 
 My understanding of the FFT started out with the innocuous equation known as Euler's Identity:
 $$
@@ -104,7 +83,7 @@ $$
 
 where $i$'th power switches the sign of the terms and whether they're complex or not according to the table a few lines above.
 
-Fortunately for us, it just so happens that the MacLaurin series (Taylor series when the root is zero) for the sine and cosine are precisely the power series that occured in the equation above, 
+Fortunately for us, it just so happens that the MacLaurin series (Taylor series when the root is zero) for the sine and cosine are precisely the power series that occurred in the equation above, 
 $$
 \begin{align}
   e^{ix} 
@@ -158,15 +137,15 @@ $$
 \big( \text{contribution of frequency} &= \frac{\text{signal}}{\text{frequency}} \big)
 \end{align}
 $$
-An alternative intuition for me is the that the Fourier transform computes the correlation of a signal with a series of sinusoids with increasing frequency.
-If a signal aligns perfectly with a particular sinusoid, it will yield a high correlation score, whereas if the signal is completely orthogonal, it has zero correlation and will the correlation score is zero.
+An alternative intuition for me is that the Fourier transform computes the correlation of a signal with a series of sinusoids with increasing frequency.
+If a signal aligns perfectly with a particular sinusoid, it will yield a high correlation score, whereas if the signal is completely orthogonal, it has zero correlation and the correlation score is zero.
 
 One technical peculiarity, which is determined by the Nyquist-Shannon sampling theorem, is that we can have only half the number of frequency bins vis-a-vis the signal length.
 The discrete signal $x_n$ is by definition a sampling frequency, as the underlying continuous signal is sampled/measured at discrete steps.
 Nyquist-Shannon says that you need twice the sampling frequency for a signal in order to be sure that you have a 'definite' representation of the signal.
 For a signal of length N, we can only have $N/2$ present frequencies which we can accurately measure.
 
-I spend a good hour figuring out why the DFT of a real signal is always mirrored in the frequency bins.
+I spent a good hour figuring out why the DFT of a real signal is always mirrored in the frequency bins.
 Most explanations on the internet only plot the real part of the spectrum, which is precisely where that detail matters.
 Unsurprisingly for a real signal, this equates to plotting
 $$
@@ -257,9 +236,9 @@ But we furthermore exploit the periodicity of the sinusoids, which we already en
 An even function is more or less defined as $f(x) = f(-x)$ and an odd function as $f(x) = - f(-x)$.
 
 Now it just so happens that the cosine is an even function and the sinus is an odd function for a single period.
-But since we defined our signal of length $N$ over a single period of $2 \pi$ (for specific integer multiple $k$, but that's not important for the intuition), we now that for a cosine we only have to compute $\{0, \ldots, k, \ldots, N/2\}$  since $\{N/2, \ldots, k, \ldots, N\}$ is handed to us on a platter due to the even property of the cosine function.
+But since we defined our signal of length $N$ over a single period of $2 \pi$ (for specific integer multiple $k$, but that's not important for the intuition), we know that for a cosine we only have to compute $\{0, \ldots, k, \ldots, N/2\}$  since $\{N/2, \ldots, k, \ldots, N\}$ is handed to us on a platter due to the even property of the cosine function.
 
-The same applies to the sinus function which we can mirror for all always of $\{N/2, \ldots, k, \ldots, N\}$ by adjusting it with the complex exponential.
+The same applies to the sinus function which we can mirror for all values of $\{N/2, \ldots, k, \ldots, N\}$ by adjusting it with the complex exponential.
 $$
 \begin{align}
   X_k 
@@ -282,7 +261,7 @@ $$
 
 where the complex exponentials evaluate accordingly due to $m$ being integers.
 
-**The log scaling of the FFT algorithm stems from the fact that we can split the computation into even and odd terms which are again DFT's, and that each application of a DFT gives us the second half of the frequency bins for for free (with a simple array addition and one complex multiplication).**
+**The log scaling of the FFT algorithm stems from the fact that we can split the computation into even and odd terms which are again DFT's, and that each application of a DFT gives us the second half of the frequency bins for free (with a simple array addition and one complex multiplication).**
 
 I said earlier that we can't save ourselves from going through our signal at least once, but by exploiting the symmetry properties of the sinusoids, we already halved the computations for the $k$ frequency bins in half.
 So while we have to do a full 'spatial' pass of $n$ over the $x_n$'s, we can save ourselves half the time by mirroring in the 'frequency' pass for the index $k$.
@@ -308,7 +287,7 @@ For the example above, we have $\exp(-i 2\pi k/N) \cdot \exp(-i 2\pi k/N) = \exp
 ### A (Linear) Algebraic Approach
 
 Things are always better when visualized and fortunately we can write out the DFT as a matrix-vector multiplication.
-For this efficient algorithn, we require that the length $N$ is a root of 2, such that we can repeatedly divide the length $N$ by two until we arrive at a DFT length of one.
+For this efficient algorithm, we require that the length $N$ is a root of 2, such that we can repeatedly divide the length $N$ by two until we arrive at a DFT length of one.
 
 First we will define the $n$'th root of unity as
 $$
@@ -344,7 +323,7 @@ While it may appear that the roots of unity are just increasing haphazardly, the
 This means that for example $w_8^2=w_8^{10}$ as with a length of $N=8$, $w_8^{10}$ does a full circle back to $w_8^2$ (it requires '8 steps' to do a full circle and has '2 steps' left to end up where $w^2$ is already, so the modulo operator respectively the periodic property of the complex exponential).
 Similarly $w_8^4=w_8^{12}$.
 
-Additionally, our astute obeservation of earlier tells that we don't need to compute the second half of the matrix, but can instead reconstruct it from the results in the upper half.
+Additionally, our astute observation of earlier tells that we don't need to compute the second half of the matrix, but can instead reconstruct it from the results in the upper half.
 
 $$
 \begin{matrix} 0 \leq k \leq N/2: \\ \\ \\ \\ N/2 \leq k \leq N: \\ \end{matrix} 
@@ -549,10 +528,10 @@ $$
 {% endraw %}
 
 Not using the structure of the matrix respectively the complex periodicity would have left us with a $ 8 \times 8 = 64$ matrix multiplication.
-Using the tricks laid out above costs us two $4 \times 4$ matrix multplications, two $4$ additions and two $4$ multiplications for a grand total of $2 \cdot (4 \times 4) + 2 \cdot 4 + 2 \cdot 4 = 48$ operations
+Using the tricks laid out above costs us two $4 \times 4$ matrix multiplications, two $4$ additions and two $4$ multiplications for a grand total of $2 \cdot (4 \times 4) + 2 \cdot 4 + 2 \cdot 4 = 48$ operations
 
 Upon closer inspection of the first matrix being multiplied with $[ x_0, x_2, x_4, x_6]$ we can notice that matrix exhibits the same properties and structure as the original DFT matrix.
-This is were the recursion kicks in in the linear algebra formulation.
+This is where the recursion kicks in in the linear algebra formulation.
 
 For that to happen, we take the even of the evens, $[x_0, x_4]$ and the odds of the even $[x_2, x_6]$ and split them as before:
 
@@ -655,7 +634,7 @@ $$
 And we can do it yet again by observing that the $2 \times 2$ matrix can be broken up again once more (but at size 1 the recursion naturally stops).
 Similarly this recursion applies equally to the original odd entry terms in the upper most recursion layer.
 
-This recursive breaking up matrices and saving half the computations (via reconstruction of the second half of the frequency bins) gives the FFT it's highly useful $O(N \log N)$ complexity.
+This recursive breaking up matrices and saving half the computations (via reconstruction of the second half of the frequency bins) gives the FFT its highly useful $O(N \log N)$ complexity.
 
 The efficiency stems from us retracing the recursive matrix break ups with our results once we arrived at the DFT with length of one.
 Each evaluation in the recursion allows us to reconstruct frequency bins twice our original size (thanks to periodicity) with minimal overhead, which goes from $1 \rightarrow 2 \rightarrow 4 \rightarrow 8$.
