@@ -1,5 +1,161 @@
 {% if include.widget == "scaling" %}
 <style>
+  /* Shared figure theme, emitted once with the first widget. */
+  :is(#matrix-scaling-widget,#matrix-rank-widget,#rank-projection-widget,#eigenvector-widget,#determinant-diagonal-widget,#determinant-area-widget).matrix-figure{
+    --line:#e2e8ec;
+    --ink:#243340;
+    --dim:#6b7c89;
+    --blue:#2f6fad;
+    --d1-gold:#7153b8;
+    --w2-gold:#7153b8;
+    --serif-body:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Consolas,monospace;
+    margin:32px 0;
+    color:var(--ink);
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:12px;
+    box-shadow:none;
+    font:400 14px/1.5 "Helvetica Neue",Helvetica,Arial,sans-serif;
+    text-transform:none;
+    & :is(.scaling-head,.rank-head,.projection-head,.eigen-head,.widget-titlewrap){
+      padding:20px 24px;
+      background:#fff;
+      border-bottom:1px solid #e2e8ec;
+    }
+    & :is(h4,.widget-title){
+      color:#243340;
+      font:600 17px/1.4 "Helvetica Neue",Helvetica,Arial,sans-serif;
+      letter-spacing:-0.02em;
+    }
+    & h5{color:#405361; font-size:14px; font-weight:500;}
+    & :is(.eigen-kicker,.d1-kicker,.w2-kicker,.wt-sub){
+      padding:0;
+      color:#6b7c89;
+      background:none;
+      border:0;
+      font:400 11px/1.4 "Helvetica Neue",Helvetica,Arial,sans-serif;
+      letter-spacing:0.02em;
+      text-transform:none;
+    }
+    & :is(.scaling-panel,.rank-panel,.projection-body,.eigen-body,.widget-body){padding:24px;}
+    & :is(.rank-badge,.rank-dimension){color:#6b7c89; font-size:11px;}
+    & :is(.projection-note,.rank-hint){color:#6b7c89; font-size:11px;}
+    & :is(.eigen-plot-shell,.d1-plot-shell,.w2-plot-shell){
+      position:relative;
+      background:#f9fbfc;
+      border:1px solid #e8eef1;
+      border-radius:8px;
+    }
+    & :is(.eigen-plot,.projection-panel svg,canvas){background:#f9fbfc;}
+    & .projection-panel svg{border-color:#e8eef1; border-radius:8px;}
+    & :is(.eigen-legend,.d1-plot-key,.w2-plot-key){
+      padding:10px 14px;
+      color:#6b7c89;
+      background:#f9fbfc;
+      border-bottom:0;
+      font:400 11px/1.4 "Helvetica Neue",Helvetica,Arial,sans-serif;
+    }
+    & :is(.eigen-metric,.d1-metric,.projection-readout){
+      padding:12px 14px;
+      background:#f4f7f9;
+      border:0;
+      border-radius:6px;
+      font-size:13px;
+    }
+    & .eigen-metric[data-active="true"]{background:#edf7f4;}
+    & :is(.eigen-metric-label,.d1-metric-label,.w2-summary-label,.w2-stage-label,.eq-label){
+      color:#6b7c89;
+      font:400 11px/1.4 "Helvetica Neue",Helvetica,Arial,sans-serif;
+      letter-spacing:0;
+      text-transform:none;
+    }
+    & :is(.eigen-metric strong,.d1-metric strong){font-size:16px; font-weight:500;}
+    & :is(.eigen-actions,.d1-actions,.w2-actions){
+      padding:14px 0 0;
+      background:none;
+      border:0;
+      border-top:1px solid #e2e8ec;
+      border-radius:0;
+    }
+    & :is(.eigen-feedback,.caption,.projection-message){
+      color:#546977;
+      font:400 12px/1.55 "Helvetica Neue",Helvetica,Arial,sans-serif;
+      text-align:left;
+    }
+    & .eigen-feedback[data-found="true"]{color:#147f7a;}
+    & :is(button,button.step-btn){
+      padding:8px 12px;
+      color:#405361 !important;
+      background:#fff;
+      border:1px solid #d4dfe5;
+      border-radius:6px;
+      box-shadow:none;
+      font:500 11px/1.4 "Helvetica Neue",Helvetica,Arial,sans-serif;
+      letter-spacing:0;
+      text-transform:none;
+      transition:background 160ms ease,border-color 160ms ease;
+    }
+    & :is(button,button.step-btn):hover{
+      color:#147f7a !important;
+      background:#edf7f4;
+      border-color:#9bc6be;
+    }
+    & .w2-summary{
+      padding:14px 0;
+      background:none;
+      border:0;
+      border-bottom:1px solid #e2e8ec;
+      border-radius:0;
+    }
+    & .w2-equation{padding:18px; background:#f9fbfc; border-color:#e8eef1;}
+    & .eq-step{transition:color 180ms ease;}
+    & .eq-step.is-current{color:#147f7a;}
+    & .eq-step.is-current .eq-note{color:#147f7a;}
+    & .eq-step.is-revealed{animation:matrix-equation-reveal 240ms ease-out;}
+    & .move-hint{
+      opacity:1;
+      pointer-events:none;
+      transition:opacity 180ms ease;
+    }
+    & .move-hint.is-dismissed{opacity:0;}
+    & .figure-canvas-hint{
+      position:absolute;
+      z-index:1;
+      padding:4px 7px;
+      color:#147f7a;
+      background:rgba(255,255,255,0.96);
+      border:1px solid #d6e5e4;
+      border-radius:3px;
+      white-space:nowrap;
+      font:400 10px/1.4 "Helvetica Neue",Helvetica,Arial,sans-serif;
+    }
+    & .figure-canvas-hint.second{color:#7153b8; border-color:#ded8ec;}
+    & [data-w2-piece].is-emphasized{background:#edf3f6; border-radius:3px;}
+    & .eigen-guides{transition:opacity 180ms ease;}
+    & .eigen-angle-arc{transition:opacity 180ms ease;}
+    & .scaling-panel[data-active-component="0"] .second,
+    & .scaling-panel[data-active-component="1"] .first{opacity:0.4;}
+    & .scaling-panel :is(.first,.second){transition:opacity 120ms ease;}
+    & .rank-controls,
+    & .scaling-comparison{background:#f9fbfc;}
+    @media (max-width:520px){
+      & :is(.scaling-head,.rank-head,.projection-head,.eigen-head,.widget-titlewrap,.scaling-panel,.rank-panel,.projection-body,.eigen-body,.widget-body){padding:16px;}
+      & :is(h4,.widget-title){font-size:15px;}
+      & .eigen-plot text{font-size:16px; stroke-width:3px;}
+      & .eigen-plot .move-hint text{font-size:15px; stroke:none;}
+      & #w2canvas{height:clamp(200px,61.75vw,420px);}
+    }
+    @media (prefers-reduced-motion:reduce){
+      & *,
+      & *::before,
+      & *::after{animation:none !important; transition:none !important;}
+    }
+  }
+  @keyframes matrix-equation-reveal{
+    from{opacity:0; transform:translateY(4px);}
+    to{opacity:1; transform:translateY(0);}
+  }
   #matrix-scaling-widget{
     --line:#e2e6e9;
     --ink:#212931;
@@ -150,9 +306,9 @@
     #matrix-scaling-widget svg text{font-size:13px;}
   }
 </style>
-<div id="matrix-scaling-widget" role="group" aria-labelledby="scaling-title">
+<div id="matrix-scaling-widget" class="matrix-figure" role="group" aria-labelledby="scaling-title">
   <div class="scaling-head">
-    <h4 id="scaling-title">02 · Scaling a diagonal matrix-vector product</h4>
+    <h4 id="scaling-title">Scaling a matrix-vector product</h4>
   </div>
   <div class="scaling-panels">
     <section class="scaling-panel" data-scaling-panel="left" aria-labelledby="scaling-left-title">
@@ -356,6 +512,7 @@
     const secondLabel = element('text',{fill:colors.second,class:'scaling-vector-label'},svg,side === 'left' ? 'a₂₂x₂' : 'a₂x₂');
     return {
       side, svg, guides, first, second, result, tip, firstLabel, secondLabel,
+      root:root.querySelector('[data-scaling-panel="'+side+'"]'),
       controls:keys.map(key=>select('[data-'+side+'-control="'+key+'"]')),
       outputs:keys.map(key=>select('[data-'+side+'-output="'+key+'"]')),
       cells:keys.map(key=>select('[data-'+side+'-cell="'+key+'"]')),
@@ -366,6 +523,22 @@
     };
   }
   const left = makePanel('left',['a1','a2']), right = makePanel('right',['x1','x2']);
+  [left,right].forEach(panel=>panel.controls.forEach((control,index)=>{
+    control.addEventListener('focus',()=>{
+      panel.root.dataset.activeComponent=String(index);
+      [panel.first,panel.second].forEach((line,component)=>{
+        line.style.opacity=component===index?'1':'0.25';
+        panel.readout.children[component].style.opacity=component===index?'1':'0.4';
+      });
+    });
+    control.addEventListener('blur',()=>{
+      delete panel.root.dataset.activeComponent;
+      [panel.first,panel.second].forEach((line,component)=>{
+        line.style.opacity='';
+        panel.readout.children[component].style.opacity='';
+      });
+    });
+  }));
 
   function drawPanel(panel){
     const values = panel.controls.map(control=>Number(control.value));
@@ -420,545 +593,6 @@
       : 'Different outputs. Match a₁₁ = x₁ and a₂₂ = x₂.';
   }
   [...left.controls,...right.controls].forEach(control=>control.addEventListener('input',draw));
-  draw();
-})();
-</script>
-{% elsif include.widget == "directions" %}
-<style>
-  #matrix-directions-widget{
-    --line:#dfe5e8;
-    --ink:#212931;
-    --dim:#65717c;
-    --teal:#147f7a;
-    --teal-soft:#edf7f6;
-    --amber:#a96100;
-    --amber-soft:#fff6e8;
-    margin:26px 0;
-    overflow:hidden;
-    color:var(--ink);
-    background:#fff;
-    border:1px solid var(--line);
-    border-radius:8px;
-    font:400 14px/1.5 "Helvetica Neue",Helvetica,Arial,sans-serif;
-    text-align:left;
-  }
-  #matrix-directions-widget,
-  #matrix-directions-widget *{box-sizing:border-box;}
-  #matrix-directions-widget .directions-head{
-    display:flex;
-    flex-wrap:wrap;
-    align-items:center;
-    justify-content:space-between;
-    gap:12px 20px;
-    padding:18px 20px;
-    border-bottom:1px solid var(--line);
-  }
-  #matrix-directions-widget .directions-heading{display:grid; gap:3px;}
-  #matrix-directions-widget .directions-kicker{
-    color:var(--teal);
-    font:600 10px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;
-    letter-spacing:0.08em;
-    text-transform:uppercase;
-  }
-  #matrix-directions-widget h4{
-    margin:0;
-    color:var(--ink);
-    font:600 17px/1.35 "Helvetica Neue",Helvetica,Arial,sans-serif;
-    letter-spacing:0;
-    text-transform:none;
-  }
-  #matrix-directions-widget .directions-matrix{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    color:#37444e;
-    font:500 13px/1.35 ui-monospace,SFMono-Regular,Consolas,monospace;
-  }
-  #matrix-directions-widget .directions-matrix-grid{
-    position:relative;
-    display:grid;
-    grid-template-columns:repeat(2,2.2em);
-    gap:2px 8px;
-    padding:3px 8px;
-    text-align:center;
-    font-variant-numeric:tabular-nums;
-  }
-  #matrix-directions-widget .directions-matrix-grid::before,
-  #matrix-directions-widget .directions-matrix-grid::after{
-    content:"";
-    position:absolute;
-    top:0;
-    bottom:0;
-    width:5px;
-    border:1px solid currentColor;
-  }
-  #matrix-directions-widget .directions-matrix-grid::before{left:0; border-right:0;}
-  #matrix-directions-widget .directions-matrix-grid::after{right:0; border-left:0;}
-  #matrix-directions-widget .directions-body{padding:18px 20px 20px;}
-  #matrix-directions-widget .directions-story{
-    margin:0 0 12px;
-    color:#485761;
-    font-size:13px;
-  }
-  #matrix-directions-widget .directions-presets{
-    display:flex;
-    flex-wrap:wrap;
-    gap:7px;
-    margin-bottom:12px;
-  }
-  #matrix-directions-widget button{
-    min-height:0;
-    padding:7px 11px;
-    color:var(--teal) !important;
-    background:#fff;
-    border:1px solid #b9cfcc;
-    border-radius:6px;
-    box-shadow:none;
-    font:600 11px/1.25 "Helvetica Neue",Helvetica,Arial,sans-serif;
-    letter-spacing:0;
-    text-transform:none;
-  }
-  #matrix-directions-widget button:hover,
-  #matrix-directions-widget button[aria-pressed="true"]{
-    color:#fff !important;
-    background:var(--teal);
-    border-color:var(--teal);
-  }
-  #matrix-directions-widget button:focus-visible{
-    outline:3px solid rgba(20,127,122,0.22);
-    outline-offset:2px;
-  }
-  #matrix-directions-widget .directions-plot-shell{
-    overflow:hidden;
-    background:#fbfdfd;
-    border:1px solid #dfe8e7;
-    border-radius:8px;
-  }
-  #matrix-directions-widget .directions-legend{
-    display:flex;
-    flex-wrap:wrap;
-    gap:7px 16px;
-    padding:9px 12px;
-    color:var(--dim);
-    background:#fff;
-    border-bottom:1px solid #e7ecee;
-    font-size:11px;
-  }
-  #matrix-directions-widget .directions-key{
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-  }
-  #matrix-directions-widget .directions-key::before{
-    content:"";
-    width:18px;
-    border-top:3px solid var(--teal);
-  }
-  #matrix-directions-widget .directions-key.actual::before{border-color:var(--amber); border-top-width:5px;}
-  #matrix-directions-widget .directions-key.grid::before{border-color:#8db8b4; border-top-width:1px;}
-  #matrix-directions-widget .directions-key.home::before{
-    width:10px;
-    height:10px;
-    background:#eef3f7;
-    border:2px solid #536b7a;
-    border-radius:2px;
-  }
-  #matrix-directions-widget .directions-plot{
-    display:block;
-    width:100%;
-    height:auto;
-    touch-action:none;
-    user-select:none;
-  }
-  #matrix-directions-widget .directions-plot text{
-    font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
-    paint-order:stroke;
-    stroke:#fff;
-    stroke-width:3px;
-    stroke-linejoin:round;
-  }
-  #matrix-directions-widget [data-directions-handle]{cursor:grab; outline:none;}
-  #matrix-directions-widget [data-directions-handle]:active{cursor:grabbing;}
-  #matrix-directions-widget [data-directions-handle]:focus-visible .directions-handle-ring{
-    stroke:#172129;
-    stroke-width:3;
-  }
-  #matrix-directions-widget .directions-readout{
-    display:grid;
-    grid-template-columns:repeat(3,minmax(0,1fr));
-    gap:8px;
-    margin-top:12px;
-  }
-  #matrix-directions-widget .directions-metric{
-    min-width:0;
-    padding:10px 12px;
-    background:#fafcfc;
-    border:1px solid #e1e7e9;
-    border-radius:7px;
-  }
-  #matrix-directions-widget .directions-metric-label{
-    display:block;
-    margin-bottom:3px;
-    color:#77828c;
-    font:600 9px/1.3 ui-monospace,SFMono-Regular,Consolas,monospace;
-    letter-spacing:0.07em;
-    text-transform:uppercase;
-  }
-  #matrix-directions-widget .directions-metric strong{
-    display:block;
-    overflow-wrap:anywhere;
-    color:var(--ink);
-    font:600 14px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;
-    font-variant-numeric:tabular-nums;
-  }
-  #matrix-directions-widget .directions-metric.instructions strong{color:var(--teal);}
-  #matrix-directions-widget .directions-metric.actual strong{color:var(--amber);}
-  #matrix-directions-widget .directions-footer{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:12px;
-    margin-top:12px;
-    padding:10px 12px;
-    color:#5d4a2d;
-    background:var(--amber-soft);
-    border:1px solid #efdfc3;
-    border-radius:7px;
-  }
-  #matrix-directions-widget .directions-message{margin:0; font-size:12px;}
-  #matrix-directions-widget .directions-sr-only{
-    position:absolute;
-    width:1px;
-    height:1px;
-    overflow:hidden;
-    clip:rect(0,0,0,0);
-    white-space:nowrap;
-  }
-  @media (max-width:620px){
-    #matrix-directions-widget .directions-readout{grid-template-columns:1fr;}
-    #matrix-directions-widget .directions-footer{align-items:flex-start; flex-direction:column;}
-  }
-  @media (max-width:420px){
-    #matrix-directions-widget .directions-head,
-    #matrix-directions-widget .directions-body{padding:14px 12px;}
-    #matrix-directions-widget .directions-matrix{width:100%; justify-content:flex-start;}
-    #matrix-directions-widget .directions-presets{display:grid; grid-template-columns:1fr;}
-    #matrix-directions-widget button{width:100%;}
-    #matrix-directions-widget .directions-legend{gap:6px 10px;}
-  }
-</style>
-<div id="matrix-directions-widget" role="group" aria-labelledby="directions-title">
-  <div class="directions-head">
-    <div class="directions-heading">
-      <span class="directions-kicker">Directions home, after last call</span>
-      <h4 id="directions-title">01 · A matrix warps a direction</h4>
-    </div>
-    <div class="directions-matrix" role="img" data-directions-matrix-label>
-      <span><i>A</i> =</span>
-      <span class="directions-matrix-grid" aria-hidden="true">
-        <span data-directions-cell="0">1</span><span data-directions-cell="1">1</span>
-        <span data-directions-cell="2">0</span><span data-directions-cell="3">1</span>
-      </span>
-    </div>
-  </div>
-  <div class="directions-body">
-    <p class="directions-story">The house is two blocks right and one block up. Drag the teal direction to the house, then swap the matrix to see where the street map actually sends you.</p>
-    <div class="directions-presets" role="group" aria-label="Choose how the street map transforms the directions">
-      <button type="button" data-directions-preset="identity" aria-pressed="false">No warp</button>
-      <button type="button" data-directions-preset="slope" aria-pressed="true">Sloped streets</button>
-      <button type="button" data-directions-preset="rotation" aria-pressed="false">Turn everything 90°</button>
-    </div>
-    <div class="directions-plot-shell">
-      <div class="directions-legend">
-        <span class="directions-key">directions <i>x</i></span>
-        <span class="directions-key actual">actual route <i>Ax</i></span>
-        <span class="directions-key grid">warped street grid</span>
-        <span class="directions-key home">home</span>
-      </div>
-      <svg class="directions-plot" viewBox="0 0 680 420" data-directions-plot role="application" aria-label="Drag the directions vector to compare it with the transformed route" aria-describedby="directions-keyboard"></svg>
-    </div>
-    <div class="directions-readout" aria-live="polite">
-      <div class="directions-metric instructions">
-        <span class="directions-metric-label">Directions you were given</span>
-        <strong data-directions-input></strong>
-      </div>
-      <div class="directions-metric actual">
-        <span class="directions-metric-label">Where the map sends you</span>
-        <strong data-directions-output></strong>
-      </div>
-      <div class="directions-metric">
-        <span class="directions-metric-label">What the matrix did</span>
-        <strong data-directions-effect></strong>
-      </div>
-    </div>
-    <div class="directions-footer">
-      <p class="directions-message" data-directions-message></p>
-      <button type="button" data-directions-reset>Reset directions</button>
-    </div>
-  </div>
-  <div id="directions-keyboard" class="directions-sr-only">Focus the draggable point and use the arrow keys to move it. Hold Shift for larger steps.</div>
-  <div class="directions-sr-only" data-directions-status role="status" aria-live="polite" aria-atomic="true"></div>
-</div>
-<script>
-(function(){
-  const root=document.getElementById('matrix-directions-widget');
-  const svg=root.querySelector('[data-directions-plot]');
-  const cells=[...root.querySelectorAll('[data-directions-cell]')];
-  const matrixLabel=root.querySelector('[data-directions-matrix-label]');
-  const inputReadout=root.querySelector('[data-directions-input]');
-  const outputReadout=root.querySelector('[data-directions-output]');
-  const effectReadout=root.querySelector('[data-directions-effect]');
-  const message=root.querySelector('[data-directions-message]');
-  const status=root.querySelector('[data-directions-status]');
-  const reset=root.querySelector('[data-directions-reset]');
-  const presetButtons=[...root.querySelectorAll('[data-directions-preset]')];
-  const matrices={
-    identity:{values:[1,0,0,1],effect:'unchanged',message:'With the identity matrix, the directions and the actual route coincide.'},
-    slope:{values:[1,1,0,1],effect:'sheared by 45°',message:'Each block upward also drifts one full block to the right.'},
-    rotation:{values:[0,-1,1,0],effect:'rotated 90°',message:'The matrix turns the entire direction 90° counterclockwise.'}
-  };
-  let mode='slope';
-  const home=[2,1];
-  const initial=[0.8,0.2];
-  const input=initial.slice();
-  let dragging=null;
-  let hintVisible=true;
-
-  const frame={left:40,right:640,top:30,bottom:390};
-  const plot={minX:-5,maxX:5,minY:-3,maxY:3,scale:60};
-  const dragBounds={minX:-3.2,maxX:3.2,minY:-2.5,maxY:2.5};
-  const colors={input:'#147f7a',output:'#a96100'};
-
-  function element(tag,attributes,parent,text){
-    const node=document.createElementNS('http://www.w3.org/2000/svg',tag);
-    Object.entries(attributes).forEach(([key,value])=>node.setAttribute(key,value));
-    if(text!==undefined) node.textContent=text;
-    parent.appendChild(node);
-    return node;
-  }
-
-  const defs=element('defs',{},svg);
-  const clip=element('clipPath',{id:'directions-plot-clip'},defs);
-  element('rect',{x:frame.left,y:frame.top,width:frame.right-frame.left,height:frame.bottom-frame.top},clip);
-  function marker(id,color,size){
-    const node=element('marker',{
-      id,viewBox:'0 0 10 10',refX:8,refY:5,markerWidth:size,markerHeight:size,orient:'auto-start-reverse'
-    },defs);
-    element('path',{d:'M 0 0 L 10 5 L 0 10 z',fill:color},node);
-  }
-  marker('directions-input-arrow',colors.input,7);
-  marker('directions-output-arrow',colors.output,7);
-
-  const baseGrid=element('g',{'clip-path':'url(#directions-plot-clip)'},svg);
-  const warpGrid=element('g',{'clip-path':'url(#directions-plot-clip)','data-directions-warp-grid':''},svg);
-  const routes=element('g',{},svg);
-
-  function toScreen(point){
-    return [frame.left+(point[0]-plot.minX)*plot.scale,frame.bottom-(point[1]-plot.minY)*plot.scale];
-  }
-  function fromScreen(point){
-    return [plot.minX+(point.x-frame.left)/plot.scale,plot.minY+(frame.bottom-point.y)/plot.scale];
-  }
-  function apply(point){
-    const [a11,a12,a21,a22]=matrices[mode].values;
-    return [a11*point[0]+a12*point[1],a21*point[0]+a22*point[1]];
-  }
-  function fmt(value){
-    const clean=Math.abs(value)<1e-9?0:value;
-    return clean.toFixed(2).replace(/\.00$/,'').replace(/(\.\d)0$/,'$1');
-  }
-  function vector(point){return '('+fmt(point[0])+', '+fmt(point[1])+')';}
-
-  for(let x=Math.ceil(plot.minX);x<=plot.maxX;x++){
-    const [sx]=toScreen([x,0]);
-    element('line',{x1:sx,y1:frame.top,x2:sx,y2:frame.bottom,stroke:x===0?'#aeb8bf':'#e8edef','stroke-width':x===0?1.3:1},baseGrid);
-    if(x!==0) element('text',{x:sx,y:408,fill:'#7b8790','font-size':10,'text-anchor':'middle'},svg,x);
-  }
-  for(let y=Math.ceil(plot.minY);y<=plot.maxY;y++){
-    const [,sy]=toScreen([0,y]);
-    element('line',{x1:frame.left,y1:sy,x2:frame.right,y2:sy,stroke:y===0?'#aeb8bf':'#e8edef','stroke-width':y===0?1.3:1},baseGrid);
-    if(y!==0) element('text',{x:31,y:sy+4,fill:'#7b8790','font-size':10,'text-anchor':'end'},svg,y);
-  }
-  element('circle',{cx:toScreen([0,0])[0],cy:toScreen([0,0])[1],r:6,fill:'#26343c'},routes);
-  element('text',{x:toScreen([0,0])[0]+10,y:toScreen([0,0])[1]-10,fill:'#26343c','font-size':11,'font-weight':700},routes,'BAR');
-
-  const homeTip=toScreen(home);
-  element('line',{
-    x1:toScreen([0,0])[0],y1:toScreen([0,0])[1],x2:homeTip[0],y2:homeTip[1],
-    stroke:'#788a96','stroke-width':1.4,'stroke-dasharray':'5 5'
-  },routes);
-  const difference=element('line',{stroke:'#7f8991','stroke-width':1.5,'stroke-dasharray':'5 5'},routes);
-  const outputArrow=element('line',{stroke:colors.output,'stroke-width':5,'stroke-linecap':'round','marker-end':'url(#directions-output-arrow)'},routes);
-  const inputArrow=element('line',{stroke:colors.input,'stroke-width':3,'stroke-linecap':'round','marker-end':'url(#directions-input-arrow)'},routes);
-  const outputPoint=element('circle',{r:5.5,fill:colors.output,stroke:'#fff','stroke-width':2},routes);
-  const inputHandle=element('g',{'data-directions-handle':'',role:'button',tabindex:0,'aria-describedby':'directions-keyboard'},routes);
-  element('circle',{r:18,fill:'transparent'},inputHandle);
-  element('circle',{r:8,fill:'#fff',stroke:colors.input,'stroke-width':3,class:'directions-handle-ring'},inputHandle);
-  const inputLabel=element('text',{fill:colors.input,'font-size':12,'font-weight':700},routes,'x');
-  const outputLabel=element('text',{fill:colors.output,'font-size':12,'font-weight':700},routes,'Ax');
-  const hint=element('g',{'aria-hidden':'true'},inputHandle);
-  const hintBox=element('rect',{width:118,height:21,rx:5,fill:'rgba(255,255,255,0.96)',stroke:colors.input},hint);
-  const hintText=element('text',{fill:colors.input,'font-size':9,'font-weight':600,stroke:'none'},hint,'Drag me to the house!');
-  const house=element('g',{
-    transform:'translate('+homeTip[0]+' '+homeTip[1]+')',
-    'data-directions-home':'',
-    'pointer-events':'none',
-    'aria-hidden':'true'
-  },routes);
-  const houseCircle=element('circle',{r:17,fill:'#f5f8fa',stroke:'#536b7a','stroke-width':2},house);
-  element('path',{d:'M -10 0 L 0 -10 L 10 0',fill:'none',stroke:'#405866','stroke-width':2.2,'stroke-linecap':'round','stroke-linejoin':'round'},house);
-  element('rect',{x:-7,y:0,width:14,height:10,rx:1,fill:'#fff',stroke:'#405866','stroke-width':1.8},house);
-  element('rect',{x:-2,y:4,width:4,height:6,fill:'#a96100'},house);
-  element('text',{x:0,y:30,fill:'#405866','font-size':9,'font-weight':700,'text-anchor':'middle'},house,'HOME');
-
-  function drawWarpGrid(){
-    warpGrid.replaceChildren();
-    const style={stroke:'#65aaa4','stroke-width':1,'stroke-opacity':0.42};
-    for(let x=-5;x<=5;x++){
-      const start=toScreen(apply([x,-3]));
-      const end=toScreen(apply([x,3]));
-      element('line',{x1:start[0],y1:start[1],x2:end[0],y2:end[1],...style},warpGrid);
-    }
-    for(let y=-3;y<=3;y++){
-      const start=toScreen(apply([-5,y]));
-      const end=toScreen(apply([5,y]));
-      element('line',{x1:start[0],y1:start[1],x2:end[0],y2:end[1],...style},warpGrid);
-    }
-  }
-
-  function placeLabel(label,point,preferAbove){
-    const screen=toScreen(point);
-    const anchor=screen[0]>590?'end':'start';
-    label.setAttribute('x',screen[0]+(anchor==='end'?-10:10));
-    label.setAttribute('y',screen[1]+(preferAbove?-12:18));
-    label.setAttribute('text-anchor',anchor);
-  }
-
-  function draw(){
-    const output=apply(input);
-    drawWarpGrid();
-    const origin=toScreen([0,0]);
-    const inputTip=toScreen(input);
-    const outputTip=toScreen(output);
-    [inputArrow,outputArrow].forEach(line=>{
-      line.setAttribute('x1',origin[0]);
-      line.setAttribute('y1',origin[1]);
-    });
-    inputArrow.setAttribute('x2',inputTip[0]);
-    inputArrow.setAttribute('y2',inputTip[1]);
-    outputArrow.setAttribute('x2',outputTip[0]);
-    outputArrow.setAttribute('y2',outputTip[1]);
-    difference.setAttribute('x1',inputTip[0]);
-    difference.setAttribute('y1',inputTip[1]);
-    difference.setAttribute('x2',outputTip[0]);
-    difference.setAttribute('y2',outputTip[1]);
-    outputPoint.setAttribute('cx',outputTip[0]);
-    outputPoint.setAttribute('cy',outputTip[1]);
-    outputPoint.setAttribute('data-y1',output[0]);
-    outputPoint.setAttribute('data-y2',output[1]);
-    inputHandle.setAttribute('transform','translate('+inputTip[0]+' '+inputTip[1]+')');
-    inputHandle.setAttribute('data-x1',input[0]);
-    inputHandle.setAttribute('data-x2',input[1]);
-    inputHandle.setAttribute('aria-label','Directions x equal '+vector(input)+'. Drag to change the direction.');
-    hint.style.display=hintVisible?'':'none';
-    const hintX=inputTip[0]>340?-122:14;
-    const hintY=inputTip[1]>345?-35:16;
-    hintBox.setAttribute('x',hintX);
-    hintBox.setAttribute('y',hintY);
-    hintText.setAttribute('x',hintX+6);
-    hintText.setAttribute('y',hintY+14);
-    placeLabel(inputLabel,input,true);
-    placeLabel(outputLabel,output,false);
-
-    const homeReached=Math.hypot(input[0]-home[0],input[1]-home[1])<1e-8;
-    const distanceFromHome=Math.hypot(output[0]-home[0],output[1]-home[1]);
-    root.setAttribute('data-directions-home-reached',String(homeReached));
-    houseCircle.setAttribute('fill',homeReached?'#e7f4f2':'#f5f8fa');
-    houseCircle.setAttribute('stroke',homeReached?colors.input:'#536b7a');
-    const values=matrices[mode].values;
-    root.setAttribute('data-directions-mode',mode);
-    values.forEach((value,index)=>{cells[index].textContent=fmt(value);});
-    matrixLabel.setAttribute('aria-label','A equals the matrix with rows '+fmt(values[0])+', '+fmt(values[1])+' and '+fmt(values[2])+', '+fmt(values[3]));
-    presetButtons.forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.directionsPreset===mode)));
-    inputReadout.textContent='x = '+vector(input);
-    outputReadout.textContent='Ax = '+vector(output);
-    effectReadout.textContent=homeReached
-      ? (distanceFromHome<0.05?'arrived home':'missed by '+fmt(distanceFromHome)+' blocks')
-      : matrices[mode].effect;
-    message.textContent=homeReached
-      ? (distanceFromHome<0.05
-        ? 'Your directions point home, and this matrix lands you there.'
-        : 'Your directions point home, but this matrix warps the route away from it.')
-      : matrices[mode].message;
-  }
-
-  function localPoint(event){
-    const point=svg.createSVGPoint();
-    point.x=event.clientX;
-    point.y=event.clientY;
-    return point.matrixTransform(svg.getScreenCTM().inverse());
-  }
-  function move(next){
-    const wasHome=Math.hypot(input[0]-home[0],input[1]-home[1])<1e-8;
-    let clamped=[
-      Math.max(dragBounds.minX,Math.min(dragBounds.maxX,next[0])),
-      Math.max(dragBounds.minY,Math.min(dragBounds.maxY,next[1]))
-    ];
-    if(!wasHome&&Math.hypot(clamped[0]-home[0],clamped[1]-home[1])<0.18){
-      clamped=home.slice();
-      hintVisible=false;
-    }
-    input[0]=clamped[0];
-    input[1]=clamped[1];
-    draw();
-  }
-
-  inputHandle.addEventListener('pointerdown',event=>{
-    if(dragging||event.button!==0) return;
-    const cursor=fromScreen(localPoint(event));
-    dragging={pointerId:event.pointerId,offset:[input[0]-cursor[0],input[1]-cursor[1]]};
-    inputHandle.setPointerCapture(event.pointerId);
-    inputHandle.focus({preventScroll:true});
-    event.preventDefault();
-  });
-  svg.addEventListener('pointermove',event=>{
-    if(!dragging||dragging.pointerId!==event.pointerId) return;
-    const cursor=fromScreen(localPoint(event));
-    move([cursor[0]+dragging.offset[0],cursor[1]+dragging.offset[1]]);
-    event.preventDefault();
-  });
-  function stopDragging(event){
-    if(!dragging||dragging.pointerId!==event.pointerId) return;
-    if(inputHandle.hasPointerCapture(event.pointerId)) inputHandle.releasePointerCapture(event.pointerId);
-    dragging=null;
-    status.textContent='Directions '+vector(input)+' transform to '+vector(apply(input))+'.';
-  }
-  svg.addEventListener('pointerup',stopDragging);
-  svg.addEventListener('pointercancel',stopDragging);
-  window.addEventListener('pointerup',stopDragging);
-  inputHandle.addEventListener('keydown',event=>{
-    const step=event.shiftKey?0.5:0.1;
-    const next=input.slice();
-    if(event.key==='ArrowLeft') next[0]-=step;
-    else if(event.key==='ArrowRight') next[0]+=step;
-    else if(event.key==='ArrowDown') next[1]-=step;
-    else if(event.key==='ArrowUp') next[1]+=step;
-    else return;
-    move(next);
-    status.textContent='Directions '+vector(input)+' transform to '+vector(apply(input))+'.';
-    event.preventDefault();
-  });
-  presetButtons.forEach(button=>button.addEventListener('click',()=>{
-    mode=button.dataset.directionsPreset;
-    draw();
-    status.textContent=matrices[mode].message;
-  }));
-  reset.addEventListener('click',()=>{
-    input[0]=initial[0];
-    input[1]=initial[1];
-    hintVisible=true;
-    draw();
-  });
   draw();
 })();
 </script>
@@ -1037,9 +671,9 @@
     #matrix-rank-widget svg text{font-size:13px;}
   }
 </style>
-<div id="matrix-rank-widget" role="group" aria-labelledby="rank-title">
+<div id="matrix-rank-widget" class="matrix-figure" role="group" aria-labelledby="rank-title">
   <div class="rank-head">
-    <h4 id="rank-title">03 · Rank: two directions or one?</h4>
+    <h4 id="rank-title">Two independent directions, or one?</h4>
   </div>
   <div class="rank-panels">
     <section class="rank-panel" data-rank-panel="full" aria-labelledby="rank-full-title">
@@ -1180,9 +814,9 @@
     element('text',{x:172,y:133,fill:'#89939e','text-anchor':'end'},svg,'0');
     element('text',{x:346,y:133,fill:'#89939e','text-anchor':'end'},svg,'y₁');
     element('text',{x:189,y:34,fill:'#89939e'},svg,'y₂');
-    const first = element('line',{stroke:colors[0],'stroke-width':7,'stroke-opacity':0.4,'marker-end':'url(#rank-'+key+'-0)','data-rank-vector':'first'},svg);
-    const second = element('line',{stroke:colors[1],'stroke-width':4,'stroke-opacity':0.75,'marker-end':'url(#rank-'+key+'-1)','data-rank-vector':'second'},svg);
-    const result = element('line',{stroke:colors[2],'stroke-width':2,'marker-end':'url(#rank-'+key+'-2)','data-rank-vector':'result'},svg);
+    const first = element('line',{stroke:colors[0],'stroke-width':5,'stroke-opacity':0.45,'marker-end':'url(#rank-'+key+'-0)','data-rank-vector':'first'},svg);
+    const second = element('line',{stroke:colors[1],'stroke-width':3.5,'stroke-opacity':0.7,'marker-end':'url(#rank-'+key+'-1)','data-rank-vector':'second'},svg);
+    const result = element('line',{stroke:colors[2],'stroke-width':2.2,'marker-end':'url(#rank-'+key+'-2)','data-rank-vector':'result'},svg);
     const elbow = element('circle',{r:2.5,fill:colors[0],'data-rank-elbow':''},svg);
     // Different stroke widths keep collinear contributions visible beneath the resultant.
     columns.forEach((column,index)=>{
@@ -1205,6 +839,24 @@
     makePanel('full',[[2.5,0],[0,0.5]],2),
     makePanel('one',[[2.5,1],[0.5,0.2]],1)
   ];
+  controls.forEach((control,index)=>{
+    control.addEventListener('focus',()=>{
+      panels.forEach(panel=>{
+        [panel.first,panel.second].forEach((line,component)=>{
+          line.style.opacity=component===index?'1':'0.25';
+          panel.weights[component].style.opacity=component===index?'1':'0.4';
+        });
+      });
+    });
+    control.addEventListener('blur',()=>{
+      panels.forEach(panel=>{
+        [panel.first,panel.second].forEach((line,component)=>{
+          line.style.opacity='';
+          panel.weights[component].style.opacity='';
+        });
+      });
+    });
+  });
 
   function draw(){
     const input = controls.map(control=>Number(control.value));
@@ -1449,9 +1101,9 @@
     #rank-projection-widget .projection-actions{padding:12px;}
   }
 </style>
-<div id="rank-projection-widget" role="group" aria-labelledby="rank-projection-title">
+<div id="rank-projection-widget" class="matrix-figure" role="group" aria-labelledby="rank-projection-title">
   <div class="projection-head">
-    <h4 id="rank-projection-title">04 · A rank-one matrix forgets one direction</h4>
+    <h4 id="rank-projection-title">A rank-one matrix forgets one direction</h4>
     <span class="projection-matrix" role="img" aria-label="A equals the matrix with rows 2.5, 0.5 and 1, 0.2">
       <span aria-hidden="true"><i>A</i> =</span>
       <span class="projection-matrix-entries" aria-hidden="true"><span>2.5</span><span>0.5</span><span>1</span><span>0.2</span></span>
@@ -1556,13 +1208,13 @@
     const position=positions[index];
     const hint=element('g',{
       transform:'translate('+position.x+' '+position.y+')',
-      class:'projection-move-hint',
+      class:'projection-move-hint move-hint',
       'data-projection-move-hint':index,
       'aria-hidden':'true'
     },parent);
     element('rect',{
-      x:0,y:0,width:96,height:20,rx:5,
-      fill:'rgba(255,255,255,0.96)',stroke:colors[index],'stroke-width':1
+      x:0,y:0,width:96,height:20,rx:3,
+      fill:'rgba(255,255,255,0.96)',stroke:colors[index],'stroke-opacity':0.25,'stroke-width':1
     },hint);
     element('text',{
       x:6,y:13.5,fill:colors[index],'font-size':8.5,'font-weight':600,
@@ -1601,6 +1253,26 @@
     x1:sameOutputStart[0],y1:sameOutputStart[1],x2:sameOutputEnd[0],y2:sameOutputEnd[1],
     stroke:'#7e8791','stroke-width':1.5,'stroke-dasharray':'5 5','data-projection-same-output-line':''
   },inputSvg);
+
+  const trailLayer=element('g',{'aria-hidden':'true','pointer-events':'none'},inputSvg);
+  const trails=[[],[]];
+  const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  function recordTrail(index){
+    if(index>=2||reducedMotion.matches) return;
+    const previous=trails[index][trails[index].length-1];
+    if(previous&&Math.hypot(points[index][0]-previous[0],points[index][1]-previous[1])<0.12) return;
+    trails[index].push(points[index].slice());
+    if(trails[index].length>12) trails[index].shift();
+    trailLayer.replaceChildren();
+    trails.forEach((trail,component)=>trail.forEach((point,position)=>{
+      const [x,y]=inputScreen(point);
+      element('circle',{
+        cx:x,cy:y,r:2.5,fill:colors[component],
+        opacity:0.06+0.2*(position+1)/trail.length
+      },trailLayer);
+    }));
+  }
 
   const inputMoveHints=[];
   const inputHandles = points.map((point,index)=>{
@@ -1682,7 +1354,7 @@
       Math.max(inputPlot.min[1],Math.min(inputPlot.max[1],point[1]))
     ];
     if(Math.hypot(next[0]-points[index][0],next[1]-points[index][1])>1e-9){
-      inputMoveHints[index].style.display='none';
+      inputMoveHints[index].classList.add('is-dismissed');
     }
     points[index][0]=next[0];
     points[index][1]=next[1];
@@ -1692,7 +1364,8 @@
   function moveOnLine(index,parameter){
     const clamped=Math.max(inputPlot.min[1],Math.min(inputPlot.max[1],parameter));
     if(Math.abs(clamped-points[index][1])>1e-9){
-      inputMoveHints[index].style.display='none';
+      recordTrail(index);
+      inputMoveHints[index].classList.add('is-dismissed');
     }
     points[index]=linePoint(clamped);
     draw();
@@ -1775,7 +1448,10 @@
     initial.forEach((point,index)=>{
       points[index][0]=point[0];
       points[index][1]=point[1];
+      inputMoveHints[index].classList.remove('is-dismissed');
     });
+    trails.forEach(trail=>trail.length=0);
+    trailLayer.replaceChildren();
     draw();
     announce();
   });
@@ -2014,11 +1690,11 @@
     #eigenvector-widget .eigen-buttons button{width:auto; flex:1 1 0;}
   }
 </style>
-<div id="eigenvector-widget" role="group" aria-labelledby="eigenvector-title">
+<div id="eigenvector-widget" class="matrix-figure" role="group" aria-labelledby="eigenvector-title">
   <div class="eigen-head">
     <div class="eigen-heading">
       <span class="eigen-kicker">Find the direction the matrix preserves</span>
-      <h4 id="eigenvector-title">07 · Eigenvector direction hunt</h4>
+      <h4 id="eigenvector-title">Finding an eigenvector</h4>
     </div>
     <span class="eigen-matrix" role="img" aria-label="A equals the matrix with rows 1.2, 0.8 and 0.8, 1.2">
       <span aria-hidden="true"><i>A</i> =</span>
@@ -2080,6 +1756,8 @@
   const resetButton=root.querySelector('[data-eigen-reset]');
   const NS='http://www.w3.org/2000/svg';
   const frame={left:44,right:636,top:28,bottom:472};
+  const narrowFrame={left:108,right:572,top:18,bottom:482};
+  const narrowPlot=window.matchMedia('(max-width:480px)');
   const origin={x:340,y:250};
   const scale=72;
   const maxRadius=1.72;
@@ -2113,19 +1791,25 @@
   const grid=make('g',{'aria-hidden':'true'});
   for(let tick=-4;tick<=4;tick++){
     const x=origin.x+tick*scale;
-    if(x>=frame.left&&x<=frame.right) make('line',{x1:x,y1:frame.top,x2:x,y2:frame.bottom,stroke:'#edf1f1','stroke-width':1},grid);
+    if(x>=frame.left&&x<=frame.right){
+      make('line',{x1:x,y1:frame.top,x2:x,y2:frame.bottom,stroke:'#edf1f1','stroke-width':1},grid);
+      if(tick!==0) make('text',{x,y:origin.y+17,fill:'#82939d','font-size':10,'text-anchor':'middle'},grid,tick);
+    }
   }
   for(let tick=-3;tick<=3;tick++){
     const y=origin.y-tick*scale;
-    if(y>=frame.top&&y<=frame.bottom) make('line',{x1:frame.left,y1:y,x2:frame.right,y2:y,stroke:'#edf1f1','stroke-width':1},grid);
+    if(y>=frame.top&&y<=frame.bottom){
+      make('line',{x1:frame.left,y1:y,x2:frame.right,y2:y,stroke:'#edf1f1','stroke-width':1},grid);
+      if(tick!==0) make('text',{x:origin.x-10,y:y+4,fill:'#82939d','font-size':10,'text-anchor':'end'},grid,tick);
+    }
   }
   make('line',{x1:frame.left,y1:origin.y,x2:frame.right,y2:origin.y,stroke:'#aeb9bd','stroke-width':1.2},grid);
   make('line',{x1:origin.x,y1:frame.top,x2:origin.x,y2:frame.bottom,stroke:'#aeb9bd','stroke-width':1.2},grid);
-  make('text',{x:frame.right-3,y:origin.y-9,fill:'#758187','font-size':12,'text-anchor':'end'},grid,'x₁');
-  make('text',{x:origin.x+10,y:frame.top+14,fill:'#758187','font-size':12},grid,'x₂');
+  const xAxisLabel=make('text',{x:frame.right-3,y:origin.y-9,fill:'#758187','font-size':12,'text-anchor':'end'},grid,'x₁');
+  const yAxisLabel=make('text',{x:origin.x+10,y:frame.top+14,fill:'#758187','font-size':12},grid,'x₂');
   make('text',{x:origin.x-9,y:origin.y+17,fill:'#758187','font-size':11,'text-anchor':'end'},grid,'0');
 
-  const guides=make('g',{'aria-hidden':'true','data-eigen-guides':''});
+  const guides=make('g',{'aria-hidden':'true','data-eigen-guides':'',class:'eigen-guides'});
   const guideLines=[
     make('line',{stroke:'#7f918f','stroke-width':1.4,'stroke-dasharray':'6 7'},guides),
     make('line',{stroke:'#7f918f','stroke-width':1.4,'stroke-dasharray':'6 7'},guides)
@@ -2143,6 +1827,10 @@
     stroke:colors.input,'stroke-width':3,'stroke-linecap':'round',
     'marker-end':'url(#eigen-arrow-input)'
   });
+  const angleArc=make('path',{
+    fill:'none',stroke:'#8fa3af','stroke-width':1.4,
+    class:'eigen-angle-arc','data-eigen-angle-arc':'','aria-hidden':'true'
+  });
   const outputLabel=make('text',{fill:colors.output,'font-size':14,'font-weight':600},svg,'Ax');
   const inputLabel=make('text',{fill:colors.input,'font-size':14,'font-weight':600},svg,'x');
 
@@ -2151,12 +1839,12 @@
     'aria-label':'Move input vector x in two dimensions',
     'aria-describedby':'eigenvector-help'
   });
-  make('circle',{r:16,fill:'transparent'},handle);
+  const hitTarget=make('circle',{r:16,fill:'transparent'},handle);
   make('circle',{r:7,fill:colors.input,stroke:'#fff','stroke-width':2,class:'eigen-handle-ring'},handle);
 
-  const moveHint=make('g',{'aria-hidden':'true'});
-  make('rect',{x:0,y:0,width:112,height:25,rx:12.5,fill:'rgba(255,255,255,0.97)',stroke:colors.input,'stroke-width':1},moveHint);
-  make('text',{x:56,y:16.5,fill:colors.input,'font-size':10,'font-weight':600,'text-anchor':'middle',stroke:'none'},moveHint,'Drag x’s tip');
+  const moveHint=make('g',{'aria-hidden':'true',class:'move-hint','data-eigen-move-hint':''});
+  const hintBox=make('rect',{x:0,y:0,width:112,height:25,rx:3,fill:'rgba(255,255,255,0.97)',stroke:colors.input,'stroke-opacity':0.25,'stroke-width':1},moveHint);
+  const hintText=make('text',{x:56,y:16.5,fill:colors.input,'font-size':10,'font-weight':500,'text-anchor':'middle',stroke:'none'},moveHint,'Drag & Move Me!');
 
   function point(value){
     return {x:origin.x+value.x*scale,y:origin.y-value.y*scale};
@@ -2238,14 +1926,15 @@
   }
 
   function placeLabel(label,tip,value,side){
+    const bounds=narrowPlot.matches?narrowFrame:frame;
     const length=Math.hypot(value.x,value.y)||1;
     const ux=value.x/length;
     const uy=-value.y/length;
     const normal={x:-uy*side,y:ux*side};
     let x=tip.x+normal.x*19+ux*7;
     let y=tip.y+normal.y*19+uy*7;
-    x=Math.max(frame.left+21,Math.min(frame.right-21,x));
-    y=Math.max(frame.top+16,Math.min(frame.bottom-12,y));
+    x=Math.max(bounds.left+21,Math.min(bounds.right-21,x));
+    y=Math.max(bounds.top+16,Math.min(bounds.bottom-12,y));
     label.setAttribute('x',x);
     label.setAttribute('y',y);
     label.setAttribute('text-anchor',ux<-.2?'end':ux>.2?'start':'middle');
@@ -2260,7 +1949,7 @@
   function markMoved(){
     if(hasMoved) return;
     hasMoved=true;
-    moveHint.setAttribute('display','none');
+    moveHint.classList.add('is-dismissed');
   }
 
   function draw(shouldAnnounce){
@@ -2273,8 +1962,15 @@
     placeLabel(outputLabel,outputTip,output,-1);
 
     if(!hasMoved){
-      const hintX=Math.max(frame.left+4,Math.min(frame.right-116,inputTip.x+13));
-      const hintY=Math.max(frame.top+4,Math.min(frame.bottom-29,inputTip.y+13));
+      const bounds=narrowPlot.matches?narrowFrame:frame;
+      const hintWidth=narrowPlot.matches?160:112;
+      const hintHeight=narrowPlot.matches?30:25;
+      hintBox.setAttribute('width',hintWidth);
+      hintBox.setAttribute('height',hintHeight);
+      hintText.setAttribute('x',hintWidth/2);
+      hintText.setAttribute('y',hintHeight/2+4);
+      const hintX=Math.max(bounds.left+4,Math.min(bounds.right-hintWidth-4,inputTip.x+13));
+      const hintY=Math.max(bounds.top+4,Math.min(bounds.bottom-hintHeight-4,inputTip.y+13));
       moveHint.setAttribute('transform','translate('+hintX+' '+hintY+')');
     }
 
@@ -2283,6 +1979,14 @@
     const cosine=Math.max(-1,Math.min(1,(vector.x*output.x+vector.y*output.y)/(inputLength*outputLength)));
     const angle=Math.acos(cosine)*180/Math.PI;
     const lambda=(vector.x*output.x+vector.y*output.y)/(inputLength*inputLength);
+    const inputAngle=Math.atan2(-vector.y,vector.x);
+    const outputAngle=Math.atan2(-output.y,output.x);
+    const sweep=Math.atan2(Math.sin(outputAngle-inputAngle),Math.cos(outputAngle-inputAngle));
+    const arcRadius=34;
+    const arcStart={x:origin.x+arcRadius*Math.cos(inputAngle),y:origin.y+arcRadius*Math.sin(inputAngle)};
+    const arcEnd={x:origin.x+arcRadius*Math.cos(inputAngle+sweep),y:origin.y+arcRadius*Math.sin(inputAngle+sweep)};
+    angleArc.setAttribute('d','M'+arcStart.x+' '+arcStart.y+' A'+arcRadius+' '+arcRadius+' 0 0 '+(sweep>=0?1:0)+' '+arcEnd.x+' '+arcEnd.y);
+    angleArc.setAttribute('opacity',angle>0.5?'0.8':'0');
     const nearest=Math.min(...directions.map(direction=>directionDistance(vector,direction)));
     const found=angle<=2.25;
     const near=!found&&nearest<=10;
@@ -2298,7 +2002,7 @@
 
     let message;
     if(found){
-      message='Eigenvector direction found — the arrows align, with λ ≈ '+lambda.toFixed(2)+'.';
+      message='Approximately aligned — an eigendirection has scale λ ≈ '+lambda.toFixed(2)+'.';
     }else if(near){
       message='Almost aligned — keep nudging the teal tip along the revealed line.';
     }else{
@@ -2307,7 +2011,7 @@
     feedback.textContent=message;
     svg.setAttribute('aria-label','Interactive coordinate plane. Input x is '+coordinates(vector)+
       ', transformed A x is '+coordinates(output)+', and their misalignment is '+angle.toFixed(1)+
-      ' degrees.'+(found?' Eigenvector direction found with scale '+lambda.toFixed(2)+'.':''));
+      ' degrees.'+(found?' Approximately aligned with an eigendirection, with scale '+lambda.toFixed(2)+'.':''));
     if(shouldAnnounce) announce(message);
   }
 
@@ -2336,7 +2040,7 @@
   svg.addEventListener('pointermove',event=>{
     if(!dragging||event.pointerId!==pointerId) return;
     const next=vectorFromEvent(event);
-    if(Math.hypot(next.x-vector.x,next.y-vector.y)>0.002) markMoved();
+    if(Math.hypot(next.x-vector.x,next.y-vector.y)>1e-9) markMoved();
     vector=next;
     draw(false);
     event.preventDefault();
@@ -2361,8 +2065,9 @@
     const delta=(event.shiftKey?0.15:0.05);
     const movement={ArrowLeft:[-delta,0],ArrowRight:[delta,0],ArrowUp:[0,delta],ArrowDown:[0,-delta]}[event.key];
     if(!movement) return;
-    vector=clampVector({x:vector.x+movement[0],y:vector.y+movement[1]},vector);
-    markMoved();
+    const next=clampVector({x:vector.x+movement[0],y:vector.y+movement[1]},vector);
+    if(Math.hypot(next.x-vector.x,next.y-vector.y)>1e-9) markMoved();
+    vector=next;
     draw(true);
     event.preventDefault();
   });
@@ -2374,19 +2079,27 @@
   });
   resetButton.addEventListener('click',()=>{
     vector={x:initial.x,y:initial.y};
+    hasMoved=false;
+    moveHint.classList.remove('is-dismissed');
     hintVisible=false;
     hintButton.setAttribute('aria-pressed','false');
     hintButton.textContent='Show hint';
     draw(true);
     handle.focus();
   });
-  draw(false);
+  function resizePlot(){
+    const bounds=narrowPlot.matches?narrowFrame:frame;
+    svg.setAttribute('viewBox',narrowPlot.matches?'108 18 464 464':'0 0 680 500');
+    hitTarget.setAttribute('r',narrowPlot.matches?32:16);
+    xAxisLabel.setAttribute('x',bounds.right-10);
+    yAxisLabel.setAttribute('y',bounds.top+14);
+    draw(false);
+  }
+  narrowPlot.addEventListener('change',resizePlot);
+  resizePlot();
 })();
 </script>
 {% elsif include.widget == "determinant-diagonal" or include.widget == "determinant" %}
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   .determinant-widget{
     --bg: #ffffff;
@@ -2400,8 +2113,8 @@
     --teal-dim: #8ebfbc;
     --rose: #c43b54;
     --paper: #212931;
-    --serif-body: 'Source Serif 4', serif;
-    --mono: 'IBM Plex Mono', monospace;
+    --serif-body:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Consolas,monospace;
     margin:26px 0;
     color:var(--ink);
     font-family:var(--serif-body);
@@ -2721,11 +2434,11 @@
     #determinant-diagonal-widget button.step-btn{width:100%;}
   }
 </style>
-<div id="determinant-diagonal-widget" class="widget determinant-widget">
+<div id="determinant-diagonal-widget" class="widget determinant-widget matrix-figure">
   <div class="widget-titlewrap">
     <div class="d1-heading">
       <span class="d1-kicker">From square to rectangle</span>
-      <span class="widget-title">05 · Diagonal scaling: rectangle area \(=|a_{11}|\,|a_{22}|\)</span>
+      <span class="widget-title">Diagonal scaling: rectangle area \(=|a_{11}|\,|a_{22}|\)</span>
     </div>
     <span class="wt-sub">drag along the axes</span>
   </div>
@@ -2737,6 +2450,8 @@
         <span class="d1-key-item"><i class="d1-handle-icon"></i>drag either handle</span>
       </div>
       <canvas id="d1canvas" width="680" height="420" tabindex="0" role="application" aria-describedby="d1help d1caption" aria-label="Interactive diagonal matrix. Use left and right arrows to change a 11, and up and down arrows to change a 22."></canvas>
+      <span class="figure-canvas-hint move-hint" data-d1-hint="a" aria-hidden="true">Drag &amp; Move Me!</span>
+      <span class="figure-canvas-hint move-hint second" data-d1-hint="d" aria-hidden="true">Drag &amp; Move Me!</span>
     </div>
     <div class="readout" aria-live="polite">
       <div class="d1-metric">
@@ -2771,6 +2486,7 @@
   const orientationEl = root.querySelector('#d1orientation');
   const captionEl = root.querySelector('#d1caption');
   const resetBtn = root.querySelector('#d1reset');
+  const moveHints={a:root.querySelector('[data-d1-hint="a"]'),d:root.querySelector('[data-d1-hint="d"]')};
   const limits = {a:[-4.5,4.5], d:[-2.8,2.8]};
   const initial = {a:2.8,d:2};
   let W = Number(canvas.getAttribute('width'));
@@ -2839,19 +2555,16 @@
 
   function pill(text,x,y,color){
     ctx.save();
-    ctx.font='600 11px "IBM Plex Mono", monospace';
+    ctx.font='500 11px "Helvetica Neue", Helvetica, Arial, sans-serif';
     const width=ctx.measureText(text).width+14;
     const height=23;
     const left=Math.max(5,Math.min(W-width-5,x-width/2));
     const top=Math.max(5,Math.min(H-height-5,y-height/2));
-    ctx.shadowColor='rgba(33,41,49,0.08)';
-    ctx.shadowBlur=6;
-    ctx.shadowOffsetY=2;
     ctx.fillStyle='rgba(255,255,255,0.96)';
     roundedRect(left,top,width,height,6);
     ctx.fill();
     ctx.shadowColor='transparent';
-    ctx.strokeStyle=color;
+    ctx.strokeStyle='#e2e8ec';
     ctx.lineWidth=1;
     ctx.stroke();
     ctx.fillStyle=color;
@@ -2931,7 +2644,7 @@
     ctx.stroke();
 
     ctx.fillStyle='#69757d';
-    ctx.font='500 10px "IBM Plex Mono", monospace';
+    ctx.font='400 10px "Helvetica Neue", Helvetica, Arial, sans-serif';
     ctx.fillText('x',W-20,oy-8);
     ctx.fillText('y',ox+8,19);
 
@@ -2963,13 +2676,37 @@
     ctx.fill();
 
     arrow({x:a,y:0},'#0f766e','a₁');
-    arrow({x:0,y:d},'#a76108','a₂');
+    arrow({x:0,y:d},'#7153b8','a₂');
+    [[a,0,'a'],[0,d,'d']].forEach(([x,y,key])=>{
+      const tip=toScreen({x,y});
+      const hint=moveHints[key];
+      const hintX=key==='a'?tip[0]+14:tip[0]-hint.offsetWidth-14;
+      const hintY=key==='a'?tip[1]-34:tip[1]+14;
+      hint.style.left=Math.max(6,Math.min(W-hint.offsetWidth-6,hintX))+'px';
+      hint.style.top=canvas.offsetTop+Math.max(6,Math.min(H-hint.offsetHeight-6,hintY))+'px';
+    });
 
-    const [widthX] = toScreen({x:a/2,y:0});
-    const [,heightY] = toScreen({x:0,y:d/2});
-    pill('|a₁₁| '+fmt(Math.abs(a)),widthX,oy+(d>=0?27:-27),'#0f766e');
-    const heightLabelX=ox+(a>=0?-48:48);
-    pill('|a₂₂| '+fmt(Math.abs(d)),heightLabelX,heightY,'#a76108');
+    const [edgeX,edgeY]=toScreen({x:a,y:d});
+    const widthY=oy+(d>=0?22:-22);
+    const heightX=ox+(a>=0?-22:22);
+    ctx.save();
+    ctx.lineWidth=1;
+    ctx.strokeStyle='#93aaa9';
+    ctx.beginPath();
+    ctx.moveTo(ox,widthY); ctx.lineTo(edgeX,widthY);
+    [ox,edgeX].forEach(x=>{ctx.moveTo(x,widthY-3);ctx.lineTo(x,widthY+3);});
+    ctx.moveTo(heightX,oy); ctx.lineTo(heightX,edgeY);
+    [oy,edgeY].forEach(y=>{ctx.moveTo(heightX-3,y);ctx.lineTo(heightX+3,y);});
+    ctx.stroke();
+    ctx.font='400 11px "Helvetica Neue", Helvetica, Arial, sans-serif';
+    ctx.fillStyle='#147f7a';
+    ctx.textAlign='center';
+    ctx.fillText('|a₁₁|',(ox+edgeX)/2,widthY+(d>=0?15:-7));
+    ctx.translate(heightX+(a>=0?-9:15),(oy+edgeY)/2);
+    ctx.rotate(-Math.PI/2);
+    ctx.fillStyle='#7153b8';
+    ctx.fillText('|a₂₂|',0,0);
+    ctx.restore();
 
     const area = Math.abs(det);
     areaEl.textContent=fmt(area);
@@ -3022,8 +2759,15 @@
       return;
     }
     if(event.pointerId!==dragPointerId) return;
-    if(dragging==='a') a=Math.max(limits.a[0],Math.min(limits.a[1],point.x));
-    else d=Math.max(limits.d[0],Math.min(limits.d[1],point.y));
+    if(dragging==='a'){
+      const next=Math.max(limits.a[0],Math.min(limits.a[1],point.x));
+      if(Math.abs(next-a)>1e-9) moveHints.a.classList.add('is-dismissed');
+      a=next;
+    }else{
+      const next=Math.max(limits.d[0],Math.min(limits.d[1],point.y));
+      if(Math.abs(next-d)>1e-9) moveHints.d.classList.add('is-dismissed');
+      d=next;
+    }
     draw();
     event.preventDefault();
   });
@@ -3039,6 +2783,7 @@
   canvas.addEventListener('pointerleave',()=>canvas.classList.remove('is-hovering'));
   canvas.addEventListener('keydown',(event)=>{
     const step=event.shiftKey?0.5:0.1;
+    const previous={a,d};
     if(event.key==='ArrowLeft') a=Math.max(limits.a[0],a-step);
     else if(event.key==='ArrowRight') a=Math.min(limits.a[1],a+step);
     else if(event.key==='ArrowDown') d=Math.max(limits.d[0],d-step);
@@ -3047,12 +2792,16 @@
       a=initial.a;
       d=initial.d;
     }else return;
+    if(Math.abs(a-previous.a)>1e-9) moveHints.a.classList.add('is-dismissed');
+    if(Math.abs(d-previous.d)>1e-9) moveHints.d.classList.add('is-dismissed');
+    if(event.key==='Home') Object.values(moveHints).forEach(hint=>hint.classList.remove('is-dismissed'));
     draw();
     event.preventDefault();
   });
   resetBtn.addEventListener('click',()=>{
     a=initial.a;
     d=initial.d;
+    Object.values(moveHints).forEach(hint=>hint.classList.remove('is-dismissed'));
     draw();
   });
 
@@ -3313,11 +3062,11 @@
     #determinant-area-widget .w2-vector-pair{grid-template-columns:1fr;}
   }
 </style>
-<div id="determinant-area-widget" class="widget determinant-widget">
+<div id="determinant-area-widget" class="widget determinant-widget matrix-figure">
   <div class="widget-titlewrap">
     <div class="w2-heading">
       <span class="w2-kicker">From rectangle to parallelogram</span>
-      <span class="widget-title">06 · Deriving \(a_{11}a_{22}-a_{12}a_{21}\) by cutting up a box</span>
+      <span class="widget-title">Deriving \(a_{11}a_{22}-a_{12}a_{21}\) by cutting up a box</span>
     </div>
     <span class="wt-sub">staged · drag the arrow tips</span>
   </div>
@@ -3329,6 +3078,8 @@
         <span class="w2-key-item"><i class="w2-handle-icon"></i>drag either tip</span>
       </div>
       <canvas id="w2canvas" width="680" height="420" tabindex="0" role="application" aria-describedby="w2help w2caption" aria-label="Interactive determinant cut-up. Drag either column-vector tip."></canvas>
+      <span class="figure-canvas-hint move-hint" data-w2-hint="u" aria-hidden="true">Drag &amp; Move Me!</span>
+      <span class="figure-canvas-hint move-hint second" data-w2-hint="v" aria-hidden="true">Drag &amp; Move Me!</span>
     </div>
     <div class="w2-summary" aria-live="polite">
       <div>
@@ -3368,26 +3119,26 @@
         <p class="eq-note">Subtract the colored pieces shown above:</p>
         <div class="eq-math-stack">
           <span>\(\text{area}=(a_{11}+a_{12})(a_{21}+a_{22})\)</span>
-          <span>\(\quad-\color{#c43b54}{\left(\tfrac12a_{11}a_{21}+\tfrac12a_{11}a_{21}\right)}\)</span>
-          <span>\(\quad-\color{#147f7a}{\left(\tfrac12a_{12}a_{22}+\tfrac12a_{12}a_{22}\right)}\)</span>
-          <span>\(\quad-\color{#b66a00}{a_{12}a_{21}}-\color{#7153b8}{a_{12}a_{21}}.\)</span>
+          <span data-w2-piece="first-triangles">\(\quad-\color{#c43b54}{\left(\tfrac12a_{11}a_{21}+\tfrac12a_{11}a_{21}\right)}\)</span>
+          <span data-w2-piece="second-triangles">\(\quad-\color{#147f7a}{\left(\tfrac12a_{12}a_{22}+\tfrac12a_{12}a_{22}\right)}\)</span>
+          <span data-w2-piece="rectangles">\(\quad-\color{#b66a00}{a_{12}a_{21}}-\color{#7153b8}{a_{12}a_{21}}.\)</span>
         </div>
       </div>
       <div class="eq-step" data-w2-stage="3">
         <p class="eq-note">Expand the box, then cancel matching terms:</p>
         <div class="eq-math-stack">
           <span>\(\text{area}=(a_{11}+a_{12})(a_{21}+a_{22})\)</span>
-          <span>\(\quad-\color{#c43b54}{a_{11}a_{21}}-\color{#147f7a}{a_{12}a_{22}}\)</span>
-          <span>\(\quad-\color{#b66a00}{a_{12}a_{21}}-\color{#7153b8}{a_{12}a_{21}}\)</span>
+          <span data-w2-piece="triangles">\(\quad-\color{#c43b54}{a_{11}a_{21}}-\color{#147f7a}{a_{12}a_{22}}\)</span>
+          <span data-w2-piece="rectangles">\(\quad-\color{#b66a00}{a_{12}a_{21}}-\color{#7153b8}{a_{12}a_{21}}\)</span>
           <span>\(=a_{11}a_{21}+a_{11}a_{22}\)</span>
           <span>\(\quad+a_{12}a_{21}+a_{12}a_{22}\)</span>
-          <span>\(\quad-\color{#c43b54}{a_{11}a_{21}}-\color{#147f7a}{a_{12}a_{22}}\)</span>
-          <span>\(\quad-\color{#b66a00}{a_{12}a_{21}}-\color{#7153b8}{a_{12}a_{21}}\)</span>
+          <span data-w2-piece="triangles">\(\quad-\color{#c43b54}{a_{11}a_{21}}-\color{#147f7a}{a_{12}a_{22}}\)</span>
+          <span data-w2-piece="rectangles">\(\quad-\color{#b66a00}{a_{12}a_{21}}-\color{#7153b8}{a_{12}a_{21}}\)</span>
           <span>\(\boxed{\text{area}=a_{11}a_{22}-a_{12}a_{21}}\)</span>
         </div>
       </div>
     </aside>
-    <p id="w2help" hidden>Drag the teal or gold tip to change either column vector. Use the stage controls to reveal the bounding-box cut-up.</p>
+    <p id="w2help" hidden>Drag either column-vector tip. With the plot focused, press 1 or 2 to select a column, then use the arrow keys to move it. Hold Shift for larger steps. Use the stage controls to reveal the bounding-box cut-up, and hover over a colored piece to highlight its algebraic term.</p>
   </div>
 </div>
 <script>
@@ -3415,7 +3166,13 @@
   };
   let u = {x:2.2, y:0.6};   // (a₁₁,a₂₁)
   let v = {x:0.8, y:2.0};   // (a₁₂,a₂₂)
-  const showMoveHint = {u:true, v:true};
+  const moveHints={u:root.querySelector('[data-w2-hint="u"]'),v:root.querySelector('[data-w2-hint="v"]')};
+  const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+  let selectedColumn='u';
+  let stageProgress=1;
+  let stageAnimation=null;
+  let hoveredPiece=null;
+  let pieces=[];
   let stage = 0; // 0..3
   const stages = [
     'The two column vectors are drawn as arrows from the origin.',
@@ -3489,7 +3246,7 @@
   function drawPill(anchor,text,color,options){
     const opts=options||{};
     ctx.save();
-    ctx.font=opts.font||'600 italic 14px "Source Serif 4", Georgia, serif';
+    ctx.font=opts.font||'500 12px "Helvetica Neue", Helvetica, Arial, sans-serif';
     const width=Math.ceil(ctx.measureText(text).width)+(opts.paddingX||14);
     const height=opts.height||25;
     const box=placeBox(anchor,width,height,opts.candidates);
@@ -3510,7 +3267,7 @@
     ctx.fill();
     if(opts.border!==false){
       ctx.strokeStyle=color;
-      ctx.globalAlpha=0.34;
+      ctx.globalAlpha*=0.25;
       ctx.lineWidth=1;
       ctx.stroke();
       ctx.globalAlpha=1;
@@ -3548,24 +3305,13 @@
     });
   }
 
-  function drawMoveHint(p, color){
-    const [sx,sy] = toScreen(p);
-    drawPill([sx,sy],'drag tip',color,{
-      font:'500 10px "IBM Plex Mono", monospace',
-      height:21,
-      paddingX:12,
-      radius:10,
-      fill:'rgba(255,255,255,0.97)',
-      candidates:[[12,12],[-67,12],[12,-33],[-67,-33]]
-    });
-  }
-
-  function poly(pts, fill, stroke){
+  function poly(pts, fill, stroke, piece){
+    if(piece) pieces.push({points:pts,key:piece});
     ctx.beginPath();
     pts.forEach((p,i)=>{ const [sx,sy]=toScreen(p); i===0?ctx.moveTo(sx,sy):ctx.lineTo(sx,sy); });
     ctx.closePath();
     if(fill){ ctx.fillStyle=fill; ctx.fill(); }
-    if(stroke){ ctx.strokeStyle=stroke; ctx.lineWidth=1.5; ctx.stroke(); }
+    if(stroke){ ctx.strokeStyle=stroke; ctx.lineWidth=piece===hoveredPiece?2.8:1.5; ctx.stroke(); }
   }
 
   function axisMarker(value, axis, label, color){
@@ -3584,7 +3330,7 @@
       ? [[-18,8],[-18,-28],[6,8],[-42,8]]
       : [[-43,-10],[8,-10],[-43,8],[8,8]];
     drawPill(item.point,item.label,item.color,{
-      font:'600 italic 13px "Source Serif 4", Georgia, serif',
+      font:'500 11px "Helvetica Neue", Helvetica, Arial, sans-serif',
       height:20,
       paddingX:10,
       radius:3,
@@ -3599,6 +3345,7 @@
     ctx.fillRect(0,0,W,H);
     labelBoxes=[];
     pendingAxisLabels=[];
+    pieces=[];
     ctx.strokeStyle='rgba(33,41,49,0.12)'; ctx.lineWidth=1;
     for(let i=-1;i<=10;i++){
       const [sx]=toScreen({x:i,y:0});
@@ -3616,27 +3363,35 @@
     const orientationColor = area>=0 ? '#b66a00' : '#c43b54';
     axisMarker(a, 'x', 'a₁₁', '#147f7a');
     axisMarker(c, 'y', 'a₂₁', '#147f7a');
-    axisMarker(b, 'x', 'a₁₂', '#b66a00');
-    axisMarker(d, 'y', 'a₂₂', '#b66a00');
+    axisMarker(b, 'x', 'a₁₂', '#7153b8');
+    axisMarker(d, 'y', 'a₂₂', '#7153b8');
 
     if(stage>=1){
       // bounding box
+      ctx.save();
+      ctx.globalAlpha=stage===1?stageProgress:1;
       const minX = Math.min(0,a,b,a+b), maxX = Math.max(0,a,b,a+b);
       const minY = Math.min(0,c,d,c+d), maxY = Math.max(0,c,d,c+d);
       poly([{x:minX,y:minY},{x:maxX,y:minY},{x:maxX,y:maxY},{x:minX,y:maxY}], 'rgba(33,41,49,0.025)', 'rgba(33,41,49,0.35)');
+      ctx.restore();
     }
     if(stage>=2){
+      ctx.save();
+      ctx.globalAlpha=stage===2?stageProgress:1;
       // Two ac/2 triangles
-      poly([{x:0,y:0},{x:a,y:0},{x:a,y:c}], 'rgba(196,59,84,0.16)', '#c43b54');
-      poly([{x:b,y:d},{x:b,y:c+d},{x:a+b,y:c+d}], 'rgba(196,59,84,0.16)', '#c43b54');
+      poly([{x:0,y:0},{x:a,y:0},{x:a,y:c}], 'rgba(196,59,84,0.16)', '#c43b54','first-triangles');
+      poly([{x:b,y:d},{x:b,y:c+d},{x:a+b,y:c+d}], 'rgba(196,59,84,0.16)', '#c43b54','first-triangles');
       // Two bd/2 triangles
-      poly([{x:a,y:c},{x:a+b,y:c},{x:a+b,y:c+d}], 'rgba(20,127,122,0.14)', '#147f7a');
-      poly([{x:0,y:0},{x:0,y:d},{x:b,y:d}], 'rgba(20,127,122,0.14)', '#147f7a');
+      poly([{x:a,y:c},{x:a+b,y:c},{x:a+b,y:c+d}], 'rgba(20,127,122,0.14)', '#147f7a','second-triangles');
+      poly([{x:0,y:0},{x:0,y:d},{x:b,y:d}], 'rgba(20,127,122,0.14)', '#147f7a','second-triangles');
       // Two bc corner rectangles
-      poly([{x:a,y:0},{x:a+b,y:0},{x:a+b,y:c},{x:a,y:c}], 'rgba(182,106,0,0.12)', '#b66a00');
-      poly([{x:0,y:d},{x:b,y:d},{x:b,y:c+d},{x:0,y:c+d}], 'rgba(113,83,184,0.12)', '#7153b8');
+      poly([{x:a,y:0},{x:a+b,y:0},{x:a+b,y:c},{x:a,y:c}], 'rgba(182,106,0,0.12)', '#b66a00','rectangles');
+      poly([{x:0,y:d},{x:b,y:d},{x:b,y:c+d},{x:0,y:c+d}], 'rgba(113,83,184,0.12)', '#7153b8','rectangles');
+      ctx.restore();
     }
     // parallelogram outline always on top (dashed until final stage, solid at stage 3)
+    ctx.save();
+    ctx.globalAlpha=stage===3?stageProgress:1;
     ctx.setLineDash(stage>=3?[]:[5,4]);
     poly(
       [{x:0,y:0},{x:a,y:c},{x:a+b,y:c+d},{x:b,y:d}],
@@ -3644,41 +3399,84 @@
       orientationColor
     );
     ctx.setLineDash([]);
+    ctx.restore();
 
     drawArrow(u, '#147f7a', 'a₁');
-    drawArrow(v, '#b66a00', 'a₂');
+    drawArrow(v, '#7153b8', 'a₂');
 
     // draggable handles
     [u,v].forEach((p,i)=>{
       const [sx,sy]=toScreen(p);
       ctx.beginPath(); ctx.arc(sx,sy,7,0,Math.PI*2);
-      ctx.fillStyle = i===0?'#147f7a':'#b66a00'; ctx.fill();
+      ctx.fillStyle = i===0?'#147f7a':'#7153b8'; ctx.fill();
       ctx.strokeStyle='#ffffff'; ctx.lineWidth=2; ctx.stroke();
+      if(document.activeElement===canvas&&selectedColumn===(i===0?'u':'v')){
+        ctx.beginPath(); ctx.arc(sx,sy,12,0,Math.PI*2);
+        ctx.strokeStyle=i===0?'#147f7a':'#7153b8'; ctx.lineWidth=1; ctx.stroke();
+      }
+      const hint=moveHints[i===0?'u':'v'];
+      if(!hint.classList.contains('is-dismissed')){
+        const hintBox=placeBox([sx,sy],hint.offsetWidth,hint.offsetHeight,i===0
+          ? [[12,12],[12,-34],[-hint.offsetWidth-12,12]]
+          : [[12,-64],[-hint.offsetWidth-12,-34],[12,12]]);
+        hint.style.left=hintBox.left+'px';
+        hint.style.top=canvas.offsetTop+hintBox.top+'px';
+      }
     });
     pendingAxisLabels.forEach(drawAxisLabel);
-    if(stage===0 && W>=520 && showMoveHint.u) drawMoveHint(u, '#147f7a');
-    if(stage===0 && W>=520 && showMoveHint.v) drawMoveHint(v, '#b66a00');
 
-    stageEl.textContent='Stage '+(stage+1)+' of 4';
-    capEl.textContent=stages[stage];
-    areaEl.innerHTML = '<span class="'+(area>=0?'pos':'neg')+'">'+fmt(area)+'</span>';
-    orientationEl.textContent=Math.abs(area)<0.02
+    const stageLabel='Stage '+(stage+1)+' of 4';
+    if(stageEl.textContent!==stageLabel) stageEl.textContent=stageLabel;
+    if(capEl.textContent!==stages[stage]) capEl.textContent=stages[stage];
+    const sign=area>=0?'pos':'neg';
+    if(areaEl.textContent!==fmt(area)||!areaEl.querySelector('.'+sign)){
+      areaEl.innerHTML='<span class="'+sign+'">'+fmt(area)+'</span>';
+    }
+    const orientation=Math.abs(area)<0.02
       ? 'collapsed'
       : (area<0?'orientation flipped':'orientation preserved');
+    if(orientationEl.textContent!==orientation) orientationEl.textContent=orientation;
     canvas.setAttribute(
       'aria-label',
       'Interactive determinant cut-up. a 11 is '+fmt(a)+', a 21 is '+fmt(c)+
-      ', a 12 is '+fmt(b)+', a 22 is '+fmt(d)+', determinant is '+fmt(area)+'.'
+      ', a 12 is '+fmt(b)+', a 22 is '+fmt(d)+', determinant is '+fmt(area)+
+      '. Selected column '+(selectedColumn==='u'?'1':'2')+'. Press 1 or 2 to select a column, then use the arrow keys to move it.'
     );
-    equationSteps.forEach(step => step.classList.toggle('is-revealed', Number(step.dataset.w2Stage) <= stage));
+    equationSteps.forEach(step=>{
+      step.classList.toggle('is-revealed',Number(step.dataset.w2Stage)<=stage);
+      step.classList.toggle('is-current',Number(step.dataset.w2Stage)===stage);
+    });
+    root.querySelectorAll('[data-w2-piece]').forEach(term=>{
+      const key=term.dataset.w2Piece;
+      term.classList.toggle('is-emphasized',key===hoveredPiece||(key==='triangles'&&hoveredPiece?.endsWith('triangles')));
+    });
     backBtn.disabled = stage===0;
     nextBtn.disabled = stage===3;
     nextBtn.textContent = stage===3 ? 'Derivation complete' : nextLabels[stage];
   }
 
-  nextBtn.addEventListener('click', ()=>{ if(stage<3){stage++; draw();} });
-  backBtn.addEventListener('click', ()=>{ if(stage>0){stage--; draw();} });
-  resetBtn.addEventListener('click', ()=>{ stage=0; draw(); });
+  function changeStage(next){
+    if(stageAnimation!==null) cancelAnimationFrame(stageAnimation);
+    stageAnimation=null;
+    const forward=next>stage;
+    stage=next;
+    hoveredPiece=null;
+    stageProgress=forward&&!reducedMotion.matches?0:1;
+    draw();
+    if(stageProgress===1) return;
+    const started=performance.now();
+    function animate(now){
+      stageProgress=Math.min(1,(now-started)/240);
+      draw();
+      stageAnimation=stageProgress<1?requestAnimationFrame(animate):null;
+    }
+    stageAnimation=requestAnimationFrame(animate);
+  }
+  nextBtn.addEventListener('click',()=>{if(stage<3) changeStage(stage+1);});
+  backBtn.addEventListener('click',()=>{if(stage>0) changeStage(stage-1);});
+  resetBtn.addEventListener('click',()=>{
+    changeStage(0);
+  });
 
   // dragging
   let dragging = null, dragPointerId = null;
@@ -3688,6 +3486,32 @@
     const cyp = evt.clientY - r.top;
     return { x:(cxp*(W/r.width) - ox)/scale, y:(oy - cyp*(H/r.height))/scale };
   }
+  function moveColumn(key,point){
+    const current=key==='u'?u:v;
+    const other=key==='u'?v:u;
+    const minX=Math.max(dragBounds.minX,gridCoordinates.minX-other.x);
+    const maxX=Math.min(dragBounds.maxX,gridCoordinates.maxX-other.x);
+    const minY=Math.max(dragBounds.minY,gridCoordinates.minY-other.y);
+    const maxY=Math.min(dragBounds.maxY,gridCoordinates.maxY-other.y);
+    const next={
+      x:Math.max(minX,Math.min(maxX,point.x)),
+      y:Math.max(minY,Math.min(maxY,point.y))
+    };
+    if(Math.hypot(next.x-current.x,next.y-current.y)>1e-9){
+      moveHints[key].classList.add('is-dismissed');
+    }
+    if(key==='u') u=next; else v=next;
+    hoveredPiece=null;
+    draw();
+  }
+  function contains(point,polygon){
+    let inside=false;
+    for(let i=0,j=polygon.length-1;i<polygon.length;j=i++){
+      const a=polygon[i],b=polygon[j];
+      if((a.y>point.y)!==(b.y>point.y)&&point.x<(b.x-a.x)*(point.y-a.y)/(b.y-a.y)+a.x) inside=!inside;
+    }
+    return inside;
+  }
   canvas.addEventListener('pointerdown', (e)=>{
     if(dragging) return;
     const m = pos(e);
@@ -3695,31 +3519,21 @@
     if(du<0.4 && du<dv) dragging='u'; else if(dv<0.4) dragging='v';
     if(!dragging) return;
     dragPointerId = e.pointerId;
+    selectedColumn=dragging;
+    canvas.focus({preventScroll:true});
     canvas.setPointerCapture(e.pointerId);
     canvas.classList.add('is-dragging');
     e.preventDefault();
   });
   canvas.addEventListener('pointermove',(e)=>{
-    if(!dragging || e.pointerId!==dragPointerId) return;
     const m = pos(e);
-    const other = dragging==='u' ? v : u;
-    const minX = Math.max(dragBounds.minX, gridCoordinates.minX-other.x);
-    const maxX = Math.min(dragBounds.maxX, gridCoordinates.maxX-other.x);
-    const minY = Math.max(dragBounds.minY, gridCoordinates.minY-other.y);
-    const maxY = Math.min(dragBounds.maxY, gridCoordinates.maxY-other.y);
-    const next = {
-      x:Math.max(minX,Math.min(maxX,m.x)),
-      y:Math.max(minY,Math.min(maxY,m.y))
-    };
-    if(dragging==='u') {
-      u = next;
-      showMoveHint.u = false;
+    if(!dragging){
+      const piece=pieces.find(piece=>contains(m,piece.points))?.key||null;
+      if(piece!==hoveredPiece){hoveredPiece=piece;draw();}
+      return;
     }
-    else {
-      v = next;
-      showMoveHint.v = false;
-    }
-    draw();
+    if(e.pointerId!==dragPointerId) return;
+    moveColumn(dragging,m);
     e.preventDefault();
   });
   function stopDragging(e){
@@ -3731,12 +3545,84 @@
   canvas.addEventListener('pointerup', stopDragging);
   canvas.addEventListener('pointercancel', stopDragging);
   canvas.addEventListener('lostpointercapture', stopDragging);
+  canvas.addEventListener('pointerleave',()=>{hoveredPiece=null;draw();});
+  canvas.addEventListener('focus',draw);
+  canvas.addEventListener('blur',draw);
+  canvas.addEventListener('keydown',event=>{
+    if(event.key==='1'||event.key==='2'){
+      selectedColumn=event.key==='1'?'u':'v';
+      draw();
+    }else{
+      const step=event.shiftKey?0.5:0.1;
+      const movement={ArrowLeft:[-step,0],ArrowRight:[step,0],ArrowUp:[0,step],ArrowDown:[0,-step]}[event.key];
+      if(!movement) return;
+      const current=selectedColumn==='u'?u:v;
+      moveColumn(selectedColumn,{x:current.x+movement[0],y:current.y+movement[1]});
+    }
+    event.preventDefault();
+  });
 
   resizeCanvas();
   draw();
   window.addEventListener('resize', ()=>{ if(resizeCanvas()) draw(); });
+  if(window.ResizeObserver){
+    new ResizeObserver(()=>{if(resizeCanvas()) draw();}).observe(canvas);
+  }
   if(document.fonts) document.fonts.ready.then(()=>{ resizeCanvas(); draw(); });
 })();
 </script>
+{% endif %}
+{% elsif include.widget == "einstein-solution" %}
+{% if include.action == "open" %}
+{% if include.example == "trace" %}
+<style>
+  .einstein-solution{
+    margin:18px 0 30px;
+    overflow:hidden;
+    color:#243340;
+    background:#f9fbfc;
+    border:1px solid #e2e8ec;
+    border-radius:8px;
+  }
+  .einstein-solution > summary{
+    padding:14px 18px;
+    color:#147f7a;
+    cursor:pointer;
+    font:500 13px/1.5 "Helvetica Neue",Helvetica,Arial,sans-serif;
+  }
+  .einstein-solution > summary:hover{background:#edf7f4;}
+  .einstein-solution > summary:focus-visible{
+    outline:2px solid #147f7a;
+    outline-offset:-3px;
+  }
+  .einstein-solution[open] > summary{border-bottom:1px solid #e2e8ec;}
+  .einstein-solution-body{
+    padding:6px 18px 18px;
+    min-width:0;
+    animation:einstein-solution-reveal 180ms ease-out;
+  }
+  .einstein-solution-body p{text-align:left;}
+  .einstein-solution-body mjx-container[display="true"]{
+    min-width:0 !important;
+    max-width:100%;
+    overflow-x:auto;
+    overflow-y:hidden;
+    padding:4px 0;
+  }
+  @keyframes einstein-solution-reveal{
+    from{opacity:0; transform:translateY(3px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .einstein-solution-body{animation:none;}
+  }
+</style>
+{% endif %}
+<details class="einstein-solution" id="einstein-solution-{{ include.example }}" markdown="1">
+<summary markdown="0">Show derivation</summary>
+<div class="einstein-solution-body" markdown="1">
+{% else %}
+</div>
+</details>
 {% endif %}
 {% endif %}
