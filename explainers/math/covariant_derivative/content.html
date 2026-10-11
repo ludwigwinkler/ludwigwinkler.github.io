@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Covariant Derivative — differentiate, then project</title>
+<script>
+window.MathJax = { tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+                   chtml: { scale: 1.02 },
+                   output: { font: 'mathjax-stix2' } };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js" async></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,340;9..144,560;9..144,640&family=Spectral:ital,wght@0,300;0,400;0,500;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root{
+  --ink:#0d1120;
+  --panel:#131a2e;
+  --panel2:#182038;
+  --line:#28304f;
+  --line2:#3a4368;
+  --paper:#e9e3d3;
+  --dim:#a09a8b;
+  --faint:#6a6f85;
+  --brass:#cfa35a;
+  --brass-dim:#8f7443;
+  --teal:#6fd0c5;
+  --rose:#e07a75;
+}
+
+*{ box-sizing:border-box; margin:0; padding:0; }
+
+html{ scroll-behavior:smooth; }
+
+body{
+  background:var(--ink);
+  background-image:
+    radial-gradient(rgba(233,227,211,0.045) 1px, transparent 1.4px),
+    radial-gradient(rgba(233,227,211,0.028) 1px, transparent 1.4px);
+  background-size: 42px 42px, 67px 67px;
+  background-position: 0 0, 21px 34px;
+  color:var(--paper);
+  font-family:'Spectral', Georgia, serif;
+  font-weight:300;
+  font-size:17.5px;
+  line-height:1.72;
+}
+
+.wrap{ max-width:760px; margin:0 auto; padding:0 22px 120px; }
+
+/* ---------- header ---------- */
+header{ padding:84px 0 8px; text-align:left; }
+.eyebrow{
+  font-family:'JetBrains Mono', monospace; font-size:11.5px; letter-spacing:0.28em;
+  color:var(--brass); text-transform:uppercase; margin-bottom:22px;
+}
+.eyebrow::before{ content:"✦ "; color:var(--brass-dim); }
+h1{
+  font-family:'Fraunces', serif; font-weight:340; font-size:clamp(38px, 6vw, 56px);
+  line-height:1.08; letter-spacing:-0.01em; margin-bottom:18px;
+}
+h1 em{ font-style:italic; color:var(--brass); }
+.promise{ font-size:19px; color:var(--dim); font-style:italic; max-width:620px; }
+
+/* ---------- kernel ---------- */
+.kernel{
+  margin:56px 0 12px; padding:30px 34px;
+  border:1px solid var(--line2);
+  box-shadow: 0 0 0 5px var(--panel), 0 0 0 6px var(--line);
+  background:linear-gradient(160deg, var(--panel2), var(--panel));
+  position:relative;
+}
+.kernel .k-tag{
+  position:absolute; top:-11px; left:26px; background:var(--ink);
+  padding:0 12px; font-family:'JetBrains Mono',monospace; font-size:11px;
+  letter-spacing:0.24em; color:var(--brass); text-transform:uppercase;
+}
+.kernel p{ font-size:19.5px; line-height:1.65; }
+.kernel p + p{ margin-top:14px; font-size:17px; color:var(--dim); }
+
+/* ---------- sections ---------- */
+section{ margin-top:88px; }
+.stepnum{
+  font-family:'JetBrains Mono', monospace; font-size:11.5px; letter-spacing:0.26em;
+  color:var(--brass); text-transform:uppercase; margin-bottom:12px;
+}
+.stepnum::after{ content:""; display:inline-block; width:110px; height:1px;
+  background:linear-gradient(90deg, var(--brass-dim), transparent);
+  vertical-align:middle; margin-left:14px; }
+h2{
+  font-family:'Fraunces', serif; font-weight:560; font-size:30px; line-height:1.22;
+  margin-bottom:20px; letter-spacing:-0.005em;
+}
+p + p{ margin-top:16px; }
+section p{ max-width:700px; }
+strong{ font-weight:500; color:#f4efe1; }
+em{ color:#ded7c4; }
+
+/* ---------- plates (widgets) ---------- */
+.plate{
+  margin:36px 0 10px;
+  border:1px solid var(--line2);
+  box-shadow: 0 0 0 5px var(--panel), 0 0 0 6px var(--line);
+  background:var(--panel);
+}
+.plate-head{
+  display:flex; align-items:baseline; gap:14px; flex-wrap:wrap;
+  padding:14px 18px 12px; border-bottom:1px solid var(--line);
+}
+.plate-no{
+  font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:0.22em;
+  color:var(--brass); text-transform:uppercase;
+}
+.plate-title{
+  font-family:'Fraunces',serif; font-size:18.5px; font-weight:560; color:var(--paper);
+}
+.plate-sub{
+  margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:10.5px;
+  letter-spacing:0.14em; color:var(--faint); text-transform:lowercase;
+  border:1px solid var(--line2); padding:3px 9px; border-radius:99px;
+}
+.plate canvas{ display:block; width:100%; height:auto; cursor:grab; }
+.plate canvas:active{ cursor:grabbing; }
+.plate canvas:focus-visible{ outline:2px solid var(--brass); outline-offset:-3px; }
+.plate-controls{
+  display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  padding:12px 18px; border-top:1px solid var(--line);
+  font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--dim);
+}
+.plate-caption{
+  padding:12px 18px 14px; border-top:1px dashed var(--line);
+  font-size:15px; font-style:italic; color:var(--dim); line-height:1.55;
+}
+.plate-caption b{ color:var(--teal); font-weight:500; font-style:normal; }
+.plate-readout{
+  padding:10px 18px; border-top:1px solid var(--line);
+  font-family:'JetBrains Mono',monospace; font-size:12.5px; line-height:1.9;
+  color:var(--dim); background:rgba(0,0,0,0.18); white-space:pre-wrap;
+}
+.plate-readout .hot{ color:var(--teal); }
+.plate-readout .warm{ color:var(--brass); }
+
+button{
+  font-family:'JetBrains Mono',monospace; font-size:12px; letter-spacing:0.04em;
+  background:var(--panel2); color:var(--paper); border:1px solid var(--line2);
+  padding:7px 14px; cursor:pointer; transition:border-color .15s, color .15s;
+}
+button:hover{ border-color:var(--brass); color:var(--brass); }
+button:disabled{ opacity:0.35; cursor:default; }
+button:disabled:hover{ border-color:var(--line2); color:var(--paper); }
+button.primary{ border-color:var(--brass-dim); color:var(--brass); }
+button:focus-visible{ outline:2px solid var(--brass); outline-offset:2px; }
+
+input[type=range]{ accent-color:var(--brass); width:150px; vertical-align:middle; }
+label.ctl{ display:inline-flex; align-items:center; gap:8px; }
+output{
+  min-width:42px; color:var(--teal); text-align:right;
+  font-variant-numeric:tabular-nums;
+}
+.seg{ display:inline-flex; border:1px solid var(--line2); }
+.seg button{ border:none; border-right:1px solid var(--line2); }
+.seg button:last-child{ border-right:none; }
+.seg button.on{ background:var(--brass-dim); color:var(--ink); }
+
+/* ---------- formal blocks ---------- */
+details.formal{
+  margin:26px 0 0; border-left:2px solid var(--brass-dim);
+  background:rgba(207,163,90,0.05); padding:14px 20px;
+}
+details.formal summary{
+  cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:12px;
+  letter-spacing:0.18em; text-transform:uppercase; color:var(--brass);
+  list-style:none;
+}
+details.formal summary::before{ content:"▸ "; }
+details.formal[open] summary::before{ content:"▾ "; }
+details.formal > div{ margin-top:14px; font-size:16px; color:#d8d2c1; }
+details.formal p{ margin-top:12px; }
+
+.gamma-explainer{
+  margin:30px 0; padding:26px 28px;
+  border:1px solid var(--line2);
+  background:linear-gradient(145deg, rgba(207,163,90,0.09), rgba(111,208,197,0.04));
+}
+.gamma-explainer h3, .derivation-block h3{
+  font-family:'Fraunces',serif; font-size:23px; font-weight:560;
+  line-height:1.25; margin-bottom:12px;
+}
+.gamma-kicker{
+  margin-bottom:8px; color:var(--brass);
+  font-family:'JetBrains Mono',monospace; font-size:10.5px;
+  letter-spacing:0.2em; text-transform:uppercase;
+}
+.gamma-index{
+  display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:20px 0;
+}
+.gamma-index > div{
+  min-height:112px; padding:14px;
+  border:1px solid var(--line); background:rgba(13,17,32,0.42);
+}
+.gamma-index .symbol{
+  display:block; margin-bottom:6px; color:var(--teal);
+  font-family:'Fraunces',serif; font-size:24px;
+}
+.gamma-index p{ font-size:14.5px; line-height:1.45; color:var(--dim); }
+.derivation-block{ margin:34px 0 10px; }
+.derive-step{
+  margin:18px 0; padding-left:18px; border-left:2px solid var(--line2);
+}
+.derive-step strong{ color:var(--brass); }
+@media (max-width:620px){ .gamma-index{ grid-template-columns:1fr; } }
+
+details.bonus{
+  margin-top:24px; border:1px solid var(--line2); background:var(--panel);
+}
+details.bonus > summary{
+  cursor:pointer; padding:18px 20px; color:var(--brass);
+  font-family:'JetBrains Mono',monospace; font-size:12px;
+  letter-spacing:0.14em; text-transform:uppercase;
+}
+details.bonus > summary::before{ content:"▸ "; }
+details.bonus[open] > summary::before{ content:"▾ "; }
+.bonus-body{ padding:4px 20px 24px; }
+
+/* ---------- recap / outro ---------- */
+.recap{
+  margin-top:96px; padding:32px 34px;
+  border:1px solid var(--line2);
+  box-shadow: 0 0 0 5px var(--panel), 0 0 0 6px var(--line);
+  background:linear-gradient(200deg, var(--panel2), var(--panel));
+}
+.recap h2{ margin-bottom:16px; }
+ul{ margin:14px 0 0 22px; }
+li{ margin-top:10px; max-width:660px; }
+li::marker{ color:var(--brass); }
+
+.mono{ font-family:'JetBrains Mono',monospace; font-size:0.86em; color:var(--teal); }
+
+@media (prefers-reduced-motion: reduce){ html{ scroll-behavior:auto; } }
+@media (max-width:560px){
+  body{ font-size:16.5px; }
+  .plate-sub{ margin-left:0; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="eyebrow">A field guide to differentiating on curved ground</div>
+  <h1>The Covariant Derivative,<br><em>demonstrated on a sphere</em></h1>
+  <p class="promise">By the end you will see the sphere’s covariant derivative, Christoffel symbols, and parallel transport as three views of one two-word act — with one-forms as an optional extension.</p>
+</header>
+
+<div class="kernel">
+  <div class="k-tag">The whole idea</div>
+  <p>For the sphere’s canonical, length-preserving derivative: <strong>differentiate a tangent vector field in the surrounding space, then delete the part of the result that sticks out of the surface.</strong> This Levi-Civita covariant derivative is “differentiate, then project.”</p>
+  <p>The \(\Gamma\)-symbols and transport equation are intrinsic bookkeeping for that deletion, written in coordinates that live on the surface and cannot see the outside. More general connections exist; this page builds the canonical one selected by the sphere’s metric.</p>
+</div>
+
+<!-- ================= STEP 1 ================= -->
+<section id="step1">
+  <div class="stepnum">Step 1 · The problem</div>
+  <h2>Every point owns a different plane of arrows</h2>
+  <p>A derivative along a curve \(\gamma(t)\) tries to compare \(V(\gamma(t+\varepsilon))\) with \(V(\gamma(t))\) as \(\varepsilon\to0\). For a scalar function this is innocent — two numbers, subtract. For a <em>vector field on a sphere</em> it is quietly illegal: \(V(p)\) lives in the tangent plane at \(p\), and \(V(q)\) lives in the tangent plane at \(q\). These are two <strong>different two-dimensional vector spaces</strong>, tilted against each other in \(\mathbb{R}^3\). There is no God-given way to subtract an arrow in one from an arrow in the other.</p>
+  <p>The tempting cheat is to subtract <em>components</em>: write both vectors in local coordinates and difference the numbers. The plate below shows why that fails. Take the arrow at \(P\), copy its components \((V^\theta, V^\varphi)\) to \(Q\), and look at what you get: a genuinely different arrow pointing a genuinely different way. Component-subtraction silently assumes an identification between the two planes — and the choice of that identification <em>is the missing structure</em>. Supplying it, consistently, is exactly what a <strong>connection</strong> does. The covariant derivative is the derivative you get once it’s supplied.</p>
+
+  <div class="plate" id="plate1">
+    <div class="plate-head">
+      <span class="plate-no">Plate I</span>
+      <span class="plate-title">Two tangent planes, one sphere</span>
+      <span class="plate-sub">drag the point · drag empty space to rotate</span>
+    </div>
+    <canvas id="cv1" width="680" height="430" tabindex="0" role="img" aria-label="Two tangent planes on a sphere. Drag the gold point with a pointer, or focus this graphic and use the arrow keys to move it.">Interactive comparison of tangent planes at two points on a sphere.</canvas>
+    <div class="plate-controls">
+      <button id="w1toggle" class="primary">Copy P’s components to Q</button>
+      <span id="w1hint">arrow at P: (V<sup>θ</sup>, V<sup>φ</sup>) = (0.80, 0.55)</span>
+    </div>
+    <div class="plate-readout" id="w1read"></div>
+    <div class="plate-caption">Drag the gold point <b>P</b> anywhere. Its tangent plane tilts with it — the plane at <b>Q</b> does not follow. Press the button: the <i>same component numbers</i> at Q produce a different arrow. Subtracting components compares apples in one basis to oranges in another.</div>
+  </div>
+</section>
+
+<!-- ================= STEP 2 ================= -->
+<section id="step2">
+  <div class="stepnum">Step 2 · The kernel</div>
+  <h2>Differentiate, then project</h2>
+  <p>The sphere has one great advantage: it sits inside \(\mathbb{R}^3\), where differentiation is unproblematic. So differentiate there. Take a vector field along a curve — say the field \(\hat e_\varphi\), “always point due east,” along a circle of latitude — and compute the honest ambient derivative \(\frac{dV}{dt}\in\mathbb{R}^3\). The result generally <em>pokes out of the surface</em>.</p>
+  <p>Now notice the poking-out part isn’t the field’s fault. It’s the <em>surface’s</em> fault — the sphere curves away underneath you, so even a field doing its best to stay constant gets dragged. That component carries no information about how the field changes <em>within</em> the sphere’s own world. So delete it:</p>
+  <p style="text-align:center; font-size:19px;">\[ \nabla_X V \;=\; \underbrace{P_{\text{tangent}}}_{\text{project}}\big(\underbrace{D_X V}_{\text{ordinary derivative}}\big) \]</p>
+  <p>That’s the sphere’s Levi-Civita covariant derivative. For the eastward field at polar angle \(\theta\) you can watch the split happen below: the ambient derivative \(\partial_\varphi \hat e_\varphi\) decomposes as \(-\sin\theta\,\hat r \;-\;\cos\theta\,\hat e_\theta\). The \(\hat r\) piece is normal — deleted. What survives is \(\nabla_{\partial_\varphi}\hat e_\varphi=-\cos\theta\,\hat e_\theta\): “due east” rotates poleward at rate \(\cos\theta\) per radian of longitude. Per unit distance, the direction is \(\hat e_\varphi=(\sin\theta)^{-1}\partial_\varphi\), so \(\nabla_{\hat e_\varphi}\hat e_\varphi=-\cot\theta\,\hat e_\theta\).</p>
+
+  <div class="plate" id="plate2">
+    <div class="plate-head">
+      <span class="plate-no">Plate II</span>
+      <span class="plate-title">Splitting the ambient derivative of “due east”</span>
+      <span class="plate-sub">staged · sliders live · drag to rotate</span>
+    </div>
+    <canvas id="cv2" width="680" height="430" role="img" aria-label="Staged decomposition of the ambient derivative into normal and tangent parts on a sphere.">Interactive projection of an ambient derivative onto a sphere.</canvas>
+    <div class="plate-controls">
+      <button id="w2back">◂ Back</button>
+      <button id="w2next" class="primary">Show the field ▸</button>
+      <label class="ctl">longitude φ <input type="range" id="w2phi" min="0" max="6.283" step="0.01" value="0.9"><output id="w2phiout" for="w2phi">52°</output></label>
+      <label class="ctl">colatitude θ <input type="range" id="w2th" min="0.35" max="1.35" step="0.01" value="0.96"><output id="w2thout" for="w2th">55°</output></label>
+    </div>
+    <div class="plate-readout" id="w2read"></div>
+    <div class="plate-caption" id="w2cap">Press <b>Show the field ▸</b> to begin the build-up.</div>
+  </div>
+
+  <details class="formal">
+    <summary>The formal version — this is the Levi-Civita connection</summary>
+    <div>
+      <p>For a surface \(S\subset\mathbb{R}^3\) with tangent projection \(P_p:\mathbb{R}^3\to T_pS\), define \(\nabla_X Y := P\,(D_X Y)\) where \(D\) is the flat directional derivative of any smooth extension. One checks: \(\nabla\) is \(\mathbb{R}\)-bilinear, tensorial in \(X\), satisfies the Leibniz rule \(\nabla_X(fY)=(Xf)Y+f\nabla_XY\), is <em>metric-compatible</em> \(\big(X\langle Y,Z\rangle = \langle\nabla_XY,Z\rangle+\langle Y,\nabla_XZ\rangle\), because projection is self-adjoint and the discarded part is orthogonal to all tangents\(\big)\), and is <em>torsion-free</em> \((\nabla_XY-\nabla_YX=[X,Y])\). By the fundamental theorem of Riemannian geometry those two properties pin the connection down uniquely — so “differentiate, then project” isn’t <em>a</em> choice of connection, it is <em>the</em> canonical one, and the intrinsic formula in Step 3 recovers it with no reference to the embedding.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ================= STEP 3 ================= -->
+<section id="step3">
+  <div class="stepnum">Step 3 · In coordinates</div>
+  <h2>Christoffel symbols: the ledger of a turning basis</h2>
+  <p>Now go intrinsic. On the sphere use \((\theta,\varphi)\) and the coordinate basis \(e_\theta=\partial_\theta\mathbf r\), \(e_\varphi=\partial_\varphi\mathbf r\). Watch the notation change: Step 2 used the <em>unit</em> east arrow \(\hat e_\varphi\), whereas the coordinate arrow is \(e_\varphi=\sin\theta\,\hat e_\varphi\). It shrinks near the pole because one radian of longitude covers less distance there. Write \(V=V^k e_k\) and differentiate with the product rule:</p>
+  <p style="text-align:center;">\[ \partial_i V \;=\; (\partial_i V^k)\,e_k \;+\; V^k\,\partial_i e_k. \]</p>
+  <p>The first term is what a naive component-derivative sees. The second is what it misses: <strong>the basis arrows themselves swing around as you move</strong>. On a sphere, “the \(e_\varphi\) direction” at one longitude is not “the \(e_\varphi\) direction” at the next. Project that basis-swing onto the surface and record its tangential components — those recorded numbers are the Christoffel symbols:</p>
+  <p style="text-align:center;">\[ P\big(\partial_i e_j\big) \;=\; \Gamma^k_{\;ij}\, e_k \qquad\Longrightarrow\qquad \nabla_i V^k \;=\; \partial_i V^k \;+\; \Gamma^k_{\;ij} V^j . \]</p>
+
+  <div class="gamma-explainer">
+    <div class="gamma-kicker">Read Γ literally</div>
+    <h3>One symbol answers three questions</h3>
+    <p>A Christoffel symbol is not an extra force or a piece of curvature by itself. It is one coefficient in the expansion
+    \[ \nabla_{e_i}e_j=\Gamma^k_{\;ij}e_k. \]
+    In words: move in coordinate direction \(i\), watch basis arrow \(j\), and record how much of its tangential change points along basis direction \(k\). Repeated \(k\) is summed, so the full change is assembled from all output directions.</p>
+    <div class="gamma-index">
+      <div>
+        <span class="symbol">\(i\)</span>
+        <p><strong>Where do you move?</strong><br>The first lower index selects the direction of differentiation.</p>
+      </div>
+      <div>
+        <span class="symbol">\(j\)</span>
+        <p><strong>What do you watch?</strong><br>The second lower index selects the basis vector being differentiated.</p>
+      </div>
+      <div>
+        <span class="symbol">\(k\)</span>
+        <p><strong>Where does the change point?</strong><br>The upper index selects one component of the resulting tangent vector.</p>
+      </div>
+    </div>
+    <p>For example, \(\Gamma^\theta_{\;\varphi\varphi}\) asks: <em>move east in the \(\varphi\) direction; watch the east-pointing coordinate arrow \(e_\varphi\); how much does its change point south along \(e_\theta\)?</em> On the unit sphere the answer is \(-\sin\theta\cos\theta\).</p>
+  </div>
+
+  <div class="derivation-block">
+    <h3>Derivation 1: measure the moving basis directly</h3>
+    <div class="derive-step">
+      <p><strong>1. Nudge the coordinate.</strong> Replace \(x^i\) by \(x^i+\delta\) and compare the same basis field \(e_j\) at the two nearby points in the surrounding space:
+      \[
+      \frac{e_j(x^1,\ldots,x^i+\delta,\ldots)-e_j(x^1,\ldots,x^i,\ldots)}{\delta}
+      \;\longrightarrow\; \partial_i e_j.
+      \]</p>
+    </div>
+    <div class="derive-step">
+      <p><strong>2. Remove the normal change.</strong> Only the tangent part describes change within the surface:
+      \[
+      P_{\mathrm{tangent}}(\partial_i e_j)=\nabla_{e_i}e_j.
+      \]</p>
+    </div>
+    <div class="derive-step">
+      <p><strong>3. Expand what remains.</strong> Every tangent vector is a combination of the local basis arrows, so there must be coefficients \(\Gamma^k_{\;ij}\) satisfying
+      \[
+      P_{\mathrm{tangent}}(\partial_i e_j)=\Gamma^k_{\;ij}e_k.
+      \]
+      Those coefficients are the Christoffel symbols. Because a coordinate basis need not be orthonormal, extracting them uses the inverse metric:
+      \[
+      \boxed{\Gamma^k_{\;ij}=g^{k\ell}\left\langle\partial_i e_j,e_\ell\right\rangle}.
+      \]</p>
+    </div>
+  </div>
+
+  <div class="derivation-block">
+    <h3>Derivation 2: recover Γ from distances alone</h3>
+    <p>The metric entries \(g_{j\ell}=\langle e_j,e_\ell\rangle\) record the lengths and mutual angles of the coordinate basis. Differentiate one entry:</p>
+    <p style="text-align:center;">
+    \[
+    \partial_i g_{j\ell}
+    =\left\langle\nabla_i e_j,e_\ell\right\rangle
+    +\left\langle e_j,\nabla_i e_\ell\right\rangle.
+    \]</p>
+    <p>Write this equation again with \(i,j,\ell\) cyclically exchanged. Add the first two versions and subtract the third. Metric compatibility preserves the inner products, while torsion-freeness gives \(\nabla_i e_j=\nabla_j e_i\) for a coordinate basis. The unwanted terms cancel:</p>
+    <p style="text-align:center;">
+    \[
+    2\left\langle\nabla_i e_j,e_\ell\right\rangle
+    =\partial_i g_{j\ell}+\partial_j g_{i\ell}-\partial_\ell g_{ij}.
+    \]</p>
+    <p>Multiplying by \(g^{k\ell}\) raises the remaining index and isolates the coefficient:</p>
+    <p style="text-align:center; font-size:18px;">
+    \[
+    \boxed{\Gamma^k_{\;ij}
+    =\frac12 g^{k\ell}
+    \left(\partial_i g_{j\ell}+\partial_j g_{i\ell}-\partial_\ell g_{ij}\right)}.
+    \]</p>
+    <p>For the unit sphere, \(g_{\theta\theta}=1\), \(g_{\varphi\varphi}=\sin^2\theta\), and \(g^{\varphi\varphi}=1/\sin^2\theta\). Therefore</p>
+    <p style="text-align:center;">
+    \[
+    \Gamma^\theta_{\;\varphi\varphi}
+    =-\frac12\,\partial_\theta(\sin^2\theta)
+    =-\sin\theta\cos\theta,
+    \qquad
+    \Gamma^\varphi_{\;\theta\varphi}
+    =\frac12\frac{1}{\sin^2\theta}\,
+      \partial_\theta(\sin^2\theta)
+    =\cot\theta.
+    \]</p>
+    <p>The direct basis measurement and the metric-only calculation agree. Plate III performs the first derivation numerically: its finite quotient converges to these two coefficients as \(\delta\to0\).</p>
+  </div>
+
+  <p>Read the corrected formula as a sentence: <em>total change = the components changed + the rulers changed underneath the components.</em> Nothing about \(\Gamma\) is mysterious or intrinsically “curvy” — polar coordinates on a flat sheet of paper have nonzero \(\Gamma\)s too, because their basis arrows also swivel. \(\Gamma\) is a property of your <em>grid</em>, not (directly) of the geometry. On the sphere: \(\Gamma^\theta_{\;\varphi\varphi}=-\sin\theta\cos\theta\) and \(\Gamma^\varphi_{\;\theta\varphi}=\cot\theta\), which the plate below lets you read directly off the swinging arrows.</p>
+
+  <div class="plate" id="plate3">
+    <div class="plate-head">
+      <span class="plate-no">Plate III</span>
+      <span class="plate-title">Watching the basis swing, reading off Γ</span>
+      <span class="plate-sub">staged · θ &amp; δ live · drag to rotate</span>
+    </div>
+    <canvas id="cv3" width="680" height="430" role="img" aria-label="Staged finite-difference measurement of how the sphere's coordinate basis changes.">Interactive derivation of Christoffel symbols from a changing basis.</canvas>
+    <div class="plate-controls">
+      <button id="w3back">◂ Back</button>
+      <button id="w3next" class="primary">Show the basis ▸</button>
+      <span class="seg">
+        <button id="w3east" class="on">nudge east (δφ)</button>
+        <button id="w3south">nudge south (δθ)</button>
+      </span>
+      <label class="ctl">colatitude θ <input type="range" id="w3th" min="0.35" max="1.45" step="0.01" value="0.95"><output id="w3thout" for="w3th">54°</output></label>
+      <label class="ctl">step δ <input type="range" id="w3d" min="0.01" max="0.30" step="0.01" value="0.12"><output id="w3dout" for="w3d">0.12</output></label>
+    </div>
+    <div class="plate-readout" id="w3read"></div>
+    <div class="plate-caption" id="w3cap">Press <b>Show the basis ▸</b> to begin.</div>
+  </div>
+
+  <details class="formal">
+    <summary>The formal version — coordinate coefficients are not curvature</summary>
+    <div>
+      <p>The collection \(\Gamma^k_{\;ij}\) is not a tensor: changing coordinates changes both the basis arrows and their derivatives, producing an extra second-derivative term in the transformation law. At any chosen point one can use normal coordinates to make every Christoffel symbol vanish there, even on a curved sphere. What cannot generally be removed throughout a neighborhood is the path-dependence encoded by the curvature tensor, which combines derivatives and quadratic products of \(\Gamma\). Thus nonzero \(\Gamma\) can arise from coordinates alone, while nonzero curvature is geometric.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ================= STEP 4 ================= -->
+<section id="step4">
+  <div class="stepnum">Step 4 · The consequence</div>
+  <h2>Parallel transport, and the angle that betrays curvature</h2>
+  <p>Once you can differentiate, you can say what “a constant vector along a curve” means: one whose covariant derivative vanishes, \(\nabla_{\dot\gamma} V = 0\). Componentwise this is a linear ODE, \(\dot V^k = -\Gamma^k_{\;ij}\,\dot x^i V^j\) — at every instant, counter-rotate the components by exactly the amount the basis swings, so the <em>arrow itself</em> never turns. This is <strong>parallel transport</strong>: the connection’s answer to Step 1’s missing identification between tangent planes, delivered curve by curve.</p>
+  <p>And here is the punchline of the whole subject. On flat paper, transport a vector around any closed loop and it returns identical — the identification doesn’t care about the path. On the sphere, carry a vector around a circle of latitude, never once turning it, and it <strong>comes back rotated</strong>. If \(\theta_0\) is the colatitude measured down from the north pole, the mismatch angle is \(2\pi(1-\cos\theta_0)\) — precisely the solid angle the loop encloses, \(\iint K\,dA\). Path-dependence of transport <em>is</em> curvature; the sphere confesses through an angle you can measure below. The plate integrates the actual transport ODE (RK4), so the arrow’s return angle and unchanged length are computed, not drawn.</p>
+
+  <div class="plate" id="plate4">
+    <div class="plate-head">
+      <span class="plate-no">Plate IV</span>
+      <span class="plate-title">Carrying an arrow around a latitude, without turning it</span>
+      <span class="plate-sub">live simulation · drag to rotate</span>
+    </div>
+    <canvas id="cv4" width="680" height="430" role="img" aria-label="Numerical parallel transport of a vector around a circle of constant colatitude.">Interactive parallel transport simulation on a sphere.</canvas>
+    <div class="plate-controls">
+      <button id="w4play" class="primary">▶ Transport</button>
+      <button id="w4reset">↺ Reset</button>
+      <label class="ctl">colatitude θ₀ <input type="range" id="w4th" min="0.30" max="1.50" step="0.01" value="1.05"><output id="w4thout" for="w4th">60°</output></label>
+    </div>
+    <div class="plate-readout" id="w4read"></div>
+    <div class="plate-caption">The arrow obeys \(\nabla_{\dot\gamma}V=0\) at every instant — it is never turned. Ghost arrows mark where it has been. It still comes home rotated: <b>the rotation equals the enclosed solid angle</b>. Slide θ₀ toward the equator (θ₀ = 90°) and the mismatch approaches a full turn — i.e. zero apparent mismatch, since the equator is a geodesic.</div>
+  </div>
+
+  <details class="formal">
+    <summary>The formal version — holonomy and Gauss–Bonnet in one line</summary>
+    <div>
+      <p>Along \(\theta=\theta_0,\ \varphi=t\): \(\dot V^\theta = \sin\theta_0\cos\theta_0\, V^\varphi\), \(\dot V^\varphi = -\cot\theta_0\, V^\theta\). In the orthonormal frame \((\hat e_\theta, \hat e_\varphi)\) this is rigid rotation at rate \(-\cos\theta_0\) per unit \(\varphi\); after a full loop the frame-relative rotation is \(-2\pi\cos\theta_0\), a mismatch of \(2\pi(1-\cos\theta_0)\bmod 2\pi\). For the unit sphere \(K\equiv 1\), and the spherical cap above the loop has area \(2\pi(1-\cos\theta_0)\) — so the holonomy equals \(\int_{\text{cap}} K\,dA\), the baby case of the general fact that curvature is the infinitesimal holonomy: \(R(X,Y)Z = (\nabla_X\nabla_Y - \nabla_Y\nabla_X - \nabla_{[X,Y]})Z\), the failure of transports along the two edges of a small parallelogram to commute.</p>
+    </div>
+  </details>
+</section>
+
+<!-- ================= STEP 5 ================= -->
+<section id="step5">
+  <div class="stepnum">Optional extension · The dual half</div>
+  <h2>One-forms: measuring devices that ride along</h2>
+  <p>The main story ends with holonomy in Plate IV. Open this bonus section to see how the same connection differentiates measuring devices as well as arrows.</p>
+  <details class="bonus" id="oneformBonus">
+    <summary>Open the one-form extension</summary>
+    <div class="bonus-body">
+  <p>A <strong>one-form</strong> \(\omega\) at a point is not an arrow; it is a <em>measuring device for arrows</em> — a linear machine that eats a tangent vector and returns a number. The right mental picture is a <strong>ruled stack of evenly spaced level lines</strong> laid across the tangent plane: feed it a vector \(v\), and \(\omega(v)\) is the number of lines the arrow pierces. Denser ruling = stronger form. The prototype is the differential \(df\) of a function: its level lines are literally the level sets of \(f\), and \(df(v)\) is how many contour lines you cross moving along \(v\). At the starting point on the sphere, take \(f=z\) (height): its ruling is the circles of latitude, spaced \(1/\sin\theta\) apart in the tangent plane — dense near the equator, sparse near the poles, exactly matching \(df = -\sin\theta\, d\theta\). Once transported, the sheet is a carried copy of that initial \(df\), not generally the local height differential at its new point.</p>
+  <p>How should \(\nabla\) act on \(\omega\)? You don’t get to choose — it’s forced. A number like \(\omega(V)\) is a scalar, and scalars must obey the plain product rule: \(\partial_\mu\big(\omega_\nu V^\nu\big) = (\nabla_\mu\omega)(V) + \omega(\nabla_\mu V)\). Solving for \(\nabla\omega\):</p>
+  <p style="text-align:center;">\[ \nabla_\mu\, \omega_\nu \;=\; \partial_\mu \omega_\nu \;-\; \Gamma^\lambda_{\;\mu\nu}\,\omega_\lambda \]</p>
+  <p>— one \(+\Gamma\) correction for an upper vector index and one \(-\Gamma\) correction for a lower covector index. The plate makes their cancellation intuitive: parallel-transport the arrow <em>and</em> the ruled sheet together around the latitude circle. Their coordinate components obey different index rules, but in the orthonormal tangent frame the physical arrow and measuring sheet co-rotate. The reading \(\omega(V)\), the pierced-line count, therefore stays frozen to the last decimal: <em>measurements do not drift when both objects are parallel</em>.</p>
+
+  <div class="plate" id="plate5">
+    <div class="plate-head">
+      <span class="plate-no">Plate V</span>
+      <span class="plate-title">The ruled sheet: ω(v) = lines pierced — pinned under transport</span>
+      <span class="plate-sub">staged · drag the arrow tip</span>
+    </div>
+    <canvas id="cv5" width="680" height="400" tabindex="0" role="img" aria-label="A one-form shown as ruled level lines. Drag the vector tip with a pointer, or focus this graphic and use the arrow keys.">Interactive one-form pairing and transport visualization.</canvas>
+    <div class="plate-controls">
+      <button id="w5back">◂ Back</button>
+      <button id="w5next" class="primary">Show the device ▸</button>
+      <button id="w5play" disabled>▶ Transport both</button>
+      <label class="ctl">colatitude θ <input type="range" id="w5th" min="0.35" max="1.45" step="0.01" value="0.85"><output id="w5thout" for="w5th">49°</output></label>
+    </div>
+    <div class="plate-readout" id="w5read"></div>
+    <div class="plate-caption" id="w5cap">Press <b>Show the device ▸</b>. This pane is a close-up of one tangent plane (north is up, east is right).</div>
+  </div>
+
+  <details class="formal">
+    <summary>The formal version — the forced sign, in two lines</summary>
+    <div>
+      <p>Demand that \(\nabla\) obey Leibniz over the pairing and reduce to \(\partial\) on scalars:
+      \[ \partial_\mu(\omega_\nu V^\nu) = (\nabla_\mu\omega_\nu)V^\nu + \omega_\nu\big(\partial_\mu V^\nu + \Gamma^\nu_{\;\mu\lambda}V^\lambda\big). \]
+      Expand the left side with the ordinary product rule, cancel \((\partial_\mu\omega_\nu)V^\nu + \omega_\nu\partial_\mu V^\nu\) from both sides, and relabel dummy indices: \((\nabla_\mu\omega_\nu)V^\nu = -\,\Gamma^\lambda_{\;\mu\nu}\omega_\lambda V^\nu\) for all \(V\), hence the boxed formula. The same argument propagates \(\nabla\) to every tensor rank: one \(+\Gamma\) per upper index, one \(-\Gamma\) per lower index. Transport-invariance of the pairing — what Plate V shows numerically — is the coordinate-free statement of the same fact.</p>
+    </div>
+  </details>
+    </div>
+  </details>
+</section>
+
+<!-- ================= RECAP ================= -->
+<div class="recap">
+  <h2>Putting it back together</h2>
+  <p>For the sphere’s Levi-Civita connection, one act — <em>differentiate, then project</em> — produces four core ideas:</p>
+  <ul>
+    <li><strong>The problem</strong> (Plate I): tangent planes at different points are different vector spaces; “subtract the components” presumes an identification that doesn’t exist yet.</li>
+    <li><strong>The definition</strong> (Plate II): \(\nabla_X V = P(D_X V)\). The deleted normal part is the surface’s doing, not the field’s.</li>
+    <li><strong>The coordinates</strong> (Plate III): \(\Gamma^k_{\;ij}\) is the recorded tangential swing of the basis arrows — the correction for measuring with rulers that turn underneath you.</li>
+    <li><strong>The identification, delivered</strong> (Plate IV): \(\nabla_{\dot\gamma}V=0\) transports arrows between planes. Its path-dependence — the return-angle \(2\pi(1-\cos\theta_0)\) — <em>is</em> curvature.</li>
+  </ul>
+  <p><strong>Optional dual extension</strong> (Plate V): one-forms are ruled measuring sheets; the lower-index \(-\Gamma\) rule keeps pairings \(\omega(V)\) honest under transport.</p>
+</div>
+
+<section>
+  <div class="stepnum">Coda · Where this shows up</div>
+  <h2>Three places you already use this</h2>
+  <p><strong>General relativity.</strong> A geodesic is a curve that parallel-transports its own velocity: \(\ddot x^k + \Gamma^k_{\;ij}\dot x^i \dot x^j = 0\). “Gravity” in GR is nothing added to this equation — it is this equation, with \(\Gamma\) determined by the metric of spacetime. Free fall is Plate IV applied to your own four-velocity.</p>
+  <p><strong>Natural gradient &amp; information geometry.</strong> The loss gradient \(\partial_\theta \mathcal L\) is a <em>one-form</em> on parameter space — a measuring device (“how fast does loss change per unit move this way?”), not a direction. Turning it into a step requires a metric; choosing the Fisher information gives the natural gradient \(F^{-1}\partial_\theta\mathcal L\), and the statistical manifold’s Christoffel symbols govern how estimators and flows must be corrected under reparametrization — the exact “rulers turning underneath you” story of Step 3, with coordinate charts replaced by model parametrizations.</p>
+  <p><strong>Riemannian optimization.</strong> Momentum methods on manifolds (SGD on the Stiefel or SPD manifold, hyperbolic embeddings) must parallel-transport the momentum vector from the previous iterate’s tangent space to the current one before adding — Plate I’s illegality, resolved by Plate IV’s transport, inside an optimizer loop.</p>
+</section>
+
+</div>
+
+<script>
+(function(){
+"use strict";
+var TAU = Math.PI*2;
+var C = { paper:'#e9e3d3', dim:'#a09a8b', faint:'#6a6f85', brass:'#cfa35a',
+          brassDim:'#8f7443', teal:'#6fd0c5', rose:'#e07a75', ink:'#0d1120',
+          panel:'#131a2e', line:'#28304f' };
+var RENDER_SCALE = Math.max((window.devicePixelRatio || 1) * 2.5, 3);
+var motionQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : {matches:false};
+
+function watchVisibility(el, onVisible){
+  var state = {visible:true};
+  if('IntersectionObserver' in window){
+    var observer = new IntersectionObserver(function(entries){
+      state.visible = entries[0].isIntersecting;
+      if(state.visible && onVisible) onVisible();
+    });
+    observer.observe(el);
+  }
+  return state;
+}
+
+/* ---------- tiny vec3 ---------- */
+function vadd(a,b){ return [a[0]+b[0], a[1]+b[1], a[2]+b[2]]; }
+function vsub(a,b){ return [a[0]-b[0], a[1]-b[1], a[2]-b[2]]; }
+function vscale(a,s){ return [a[0]*s, a[1]*s, a[2]*s]; }
+function vdot(a,b){ return a[0]*b[0]+a[1]*b[1]+a[2]*b[2]; }
+function vlin(a,s,b,t){ return [a[0]*s+b[0]*t, a[1]*s+b[1]*t, a[2]*s+b[2]*t]; }
+
+/* ---------- sphere frames ---------- */
+function sphPt(th,ph){ var s=Math.sin(th); return [s*Math.cos(ph), s*Math.sin(ph), Math.cos(th)]; }
+function eTh(th,ph){ return [Math.cos(th)*Math.cos(ph), Math.cos(th)*Math.sin(ph), -Math.sin(th)]; }
+function ePhU(th,ph){ return [-Math.sin(ph), Math.cos(ph), 0]; }
+
+/* ---------- view rotation: v = Rx(pitch) Rz(yaw) p ; front <=> v.y > 0 ---------- */
+function makeView(yaw, pitch){
+  return { yaw:yaw, pitch:pitch,
+    apply:function(p){
+      var cy=Math.cos(this.yaw), sy=Math.sin(this.yaw);
+      var cp=Math.cos(this.pitch), sp=Math.sin(this.pitch);
+      var x = cy*p[0] - sy*p[1], y = sy*p[0] + cy*p[1], z = p[2];
+      return [x, cp*y - sp*z, sp*y + cp*z];
+    },
+    invApply:function(v){
+      var cy=Math.cos(this.yaw), sy=Math.sin(this.yaw);
+      var cp=Math.cos(this.pitch), sp=Math.sin(this.pitch);
+      var x=v[0], y = cp*v[1] + sp*v[2], z = -sp*v[1] + cp*v[2];
+      return [cy*x + sy*y, -sy*x + cy*y, z];
+    } };
+}
+
+/* ---------- plate factory: canvas + cached globe base + rotate-drag ---------- */
+function makePlate(canvasId, opts){
+  var cv = document.getElementById(canvasId);
+  if(!cv) return null;
+  var dpr = RENDER_SCALE;
+  var W = cv.width, H = cv.height;
+  cv.width = W*dpr; cv.height = H*dpr;
+  cv.style.aspectRatio = W + ' / ' + H;
+  var ctx = cv.getContext('2d');
+  ctx.scale(dpr,dpr);
+  var base = document.createElement('canvas');
+  base.width = W*dpr; base.height = H*dpr;
+  var bctx = base.getContext('2d');
+  bctx.scale(dpr,dpr);
+  var plate = {
+    cv:cv, ctx:ctx, W:W, H:H, dpr:dpr,
+    cx: (opts && opts.cx!==undefined) ? opts.cx : W/2,
+    cy: (opts && opts.cy!==undefined) ? opts.cy : H/2 + 4,
+    R:  (opts && opts.R) ? opts.R : 168,
+    view: makeView((opts&&opts.yaw!==undefined)?opts.yaw:-0.55, (opts&&opts.pitch!==undefined)?opts.pitch:-0.42),
+    needsBase:true, dirty:true, base:base, bctx:bctx, render:null, raf:null,
+    proj:function(p){ var v=this.view.apply(p);
+      return [this.cx + this.R*v[0], this.cy - this.R*v[2], v[1]]; },
+    blit:function(){ this.ctx.clearRect(0,0,this.W,this.H);
+      this.ctx.drawImage(this.base, 0,0, this.W, this.H); },
+    rebuildBase:function(extra){
+      this.bctx.clearRect(0,0,this.W,this.H);
+      drawGlobe(this.bctx, this);
+      if(extra) extra(this.bctx, this);
+      this.needsBase = false;
+    },
+    requestRender:function(){
+      var self = this;
+      if(this.raf !== null) return;
+      this.raf = requestAnimationFrame(function(){
+        self.raf = null;
+        if(self.render) self.render();
+      });
+    }
+  };
+  /* rotate on drag (unless a pick handler claims the drag) */
+  var dragging=false, mode='rot', lx=0, ly=0;
+  function pos(ev){
+    var r = cv.getBoundingClientRect();
+    var t = (ev.touches && ev.touches[0]) ? ev.touches[0] : ev;
+    return [ (t.clientX - r.left) * (W / r.width), (t.clientY - r.top) * (H / r.height) ];
+  }
+  function down(ev){
+    var p = pos(ev); lx=p[0]; ly=p[1]; dragging=true;
+    mode = (opts && opts.pick && opts.pick(p[0],p[1])) ? 'pick' : 'rot';
+    if(ev.cancelable) ev.preventDefault();
+  }
+  function move(ev){
+    if(!dragging) return;
+    var p = pos(ev);
+    if(mode==='pick' && opts && opts.dragPick){ opts.dragPick(p[0],p[1]); }
+    else {
+      plate.view.yaw   += (p[0]-lx)*0.008;
+      plate.view.pitch += (p[1]-ly)*0.008;
+      var lim = 1.45;
+      if(plate.view.pitch >  lim) plate.view.pitch =  lim;
+      if(plate.view.pitch < -lim) plate.view.pitch = -lim;
+      plate.needsBase = true;
+    }
+    lx=p[0]; ly=p[1]; plate.dirty=true; plate.requestRender();
+    if(ev.cancelable) ev.preventDefault();
+  }
+  function up(){ dragging=false; }
+  cv.addEventListener('mousedown', down);
+  cv.addEventListener('touchstart', down, {passive:false});
+  window.addEventListener('mousemove', move);
+  window.addEventListener('touchmove', move, {passive:false});
+  window.addEventListener('mouseup', up);
+  window.addEventListener('touchend', up);
+  return plate;
+}
+
+/* ---------- globe base: shaded disc + graticule (drawn once per view change) ---------- */
+function drawGlobe(ctx, pl){
+  var cx=pl.cx, cy=pl.cy, R=pl.R;
+  var g = ctx.createRadialGradient(cx - R*0.38, cy - R*0.42, R*0.08, cx, cy, R*1.02);
+  g.addColorStop(0, '#222b4a');
+  g.addColorStop(0.55, '#182038');
+  g.addColorStop(1, '#0e1428');
+  ctx.beginPath(); ctx.arc(cx, cy, R, 0, TAU);
+  ctx.fillStyle = g; ctx.fill();
+  ctx.strokeStyle = 'rgba(207,163,90,0.35)'; ctx.lineWidth = 1; ctx.stroke();
+
+  function polyline(pts, isEquatorOrPrime){
+    /* split into front (v.y>0) and back runs */
+    var aF = isEquatorOrPrime ? 0.42 : 0.26, aB = 0.06;
+    var run = [], front = null;
+    function flush(){
+      if(run.length < 2){ run=[]; return; }
+      ctx.beginPath();
+      ctx.moveTo(run[0][0], run[0][1]);
+      for(var i=1;i<run.length;i++) ctx.lineTo(run[i][0], run[i][1]);
+      ctx.strokeStyle = 'rgba(233,227,211,' + (front ? aF : aB) + ')';
+      ctx.lineWidth = front ? 1 : 0.8;
+      ctx.stroke();
+      run = [];
+    }
+    for(var i=0;i<pts.length;i++){
+      var pr = pl.proj(pts[i]);
+      var f = pr[2] > 0;
+      if(front===null) front = f;
+      if(f !== front){ flush(); front = f; }
+      run.push(pr);
+    }
+    flush();
+  }
+  var i, j, pts;
+  for(i=1;i<=11;i++){ /* latitudes every 15 deg */
+    var th = i*Math.PI/12; pts=[];
+    for(j=0;j<=72;j++) pts.push(sphPt(th, j*TAU/72));
+    polyline(pts, i===6);
+  }
+  for(i=0;i<12;i++){ /* meridians every 30 deg */
+    var ph = i*TAU/12; pts=[];
+    for(j=0;j<=48;j++) pts.push(sphPt(j*Math.PI/48, ph));
+    polyline(pts, i===0);
+  }
+  /* pole tick */
+  var np = pl.proj([0,0,1]);
+  if(np[2] > 0){
+    ctx.fillStyle='rgba(233,227,211,0.5)';
+    ctx.beginPath(); ctx.arc(np[0], np[1], 2, 0, TAU); ctx.fill();
+    ctx.fillStyle='rgba(233,227,211,0.45)';
+    ctx.font='10px "JetBrains Mono", monospace';
+    ctx.fillText('N', np[0]+6, np[1]-4);
+  }
+}
+
+/* ---------- 2d arrow ---------- */
+function arrow2(ctx, x1,y1, x2,y2, color, w, alpha, dash){
+  var dx=x2-x1, dy=y2-y1, L=Math.hypot(dx,dy);
+  if(L < 1) return;
+  ctx.save();
+  ctx.globalAlpha = (alpha===undefined) ? 1 : alpha;
+  ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = w||2;
+  if(dash) ctx.setLineDash(dash);
+  ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke();
+  ctx.setLineDash([]);
+  var a = Math.atan2(dy,dx), hs = 5 + (w||2)*1.6;
+  ctx.beginPath();
+  ctx.moveTo(x2,y2);
+  ctx.lineTo(x2 - hs*Math.cos(a - 0.42), y2 - hs*Math.sin(a - 0.42));
+  ctx.lineTo(x2 - hs*Math.cos(a + 0.42), y2 - hs*Math.sin(a + 0.42));
+  ctx.closePath(); ctx.fill();
+  ctx.restore();
+}
+function arrow3(pl, base, tip, color, w, alpha, dash){
+  var a = pl.proj(base), b = pl.proj(tip);
+  var gh = (a[2] <= 0.02) ? 0.22 : 1;
+  arrow2(pl.ctx, a[0],a[1], b[0],b[1], color, w, (alpha===undefined?1:alpha)*gh, dash);
+}
+function dot3(pl, p, color, r){
+  var a = pl.proj(p), gh = (a[2] <= 0.02) ? 0.25 : 1;
+  pl.ctx.save(); pl.ctx.globalAlpha = gh;
+  pl.ctx.fillStyle = color;
+  pl.ctx.beginPath(); pl.ctx.arc(a[0],a[1], r||5, 0, TAU); pl.ctx.fill();
+  pl.ctx.restore();
+}
+function label3(pl, p, text, color, dx, dy){
+  var a = pl.proj(p);
+  pl.ctx.save(); pl.ctx.globalAlpha = (a[2] <= 0.02) ? 0.3 : 0.95;
+  pl.ctx.fillStyle = color || C.paper;
+  pl.ctx.font = '12px "JetBrains Mono", monospace';
+  pl.ctx.fillText(text, a[0]+(dx===undefined?8:dx), a[1]+(dy===undefined?-8:dy));
+  pl.ctx.restore();
+}
+function planeQuad(pl, p, e1, e2, s, fill, stroke){
+  var c = [ vlin(e1, s, e2, s), vlin(e1, s, e2,-s), vlin(e1,-s, e2,-s), vlin(e1,-s, e2, s) ];
+  var ctx = pl.ctx, pr = [];
+  for(var i=0;i<4;i++) pr.push(pl.proj(vadd(p, c[i])));
+  var gh = (pl.proj(p)[2] <= 0.02) ? 0.3 : 1;
+  ctx.save(); ctx.globalAlpha = gh;
+  ctx.beginPath();
+  ctx.moveTo(pr[0][0], pr[0][1]);
+  for(i=1;i<4;i++) ctx.lineTo(pr[i][0], pr[i][1]);
+  ctx.closePath();
+  ctx.fillStyle = fill; ctx.fill();
+  ctx.strokeStyle = stroke; ctx.lineWidth = 1; ctx.stroke();
+  /* interior ruling to read as a plane */
+  ctx.globalAlpha = gh*0.5; ctx.strokeStyle = stroke;
+  for(var k=-1;k<=1;k+=2){
+    var a1 = pl.proj(vadd(p, vlin(e1, k*s/2, e2,  s)));
+    var b1 = pl.proj(vadd(p, vlin(e1, k*s/2, e2, -s)));
+    ctx.beginPath(); ctx.moveTo(a1[0],a1[1]); ctx.lineTo(b1[0],b1[1]); ctx.stroke();
+    var a2 = pl.proj(vadd(p, vlin(e1,  s, e2, k*s/2)));
+    var b2 = pl.proj(vadd(p, vlin(e1, -s, e2, k*s/2)));
+    ctx.beginPath(); ctx.moveTo(a2[0],a2[1]); ctx.lineTo(b2[0],b2[1]); ctx.stroke();
+  }
+  ctx.restore();
+}
+function setRead(el, html){ if(el.innerHTML !== html) el.innerHTML = html; }
+function deg(x){ return (x*180/Math.PI); }
+
+/* ============================================================
+   PLATE I — two tangent planes
+   ============================================================ */
+(function(){
+  var pl0 = null;
+  var P = { th:0.85, ph:0.55 };
+  var Q = { th:1.15, ph:-0.85 };
+  var comps = { a:0.80, b:0.55 };  /* V = a e_th + b e_ph (unit basis), scaled for display */
+  var showCopy = false;
+  var readEl = document.getElementById('w1read');
+  var toggleBtn = document.getElementById('w1toggle');
+  if(!document.getElementById('cv1')) return;
+
+  pl0 = makePlate('cv1', {
+    pick:function(mx,my){
+      var pr = pl0.proj(sphPt(P.th, P.ph));
+      return pr[2] > 0 && Math.hypot(mx-pr[0], my-pr[1]) < 22;
+    },
+    dragPick:function(mx,my){
+      var vx = (mx - pl0.cx)/pl0.R, vz = (pl0.cy - my)/pl0.R;
+      var rr = vx*vx + vz*vz;
+      if(rr > 0.96) { var s = Math.sqrt(0.96/rr); vx*=s; vz*=s; rr = 0.96; }
+      var vy = Math.sqrt(1 - rr);
+      var w = pl0.view.invApply([vx, vy, vz]);
+      P.th = Math.acos(Math.max(-1, Math.min(1, w[2])));
+      P.ph = Math.atan2(w[1], w[0]);
+      if(P.th < 0.12) P.th = 0.12;
+      if(P.th > Math.PI-0.12) P.th = Math.PI-0.12;
+    }
+  });
+  toggleBtn.addEventListener('click', function(){
+    showCopy = !showCopy; pl0.dirty = true;
+    toggleBtn.textContent = showCopy ? 'Hide the copied arrow' : 'Copy P’s components to Q';
+    toggleBtn.setAttribute('aria-pressed', showCopy ? 'true' : 'false');
+    pl0.requestRender();
+  });
+  toggleBtn.setAttribute('aria-pressed', 'false');
+  pl0.cv.addEventListener('keydown', function(ev){
+    var step = ev.shiftKey ? 0.02 : 0.06;
+    if(ev.key==='ArrowUp') P.th -= step;
+    else if(ev.key==='ArrowDown') P.th += step;
+    else if(ev.key==='ArrowLeft') P.ph -= step;
+    else if(ev.key==='ArrowRight') P.ph += step;
+    else return;
+    P.th = Math.max(0.12, Math.min(Math.PI-0.12, P.th));
+    pl0.requestRender();
+    ev.preventDefault();
+  });
+
+  function vecAt(pt){ /* arrow in R^3 from unit-basis comps */
+    return vlin(eTh(pt.th, pt.ph), comps.a*0.42, ePhU(pt.th, pt.ph), comps.b*0.42);
+  }
+  function frame(){
+    if(pl0.needsBase) pl0.rebuildBase();
+    pl0.blit();
+    var pP = sphPt(P.th,P.ph), pQ = sphPt(Q.th,Q.ph);
+    planeQuad(pl0, pP, eTh(P.th,P.ph), ePhU(P.th,P.ph), 0.34, 'rgba(207,163,90,0.10)', 'rgba(207,163,90,0.55)');
+    planeQuad(pl0, pQ, eTh(Q.th,Q.ph), ePhU(Q.th,Q.ph), 0.34, 'rgba(111,208,197,0.08)', 'rgba(111,208,197,0.5)');
+    arrow3(pl0, pP, vadd(pP, vecAt(P)), C.brass, 2.6);
+    dot3(pl0, pP, C.brass, 5.5); label3(pl0, pP, 'P', C.brass, 10, 16);
+    dot3(pl0, pQ, C.teal, 4.5); label3(pl0, pQ, 'Q', C.teal, 10, 16);
+    if(showCopy){
+      arrow3(pl0, pQ, vadd(pQ, vecAt(Q)), C.teal, 2.6);
+      label3(pl0, vadd(pQ, vecAt(Q)), 'same (V\u03b8,V\u03c6)', C.teal, 6, -6);
+    }
+    var ang = Math.acos(Math.max(-1, Math.min(1, vdot(pP, pQ))));
+    setRead(readEl,
+      'P: (\u03b8,\u03c6) = (' + deg(P.th).toFixed(0) + '\u00b0, ' + deg(P.ph).toFixed(0) + '\u00b0)' +
+      '    tilt between the two tangent planes: <span class="warm">' + deg(ang).toFixed(1) + '\u00b0</span>' +
+      (showCopy ? '\nsame components, different arrow \u2014 the planes disagree about what \u201cthis direction\u201d means' : ''));
+  }
+  pl0.render = frame;
+  pl0.requestRender();
+})();
+
+/* ============================================================
+   PLATE II — split the ambient derivative (staged)
+   ============================================================ */
+(function(){
+  if(!document.getElementById('cv2')) return;
+  var pl = makePlate('cv2', {yaw:-0.35, pitch:-0.5});
+  var stage = 0;
+  var phiEl = document.getElementById('w2phi'), thEl = document.getElementById('w2th');
+  var phiOut = document.getElementById('w2phiout'), thOut = document.getElementById('w2thout');
+  var readEl = document.getElementById('w2read'), capEl = document.getElementById('w2cap');
+  var nextB = document.getElementById('w2next'), backB = document.getElementById('w2back');
+  var caps = [
+    'Press <b>Show the field \u25b8</b> to begin the build-up.',
+    'The field: <b>\u201cdue east\u201d</b> (\u00ea\u03c6) at every point of a latitude circle. It looks as constant as a field on a sphere can look.',
+    'The honest ambient derivative <b>\u2202\u03c6 \u00ea\u03c6</b> at the marked point \u2014 computed in \u211d\u00b3. Notice it does <i>not</i> lie in the surface: it leans inward, toward the axis.',
+    'The split. The <span style="color:#e07a75">normal part</span> (\u2212sin\u03b8 \u0072\u0302) is the sphere curving away \u2014 <b>deleted</b>. The <b>tangential remainder</b> \u2212cos\u03b8 \u00ea\u03b8 is \u2207<sub>\u2202\u03c6</sub>\u00ea\u03c6: \u201cdue east\u201d rotates poleward at rate cos\u03b8 per radian of longitude. Slide \u03c6 and \u03b8 with all layers live.'
+  ];
+  var nextLabels = ['Show the field \u25b8', 'Add the ambient derivative \u25b8', 'Split &amp; project \u25b8', 'Split &amp; project \u25b8'];
+  function sync(){
+    capEl.innerHTML = caps[stage];
+    nextB.innerHTML = nextLabels[stage];
+    nextB.disabled = (stage===3); backB.disabled = (stage===0);
+    pl.dirty = true;
+    pl.requestRender();
+  }
+  nextB.addEventListener('click', function(){ if(stage<3){ stage++; sync(); } });
+  backB.addEventListener('click', function(){ if(stage>0){ stage--; sync(); } });
+  phiEl.addEventListener('input', function(){ pl.dirty=true; pl.requestRender(); });
+  thEl.addEventListener('input', function(){ pl.dirty=true; pl.requestRender(); });
+
+  function frame(){
+    if(pl.needsBase) pl.rebuildBase();
+    pl.blit();
+    var th = parseFloat(thEl.value), phm = parseFloat(phiEl.value);
+    phiOut.textContent = deg(phm).toFixed(0) + '\u00b0';
+    thOut.textContent = deg(th).toFixed(0) + '\u00b0';
+    var ctx = pl.ctx, i;
+    /* latitude circle */
+    ctx.save();
+    var run=[], front=null;
+    function flush(){
+      if(run.length<2){run=[];return;}
+      ctx.beginPath(); ctx.moveTo(run[0][0],run[0][1]);
+      for(var k=1;k<run.length;k++) ctx.lineTo(run[k][0],run[k][1]);
+      ctx.strokeStyle = front? 'rgba(207,163,90,0.85)':'rgba(207,163,90,0.16)';
+      ctx.lineWidth = 1.6; ctx.stroke(); run=[];
+    }
+    for(i=0;i<=96;i++){
+      var pr = pl.proj(sphPt(th, i*TAU/96)); var f = pr[2]>0;
+      if(front===null) front=f;
+      if(f!==front){ flush(); front=f; }
+      run.push(pr);
+    }
+    flush(); ctx.restore();
+
+    if(stage>=1){ /* field arrows */
+      for(i=0;i<12;i++){
+        var ph = i*TAU/12;
+        var p = sphPt(th,ph);
+        arrow3(pl, p, vadd(p, vscale(ePhU(th,ph),0.30)), C.paper, 1.6, 0.7);
+      }
+    }
+    var pm = sphPt(th,phm);
+    dot3(pl, pm, C.brass, 5);
+    if(stage>=1){
+      arrow3(pl, pm, vadd(pm, vscale(ePhU(th,phm),0.30)), C.brass, 2.6);
+      label3(pl, vadd(pm, vscale(ePhU(th,phm),0.30)), '\u00ea\u03c6', C.brass, 6, -4);
+    }
+    if(stage>=2){
+      /* dV = d(e_phi hat)/dphi = (-cos ph, -sin ph, 0) */
+      var dV = [-Math.cos(phm), -Math.sin(phm), 0];
+      arrow3(pl, pm, vadd(pm, vscale(dV,0.42)), C.paper, 2.4, 0.95);
+      label3(pl, vadd(pm, vscale(dV,0.42)), '\u2202\u03c6 \u00ea\u03c6', C.paper, 8, 0);
+    }
+    if(stage>=3){
+      var rh = sphPt(th,phm); /* = rhat on unit sphere */
+      var nrm = vscale(rh, -Math.sin(th));           /* normal part */
+      var tan = vscale(eTh(th,phm), -Math.cos(th));  /* tangential part */
+      arrow3(pl, pm, vadd(pm, vscale(nrm,0.42)), C.rose, 2.2, 0.9, [5,4]);
+      label3(pl, vadd(pm, vscale(nrm,0.42)), '\u2212sin\u03b8 r\u0302  (delete)', C.rose, 8, 12);
+      arrow3(pl, pm, vadd(pm, vscale(tan,0.42)), C.teal, 3);
+      label3(pl, vadd(pm, vscale(tan,0.42)), '\u2207\u2202\u03c6 \u00ea\u03c6 = \u2212cos\u03b8 \u00ea\u03b8', C.teal, 8, -6);
+    }
+    var lines = '\u03b8 = ' + deg(th).toFixed(0) + '\u00b0';
+    if(stage>=2) lines += '    |\u2202\u03c6 \u00ea\u03c6| = 1.000';
+    if(stage>=3) lines += '\nnormal (deleted): |\u2212sin\u03b8| = <span class="warm">' + Math.sin(th).toFixed(3) +
+      '</span>    kept: |\u2207\u2202\u03c6 \u00ea\u03c6| = |cos\u03b8| = <span class="hot">' + Math.abs(Math.cos(th)).toFixed(3) + '</span>';
+    setRead(readEl, lines);
+  }
+  pl.render = frame;
+  sync();
+})();
+
+/* ============================================================
+   PLATE III — Christoffel symbols from the swinging basis (staged)
+   ============================================================ */
+(function(){
+  if(!document.getElementById('cv3')) return;
+  var pl = makePlate('cv3', {yaw:-0.5, pitch:-0.45});
+  var stage = 0, dir = 'east';
+  var thEl = document.getElementById('w3th'), dEl = document.getElementById('w3d');
+  var thOut = document.getElementById('w3thout'), dOut = document.getElementById('w3dout');
+  var readEl = document.getElementById('w3read'), capEl = document.getElementById('w3cap');
+  var nextB = document.getElementById('w3next'), backB = document.getElementById('w3back');
+  var eastB = document.getElementById('w3east'), southB = document.getElementById('w3south');
+  var PH0 = 0.55;
+  var capsEast = [
+    'Press <b>Show the basis \u25b8</b> to begin.',
+    'The coordinate basis at a point: <b>e\u03b8</b> (gold, unit length) and <b>e\u03c6</b> (teal, length sin\u03b8 \u2014 coordinate circles shrink toward the pole).',
+    'Nudge east by \u03b4\u03c6: the <i>same basis arrow</i> e\u03c6, one grid-step over (ghost). The white arrow is the finite difference \u0394e\u03c6/\u03b4\u03c6, carried back through the surrounding \u211d\u00b3. Shrink \u03b4 to watch it converge.',
+    'The colored pieces exactly split the <i>finite</i> white quotient into normal and tangent parts. At finite \u03b4 the tangent has a small stray e\u03c6 component. Shrink \u03b4: that stray part vanishes and the e\u03b8 coefficient converges to <b>\u0393^\u03b8_\u03c6\u03c6 = \u2212sin\u03b8 cos\u03b8</b>.'
+  ];
+  var capsSouth = [
+    'Press <b>Show the basis \u25b8</b> to begin.',
+    'The coordinate basis at a point: <b>e\u03b8</b> (gold, unit) and <b>e\u03c6</b> (teal, length sin\u03b8).',
+    'Nudge south by \u03b4\u03b8: e\u03c6 at the new point (ghost) is longer \u2014 latitude circles grow toward the equator. The white arrow is the finite difference \u0394e\u03c6/\u03b4\u03b8.',
+    'This finite swing is <i>entirely tangential</i> \u2014 nothing to delete \u2014 and points along e\u03c6. Shrink \u03b4: its coefficient converges to <b>\u0393^\u03c6_\u03b8\u03c6 = cot\u03b8</b>, pure stretching of the coordinate ruler.'
+  ];
+  function caps(){ return dir==='east' ? capsEast : capsSouth; }
+  var nextLabels = ['Show the basis \u25b8','Nudge the grid \u25b8','Project &amp; take \u03b4\u21920 \u25b8','Project &amp; take \u03b4\u21920 \u25b8'];
+  function sync(){
+    capEl.innerHTML = caps()[stage];
+    nextB.innerHTML = nextLabels[stage];
+    nextB.disabled = (stage===3); backB.disabled = (stage===0);
+    eastB.className = dir==='east' ? 'on':'';
+    southB.className = dir==='south' ? 'on':'';
+    eastB.setAttribute('aria-pressed', dir==='east' ? 'true':'false');
+    southB.setAttribute('aria-pressed', dir==='south' ? 'true':'false');
+    pl.dirty = true;
+    pl.requestRender();
+  }
+  nextB.addEventListener('click', function(){ if(stage<3){ stage++; sync(); } });
+  backB.addEventListener('click', function(){ if(stage>0){ stage--; sync(); } });
+  eastB.addEventListener('click', function(){ dir='east'; sync(); });
+  southB.addEventListener('click', function(){ dir='south'; sync(); });
+  thEl.addEventListener('input', function(){ pl.dirty=true; pl.requestRender(); });
+  dEl.addEventListener('input', function(){ pl.dirty=true; pl.requestRender(); });
+
+  function ePhCoord(th,ph){ return vscale(ePhU(th,ph), Math.sin(th)); } /* coordinate basis, length sin th */
+
+  function frame(){
+    if(pl.needsBase) pl.rebuildBase();
+    pl.blit();
+    var th = parseFloat(thEl.value), d = parseFloat(dEl.value);
+    thOut.textContent = deg(th).toFixed(0) + '\u00b0';
+    dOut.textContent = d.toFixed(2);
+    var p = sphPt(th, PH0);
+    var S = 0.55; /* display scale for basis arrows */
+    dot3(pl, p, C.paper, 4);
+    if(stage>=1){
+      arrow3(pl, p, vadd(p, vscale(eTh(th,PH0), S)), C.brass, 2.6);
+      label3(pl, vadd(p, vscale(eTh(th,PH0), S)), 'e\u03b8', C.brass, 6, 12);
+      arrow3(pl, p, vadd(p, vscale(ePhCoord(th,PH0), S)), C.teal, 2.6);
+      label3(pl, vadd(p, vscale(ePhCoord(th,PH0), S)), 'e\u03c6', C.teal, 6, -4);
+    }
+    var th2 = dir==='east' ? th : Math.min(th + d, Math.PI-0.1);
+    var ph2 = dir==='east' ? PH0 + d : PH0;
+    var dd  = dir==='east' ? d : (th2 - th);
+    var dq = null;
+    if(stage>=2){
+      var p2 = sphPt(th2, ph2);
+      dot3(pl, p2, C.faint, 3.5);
+      arrow3(pl, p2, vadd(p2, vscale(ePhCoord(th2,ph2), S)), C.teal, 2, 0.38);
+      /* difference quotient carried back to p (extrinsic subtraction) */
+      dq = vscale(vsub(ePhCoord(th2,ph2), ePhCoord(th,PH0)), 1/dd);
+      arrow3(pl, p, vadd(p, vscale(dq, S)), C.paper, 2.4, 0.95);
+      label3(pl, vadd(p, vscale(dq, S)), '\u0394e\u03c6/\u03b4', C.paper, 8, -6);
+    }
+    var observed = 0, stray = 0;
+    if(stage>=3){
+      /* exact decomposition of the finite quotient at p */
+      var normalCoefficient = vdot(dq, p);
+      var nrm = vscale(p, normalCoefficient);
+      var tan = vsub(dq, nrm);
+      var tanLabel;
+      if(dir==='east'){
+        observed = vdot(tan, eTh(th,PH0));
+        stray = vdot(tan, ePhCoord(th,PH0))/(Math.sin(th)*Math.sin(th));
+        tanLabel = 'tangent part \u2192 \u0393^\u03b8_\u03c6\u03c6 e\u03b8';
+      } else {
+        observed = vdot(tan, ePhCoord(th,PH0))/(Math.sin(th)*Math.sin(th));
+        tanLabel = 'tangent part \u2192 \u0393^\u03c6_\u03b8\u03c6 e\u03c6';
+      }
+      if(Math.abs(normalCoefficient) > 1e-8){
+        arrow3(pl, p, vadd(p, vscale(nrm, S)), C.rose, 2.2, 0.9, [5,4]);
+        label3(pl, vadd(p, vscale(nrm, S)), 'finite normal (delete)', C.rose, 8, 12);
+      }
+      arrow3(pl, p, vadd(p, vscale(tan, S)), C.teal, 3.2);
+      label3(pl, vadd(p, vscale(tan, S)), tanLabel, C.teal, 8, -8);
+    }
+    var g1 = -Math.sin(th)*Math.cos(th), g2 = Math.cos(th)/Math.sin(th);
+    var lines = '\u03b8 = ' + deg(th).toFixed(0) + '\u00b0    |e\u03c6| = sin\u03b8 = ' + Math.sin(th).toFixed(3);
+    if(stage>=3){
+      var target = dir==='east' ? g1 : g2;
+      lines += '\nfinite projected coefficient: <span class="warm">' + observed.toFixed(4) +
+               '</span>    limit \u0393 = <span class="hot">' + target.toFixed(4) +
+               '</span>    error: ' + Math.abs(observed-target).toFixed(4);
+      if(dir==='east') lines += '    stray e\u03c6 coefficient: ' + stray.toFixed(4) + ' \u2192 0';
+    }
+    setRead(readEl, lines);
+  }
+  pl.render = frame;
+  sync();
+})();
+
+/* ============================================================
+   PLATE IV — parallel transport around a latitude (real RK4)
+   ============================================================ */
+(function(){
+  if(!document.getElementById('cv4')) return;
+  var pl = makePlate('cv4', {yaw:-0.3, pitch:-0.55});
+  var thEl = document.getElementById('w4th');
+  var thOut = document.getElementById('w4thout');
+  var playB = document.getElementById('w4play'), resetB = document.getElementById('w4reset');
+  var readEl = document.getElementById('w4read');
+  var st = null, playing = false;
+  var visibility = watchVisibility(pl.cv, function(){ if(playing) pl.requestRender(); });
+
+  function init(){
+    var th0 = parseFloat(thEl.value);
+    st = { th0:th0, phi:0, V:[1,0], ghosts:[], done:false,
+           prevAng: 0, totAng: 0 };
+    st.prevAng = frameAngle(st.V, th0);
+    st.ghosts.push({ph:0, V:[st.V[0], st.V[1]]});
+    playing = false;
+    playB.textContent = '\u25b6 Transport';
+    pl.dirty = true;
+    pl.requestRender();
+  }
+  function frameAngle(V, th){ return Math.atan2(Math.sin(th)*V[1], V[0]); }
+  function deriv(V, th){
+    var s=Math.sin(th), c=Math.cos(th);
+    return [ s*c*V[1], -(c/s)*V[0] ];
+  }
+  function rk4(V, th, h){
+    var k1=deriv(V,th),
+        k2=deriv([V[0]+h/2*k1[0], V[1]+h/2*k1[1]], th),
+        k3=deriv([V[0]+h/2*k2[0], V[1]+h/2*k2[1]], th),
+        k4=deriv([V[0]+h*k3[0], V[1]+h*k3[1]], th);
+    return [ V[0]+h/6*(k1[0]+2*k2[0]+2*k3[0]+k4[0]),
+             V[1]+h/6*(k1[1]+2*k2[1]+2*k3[1]+k4[1]) ];
+  }
+  thEl.addEventListener('input', init);
+  resetB.addEventListener('click', init);
+  playB.addEventListener('click', function(){
+    if(st.done) init();
+    playing = !playing;
+    playB.textContent = playing ? '\u2758\u2758 Pause' : '\u25b6 Transport';
+    pl.requestRender();
+  });
+
+  function drawArrowOnSphere(pt, V, th, color, w, alpha){
+    /* V in coordinate comps -> R^3 arrow via coordinate basis */
+    var dir3 = vlin(eTh(th, pt), V[0], vscale(ePhU(th, pt), Math.sin(th)), V[1]);
+    var p = sphPt(th, pt);
+    arrow3(pl, p, vadd(p, vscale(dir3, 0.40)), color, w, alpha);
+  }
+  function frame(){
+    if(playing && !st.done){
+      var h = 0.012;
+      var sub = motionQuery.matches ? Math.ceil((TAU-st.phi)/h)+1 : 3;
+      for(var k=0;k<sub;k++){
+        if(st.phi >= TAU){ break; }
+        var step = Math.min(h, TAU - st.phi);
+        st.V = rk4(st.V, st.th0, step);
+        st.phi += step;
+        var a = frameAngle(st.V, st.th0);
+        var da = a - st.prevAng;
+        if(da >  Math.PI) da -= TAU;
+        if(da < -Math.PI) da += TAU;
+        st.totAng += da; st.prevAng = a;
+      }
+      if(st.ghosts.length < Math.floor(st.phi/(TAU/16)) + 1 && st.phi < TAU - 0.01){
+        st.ghosts.push({ph:st.phi, V:[st.V[0], st.V[1]]});
+        if(st.ghosts.length > 20) st.ghosts.shift();
+      }
+      if(st.phi >= TAU - 1e-9){
+        st.done = true; playing = false;
+        playB.textContent = '\u25b6 Transport';
+      }
+      pl.dirty = true;
+    }
+    if(pl.needsBase) pl.rebuildBase();
+    pl.blit();
+    var th0 = st.th0, ctx = pl.ctx, i;
+    thOut.textContent = deg(th0).toFixed(0) + '\u00b0';
+    /* latitude circle */
+    var run=[], front=null;
+    function flush(){
+      if(run.length<2){run=[];return;}
+      ctx.beginPath(); ctx.moveTo(run[0][0],run[0][1]);
+      for(var k2=1;k2<run.length;k2++) ctx.lineTo(run[k2][0],run[k2][1]);
+      ctx.strokeStyle = front? 'rgba(207,163,90,0.8)':'rgba(207,163,90,0.14)';
+      ctx.lineWidth = 1.6; ctx.stroke(); run=[];
+    }
+    for(i=0;i<=96;i++){
+      var pr = pl.proj(sphPt(th0, i*TAU/96)); var f = pr[2]>0;
+      if(front===null) front=f;
+      if(f!==front){ flush(); front=f; }
+      run.push(pr);
+    }
+    flush();
+    /* ghosts */
+    for(i=0;i<st.ghosts.length;i++){
+      var g = st.ghosts[i];
+      drawArrowOnSphere(g.ph, g.V, th0, C.brassDim, 1.5, 0.55);
+    }
+    /* start marker arrow (initial vector, kept visible) */
+    drawArrowOnSphere(0, [1,0], th0, C.paper, 1.6, 0.5);
+    /* current */
+    drawArrowOnSphere(st.phi, st.V, th0, C.teal, 3);
+    dot3(pl, sphPt(th0, st.phi), C.teal, 5);
+
+    var norm = Math.sqrt(st.V[0]*st.V[0] + Math.sin(th0)*Math.sin(th0)*st.V[1]*st.V[1]);
+    var predict = 2*Math.PI*(1-Math.cos(th0));
+    var lines = '\u03b8\u2080 = ' + deg(th0).toFixed(0) + '\u00b0    \u03c6 travelled: ' + deg(st.phi).toFixed(0) +
+      '\u00b0    |V| = ' + norm.toFixed(6) + '  (invariant \u2713)';
+    if(st.done){
+      var meas = ((st.totAng) % TAU + TAU) % TAU;
+      lines += '\nmeasured mismatch (RK4): <span class="hot">' + deg(meas).toFixed(2) +
+        '\u00b0</span>    predicted 2\u03c0(1\u2212cos\u03b8\u2080) mod 360\u00b0: <span class="warm">' +
+        deg(predict % TAU).toFixed(2) + '\u00b0</span>    = enclosed solid angle';
+    } else {
+      lines += '\nrun the loop to compare the return angle with 2\u03c0(1\u2212cos\u03b8\u2080) = ' +
+        deg(predict).toFixed(1) + '\u00b0 (mod 360\u00b0)';
+    }
+    setRead(readEl, lines);
+    if(playing && visibility.visible) pl.requestRender();
+  }
+  pl.render = frame;
+  init();
+})();
+
+/* ============================================================
+   PLATE V — one-form as ruled sheet; pairing pinned under transport
+   ============================================================ */
+(function(){
+  var cv = document.getElementById('cv5');
+  if(!cv) return;
+  var dpr = RENDER_SCALE;
+  var W = cv.width, H = cv.height;
+  cv.width = W*dpr; cv.height = H*dpr;
+  cv.style.aspectRatio = W + ' / ' + H;
+  var ctx = cv.getContext('2d');
+  ctx.scale(dpr,dpr);
+  var cx = W/2, cy = H/2, SC = 90; /* px per unit */
+
+  var stage = 0, playing = false;
+  var thEl = document.getElementById('w5th');
+  var thOut = document.getElementById('w5thout');
+  var readEl = document.getElementById('w5read'), capEl = document.getElementById('w5cap');
+  var nextB = document.getElementById('w5next'), backB = document.getElementById('w5back');
+  var playB = document.getElementById('w5play');
+  /* orthonormal comps (a_th southward, a_ph eastward); canvas x=a_ph, y(down)=a_th */
+  var vBase = [ -0.55, 1.05 ];   /* arrow: somewhat north-east */
+  var wBase = null;              /* set from theta: df of height = (-sin th, 0) */
+  var phi = 0;                   /* transport progress */
+  var renderQueued = false;
+  function requestRender(){
+    if(renderQueued) return;
+    renderQueued = true;
+    requestAnimationFrame(function(){ renderQueued=false; frame(); });
+  }
+  var visibility = watchVisibility(cv, function(){ if(playing) requestRender(); });
+  var caps = [
+    'Press <b>Show the device \u25b8</b>. This pane is a close-up of one tangent plane (north is up, east is right).',
+    'A one-form is a <b>ruled sheet</b>: parallel level lines, evenly spaced. At the starting point this one is df of height on the sphere \u2014 its lines are latitude circles seen up close, spacing 1/sin\u03b8. Slide \u03b8: near the pole the ruling thins out.',
+    'Feed it an arrow. <b>\u03c9(v) = lines pierced</b> (pierced lines light up; fractions count). Drag the arrow tip \u2014 the reading is linear in v. No metric, no angles: just counting.',
+    'Now parallel-transport <b>both</b> arrow and the carried copy of that initial sheet around the latitude circle (rate \u2212cos\u03b8 per unit \u03c6, from Plate IV). Components swirl \u2014 the reading \u03c9(v) does not move. The lower-index \u2212\u0393 rule is the coordinate bookkeeping that preserves this pairing.'
+  ];
+  var nextLabels = ['Show the device \u25b8','Add an arrow \u25b8','Enable transport \u25b8','Enable transport \u25b8'];
+  function sync(){
+    capEl.innerHTML = caps[stage];
+    nextB.innerHTML = nextLabels[stage];
+    nextB.disabled = (stage===3);
+    backB.disabled = (stage===0);
+    playB.disabled = (stage<3);
+    if(stage<3){ playing=false; phi=0; playB.textContent='\u25b6 Transport both'; }
+    requestRender();
+  }
+  nextB.addEventListener('click', function(){ if(stage<3){ stage++; sync(); } });
+  backB.addEventListener('click', function(){ if(stage>0){ stage--; sync(); } });
+  playB.addEventListener('click', function(){
+    if(phi >= TAU-1e-9) phi = 0;
+    if(motionQuery.matches){
+      phi = TAU; playing = false; playB.textContent = '\u25b6 Transport both';
+      requestRender(); return;
+    }
+    playing = !playing;
+    playB.textContent = playing ? '\u2758\u2758 Pause' : '\u25b6 Transport both';
+    requestRender();
+  });
+  thEl.addEventListener('input', function(){ phi = 0; playing=false; playB.textContent='\u25b6 Transport both'; requestRender(); });
+
+  /* drag arrow tip (when visible and not playing) */
+  var dragging=false;
+  function pos(ev){
+    var r = cv.getBoundingClientRect();
+    var t = (ev.touches && ev.touches[0]) ? ev.touches[0] : ev;
+    return [ (t.clientX-r.left)*(W/r.width), (t.clientY-r.top)*(H/r.height) ];
+  }
+  function rot(v, a){ var c=Math.cos(a), s=Math.sin(a);
+    /* ODE: d(a_th,a_ph)/dphi = cos(th) * (a_ph, -a_th) => rotation matrix below */
+    return [ c*v[0] + s*v[1], -s*v[0] + c*v[1] ]; }
+  function alphaNow(){ return Math.cos(parseFloat(thEl.value)) * phi; }
+  function curV(){ return rot(vBase, alphaNow()); }
+  function curW(){ return rot(wBase, alphaNow()); }
+  cv.addEventListener('mousedown', function(ev){
+    if(stage<2 || playing) return;
+    var p = pos(ev), v = curV();
+    var tx = cx + SC*v[1], ty = cy + SC*v[0];
+    if(Math.hypot(p[0]-tx, p[1]-ty) < 28){ dragging=true; ev.preventDefault(); }
+  });
+  cv.addEventListener('touchstart', function(ev){
+    if(stage<2 || playing) return;
+    var p = pos(ev), v = curV();
+    var tx = cx + SC*v[1], ty = cy + SC*v[0];
+    if(Math.hypot(p[0]-tx, p[1]-ty) < 34){ dragging=true; ev.preventDefault(); }
+  }, {passive:false});
+  window.addEventListener('mousemove', function(ev){
+    if(!dragging) return;
+    var p = pos(ev);
+    var vNow = [ (p[1]-cy)/SC, (p[0]-cx)/SC ];
+    vBase = rot(vNow, -alphaNow());
+    requestRender();
+    ev.preventDefault();
+  });
+  window.addEventListener('touchmove', function(ev){
+    if(!dragging) return;
+    var p = pos(ev);
+    var vNow = [ (p[1]-cy)/SC, (p[0]-cx)/SC ];
+    vBase = rot(vNow, -alphaNow());
+    requestRender();
+    ev.preventDefault();
+  }, {passive:false});
+  window.addEventListener('mouseup', function(){ dragging=false; });
+  window.addEventListener('touchend', function(){ dragging=false; });
+  cv.addEventListener('keydown', function(ev){
+    if(stage<2 || playing) return;
+    var vNow = curV(), step = ev.shiftKey ? 0.02 : 0.06;
+    if(ev.key==='ArrowUp') vNow[0] -= step;
+    else if(ev.key==='ArrowDown') vNow[0] += step;
+    else if(ev.key==='ArrowLeft') vNow[1] -= step;
+    else if(ev.key==='ArrowRight') vNow[1] += step;
+    else return;
+    vBase = rot(vNow, -alphaNow());
+    requestRender();
+    ev.preventDefault();
+  });
+
+  function frame(){
+    var th = parseFloat(thEl.value);
+    thOut.textContent = deg(th).toFixed(0) + '\u00b0';
+    wBase = [ -Math.sin(th), 0 ]; /* df of z: omega_that = -sin th (points north on canvas) */
+    if(playing){
+      phi = Math.min(TAU, phi + 0.02);
+      if(phi >= TAU-1e-9){ playing=false; playB.textContent='\u25b6 Transport both'; }
+    }
+    var v = curV(), w = curW();
+    var pairing = v[0]*w[0] + v[1]*w[1];
+
+    ctx.clearRect(0,0,W,H);
+    /* backdrop */
+    ctx.fillStyle = '#10162a'; ctx.fillRect(0,0,W,H);
+    /* compass */
+    ctx.save();
+    ctx.fillStyle = 'rgba(233,227,211,0.4)';
+    ctx.font = '11px "JetBrains Mono", monospace';
+    ctx.fillText('N \u2191', 14, 22); ctx.fillText('E \u2192', 14, 38);
+    ctx.restore();
+
+    if(stage>=1){
+      /* ruled sheet: lines { x : w.x = k }, w in canvas coords: wx = w[1], wy = w[0] (y down) */
+      var wx = w[1], wy = w[0];
+      var wn = Math.hypot(wx,wy);
+      if(wn > 1e-9){
+        var ux = -wy/wn, uy = wx/wn;      /* along-line dir */
+        var L = Math.hypot(W,H);
+        for(var k=-14;k<=14;k++){
+          var bx = cx + SC*k*wx/(wn*wn), by = cy + SC*k*wy/(wn*wn);
+          var pierced = false;
+          if(stage>=2){
+            if(pairing >= 0) pierced = (k > 0 && k <= pairing);
+            else pierced = (k < 0 && k >= pairing);
+          }
+          ctx.strokeStyle = pierced ? 'rgba(111,208,197,0.85)'
+                          : (k===0 ? 'rgba(233,227,211,0.5)' : 'rgba(233,227,211,0.20)');
+          ctx.lineWidth = pierced ? 1.8 : 1;
+          ctx.beginPath();
+          ctx.moveTo(bx - ux*L, by - uy*L);
+          ctx.lineTo(bx + ux*L, by + uy*L);
+          ctx.stroke();
+        }
+        /* small omega direction marker */
+        arrow2(ctx, cx + 0.0, cy + 0.0, cx + 34*wx/wn, cy + 34*wy/wn, C.brassDim, 1.4, 0.8, [3,3]);
+        ctx.fillStyle = C.brassDim; ctx.font='11px "JetBrains Mono", monospace';
+        ctx.fillText('\u03c9', cx + 42*wx/wn, cy + 42*wy/wn);
+      }
+    }
+    if(stage>=2){
+      var tx = cx + SC*v[1], ty = cy + SC*v[0];
+      arrow2(ctx, cx, cy, tx, ty, C.teal, 3);
+      ctx.fillStyle = C.teal;
+      ctx.beginPath(); ctx.arc(tx, ty, 6, 0, TAU); ctx.fill();
+      ctx.font='12px "JetBrains Mono", monospace';
+      ctx.fillText('v', tx+10, ty-8);
+      ctx.fillStyle = 'rgba(233,227,211,0.8)';
+      ctx.beginPath(); ctx.arc(cx, cy, 3, 0, TAU); ctx.fill();
+    }
+    var lines = '\u03b8 = ' + deg(th).toFixed(0) + '\u00b0    ruling density |\u03c9| = sin\u03b8 = ' + Math.sin(th).toFixed(3);
+    if(stage>=2){
+      /* coordinate comps: V^th = a_th, V^ph = a_ph/sin th ; w_th = what, w_ph = whatph*sin th */
+      var Vth = v[0], Vph = v[1]/Math.sin(th), wth = w[0], wph = w[1]*Math.sin(th);
+      lines += '\nV\u03b8 = ' + Vth.toFixed(3) + '   V\u03c6 = ' + Vph.toFixed(3) +
+               '   \u03c9\u03b8 = ' + wth.toFixed(3) + '   \u03c9\u03c6 = ' + wph.toFixed(3);
+      lines += '\n\u03c9(v) = <span class="hot">' + pairing.toFixed(4) + '</span>  lines pierced';
+      if(stage>=3) lines += '    \u03c6 = ' + deg(phi).toFixed(0) + '\u00b0' +
+        (playing || phi>0 ? '   \u2190 components swirl, the reading holds' : '');
+    }
+    setRead(readEl, lines);
+    if(playing && visibility.visible) requestRender();
+  }
+  var bonus = document.getElementById('oneformBonus');
+  if(bonus) bonus.addEventListener('toggle', requestRender);
+  sync();
+
+})();
+
+})();
+</script>
+</body>
+</html>

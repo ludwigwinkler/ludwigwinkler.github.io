@@ -6,21 +6,12 @@ date:   2025-02-04
 excerpt: "Diffusion, ODEs and Expressing One with the Other"
 image: "/blog/DiscreteDiffusion/cover.png"
 ---
-<head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+{% include mathjax3.html %}
 
 ## Binary Diffusion
+
+This post builds on the discrete-state-space machinery covered in [Continuous Time Markov Chains](https://ludwigwinkler.github.io/blog/ContTimeMarkovChain/) and the connection to continuous diffusion shown in [The Ehrenfest Process](https://ludwigwinkler.github.io/blog/TheEhrenfestProcess/).
+
 Let us have a stochastic process $\{X(t): 0 \leq t \leq 1 \}$.
 The random variable $X(t)$, which we shall abbreviate as $X_t$ can take on only two states with $X_t \in \\{-1, +1\\}^D$.
 
@@ -29,7 +20,7 @@ The marginal distribution assigns probabilities to two possible states at time $
 In order to keep the notation succinct, we will abbreviate the positive and negative states with a raised index $^+$ and $^-$.
 We can then write $x^+_t$ for a positive state at time $t$ and $x^-_t$ for a negative state with the corresponding marginal probabilities $p^\pm_t(x_t)$.
 
-In a time-reversible Markov Jump Processes with only two states, we have two rates: the forward rate $r_t^+(x^+_t|x^-_t)$ and the backward rate $r_t^-(x^-_t|x^+_t)$.
+In a time-reversible [Markov Jump Process](https://ludwigwinkler.github.io/blog/ContTimeMarkovChain/) with only two states, we have two rates: the forward rate $r_t^+(x^+_t|x^-_t)$ and the backward rate $r_t^-(x^-_t|x^+_t)$.
 The rates $r^+$ and $r^-$ denote the propensity of switching the state going from $x^+_t$ to $x^-_t$ and vice-versa.
 
 Time reversibility implies that any transition is reversible, thus we have
@@ -44,7 +35,7 @@ $$
 All that the equation above states is that residing in state $$x^+_t$$ 
 with probability $$p_{t}(x^+_t)$$ and moving to $$x^-_t$$ should equal the probability of moving in the reverse direction $$x^-_t \rightarrow x^+_t$$.
 If this equation wouldn't hold, simulating the process forward in time would in the long run yield a different marginal distribution than simulating the process backward in time.
-Essential we would deal with two different stochastic processes instead with a single time-reversible one.
+Essentially we would deal with two different stochastic processes instead of a single time-reversible one.
 This property is called _detailed balance_ and is essential for time reversible stochastic processes and is pivotal for MCMC sampling for example.
 
 Applying the limit to the time difference $$\lim_{\Delta t \rightarrow 0}$$, we will obtain the instantaneous rate $$r^+_t$$.
@@ -132,7 +123,7 @@ $$
 \end{align}
 $$
 <!-- </div> -->
-which oddly enough looks like the deterministic part of an Ornstein-Uhlenbeck process $dX_T = - \theta ( X_t - \mu) dt + \sigma dW_t$.
+which oddly enough looks like the deterministic part of an [Ornstein-Uhlenbeck process](https://ludwigwinkler.github.io/blog/SolvingSDEs/) $dX_T = - \theta ( X_t - \mu) dt + \sigma dW_t$.
 
 We can then proceed to solve the ODE for the marginal distribution $p^+_t$ by using the solution of the OU process.
 <!-- <div style="overflow-x: auto;"> -->
@@ -186,7 +177,7 @@ $$
 $$
 <!-- </div> -->
 
-Taking the time derivative $\dot{\mu}_t$ of $\mu_t$ we can express it's solution via the rate $\beta_t$,
+Taking the time derivative $\dot{\mu}_t$ of $\mu_t$ we can express its solution via the rate $\beta_t$,
 <!-- <div style="overflow-x: auto;"> -->
 $$
 \begin{align}
@@ -231,7 +222,7 @@ Further up, we saw the detailed balance requirement for a time-reversible stocha
 While solving the forward process, we only considered the forward rates.
 
 Here, we will derive the correct reverse rates.
-But first, let's revisit the detailed balance equation for the reverse process and extrac the reverse rate,
+But first, let's revisit the detailed balance equation for the reverse process and extract the reverse rate,
 <!-- <div style="overflow-x: auto;"> -->
 $$
 \begin{align}
@@ -260,7 +251,7 @@ $$
 $$
 <!-- </div> -->
 
-In the binary case we can easily express $p_t^-$ in terms of it's reciprocal $p_t^+$,
+In the binary case we can easily express $p_t^-$ in terms of its reciprocal $p_t^+$,
 <!-- <div style="overflow-x: auto;"> -->
 $$
 \begin{align}
@@ -491,6 +482,8 @@ This necessitates how to design the function $w_t$.
 
 ### Tweaking the Diffusion Function $w_t$
 
+For computing likelihoods under continuous-space diffusion models with similar machinery, see [Likelihood Calculations in Diffusion Models](https://ludwigwinkler.github.io/blog/DiffusionLikelihoods/).
+
 The weighting function $w_t$ is defined as
 <div style="overflow-x: auto;">
 $$
@@ -521,7 +514,7 @@ $$
 $$
 </div>
 
-We can see that the diffusion rate $\beta_t$ is directly scaled with the number of states, such that for more states $S$ the diffusion rate is reduce as there is intrinsically more variance due to more possibilities of state switching.
+We can see that the diffusion rate $\beta_t$ is directly scaled with the number of states, such that for more states $S$ the diffusion rate is reduced as there is intrinsically more variance due to more possibilities of state switching.
 
 Secondly, we would like to regularize the weighting function to a range $w_t \in [w_{min}/(S-1), (1 - w_{min}) \cdot \delta_{i,0}]$, where we bound the weighting of the true state $i$ at time $t=0$ to $1- w_{min}$ and distribute the remaining probability $w_{min}$ onto the $S-1$ remaining states,
 <div style="overflow-x: auto;">
@@ -537,4 +530,4 @@ $$
 During optimization, this state switching regularization might be unimportant, but during sampling, this might provide an important regularization to prevent exploding state switching rates at $t \approx 0$.
 
 While the equation above characterize a smooth function, we can for simplicity's sake also bound the function with a floor and a ceiling by restricting $w_t$ to $w_t \in [ \frac{w_{min}}{S-1}, 1 - w_{min} ]$.
-There only difference is that the weighting function is not smooth anymore, which should be of little importance to the prediction task during sampling.
+The only difference is that the weighting function is not smooth anymore, which should be of little importance to the prediction task during sampling.

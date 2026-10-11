@@ -5,28 +5,7 @@ date:   2023-10-21
 excerpt: "Fokker-Planck Equation Via Ito Calculus"
 image: "../../blog/blogthumbnails/fokkerplanckito.png"
 ---
-<head>
-<!-- <script type="text/x-mathjax-config">  -->
-  <!-- MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script> -->
-<!-- uncomment two lines above and remove the html css to svg lines -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    TeX: { equationNumbers: { autoNumber: "all" } },
-    tex2jax: {
-      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      displayMath: [['$$','$$'], ['\[' , '\]'], ['\\[', '\\]']],
-      processEscapes: true
-    },
-    "HTML-CSS": { linebreaks: { automatic: true } },
-    CommonHTML: { linebreaks: { automatic: true } },
-    SVG: { linebreaks: { automatic: true } }
-    });
-</script>
-<script type="text/javascript" async
-  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-</head>
+{% include mathjax3.html %}
 $$
 \newcommand{\Efunc}[1]{\mathbb{E}\left[ #1\right]}
 \newcommand{\Vfunc}[1]{\mathbb{V}\left[ #1\right]}
@@ -38,13 +17,15 @@ $$
 
 A Dutch, a German and a Japanese walk into a bar ...
 
-Let us consider the random variable $$X_t$$ that follows an Ito drift-diffusion process of the form
+For an alternative derivation via the Kramers-Moyal expansion, see [Fokker, Planck & Kolmogorov Revisited](https://ludwigwinkler.github.io/blog/Kramers/).
+
+Let us consider the random variable $$X_t$$ that follows an [Ito drift-diffusion process](https://ludwigwinkler.github.io/blog/ItosLemma/) of the form
 $$
 \begin{align}
 	dX_t = \drift dt + \diff dW_t
 \end{align}
 $$
-where $$W_t$$ is a Wiener process with $$W_t \sim \mathcal{N}(0, t)$$.
+where $$W_t$$ is a [Wiener process](https://ludwigwinkler.github.io/blog/SDE/) with $$W_t \sim \mathcal{N}(0, t)$$.
 
 We want to study an arbitrary function $$f(X_t)$$ with a compact support, meaning that $$f(X_t)=0, X_t \in \{ -\infty, \infty \}$$.
 Intuitively, this means that for the extreme values of $$\pm \infty$$ the function $$f(X_t)$$ evaluates to zero. 
@@ -55,7 +36,7 @@ $$
 \end{align}
 $$
 
-For the infinitissimal values $$dt$$, any term with an exponent higher than one will go towards zero at a faster rate.
+For the infinitesimal values $$dt$$, any term with an exponent higher than one will go towards zero at a faster rate.
 Thus the terms $$dt^2$$, $$dt dW_t = dt^{1.5}$$ will evaluate to zero at the limit.
 We can then plug in the dynamics of $$X_t$$ to obtain
 $$
@@ -103,7 +84,7 @@ $$
 	\partial_x \left[ u(x) v(x) \right] = \partial_x \left[  u(x) \right] v(x) + u(x) \partial_x \left[ v(x) \right]
 \end{align} 
 $$
-or in a easier form
+or in an easier form
 $$
 \begin{align}
 	\left( u(x) v(x) \right)' = u'(x) v(x) + u(x) v'(x)
@@ -162,3 +143,5 @@ $$
 \end{align}
 $$
 which is the Fokker-Planck equation!
+
+For its time-reversed counterpart that lies at the heart of diffusion generative models, see [Simple Reverse-Time SDE Derivation](https://ludwigwinkler.github.io/blog/SimpleReverseSDE/) and the original [Anderson (1982) derivation](https://ludwigwinkler.github.io/blog/ReverseTimeAnderson/).

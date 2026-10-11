@@ -5,28 +5,7 @@ date:   2024-01-13
 excerpt: "Save yourself a lot of Bayes with a linear function"
 image: "../../blog/blogthumbnails/simple_reverse_sde.png"
 ---
-<head>
-<!-- <script type="text/x-mathjax-config">  -->
-  <!-- MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script> -->
-<!-- uncomment two lines above and remove the html css to svg lines -->
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    TeX: { equationNumbers: { autoNumber: "all" } },
-    tex2jax: {
-      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      displayMath: [['$$','$$'], ['\[' , '\]'], ['\\[', '\\]']],
-      processEscapes: true
-    },
-    "HTML-CSS": { linebreaks: { automatic: true } },
-    CommonHTML: { linebreaks: { automatic: true } },
-    SVG: { linebreaks: { automatic: true } }
-    });
-</script>
-<script type="text/javascript" async
-  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-</head>
+{% include mathjax3.html %}
 $$
 \newcommand{\Efunc}[1]{\mathbb{E}\left[ #1\right]}
 \newcommand{\Vfunc}[1]{\mathbb{V}\left[ #1\right]}
@@ -36,7 +15,7 @@ $$
 \newcommand{\diff}{\sigma(X_t, t)}
 $$
 
-We start out with the Fokker-Planck equation (FPE) which relates the change over time for the probability for a specific value of $x$ with a diffusion term $\sigma(t)$ which is only dependent on the time,
+We start out with the [Fokker-Planck equation (FPE)](https://ludwigwinkler.github.io/blog/FokkerPlanck/) which relates the change over time for the probability for a specific value of $x$ with a diffusion term $\sigma(t)$ which is only dependent on the time,
 $$
 \begin{align}
 	\partial_t \ p(x,t) = & - \partial_x \left[ \drift \ p(x, t) \right] +  \partial_x^2 \left[ \denom{2} \sigma(t)^2 \ p(x, t) \right]  \\
@@ -45,7 +24,7 @@ $$
 $$
 
 The FPE describes the evolution of the entire probability distribution of a stochastic process.
-We can simulate a single particle by defining the stochastic differential equation (SDE),
+We can simulate a single particle by defining the [stochastic differential equation (SDE)](https://ludwigwinkler.github.io/blog/SDE/) — for an alternative, more intricate derivation of the reverse-time process, see [Reverse Time SDEs (Anderson 1982)](https://ludwigwinkler.github.io/blog/ReverseTimeAnderson/),
 $$
 \begin{align}
 dX_t = \underbrace{\mu(X_t, t) dt}_{\text{drift}} + \underbrace{\sigma(t) dW_t}_{\text{diffusion}}
@@ -68,7 +47,7 @@ But some marbles will move slower and some marbles will move faster and thus the
 After sufficient time they will all be at the bottom of the staircase in another bucket (we built a collection contraption).
 There the probability distribution will be highly concentrated again as all marbles will be found inside the very compact space of the bottom bucket.
 
-So obtaining the FPE is of the harder, but more rewarding task as it gives us the underlying probability distribution over time and space instead of a bunch of trajectories.
+So obtaining the FPE is the harder, but more rewarding task as it gives us the underlying probability distribution over time and space instead of a bunch of trajectories.
 
 
 Now we consider a time reversion $\color{blue}{\tau(t)} = 1 - t$ and are interested in what the change of the probability distribution is under this reversed time index,
@@ -96,6 +75,8 @@ $$
 	= & - \color{blue}{\partial_x} \Bigg[ -\mu(X(\tau(t)), \tau(t)) \ p(x, \tau(t)) + \denom{2} \sigma(\tau(t))^2 \color{blue}{\partial_x} \left[ \ p(x, \tau(t)) \right] \Bigg]
 \end{align}
 $$
+For a generative-modelling application of this same reverse-time machinery, see [Flow Matching](https://ludwigwinkler.github.io/blog/FlowMatching/) and [Diffusion Likelihoods](https://ludwigwinkler.github.io/blog/DiffusionLikelihoods/).
+
 Applying the log derivative identity $\partial_x \log p(x) = \frac{1}{p(x)} \partial_x p(x)$, which rearranged yields $ \partial_x p(x) = p(x) \partial_x \log p(x)$, we obtain
 $$
 \begin{align}
@@ -139,5 +120,5 @@ $$
 \end{align}
 $$
 
-In the intuition is quite clear: If we add extra diffusion to our forward process, we will 'diffuse' more and the probability mass will be distributed over a larger, more spread out area.
+The intuition is quite clear: If we add extra diffusion to our forward process, we will 'diffuse' more and the probability mass will be distributed over a larger, more spread out area.
 Therefore, if we want to invert this particular stochastic process, we need to increase the score term dependent on the $$\alpha$$ which pushes the particles back into the high probability region.

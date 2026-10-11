@@ -6,21 +6,11 @@ date:   2024-12-08
 excerpt: "Flow Matching, Diffusion, Scores and Characteristic Functions"
 image: "/blog/FlowMatching/sample_flow.png"
 ---
-<head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+{% include mathjax3.html %}
 
 "Creating noise from data is easy, creating data from noise is generative modelling."
+
+For a derivation of how to compute likelihoods (and convert between flows and diffusion SDEs), see [Likelihood Calculations in Diffusion Models](https://ludwigwinkler.github.io/blog/DiffusionLikelihoods/).
 
 That was the first sentence in the seminal 'Score-Based Generative Modelling Through Stochastic Differential Equations' by Yang Song et al.
 It introduced a rigorous mathematical framework for A) turning data into noise with a predetermined stochastic process and B) training a neural network to revert this process.
@@ -31,7 +21,7 @@ They use a forward process which transforms data into noise _over time_.
 During training, we can jump to any time step of this forward process and train the model to make the noisy data slightly less noisy.
 Just as we can turn data into noise by repeatedly adding just a sliver of noise to it, we can equally denoise data (with the right model) repeatedly to recover the original data.
 
-The data samples are transformed into noise samples by a stochastic process which is defined by a stochastic differential equation (SDE),
+The data samples are transformed into noise samples by a stochastic process which is defined by a [stochastic differential equation (SDE)](https://ludwigwinkler.github.io/blog/SDE/),
 <div style="overflow-x: auto;">
 $$
 \begin{align*}
@@ -43,7 +33,7 @@ $$
 
 We can take a sample $x_0 \sim p(x)$ from the data distribution $p(x)$ and if we simulate the SDE long enough, we will end up with a sample $x_1$ that is indistinguishable (in a statistical sense) from a sample $\epsilon \sim p(\epsilon)$ from the noise distribution $p(\epsilon)$.
 
-The reverse process, which transforms noise samples $\epsilon$ into sample from the data distribution $p(x)$, is defined by the reverse SDE,
+The reverse process, which transforms noise samples $\epsilon$ into sample from the data distribution $p(x)$, is defined by the [reverse SDE](https://ludwigwinkler.github.io/blog/SimpleReverseSDE/),
 <div style="overflow-x: auto;">
 $$
 \begin{align*}
@@ -68,8 +58,8 @@ dX_\tau &= \left\{-\mu(X_\tau, \tau) + \frac{1}{2} \sigma_\tau^2 \left(1 +\alpha
 $$
 </div>
 
-One interpretation of diffusion model is that we want to connect a data distribution with a noise distribution.
-Upon successfull training, we can then sample from the noise distribution and transform it into data.
+One interpretation of diffusion models is that we want to connect a data distribution with a noise distribution.
+Upon successful training, we can then sample from the noise distribution and transform it into data.
 The stochastic process at the heart of diffusion models provides this (stochastic) connection.
 
 While we originally started out with the idea of connecting data and noise with a stochastic process, setting $\alpha=0$ in the reverse SDE gives us a deterministic connection.
@@ -78,7 +68,7 @@ While we originally started out with the idea of connecting data and noise with 
 As derived in this [blog post](https://ludwigwinkler.github.io/blog/SimpleReverseSDE/), these stochastic processes could also be simulated in a deterministic fashion with the idea of probability flows. -->
 
 But does the connection really have to be stochastic at all?
-The probability flow interpretation of diffusion models suggests that we can also connect data and noise deterministically by setting $\alpha=0$ in the reverse SDE.
+The probability flow interpretation of diffusion models suggests that we can also connect data and noise deterministically by setting $\alpha=0$ in the reverse SDE (see [Likelihood Calculations in Diffusion Models](https://ludwigwinkler.github.io/blog/DiffusionLikelihoods/) for how the deterministic and stochastic formulations relate and how to compute likelihoods through each).
 
 ### Flow Matching Vector Fields
 
@@ -224,7 +214,7 @@ $$
 
 That doesn't seem to be the most equation to be working with.
 
-Also, why is actually the convolution of the two PDF's?
+Also, why it is actually the convolution of the two PDF's?
 
 In the case of the sum of $X$ and $Y$ we have to consider all possible values of $X$ and $Y$ that sum up to $Z$.
 For example, let's consider the probability of obtaining $Z=5$.
@@ -493,7 +483,7 @@ x_t &= \alpha(t) x_0 + \sigma(t) \epsilon \\
 $$
 </div>
 
-Since DDPM is built on the Ornstein Uhlenbeck process, the score term is given by by the gradient of the log marginal probability density function of a time-dependent Gaussian:
+Since DDPM is built on the Ornstein Uhlenbeck process, the score term is given by the gradient of the log marginal probability density function of a time-dependent Gaussian:
 <div style="overflow-x: auto;">
 $$
 \begin{align*}
@@ -510,7 +500,7 @@ where all the relevant terms occur in a similar fashion to the flow matching mod
 ### Let's try it out with some Code
 
 So let's try this out with some code.
-One thing to note, and what I personally think is nice, is that the interpolation paramters $\alpha(t)$, $\beta(t)$ can be chosen independently from the diffusion parameter $\sigma(t)$.
+One thing to note, and what I personally think is nice, is that the interpolation parameters $\alpha(t)$, $\beta(t)$ can be chosen independently from the diffusion parameter $\sigma(t)$.
 <div style="overflow-x: auto;">
 $$
 \begin{align*}

@@ -1,0 +1,70 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+	{% include head.html %}
+</head>
+
+<body class="is-loading">
+	<div id="wrapper" class="fade-in">
+		<header id="header">
+			<a href="{{ "/" | absolute_url }}" class="logo">{{site.title}}</a>
+		</header>
+
+		<nav id="nav">
+			{% include nav.html %}
+			<ul class="icons">
+				<li><a href="https://twitter.com/ludiXIVwinkler" class="icon fa-twitter" rel="nofollow"><span class="label">Twitter</span></a></li>
+				<li><a href="https://github.com/ludwigwinkler" class="icon fa-github" rel="nofollow"><span class="label">GitHub</span></a></li>
+			</ul>
+		</nav>
+
+		<div id="main">
+			<article class="post featured">
+				<header class="major">
+					<h2>Explainers</h2>
+				</header>
+				<p>If we already have LLM's with the knowledge of an entire university library, why not use them to explain stuff to me :)</p>
+			</article>
+
+			{% assign explainers = site.pages | where: "layout", "explainer" | sort: "title" %}
+			{% assign section_order = "Physics|Math|Bio|Programming" | split: "|" %}
+			{% for section_name in section_order %}
+			{% case section_name %}
+			{% when "Physics" %}
+			{% assign section_explainers = explainers | where: "section", "Physics" %}
+			{% when "Math" %}
+			{% assign section_explainers = explainers | where: "section", "Math" %}
+			{% when "Bio" %}
+			{% assign section_explainers = explainers | where: "section", "Bio" %}
+			{% when "Programming" %}
+			{% assign section_explainers = explainers | where: "section", "Programming" %}
+			{% endcase %}
+			{% if section_explainers.size > 0 %}
+			<header class="major">
+				<h2>{{ section_name }}</h2>
+			</header>
+			<section class="posts">
+				{% for post in section_explainers %}
+				<article>
+					<header>
+						{% if post.date %}<span class="date">{{ post.date | date_to_string }}</span>{% endif %}
+						<h2><a href="{{ post.url | absolute_url }}">{{ post.title }}</a></h2>
+					</header>
+					{% if post.image %}
+					<a href="{{ post.url | absolute_url }}" class="image fit"><img src="{{ post.image | absolute_url }}" alt="" /></a>
+					{% endif %}
+					{% if post.description %}<p>{{ post.description }}</p>{% endif %}
+					<ul class="actions">
+						<li><a href="{{ post.url | absolute_url }}" class="button">Read Explainer</a></li>
+					</ul>
+				</article>
+				{% endfor %}
+			</section>
+			{% endif %}
+			{% endfor %}
+		</div>
+	</div>
+</body>
+
+</html>

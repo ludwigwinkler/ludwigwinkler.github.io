@@ -1,0 +1,3898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Primal &amp; Dual Optimization — A Geometric Explainer</title>
+
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #eef1eb;
+    --surface: #faf9f4;
+    --plot: #e7ece6;
+    --ink: #17302f;
+    --ink-soft: #5b6b67;
+    --teal: #19766f;
+    --teal-pale: #b9d9d2;
+    --coral: #d45d48;
+    --gold: #d6a32f;
+    --violet: #725b9e;
+    --line: #cdd6ce;
+    --axis: #9baaa3;
+    --kernel-bg: #17302f;
+    --shadow: rgba(23, 48, 47, 0.09);
+    --radius: 18px;
+    --measure: 69ch;
+    --font-display: 'Instrument Serif', Georgia, serif;
+    --font-body: 'Manrope', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #111a19;
+      --surface: #192321;
+      --plot: #14201e;
+      --ink: #edf3ed;
+      --ink-soft: #aebdb7;
+      --teal: #55c4b9;
+      --teal-pale: #315d58;
+      --coral: #f27c63;
+      --gold: #efc45c;
+      --violet: #b39adb;
+      --line: #33433f;
+      --axis: #52645e;
+      --kernel-bg: #203f3b;
+      --shadow: rgba(0, 0, 0, 0.24);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #111a19;
+    --surface: #192321;
+    --plot: #14201e;
+    --ink: #edf3ed;
+    --ink-soft: #aebdb7;
+    --teal: #55c4b9;
+    --teal-pale: #315d58;
+    --coral: #f27c63;
+    --gold: #efc45c;
+    --violet: #b39adb;
+    --line: #33433f;
+    --axis: #52645e;
+    --kernel-bg: #203f3b;
+    --shadow: rgba(0, 0, 0, 0.24);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background:
+      radial-gradient(circle at 12% 4%, color-mix(in srgb, var(--teal-pale) 24%, transparent), transparent 28rem),
+      var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 18px;
+    line-height: 1.72;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #progress {
+    position: fixed;
+    inset: 0 auto auto 0;
+    z-index: 100;
+    width: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--teal), var(--gold), var(--coral));
+  }
+
+  .wrap { width: min(920px, 100%); margin: 0 auto; padding: 0 28px 110px; }
+  .prose { max-width: var(--measure); }
+  .prose p { margin: 0 0 1.08em; }
+  strong { font-weight: 700; }
+
+  header { padding: 96px 0 46px; }
+  .eyebrow {
+    margin: 0 0 18px;
+    color: var(--teal);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  h1 {
+    max-width: 760px;
+    margin: 0 0 20px;
+    font-family: var(--font-display);
+    font-size: clamp(3.25rem, 9vw, 6.1rem);
+    font-weight: 400;
+    letter-spacing: -0.045em;
+    line-height: 0.92;
+  }
+  h1 em { color: var(--coral); font-weight: 400; }
+  .promise {
+    max-width: 690px;
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: clamp(1.05rem, 2.4vw, 1.3rem);
+    line-height: 1.55;
+  }
+
+  .route {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 30px;
+  }
+  .route a {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 6px 11px;
+    color: var(--ink-soft);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    text-decoration: none;
+    transition: border-color 140ms, color 140ms, transform 140ms;
+  }
+  .route a:hover { border-color: var(--teal); color: var(--teal); transform: translateY(-1px); }
+
+  .kernel {
+    position: relative;
+    overflow: hidden;
+    margin: 28px 0 88px;
+    border-radius: 24px;
+    padding: 42px 46px;
+    background: var(--kernel-bg);
+    color: #f4f5ed;
+    box-shadow: 0 22px 60px var(--shadow);
+  }
+  .kernel::after {
+    position: absolute;
+    right: -80px;
+    bottom: -120px;
+    width: 320px;
+    height: 320px;
+    border: 1px solid rgba(255,255,255,0.13);
+    border-radius: 50%;
+    box-shadow:
+      0 0 0 42px rgba(255,255,255,0.04),
+      0 0 0 88px rgba(255,255,255,0.025);
+    content: '';
+  }
+  .kernel .label {
+    margin: 0 0 12px;
+    color: #9fd4cb;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .kernel .sentence {
+    position: relative;
+    z-index: 1;
+    max-width: 700px;
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.55rem, 4vw, 2.25rem);
+    line-height: 1.3;
+  }
+  .kernel mark {
+    background: linear-gradient(transparent 68%, rgba(239,196,92,0.5) 68%);
+    color: inherit;
+  }
+  .intro-bridge {
+    max-width: var(--measure);
+    margin: -42px 0 92px;
+    padding: 0 0 0 22px;
+    border-left: 3px solid var(--teal);
+  }
+  .intro-bridge h2 {
+    margin: 0 0 16px;
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 400;
+  }
+
+  .concept-step { margin: 0 0 104px; scroll-margin-top: 32px; }
+  .step-num {
+    display: inline-block;
+    margin: 0 0 12px;
+    color: var(--coral);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .concept-step h2, .recap h2 {
+    max-width: 760px;
+    margin: 0 0 24px;
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 5vw, 3.45rem);
+    font-weight: 400;
+    letter-spacing: -0.025em;
+    line-height: 1.03;
+  }
+  .concept-step h3.subhead {
+    max-width: 740px;
+    margin: 44px 0 16px;
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 3.7vw, 2.45rem);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    line-height: 1.08;
+  }
+  .lead {
+    color: var(--ink);
+    font-size: 1.08rem;
+  }
+
+  .equation-story {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    max-width: 820px;
+    margin: 24px 0;
+  }
+  .equation-story .piece {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 15px 16px;
+    background: color-mix(in srgb, var(--surface) 78%, transparent);
+  }
+  .piece .mini {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--ink-soft);
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .nested-game {
+    max-width: var(--measure);
+    margin: 26px 0;
+    border-left: 4px solid var(--gold);
+    border-radius: 0 12px 12px 0;
+    padding: 20px 22px;
+    background: color-mix(in srgb, var(--surface) 82%, var(--gold) 5%);
+  }
+  .nested-game .read-order {
+    margin: 0 0 10px;
+    font-family: var(--font-display);
+    font-size: 1.45rem;
+    line-height: 1.25;
+  }
+  .nested-game ol { margin: 0 0 16px; padding-left: 1.35em; }
+  .nested-game li { margin-bottom: 7px; }
+  .price-table-wrap { overflow-x: auto; }
+  .price-table {
+    width: 100%;
+    min-width: 510px;
+    border-collapse: collapse;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    line-height: 1.45;
+  }
+  .price-table th, .price-table td {
+    border-bottom: 1px solid var(--line);
+    padding: 8px 10px;
+    text-align: left;
+  }
+  .price-table th { color: var(--ink-soft); font-weight: 500; }
+  .price-table tr.best { background: color-mix(in srgb, var(--teal-pale) 35%, transparent); }
+  .price-table tr:last-child td { border-bottom: 0; }
+
+  .widget {
+    margin: 30px 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 22px;
+    background: color-mix(in srgb, var(--surface) 96%, transparent);
+    box-shadow: 0 16px 42px var(--shadow);
+  }
+  .widget-titlewrap {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 18px;
+  }
+  .widget-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.55rem;
+    line-height: 1.15;
+  }
+  .figure-label {
+    margin-right: 0.38em;
+    color: var(--coral);
+    font-family: var(--font-mono);
+    font-size: 0.55em;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .widget-tag {
+    flex: 0 0 auto;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 5px 9px;
+    color: var(--ink-soft);
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.04em;
+  }
+  .widget-stage {
+    display: block;
+    width: 100%;
+    border: 1px solid color-mix(in srgb, var(--line) 75%, transparent);
+    border-radius: 12px;
+    background: var(--plot);
+    touch-action: none;
+  }
+  .dual-pair {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+  }
+  .dual-panel { display: grid; gap: 7px; }
+  .dual-panel-label {
+    margin: 0;
+    color: var(--ink-soft);
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+  .dual-pair .widget-stage { width: min(100%, 390px); }
+  #w3-point-primal { max-width: 230px; }
+  #w3-point-line { max-width: 380px; }
+  .widget-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 14px 24px;
+    margin: 0 0 16px;
+  }
+  .widget-controls label {
+    display: grid;
+    min-width: min(260px, 100%);
+    gap: 5px;
+    color: var(--ink-soft);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+  }
+  input[type="range"] {
+    width: min(320px, 100%);
+    accent-color: var(--teal);
+    cursor: pointer;
+  }
+  .val { color: var(--coral); font-weight: 500; }
+  .reveal-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-top: 14px;
+  }
+  .reveal-caption {
+    flex: 1 1 260px;
+    color: var(--ink-soft);
+    font-size: 0.82rem;
+    font-style: italic;
+    line-height: 1.45;
+  }
+  .widget button {
+    border: 0;
+    border-radius: 9px;
+    padding: 9px 14px;
+    background: var(--ink);
+    color: var(--surface);
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: 700;
+    transition: background 130ms, transform 130ms;
+  }
+  .widget button:hover { background: var(--teal); transform: translateY(-1px); }
+  .widget button:disabled { opacity: 0.32; cursor: default; transform: none; }
+  .widget button.active { background: var(--teal); }
+  .widget button.secondary {
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink);
+  }
+  .readout {
+    min-height: 1.5em;
+    margin-top: 13px;
+    color: var(--ink-soft);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.55;
+  }
+  .caption {
+    margin: 8px 0 0;
+    color: var(--ink-soft);
+    font-size: 0.76rem;
+    font-style: italic;
+  }
+  .is-hidden { display: none !important; }
+
+  .kkt-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .kkt-chip {
+    min-height: 72px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 9px 10px;
+    color: var(--ink-soft);
+    font-size: 0.68rem;
+    line-height: 1.35;
+  }
+  .kkt-chip b {
+    display: block;
+    margin-bottom: 3px;
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+  }
+  .kkt-chip.on {
+    border-color: color-mix(in srgb, var(--teal) 55%, var(--line));
+    background: color-mix(in srgb, var(--teal-pale) 23%, transparent);
+  }
+
+  details.formal {
+    max-width: var(--measure);
+    margin: 24px 0;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--surface) 78%, transparent);
+  }
+  details.formal summary {
+    padding: 14px 17px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    list-style: none;
+    user-select: none;
+  }
+  details.formal summary::before { color: var(--coral); content: '+  '; }
+  details.formal[open] summary::before { content: '−  '; }
+  details.formal .formal-body { padding: 0 18px 18px; }
+
+  pre.code {
+    max-width: var(--measure);
+    overflow-x: auto;
+    margin: 18px 0 24px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 18px;
+    background: var(--surface);
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    line-height: 1.75;
+  }
+  pre.code .primal { color: var(--teal); }
+  pre.code .dual { color: var(--coral); }
+  pre.code .comment { color: var(--ink-soft); }
+
+  .recap {
+    margin-top: 18px;
+    border-top: 2px solid var(--ink);
+    padding-top: 52px;
+  }
+  .places {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 30px;
+  }
+  .place {
+    border-top: 3px solid var(--teal);
+    border-radius: 0 0 12px 12px;
+    padding: 15px 16px 17px;
+    background: var(--surface);
+  }
+  .place:nth-child(2) { border-color: var(--gold); }
+  .place:nth-child(3) { border-color: var(--coral); }
+  .place h3 {
+    margin: 0 0 6px;
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 400;
+  }
+  .place p { margin: 0; color: var(--ink-soft); font-size: 0.76rem; line-height: 1.55; }
+
+  @media (max-width: 720px) {
+    body { font-size: 16px; }
+    .wrap { padding: 0 17px 76px; }
+    header { padding-top: 72px; }
+    .kernel { padding: 30px 25px; margin-bottom: 70px; }
+    .widget { padding: 15px; margin-inline: -4px; }
+    .widget-titlewrap { display: block; }
+    .widget-tag { display: inline-block; margin-top: 8px; }
+    .equation-story, .places { grid-template-columns: 1fr; }
+    .kkt-strip { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+
+<main class="wrap">
+  <header>
+    <p class="eyebrow">Optimization, undressed</p>
+    <h1>Primal <em>&amp;</em> dual optimization</h1>
+    <p class="promise">
+      One constrained bowl, viewed two ways: search for the best allowed point,
+      or search for the right price on breaking the rule. By the end, the
+      Lagrangian and KKT conditions will be consequences of the picture.
+    </p>
+    <nav class="route" aria-label="Explainer steps">
+      <a href="#primal">01 primal</a>
+      <a href="#lagrangian">02 Lagrangian</a>
+      <a href="#max-min">03 max–min</a>
+      <a href="#dual">04 dual</a>
+      <a href="#kkt">05 KKT</a>
+      <a href="#algorithm">06 algorithm</a>
+    </nav>
+  </header>
+
+  <aside class="kernel">
+    <p class="label">The whole idea, in one sentence</p>
+    <p class="sentence">
+      A constrained problem can be solved either by searching among allowed
+      points, or by <mark>putting a price on each broken rule and tuning the
+      prices until selfish optimization obeys the rules</mark>.
+    </p>
+  </aside>
+
+  <section class="intro-bridge prose" aria-labelledby="intro-bridge-title">
+    <h2 id="intro-bridge-title">The plan before the details</h2>
+    <p>
+      We want to minimize \(f(x,y)\) subject to \(g(x,y)\le0\). For a chosen
+      price \(\lambda\ge0\), define
+      \[
+        L(x,y,\lambda)=f(x,y)+\lambda g(x,y).
+      \]
+      At every feasible point, \(\lambda g(x,y)\le0\), so
+      \(L(x,y,\lambda)\le f(x,y)\). Thus, the cheapest value of \(L\) over all
+      \((x,y)\),
+      \[
+        q(\lambda)=\min_{x,y}L(x,y,\lambda),
+      \]
+      is a guaranteed lower bound on the constrained optimum. We now want to
+      raise this lower bound as far as possible by choosing \(\lambda\).
+    </p>
+    <p>
+      For each price, the point chooses its own minimizer
+      \((x(\lambda),y(\lambda))\). If that point violates the constraint,
+      \(g>0\), the price is too low: increase \(\lambda\) so violation becomes
+      more expensive. If it lies strictly inside, \(g<0\), the price is too
+      high: \(\lambda g\) is a negative rebate that pushes the lower bound
+      down, so reduce \(\lambda\). The best price makes the lower bound as
+      tight as possible. When the constraint is active, this occurs at
+      \[
+        g(x^\star,y^\star)=0,
+      \]
+      where the Lagrangian minimizer is also the true constrained minimizer.
+      If the constraint is inactive, the best price is instead
+      \(\lambda^\star=0\).
+    </p>
+  </section>
+
+  <section class="concept-step" id="primal">
+    <span class="step-num">Step 01 · the primal view</span>
+    <h2>First, search where you are allowed to stand</h2>
+    <div class="prose">
+      <p class="lead">
+        Imagine a marble that wants to reach \((2,2)\), but a wall says
+        \(x+y\le 2\). The <strong>primal problem</strong> asks for the lowest
+        point of the bowl that lies on the allowed side of the wall.
+      </p>
+      <p>
+        We measure how far the marble is from its preferred point with
+        \[
+          f(x,y)=(x-2)^2+(y-2)^2.
+        \]
+        Each squared term measures miss-distance along one axis, so \(f\) is
+        exactly squared Euclidean distance to \((2,2)\). Unconstrained, the
+        answer is obviously \((2,2)\). With the rule, it is forbidden.
+      </p>
+      <p>
+        A direct primal technique is <strong>projected gradient descent</strong>:
+        move downhill, then snap back to the nearest allowed point. That snap is
+        called a <em>projection</em>.
+      </p>
+    </div>
+
+    <div class="widget" id="w1">
+      <div class="widget-titlewrap">
+        <h3 class="widget-title"><span class="figure-label">Figure 1 ·</span>A downhill step meets a wall</h3>
+        <span class="widget-tag">staged · drag the starting point</span>
+      </div>
+      <canvas id="w1-canvas" class="widget-stage"></canvas>
+      <div class="reveal-bar">
+        <button id="w1-back" class="secondary" disabled>&larr; Back</button>
+        <span class="reveal-caption" id="w1-caption"></span>
+        <button id="w1-next">Add the constraint &rarr;</button>
+      </div>
+      <div class="readout" id="w1-readout"></div>
+      <p class="caption">The contour rings are equal-cost curves: inner rings are better.</p>
+    </div>
+
+    <div class="prose">
+      <p>
+        In this special bowl, a step of size \(\eta=\tfrac12\) lands directly
+        at \((2,2)\), because
+        \[
+          \nabla f(x,y)=\bigl(2(x-2),\,2(y-2)\bigr)
+        \]
+        and therefore \((x,y)-\tfrac12\nabla f(x,y)=(2,2)\). Projecting that
+        forbidden point onto \(x+y\le2\) gives \((1,1)\). Its cost is
+        \[
+          p^\star=f(1,1)=(-1)^2+(-1)^2=2.
+        \]
+        The symbol \(p^\star\) means “the best primal value.”
+      </p>
+    </div>
+
+    <details class="formal">
+      <summary>The formal primal method</summary>
+      <div class="formal-body prose">
+        <p>
+          For an allowed set \(C\), projected gradient descent repeats
+          \[
+            z_{k+1}=x_k-\eta\nabla f(x_k),
+            \qquad
+            x_{k+1}=\Pi_C(z_{k+1}),
+          \]
+          where \(\Pi_C(z)\) is the point in \(C\) closest to \(z\). This is
+          attractive when projection is cheap. It becomes awkward when the
+          constraint set is huge or projection itself is another hard
+          optimization problem—the motivation for the dual view.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <section class="concept-step" id="lagrangian">
+    <span class="step-num">Step 02 · the bridge</span>
+    <h2>Turn the wall into a price</h2>
+    <div class="prose">
+      <p class="lead">
+        Instead of physically forbidding \(x+y>2\), charge for it. Let
+        \(g(x,y)=x+y-2\): it is positive beyond the wall, zero on the wall, and
+        negative inside.
+      </p>
+      <p>
+        Multiply that signed rule value by a nonnegative price
+        \(\lambda\), then add it to the original cost:
+        \[
+          \underbrace{
+            \overbrace{L(x,y,\lambda)}^{-\infty\lt L\lt\infty}
+          }_{\min_{(x,y)\in\mathbb R^2}}
+          =
+          \underbrace{
+            \overbrace{(x-2)^2+(y-2)^2}^{f(x,y)\ge0}
+          }_{\min_{x,y}}
+          +
+          \underbrace{
+            \overbrace{\lambda}^{\lambda\ge0}
+          }_{\max_{\lambda}\text{ later}}
+          \underbrace{
+            \overbrace{(x+y-2)}^{-\infty\lt g(x,y)\lt\infty}
+          }_{\text{require }g(x,y)\le0}.
+        \]
+        The product \(\lambda g(x,y)\) can lie anywhere in \(\mathbb R\), but
+        it is always nonpositive at a feasible point because
+        \(\lambda\ge0\) and \(g(x,y)\le0\).
+        This combined score is the <strong>Lagrangian</strong>. The multiplier
+        \(\lambda\) is not magic—it is simply the current unit price of pushing
+        through the wall.
+      </p>
+    </div>
+
+    <div class="widget" id="w2">
+      <div class="widget-titlewrap">
+        <h3 class="widget-title"><span class="figure-label">Figure 2 ·</span>A price tilts the bowl</h3>
+        <span class="widget-tag">staged · then drag λ</span>
+      </div>
+      <div class="widget-controls is-hidden" id="w2-controls">
+        <label>rule price &nbsp;λ = <span class="val" id="w2-lambda-v">1.20</span>
+          <input type="range" id="w2-lambda" min="0" max="4" step="0.05" value="1.2">
+        </label>
+      </div>
+      <canvas id="w2-canvas" class="widget-stage"></canvas>
+      <div class="reveal-bar">
+        <button id="w2-back" class="secondary" disabled>&larr; Back</button>
+        <span class="reveal-caption" id="w2-caption"></span>
+        <button id="w2-next">Show the signed rule &rarr;</button>
+      </div>
+      <div class="readout" id="w2-readout"></div>
+    </div>
+
+    <div class="prose">
+      <p>
+        For a fixed price, the point behaves selfishly: it minimizes \(L\).
+        Setting the two slopes to zero gives
+        \[
+          \frac{\partial L}{\partial x}=2(x-2)+\lambda=0,
+          \qquad
+          \frac{\partial L}{\partial y}=2(y-2)+\lambda=0.
+        \]
+        So the price moves the bowl’s preferred point to
+        \[
+          x(\lambda)=y(\lambda)=2-\frac{\lambda}{2}.
+        \]
+        At \(\lambda=0\), it ignores the rule and chooses \((2,2)\). At
+        \(\lambda=2\), its selfish choice is exactly \((1,1)\), on the wall.
+        A larger price over-corrects and pushes it farther inside.
+      </p>
+    </div>
+
+    <div class="prose">
+      <h3 class="subhead">Why an inequality price cannot be negative</h3>
+      <p>
+        For the rule \(g(x,y)\le0\), a valid dual price must satisfy
+        \(\lambda\ge0\). Then every violation \(g>0\) receives a nonnegative
+        charge \(\lambda g\), while every feasible point \(g\le0\) receives a
+        nonpositive adjustment. A negative \(\lambda\) reverses both signs:
+        it rewards violations and can raise the score of feasible points,
+        destroying the lower-bound argument used by the dual.
+      </p>
+    </div>
+
+    <details class="formal">
+      <summary>Why equality multipliers may have either sign</summary>
+      <div class="formal-body prose">
+        <p>
+          For an equality \(h(x,y)=0\), every feasible point has
+          \(\nu h(x,y)=0\) for <em>any</em> \(\nu\in\mathbb R\). Therefore
+          \(L=f\) at feasible points regardless of the multiplier’s sign, so
+          the lower-bound proof needs no sign restriction. Equivalently,
+          \(h=0\) means both \(h\le0\) and \(-h\le0\); their two nonnegative
+          multipliers combine into one unrestricted difference
+          \(\nu=\lambda_+-\lambda_-\).
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <section class="concept-step" id="max-min">
+    <span class="step-num">Step 03 · the order of play</span>
+    <h2>Read max–min from the inside out</h2>
+    <div class="prose">
+      <p class="lead">
+        The expression is not asking \(\lambda\), \(x\), and \(y\) to move at
+        once. It describes a nested game:
+        \[
+          \underbrace{\max_{\lambda\ge0}}_{\text{compare prices second}}
+          \left[
+            \underbrace{\min_{(x,y)\in\mathbb R^2}
+              L(x,y,\lambda)}_{\text{point best-responds first}}
+          \right].
+        \]
+        The operator closest to \(L\) acts first. Freeze one price
+        \(\lambda\); let \((x,y)\) find the cheapest possible response; record
+        that one number as \(q(\lambda)\). Repeat for other prices. Only then
+        keep the largest recorded number.
+      </p>
+    </div>
+
+    <aside class="nested-game">
+      <p class="read-order">Set a price → allow the cheapest response → record one bound.</p>
+      <ol>
+        <li><strong>Freeze \(\lambda\).</strong> It cannot move while the inner
+          minimization runs.</li>
+        <li><strong>Minimize over \((x,y)\).</strong> The point gets a fresh
+          best response to every price.</li>
+        <li><strong>Call the result \(q(\lambda)\).</strong> All dependence on
+          \(x,y\) has disappeared; one price now maps to one number.</li>
+        <li><strong>Maximize over prices.</strong> Choose the largest of those
+          guaranteed lower bounds.</li>
+      </ol>
+      <div class="price-table-wrap">
+        <table class="price-table">
+          <thead>
+            <tr>
+              <th>First choose \(\lambda\)</th>
+              <th>Then \(\min_{x,y}L\) chooses</th>
+              <th>Rule value \(g\)</th>
+              <th>Record \(q(\lambda)\)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>\(0\)</td><td>\((2,2)\)</td><td>\(2\), violated</td><td>\(0\)</td>
+            </tr>
+            <tr>
+              <td>\(1\)</td><td>\((1.5,1.5)\)</td><td>\(1\), violated</td><td>\(1.5\)</td>
+            </tr>
+            <tr class="best">
+              <td>\(2\)</td><td>\((1,1)\)</td><td>\(0\), tight</td><td>\(2\) — largest</td>
+            </tr>
+            <tr>
+              <td>\(3\)</td><td>\((0.5,0.5)\)</td><td>\(-1\), slack</td><td>\(1.5\)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </aside>
+
+    <div class="widget" id="w-constraint-plane">
+      <div class="widget-titlewrap">
+        <h3 class="widget-title"><span class="figure-label">Figure 3 ·</span>The constraint function is a tilted plane</h3>
+        <span class="widget-tag">3D constraint plane · drag to rotate</span>
+      </div>
+      <canvas id="w-constraint-plane-canvas" class="widget-stage"></canvas>
+      <div class="readout">
+        <span style="color:var(--teal);font-weight:700">green grid: g ≤ 0, feasible</span>
+        &nbsp;·&nbsp;
+        <span style="color:var(--coral);font-weight:700">red grid: g &gt; 0, infeasible</span>
+      </div>
+    </div>
+
+    <div class="widget" id="w-nested">
+      <div class="widget-titlewrap">
+        <h3 class="widget-title"><span class="figure-label">Figure 4 ·</span>One price enters; one best-response bound comes out</h3>
+        <span class="widget-tag">3D L surface + 1D slice · drag to rotate</span>
+      </div>
+      <div class="widget-controls">
+        <label>outer choice &nbsp;λ = <span class="val" id="w-nested-lambda-v">3.00</span>
+          <input type="range" id="w-nested-lambda" min="0" max="4" step="0.05" value="3">
+        </label>
+        <div>
+          <button id="w-nested-active" class="active">Constraint excludes (2,2)</button>
+          <button id="w-nested-inactive" class="secondary">Constraint leaves (2,2) legal</button>
+        </div>
+      </div>
+      <canvas id="w-nested-canvas" class="widget-stage"></canvas>
+      <div class="reveal-bar">
+        <button id="w-nested-back" class="secondary" disabled>&larr; Back</button>
+        <span class="reveal-caption" id="w-nested-caption"></span>
+        <button id="w-nested-next">Let the point respond &rarr;</button>
+      </div>
+      <div class="readout" id="w-nested-readout"></div>
+    </div>
+
+    <div class="prose">
+      <p>
+        The left view is still a problem with only two decision variables:
+        horizontal position is \((x,y)\), and the added height is the score
+        \(L(x,y,\lambda)\). Rendering that score as a third visual dimension
+        turns “minimize \(L\)” into the literal act of finding the bottom of a
+        bowl.
+      </p>
+      <p>
+        The right-hand plot is not a different problem or an approximation. It
+        is the exact slice of the 2D Lagrangian along the dashed diagonal
+        \(x=y=t\). Symmetry forces the best response to lie on that diagonal,
+        so the minimum of the 1D slice is the same point and the same height as
+        the minimum of the full 2D bowl. The dashed turquoise curve is the
+        original cost \(f(t,t)\); the gold curve is \(L(t,t,\lambda)\). At the
+        default active law \(x+y\le2\) and \(\lambda=3\), the response is
+        \(t=0.5\), so \(g=-1\). The vertical drop shows the resulting rebate:
+        \(f=4.5\), \(\lambda g=-3\), and \(L=4.5-3=1.5\). Switch to
+        \(x+y\le5\) to see the opposite case: \((2,2)\) is already legal, so
+        the best dual price is \(\lambda=0\).
+      </p>
+    </div>
+
+    <div class="prose">
+      <h3 class="subhead">Why maximize over the price?</h3>
+      <p>
+         First, \(\lambda\) is not itself a cost and the dual does not try to
+         make \(\lambda\) numerically large. The product \(\lambda g(x,y)\) is
+         the cost adjustment: \(\lambda\) says how many units of objective value
+         one unit of rule violation is worth. The actual outer objective is
+         \[
+           \max_{\lambda\ge0}\;
+           \underbrace{q(\lambda)}_{\min_{x,y}L(x,y,\lambda)},
+         \]
+         so we choose the <em>price whose best response gives the highest valid
+         lower bound</em>.
+      </p>
+      <p>
+         The price is a feedback signal. At the point that currently minimizes
+         \(L\), the slope of the dual curve is the remaining rule value:
+         \[
+           q'(\lambda)
+           =g\bigl(x(\lambda),y(\lambda)\bigr)
+           =2-\lambda.
+         \]
+         If the best response still violates the rule, \(g>0\), increasing
+         \(\lambda\) raises \(q\). If the response is too far inside, \(g<0\),
+         increasing \(\lambda\) lowers \(q\), so maximization moves the price
+         back down. The peak occurs at \(g=0\): the price is just strong enough
+         that the selfish best response lands on the wall.
+      </p>
+    </div>
+
+    <div class="widget" id="w-saddle">
+      <div class="widget-titlewrap">
+         <h3 class="widget-title"><span class="figure-label">Figure 5 ·</span>Descend across the saddle, then climb along its trough</h3>
+         <span class="widget-tag">3D saddle · drag to rotate · move λ</span>
+      </div>
+      <div class="widget-controls">
+         <label>frozen price &nbsp;λ = <span class="val" id="w-saddle-lambda-v">1.00</span>
+           <input type="range" id="w-saddle-lambda" min="0" max="4" step="0.05" value="1">
+         </label>
+      </div>
+      <canvas id="w-saddle-canvas" class="widget-stage"></canvas>
+      <div class="reveal-bar">
+         <button id="w-saddle-back" class="secondary">&larr; Back</button>
+         <span class="reveal-caption" id="w-saddle-caption"></span>
+         <button id="w-saddle-next">Follow every slice minimum &rarr;</button>
+      </div>
+      <div class="readout" id="w-saddle-readout"></div>
+    </div>
+
+    <div class="prose">
+      <p>
+         Why not send \(\lambda\) to infinity? Because the point is allowed to
+        respond after every price change. Once \(\lambda>2\), its cheapest
+        response moves inside the allowed region, where \(g<0\). The term
+        \(\lambda g\) then becomes increasingly negative, so \(q(\lambda)\)
+        falls. The outer player cannot raise the bound without accounting for
+        the inner player’s response.
+      </p>
+    </div>
+  </section>
+
+  <section class="concept-step" id="dual">
+    <span class="step-num">Step 04 · the dual view</span>
+    <h2>The dual is a lower envelope—and therefore concave</h2>
+    <div class="prose">
+      <p class="lead">
+        Fix any \(\lambda\ge0\), and let the point minimize the Lagrangian over
+        <em>all</em> of the plane—even forbidden points. Call that cheapest
+        possible score \(q(\lambda)\). This is the <strong>dual function</strong>.
+      </p>
+      <p>
+        Why is it a lower bound? For any feasible point,
+        \(x+y-2\le0\), so
+        \[
+          L(x,y,\lambda)
+          =f(x,y)+\lambda(x+y-2)
+          \le f(x,y).
+        \]
+        And \(q(\lambda)\), being the minimum of \(L\), is no larger than that:
+        \[
+          q(\lambda)=\min_{x,y}L(x,y,\lambda)
+          \le L(x,y,\lambda)
+          \le f(x,y).
+        \]
+        Thus every nonnegative price certifies a number below the primal
+        optimum. The <strong>dual problem</strong> chooses the tightest such
+        certificate: maximize \(q(\lambda)\) over \(\lambda\ge0\).
+      </p>
+    </div>
+
+    <div class="prose">
+      <p>
+        Hold one response \((x',y')\) fixed and change only the price
+        \(\lambda\). At that frozen point, both \(f(x',y')\) and \(g(x',y')\) are
+        just numbers, so
+        \[
+          L(x',y',\lambda)=\underbrace{f(x',y')}_{\text{offset}}+\lambda \underbrace{g(x',y')}_{\text{slope}}
+        \]
+        has exactly the familiar line form “offset + horizontal coordinate
+        times slope.” The horizontal coordinate is \(\lambda\), the fixed cost
+        \(f(x',y')\) is the offset (or intercept), and the fixed rule value
+        \(g(x',y')\) is the slope.
+      </p>
+      <p>
+        This slope has a useful meaning. A response that violates the rule has
+        \(g(x,y)>0\), so charging a higher price makes its line rise. A response
+        safely inside the rule has \(g(x,y)<0\), so its line falls: it receives
+        a larger rebate. A response exactly on the wall has \(g(x,y)=0\), so
+        its line is horizontal. Drag the point below to see its cost and rule
+        value become the intercept and slope of one concrete line.
+      </p>
+    </div>
+
+    <div class="widget" id="w3-point-link">
+      <div class="widget-titlewrap">
+        <h3 class="widget-title"><span class="figure-label">Figure 6 ·</span>Drag one response; watch its line appear</h3>
+        <span class="widget-tag">linked · drag the point</span>
+      </div>
+      <div class="dual-pair">
+        <canvas id="w3-point-primal" class="widget-stage" width="230" height="230"></canvas>
+        <canvas id="w3-point-line" class="widget-stage" width="380" height="230"></canvas>
+      </div>
+      <div class="widget-controls">
+        <div>
+          <button id="w3-point-active" class="active">Constraint excludes (2,2)</button>
+          <button id="w3-point-inactive" class="secondary">Constraint leaves (2,2) legal</button>
+        </div>
+      </div>
+      <div class="readout" id="w3-point-readout"></div>
+      <p class="caption">A fixed response can only draw a straight line in \(\lambda\): its intercept is \(f\), its slope is \(g\).</p>
+    </div>
+
+    <div class="widget" id="w3">
+      <div class="widget-titlewrap">
+        <h3 class="widget-title"><span class="figure-label">Figure 7 ·</span>The lower envelope of every possible line</h3>
+        <span class="widget-tag">staged · add lines</span>
+      </div>
+      <canvas id="w3-canvas" class="widget-stage"></canvas>
+      <div class="widget-controls">
+        <div>
+          <button id="w3-active" class="active">Constraint excludes (2,2)</button>
+          <button id="w3-inactive" class="secondary">Constraint leaves (2,2) legal</button>
+        </div>
+        <button id="w3-next">Add a line &rarr;</button>
+        <button id="w3-flood" disabled>Flood with 300 more &rarr;</button>
+        <button id="w3-reset" class="secondary">Reset</button>
+      </div>
+      <p class="caption" id="w3-caption">Press “Add a line” to place the first response line.</p>
+    </div>
+
+    <div class="prose">
+      <p>
+        Why do we maximize \(q(\lambda)\)? For every nonnegative price and
+        every feasible response, \(g(x,y)\le0\), so
+        \[
+          L(x,y,\lambda)=f(x,y)+\lambda g(x,y)\le f(x,y).
+        \]
+        Since \(q(\lambda)\) is the minimum of \(L\) over all responses, it is
+        no larger than the cost of every feasible response—in particular, no
+        larger than the best feasible cost \(p^\star\). Thus each
+        \(\lambda\ge0\) gives a valid lower-bound certificate
+        \(q(\lambda)\le p^\star\). We want the strongest certificate, so we
+        maximize \(q(\lambda)\). This does <em>not</em> mean making
+        \(\lambda\) itself as large as possible: beyond the dome’s peak, the
+        best response moves safely inside the wall, \(g<0\), and a larger
+        price lowers \(q\) instead.
+      </p>
+    </div>
+
+    <div class="widget" id="w3-tangent">
+      <div class="widget-titlewrap">
+        <h3 class="widget-title"><span class="figure-label">Figure 8 ·</span>The cheapest response draws the touching line</h3>
+        <span class="widget-tag">linked · drag λ</span>
+      </div>
+      <div class="dual-pair">
+        <div class="dual-panel">
+          <p class="dual-panel-label">Primal bowl · selected response</p>
+          <canvas id="w3-tangent-primal" class="widget-stage" aria-label="Primal bowl with the selected response"></canvas>
+        </div>
+        <div class="dual-panel">
+          <p class="dual-panel-label">Dual dome · touching response line</p>
+          <canvas id="w3-tangent-line" class="widget-stage" aria-label="Dual dome and its touching response line"></canvas>
+        </div>
+      </div>
+      <div class="widget-controls">
+        <div>
+          <button id="w3-tangent-active" class="active">Constraint excludes (2,2)</button>
+          <button id="w3-tangent-inactive" class="secondary">Constraint leaves (2,2) legal</button>
+        </div>
+        <label>price &nbsp;λ = <span class="val" id="w3-tangent-lambda-v">0.50</span>
+          <input type="range" id="w3-tangent-lambda" min="-1.5" max="5.5" step="0.02" value="0.5">
+        </label>
+        <button id="w3-tangent-snap">Snap to λ* = 2</button>
+      </div>
+      <div class="readout" id="w3-tangent-readout"></div>
+      <p class="caption" id="w3-tangent-caption"></p>
+    </div>
+
+    <div class="prose">
+      <p>
+        Hold any response \((x,y)\) fixed. Its score
+        \[
+          L(x,y,\lambda)=f(x,y)+\lambda g(x,y)
+        \]
+        is a straight line in \(\lambda\): \(f(x,y)\) is its intercept and
+        \(g(x,y)\) is its slope. The dual function keeps the lowest such line
+        at every price:
+        \[
+          q(\lambda)=\min_{x,y}L(x,y,\lambda)
+          =\text{their lower envelope}.
+        \]
+      </p>
+      <p>
+        A lower envelope of straight lines is always concave. Pick two prices
+        \(\lambda_1,\lambda_2\) and mix them with \(0\le\theta\le1\). Because
+        every \(L(x,y,\lambda)\) is affine in \(\lambda\),
+        \[
+        \begin{aligned}
+          q\!\left(\theta\lambda_1+(1-\theta)\lambda_2\right)
+          &=\min_{x,y}\left[
+            \theta L(x,y,\lambda_1)+(1-\theta)L(x,y,\lambda_2)\right]\\
+          &\ge
+            \theta\min_{x,y}L(x,y,\lambda_1)
+            +(1-\theta)\min_{x,y}L(x,y,\lambda_2)\\
+          &=\theta q(\lambda_1)+(1-\theta)q(\lambda_2).
+        \end{aligned}
+        \]
+        The middle inequality says: forcing one response \((x,y)\) to serve
+        both prices cannot beat letting each price choose its own cheapest
+        response. This is exactly the definition of concavity—the curve lies
+        above every chord. Notice that this argument never assumed the primal
+        problem was convex; the dual function is concave regardless.
+      </p>
+      <p>
+        For this bowl, \(x(\lambda)=y(\lambda)=2-\lambda/2\), so
+        \[
+          q(\lambda)=2\lambda-\frac{\lambda^2}{2}.
+        \]
+        The dome peaks at \(\lambda^\star=2\), where \(q(2)=2=p^\star\): this
+        convex example has no duality gap.
+      </p>
+    </div>
+
+    <details class="formal">
+      <summary>The general dual construction</summary>
+      <div class="formal-body prose">
+        <p>
+          For
+          \[
+            \min_x f(x)\quad\text{subject to}\quad g_i(x)\le0,
+          \]
+          form
+          \[
+            L(x,\lambda)=f(x)+\sum_i\lambda_i g_i(x),
+            \qquad \lambda_i\ge0.
+          \]
+          Then define \(q(\lambda)=\inf_x L(x,\lambda)\) and solve
+          \[
+            \max_{\lambda\ge0}q(\lambda).
+          \]
+          Strong duality needs additional structure even though \(q\) is
+          always concave; convexity plus Slater’s condition is a standard
+          guarantee.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <section class="concept-step" id="kkt">
+    <span class="step-num">Step 05 · the handshake</span>
+    <h2>KKT says when the point and the price agree</h2>
+    <div class="prose">
+      <p class="lead">
+        At the solution, four simple facts hold at once. Together they are the
+        <strong>Karush–Kuhn–Tucker conditions</strong>, or KKT conditions.
+      </p>
+      <div class="equation-story">
+        <div class="piece">
+          <span class="mini">Point obeys the rule</span>
+          \(x+y-2\le0\)
+        </div>
+        <div class="piece">
+          <span class="mini">Price has the right sign</span>
+          \(\lambda\ge0\)
+        </div>
+        <div class="piece">
+          <span class="mini">Forces balance</span>
+          \(\nabla f+\lambda\nabla g=0\)
+        </div>
+      </div>
+      <p>
+        One more condition links slack and price:
+        \[
+          \lambda(x+y-2)=0.
+        \]
+        This is <strong>complementary slackness</strong>. If the wall blocks
+        the answer, the rule is tight and may carry a positive price. If the
+        wall is loose, its price must be zero. A rule cannot be simultaneously
+        slack and expensive.
+      </p>
+    </div>
+
+    <div class="widget" id="w4">
+      <div class="widget-titlewrap">
+        <h3 class="widget-title"><span class="figure-label">Figure 9 ·</span>Move the wall and watch KKT switch regimes</h3>
+        <span class="widget-tag">staged · drag the wall</span>
+      </div>
+      <div class="widget-controls">
+        <label>wall position &nbsp;b in x + y ≤ b &nbsp;= <span class="val" id="w4-b-v">2.00</span>
+          <input type="range" id="w4-b" min="1" max="5.5" step="0.05" value="2">
+        </label>
+      </div>
+      <canvas id="w4-canvas" class="widget-stage"></canvas>
+      <div class="reveal-bar">
+        <button id="w4-back" class="secondary" disabled>&larr; Back</button>
+        <span class="reveal-caption" id="w4-caption"></span>
+        <button id="w4-next">Add the price force &rarr;</button>
+      </div>
+      <div class="kkt-strip">
+        <div class="kkt-chip on" id="w4-chip-0"><b>PRIMAL FEASIBILITY</b><span></span></div>
+        <div class="kkt-chip" id="w4-chip-1"><b>DUAL FEASIBILITY</b><span></span></div>
+        <div class="kkt-chip" id="w4-chip-2"><b>STATIONARITY</b><span></span></div>
+        <div class="kkt-chip" id="w4-chip-3"><b>COMPLEMENTARITY</b><span></span></div>
+      </div>
+      <div class="readout" id="w4-readout"></div>
+    </div>
+
+    <div class="prose">
+      <p>
+        For the original wall \(b=2\), the solution is \((1,1)\).
+        The objective gradient there is \((-2,-2)\), while
+        \(\nabla g=(1,1)\). Stationarity forces
+        \[
+          (-2,-2)+\lambda(1,1)=(0,0),
+        \]
+        so \(\lambda=2\). Geometrically, the objective’s urge to cross the wall
+        is exactly cancelled by the wall’s price force.
+      </p>
+      <p>
+        Move the wall past \(b=4\). Now \((2,2)\) is already feasible, the
+        constraint stops mattering, and complementary slackness turns its price
+        off: \(\lambda^\star=0\).
+      </p>
+    </div>
+
+    <details class="formal">
+      <summary>KKT for many inequality constraints</summary>
+      <div class="formal-body prose">
+        <p>
+          At a candidate \(x^\star\), KKT asks for multipliers
+          \(\lambda_i^\star\) satisfying
+          \[
+          \begin{aligned}
+            g_i(x^\star)&\le0 &&\text{primal feasibility},\\
+            \lambda_i^\star&\ge0 &&\text{dual feasibility},\\
+            \nabla f(x^\star)+\sum_i\lambda_i^\star\nabla g_i(x^\star)&=0
+              &&\text{stationarity},\\
+            \lambda_i^\star g_i(x^\star)&=0
+              &&\text{complementary slackness}.
+          \end{aligned}
+          \]
+          For differentiable convex problems under a constraint qualification,
+          these conditions are necessary and sufficient for global optimality.
+          In nonconvex problems they are generally only necessary local
+          conditions, so a KKT point need not be the global answer.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <section class="concept-step" id="algorithm">
+    <span class="step-num">Step 06 · the technique in motion</span>
+    <h2>Let the point descend while the price ascends</h2>
+    <div class="prose">
+      <p class="lead">
+        The primal variables \(x,y\) want to make \(L\) smaller. The dual
+        variable \(\lambda\) wants to make the lower bound larger. A
+        <strong>primal–dual algorithm</strong> updates both directions together.
+      </p>
+      <pre class="code"><span class="comment"># one simultaneous primal–dual step</span>
+<span class="primal">x ← x − η [2(x − 2) + λ]</span>
+<span class="primal">y ← y − η [2(y − 2) + λ]</span>
+<span class="dual">λ ← max(0, λ + η [x + y − 2])</span></pre>
+      <p>
+        The first two lines descend the Lagrangian. The last line ascends in
+        price: if the point violates the wall, \(x+y-2>0\), the price rises; if
+        the point sits safely inside, the price falls. The \(\max(0,\cdot)\)
+        keeps the inequality multiplier nonnegative.
+      </p>
+    </div>
+
+    <div class="widget" id="w5">
+      <div class="widget-titlewrap">
+        <h3 class="widget-title"><span class="figure-label">Figure 10 ·</span>The point and price negotiate</h3>
+        <span class="widget-tag">iterative · step or play</span>
+      </div>
+      <div class="widget-controls">
+        <label>step size &nbsp;η = <span class="val" id="w5-eta-v">0.20</span>
+          <input type="range" id="w5-eta" min="0.05" max="0.85" step="0.05" value="0.2">
+        </label>
+        <label>iteration &nbsp;k = <span class="val" id="w5-k-v">0</span>
+          <input type="range" id="w5-k" min="0" max="120" step="1" value="0">
+        </label>
+      </div>
+      <canvas id="w5-canvas" class="widget-stage"></canvas>
+      <div class="reveal-bar">
+        <button id="w5-prev" class="secondary" disabled>&larr; Previous</button>
+        <button id="w5-next">One update &rarr;</button>
+        <button id="w5-play">Play</button>
+        <button id="w5-reset" class="secondary">Reset</button>
+        <span class="reveal-caption" id="w5-caption">Start feasible with no price. The objective pulls the point toward (2,2).</span>
+      </div>
+      <div class="readout" id="w5-readout"></div>
+    </div>
+
+    <div class="prose">
+      <p>
+        Watch the negotiation: the point first chases the unconstrained minimum
+        and crosses the wall. The violation raises \(\lambda\); the higher price
+        pushes the next primal steps back. The oscillation shrinks until the
+        point settles at \((1,1)\) and the price at \(2\)—the same KKT pair we
+        found analytically.
+      </p>
+      <p>
+        This toy exposes three common techniques. <strong>Primal methods</strong>
+        optimize \(x\) directly and enforce feasibility, often by projection.
+        <strong>Dual methods</strong> optimize prices and repeatedly solve or
+        approximate \(\min_x L(x,\lambda)\). <strong>Primal–dual methods</strong>
+        update both at once, which is useful when exact projection and exact
+        inner minimization are both expensive.
+      </p>
+    </div>
+
+    <details class="formal">
+      <summary>Why the step-size slider stops at 0.85</summary>
+      <div class="formal-body prose">
+        <p>
+          Near \((1,1,2)\), the coupled error dynamics have eigenvalues whose
+          magnitude is
+          \[
+            \sqrt{1-2\eta+2\eta^2}.
+          \]
+          This is below \(1\) exactly when \(0<\eta<1\). The slider stays inside
+          that stable interval. Larger stable values may zig-zag dramatically;
+          smaller values move smoothly but slowly. Real primal–dual solvers use
+          line searches, preconditioning, acceleration, or problem-specific
+          splitting methods to improve this tradeoff.
+        </p>
+      </div>
+    </details>
+  </section>
+
+  <section class="recap prose">
+    <h2>Putting it together</h2>
+    <p>
+      The primal view asks, “Which allowed point is best?” The dual view asks,
+      “Which nonnegative rule prices give the strongest guaranteed lower
+      bound?” The Lagrangian is the shared score that lets a point and its
+      prices negotiate. KKT describes their agreement: the point is feasible,
+      prices have the right sign, forces balance, and slack rules cost nothing.
+    </p>
+    <p>
+      Return to the kernel: <strong>constraints can be enforced either as walls
+      around the search or as prices inside the objective.</strong> In a convex
+      problem with strong duality, both roads meet at the same value.
+    </p>
+
+    <div class="places" aria-label="Applications">
+      <article class="place">
+        <h3>Resource allocation</h3>
+        <p>A multiplier is a shadow price: the value of one more unit of budget, power, bandwidth, or capacity.</p>
+      </article>
+      <article class="place">
+        <h3>Machine learning</h3>
+        <p>Support vector machines, constrained training, and regularized models often become simpler in dual variables.</p>
+      </article>
+      <article class="place">
+        <h3>Control &amp; networks</h3>
+        <p>Primal–dual updates coordinate local decisions through shared prices without solving one giant centralized problem.</p>
+      </article>
+    </div>
+  </section>
+</main>
+
+<script>
+const RENDER_SCALE = Math.max((window.devicePixelRatio || 1) * 2.5, 3);
+
+function setupCanvas(canvas, cssW, cssH) {
+  canvas.style.maxWidth = cssW + 'px';
+  canvas.style.aspectRatio = cssW + ' / ' + cssH;
+  canvas.width = Math.round(cssW * RENDER_SCALE);
+  canvas.height = Math.round(cssH * RENDER_SCALE);
+  const ctx = canvas.getContext('2d');
+  ctx.scale(RENDER_SCALE, RENDER_SCALE);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  canvas._cssW = cssW;
+  canvas._cssH = cssH;
+  return ctx;
+}
+
+function makeView(canvas, bounds, pad) {
+  const p = Object.assign({ left: 48, right: 22, top: 22, bottom: 42 }, pad || {});
+  const innerW = canvas._cssW - p.left - p.right;
+  const innerH = canvas._cssH - p.top - p.bottom;
+  return {
+    ...bounds,
+    w: canvas._cssW,
+    h: canvas._cssH,
+    p,
+    x: value => p.left + (value - bounds.xmin) / (bounds.xmax - bounds.xmin) * innerW,
+    y: value => p.top + innerH - (value - bounds.ymin) / (bounds.ymax - bounds.ymin) * innerH,
+    mx: px => bounds.xmin + (px - p.left) / innerW * (bounds.xmax - bounds.xmin),
+    my: py => bounds.ymax - (py - p.top) / innerH * (bounds.ymax - bounds.ymin)
+  };
+}
+
+const css = getComputedStyle(document.documentElement);
+const C = {
+  bg: css.getPropertyValue('--bg').trim(),
+  surface: css.getPropertyValue('--surface').trim(),
+  plot: css.getPropertyValue('--plot').trim(),
+  ink: css.getPropertyValue('--ink').trim(),
+  soft: css.getPropertyValue('--ink-soft').trim(),
+  teal: css.getPropertyValue('--teal').trim(),
+  tealPale: css.getPropertyValue('--teal-pale').trim(),
+  coral: css.getPropertyValue('--coral').trim(),
+  gold: css.getPropertyValue('--gold').trim(),
+  violet: css.getPropertyValue('--violet').trim(),
+  line: css.getPropertyValue('--line').trim(),
+  axis: css.getPropertyValue('--axis').trim()
+};
+
+function makeLayer(cssW, cssH, draw) {
+  const layer = document.createElement('canvas');
+  layer.width = Math.round(cssW * RENDER_SCALE);
+  layer.height = Math.round(cssH * RENDER_SCALE);
+  const lctx = layer.getContext('2d');
+  lctx.scale(RENDER_SCALE, RENDER_SCALE);
+  draw(lctx);
+  return layer;
+}
+
+function drawLayer(ctx, layer, w, h) {
+  ctx.drawImage(layer, 0, 0, layer.width, layer.height, 0, 0, w, h);
+}
+
+function drawGrid(ctx, view) {
+  ctx.save();
+  ctx.fillStyle = C.plot;
+  ctx.fillRect(0, 0, view.w, view.h);
+  ctx.strokeStyle = C.line;
+  ctx.globalAlpha = 0.5;
+  ctx.lineWidth = 1;
+  for (let n = Math.ceil(view.xmin); n <= Math.floor(view.xmax); n++) {
+    ctx.beginPath();
+    ctx.moveTo(view.x(n), view.p.top);
+    ctx.lineTo(view.x(n), view.h - view.p.bottom);
+    ctx.stroke();
+  }
+  for (let n = Math.ceil(view.ymin); n <= Math.floor(view.ymax); n++) {
+    ctx.beginPath();
+    ctx.moveTo(view.p.left, view.y(n));
+    ctx.lineTo(view.w - view.p.right, view.y(n));
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+  ctx.strokeStyle = C.axis;
+  ctx.lineWidth = 1.25;
+  if (view.ymin <= 0 && view.ymax >= 0) {
+    ctx.beginPath();
+    ctx.moveTo(view.p.left, view.y(0));
+    ctx.lineTo(view.w - view.p.right, view.y(0));
+    ctx.stroke();
+  }
+  if (view.xmin <= 0 && view.xmax >= 0) {
+    ctx.beginPath();
+    ctx.moveTo(view.x(0), view.p.top);
+    ctx.lineTo(view.x(0), view.h - view.p.bottom);
+    ctx.stroke();
+  }
+  ctx.fillStyle = C.soft;
+  ctx.font = '11px "DM Mono", monospace';
+  ctx.textAlign = 'center';
+  for (let n = Math.ceil(view.xmin); n <= Math.floor(view.xmax); n++) {
+    ctx.fillText(String(n), view.x(n), view.h - 17);
+  }
+  ctx.textAlign = 'right';
+  for (let n = Math.ceil(view.ymin); n <= Math.floor(view.ymax); n++) {
+    if (n !== 0) ctx.fillText(String(n), view.p.left - 8, view.y(n) + 4);
+  }
+  ctx.fillStyle = C.ink;
+  ctx.font = '500 12px "DM Mono", monospace';
+  ctx.textAlign = 'right';
+  ctx.fillText('x', view.w - view.p.right, view.y(0) - 8);
+  ctx.textAlign = 'left';
+  ctx.fillText('y', view.x(0) + 8, view.p.top + 10);
+  ctx.restore();
+}
+
+function drawContours(ctx, view, cx, cy, color, alpha, levels) {
+  const sx = (view.x(1) - view.x(0));
+  const sy = Math.abs(view.y(1) - view.y(0));
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.globalAlpha = alpha;
+  ctx.lineWidth = 1.5;
+  (levels || [0.25, 0.75, 1.5, 2.5, 4, 6, 9, 12]).forEach(level => {
+    const r = Math.sqrt(level);
+    ctx.beginPath();
+    ctx.ellipse(view.x(cx), view.y(cy), r * sx, r * sy, 0, 0, Math.PI * 2);
+    ctx.stroke();
+  });
+  ctx.restore();
+}
+
+function clipHalfPlane(view, b, below) {
+  let poly = [
+    {x: view.xmin, y: view.ymin},
+    {x: view.xmax, y: view.ymin},
+    {x: view.xmax, y: view.ymax},
+    {x: view.xmin, y: view.ymax}
+  ];
+  const inside = p => below ? p.x + p.y <= b + 1e-9 : p.x + p.y >= b - 1e-9;
+  const intersect = (a, d) => {
+    const t = (b - a.x - a.y) / ((d.x - a.x) + (d.y - a.y));
+    return { x: a.x + t * (d.x - a.x), y: a.y + t * (d.y - a.y) };
+  };
+  const out = [];
+  for (let i = 0; i < poly.length; i++) {
+    const a = poly[i];
+    const d = poly[(i + 1) % poly.length];
+    const ain = inside(a);
+    const din = inside(d);
+    if (ain && din) out.push(d);
+    else if (ain && !din) out.push(intersect(a, d));
+    else if (!ain && din) {
+      out.push(intersect(a, d));
+      out.push(d);
+    }
+  }
+  return out;
+}
+
+function fillPolygon(ctx, view, poly, color, alpha) {
+  if (!poly.length) return;
+  ctx.save();
+  ctx.fillStyle = color;
+  ctx.globalAlpha = alpha;
+  ctx.beginPath();
+  ctx.moveTo(view.x(poly[0].x), view.y(poly[0].y));
+  for (let i = 1; i < poly.length; i++) ctx.lineTo(view.x(poly[i].x), view.y(poly[i].y));
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+
+function lineEndpoints(view, b) {
+  const candidates = [
+    {x: view.xmin, y: b - view.xmin},
+    {x: view.xmax, y: b - view.xmax},
+    {x: b - view.ymin, y: view.ymin},
+    {x: b - view.ymax, y: view.ymax}
+  ].filter(p => p.x >= view.xmin - 1e-9 && p.x <= view.xmax + 1e-9 &&
+                 p.y >= view.ymin - 1e-9 && p.y <= view.ymax + 1e-9);
+  const unique = [];
+  candidates.forEach(p => {
+    if (!unique.some(q => Math.hypot(q.x - p.x, q.y - p.y) < 1e-7)) unique.push(p);
+  });
+  return unique.slice(0, 2);
+}
+
+function drawConstraint(ctx, view, b, label) {
+  const pts = lineEndpoints(view, b);
+  if (pts.length < 2) return;
+  ctx.save();
+  ctx.strokeStyle = C.coral;
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(view.x(pts[0].x), view.y(pts[0].y));
+  ctx.lineTo(view.x(pts[1].x), view.y(pts[1].y));
+  ctx.stroke();
+  const mid = { x: (pts[0].x + pts[1].x) / 2, y: (pts[0].y + pts[1].y) / 2 };
+  ctx.fillStyle = C.coral;
+  ctx.font = '500 12px "DM Mono", monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText(label || 'x + y = ' + b.toFixed(1), view.x(mid.x) + 42, view.y(mid.y) - 10);
+  ctx.restore();
+}
+
+function drawPoint(ctx, view, x, y, color, label, radius) {
+  const px = view.x(x);
+  const py = view.y(y);
+  ctx.save();
+  ctx.fillStyle = C.surface;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.arc(px, py, radius || 7, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  if (label) {
+    ctx.fillStyle = color;
+    ctx.font = '600 12px "Manrope", sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(label, px + 11, py - 10);
+  }
+  ctx.restore();
+}
+
+function drawStar(ctx, view, x, y, color, label) {
+  const px = view.x(x);
+  const py = view.y(y);
+  ctx.save();
+  ctx.translate(px, py);
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  for (let i = 0; i < 10; i++) {
+    const r = i % 2 === 0 ? 11 : 4.8;
+    const a = -Math.PI / 2 + i * Math.PI / 5;
+    const xx = Math.cos(a) * r;
+    const yy = Math.sin(a) * r;
+    i === 0 ? ctx.moveTo(xx, yy) : ctx.lineTo(xx, yy);
+  }
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+  if (label) {
+    ctx.fillStyle = color;
+    ctx.font = '700 12px "Manrope", sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(label, px + 14, py - 12);
+  }
+}
+
+function drawArrow(ctx, view, x1, y1, x2, y2, color, label, dashed) {
+  const a = {x: view.x(x1), y: view.y(y1)};
+  const b = {x: view.x(x2), y: view.y(y2)};
+  const angle = Math.atan2(b.y - a.y, b.x - a.x);
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.fillStyle = color;
+  ctx.lineWidth = 2.5;
+  if (dashed) ctx.setLineDash([7, 6]);
+  ctx.beginPath();
+  ctx.moveTo(a.x, a.y);
+  ctx.lineTo(b.x, b.y);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.beginPath();
+  ctx.moveTo(b.x, b.y);
+  ctx.lineTo(b.x - 10 * Math.cos(angle - Math.PI / 6), b.y - 10 * Math.sin(angle - Math.PI / 6));
+  ctx.lineTo(b.x - 10 * Math.cos(angle + Math.PI / 6), b.y - 10 * Math.sin(angle + Math.PI / 6));
+  ctx.closePath();
+  ctx.fill();
+  if (label) {
+    ctx.font = '600 12px "Manrope", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(label, (a.x + b.x) / 2, (a.y + b.y) / 2 - 11);
+  }
+  ctx.restore();
+}
+
+function drawZeroMarker(ctx, view, x, y, color, label, offset) {
+  const px = view.x(x) + (offset || 0);
+  const py = view.y(y);
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(px, py, 13, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.fillStyle = color;
+  ctx.font = '600 11px "Manrope", sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText(label, px + 17, py + 4);
+  ctx.restore();
+}
+
+function attachDrag(canvas, view, point, onMove) {
+  let dragging = false;
+  function locate(event) {
+    const rect = canvas.getBoundingClientRect();
+    const source = event.touches ? event.touches[0] : event;
+    const px = (source.clientX - rect.left) / rect.width * view.w;
+    const py = (source.clientY - rect.top) / rect.height * view.h;
+    return {
+      x: Math.max(view.xmin, Math.min(view.xmax, view.mx(px))),
+      y: Math.max(view.ymin, Math.min(view.ymax, view.my(py)))
+    };
+  }
+  function start(event) {
+    const p = locate(event);
+    const distance = Math.hypot(view.x(p.x) - view.x(point.x), view.y(p.y) - view.y(point.y));
+    if (distance < 28) {
+      dragging = true;
+      canvas.style.cursor = 'grabbing';
+      event.preventDefault();
+    }
+  }
+  function move(event) {
+    if (!dragging) return;
+    const p = locate(event);
+    point.x = p.x;
+    point.y = p.y;
+    onMove();
+    event.preventDefault();
+  }
+  function end() {
+    dragging = false;
+    canvas.style.cursor = 'grab';
+  }
+  canvas.style.cursor = 'grab';
+  canvas.addEventListener('mousedown', start);
+  canvas.addEventListener('mousemove', move);
+  window.addEventListener('mouseup', end);
+  canvas.addEventListener('touchstart', start, {passive: false});
+  canvas.addEventListener('touchmove', move, {passive: false});
+  window.addEventListener('touchend', end);
+}
+
+(function () {
+  const canvas = document.getElementById('w1-canvas');
+  const ctx = setupCanvas(canvas, 850, 455);
+  const view = makeView(canvas, {xmin: -0.8, xmax: 4.4, ymin: -0.8, ymax: 4.4});
+  const point = {x: 0.25, y: 0.45};
+  const caption = document.getElementById('w1-caption');
+  const readout = document.getElementById('w1-readout');
+  const back = document.getElementById('w1-back');
+  const next = document.getElementById('w1-next');
+  const base = makeLayer(view.w, view.h, layerCtx => {
+    drawGrid(layerCtx, view);
+    drawContours(layerCtx, view, 2, 2, C.teal, 0.58);
+    drawStar(layerCtx, view, 2, 2, C.teal, 'unconstrained minimum');
+  });
+  const stages = [
+    {
+      caption: 'The bowl only cares about distance to (2,2). Drag the starting point across the contour rings.',
+      next: 'Add the constraint →'
+    },
+    {
+      caption: 'The green half-plane is allowed. The coral wall separates feasible from forbidden points.',
+      next: 'Take a downhill step →'
+    },
+    {
+      caption: 'With η = 1/2, one gradient step reaches (2,2)—but that point breaks the rule.',
+      next: 'Project back to safety →'
+    },
+    {
+      caption: 'Projection snaps to the nearest feasible point, (1,1), which is the constrained optimum.',
+      next: null
+    }
+  ];
+  let stage = 0;
+
+  function render() {
+    ctx.clearRect(0, 0, view.w, view.h);
+    drawLayer(ctx, base, view.w, view.h);
+    if (stage >= 1) {
+      fillPolygon(ctx, view, clipHalfPlane(view, 2, true), C.tealPale, 0.33);
+      drawConstraint(ctx, view, 2, 'wall: x + y = 2');
+    }
+    const feasible = point.x + point.y <= 2 + 1e-9;
+    drawPoint(ctx, view, point.x, point.y, stage >= 1 && !feasible ? C.coral : C.violet, 'start', 8);
+    if (stage >= 2) {
+      drawArrow(ctx, view, point.x, point.y, 2, 2, C.violet, 'downhill step', true);
+      drawPoint(ctx, view, 2, 2, C.coral, 'forbidden', 9);
+    }
+    if (stage >= 3) {
+      drawArrow(ctx, view, 2, 2, 1, 1, C.gold, 'projection');
+      drawStar(ctx, view, 1, 1, C.gold, 'primal optimum');
+    }
+    const f = (point.x - 2) ** 2 + (point.y - 2) ** 2;
+    if (stage === 0) {
+      readout.textContent = 'start = (' + point.x.toFixed(2) + ', ' + point.y.toFixed(2) + ')  ·  f = ' + f.toFixed(3);
+    } else if (stage === 1) {
+      readout.textContent = 'start = (' + point.x.toFixed(2) + ', ' + point.y.toFixed(2) + ')  ·  ' +
+        (feasible ? 'feasible: x + y ≤ 2' : 'infeasible: x + y = ' + (point.x + point.y).toFixed(2) + ' > 2');
+    } else if (stage === 2) {
+      readout.textContent = 'gradient step = (2.00, 2.00)  ·  violation = 2.00';
+    } else {
+      readout.textContent = 'projected point = (1.00, 1.00)  ·  f = 2.000  ·  violation = 0';
+    }
+    caption.textContent = stages[stage].caption;
+    back.disabled = stage === 0;
+    if (stages[stage].next) {
+      next.classList.remove('is-hidden');
+      next.textContent = stages[stage].next;
+    } else {
+      next.classList.add('is-hidden');
+    }
+  }
+
+  back.addEventListener('click', () => { stage = Math.max(0, stage - 1); render(); });
+  next.addEventListener('click', () => { stage = Math.min(stages.length - 1, stage + 1); render(); });
+  attachDrag(canvas, view, point, render);
+  render();
+})();
+
+(function () {
+  const canvas = document.getElementById('w3-canvas');
+  const ctx = setupCanvas(canvas, 760, 390);
+  const next = document.getElementById('w3-next');
+  const flood = document.getElementById('w3-flood');
+  const reset = document.getElementById('w3-reset');
+  const caption = document.getElementById('w3-caption');
+  const activeConstraint = document.getElementById('w3-active');
+  const inactiveConstraint = document.getElementById('w3-inactive');
+  const bounds = {xmin: -1.5, xmax: 5.5, ymin: -6, ymax: 8};
+  const view = makeView(canvas, bounds, {left: 52, right: 25, top: 24, bottom: 42});
+  let constraintLimit = 2;
+  const q = lambda => (4 - constraintLimit) * lambda - lambda * lambda / 2;
+  const line = point => ({
+    intercept: (point.x - 2) ** 2 + (point.y - 2) ** 2,
+    slope: point.x + point.y - constraintLimit
+  });
+  const featured = [
+    {x: 2, y: 2, label: '(2,2)'},
+    {x: 1.5, y: 1.5, label: '(1.5,1.5)'},
+    {x: 1, y: 1, label: '(1,1)'},
+    {x: 0.5, y: 0.5, label: '(0.5,0.5)'}
+  ];
+  let placed = [];
+  let floodPoints = [];
+
+  function drawLine(point, color, width, alpha) {
+    const {intercept, slope} = line(point);
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.beginPath();
+    ctx.moveTo(view.x(bounds.xmin), view.y(intercept + slope * bounds.xmin));
+    ctx.lineTo(view.x(bounds.xmax), view.y(intercept + slope * bounds.xmax));
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas._cssW, canvas._cssH);
+    ctx.fillStyle = C.plot;
+    ctx.fillRect(0, 0, canvas._cssW, canvas._cssH);
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(view.p.left, view.p.top, canvas._cssW - view.p.left - view.p.right,
+      canvas._cssH - view.p.top - view.p.bottom);
+    ctx.clip();
+    if (floodPoints.length) {
+      ctx.beginPath();
+      ctx.moveTo(view.x(bounds.xmin), view.y(q(bounds.xmin)));
+      for (let lambda = bounds.xmin; lambda <= bounds.xmax; lambda += 0.04) {
+        ctx.lineTo(view.x(lambda), view.y(q(lambda)));
+      }
+      ctx.lineTo(view.x(bounds.xmax), view.y(bounds.ymin));
+      ctx.lineTo(view.x(bounds.xmin), view.y(bounds.ymin));
+      ctx.closePath();
+      ctx.fillStyle = C.teal;
+      ctx.globalAlpha = 0.12;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+    floodPoints.forEach(point => drawLine(point, C.gold, 0.7, 0.18));
+    placed.forEach(point => drawLine(point, C.gold, 1.7, 0.9));
+    if (floodPoints.length) {
+      ctx.strokeStyle = C.teal;
+      ctx.lineWidth = 3.5;
+      ctx.beginPath();
+      ctx.moveTo(view.x(bounds.xmin), view.y(q(bounds.xmin)));
+      for (let lambda = bounds.xmin; lambda <= bounds.xmax; lambda += 0.04) {
+        ctx.lineTo(view.x(lambda), view.y(q(lambda)));
+      }
+      ctx.stroke();
+    }
+    ctx.restore();
+    ctx.strokeStyle = C.axis;
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.moveTo(view.x(bounds.xmin), view.y(0));
+    ctx.lineTo(view.x(bounds.xmax), view.y(0));
+    ctx.moveTo(view.x(0), view.y(bounds.ymin));
+    ctx.lineTo(view.x(0), view.y(bounds.ymax));
+    ctx.stroke();
+    ctx.fillStyle = C.soft;
+    ctx.font = '11px "DM Mono", monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText('λ', view.x(bounds.xmax), view.y(0) - 8);
+    ctx.save();
+    ctx.translate(view.x(0) + 14, view.y(bounds.ymax) + 4);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('L(λ), q(λ)', 0, 0);
+    ctx.restore();
+  }
+
+  function updateCaption() {
+    if (!placed.length) {
+      caption.textContent = 'Press “Add a line” to place the first response line.';
+    } else if (placed.length < featured.length) {
+      caption.innerHTML = 'Response <strong>' + featured[placed.length - 1].label +
+        '</strong> adds one straight line. One line cannot make a dome.';
+    } else if (!floodPoints.length) {
+      caption.textContent = 'Four lines hint at a lower boundary. Flood the plot with responses to make the envelope appear.';
+    } else {
+      caption.innerHTML = '<strong>300 more lines:</strong> their lower envelope is a dome.';
+    }
+  }
+
+  next.addEventListener('click', () => {
+    placed.push(featured[placed.length]);
+    if (placed.length === featured.length) {
+      next.disabled = true;
+      flood.disabled = false;
+    }
+    draw();
+    updateCaption();
+  });
+  flood.addEventListener('click', () => {
+    floodPoints = Array.from({length: 300}, () => ({
+      x: -3 + Math.random() * 10,
+      y: -3 + Math.random() * 10
+    }));
+    flood.disabled = true;
+    draw();
+    updateCaption();
+  });
+  reset.addEventListener('click', () => {
+    placed = [];
+    floodPoints = [];
+    next.disabled = false;
+    flood.disabled = true;
+    caption.textContent = 'Press “Add a line” to place the first response line.';
+    draw();
+  });
+  function setConstraint(limit) {
+    constraintLimit = limit;
+    const isActive = limit === 2;
+    activeConstraint.classList.toggle('active', isActive);
+    activeConstraint.classList.toggle('secondary', !isActive);
+    inactiveConstraint.classList.toggle('active', !isActive);
+    inactiveConstraint.classList.toggle('secondary', isActive);
+    draw();
+    updateCaption();
+  }
+  activeConstraint.addEventListener('click', () => setConstraint(2));
+  inactiveConstraint.addEventListener('click', () => setConstraint(5));
+  draw();
+})();
+
+(function () {
+  const primal = document.getElementById('w3-point-primal');
+  const pctx = setupCanvas(primal, 250, 250);
+  const lineCanvas = document.getElementById('w3-point-line');
+  const lctx = setupCanvas(lineCanvas, 390, 250);
+  const readout = document.getElementById('w3-point-readout');
+  const activeConstraint = document.getElementById('w3-point-active');
+  const inactiveConstraint = document.getElementById('w3-point-inactive');
+  const primalView = makeView(primal, {xmin: -2, xmax: 6, ymin: -2, ymax: 6},
+    {left: 24, right: 18, top: 18, bottom: 24});
+  const lineView = makeView(lineCanvas, {xmin: -1.5, xmax: 5.5, ymin: -6, ymax: 8},
+    {left: 40, right: 22, top: 18, bottom: 32});
+  let point = {x: 1.5, y: 1.5};
+  let dragging = false;
+  let constraintLimit = 2;
+
+  function drawPrimal() {
+    pctx.clearRect(0, 0, primal._cssW, primal._cssH);
+    pctx.fillStyle = C.plot;
+    pctx.fillRect(0, 0, primal._cssW, primal._cssH);
+    fillPolygon(pctx, primalView, clipHalfPlane(primalView, constraintLimit, true), C.tealPale, 0.42);
+    drawConstraint(pctx, primalView, constraintLimit, 'x + y = ' + constraintLimit);
+    pctx.strokeStyle = C.line;
+    [1, 2, 3, 4, 5].forEach(radius => {
+      pctx.beginPath();
+      pctx.arc(primalView.x(2), primalView.y(2),
+        Math.abs(primalView.x(2 + radius) - primalView.x(2)), 0, Math.PI * 2);
+      pctx.stroke();
+    });
+    pctx.fillStyle = C.gold;
+    pctx.beginPath();
+    pctx.arc(primalView.x(2), primalView.y(2), 4, 0, Math.PI * 2);
+    pctx.fill();
+    pctx.fillStyle = C.ink;
+    pctx.strokeStyle = C.surface;
+    pctx.lineWidth = 2;
+    pctx.beginPath();
+    pctx.arc(primalView.x(point.x), primalView.y(point.y), 7, 0, Math.PI * 2);
+    pctx.fill();
+    pctx.stroke();
+  }
+
+  function drawLine() {
+    const intercept = (point.x - 2) ** 2 + (point.y - 2) ** 2;
+    const slope = point.x + point.y - constraintLimit;
+    lctx.clearRect(0, 0, lineCanvas._cssW, lineCanvas._cssH);
+    lctx.fillStyle = C.plot;
+    lctx.fillRect(0, 0, lineCanvas._cssW, lineCanvas._cssH);
+    lctx.strokeStyle = C.axis;
+    lctx.lineWidth = 1.2;
+    lctx.beginPath();
+    lctx.moveTo(lineView.x(-1.5), lineView.y(0));
+    lctx.lineTo(lineView.x(5.5), lineView.y(0));
+    lctx.moveTo(lineView.x(0), lineView.y(-6));
+    lctx.lineTo(lineView.x(0), lineView.y(8));
+    lctx.stroke();
+    lctx.fillStyle = C.ink;
+    lctx.font = '600 11px "DM Mono", monospace';
+    lctx.textAlign = 'right';
+    lctx.fillText('price λ', lineCanvas._cssW - 10, lineView.y(0) - 8);
+    lctx.textAlign = 'left';
+    lctx.fillText('L(λ)', 10, 16);
+    const slopeStatus = slope > 0.01
+      ? {text: 'x + y > ' + constraintLimit + '  →  slope > 0', color: C.coral}
+      : slope < -0.01
+        ? {text: 'x + y < ' + constraintLimit + '  →  slope < 0', color: C.teal}
+        : {text: 'x + y = ' + constraintLimit + '  →  slope = 0', color: C.gold};
+    lctx.fillStyle = slopeStatus.color;
+    lctx.font = '600 10px "DM Mono", monospace';
+    lctx.textAlign = 'right';
+    lctx.fillText(slopeStatus.text, lineCanvas._cssW - 10, 34);
+    lctx.strokeStyle = slopeStatus.color;
+    lctx.lineWidth = 2.5;
+    lctx.beginPath();
+    lctx.moveTo(lineView.x(-1.5), lineView.y(intercept - 1.5 * slope));
+    lctx.lineTo(lineView.x(5.5), lineView.y(intercept + 5.5 * slope));
+    lctx.stroke();
+    readout.textContent = '(x,y) = (' + point.x.toFixed(2) + ', ' + point.y.toFixed(2) +
+      ')  →  L(λ) = ' + intercept.toFixed(2) + ' + λ·' + slope.toFixed(2);
+  }
+
+  function update() {
+    drawPrimal();
+    drawLine();
+  }
+  function toPoint(event) {
+    const rect = primal.getBoundingClientRect();
+    const x = primalView.mx((event.clientX - rect.left) / rect.width * primal._cssW);
+    const y = primalView.my((event.clientY - rect.top) / rect.height * primal._cssH);
+    return {x: Math.max(-2, Math.min(6, x)), y: Math.max(-2, Math.min(6, y))};
+  }
+  primal.style.cursor = 'grab';
+  primal.addEventListener('pointerdown', event => {
+    dragging = true;
+    point = toPoint(event);
+    primal.setPointerCapture(event.pointerId);
+    primal.style.cursor = 'grabbing';
+    update();
+  });
+  primal.addEventListener('pointermove', event => {
+    if (!dragging) return;
+    point = toPoint(event);
+    update();
+  });
+  function stop(event) {
+    dragging = false;
+    primal.style.cursor = 'grab';
+    if (event.pointerId !== undefined && primal.hasPointerCapture(event.pointerId)) {
+      primal.releasePointerCapture(event.pointerId);
+    }
+  }
+  primal.addEventListener('pointerup', stop);
+  primal.addEventListener('pointercancel', stop);
+  function setConstraint(limit) {
+    constraintLimit = limit;
+    const isActive = limit === 2;
+    activeConstraint.classList.toggle('active', isActive);
+    activeConstraint.classList.toggle('secondary', !isActive);
+    inactiveConstraint.classList.toggle('active', !isActive);
+    inactiveConstraint.classList.toggle('secondary', isActive);
+    update();
+  }
+  activeConstraint.addEventListener('click', () => setConstraint(2));
+  inactiveConstraint.addEventListener('click', () => setConstraint(5));
+  try {
+    update();
+  } catch (error) {
+    readout.textContent = error.name + ': ' + error.message;
+  }
+})();
+
+(function () {
+  const primal = document.getElementById('w3-tangent-primal');
+  const pctx = setupCanvas(primal, 250, 250);
+  const lineCanvas = document.getElementById('w3-tangent-line');
+  const lctx = setupCanvas(lineCanvas, 390, 250);
+  const slider = document.getElementById('w3-tangent-lambda');
+  const value = document.getElementById('w3-tangent-lambda-v');
+  const readout = document.getElementById('w3-tangent-readout');
+  const caption = document.getElementById('w3-tangent-caption');
+  const activeConstraint = document.getElementById('w3-tangent-active');
+  const inactiveConstraint = document.getElementById('w3-tangent-inactive');
+  const snap = document.getElementById('w3-tangent-snap');
+  const primalView = makeView(primal, {xmin: -2, xmax: 6, ymin: -2, ymax: 6},
+    {left: 24, right: 18, top: 18, bottom: 24});
+  const lineView = makeView(lineCanvas, {xmin: -1.5, xmax: 5.5, ymin: -6, ymax: 8},
+    {left: 40, right: 22, top: 18, bottom: 32});
+  let constraintLimit = 2;
+  const q = lambda => (4 - constraintLimit) * lambda - lambda * lambda / 2;
+  const lambdaStar = () => Math.max(0, 4 - constraintLimit);
+
+  function drawPrimal(lambda) {
+    const point = 2 - lambda / 2;
+    pctx.clearRect(0, 0, primal._cssW, primal._cssH);
+    pctx.fillStyle = C.plot;
+    pctx.fillRect(0, 0, primal._cssW, primal._cssH);
+    pctx.fillStyle = C.soft;
+    pctx.font = '600 11px "DM Mono", monospace';
+    pctx.fillText('x = y response path', 14, 20);
+    fillPolygon(pctx, primalView, clipHalfPlane(primalView, constraintLimit, true), C.tealPale, 0.28);
+    pctx.strokeStyle = C.line;
+    pctx.lineWidth = 1;
+    [1, 2, 3, 4, 5].forEach(radius => {
+      pctx.beginPath();
+      pctx.arc(primalView.x(2), primalView.y(2),
+        Math.abs(primalView.x(2 + radius) - primalView.x(2)), 0, Math.PI * 2);
+      pctx.stroke();
+    });
+    drawConstraint(pctx, primalView, constraintLimit, 'x + y = ' + constraintLimit);
+    pctx.strokeStyle = C.gold;
+    pctx.globalAlpha = 0.4;
+    pctx.setLineDash([3, 4]);
+    pctx.beginPath();
+    pctx.moveTo(primalView.x(-2), primalView.y(-2));
+    pctx.lineTo(primalView.x(6), primalView.y(6));
+    pctx.stroke();
+    pctx.setLineDash([]);
+    pctx.globalAlpha = 1;
+    pctx.fillStyle = C.gold;
+    pctx.beginPath();
+    pctx.arc(primalView.x(point), primalView.y(point), 7, 0, Math.PI * 2);
+    pctx.fill();
+    pctx.strokeStyle = C.surface;
+    pctx.lineWidth = 2;
+    pctx.stroke();
+  }
+
+  function drawLine(lambda) {
+    const point = 2 - lambda / 2;
+    const intercept = 2 * (point - 2) ** 2;
+    const slope = 2 * point - constraintLimit;
+    lctx.clearRect(0, 0, lineCanvas._cssW, lineCanvas._cssH);
+    lctx.fillStyle = C.plot;
+    lctx.fillRect(0, 0, lineCanvas._cssW, lineCanvas._cssH);
+    lctx.fillStyle = C.soft;
+    lctx.font = '600 11px "DM Mono", monospace';
+    lctx.textAlign = 'right';
+    lctx.fillText('q(λ) and the selected line', lineCanvas._cssW - 14, 20);
+    lctx.textAlign = 'left';
+    lctx.strokeStyle = C.axis;
+    lctx.lineWidth = 1.2;
+    lctx.beginPath();
+    lctx.moveTo(lineView.x(-1.5), lineView.y(0));
+    lctx.lineTo(lineView.x(5.5), lineView.y(0));
+    lctx.moveTo(lineView.x(0), lineView.y(-6));
+    lctx.lineTo(lineView.x(0), lineView.y(8));
+    lctx.stroke();
+    lctx.fillStyle = C.soft;
+    lctx.font = '10px "DM Mono", monospace';
+    lctx.textAlign = 'center';
+    [-1, 0, 1, 2, 3, 4, 5].forEach(value => {
+      lctx.fillText(String(value), lineView.x(value), lineView.y(0) + 15);
+    });
+    lctx.textAlign = 'right';
+    [-4, 0, 4, 8].forEach(value => {
+      if (value !== 0) lctx.fillText(String(value), lineView.x(0) - 7, lineView.y(value) + 3);
+    });
+    lctx.fillStyle = C.ink;
+    lctx.font = '600 11px "DM Mono", monospace';
+    lctx.textAlign = 'right';
+    lctx.fillText('price λ', lineCanvas._cssW - 12, lineView.y(0) - 8);
+    lctx.textAlign = 'left';
+    lctx.fillText('L(λ), q(λ)', 10, 16);
+    lctx.strokeStyle = C.teal;
+    lctx.lineWidth = 3;
+    lctx.beginPath();
+    lctx.moveTo(lineView.x(-1.5), lineView.y(q(-1.5)));
+    for (let x = -1.5; x <= 5.5; x += 0.04) lctx.lineTo(lineView.x(x), lineView.y(q(x)));
+    lctx.stroke();
+    lctx.strokeStyle = C.gold;
+    lctx.lineWidth = 2.4;
+    lctx.beginPath();
+    lctx.moveTo(lineView.x(-1.5), lineView.y(intercept - 1.5 * slope));
+    lctx.lineTo(lineView.x(5.5), lineView.y(intercept + 5.5 * slope));
+    lctx.stroke();
+    lctx.fillStyle = C.surface;
+    lctx.strokeStyle = C.gold;
+    lctx.lineWidth = 2;
+    lctx.beginPath();
+    lctx.arc(lineView.x(lambda), lineView.y(q(lambda)), 6, 0, Math.PI * 2);
+    lctx.fill();
+    lctx.stroke();
+  }
+
+  function update() {
+    const lambda = parseFloat(slider.value);
+    const point = 2 - lambda / 2;
+    drawPrimal(lambda);
+    drawLine(lambda);
+    value.textContent = lambda.toFixed(2);
+    readout.textContent = 'best response x* = y* = ' + point.toFixed(2) +
+      '  ·  q(λ) = ' + q(lambda).toFixed(3) +
+      '  ·  q′(λ) = ' + (4 - constraintLimit - lambda).toFixed(2);
+    caption.textContent = Math.abs(lambda - lambdaStar()) < 0.05
+      ? 'At λ* = ' + lambdaStar().toFixed(0) + ', the touching line is horizontal: q′(λ) = 0.'
+      : 'This response’s line touches the envelope at the chosen price; another price selects another response.';
+  }
+  slider.addEventListener('input', update);
+  snap.addEventListener('click', () => {
+    slider.value = lambdaStar();
+    update();
+  });
+  function setConstraint(limit) {
+    constraintLimit = limit;
+    const isActive = limit === 2;
+    activeConstraint.classList.toggle('active', isActive);
+    activeConstraint.classList.toggle('secondary', !isActive);
+    inactiveConstraint.classList.toggle('active', !isActive);
+    inactiveConstraint.classList.toggle('secondary', isActive);
+    snap.textContent = 'Snap to λ* = ' + lambdaStar();
+    slider.value = lambdaStar();
+    update();
+  }
+  activeConstraint.addEventListener('click', () => setConstraint(2));
+  inactiveConstraint.addEventListener('click', () => setConstraint(5));
+  update();
+})();
+
+(function () {
+  const canvas = document.getElementById('w2-canvas');
+  const ctx = setupCanvas(canvas, 850, 455);
+  const view = makeView(canvas, {xmin: -0.8, xmax: 4.4, ymin: -0.8, ymax: 4.4});
+  const slider = document.getElementById('w2-lambda');
+  const value = document.getElementById('w2-lambda-v');
+  const controls = document.getElementById('w2-controls');
+  const caption = document.getElementById('w2-caption');
+  const readout = document.getElementById('w2-readout');
+  const back = document.getElementById('w2-back');
+  const next = document.getElementById('w2-next');
+  const base = makeLayer(view.w, view.h, layerCtx => {
+    drawGrid(layerCtx, view);
+    drawContours(layerCtx, view, 2, 2, C.teal, 0.32);
+    drawStar(layerCtx, view, 2, 2, C.teal, 'λ = 0 minimum');
+  });
+  const stages = [
+    {
+      caption: 'With no price, the original bowl bottoms out at the forbidden point (2,2).',
+      next: 'Show the signed rule →'
+    },
+    {
+      caption: 'The rule value is negative in green, zero on the wall, and positive in coral.',
+      next: 'Let the price tilt the bowl →'
+    },
+    {
+      caption: 'Choose λ first; then the point best-responds by moving to min L. Try λ = 2.',
+      next: null
+    }
+  ];
+  let stage = 0;
+
+  function render() {
+    const lambda = parseFloat(slider.value);
+    const m = 2 - lambda / 2;
+    ctx.clearRect(0, 0, view.w, view.h);
+    drawLayer(ctx, base, view.w, view.h);
+    if (stage >= 1) {
+      fillPolygon(ctx, view, clipHalfPlane(view, 2, true), C.tealPale, 0.25);
+      fillPolygon(ctx, view, clipHalfPlane(view, 2, false), C.coral, 0.10);
+      drawConstraint(ctx, view, 2, 'g(x,y) = 0');
+      ctx.save();
+      ctx.fillStyle = C.teal;
+      ctx.font = '600 12px "Manrope", sans-serif';
+      ctx.fillText('g < 0', view.x(0.15), view.y(0.25));
+      ctx.fillStyle = C.coral;
+      ctx.fillText('g > 0', view.x(3.3), view.y(3.25));
+      ctx.restore();
+    }
+    if (stage >= 2) {
+      drawContours(ctx, view, m, m, C.gold, 0.92, [0.25, 0.75, 1.5, 2.5, 4, 6]);
+      drawArrow(ctx, view, 2, 2, m, m, C.gold, 'tilt by −λ∇g');
+      drawPoint(ctx, view, m, m, C.gold, 'min L', 9);
+      if (Math.abs(lambda - 2) < 0.08) drawStar(ctx, view, 1, 1, C.coral, 'price is just right');
+    }
+    value.textContent = lambda.toFixed(2);
+    controls.classList.toggle('is-hidden', stage < 2);
+    if (stage < 2) {
+      readout.textContent = stage === 0 ? 'minimum = (2.00, 2.00)' : 'g(x,y) = x + y − 2';
+    } else {
+      const q = 2 * lambda - lambda * lambda / 2;
+      const violation = 2 - lambda;
+      readout.textContent = '1. choose λ = ' + lambda.toFixed(2) +
+        '  →  2. min₍x,y₎ L responds with (' + m.toFixed(2) + ', ' + m.toFixed(2) + ')' +
+        '  →  q(λ) = ' + q.toFixed(3) + '  ·  g = ' + violation.toFixed(2);
+    }
+    caption.textContent = stages[stage].caption;
+    back.disabled = stage === 0;
+    if (stages[stage].next) {
+      next.classList.remove('is-hidden');
+      next.textContent = stages[stage].next;
+    } else {
+      next.classList.add('is-hidden');
+    }
+  }
+
+  slider.addEventListener('input', render);
+  back.addEventListener('click', () => { stage = Math.max(0, stage - 1); render(); });
+  next.addEventListener('click', () => { stage = Math.min(stages.length - 1, stage + 1); render(); });
+  render();
+})();
+
+(function () {
+  const canvas = document.getElementById('w-constraint-plane-canvas');
+  const ctx = setupCanvas(canvas, 850, 410);
+  const panel = {x: 24, y: 22, w: 802, h: 362};
+  const domain = 3;
+  const camera = {angle: -0.72, depth: 0.48};
+  let rotating = false;
+  let lastPointer = null;
+  let renderFrame = null;
+
+  function gAt(x, y) {
+    return x + y - 2;
+  }
+
+  function project3(x, y, z) {
+    const dx = x - domain / 2;
+    const dy = y - domain / 2;
+    const cos = Math.cos(camera.angle);
+    const sin = Math.sin(camera.angle);
+    const across = cos * dx - sin * dy;
+    const depth = sin * dx + cos * dy;
+    return {
+      x: panel.x + panel.w / 2 + across * 105,
+      y: panel.y + 235 + depth * 105 * camera.depth - z * 31
+    };
+  }
+
+  function fillPolygon(points, color, alpha) {
+    ctx.fillStyle = color;
+    ctx.globalAlpha = alpha;
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    points.slice(1).forEach(point => ctx.lineTo(point.x, point.y));
+    ctx.closePath();
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+
+  function label(text, point, color) {
+    ctx.font = '700 11px "DM Mono", monospace';
+    ctx.textAlign = 'center';
+    const width = ctx.measureText(text).width;
+    ctx.fillStyle = C.surface;
+    ctx.globalAlpha = 0.9;
+    ctx.fillRect(point.x - width / 2 - 7, point.y - 13, width + 14, 20);
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = color;
+    ctx.fillText(text, point.x, point.y + 1);
+  }
+
+  function render() {
+    ctx.clearRect(0, 0, canvas._cssW, canvas._cssH);
+    ctx.fillStyle = C.plot;
+    ctx.fillRect(0, 0, canvas._cssW, canvas._cssH);
+    ctx.fillStyle = C.surface;
+    ctx.strokeStyle = C.line;
+    ctx.lineWidth = 1.2;
+    ctx.fillRect(panel.x, panel.y, panel.w, panel.h);
+    ctx.strokeRect(panel.x, panel.y, panel.w, panel.h);
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(panel.x + 2, panel.y + 2, panel.w - 4, panel.h - 4);
+    ctx.clip();
+
+    const zeroPlane = [
+      project3(0, 0, 0),
+      project3(domain, 0, 0),
+      project3(domain, domain, 0),
+      project3(0, domain, 0)
+    ];
+    fillPolygon(zeroPlane, C.soft, 0.045);
+    ctx.strokeStyle = C.axis;
+    ctx.globalAlpha = 0.28;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(zeroPlane[0].x, zeroPlane[0].y);
+    zeroPlane.slice(1).forEach(point => ctx.lineTo(point.x, point.y));
+    ctx.closePath();
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+
+    const feasibleRegion = [[0, 0], [2, 0], [0, 2]]
+      .map(([x, y]) => project3(x, y, gAt(x, y)));
+    const infeasibleRegion = [[2, 0], [domain, 0], [domain, domain], [0, domain], [0, 2]]
+      .map(([x, y]) => project3(x, y, gAt(x, y)));
+    fillPolygon(feasibleRegion, C.teal, 0.18);
+    fillPolygon(infeasibleRegion, C.coral, 0.14);
+
+    const gridN = 12;
+    const step = domain / gridN;
+    ctx.lineWidth = 1.15;
+    ctx.globalAlpha = 0.82;
+    for (let i = 0; i <= gridN; i++) {
+      const fixed = i * step;
+      for (let j = 0; j < gridN; j++) {
+        const start = j * step;
+        const end = (j + 1) * step;
+        const midpointA = gAt(fixed, (start + end) / 2);
+        const a0 = project3(fixed, start, gAt(fixed, start));
+        const a1 = project3(fixed, end, gAt(fixed, end));
+        ctx.strokeStyle = midpointA <= 0 ? C.teal : C.coral;
+        ctx.beginPath();
+        ctx.moveTo(a0.x, a0.y);
+        ctx.lineTo(a1.x, a1.y);
+        ctx.stroke();
+
+        const midpointB = gAt((start + end) / 2, fixed);
+        const b0 = project3(start, fixed, gAt(start, fixed));
+        const b1 = project3(end, fixed, gAt(end, fixed));
+        ctx.strokeStyle = midpointB <= 0 ? C.teal : C.coral;
+        ctx.beginPath();
+        ctx.moveTo(b0.x, b0.y);
+        ctx.lineTo(b1.x, b1.y);
+        ctx.stroke();
+      }
+    }
+    ctx.globalAlpha = 1;
+
+    ctx.strokeStyle = C.gold;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    for (let i = 0; i <= 100; i++) {
+      const x = i / 100 * 2;
+      const point = project3(x, 2 - x, 0.025);
+      i === 0 ? ctx.moveTo(point.x, point.y) : ctx.lineTo(point.x, point.y);
+    }
+    ctx.stroke();
+
+    const origin = project3(0, 0, 0);
+    const xAxis = project3(3.35, 0, 0);
+    const yAxis = project3(0, 3.35, 0);
+    const zLow = project3(0, 0, -2.35);
+    const zHigh = project3(0, 0, 4.35);
+    ctx.strokeStyle = C.ink;
+    ctx.lineWidth = 1.5;
+    [[origin, xAxis], [origin, yAxis], [zLow, zHigh]].forEach(([start, end]) => {
+      ctx.beginPath();
+      ctx.moveTo(start.x, start.y);
+      ctx.lineTo(end.x, end.y);
+      ctx.stroke();
+    });
+    ctx.fillStyle = C.ink;
+    ctx.font = '700 11px "DM Mono", monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('x', xAxis.x + 5, xAxis.y - 3);
+    ctx.fillText('y', yAxis.x + 5, yAxis.y - 3);
+    ctx.fillText('g(x,y)', zHigh.x + 5, zHigh.y - 3);
+
+    label('FEASIBLE  g ≤ 0', project3(0.5, 0.5, gAt(0.5, 0.5) - 0.08), C.teal);
+    label('INFEASIBLE  g > 0', project3(2.2, 1.9, gAt(2.2, 1.9) + 0.08), C.coral);
+    label('g = 0  ⇔  x + y = 2', project3(1.55, 0.45, 0.05), C.gold);
+
+    ctx.restore();
+  }
+
+  function scheduleRender() {
+    if (renderFrame !== null) return;
+    renderFrame = requestAnimationFrame(() => {
+      renderFrame = null;
+      render();
+    });
+  }
+
+  canvas.style.cursor = 'grab';
+  canvas.addEventListener('pointerdown', event => {
+    rotating = true;
+    lastPointer = {x: event.clientX, y: event.clientY};
+    canvas.style.cursor = 'grabbing';
+    canvas.setPointerCapture(event.pointerId);
+  });
+  canvas.addEventListener('pointermove', event => {
+    if (!rotating || !lastPointer) return;
+    camera.angle += (event.clientX - lastPointer.x) * 0.009;
+    camera.depth = Math.max(0.22, Math.min(0.78,
+      camera.depth + (event.clientY - lastPointer.y) * 0.003));
+    lastPointer = {x: event.clientX, y: event.clientY};
+    scheduleRender();
+  });
+  function stopRotating(event) {
+    rotating = false;
+    lastPointer = null;
+    canvas.style.cursor = 'grab';
+    if (event.pointerId !== undefined && canvas.hasPointerCapture(event.pointerId)) {
+      canvas.releasePointerCapture(event.pointerId);
+    }
+  }
+  canvas.addEventListener('pointerup', stopRotating);
+  canvas.addEventListener('pointercancel', stopRotating);
+  render();
+})();
+
+(function () {
+  const canvas = document.getElementById('w-nested-canvas');
+  const ctx = setupCanvas(canvas, 850, 475);
+  const slider = document.getElementById('w-nested-lambda');
+  const value = document.getElementById('w-nested-lambda-v');
+  const caption = document.getElementById('w-nested-caption');
+  const readout = document.getElementById('w-nested-readout');
+  const back = document.getElementById('w-nested-back');
+  const next = document.getElementById('w-nested-next');
+  const activeConstraint = document.getElementById('w-nested-active');
+  const inactiveConstraint = document.getElementById('w-nested-inactive');
+  const stages = [
+    {
+      caption: 'The full 2D toy problem: x and y span the ground; surface height is L. Drag to rotate.',
+      next: 'Project onto the diagonal x = y →'
+    },
+    {
+      caption: 'The right plot slices the same bowl along x = y = t. Its bottom is the same 2D best response.',
+      next: 'Record the resulting bound →'
+    },
+    {
+      caption: 'The shared minimum height is q(λ): one number produced by this frozen price.',
+      next: null
+    }
+  ];
+  let stage = 1;
+  const leftPanel = {x: 24, y: 56, w: 386, h: 360};
+  const rightPanel = {x: 440, y: 56, w: 386, h: 360};
+  const domain = 2.6;
+  const camera = {angle: -0.72, depth: 0.48};
+  let rotating = false;
+  let lastPointer = null;
+  let constraintLimit = 2;
+
+  function parseHex(color) {
+    const hex = color.replace('#', '');
+    return {
+      r: parseInt(hex.slice(0, 2), 16),
+      g: parseInt(hex.slice(2, 4), 16),
+      b: parseInt(hex.slice(4, 6), 16)
+    };
+  }
+  const lowSurface = parseHex(C.teal);
+  const highSurface = parseHex(C.gold);
+
+  function surfaceColor(height, shade) {
+    const t = Math.max(0, Math.min(1, height / 13));
+    const channel = key => Math.round(
+      (lowSurface[key] * (1 - t) + highSurface[key] * t) * shade
+    );
+    return 'rgb(' + channel('r') + ',' + channel('g') + ',' + channel('b') + ')';
+  }
+
+  function project3(x, y, z) {
+    const dx = x - 1.3;
+    const dy = y - 1.3;
+    const cos = Math.cos(camera.angle);
+    const sin = Math.sin(camera.angle);
+    const across = cos * dx - sin * dy;
+    const depth = sin * dx + cos * dy;
+    return {
+      x: leftPanel.x + leftPanel.w / 2 + across * 82,
+      y: leftPanel.y + 276 + depth * 82 * camera.depth - z * 9,
+      depth: depth + z * 0.035
+    };
+  }
+
+  function feasiblePolygon(limit) {
+    const square = [[0, 0], [domain, 0], [domain, domain], [0, domain]];
+    const clipped = [];
+    square.forEach((current, index) => {
+      const previous = square[(index + square.length - 1) % square.length];
+      const currentInside = current[0] + current[1] <= limit;
+      const previousInside = previous[0] + previous[1] <= limit;
+      if (currentInside !== previousInside) {
+        const t = (limit - previous[0] - previous[1]) /
+          ((current[0] + current[1]) - (previous[0] + previous[1]));
+        clipped.push([
+          previous[0] + t * (current[0] - previous[0]),
+          previous[1] + t * (current[1] - previous[1])
+        ]);
+      }
+      if (currentInside) clipped.push(current);
+    });
+    return clipped;
+  }
+
+  function render() {
+    const lambda = parseFloat(slider.value);
+    const isActiveCase = constraintLimit === 2;
+    const m = 2 - lambda / 2;
+    const violation = 2 * m - constraintLimit;
+    const originalAtMin = 2 * (m - 2) ** 2;
+    const adjustment = lambda * violation;
+    const bound = originalAtMin + adjustment;
+    const responseColor = violation > 0.02 ? C.coral : violation < -0.02 ? C.teal : C.gold;
+    value.textContent = lambda.toFixed(2);
+    ctx.clearRect(0, 0, canvas._cssW, canvas._cssH);
+    ctx.fillStyle = C.plot;
+    ctx.fillRect(0, 0, canvas._cssW, canvas._cssH);
+
+    [leftPanel, rightPanel].forEach(panel => {
+      ctx.fillStyle = C.surface;
+      ctx.strokeStyle = C.line;
+      ctx.lineWidth = 1.2;
+      ctx.fillRect(panel.x, panel.y, panel.w, panel.h);
+      ctx.strokeRect(panel.x, panel.y, panel.w, panel.h);
+    });
+
+    ctx.fillStyle = C.soft;
+    ctx.font = '10px "DM Mono", monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('2D DECISION SPACE · HEIGHT = L', leftPanel.x + leftPanel.w / 2, leftPanel.y - 14);
+    ctx.fillText('EXACT DIAGONAL SLICE x = y = t', rightPanel.x + rightPanel.w / 2, rightPanel.y - 14);
+
+    const zAt = (x, y) => (x - 2) ** 2 + (y - 2) ** 2 +
+      lambda * (x + y - constraintLimit);
+    const gridN = 18;
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(leftPanel.x + 2, leftPanel.y + 2, leftPanel.w - 4, leftPanel.h - 4);
+    ctx.clip();
+
+    const feasibleBase = feasiblePolygon(constraintLimit).map(([x, y]) => project3(x, y, 0));
+    ctx.fillStyle = C.tealPale;
+    ctx.globalAlpha = 0.25;
+    ctx.beginPath();
+    ctx.moveTo(feasibleBase[0].x, feasibleBase[0].y);
+    feasibleBase.slice(1).forEach(point => ctx.lineTo(point.x, point.y));
+    ctx.closePath();
+    ctx.fill();
+    ctx.globalAlpha = 1;
+
+    const quads = [];
+    for (let i = 0; i < gridN; i++) {
+      for (let j = 0; j < gridN; j++) {
+        const x0 = i / gridN * domain;
+        const x1 = (i + 1) / gridN * domain;
+        const y0 = j / gridN * domain;
+        const y1 = (j + 1) / gridN * domain;
+        const corners = [
+          [x0, y0], [x1, y0], [x1, y1], [x0, y1]
+        ].map(([x, y]) => {
+          const z = zAt(x, y);
+          return {...project3(x, y, z), z};
+        });
+        const cx = (x0 + x1) / 2;
+        const cy = (y0 + y1) / 2;
+        const nx = -2 * (cx - m);
+        const ny = -2 * (cy - m);
+        const nz = 1;
+        const norm = Math.hypot(nx, ny, nz);
+        const light = Math.max(0, (nx * -0.35 + ny * -0.45 + nz * 0.82) / norm);
+        const shade = 0.48 + 0.52 * light;
+        const height = corners.reduce((sum, point) => sum + point.z, 0) / 4;
+        quads.push({
+          corners,
+          depth: corners.reduce((sum, point) => sum + point.depth, 0) / 4,
+          color: surfaceColor(height, shade)
+        });
+      }
+    }
+    quads.sort((a, b) => a.depth - b.depth);
+    quads.forEach(quad => {
+      ctx.fillStyle = quad.color;
+      ctx.strokeStyle = quad.color;
+      ctx.lineWidth = 0.8;
+      ctx.beginPath();
+      ctx.moveTo(quad.corners[0].x, quad.corners[0].y);
+      quad.corners.slice(1).forEach(point => ctx.lineTo(point.x, point.y));
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    });
+
+    if (stage >= 1) {
+      ctx.strokeStyle = C.violet;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      for (let i = 0; i <= 100; i++) {
+        const t = i / 100 * domain;
+        const point = project3(t, t, zAt(t, t) + 0.03);
+        i === 0 ? ctx.moveTo(point.x, point.y) : ctx.lineTo(point.x, point.y);
+      }
+      ctx.stroke();
+    }
+
+    const minimum = project3(m, m, bound + 0.05);
+    ctx.fillStyle = responseColor;
+    ctx.strokeStyle = C.surface;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(minimum.x, minimum.y, 8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = responseColor;
+    ctx.font = '700 10px "Manrope", sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('min L', minimum.x + 11, minimum.y - 7);
+
+    const wallT = constraintLimit / 2;
+    const wallPoint = project3(wallT, wallT, zAt(wallT, wallT) + 0.05);
+    if (isActiveCase) {
+      ctx.fillStyle = C.gold;
+      ctx.strokeStyle = C.surface;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(wallPoint.x, wallPoint.y, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+    }
+    if (isActiveCase && lambda > 2.02) {
+      drawArrow(ctx, {x: z => z, y: z => z}, wallPoint.x, wallPoint.y,
+        minimum.x, minimum.y, C.teal, 'negative rebate pulls inside', false);
+      ctx.fillStyle = C.teal;
+      ctx.font = '700 10px "Manrope", sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('g < 0', minimum.x + 11, minimum.y + 10);
+    }
+
+    const target = project3(2, 2, zAt(2, 2) + 0.05);
+    ctx.fillStyle = isActiveCase ? C.coral : C.teal;
+    ctx.beginPath();
+    ctx.arc(target.x, target.y, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.font = '700 9px "Manrope", sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText(
+      isActiveCase ? '(2,2) violates g > 0' : '(2,2) is legal: g < 0',
+      target.x + 7, target.y - 5
+    );
+
+    const origin = project3(0, 0, 0);
+    const xAxis = project3(2.9, 0, 0);
+    const yAxis = project3(0, 2.9, 0);
+    const zAxis = project3(0, 0, 8);
+    [
+      [xAxis, 'x'],
+      [yAxis, 'y'],
+      [zAxis, 'height = L']
+    ].forEach(([end, label]) => {
+      ctx.strokeStyle = C.ink;
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      ctx.moveTo(origin.x, origin.y);
+      ctx.lineTo(end.x, end.y);
+      ctx.stroke();
+      ctx.fillStyle = C.ink;
+      ctx.font = '700 10px "DM Mono", monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText(label, end.x + 4, end.y - 3);
+    });
+    ctx.restore();
+
+    ctx.fillStyle = C.soft;
+    ctx.font = '10px "DM Mono", monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('drag this surface to rotate', leftPanel.x + leftPanel.w / 2, leftPanel.y + 346);
+
+    if (stage >= 1) {
+      const plot = {
+        left: rightPanel.x + 50,
+        right: rightPanel.x + rightPanel.w - 24,
+        top: rightPanel.y + 38,
+        bottom: rightPanel.y + 286
+      };
+      const TX = t => plot.left + t / 2.5 * (plot.right - plot.left);
+      const LY = score => plot.bottom - (score + 0.5) / 9.5 * (plot.bottom - plot.top);
+      const wallX = TX(Math.min(wallT, 2.5));
+      ctx.fillStyle = C.plot;
+      ctx.fillRect(plot.left, plot.top, plot.right - plot.left, plot.bottom - plot.top);
+      ctx.fillStyle = C.soft;
+      ctx.font = '700 9px "DM Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(
+        'λ = ' + lambda.toFixed(2) + ':  f(x*, y*) + λg(x*, y*) = ' +
+        originalAtMin.toFixed(2) + ' + ' + lambda.toFixed(2) +
+        '(' + violation.toFixed(2) + ') = ' + bound.toFixed(2),
+        rightPanel.x + rightPanel.w / 2, rightPanel.y + 23
+      );
+      ctx.fillStyle = C.tealPale;
+      ctx.globalAlpha = 0.22;
+      ctx.fillRect(plot.left, plot.top, wallX - plot.left, plot.bottom - plot.top);
+      if (isActiveCase) {
+        ctx.fillStyle = C.coral;
+        ctx.globalAlpha = 0.07;
+        ctx.fillRect(wallX, plot.top, plot.right - wallX, plot.bottom - plot.top);
+      }
+      ctx.globalAlpha = 1;
+      ctx.strokeStyle = C.line;
+      ctx.lineWidth = 1;
+      for (let score = 0; score <= 8; score += 2) {
+        ctx.beginPath();
+        ctx.moveTo(plot.left, LY(score));
+        ctx.lineTo(plot.right, LY(score));
+        ctx.stroke();
+      }
+      ctx.strokeStyle = C.axis;
+      ctx.lineWidth = 1.3;
+      ctx.beginPath();
+      ctx.moveTo(plot.left, plot.bottom);
+      ctx.lineTo(plot.right, plot.bottom);
+      ctx.moveTo(plot.left, plot.top);
+      ctx.lineTo(plot.left, plot.bottom);
+      ctx.stroke();
+      ctx.fillStyle = C.soft;
+      ctx.font = '9px "DM Mono", monospace';
+      for (let t = 0; t <= 2.5; t += 0.5) {
+        ctx.textAlign = 'center';
+        ctx.fillText(t.toFixed(1), TX(t), plot.bottom + 14);
+      }
+      for (let score = 0; score <= 8; score += 2) {
+        ctx.textAlign = 'right';
+        ctx.fillText(String(score), plot.left - 7, LY(score) + 3);
+      }
+      ctx.fillStyle = C.teal;
+      ctx.font = '700 9px "Manrope", sans-serif';
+      ctx.textAlign = 'center';
+      if (isActiveCase) {
+        ctx.strokeStyle = C.coral;
+        ctx.lineWidth = 2;
+        ctx.setLineDash([6, 5]);
+        ctx.beginPath();
+        ctx.moveTo(wallX, plot.top);
+        ctx.lineTo(wallX, plot.bottom);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillText('feasible t ≤ 1', (plot.left + wallX) / 2, plot.top + 13);
+        ctx.fillStyle = C.coral;
+        ctx.fillText('violates', (wallX + plot.right) / 2, plot.top + 13);
+        ctx.textAlign = 'left';
+        ctx.fillText('wall', wallX + 4, plot.top + 27);
+      } else {
+        ctx.fillText('the whole visible slice is feasible', (plot.left + plot.right) / 2, plot.top + 13);
+      }
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(plot.left, plot.top, plot.right - plot.left, plot.bottom - plot.top);
+      ctx.clip();
+      ctx.strokeStyle = C.teal;
+      ctx.globalAlpha = 0.7;
+      ctx.lineWidth = 2;
+      ctx.setLineDash([7, 5]);
+      ctx.beginPath();
+      for (let i = 0; i <= 180; i++) {
+        const t = i / 180 * 2.5;
+        const score = 2 * (t - 2) ** 2;
+        i === 0 ? ctx.moveTo(TX(t), LY(score)) : ctx.lineTo(TX(t), LY(score));
+      }
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.globalAlpha = 1;
+      ctx.strokeStyle = C.gold;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      for (let i = 0; i <= 180; i++) {
+        const t = i / 180 * 2.5;
+        const score = 2 * (t - 2) ** 2 + lambda * (2 * t - constraintLimit);
+        i === 0 ? ctx.moveTo(TX(t), LY(score)) : ctx.lineTo(TX(t), LY(score));
+      }
+      ctx.stroke();
+      ctx.restore();
+      const fPointY = LY(originalAtMin);
+      const lPointY = LY(bound);
+      ctx.strokeStyle = adjustment < -0.02 ? C.teal : adjustment > 0.02 ? C.coral : C.axis;
+      ctx.fillStyle = ctx.strokeStyle;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(TX(m), fPointY);
+      ctx.lineTo(TX(m), lPointY);
+      ctx.stroke();
+      if (Math.abs(adjustment) > 0.02) {
+        const direction = Math.sign(lPointY - fPointY);
+        ctx.beginPath();
+        ctx.moveTo(TX(m), lPointY);
+        ctx.lineTo(TX(m) - 6, lPointY - direction * 9);
+        ctx.lineTo(TX(m) + 6, lPointY - direction * 9);
+        ctx.closePath();
+        ctx.fill();
+      }
+      ctx.fillStyle = C.teal;
+      ctx.beginPath();
+      ctx.arc(TX(m), fPointY, 4.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.font = '700 9px "Manrope", sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('original f', TX(m) + 8, fPointY + 3);
+      if (Math.abs(adjustment) > 0.02) {
+        ctx.fillStyle = adjustment < 0 ? C.teal : C.coral;
+        ctx.fillText(
+          adjustment < 0
+            ? 'λg = ' + adjustment.toFixed(2) + ' rebate'
+            : 'λg = +' + adjustment.toFixed(2) + ' charge',
+          TX(m) + 8, (fPointY + lPointY) / 2 + 3
+        );
+      }
+      ctx.strokeStyle = C.violet;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(TX(m), plot.bottom);
+      ctx.lineTo(TX(m), LY(bound));
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = responseColor;
+      ctx.beginPath();
+      ctx.arc(TX(m), LY(bound), 8, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = C.ink;
+      ctx.font = '600 11px "Manrope", sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText(
+        !isActiveCase
+          ? 'min L stays legal'
+          : lambda > 2.02 ? 'min L moved inside' : lambda < 1.98 ? 'min L still violates' : 'min L on wall',
+        TX(m) + 11, LY(bound) - 7
+      );
+      ctx.fillStyle = C.soft;
+      ctx.font = '10px "DM Mono", monospace';
+      ctx.textAlign = 'right';
+      ctx.fillText('t = x = y', plot.right, rightPanel.y + 314);
+      ctx.save();
+      ctx.translate(rightPanel.x + 17, plot.top);
+      ctx.rotate(-Math.PI / 2);
+      ctx.textAlign = 'right';
+      ctx.fillText('L(t,t,λ)', 0, 0);
+      ctx.restore();
+
+      drawArrow(ctx, {x: z => z, y: z => z}, leftPanel.x + leftPanel.w + 5, 230,
+        rightPanel.x - 5, 230, C.violet, '', false);
+    } else {
+      ctx.fillStyle = C.soft;
+      ctx.font = '600 13px "Manrope", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Next: slice the 2D bowl along x = y', rightPanel.x + rightPanel.w / 2, 230);
+    }
+
+    if (stage >= 2) {
+      const badgeX = rightPanel.x + 80;
+      const badgeY = rightPanel.y + 326;
+      ctx.fillStyle = C.gold;
+      ctx.fillRect(badgeX, badgeY, 226, 25);
+      ctx.fillStyle = C.surface;
+      ctx.font = '700 12px "DM Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('record q(λ) = min L = ' + bound.toFixed(3), badgeX + 113, badgeY + 17);
+    }
+
+    const regime = !isActiveCase
+      ? ' Here (2,2) already satisfies g < 0, so the dual chooses λ = 0; any positive price only creates a rebate.'
+      : lambda > 2.02
+        ? ' Past λ = 2, the best response is inside and λg is a negative rebate.'
+        : lambda < 1.98
+          ? ' Below λ = 2, the best response still violates and λg is a positive charge.'
+          : ' At λ = 2, the response is on the wall and λg = 0.';
+    caption.textContent = stages[stage].caption + regime;
+    readout.textContent = 'λ = ' + lambda.toFixed(2) +
+      '  →  best response (x,y) = (' + m.toFixed(2) + ', ' + m.toFixed(2) + ')' +
+      '  ·  f = ' + originalAtMin.toFixed(3) +
+      '  ·  λg = ' + adjustment.toFixed(3) +
+      '  →  q(λ) = L = ' + bound.toFixed(3);
+    activeConstraint.classList.toggle('active', isActiveCase);
+    activeConstraint.classList.toggle('secondary', !isActiveCase);
+    inactiveConstraint.classList.toggle('active', !isActiveCase);
+    inactiveConstraint.classList.toggle('secondary', isActiveCase);
+    back.disabled = stage === 0;
+    if (stages[stage].next) {
+      next.classList.remove('is-hidden');
+      next.textContent = stages[stage].next;
+    } else {
+      next.classList.add('is-hidden');
+    }
+  }
+
+  slider.addEventListener('input', render);
+  activeConstraint.addEventListener('click', () => {
+    constraintLimit = 2;
+    slider.value = 3;
+    render();
+  });
+  inactiveConstraint.addEventListener('click', () => {
+    constraintLimit = 5;
+    slider.value = 0;
+    render();
+  });
+  back.addEventListener('click', () => { stage = Math.max(0, stage - 1); render(); });
+  next.addEventListener('click', () => { stage = Math.min(stages.length - 1, stage + 1); render(); });
+  function pointerPosition(event) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: (event.clientX - rect.left) / rect.width * canvas._cssW,
+      y: (event.clientY - rect.top) / rect.height * canvas._cssH
+    };
+  }
+  let dragFrame = null;
+  function scheduleDragRender() {
+    if (dragFrame !== null) return;
+    dragFrame = requestAnimationFrame(() => {
+      dragFrame = null;
+      render();
+    });
+  }
+  canvas.addEventListener('pointerdown', event => {
+    const point = pointerPosition(event);
+    if (point.x < leftPanel.x || point.x > leftPanel.x + leftPanel.w ||
+        point.y < leftPanel.y || point.y > leftPanel.y + leftPanel.h) return;
+    rotating = true;
+    lastPointer = point;
+    canvas.setPointerCapture(event.pointerId);
+    canvas.style.cursor = 'grabbing';
+  });
+  canvas.addEventListener('pointermove', event => {
+    const point = pointerPosition(event);
+    if (!rotating) {
+      canvas.style.cursor =
+        point.x >= leftPanel.x && point.x <= leftPanel.x + leftPanel.w &&
+        point.y >= leftPanel.y && point.y <= leftPanel.y + leftPanel.h
+          ? 'grab' : 'default';
+      return;
+    }
+    camera.angle += (point.x - lastPointer.x) * 0.012;
+    camera.depth = Math.max(0.25, Math.min(0.68,
+      camera.depth + (point.y - lastPointer.y) * 0.003));
+    lastPointer = point;
+    scheduleDragRender();
+  });
+  function endRotation(event) {
+    if (!rotating) return;
+    rotating = false;
+    lastPointer = null;
+    if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
+    canvas.style.cursor = 'grab';
+  }
+  canvas.addEventListener('pointerup', endRotation);
+  canvas.addEventListener('pointercancel', endRotation);
+  render();
+})();
+
+(function () {
+  const canvas = document.getElementById('w-saddle-canvas');
+  const ctx = setupCanvas(canvas, 850, 480);
+  const slider = document.getElementById('w-saddle-lambda');
+  const value = document.getElementById('w-saddle-lambda-v');
+  const caption = document.getElementById('w-saddle-caption');
+  const readout = document.getElementById('w-saddle-readout');
+  const back = document.getElementById('w-saddle-back');
+  const next = document.getElementById('w-saddle-next');
+  const camera = {angle: -0.72, depth: 0.52};
+  const stages = [
+    {
+      caption: 'Freeze λ: the gold cross-section is L(t,λ). The inner minimization descends to its lowest point.',
+      next: 'Follow every slice minimum →'
+    },
+    {
+      caption: 'Repeating the inner minimum for every λ draws the teal trough q(λ).',
+      next: 'Maximize along the trough →'
+    },
+    {
+      caption: 'The outer maximization climbs the trough—not the whole surface—to its highest point at λ = 2.',
+      next: null
+    }
+  ];
+  let stage = 1;
+  let rotating = false;
+  let lastPointer = null;
+  let dragFrame = null;
+
+  function parseHex(color) {
+    const hex = color.replace('#', '');
+    return {
+      r: parseInt(hex.slice(0, 2), 16),
+      g: parseInt(hex.slice(2, 4), 16),
+      b: parseInt(hex.slice(4, 6), 16)
+    };
+  }
+  const low = parseHex(C.violet);
+  const high = parseHex(C.gold);
+  function colorAt(height, shade) {
+    const t = Math.max(0, Math.min(1, height / 12.5));
+    const channel = key => Math.round((low[key] * (1 - t) + high[key] * t) * shade);
+    return 'rgb(' + channel('r') + ',' + channel('g') + ',' + channel('b') + ')';
+  }
+
+  function loss(t, lambda) {
+    return 2 * (t - 2) ** 2 + lambda * (2 * t - 2);
+  }
+  function q(lambda) {
+    return 2 * lambda - lambda * lambda / 2;
+  }
+  function project(t, lambda, z) {
+    const u = (t - 1.25) / 1.25;
+    const v = (lambda - 2) / 2;
+    const cos = Math.cos(camera.angle);
+    const sin = Math.sin(camera.angle);
+    const across = cos * u - sin * v;
+    const depth = sin * u + cos * v;
+    return {
+      x: 425 + across * 230,
+      y: 382 + depth * 138 * camera.depth - z * 12,
+      depth: depth + z * 0.025
+    };
+  }
+
+  function drawCurve(points, color, width) {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.beginPath();
+    points.forEach((point, index) => {
+      index === 0 ? ctx.moveTo(point.x, point.y) : ctx.lineTo(point.x, point.y);
+    });
+    ctx.stroke();
+  }
+
+  function render() {
+    const lambda = parseFloat(slider.value);
+    const tStar = 2 - lambda / 2;
+    const bound = q(lambda);
+    const rule = 2 * tStar - 2;
+    value.textContent = lambda.toFixed(2);
+    ctx.clearRect(0, 0, canvas._cssW, canvas._cssH);
+    ctx.fillStyle = C.plot;
+    ctx.fillRect(0, 0, canvas._cssW, canvas._cssH);
+
+    const gridN = 22;
+    const quads = [];
+    for (let i = 0; i < gridN; i++) {
+      for (let j = 0; j < gridN; j++) {
+        const t0 = i / gridN * 2.5;
+        const t1 = (i + 1) / gridN * 2.5;
+        const l0 = j / gridN * 4;
+        const l1 = (j + 1) / gridN * 4;
+        const corners = [
+          [t0, l0], [t1, l0], [t1, l1], [t0, l1]
+        ].map(([t, l]) => {
+          const z = loss(t, l);
+          return {...project(t, l, z), z};
+        });
+        const tc = (t0 + t1) / 2;
+        const lc = (l0 + l1) / 2;
+        const dt = 4 * (tc - 2) + 2 * lc;
+        const dl = 2 * tc - 2;
+        const norm = Math.hypot(dt, dl, 1);
+        const light = Math.max(0, (-dt * -0.35 - dl * -0.45 + 0.82) / norm);
+        const shade = 0.48 + 0.52 * light;
+        const height = corners.reduce((sum, point) => sum + point.z, 0) / 4;
+        quads.push({
+          corners,
+          depth: corners.reduce((sum, point) => sum + point.depth, 0) / 4,
+          color: colorAt(height, shade)
+        });
+      }
+    }
+    quads.sort((a, b) => a.depth - b.depth);
+    quads.forEach(quad => {
+      ctx.fillStyle = quad.color;
+      ctx.strokeStyle = quad.color;
+      ctx.lineWidth = 0.7;
+      ctx.beginPath();
+      ctx.moveTo(quad.corners[0].x, quad.corners[0].y);
+      quad.corners.slice(1).forEach(point => ctx.lineTo(point.x, point.y));
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    });
+
+    const sliceCurtain = [];
+    for (let i = 0; i <= 24; i++) {
+      const t = i / 24 * 2.5;
+      sliceCurtain.push({
+        floor: project(t, lambda, 0),
+        top: project(t, lambda, loss(t, lambda))
+      });
+    }
+    for (let i = 0; i < sliceCurtain.length - 1; i++) {
+      const quad = [
+        sliceCurtain[i].floor,
+        sliceCurtain[i + 1].floor,
+        sliceCurtain[i + 1].top,
+        sliceCurtain[i].top
+      ];
+      ctx.fillStyle = C.gold;
+      ctx.globalAlpha = 0.1;
+      ctx.beginPath();
+      ctx.moveTo(quad[0].x, quad[0].y);
+      quad.slice(1).forEach(point => ctx.lineTo(point.x, point.y));
+      ctx.closePath();
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+    const slice = [];
+    for (let i = 0; i <= 120; i++) {
+      const t = i / 120 * 2.5;
+      slice.push(project(t, lambda, loss(t, lambda) + 0.04));
+    }
+    drawCurve(slice, C.gold, 4);
+    const currentMin = project(tStar, lambda, bound + 0.07);
+    ctx.fillStyle = C.coral;
+    ctx.strokeStyle = C.surface;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(currentMin.x, currentMin.y, 9, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = C.coral;
+    ctx.font = '700 11px "Manrope", sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('min over t', currentMin.x + 12, currentMin.y - 7);
+
+    if (stage >= 1) {
+      const trough = [];
+      for (let i = 0; i <= 160; i++) {
+        const l = i / 160 * 4;
+        trough.push(project(2 - l / 2, l, q(l) + 0.08));
+      }
+      drawCurve(trough, C.teal, 5);
+      ctx.fillStyle = C.teal;
+      ctx.font = '700 11px "Manrope", sans-serif';
+      ctx.textAlign = 'left';
+      const troughLabel = project(0.25, 3.5, q(3.5) + 0.1);
+      ctx.fillText('trough q(λ)', troughLabel.x + 8, troughLabel.y - 8);
+    }
+
+    if (stage >= 2) {
+      for (let i = 0; i < 16; i++) {
+        const l0 = i / 16 * 4;
+        const l1 = (i + 1) / 16 * 4;
+        const plane = [
+          project(1, l0, 0),
+          project(1, l1, 0),
+          project(1, l1, 5),
+          project(1, l0, 5)
+        ];
+        ctx.fillStyle = C.coral;
+        ctx.globalAlpha = 0.055;
+        ctx.beginPath();
+        ctx.moveTo(plane[0].x, plane[0].y);
+        plane.slice(1).forEach(point => ctx.lineTo(point.x, point.y));
+        ctx.closePath();
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+      const optimum = project(1, 2, 2.12);
+      ctx.fillStyle = C.coral;
+      ctx.beginPath();
+      ctx.arc(optimum.x, optimum.y, 11, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = C.coral;
+      ctx.font = '700 12px "Manrope", sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('max along trough: λ* = 2, g = 0', optimum.x + 15, optimum.y - 10);
+
+      const leftStart = project(1.65, 0.7, q(0.7) + 0.12);
+      const leftEnd = project(1.3, 1.4, q(1.4) + 0.12);
+      drawArrow(ctx, {x: x => x, y: y => y}, leftStart.x, leftStart.y,
+        leftEnd.x, leftEnd.y, C.coral, '', false);
+      const rightStart = project(0.35, 3.3, q(3.3) + 0.12);
+      const rightEnd = project(0.7, 2.6, q(2.6) + 0.12);
+      drawArrow(ctx, {x: x => x, y: y => y}, rightStart.x, rightStart.y,
+        rightEnd.x, rightEnd.y, C.coral, '', false);
+    }
+
+    const origin = project(0, 0, 0);
+    const tAxis = project(2.8, 0, 0);
+    const lAxis = project(0, 4.5, 0);
+    const zAxis = project(0, 0, 9);
+    [
+      [tAxis, 'primal response t'],
+      [lAxis, 'price λ'],
+      [zAxis, 'height L']
+    ].forEach(([end, label]) => {
+      ctx.strokeStyle = C.ink;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(origin.x, origin.y);
+      ctx.lineTo(end.x, end.y);
+      ctx.stroke();
+      ctx.fillStyle = C.ink;
+      ctx.font = '700 11px "DM Mono", monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText(label, end.x + 5, end.y - 4);
+    });
+
+    caption.textContent = stages[stage].caption;
+    const direction = rule > 0.03
+      ? 'violation remains, so increasing λ climbs q'
+      : rule < -0.03
+        ? 'response is slack, so increasing λ descends q'
+        : 'rule is tight: q has reached its peak';
+    readout.textContent = 'λ = ' + lambda.toFixed(2) +
+      '  ·  minₜ L at t* = ' + tStar.toFixed(2) +
+      '  ·  q(λ) = ' + bound.toFixed(3) +
+      '  ·  q′(λ) = g = ' + rule.toFixed(3) +
+      '  →  ' + direction;
+    back.disabled = stage === 0;
+    if (stages[stage].next) {
+      next.classList.remove('is-hidden');
+      next.textContent = stages[stage].next;
+    } else {
+      next.classList.add('is-hidden');
+    }
+  }
+
+  slider.addEventListener('input', render);
+  back.addEventListener('click', () => { stage = Math.max(0, stage - 1); render(); });
+  next.addEventListener('click', () => { stage = Math.min(stages.length - 1, stage + 1); render(); });
+  function pointerPosition(event) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: (event.clientX - rect.left) / rect.width * canvas._cssW,
+      y: (event.clientY - rect.top) / rect.height * canvas._cssH
+    };
+  }
+  function scheduleRender() {
+    if (dragFrame !== null) return;
+    dragFrame = requestAnimationFrame(() => {
+      dragFrame = null;
+      render();
+    });
+  }
+  canvas.addEventListener('pointerdown', event => {
+    rotating = true;
+    lastPointer = pointerPosition(event);
+    canvas.setPointerCapture(event.pointerId);
+    canvas.style.cursor = 'grabbing';
+  });
+  canvas.addEventListener('pointermove', event => {
+    if (!rotating) {
+      canvas.style.cursor = 'grab';
+      return;
+    }
+    const point = pointerPosition(event);
+    camera.angle += (point.x - lastPointer.x) * 0.009;
+    camera.depth = Math.max(0.28, Math.min(0.7,
+      camera.depth + (point.y - lastPointer.y) * 0.003));
+    lastPointer = point;
+    scheduleRender();
+  });
+  function stopRotation(event) {
+    if (!rotating) return;
+    rotating = false;
+    lastPointer = null;
+    if (canvas.hasPointerCapture(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
+    canvas.style.cursor = 'grab';
+  }
+  canvas.addEventListener('pointerup', stopRotation);
+  canvas.addEventListener('pointercancel', stopRotation);
+  render();
+})();
+
+(function () {
+  const canvas = document.getElementById('w3-canvas');
+  if (!document.getElementById('w3-lambda')) return;
+  const ctx = setupCanvas(canvas, 850, 470);
+  const slider = document.getElementById('w3-lambda');
+  const value = document.getElementById('w3-lambda-v');
+  const tSlider = document.getElementById('w3-t');
+  const tValue = document.getElementById('w3-t-v');
+  const caption = document.getElementById('w3-caption');
+  const readout = document.getElementById('w3-readout');
+  const back = document.getElementById('w3-back');
+  const next = document.getElementById('w3-next');
+  const chart = {left: 70, right: 28, top: 28, bottom: 58, xmin: 0, xmax: 4, ymin: -0.4, ymax: 8.4};
+  const X = x => chart.left + (x - chart.xmin) / (chart.xmax - chart.xmin) * (canvas._cssW - chart.left - chart.right);
+  const Y = y => chart.top + (chart.ymax - y) / (chart.ymax - chart.ymin) * (canvas._cssH - chart.top - chart.bottom);
+  const q = lambda => 2 * lambda - lambda * lambda / 2;
+  const score = (t, lambda) => 2 * (t - 2) ** 2 + lambda * (2 * t - 2);
+  const stages = [
+    {
+      caption: 'Freeze one response x = y = t. As λ changes, its score is a straight line.',
+      next: 'Add more response lines →'
+    },
+    {
+      caption: 'Every possible response contributes a line. At each λ, the inner minimum looks straight down.',
+      next: 'Keep only the lowest line →'
+    },
+    {
+      caption: 'The lowest available height at each λ traces q(λ), the lower envelope.',
+      next: 'Test concavity with a chord →'
+    },
+    {
+      caption: 'The chord stays below q. That “cap, never cup” shape is exactly concavity.',
+      next: 'Find the highest lower bound →'
+    },
+    {
+      caption: 'Only after building the lower envelope does maxλ choose its highest point: λ* = 2.',
+      next: null
+    }
+  ];
+  let stage = 0;
+  const base = makeLayer(canvas._cssW, canvas._cssH, layerCtx => {
+    layerCtx.fillStyle = C.plot;
+    layerCtx.fillRect(0, 0, canvas._cssW, canvas._cssH);
+    layerCtx.strokeStyle = C.line;
+    layerCtx.lineWidth = 1;
+    for (let y = 0; y <= 8; y += 1) {
+      layerCtx.beginPath();
+      layerCtx.moveTo(chart.left, Y(y));
+      layerCtx.lineTo(canvas._cssW - chart.right, Y(y));
+      layerCtx.stroke();
+    }
+    layerCtx.strokeStyle = C.axis;
+    layerCtx.lineWidth = 1.4;
+    layerCtx.beginPath();
+    layerCtx.moveTo(chart.left, Y(0));
+    layerCtx.lineTo(canvas._cssW - chart.right, Y(0));
+    layerCtx.moveTo(chart.left, chart.top);
+    layerCtx.lineTo(chart.left, canvas._cssH - chart.bottom);
+    layerCtx.stroke();
+    layerCtx.fillStyle = C.soft;
+    layerCtx.font = '11px "DM Mono", monospace';
+    layerCtx.textAlign = 'center';
+    for (let x = 0; x <= 4; x++) layerCtx.fillText(String(x), X(x), canvas._cssH - 27);
+    layerCtx.textAlign = 'right';
+    for (let y = 0; y <= 8; y += 1) layerCtx.fillText(String(y), chart.left - 10, Y(y) + 4);
+    layerCtx.fillStyle = C.ink;
+    layerCtx.font = '500 12px "DM Mono", monospace';
+    layerCtx.textAlign = 'right';
+    layerCtx.fillText('price λ', canvas._cssW - chart.right, canvas._cssH - 11);
+    layerCtx.save();
+    layerCtx.translate(18, chart.top);
+    layerCtx.rotate(-Math.PI / 2);
+    layerCtx.textAlign = 'right';
+    layerCtx.fillText('Lagrangian score', 0, 0);
+    layerCtx.restore();
+  });
+  const family = makeLayer(canvas._cssW, canvas._cssH, layerCtx => {
+    layerCtx.save();
+    layerCtx.beginPath();
+    layerCtx.rect(chart.left, chart.top, canvas._cssW - chart.left - chart.right,
+      canvas._cssH - chart.top - chart.bottom);
+    layerCtx.clip();
+    layerCtx.strokeStyle = C.violet;
+    layerCtx.globalAlpha = 0.28;
+    layerCtx.lineWidth = 1.2;
+    for (let i = 0; i <= 16; i++) {
+      const t = i / 8;
+      layerCtx.beginPath();
+      layerCtx.moveTo(X(0), Y(score(t, 0)));
+      layerCtx.lineTo(X(4), Y(score(t, 4)));
+      layerCtx.stroke();
+    }
+    layerCtx.restore();
+  });
+  const envelope = makeLayer(canvas._cssW, canvas._cssH, layerCtx => {
+    layerCtx.strokeStyle = C.teal;
+    layerCtx.lineWidth = 4;
+    layerCtx.beginPath();
+    for (let i = 0; i <= 400; i++) {
+      const lambda = i / 100;
+      i === 0 ? layerCtx.moveTo(X(lambda), Y(q(lambda))) : layerCtx.lineTo(X(lambda), Y(q(lambda)));
+    }
+    layerCtx.stroke();
+  });
+
+  function render() {
+    const lambda = parseFloat(slider.value);
+    const t = parseFloat(tSlider.value);
+    const bound = q(lambda);
+    const candidate = score(t, lambda);
+    const bestT = 2 - lambda / 2;
+    ctx.clearRect(0, 0, canvas._cssW, canvas._cssH);
+    drawLayer(ctx, base, canvas._cssW, canvas._cssH);
+    if (stage >= 1) {
+      drawLayer(ctx, family, canvas._cssW, canvas._cssH);
+    }
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(chart.left, chart.top, canvas._cssW - chart.left - chart.right,
+      canvas._cssH - chart.top - chart.bottom);
+    ctx.clip();
+    ctx.strokeStyle = C.gold;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(X(0), Y(score(t, 0)));
+    ctx.lineTo(X(4), Y(score(t, 4)));
+    ctx.stroke();
+    ctx.restore();
+
+    if (stage >= 2) {
+      drawLayer(ctx, envelope, canvas._cssW, canvas._cssH);
+    }
+
+    ctx.save();
+    ctx.strokeStyle = C.axis;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 5]);
+    ctx.beginPath();
+    ctx.moveTo(X(lambda), chart.top);
+    ctx.lineTo(X(lambda), canvas._cssH - chart.bottom);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = C.gold;
+    ctx.beginPath();
+    ctx.arc(X(lambda), Y(candidate), 7, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.font = '600 11px "Manrope", sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('fixed response t = ' + t.toFixed(2), X(lambda) + 10, Y(candidate) - 9);
+    ctx.restore();
+
+    if (stage >= 2) {
+      ctx.save();
+      ctx.fillStyle = C.teal;
+      ctx.beginPath();
+      ctx.arc(X(lambda), Y(bound), 8, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = C.teal;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(X(lambda), Y(candidate));
+      ctx.lineTo(X(lambda), Y(bound));
+      ctx.stroke();
+      ctx.fillStyle = C.teal;
+      ctx.font = '700 11px "Manrope", sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('inner min: t* = ' + bestT.toFixed(2), X(lambda) + 10, Y(bound) + 17);
+      ctx.restore();
+    }
+
+    if (stage >= 3) {
+      const a = 0.5;
+      const b = 3.5;
+      const chordHeight = q(a);
+      ctx.save();
+      ctx.strokeStyle = C.coral;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(X(a), Y(q(a)));
+      ctx.lineTo(X(b), Y(q(b)));
+      ctx.stroke();
+      [a, b].forEach(point => {
+        ctx.fillStyle = C.coral;
+        ctx.beginPath();
+        ctx.arc(X(point), Y(q(point)), 6, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.fillStyle = C.coral;
+      ctx.font = '700 11px "Manrope", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('chord stays below q', X(2), Y(chordHeight) + 22);
+      ctx.restore();
+    }
+
+    if (stage >= 4) {
+      ctx.save();
+      ctx.strokeStyle = C.coral;
+      ctx.lineWidth = 2;
+      ctx.setLineDash([8, 6]);
+      ctx.beginPath();
+      ctx.moveTo(chart.left, Y(2));
+      ctx.lineTo(canvas._cssW - chart.right, Y(2));
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = C.coral;
+      ctx.strokeStyle = C.surface;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(X(2), Y(2), 10, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = C.coral;
+      ctx.font = '700 12px "Manrope", sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillText('maxλ q(λ) = 2 at λ* = 2', X(2) + 15, Y(2) - 14);
+      ctx.restore();
+    }
+
+    value.textContent = lambda.toFixed(2);
+    tValue.textContent = t.toFixed(2);
+    if (stage < 2) {
+      readout.textContent = 'response t = ' + t.toFixed(2) +
+        ' draws Lₜ(λ) = ' + (2 * (t - 2) ** 2).toFixed(2) +
+        ' + λ·' + (2 * t - 2).toFixed(2) +
+        '  ·  at λ = ' + lambda.toFixed(2) + ', height = ' + candidate.toFixed(3);
+    } else {
+      readout.textContent = 'at λ = ' + lambda.toFixed(2) +
+        ': selected line = ' + candidate.toFixed(3) +
+        '  ·  lowest line q(λ) = ' + bound.toFixed(3) +
+        '  ·  best response t* = ' + bestT.toFixed(2);
+    }
+    caption.textContent = stages[stage].caption;
+    back.disabled = stage === 0;
+    if (stages[stage].next) {
+      next.classList.remove('is-hidden');
+      next.textContent = stages[stage].next;
+    } else {
+      next.classList.add('is-hidden');
+    }
+  }
+
+  slider.addEventListener('input', render);
+  tSlider.addEventListener('input', render);
+  back.addEventListener('click', () => { stage = Math.max(0, stage - 1); render(); });
+  next.addEventListener('click', () => { stage = Math.min(stages.length - 1, stage + 1); render(); });
+  render();
+})();
+
+(function () {
+  const canvas = document.getElementById('w4-canvas');
+  const ctx = setupCanvas(canvas, 850, 470);
+  const view = makeView(canvas, {xmin: -0.8, xmax: 4.6, ymin: -0.8, ymax: 4.6});
+  const slider = document.getElementById('w4-b');
+  const value = document.getElementById('w4-b-v');
+  const caption = document.getElementById('w4-caption');
+  const readout = document.getElementById('w4-readout');
+  const back = document.getElementById('w4-back');
+  const next = document.getElementById('w4-next');
+  const chips = [0, 1, 2, 3].map(i => document.getElementById('w4-chip-' + i));
+  const base = makeLayer(view.w, view.h, layerCtx => {
+    drawGrid(layerCtx, view);
+    drawContours(layerCtx, view, 2, 2, C.teal, 0.48);
+    drawStar(layerCtx, view, 2, 2, C.teal, 'unconstrained minimum');
+  });
+  const stages = [
+    {
+      caption: 'Primal feasibility: the chosen point lies on or inside the moving wall.',
+      next: 'Add the price force →'
+    },
+    {
+      caption: 'Dual feasibility: λ ≥ 0. A binding wall pushes in the direction −λ∇g.',
+      next: 'Balance the objective force →'
+    },
+    {
+      caption: 'Stationarity: ∇f and λ∇g are equal and opposite, so their sum is zero.',
+      next: 'Reveal complementary slackness →'
+    },
+    {
+      caption: 'Complementary slackness: a binding wall can have price; a loose wall has λ = 0.',
+      next: null
+    }
+  ];
+  let stage = 0;
+
+  function render() {
+    const b = parseFloat(slider.value);
+    const active = b < 4;
+    const optimum = active ? b / 2 : 2;
+    const lambda = active ? 4 - b : 0;
+    const slack = b - 2 * optimum;
+    const grad = 2 * (optimum - 2);
+    ctx.clearRect(0, 0, view.w, view.h);
+    drawLayer(ctx, base, view.w, view.h);
+    fillPolygon(ctx, view, clipHalfPlane(view, b, true), C.tealPale, 0.29);
+    drawConstraint(ctx, view, b, 'x + y = b');
+    drawStar(ctx, view, optimum, optimum, C.gold, 'x*');
+    if (stage >= 1) {
+      if (lambda > 1e-8) {
+        drawArrow(ctx, view, optimum, optimum, optimum + 0.27 * lambda, optimum + 0.27 * lambda,
+          C.coral, 'λ∇g');
+      } else {
+        drawZeroMarker(ctx, view, optimum, optimum, C.coral, 'λ∇g = 0', 22);
+      }
+    }
+    if (stage >= 2) {
+      if (Math.abs(grad) > 1e-8) {
+        drawArrow(ctx, view, optimum, optimum, optimum + 0.27 * grad, optimum + 0.27 * grad,
+          C.teal, '∇f');
+      } else {
+        drawZeroMarker(ctx, view, optimum, optimum, C.teal, '∇f = 0', -22);
+      }
+    }
+    if (stage >= 3) {
+      ctx.save();
+      if (active) {
+        ctx.strokeStyle = C.gold;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(view.x(optimum), view.y(optimum), 20, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.fillStyle = C.gold;
+        ctx.font = '700 12px "Manrope", sans-serif';
+        ctx.fillText('tight rule · positive price', view.x(optimum) + 26, view.y(optimum) + 26);
+      } else {
+        const foot = b / 2;
+        if (foot <= view.xmax) {
+          drawArrow(ctx, view, 2, 2, foot, foot, C.violet, 'slack', true);
+        }
+        ctx.fillStyle = C.violet;
+        ctx.font = '700 12px "Manrope", sans-serif';
+        ctx.fillText('loose rule · zero price', view.x(2) + 18, view.y(2) + 30);
+      }
+      ctx.restore();
+    }
+    value.textContent = b.toFixed(2);
+    const residual = Math.hypot(grad + lambda, grad + lambda);
+    const product = lambda * (2 * optimum - b);
+    chips[0].querySelector('span').textContent = 'x + y − b = ' + (2 * optimum - b).toFixed(2);
+    chips[1].querySelector('span').textContent = 'λ = ' + lambda.toFixed(2) + ' ≥ 0';
+    chips[2].querySelector('span').textContent = 'force residual = ' + residual.toFixed(2);
+    chips[3].querySelector('span').textContent = 'λg = ' + product.toFixed(2);
+    chips.forEach((chip, i) => chip.classList.toggle('on', i <= stage));
+    readout.textContent = 'x* = (' + optimum.toFixed(2) + ', ' + optimum.toFixed(2) + ')' +
+      '  ·  λ* = ' + lambda.toFixed(2) + '  ·  slack b − x* − y* = ' + slack.toFixed(2);
+    caption.textContent = stages[stage].caption;
+    back.disabled = stage === 0;
+    if (stages[stage].next) {
+      next.classList.remove('is-hidden');
+      next.textContent = stages[stage].next;
+    } else {
+      next.classList.add('is-hidden');
+    }
+  }
+
+  slider.addEventListener('input', render);
+  back.addEventListener('click', () => { stage = Math.max(0, stage - 1); render(); });
+  next.addEventListener('click', () => { stage = Math.min(stages.length - 1, stage + 1); render(); });
+  render();
+})();
+
+(function () {
+  const canvas = document.getElementById('w5-canvas');
+  const ctx = setupCanvas(canvas, 850, 475);
+  const view = makeView(canvas, {xmin: -0.8, xmax: 4.5, ymin: -0.8, ymax: 4.5});
+  const etaSlider = document.getElementById('w5-eta');
+  const etaValue = document.getElementById('w5-eta-v');
+  const kSlider = document.getElementById('w5-k');
+  const kValue = document.getElementById('w5-k-v');
+  const prev = document.getElementById('w5-prev');
+  const next = document.getElementById('w5-next');
+  const play = document.getElementById('w5-play');
+  const reset = document.getElementById('w5-reset');
+  const caption = document.getElementById('w5-caption');
+  const readout = document.getElementById('w5-readout');
+  const base = makeLayer(view.w, view.h, layerCtx => {
+    drawGrid(layerCtx, view);
+    fillPolygon(layerCtx, view, clipHalfPlane(view, 2, true), C.tealPale, 0.27);
+    drawContours(layerCtx, view, 2, 2, C.teal, 0.38);
+    drawConstraint(layerCtx, view, 2, 'wall');
+    drawStar(layerCtx, view, 1, 1, C.gold, 'KKT target');
+  });
+  let states = [];
+  let timer = null;
+
+  function compute(eta) {
+    const result = [{x: 0.2, y: 0.4, lambda: 0}];
+    for (let k = 0; k < 120; k++) {
+      const current = result[result.length - 1];
+      const gx = 2 * (current.x - 2) + current.lambda;
+      const gy = 2 * (current.y - 2) + current.lambda;
+      const violation = current.x + current.y - 2;
+      result.push({
+        x: current.x - eta * gx,
+        y: current.y - eta * gy,
+        lambda: Math.max(0, current.lambda + eta * violation)
+      });
+    }
+    return result;
+  }
+
+  function stop() {
+    if (timer !== null) {
+      clearInterval(timer);
+      timer = null;
+    }
+    play.textContent = 'Play';
+  }
+
+  function pressureArrows(lambda) {
+    const magnitude = Math.min(0.12 + lambda * 0.09, 0.48);
+    [-0.05, 0.5, 1.05].forEach(x => {
+      const y = 2 - x;
+      if (x >= view.xmin && y <= view.ymax) {
+        drawArrow(ctx, view, x, y, x - magnitude, y - magnitude, C.coral, '', false);
+      }
+    });
+  }
+
+  function render() {
+    const index = parseInt(kSlider.value, 10);
+    const state = states[index];
+    ctx.clearRect(0, 0, view.w, view.h);
+    drawLayer(ctx, base, view.w, view.h);
+    pressureArrows(state.lambda);
+
+    ctx.save();
+    ctx.strokeStyle = C.violet;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    states.slice(0, index + 1).forEach((s, i) => {
+      i === 0 ? ctx.moveTo(view.x(s.x), view.y(s.y)) : ctx.lineTo(view.x(s.x), view.y(s.y));
+    });
+    ctx.stroke();
+    states.slice(0, index + 1).forEach((s, i) => {
+      if (i % 4 === 0 || i === index) {
+        ctx.globalAlpha = i === index ? 1 : 0.3;
+        ctx.fillStyle = C.violet;
+        ctx.beginPath();
+        ctx.arc(view.x(s.x), view.y(s.y), i === index ? 6.5 : 2.4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    });
+    ctx.globalAlpha = 1;
+    ctx.restore();
+    drawPoint(ctx, view, state.x, state.y, state.x + state.y > 2 ? C.coral : C.violet, 'current point', 8);
+
+    const hudX = view.w - 194;
+    const hudY = 28;
+    ctx.save();
+    ctx.fillStyle = C.surface;
+    ctx.globalAlpha = 0.92;
+    ctx.fillRect(hudX, hudY, 164, 82);
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = C.soft;
+    ctx.font = '10px "DM Mono", monospace';
+    ctx.fillText('DUAL PRICE', hudX + 13, hudY + 20);
+    ctx.fillStyle = C.line;
+    ctx.fillRect(hudX + 13, hudY + 34, 136, 12);
+    ctx.fillStyle = C.coral;
+    ctx.fillRect(hudX + 13, hudY + 34, Math.min(136, state.lambda / 4.2 * 136), 12);
+    ctx.fillStyle = C.ink;
+    ctx.font = '600 15px "DM Mono", monospace';
+    ctx.fillText('λ = ' + state.lambda.toFixed(3), hudX + 13, hudY + 68);
+    ctx.restore();
+
+    const violation = state.x + state.y - 2;
+    const objective = (state.x - 2) ** 2 + (state.y - 2) ** 2;
+    etaValue.textContent = parseFloat(etaSlider.value).toFixed(2);
+    kValue.textContent = String(index);
+    prev.disabled = index === 0;
+    next.disabled = index === 120;
+    if (index === 0) {
+      caption.textContent = 'Start feasible with no price. The objective pulls the point toward (2,2).';
+    } else if (violation > 0.08) {
+      caption.textContent = 'The point is beyond the wall, so dual ascent raises the price and strengthens the inward push.';
+    } else if (violation < -0.08) {
+      caption.textContent = 'The point is safely inside, so the price relaxes while the objective pulls outward again.';
+    } else {
+      caption.textContent = 'Point and price nearly agree: feasibility and force balance are settling together.';
+    }
+    readout.textContent = 'k = ' + index +
+      '  ·  (x, y) = (' + state.x.toFixed(3) + ', ' + state.y.toFixed(3) + ')' +
+      '  ·  λ = ' + state.lambda.toFixed(3) +
+      '  ·  x + y − 2 = ' + violation.toFixed(3) +
+      '  ·  f = ' + objective.toFixed(3);
+    if (index >= 120) stop();
+  }
+
+  function rebuild() {
+    stop();
+    states = compute(parseFloat(etaSlider.value));
+    kSlider.value = '0';
+    render();
+  }
+
+  etaSlider.addEventListener('input', rebuild);
+  kSlider.addEventListener('input', () => { stop(); render(); });
+  prev.addEventListener('click', () => {
+    stop();
+    kSlider.value = String(Math.max(0, parseInt(kSlider.value, 10) - 1));
+    render();
+  });
+  next.addEventListener('click', () => {
+    stop();
+    kSlider.value = String(Math.min(120, parseInt(kSlider.value, 10) + 1));
+    render();
+  });
+  play.addEventListener('click', () => {
+    if (timer !== null) {
+      stop();
+      return;
+    }
+    if (parseInt(kSlider.value, 10) >= 120) kSlider.value = '0';
+    play.textContent = 'Pause';
+    timer = setInterval(() => {
+      const index = parseInt(kSlider.value, 10);
+      if (index >= 120) {
+        stop();
+        return;
+      }
+      kSlider.value = String(index + 1);
+      render();
+    }, 150);
+  });
+  reset.addEventListener('click', () => {
+    stop();
+    kSlider.value = '0';
+    render();
+  });
+  states = compute(parseFloat(etaSlider.value));
+  render();
+})();
+
+const progress = document.getElementById('progress');
+function updateProgress() {
+  const max = document.documentElement.scrollHeight - window.innerHeight;
+  progress.style.width = (max > 0 ? window.scrollY / max * 100 : 0) + '%';
+}
+window.addEventListener('scroll', updateProgress, {passive: true});
+updateProgress();
+</script>
+</body>
+</html>

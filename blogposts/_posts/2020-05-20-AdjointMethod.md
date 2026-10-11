@@ -5,19 +5,7 @@ date:   2020-05-20
 excerpt: "Reverse-Mode Sensitivity Training"
 image: "/blog/Adjoint/Adjoint1.png"
 ---
-<head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+{% include mathjax3.html %}
 
 ### The Adjoint Method in Neural Ordinary Differential Equations
 
@@ -26,6 +14,8 @@ Back at NeurIPS 2018 the best paper award was given to the authors of [Neural Or
 The motivation of the paper was the mainly given through the interpretation of the ResNet architectures being interpreted as the Euler discretization of ordinary differential equations (ODE).
 The paper took this insight to its logical extreme and asked the question whether we really have to remain content with just the Euler discretization of an ODE or whether we can go deeper ... or more continuous in our case.
 
+For an extended treatment from both the autograd and Lagrangian perspectives, see also my [later post on the adjoint method](https://ludwigwinkler.github.io/blog/TheAdjointMethod/).
+
 By definition an ODE is defined in its differential form as
 $$
 \begin{align}
@@ -33,7 +23,7 @@ dz_t = f(z_t, t, \theta)
 \end{align}
 $$
 which basically means that the function $f$ computes the rate of change of $z_t$ at timestep $t$ with its parameters $\theta$.
-Often these equations $f$ are constructed analytically or are known from physics but a more interesting question cane be posed by asking whether this function $f$ can actually be learned ... with a neural network for example.
+Often these equations $f$ are constructed analytically or are known from physics but a more interesting question can be posed by asking whether this function $f$ can actually be learned ... with a neural network for example.
 
 Ultimately, if we want to use gradient based optimization to train a neural network we need to compute a scalar loss function and compute the gradients of the parameters $\theta$ through reverse-mode autodifferentiation.
 
@@ -41,7 +31,7 @@ An important part of solving/simulating differential equations is that although 
 
 For that reason we will work with four samples $\{z_0, z_1, z_2, z_3 \}$ from a differential equation as shown in the image below. Our prediction with a neural network will be denoted as $\{\hat{z}_1, \hat{z}_2, \hat{z}_3 \}$.
 
-Working with neural networks, we want to obtain gradients which which we can perform gradient descent at the end of the day. In order to do that we will need a scalar cost function on which we can perform reverse-mode autodifferentiation which is very efficient for models with potentially a lot of parameters. If the model were to be very small we could also do forward-mode autodifferentiation but that's another topic.
+Working with neural networks, we want to obtain gradients with which we can perform gradient descent at the end of the day. In order to do that we will need a scalar cost function on which we can perform reverse-mode autodifferentiation which is very efficient for models with potentially a lot of parameters. If the model were to be very small we could also do forward-mode autodifferentiation but that's another topic.
 
 Let's define such a scalar cost function $\mathcal{L}(\text{ODESolver}(z_0, t_0, t_3, f))$ that takes in $z_0$ and solves the ODE for four timesteps by integrating forward $f(z_t, t, \theta)$ in time until it reaches $t=3$ and compares the prediction with the true values $\{z_0, z_1, z_2, z_3 \}$.
 

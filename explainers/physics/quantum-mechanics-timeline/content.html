@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How Quantum Mechanics Was Discovered — A Spectral Timeline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Brygada+1918:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" id="MathJax-script" async></script>
+<style>
+:root{
+  --void:#080b14; --plate:#0c1120; --panel:#121a2e; --panel-2:#0e1525;
+  --line:#26314c; --line-soft:#1a2236;
+  --phosphor:#ece8dc; --phosphor-dim:#b3b8c9; --muted:#727c95;
+  --h-alpha:#ff5470;   /* 656nm red  */
+  --h-beta:#3fd7e6;    /* 486nm cyan — primary quantum accent */
+  --h-gamma:#9b6bff;   /* 434nm violet */
+  --classical:#e0b15a; /* warm gold = the continuous classical world */
+  --quantum:#3fd7e6;   /* cool cyan = the discrete quantum fix */
+  --glow:0 0 18px;
+  --maxw:1080px; --measure:43rem;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; background:
+     radial-gradient(1200px 700px at 50% -8%, #131c33 0%, rgba(19,28,51,0) 60%),
+     linear-gradient(180deg,var(--void) 0%, var(--plate) 38%, var(--void) 100%);
+  background-attachment:fixed;
+  color:var(--phosphor); font-family:"Spectral",Georgia,serif;
+  font-weight:400; font-size:18px; line-height:1.72; letter-spacing:.002em;
+  -webkit-font-smoothing:antialiased;
+}
+/* faint photographic grain */
+body::before{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.035;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.wrap{position:relative; z-index:1; max-width:var(--maxw); margin:0 auto; padding:0 28px}
+p{max-width:var(--measure)}
+
+/* ---------------- HERO ---------------- */
+.hero{padding:88px 0 36px; position:relative}
+.eyebrow{
+  font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:.34em;
+  text-transform:uppercase; color:var(--muted); margin:0 0 22px;
+}
+.hero h1{
+  font-family:"Brygada 1918",serif; font-weight:600; font-size:clamp(2.5rem,6.4vw,4.6rem);
+  line-height:1.02; letter-spacing:-.01em; margin:0 0 10px; color:var(--phosphor);
+}
+.hero h1 em{font-style:italic; color:var(--h-beta); text-shadow:var(--glow) rgba(63,215,230,.35)}
+.hero .sub{font-size:1.22rem; color:var(--phosphor-dim); max-width:38rem; font-weight:300; margin:18px 0 0}
+.hero .sub b{color:var(--phosphor); font-weight:500}
+
+/* spectral timeline hero widget */
+.spectrum-hero{margin:48px 0 8px; border:1px solid var(--line); border-radius:10px;
+  background:linear-gradient(180deg,#070a12,#0b1020); overflow:hidden; position:relative;
+  box-shadow:0 24px 60px -28px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,255,255,.03)}
+.spectrum-hero .plate-label{font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.22em;
+  color:var(--muted); text-transform:uppercase; padding:11px 16px 0; display:flex; justify-content:space-between}
+.spectrum-hero canvas{display:block; width:100%; height:auto}
+.hero-hint{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--muted);
+  text-align:center;padding:0 0 13px;letter-spacing:.04em}
+
+/* ---------------- KERNEL ---------------- */
+.kernel{margin:30px 0 8px; padding:30px 34px; border-radius:12px; position:relative;
+  background:linear-gradient(180deg,rgba(63,215,230,.07),rgba(63,215,230,.02));
+  border:1px solid rgba(63,215,230,.28);
+  box-shadow:0 0 60px -30px rgba(63,215,230,.6)}
+.kernel::before{content:"The whole thing in one breath"; position:absolute; top:-10px; left:24px;
+  background:var(--plate); padding:0 10px; font-family:"JetBrains Mono",monospace;
+  font-size:10.5px; letter-spacing:.24em; text-transform:uppercase; color:var(--h-beta)}
+.kernel p{font-family:"Brygada 1918",serif; font-size:1.32rem; line-height:1.5; margin:0; max-width:54rem; color:var(--phosphor)}
+.kernel p em{color:var(--h-beta); font-style:italic}
+.kernel p b{color:var(--classical); font-weight:600}
+
+/* ---------------- SECTION SHELL ---------------- */
+.section-intro{margin:60px 0 0}
+.section-intro h2{font-family:"Brygada 1918",serif; font-weight:600; font-size:1.7rem; color:var(--phosphor); margin:0 0 8px}
+
+.step{margin:74px 0; scroll-margin-top:24px}
+.step-head{display:flex; align-items:baseline; gap:18px; margin-bottom:6px}
+.step-line{width:4px; align-self:stretch; border-radius:3px; min-height:54px; flex:none}
+.step-meta{flex:none}
+.step-no{font-family:"JetBrains Mono",monospace; font-size:11px; letter-spacing:.2em; color:var(--muted)}
+.step-year{font-family:"Brygada 1918",serif; font-size:2.1rem; font-weight:700; line-height:1; display:block; margin-top:2px}
+.step-titles{padding-top:2px}
+.step h3{font-family:"Brygada 1918",serif; font-weight:600; font-size:1.62rem; line-height:1.12; margin:0; color:var(--phosphor)}
+.step .who{font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--muted); margin-top:6px; letter-spacing:.02em}
+
+.lede{font-size:1.12rem; color:var(--phosphor-dim); font-weight:300; margin:20px 0}
+.lede b{color:var(--phosphor);font-weight:500}
+
+/* experiment / classical-fail / fix triad */
+.triad{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin:26px 0 30px}
+.card{border:1px solid var(--line-soft); border-radius:9px; padding:16px 17px; background:var(--panel-2)}
+.card .tag{font-family:"JetBrains Mono",monospace; font-size:10px; letter-spacing:.18em; text-transform:uppercase; display:block; margin-bottom:8px}
+.card p{font-size:.96rem; line-height:1.55; margin:0; color:var(--phosphor-dim); max-width:none}
+.card.exp .tag{color:var(--phosphor-dim)}
+.card.fail{border-color:rgba(224,177,90,.32); background:linear-gradient(180deg,rgba(224,177,90,.06),transparent)}
+.card.fail .tag{color:var(--classical)}
+.card.fix{border-color:rgba(63,215,230,.32); background:linear-gradient(180deg,rgba(63,215,230,.06),transparent)}
+.card.fix .tag{color:var(--h-beta)}
+@media(max-width:760px){.triad{grid-template-columns:1fr}}
+
+/* ---------------- WIDGET ---------------- */
+.widget{border:1px solid var(--line); border-radius:12px; background:linear-gradient(180deg,var(--panel),var(--panel-2));
+  margin:26px 0; overflow:hidden; box-shadow:0 20px 50px -34px rgba(0,0,0,.9)}
+.widget-titlewrap{display:flex; justify-content:space-between; align-items:center; gap:12px;
+  padding:14px 18px; border-bottom:1px solid var(--line-soft); background:rgba(255,255,255,.012)}
+.widget-title{font-family:"Brygada 1918",serif; font-size:1.05rem; font-weight:600; color:var(--phosphor)}
+.wt-sub{font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--muted); border:1px solid var(--line); border-radius:20px; padding:4px 11px; white-space:nowrap}
+.widget-body{padding:18px}
+.widget canvas{display:block; width:100%; height:auto; border-radius:7px; background:#070a12}
+.controls{display:flex; flex-wrap:wrap; gap:14px 22px; align-items:center; margin-top:16px}
+.ctl{display:flex; flex-direction:column; gap:5px; min-width:150px; flex:1}
+.ctl label{font-family:"JetBrains Mono",monospace; font-size:10.5px; letter-spacing:.08em; color:var(--muted); text-transform:uppercase;
+  display:flex; justify-content:space-between; gap:10px}
+.ctl label b{color:var(--h-beta); font-weight:600}
+input[type=range]{-webkit-appearance:none; appearance:none; height:3px; background:var(--line); border-radius:3px; outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:15px; height:15px; border-radius:50%;
+  background:var(--h-beta); cursor:pointer; box-shadow:0 0 10px rgba(63,215,230,.7); border:2px solid #0a0f1c}
+input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--h-beta);cursor:pointer;border:2px solid #0a0f1c}
+.btn{font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:.04em; cursor:pointer;
+  background:rgba(63,215,230,.1); color:var(--h-beta); border:1px solid rgba(63,215,230,.4);
+  border-radius:7px; padding:9px 15px; transition:background .15s, transform .05s}
+.btn:hover{background:rgba(63,215,230,.2)} .btn:active{transform:translateY(1px)}
+.btn.ghost{background:transparent; color:var(--muted); border-color:var(--line)}
+.btn.ghost:hover{color:var(--phosphor); border-color:var(--phosphor-dim)}
+.btn:disabled{opacity:.35; cursor:default}
+.btn.warm{background:rgba(224,177,90,.1); color:var(--classical); border-color:rgba(224,177,90,.4)}
+.btn.warm:hover{background:rgba(224,177,90,.2)}
+.toggle{display:inline-flex; border:1px solid var(--line); border-radius:7px; overflow:hidden}
+.toggle button{font-family:"JetBrains Mono",monospace; font-size:11.5px; cursor:pointer; background:transparent;
+  color:var(--muted); border:none; padding:9px 14px}
+.toggle button.on{background:rgba(63,215,230,.16); color:var(--h-beta)}
+.toggle button.on.warm{background:rgba(224,177,90,.16); color:var(--classical)}
+.caption{font-family:"JetBrains Mono",monospace; font-size:11.5px; color:var(--phosphor-dim); line-height:1.6;
+  margin-top:14px; padding:11px 14px; border-left:2px solid var(--h-beta); background:rgba(63,215,230,.05); border-radius:0 6px 6px 0; min-height:1.6em}
+.caption b{color:var(--h-beta)}
+.readout{display:flex; flex-wrap:wrap; gap:18px 26px; margin-top:14px; font-family:"JetBrains Mono",monospace; font-size:12.5px}
+.readout span{color:var(--muted)} .readout span b{color:var(--phosphor); font-weight:500}
+.readout .q{color:var(--h-beta)} .readout .cl{color:var(--classical)}
+
+/* formal collapsible */
+details.formal{margin:22px 0 0; border:1px solid var(--line-soft); border-radius:9px; background:rgba(255,255,255,.012)}
+details.formal>summary{cursor:pointer; list-style:none; padding:14px 18px; font-family:"JetBrains Mono",monospace;
+  font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); display:flex; align-items:center; gap:10px}
+details.formal>summary::-webkit-details-marker{display:none}
+details.formal>summary::before{content:"+"; color:var(--h-beta); font-size:15px}
+details.formal[open]>summary::before{content:"\2212"}
+details.formal[open]>summary{border-bottom:1px solid var(--line-soft)}
+.formal-body{padding:6px 20px 18px; font-size:.99rem; color:var(--phosphor-dim)}
+.formal-body p{max-width:none}
+
+/* recap */
+.recap{margin:90px 0 40px; padding:38px 0 0; border-top:1px solid var(--line)}
+.recap h2{font-family:"Brygada 1918",serif; font-weight:600; font-size:1.9rem; margin:0 0 18px}
+.ladder{list-style:none; padding:0; margin:24px 0; max-width:none}
+.ladder li{display:flex; gap:16px; align-items:baseline; padding:13px 0; border-bottom:1px solid var(--line-soft)}
+.ladder .yr{font-family:"JetBrains Mono",monospace; font-size:13px; color:var(--muted); flex:none; width:52px}
+.ladder .lk{flex:none; width:4px; align-self:stretch; border-radius:3px}
+.ladder .tx{font-size:1rem; color:var(--phosphor-dim)} .ladder .tx b{color:var(--phosphor); font-weight:500}
+.closeoff{font-family:"Brygada 1918",serif; font-size:1.28rem; line-height:1.5; color:var(--phosphor); max-width:54rem; margin:26px 0}
+.closeoff em{color:var(--h-beta); font-style:italic}
+
+.foot{font-family:"JetBrains Mono",monospace; font-size:11px; color:var(--muted); text-align:center;
+  padding:30px 0 70px; letter-spacing:.04em; line-height:1.9}
+
+mjx-container{color:var(--phosphor)}
+.hl-q{color:var(--quantum)} .hl-c{color:var(--classical)}
+@media(max-width:620px){
+  body{font-size:16.5px}
+  .step-head{flex-wrap:wrap;gap:12px}
+  .controls{gap:12px 16px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ===================== HERO ===================== -->
+  <header class="hero">
+    <p class="eyebrow">1900 &ndash; 1927 &nbsp;&middot;&nbsp; Berlin &middot; Bern &middot; Copenhagen &middot; G&ouml;ttingen &middot; Z&uuml;rich</p>
+    <h1>How the world turned out<br>to be <em>made of steps</em></h1>
+    <p class="sub">For a quarter of a century, every time physicists looked closely enough at light, heat, or atoms, the <b>smooth continuum they expected</b> shattered into <b>discrete lines and lumps</b>. This is the chain of experiments that forced it — and the single idea waiting underneath at the end.</p>
+
+    <div class="spectrum-hero">
+      <div class="plate-label"><span>PHOTOGRAPHIC PLATE &mdash; THE QUANTUM REVOLUTION</span><span id="plate-readout">six emission lines</span></div>
+      <canvas id="heroCanvas" width="1040" height="240"></canvas>
+      <div class="hero-hint">each glowing line is one discovery &mdash; hover or tap a line to read it &middot; click to jump to its chapter</div>
+    </div>
+  </header>
+
+  <!-- ===================== KERNEL ===================== -->
+  <section class="kernel">
+    <p>Every step of the revolution was the <em>same move</em>. A classical theory predicted a <b>smooth, continuous</b> quantity; an experiment showed <em>sharp steps</em> or wave interference instead; and the cure was to <em>quantize</em> one more thing everyone had assumed was continuous. The punchline of the final step is <em>why</em> &mdash; underneath, everything is a wave, and &ldquo;quantized&rdquo; just means <em>a wave that has to fit</em>.</p>
+  </section>
+
+  <section class="section-intro">
+    <h2>Six experiments, one slow realization</h2>
+    <p class="lede">Read it as a relay. Each runner is handed a paradox by the last, quantizes something to fix it, and passes a sharper paradox forward. By the sixth, the thing being quantized stops looking like a patch and starts looking like the nature of matter itself.</p>
+  </section>
+
+  <!-- step shells injected below -->
+  <section class="step" id="step1">
+  <div class="step-head">
+    <div class="step-line" style="background:var(--h-alpha);box-shadow:var(--glow) rgba(255,84,112,.6)"></div>
+    <div class="step-meta"><span class="step-no">STEP 01</span><span class="step-year" style="color:var(--h-alpha)">1900</span></div>
+    <div class="step-titles">
+      <h3>The glow of warm matter, and a number born of desperation</h3>
+      <div class="who">Max Planck &middot; Berlin &middot; blackbody radiation</div>
+    </div>
+  </div>
+
+  <p class="lede">Heat anything until it glows — an iron bar, a star, the filament of a lamp — and it emits a smooth rainbow of light whose <b>shape</b> depends only on temperature, not on what it's made of. Physics could explain almost all of that curve. The trouble was one end of it.</p>
+
+  <div class="triad">
+    <div class="card exp"><span class="tag">The experiment</span><p>Measure how much light of each frequency \(\nu\) a hot body radiates. The curve rises, peaks, and falls — peaking bluer as it gets hotter. A clean, universal shape begging for a formula.</p></div>
+    <div class="card fail"><span class="tag">Classical prediction</span><p>Treat the radiation as countless vibrating modes, each holding \(k_BT\) of energy (equipartition). But there are ever more modes at higher \(\nu\), so the predicted energy climbs without limit — <b>infinite energy</b>. The "ultraviolet catastrophe."</p></div>
+    <div class="card fix"><span class="tag">Planck's assumption</span><p>A mode of frequency \(\nu\) can only hold energy in whole <b>steps</b> of size \(h\nu\): \(E=nh\nu\). High-frequency modes can't afford even one step, so they stay dark. The new constant \(h\) was born.</p></div>
+  </div>
+
+  <div class="widget" id="w1">
+    <div class="widget-titlewrap"><span class="widget-title">The catastrophe, and the step size that cures it</span><span class="wt-sub">staged &middot; drag T &middot; drag the marker</span></div>
+    <div class="widget-body">
+      <canvas id="w1plot" width="940" height="380"></canvas>
+      <canvas id="w1mode" width="940" height="190" style="margin-top:12px"></canvas>
+      <div class="controls">
+        <button class="btn" id="w1stage">Quantize the energy &rarr;</button>
+        <button class="btn ghost" id="w1reset">Reset</button>
+        <div class="ctl"><label>Temperature <b><span id="w1tval">3.0</span></b></label><input type="range" id="w1T" min="1" max="6" step="0.05" value="3"></div>
+      </div>
+      <div class="readout">
+        <span>at the marker &nbsp; <b id="w1nu">5.0</b> &middot; step cost \(h\nu/k_BT=\)<b id="w1x">1.67</b></span>
+        <span class="cl">classical &langle;E&rangle; = <b id="w1cl">k_BT</b></span>
+        <span class="q">quantum &langle;E&rangle; = <b id="w1q">0.39 k_BT</b></span>
+      </div>
+      <div class="caption" id="w1cap">This is the classical prediction alone. Every mode holds k<sub>B</sub>T, so the curve <b>never comes back down</b> — summed over all the modes packed in at high frequency, the total energy diverges. Press <b>Quantize the energy</b>.</div>
+    </div>
+  </div>
+
+  <details class="formal"><summary>The formal version</summary>
+  <div class="formal-body">
+  <p>Classical equipartition gives every electromagnetic mode an average energy \(\langle E\rangle = k_BT\). With the density of modes \(\propto \nu^2\), the Rayleigh&ndash;Jeans law follows: \(u(\nu)\,d\nu \propto \nu^2 k_BT\,d\nu\), which diverges as \(\int \nu^2\,d\nu\to\infty\).</p>
+  <p>Planck instead allowed each mode only the energies \(E_n=nh\nu\). Boltzmann-weighting them, \(p_n\propto e^{-nh\nu/k_BT}\), the average energy becomes a geometric sum:
+  \[ \langle E\rangle = \frac{\sum_n nh\nu\,e^{-nh\nu/k_BT}}{\sum_n e^{-nh\nu/k_BT}} = \frac{h\nu}{e^{h\nu/k_BT}-1}. \]
+  For \(h\nu\ll k_BT\) this returns the classical \(k_BT\); for \(h\nu\gg k_BT\) it collapses to \(\approx h\nu\,e^{-h\nu/k_BT}\to 0\). High-frequency modes freeze out, and \(u(\nu)\propto \nu^3/(e^{h\nu/k_BT}-1)\) — the Planck law — peaks and returns to zero. Planck called \(h\) "an act of desperation"; he did not yet believe energy was truly discrete.</p>
+  </div>
+  </details>
+</section><section class="step" id="step2">
+  <div class="step-head">
+    <div class="step-line" style="background:#ff8a3d;box-shadow:var(--glow) rgba(255,138,61,.6)"></div>
+    <div class="step-meta"><span class="step-no">STEP 02</span><span class="step-year" style="color:#ff8a3d">1905</span></div>
+    <div class="step-titles">
+      <h3>The packets aren't in the matter — light itself is grainy</h3>
+      <div class="who">Albert Einstein &middot; Bern &middot; the photoelectric effect</div>
+    </div>
+  </div>
+
+  <p class="lede">Planck thought \(h\) was a bookkeeping trick about how matter trades energy. Einstein took it literally and aimed it at a puzzle nobody could crack: shine light on a metal and electrons fly off — but <b>which</b> light does it, and how hard, made no sense as a wave.</p>
+
+  <div class="triad">
+    <div class="card exp"><span class="tag">The experiment</span><p>Light hits a metal; electrons are ejected. Vary the light's <b>color</b> (frequency \(\nu\)) and its <b>brightness</b> (intensity). Measure how many electrons come out and how fast.</p></div>
+    <div class="card fail"><span class="tag">Classical prediction</span><p>Light is a wave; a brighter wave carries more energy, so <b>any</b> color should eventually shake electrons loose, and brighter light should make them faster. Wait long enough and even dim red light should work.</p></div>
+    <div class="card fix"><span class="tag">Einstein's assumption</span><p>Light arrives as grains — photons — each carrying \(E=h\nu\). One photon kicks one electron. Below a threshold frequency a grain is simply <b>too small</b>, and no amount of them helps. The energy of escapees is \(h\nu - W\).</p></div>
+  </div>
+
+  <div class="widget" id="w2">
+    <div class="widget-titlewrap"><span class="widget-title">Shining light on a metal, grain by grain</span><span class="wt-sub">live &middot; drag color &amp; brightness &middot; toggle the picture</span></div>
+    <div class="widget-body">
+      <canvas id="w2cv" width="940" height="360"></canvas>
+      <div class="controls">
+        <div class="toggle" id="w2mode">
+          <button data-m="q" class="on">Photon picture</button>
+          <button data-m="c" class="warm">Classical wave</button>
+        </div>
+        <div class="ctl"><label>Color — frequency ν <b><span id="w2lab">520 nm</span></b></label><input type="range" id="w2f" min="350" max="700" step="2" value="470"></div>
+        <div class="ctl"><label>Brightness — intensity <b><span id="w2ilab">60%</span></b></label><input type="range" id="w2i" min="0" max="100" step="1" value="60"></div>
+      </div>
+      <div class="readout">
+        <span>photon energy \(h\nu=\)<b id="w2hv">2.64 eV</b> &middot; binding \(W=\)<b>2.38 eV</b></span>
+        <span class="q">max electron energy <b id="w2ke">0.26 eV</b></span>
+        <span>current (electrons/s) <b id="w2cur">—</b></span>
+      </div>
+      <div class="caption" id="w2cap">Drag the color slider below ≈520 nm (greener/bluer) and electrons fly. Drag it past 520 nm toward red — then crank <b>brightness to 100%</b>. Nothing comes out, no matter how bright.</div>
+    </div>
+  </div>
+
+  <details class="formal"><summary>The formal version</summary>
+  <div class="formal-body">
+  <p>Einstein's relation: the maximum kinetic energy of an ejected electron is
+  \[ K_{\max}=h\nu - W, \]
+  where \(W\) is the work function (the energy binding the least-bound electron to the metal). Three consequences contradicted the wave picture and were all confirmed by Millikan by 1916: (i) a sharp <em>threshold frequency</em> \(\nu_0=W/h\) below which nothing is emitted regardless of intensity; (ii) \(K_{\max}\) grows <em>linearly with \(\nu\)</em>, with slope exactly \(h\) — and independent of intensity; (iii) intensity sets only the <em>number</em> of electrons (the current), not their energy. This is the experiment Einstein's 1921 Nobel Prize cited — not relativity — and the first time \(h\) was claimed to describe light itself, not just matter's exchange of it.</p>
+  </div>
+  </details>
+</section><section class="step" id="step3">
+  <div class="step-head">
+    <div class="step-line" style="background:var(--classical);box-shadow:var(--glow) rgba(224,177,90,.6)"></div>
+    <div class="step-meta"><span class="step-no">STEP 03</span><span class="step-year" style="color:var(--classical)">1913</span></div>
+    <div class="step-titles">
+      <h3>If light is discrete, the atom's energies must be too</h3>
+      <div class="who">Niels Bohr &middot; Copenhagen &middot; the hydrogen spectrum</div>
+    </div>
+  </div>
+
+  <p class="lede">Rutherford had just shown the atom is mostly empty: a tiny dense nucleus with electrons somewhere outside. Picture it as a little solar system — and it should die instantly. Yet heated hydrogen doesn't smear out light; it emits a <b>handful of razor-sharp colored lines</b>, the same ones every time.</p>
+
+  <div class="triad">
+    <div class="card exp"><span class="tag">The experiment</span><p>Pass light from glowing hydrogen through a prism. Instead of a continuous rainbow you see a few bright lines at fixed wavelengths — 656, 486, 434, 410 nm — captured decades earlier by the empirical Rydberg formula.</p></div>
+    <div class="card fail"><span class="tag">Classical prediction</span><p>An orbiting electron accelerates, so it must radiate, lose energy, and <b>spiral into the nucleus in \(\sim\!10^{-11}\) s</b> — emitting an ever-rising smear of all frequencies on the way down. Atoms shouldn't exist, and their light should be continuous.</p></div>
+    <div class="card fix"><span class="tag">Bohr's assumption</span><p>Only certain orbits are allowed — those with quantized angular momentum \(L=n\hbar\). On them the electron simply <b>doesn't radiate</b>. Light is emitted only when it <b>jumps</b> between them: \(h\nu=E_i-E_f\). Discrete jumps, discrete lines.</p></div>
+  </div>
+
+  <div class="widget" id="w3">
+    <div class="widget-titlewrap"><span class="widget-title">Exciting hydrogen and reading its emission lines</span><span class="wt-sub">staged &middot; classical vs quantized &middot; excite to emit</span></div>
+    <div class="widget-body">
+      <canvas id="w3cv" width="940" height="420"></canvas>
+      <div class="controls">
+        <div class="toggle" id="w3mode">
+          <button data-m="c" class="on warm">Classical orbit</button>
+          <button data-m="q">Quantized levels</button>
+        </div>
+        <button class="btn" id="w3excite" disabled>Excite the atom ⚡</button>
+        <button class="btn ghost" id="w3auto" disabled>Auto-excite ▶</button>
+        <button class="btn ghost" id="w3clear">Clear plate</button>
+      </div>
+      <div class="caption" id="w3cap">This is Rutherford's classical atom. Watch the electron <b>spiral into the nucleus</b>, smearing out light of every color as it falls — the atom should self-destruct almost instantly. Switch to <b>Quantized levels</b> to see Bohr's fix.</div>
+    </div>
+  </div>
+
+  <details class="formal"><summary>The formal version</summary>
+  <div class="formal-body">
+  <p>Bohr's quantization condition \(L=m_e v r = n\hbar\) (with \(n=1,2,3,\dots\)) selects orbits with energies
+  \[ E_n=-\frac{m_e e^4}{8\varepsilon_0^2 h^2}\,\frac{1}{n^2}=-\frac{13.6\ \text{eV}}{n^2}. \]
+  A jump from level \(n_i\) to \(n_f\) emits a photon of energy \(E_{n_i}-E_{n_f}\), reproducing the Rydberg formula exactly:
+  \[ \frac{1}{\lambda}=R_\infty\!\left(\frac{1}{n_f^2}-\frac{1}{n_i^2}\right). \]
+  The visible <em>Balmer</em> series is every jump landing on \(n_f=2\): \(3\!\to\!2\) gives 656 nm (red), \(4\!\to\!2\) 486 nm, \(5\!\to\!2\) 434 nm, \(6\!\to\!2\) 410 nm. Jumps to \(n_f=1\) (Lyman) are ultraviolet; to \(n_f=3\) (Paschen) infrared. The model nailed hydrogen but couldn't explain <em>why</em> only these orbits — that answer is Step 4.</p>
+  </div>
+  </details>
+</section><section class="step" id="step4">
+  <div class="step-head">
+    <div class="step-line" style="background:#7ee06a;box-shadow:var(--glow) rgba(126,224,106,.6)"></div>
+    <div class="step-meta"><span class="step-no">STEP 04</span><span class="step-year" style="color:#7ee06a">1924</span></div>
+    <div class="step-titles">
+      <h3>Why only those orbits? Because the electron is a wave</h3>
+      <div class="who">Louis de Broglie &middot; Paris &middot; confirmed by Davisson&ndash;Germer, 1927</div>
+    </div>
+  </div>
+
+  <p class="lede">Bohr's rule worked but was a naked guess: <em>why</em> is angular momentum quantized? De Broglie's answer was audacious and simple — if light, long thought a wave, can act like particles, then particles long thought solid might act like waves. Give the electron a wavelength, and Bohr's mystery dissolves.</p>
+
+  <div class="triad">
+    <div class="card exp"><span class="tag">The experiment</span><p>Davisson and Germer fired electrons at a nickel crystal and got a <b>diffraction pattern</b> — bright and dark rings, the unmistakable signature of waves interfering. Electrons, supposedly tiny billiard balls, were diffracting like light.</p></div>
+    <div class="card fail"><span class="tag">The open question</span><p>Bohr's \(L=n\hbar\) had no derivation. Why integers? Why <b>those</b> radii and no others? The condition was pulled from thin air to match the spectrum.</p></div>
+    <div class="card fix"><span class="tag">de Broglie's assumption</span><p>Matter has a wavelength \(\lambda=h/p\). A stable orbit must hold a <b>whole number of wavelengths</b> — the wave has to meet itself in phase after one lap: \(2\pi r=n\lambda\). Substitute and out pops \(L=n\hbar\), for free.</p></div>
+  </div>
+
+  <div class="widget" id="w4">
+    <div class="widget-titlewrap"><span class="widget-title">An electron wave wrapped around its orbit</span><span class="wt-sub">staged &middot; drag the wavelength &middot; find the fits</span></div>
+    <div class="widget-body">
+      <canvas id="w4cv" width="940" height="430"></canvas>
+      <div class="controls">
+        <button class="btn" id="w4stage">Give the electron a wavelength &rarr;</button>
+        <div class="ctl" id="w4ctlwrap" style="opacity:.35"><label>Wavelength λ — sets how many fit, <b><span id="w4nlab">3.00</span></b> per lap</label><input type="range" id="w4n" min="1.6" max="6.4" step="0.01" value="3" disabled></div>
+        <button class="btn ghost" id="w4snap" disabled>Snap to nearest fit</button>
+      </div>
+      <div class="caption" id="w4cap">Here is Bohr's electron as a featureless particle on a chosen orbit — nothing tells us which orbits are special. Press <b>Give the electron a wavelength</b> and drag.</div>
+    </div>
+  </div>
+
+  <details class="formal"><summary>The formal version</summary>
+  <div class="formal-body">
+  <p>The standing-wave condition on a circular orbit is \(2\pi r = n\lambda\) for integer \(n\): the only way the wave returns to its starting phase after one trip around. Insert de Broglie's \(\lambda = h/p = h/(m_e v)\):
+  \[ 2\pi r = n\frac{h}{m_e v}\;\Longrightarrow\; m_e v r = n\frac{h}{2\pi}=n\hbar. \]
+  That is <em>exactly</em> Bohr's quantization condition \(L=n\hbar\) — now derived, not postulated. The "allowed orbits" are simply the resonances of a confined wave, like the harmonics of a string fixed at both ends. For any non-integer number of wavelengths the wave interferes destructively with itself over many laps and cannot persist — which is why those orbits are forbidden. This is the hinge of the whole story: <em>quantization is what waves do when you confine them.</em></p>
+  </div>
+  </details>
+</section><section class="step" id="step5">
+  <div class="step-head">
+    <div class="step-line" style="background:var(--h-beta);box-shadow:var(--glow) rgba(63,215,230,.6)"></div>
+    <div class="step-meta"><span class="step-no">STEP 05</span><span class="step-year" style="color:var(--h-beta)">1925&ndash;26</span></div>
+    <div class="step-titles">
+      <h3>One equation for the wave — quantization becomes a theorem</h3>
+      <div class="who">Erwin Schr&ouml;dinger &middot; Z&uuml;rich &middot; with Heisenberg's matrices (1925) &amp; Born's rule (1926)</div>
+    </div>
+  </div>
+
+  <p class="lede">De Broglie's standing wave explained one atom's circular orbits — but it was a picture, not a law. If matter really is a wave, something must <b>govern</b> that wave everywhere: in helium, in molecules, in any trap you build. Schr&ouml;dinger wrote that equation, and something remarkable fell out of it: <b>you no longer have to assume quantization anywhere</b>. Demand only that a trapped wave die away outside its trap, and the equation has solutions at a few special energies — and at no others.</p>
+
+  <div class="triad">
+    <div class="card exp"><span class="tag">The situation</span><p>The "old quantum theory" was a grab-bag of patches: Bohr's rule nailed hydrogen but failed for helium, said nothing about how bright each line is, and de Broglie's "fit around the ring" only worked for circles. Physics had rules without a mechanics.</p></div>
+    <div class="card fail"><span class="tag">The missing law</span><p>A wave needs an equation of motion — what Maxwell's equations are to light, or \(F=ma\) is to planets. Nothing said how the electron's wave \(\psi\) behaves in an <b>arbitrary</b> force field, or even what \(\psi\) physically <em>is</em>.</p></div>
+    <div class="card fix"><span class="tag">Schr&ouml;dinger's equation</span><p>\(\hat H\psi = E\psi\): energy bookkeeping rewritten for waves. For a <b>trapped</b> wave — one that must vanish far away — solutions exist only at discrete energies \(E_1, E_2,\dots\) Quantization stops being an assumption and becomes a <b>solvability condition</b>. Born added the meaning: \(|\psi|^2\) is the probability of finding the particle.</p></div>
+  </div>
+
+  <div class="widget" id="w5">
+    <div class="widget-titlewrap"><span class="widget-title">Hunting the allowed energies of a trapped electron</span><span class="wt-sub">live &middot; drag the energy &middot; then reveal |&psi;|&sup2;</span></div>
+    <div class="widget-body">
+      <canvas id="w5cv" width="940" height="430"></canvas>
+      <div class="controls">
+        <div class="ctl"><label>Trial energy E — hunt for the fits <b><span id="w5Elab">10.00</span></b></label><input type="range" id="w5E" min="0.5" max="38" step="0.01" value="10"></div>
+        <button class="btn ghost" id="w5snap">Snap to nearest allowed E</button>
+        <button class="btn" id="w5stage">Reveal what ψ means &rarr;</button>
+        <button class="btn ghost" id="w5clear" disabled>Clear detections</button>
+      </div>
+      <div class="readout">
+        <span>trial E <b id="w5Ev">10.00</b></span>
+        <span class="cl">edge blow-up &times;<b id="w5div">—</b></span>
+        <span class="q">allowed energies found <b id="w5found">0 / 4</b></span>
+      </div>
+      <div class="caption" id="w5cap">The equation is being solved live: the wave grows in from the left at your trial energy E. At almost every E the tail <b>explodes to ±∞</b> on the right (gold) — no physical trapped wave exists there. Drag E slowly and watch the tail flip from +∞ to −∞: the allowed energy is the razor-thin crossing in between.</div>
+    </div>
+  </div>
+
+  <details class="formal"><summary>The formal version</summary>
+  <div class="formal-body">
+  <p>Take de Broglie seriously: a free particle of momentum \(p\) is a wave \(\psi\sim e^{ikx}\) with \(p=\hbar k\) (that's \(\lambda=h/p\) restated). Note that differentiating extracts the momentum: \(-i\hbar\,\partial_x\psi = \hbar k\,\psi = p\,\psi\). So wherever classical mechanics uses \(p\), let the wave theory use the operator \(-i\hbar\,\partial_x\). Feeding that into the energy balance \(E = \frac{p^2}{2m}+V(x)\) turns a number equation into a wave equation:</p>
+  <p>\[ -\frac{\hbar^2}{2m}\frac{d^2\psi}{dx^2} + V(x)\,\psi \;=\; E\,\psi . \]</p>
+  <p>Each term is the old bookkeeping in new clothes: the derivative term is kinetic energy (a sharply curved wave = short wavelength = large \(p\)), \(V\psi\) is potential energy, and \(E\) is the total. For a <em>bound</em> particle we must also demand \(\psi\to 0\) far away (the electron is actually in the trap; the total probability must be finite). That boundary condition is everything: inside the well the solution oscillates, outside it is a mix of a decaying and an <em>exploding</em> exponential — and only at special energies \(E_n\) does the exploding piece cancel on both sides at once. The widget above is literally performing this "shooting method." Solve the same equation in three dimensions with the Coulomb potential \(V=-e^2/4\pi\varepsilon_0 r\) and the allowed energies come out \(E_n=-13.6\,\text{eV}/n^2\) — Bohr's ladder, now a theorem. Heisenberg, Born and Jordan had already reached equivalent rules in 1925 via matrix mechanics; Schr&ouml;dinger proved the two formalisms identical. And in 1926 Born supplied the missing meaning of \(\psi\): it is not a smeared-out electron — \(|\psi(x)|^2\,dx\) is the <em>probability</em> of finding the whole electron near \(x\). That reading is tested in the strip at the bottom of the widget, and put on trial in Step 6.</p>
+  </div>
+  </details>
+</section><section class="step" id="step6">
+  <div class="step-head">
+    <div class="step-line" style="background:var(--h-gamma);box-shadow:var(--glow) rgba(155,107,255,.6)"></div>
+    <div class="step-meta"><span class="step-no">STEP 06</span><span class="step-year" style="color:var(--h-gamma)">1927</span></div>
+    <div class="step-titles">
+      <h3>One electron, two slits — the wave is probability</h3>
+      <div class="who">electron waves confirmed: Davisson&ndash;Germer &amp; G.P. Thomson, 1927 &middot; the two-slit version, run one electron at a time: J&ouml;nsson 1961, Tonomura 1989</div>
+    </div>
+  </div>
+
+  <p class="lede">Everything so far says matter is a wave that has to fit. But look at any detector: an electron always <b>arrives as one sharp dot</b>, never as a smear. The double slit is where the two truths collide — dots land one at a time, at unpredictable places, yet thousands of dots quietly draw the wave's interference stripes. This one image contains superposition, the Born rule, and what measurement does.</p>
+
+  <div class="triad">
+    <div class="card exp"><span class="tag">The experiment</span><p>Fire electrons <b>one at a time</b> at a wall with two narrow slits and record where each lands. Every electron arrives as a single point — but the accumulated points form bright and dark <b>fringes</b>, with dark bands where no electron ever lands.</p></div>
+    <div class="card fail"><span class="tag">Classical prediction</span><p>Bullets would pile up in one broad heap behind the slits — no dark bands. A classical wave would make fringes, but as a <b>continuous smear</b> arriving everywhere at once, never as lone dots. Nothing classical produces <em>dots whose statistics are stripes</em>.</p></div>
+    <div class="card fix"><span class="tag">The quantum answer</span><p>Each electron's wave \(\psi\) passes through <b>both</b> slits and interferes with itself; \(|\psi|^2\) on the screen sets the odds for where that one dot lands. And if you <b>watch</b> which slit it used, you force the wave through one slit — the cross-term dies and the stripes vanish.</p></div>
+  </div>
+
+  <div class="widget" id="w6">
+    <div class="widget-titlewrap"><span class="widget-title">Building the fringes one electron at a time</span><span class="wt-sub">live &middot; fire electrons &middot; toggle the detector</span></div>
+    <div class="widget-body">
+      <canvas id="w6cv" width="940" height="420"></canvas>
+      <div class="controls">
+        <button class="btn" id="w6one">Fire 1 electron</button>
+        <button class="btn" id="w6run">Fire stream ▶</button>
+        <button class="btn ghost" id="w6ff">Fast-forward &times;500</button>
+        <div class="toggle" id="w6det">
+          <button data-d="off" class="on">No detector</button>
+          <button data-d="on" class="warm">Watch the slits</button>
+        </div>
+        <button class="btn ghost" id="w6overlay">Overlay the wave's prediction</button>
+        <button class="btn ghost" id="w6clear">Clear screen</button>
+      </div>
+      <div class="readout">
+        <span>electrons recorded <b id="w6n">0</b></span>
+        <span class="q">predicted stripe spacing λL/d = <b>45 px</b></span>
+        <span>each dot = one whole electron</span>
+      </div>
+      <div class="caption" id="w6cap">Press <b>Fire 1 electron</b> a few times. Each one leaves the gun as a particle, spreads through <b>both slits as a wave</b> (the expanding rings), and lands as a single dot at a place no one can predict. Then hold <b>Fire stream</b> and watch what thousands of unpredictable dots agree on.</div>
+    </div>
+  </div>
+
+  <details class="formal"><summary>The formal version</summary>
+  <div class="formal-body">
+  <p>Call \(\psi_1\) and \(\psi_2\) the waves reaching a screen point \(y\) from slit 1 and slit 2. The path from the farther slit is longer by \(\delta \approx d\,y/L\) (slit separation \(d\), screen distance \(L\)), so \(\psi_2\) lags by a phase \(\varphi = 2\pi\delta/\lambda = 2\pi d y/\lambda L\). Quantum mechanics adds <em>amplitudes</em>, not probabilities:</p>
+  <p>\[ P(y) \;=\; |\psi_1+\psi_2|^2 \;=\; |\psi_1|^2+|\psi_2|^2+2\,\mathrm{Re}(\psi_1^*\psi_2) \;\propto\; \cos^2\!\frac{\pi d y}{\lambda L}, \]</p>
+  <p>maxima where the paths differ by a whole number of wavelengths, spaced \(\Delta y = \lambda L/d\) apart (the widget's geometry gives exactly 45 px). The last term — the <em>interference cross-term</em> — exists only while both paths are indistinguishable. Mark which slit the electron used (any which-path measurement, however gentle in intent) and the outcomes become distinguishable alternatives, so the probabilities add instead: \(P = |\psi_1|^2+|\psi_2|^2\), a smooth stripeless hump. Heisenberg's 1927 uncertainty relation \(\Delta x\,\Delta p \ge \hbar/2\) says the same thing mechanically: locating the electron to within \(d\) at the slits necessarily disturbs its transverse momentum by \(\gtrsim \hbar/d\) — precisely enough to smear the pattern by one full fringe. A historical honesty note: in 1927 the electron-wave evidence was Davisson&ndash;Germer's crystal diffraction (and G.P. Thomson's foils); the two-slit experiment itself was the founders' <em>thought experiment</em>, first done with electrons by J&ouml;nsson in 1961, and one-electron-at-a-time — dots visibly building fringes, exactly as in this widget — by Tonomura's team in 1989. It ran precisely as predicted in 1927.</p>
+  </div>
+  </details>
+</section>
+
+  <!-- ===================== RECAP ===================== -->
+  <section class="recap">
+    <h2>How the steps stacked into a theory</h2>
+    <p class="lede">Notice the quantity being chopped into steps marches inward — from the energy <em>radiated by warm matter</em>, to <em>light</em>, to the <em>atom's insides</em>, and finally to <em>matter itself</em> — until the last step reveals they were never separate fixes at all.</p>
+    <ul class="ladder">
+      <li><span class="yr">1900</span><span class="lk" style="background:var(--h-alpha)"></span><span class="tx"><b>Planck:</b> the <em>energy</em> a warm body trades with light comes in packets \(E=nh\nu\). A desperate fit that quietly created the constant \(h\).</span></li>
+      <li><span class="yr">1905</span><span class="lk" style="background:#ff8a3d"></span><span class="tx"><b>Einstein:</b> the packets aren't in the matter — <em>light itself</em> is grains of energy \(h\nu\). The photon.</span></li>
+      <li><span class="yr">1913</span><span class="lk" style="background:var(--classical)"></span><span class="tx"><b>Bohr:</b> if light is discrete, the atom's <em>energies</em> must be too. Only certain orbits allowed; jumps emit the exact spectral lines we see.</span></li>
+      <li><span class="yr">1924</span><span class="lk" style="background:#7ee06a"></span><span class="tx"><b>de Broglie:</b> <em>matter</em> is wavy, \(\lambda=h/p\). Bohr's mysterious allowed orbits are just the standing waves that fit around the ring.</span></li>
+      <li><span class="yr">1925&ndash;26</span><span class="lk" style="background:var(--h-beta)"></span><span class="tx"><b>Heisenberg, Schr&ouml;dinger, Born:</b> one equation for the wave; quantized energies are its standing-wave solutions; \(|\psi|^2\) is probability.</span></li>
+      <li><span class="yr">1927</span><span class="lk" style="background:var(--h-gamma)"></span><span class="tx"><b>The double slit:</b> a single electron interferes with itself; <em>looking</em> destroys the pattern. Superposition, the Born rule, and uncertainty in one image.</span></li>
+    </ul>
+    <p class="closeoff">So the kernel holds all the way down. Six times, a continuum cracked into steps; six times the fix was to quantize. Only at the end does the reason surface: <em>steps are what waves do when they're confined.</em> A guitar string can't sound any pitch, only the ones that fit its length — and an electron bound to an atom is exactly that, a wave that has to close on itself. Quantum mechanics is the bookkeeping of confined waves.</p>
+  </section>
+
+  <p class="foot">A spectral timeline &middot; built kernel-first &middot; every number herein verified against the Planck, Rydberg, and Schr&ouml;dinger relations<br>palette drawn from the true sRGB colors of the hydrogen Balmer lines &mdash; 656, 486, 434, 410 nm</p>
+
+</div>
+
+<script>
+/* pause redraws for widgets scrolled off-screen — only visible canvases pay for frames */
+window.__seen={};
+(function(){
+  if(!('IntersectionObserver' in window)) return;
+  const io=new IntersectionObserver(es=>{ for(const e of es) window.__seen[e.target.id]=e.isIntersecting; },{rootMargin:'120px'});
+  ['w2cv','w3cv','w4cv','w5cv','w6cv'].forEach(id=>{ const c=document.getElementById(id); if(c) io.observe(c); });
+})();
+</script>
+<script>
+/* ============ HERO: the spectral timeline ============ */
+(function(){
+  const cv=document.getElementById('heroCanvas'), ctx=cv.getContext('2d');
+  const W=cv.width, H=cv.height;
+  const events=[
+    {x:0.06, c:'#ff3344', year:'1900', who:'Planck',     t:'energy comes in packets', step:'step1'},
+    {x:0.205,c:'#ff8a3d', year:'1905', who:'Einstein',   t:'light comes in packets',  step:'step2'},
+    {x:0.40, c:'#e0b15a', year:'1913', who:'Bohr',       t:'orbits come in packets',  step:'step3'},
+    {x:0.58, c:'#7ee06a', year:'1924', who:'de Broglie', t:'matter is a wave',        step:'step4'},
+    {x:0.76, c:'#3fd7e6', year:'1925', who:'Schrödinger',t:'one equation for the wave',step:'step5'},
+    {x:0.93, c:'#9b6bff', year:'1927', who:'the slit',   t:'the wave is probability', step:'step6'}
+  ];
+  let revealT=0, hover=-1;
+  const readout=document.getElementById('plate-readout');
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    // continuous faint background spectrum band (the classical expectation)
+    const bandY=H*0.46, bandH=H*0.30;
+    const g=ctx.createLinearGradient(0,0,W,0);
+    g.addColorStop(0.00,'#5a0a3a');g.addColorStop(0.14,'#2a0a8a');g.addColorStop(0.30,'#0a3acc');
+    g.addColorStop(0.45,'#08c0c0');g.addColorStop(0.58,'#10c020');g.addColorStop(0.72,'#c8c810');
+    g.addColorStop(0.86,'#d06010');g.addColorStop(1.00,'#a00808');
+    ctx.globalAlpha=0.07; ctx.fillStyle=g; ctx.fillRect(60,bandY,W-120,bandH); ctx.globalAlpha=1;
+    // axis baseline
+    ctx.strokeStyle='#26314c'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(60,bandY+bandH); ctx.lineTo(W-60,bandY+bandH); ctx.stroke();
+
+    events.forEach((e,i)=>{
+      const px=60+e.x*(W-120);
+      const local=Math.max(0,Math.min(1,(revealT-i*0.13)/0.5));
+      if(local<=0) return;
+      const a=local, big=(i===hover);
+      const lw=big?5:3, glowA=(big?0.95:0.62)*a;
+      // glow
+      ctx.save(); ctx.globalAlpha=glowA; ctx.shadowBlur=big?34:20; ctx.shadowColor=e.c;
+      ctx.strokeStyle=e.c; ctx.lineWidth=lw;
+      ctx.beginPath(); ctx.moveTo(px,bandY-(big?26:14)); ctx.lineTo(px,bandY+bandH+(big?16:8)); ctx.stroke();
+      ctx.restore();
+      // labels
+      ctx.globalAlpha=a;
+      ctx.textAlign='center';
+      ctx.fillStyle=big?e.c:'#b3b8c9';
+      ctx.font='600 '+(big?15:13)+'px "JetBrains Mono",monospace';
+      ctx.fillText(e.year, px, bandY-(big?34:24));
+      ctx.fillStyle=big?'#ece8dc':'#727c95';
+      ctx.font='500 11px "JetBrains Mono",monospace';
+      ctx.fillText(e.who, px, bandY+bandH+(big?34:26));
+      ctx.globalAlpha=1;
+    });
+  }
+  function loop(){ if(revealT<1.6){ revealT+=0.012; draw(); requestAnimationFrame(loop);} else draw(); }
+  loop();
+
+  function pick(mx){
+    let best=-1,bd=1e9;
+    events.forEach((e,i)=>{ const px=60+e.x*(W-120); const d=Math.abs(mx-px); if(d<bd){bd=d;best=i;} });
+    return bd<34?best:-1;
+  }
+  function evtX(ev){ const r=cv.getBoundingClientRect(); const cx=(ev.touches?ev.touches[0].clientX:ev.clientX); return (cx-r.left)*(W/r.width); }
+  cv.addEventListener('mousemove',ev=>{ const h=pick(evtX(ev)); if(h!==hover){hover=h; draw();
+     readout.textContent = h>=0? events[h].year+' — '+events[h].t : 'six emission lines'; cv.style.cursor=h>=0?'pointer':'default'; }});
+  cv.addEventListener('mouseleave',()=>{hover=-1;draw();readout.textContent='six emission lines';});
+  cv.addEventListener('click',ev=>{ const h=pick(evtX(ev)); if(h>=0){ const el=document.getElementById(events[h].step); if(el) el.scrollIntoView({behavior:'smooth',block:'start'});}});
+  cv.addEventListener('touchstart',ev=>{ const h=pick(evtX(ev)); if(h>=0){hover=h;draw(); readout.textContent=events[h].year+' — '+events[h].t;} },{passive:true});
+})();
+</script>
+<script>
+/* ===== STEP 1: blackbody — catastrophe + mode freeze-out ===== */
+(function(){
+  const plot=document.getElementById('w1plot'), pc=plot.getContext('2d');
+  const mode=document.getElementById('w1mode'), mc=mode.getContext('2d');
+  const PW=plot.width, PH=plot.height, MW=mode.width, MH=mode.height;
+  const Tslider=document.getElementById('w1T'), Tval=document.getElementById('w1tval');
+  const stageBtn=document.getElementById('w1stage'), resetBtn=document.getElementById('w1reset');
+  const cap=document.getElementById('w1cap');
+  const elNu=document.getElementById('w1nu'), elX=document.getElementById('w1x'),
+        elCl=document.getElementById('w1cl'), elQ=document.getElementById('w1q');
+  const NUMAX=16, GOLD='#e0b15a', CYAN='#3fd7e6';
+  let T=3, showQ=false, nuMark=5;
+
+  // scaled units: kB=1, h=1
+  const cl  = nu => nu*nu*T;                       // Rayleigh-Jeans spectral density
+  const qa  = nu => nu*nu*(nu/(Math.exp(nu/T)-1)); // Planck spectral density
+  const Ebq = nu => nu/(Math.exp(nu/T)-1);         // quantum avg energy per mode
+
+  // plot frame
+  const PL=58,PR=20,PT=18,PB=34, gx0=PL,gx1=PW-PR,gy0=PT,gy1=PH-PB;
+  function ymax(){ return 1.05*cl(NUMAX); }        // classical sets the (divergent-looking) ceiling
+  const X = nu => gx0+(nu/NUMAX)*(gx1-gx0);
+  const Y = v  => gy1-(v/ymax())*(gy1-gy0);
+
+  function drawPlot(){
+    pc.clearRect(0,0,PW,PH);
+    // axes
+    pc.strokeStyle='#26314c'; pc.lineWidth=1;
+    pc.beginPath(); pc.moveTo(gx0,gy0); pc.lineTo(gx0,gy1); pc.lineTo(gx1,gy1); pc.stroke();
+    pc.fillStyle='#727c95'; pc.font='11px "JetBrains Mono",monospace';
+    pc.textAlign='center'; pc.fillText('frequency  ν  →', (gx0+gx1)/2, PH-8);
+    pc.save(); pc.translate(14,(gy0+gy1)/2); pc.rotate(-Math.PI/2); pc.textAlign='center';
+    pc.fillText('energy radiated per frequency', 0,0); pc.restore();
+
+    // classical curve (gold) — clipped at top, with arrow implying →∞
+    pc.strokeStyle=GOLD; pc.lineWidth=2.4; pc.beginPath();
+    let clipped=false;
+    for(let i=0;i<=400;i++){ const nu=0.01+i/400*NUMAX; const y=Y(cl(nu));
+      if(i===0)pc.moveTo(X(nu),Math.max(gy0,y)); else pc.lineTo(X(nu),Math.max(gy0,y));
+      if(y<gy0)clipped=true; }
+    pc.stroke();
+    if(clipped){ pc.fillStyle=GOLD; pc.font='600 11px "JetBrains Mono",monospace'; pc.textAlign='right';
+      pc.fillText('→ ∞  (catastrophe)', gx1-4, gy0+13); }
+
+    // quantum curve (cyan) + fill
+    if(showQ){
+      pc.beginPath();
+      for(let i=0;i<=400;i++){ const nu=0.01+i/400*NUMAX; const y=Y(qa(nu));
+        if(i===0)pc.moveTo(X(nu),y); else pc.lineTo(X(nu),y);}
+      pc.lineTo(X(NUMAX),gy1); pc.lineTo(X(0.01),gy1); pc.closePath();
+      pc.fillStyle='rgba(63,215,230,.10)'; pc.fill();
+      pc.beginPath();
+      for(let i=0;i<=400;i++){ const nu=0.01+i/400*NUMAX; const y=Y(qa(nu));
+        if(i===0)pc.moveTo(X(nu),y); else pc.lineTo(X(nu),y);}
+      pc.strokeStyle=CYAN; pc.lineWidth=2.6; pc.stroke();
+    }
+    // marker
+    const mx=X(nuMark);
+    pc.strokeStyle='rgba(236,232,220,.45)'; pc.setLineDash([4,4]); pc.lineWidth=1;
+    pc.beginPath(); pc.moveTo(mx,gy0); pc.lineTo(mx,gy1); pc.stroke(); pc.setLineDash([]);
+    pc.fillStyle='#ece8dc'; pc.beginPath(); pc.arc(mx,gy1+0,4,0,7); pc.fill();
+    pc.font='600 11px "JetBrains Mono",monospace'; pc.textAlign='center'; pc.fillStyle='#ece8dc';
+    pc.fillText('mode ν='+nuMark.toFixed(1), mx, gy0+12);
+  }
+
+  function drawMode(){
+    mc.clearRect(0,0,MW,MH);
+    const hv=nuMark, x=hv/T;            // step cost in units of kBT
+    // left: energy ladder; right: occupancy bars
+    const lx=70, lw=150, base=MH-26, top=24, ladH=base-top;
+    mc.fillStyle='#727c95'; mc.font='10.5px "JetBrains Mono",monospace'; mc.textAlign='left';
+    mc.fillText('allowed energies of THIS mode (steps of hν)', 16, 15);
+    // kBT reference waterline
+    const eMax=Math.max(3*T, 4*hv, hv*1.2);
+    const Yl = e => base-(e/eMax)*ladH;
+    mc.strokeStyle='rgba(224,177,90,.6)'; mc.setLineDash([5,4]); mc.lineWidth=1.4;
+    mc.beginPath(); mc.moveTo(lx-12,Yl(T)); mc.lineTo(MW-16,Yl(T)); mc.stroke(); mc.setLineDash([]);
+    mc.fillStyle=GOLD; mc.textAlign='right'; mc.fillText('k_BT (classical share)', MW-18, Yl(T)-5);
+    // rungs
+    let n=0; const measured=[];
+    while(n*hv<=eMax && n<40){ const yy=Yl(n*hv);
+      const p=Math.exp(-n*hv/T); measured.push({n,e:n*hv,p,y:yy});
+      mc.strokeStyle='#46527a'; mc.lineWidth=n===0?2:1.2;
+      mc.beginPath(); mc.moveTo(lx,yy); mc.lineTo(lx+lw,yy); mc.stroke(); n++; }
+    // normalize p
+    const Z=measured.reduce((s,m)=>s+m.p,0);
+    let Eavg=0; measured.forEach(m=>{m.p/=Z; Eavg+=m.e*m.p;});
+    // occupancy bars (cyan) from each rung
+    measured.forEach(m=>{ const w=m.p*230;
+      mc.fillStyle='rgba(63,215,230,'+(0.25+0.6*m.p)+')';
+      mc.fillRect(lx+lw+14, m.y-4, Math.max(0.4,w), 8); });
+    mc.fillStyle='#727c95'; mc.textAlign='left'; mc.font='10px "JetBrains Mono",monospace';
+    mc.fillText('how often the mode actually sits on each step →', lx+lw+14, 15);
+    // quantum avg energy waterline
+    mc.strokeStyle=CYAN; mc.lineWidth=1.6; mc.setLineDash([2,3]);
+    mc.beginPath(); mc.moveTo(lx-12,Yl(Eavg)); mc.lineTo(lx+lw,Yl(Eavg)); mc.stroke(); mc.setLineDash([]);
+    mc.fillStyle=CYAN; mc.textAlign='left'; mc.fillText('⟨E⟩', lx-44, Yl(Eavg)+4);
+
+    // readouts
+    elNu.textContent=hv.toFixed(1);
+    elX.textContent=x.toFixed(2);
+    elCl.textContent='k_BT';
+    elQ.textContent=(Ebq(hv)/T).toFixed(2)+' k_BT';
+  }
+
+  let capKey='';
+  function setCap(){
+    const x=nuMark/T; let key, html;
+    if(!showQ){
+      key='c';
+      html='This is the classical prediction alone. Every mode holds k<sub>B</sub>T, so the curve <b>never comes back down</b> — summed over all the high-frequency modes the total energy diverges. Press <b>Quantize the energy</b>.';
+    } else if(x<0.6){
+      key='lo';
+      html='At this low frequency one step hν is <b>cheap</b> compared to k<sub>B</sub>T, so the mode climbs the ladder freely and behaves classically — the two curves agree here.';
+    } else if(x<2.2){
+      key='mid';
+      html='Now one step costs a sizable fraction of k<sub>B</sub>T. The mode spends much of its time stuck on the ground rung, so ⟨E⟩ has already dropped <b>below</b> the classical share. The curve starts bending down.';
+    } else {
+      key='hi';
+      html='Out here a single step hν is <b>unaffordable</b> — the mode almost never leaves the ground rung, ⟨E⟩ → 0, and it goes dark. <b>This freeze-out is what tames the catastrophe.</b>';
+    }
+    if(key!==capKey){ capKey=key; cap.innerHTML=html; }
+  }
+  function render(){ drawPlot(); drawMode(); }
+
+  Tslider.addEventListener('input',()=>{ T=+Tslider.value; Tval.textContent=T.toFixed(1); render(); setCap(); });
+  stageBtn.addEventListener('click',()=>{ showQ=true; stageBtn.disabled=true; render(); setCap(); });
+  resetBtn.addEventListener('click',()=>{ showQ=false; stageBtn.disabled=false; nuMark=5; T=3; Tslider.value=3; Tval.textContent='3.0'; render(); setCap(); });
+
+  function dragNu(ev){ const r=plot.getBoundingClientRect(); const cx=(ev.touches?ev.touches[0].clientX:ev.clientX);
+    const px=(cx-r.left)*(PW/r.width); let nu=(px-gx0)/(gx1-gx0)*NUMAX; nu=Math.max(0.3,Math.min(NUMAX-0.3,nu));
+    nuMark=nu; render(); setCap(); }
+  let dragging=false;
+  plot.addEventListener('mousedown',e=>{dragging=true;dragNu(e);});
+  window.addEventListener('mousemove',e=>{if(dragging)dragNu(e);});
+  window.addEventListener('mouseup',()=>dragging=false);
+  plot.addEventListener('touchstart',e=>{dragNu(e);},{passive:true});
+  plot.addEventListener('touchmove',e=>{dragNu(e);e.preventDefault();},{passive:false});
+
+  render(); setCap();
+})();
+</script>
+<script>
+/* ===== STEP 4: de Broglie standing wave on a ring ===== */
+(function(){
+  const cv=document.getElementById('w4cv'), ctx=cv.getContext('2d');
+  const W=cv.width, H=cv.height;
+  const stageBtn=document.getElementById('w4stage'), slider=document.getElementById('w4n'),
+        nlab=document.getElementById('w4nlab'), snapBtn=document.getElementById('w4snap'),
+        ctlwrap=document.getElementById('w4ctlwrap'), cap=document.getElementById('w4cap');
+  const CX=W*0.34, CY=H*0.5, R=140, AMP=42, LAPS=14;
+  let wavy=false, n=3, phase=0;
+
+  // coherent resonance amplitude after LAPS laps: |sin(pi n N)/(N sin(pi n))|
+  function resonance(nn){ const frac=nn-Math.round(nn);
+    if(Math.abs(frac)<1e-4) return 1;
+    return Math.abs(Math.sin(Math.PI*nn*LAPS)/(LAPS*Math.sin(Math.PI*nn))); }
+
+  function frame(){
+    if(window.__seen['w4cv']===false){ requestAnimationFrame(frame); return; }
+    ctx.clearRect(0,0,W,H);
+    // base orbit
+    ctx.strokeStyle='#46527a'; ctx.lineWidth=1.4; ctx.setLineDash([4,5]);
+    ctx.beginPath(); ctx.arc(CX,CY,R,0,7); ctx.stroke(); ctx.setLineDash([]);
+    // nucleus
+    ctx.fillStyle='#ff8a3d'; ctx.shadowBlur=12; ctx.shadowColor='#ff8a3d';
+    ctx.beginPath(); ctx.arc(CX,CY,6,0,7); ctx.fill(); ctx.shadowBlur=0;
+
+    if(!wavy){
+      // plain particle
+      phase+=0.02; const ex=CX+R*Math.cos(phase), ey=CY+R*Math.sin(phase);
+      ctx.fillStyle='#3fd7e6'; ctx.shadowBlur=10; ctx.shadowColor='#3fd7e6';
+      ctx.beginPath(); ctx.arc(ex,ey,5,0,7); ctx.fill(); ctx.shadowBlur=0;
+      requestAnimationFrame(frame); return;
+    }
+
+    phase+=0.03;
+    const amp=resonance(n);
+    const fit=Math.abs(n-Math.round(n))<0.035;
+    const col = fit? '#7ee06a' : '#e0b15a';
+
+    // draw the wave over many laps to show coherence vs spreading
+    // each lap j: displacement = sin(2π n s + phase), point at θ=2π s
+    // (non-fit mode strokes 14 lap paths — keep their segment count low)
+    const steps = fit? 600 : 220;
+    for(let lap=0; lap<LAPS; lap++){
+      const la = fit? (lap===0?0.95:0.0) : 0.16; // if fits, laps coincide -> draw one bold; else many faint spread
+      if(la<=0) continue;
+      ctx.globalAlpha=la; ctx.strokeStyle=col; ctx.lineWidth=fit?2.6:1.2;
+      ctx.beginPath();
+      for(let i=0;i<=steps;i++){ const s=i/steps; const arc=lap+s;
+        const disp=AMP*amp* Math.sin(2*Math.PI*n*arc + phase);
+        const th=2*Math.PI*s; const rr=R+disp;
+        const x=CX+rr*Math.cos(th), y=CY+rr*Math.sin(th);
+        if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      }
+      ctx.stroke();
+    }
+    ctx.globalAlpha=1;
+
+    // closure marker: where the wave starts (θ=0) — show start dot and the end-of-lap value
+    const startDisp=AMP*amp*Math.sin(phase);
+    ctx.fillStyle=col; ctx.beginPath(); ctx.arc(CX+(R+startDisp),CY,4,0,7); ctx.fill();
+
+    // ---- right panel: closure / resonance ----
+    const px=W*0.66, pw=W*0.30;
+    ctx.fillStyle='#727c95'; ctx.font='11px "JetBrains Mono",monospace'; ctx.textAlign='left';
+    ctx.fillText('wavelengths per lap   2πr / λ', px, 40);
+    ctx.font='600 30px "Brygada 1918",serif'; ctx.fillStyle=col;
+    ctx.fillText(n.toFixed(2), px, 74);
+    // resonance bar
+    ctx.fillStyle='#727c95'; ctx.font='11px "JetBrains Mono",monospace';
+    ctx.fillText('surviving amplitude after many laps', px, 108);
+    ctx.fillStyle='#1a2236'; ctx.fillRect(px,118,pw,16);
+    ctx.fillStyle=col; ctx.fillRect(px,118,pw*amp,16);
+    ctx.strokeStyle='#26314c'; ctx.strokeRect(px,118,pw,16);
+    // verdict
+    ctx.font='600 14px "JetBrains Mono",monospace'; ctx.fillStyle=col; ctx.textAlign='left';
+    if(fit){ const ni=Math.round(n);
+      ctx.fillText('✓ CLOSES — allowed orbit n = '+ni, px, 162);
+      ctx.fillStyle='#b3b8c9'; ctx.font='12px "JetBrains Mono",monospace';
+      ctx.fillText('2πr = '+ni+'λ   →   L = '+ni+'ℏ', px, 184);
+      ctx.fillText('this is Bohr\'s level n = '+ni, px, 204);
+    } else {
+      ctx.fillText('✗ does not close', px, 162);
+      ctx.fillStyle='#b3b8c9'; ctx.font='12px "JetBrains Mono",monospace';
+      ctx.fillText('the wave misses its own', px, 184);
+      ctx.fillText('start — laps spread and', px, 202);
+      ctx.fillText('cancel. Orbit forbidden.', px, 220);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  let capKey='';
+  function setCap(){
+    const fit=Math.abs(n-Math.round(n))<0.035;
+    const key=fit?('fit'+Math.round(n)):'nofit';
+    if(key===capKey) return; capKey=key;
+    if(fit){ cap.innerHTML='A <b>whole number</b> of wavelengths fits, so the wave meets itself <em>in phase</em> after one lap and reinforces into a stable standing wave. 2πr = '+Math.round(n)+'λ — and this is precisely one of Bohr\'s allowed orbits.';
+    } else { cap.innerHTML='A <b>fractional</b> number of wavelengths fits. After each lap the wave is shifted, and over many laps the crests and troughs <b>blur out and cancel</b> — no stable wave can live here, so this orbit is forbidden. Slide to an integer.'; }
+  }
+
+  stageBtn.addEventListener('click',()=>{ wavy=true; stageBtn.disabled=true; slider.disabled=false; snapBtn.disabled=false;
+    ctlwrap.style.opacity='1'; capKey=''; setCap(); });
+  slider.addEventListener('input',()=>{ n=+slider.value; nlab.textContent=n.toFixed(2); setCap(); });
+  snapBtn.addEventListener('click',()=>{ n=Math.round(n); slider.value=n; nlab.textContent=n.toFixed(2); setCap(); });
+
+  requestAnimationFrame(frame);
+})();
+</script>
+<script>
+/* ===== STEP 3: Bohr atom + emission spectrum ===== */
+(function(){
+  const cv=document.getElementById('w3cv'), ctx=cv.getContext('2d');
+  const W=cv.width, H=cv.height;
+  const modeBtns=document.querySelectorAll('#w3mode button');
+  const exciteBtn=document.getElementById('w3excite'), autoBtn=document.getElementById('w3auto'),
+        clearBtn=document.getElementById('w3clear'), cap=document.getElementById('w3cap');
+  let mode='c';
+
+  const En = n => -13.6/(n*n);
+  // wavelength (nm) of jump ni->nf: photon energy = E_i - E_f > 0, lambda = 1240/E_photon
+  const lamOf = (ni,nf) => 1240/(En(ni)-En(nf));
+
+  function wl2rgb(wl,a){ let r=0,g=0,b=0;
+    if(wl<440){r=-(wl-440)/60;b=1;} else if(wl<490){g=(wl-440)/50;b=1;}
+    else if(wl<510){g=1;b=-(wl-510)/20;} else if(wl<580){r=(wl-510)/70;g=1;}
+    else if(wl<645){r=1;g=-(wl-645)/65;} else {r=1;}
+    let f=1; if(wl<420)f=0.3+0.7*(wl-380)/40; else if(wl>700)f=0.3+0.7*(780-wl)/80;
+    const ch=v=>Math.round(255*Math.pow(Math.max(0,v)*f,0.8));
+    return 'rgba('+ch(r)+','+ch(g)+','+ch(b)+','+(a==null?1:a)+')'; }
+
+  // layout regions
+  const LAD_X=70, LAD_W=180, LAD_TOP=30, LAD_BOT=H-120;   // energy ladder
+  const ATOM_CX=620, ATOM_CY=(LAD_TOP+LAD_BOT)/2, ATOM_R=150;
+  const SPEC_Y=H-78, SPEC_H=46, SPEC_X0=70, SPEC_X1=W-30;
+  const LAMIN=380, LAMAX=720;
+  // level y on ladder: map E in [-13.6,0] -> [LAD_BOT,LAD_TOP]
+  const Ylevel = E => LAD_BOT + (E/-13.6)*(LAD_TOP-LAD_BOT); // E=0 ->top region
+  const specX = lam => SPEC_X0+(lam-LAMIN)/(LAMAX-LAMIN)*(SPEC_X1-SPEC_X0);
+
+  let nCur=1, photons=[], jumpArrows=[], spectrum={}, classical={r:1,theta:0,trail:[]}, autoTimer=null;
+  let smearTick=0;
+  const NLEVELS=6;
+
+  function addLine(lam){ const k=Math.round(lam); spectrum[k]=(spectrum[k]||0)+1; }
+
+  function drawLadder(){
+    ctx.fillStyle='#727c95'; ctx.font='11px "JetBrains Mono",monospace'; ctx.textAlign='left';
+    ctx.fillText('energy levels  Eₙ = −13.6/n²  eV', LAD_X-4, 16);
+    for(let n=1;n<=NLEVELS;n++){ const y=Ylevel(En(n));
+      ctx.strokeStyle = n===nCur?'#ece8dc':'#46527a';
+      ctx.lineWidth= n===nCur?2.4:1.2;
+      ctx.beginPath(); ctx.moveTo(LAD_X,y); ctx.lineTo(LAD_X+LAD_W,y); ctx.stroke();
+      ctx.fillStyle= n===nCur?'#ece8dc':'#727c95'; ctx.textAlign='right'; ctx.font='11px "JetBrains Mono",monospace';
+      ctx.fillText('n='+n, LAD_X-8, y+4);
+      ctx.textAlign='left'; ctx.fillText(En(n).toFixed(2)+' eV', LAD_X+LAD_W+8, y+4);
+    }
+    // n=2 baseline highlight (Balmer target)
+    const y2=Ylevel(En(2));
+    ctx.strokeStyle='rgba(63,215,230,.35)'; ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.moveTo(LAD_X,y2); ctx.lineTo(SPEC_X1,y2); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle='rgba(63,215,230,.7)'; ctx.font='10px "JetBrains Mono",monospace'; ctx.textAlign='left';
+    ctx.fillText('jumps landing on n=2 = visible (Balmer) lines', LAD_X+LAD_W+90, y2-6);
+    // jump arrows (fading)
+    jumpArrows=jumpArrows.filter(a=>a.life<60);
+    for(const a of jumpArrows){ const yi=Ylevel(En(a.ni)),yf=Ylevel(En(a.nf));
+      const al=1-a.life/60; ctx.globalAlpha=al; ctx.strokeStyle=wl2rgb(a.lam,1); ctx.lineWidth=2;
+      const xx=LAD_X+LAD_W*0.5;
+      ctx.beginPath(); ctx.moveTo(xx,yi); ctx.lineTo(xx,yf); ctx.stroke();
+      // arrowhead
+      ctx.fillStyle=wl2rgb(a.lam,1);
+      ctx.beginPath(); ctx.moveTo(xx,yf); ctx.lineTo(xx-4,yf-6); ctx.lineTo(xx+4,yf-6); ctx.fill();
+      ctx.globalAlpha=1; a.life++; }
+  }
+
+  function drawAtom(){
+    // nucleus
+    ctx.fillStyle='#ff8a3d'; ctx.shadowBlur=14; ctx.shadowColor='#ff8a3d';
+    ctx.beginPath(); ctx.arc(ATOM_CX,ATOM_CY,7,0,7); ctx.fill(); ctx.shadowBlur=0;
+    if(mode==='q'){
+      // allowed orbits as faint rings ∝ n^2 (scaled)
+      for(let n=1;n<=NLEVELS;n++){ const rr=ATOM_R*(n*n)/(NLEVELS*NLEVELS);
+        ctx.strokeStyle = n===nCur?'rgba(236,232,220,.7)':'rgba(70,82,122,.5)';
+        ctx.lineWidth=n===nCur?2:1; ctx.beginPath(); ctx.arc(ATOM_CX,ATOM_CY,rr,0,7); ctx.stroke(); }
+      // electron on current orbit
+      const rr=ATOM_R*(nCur*nCur)/(NLEVELS*NLEVELS);
+      const th=performance.now()*0.002*(1/Math.max(1,nCur*0.7));
+      const ex=ATOM_CX+rr*Math.cos(th), ey=ATOM_CY+rr*Math.sin(th);
+      ctx.fillStyle='#3fd7e6'; ctx.shadowBlur=8; ctx.shadowColor='#3fd7e6';
+      ctx.beginPath(); ctx.arc(ex,ey,4,0,7); ctx.fill(); ctx.shadowBlur=0;
+    } else {
+      // classical: spiral inward
+      const c=classical;
+      c.theta+=0.06+ (1-c.r)*0.2; c.r-=0.0016*(1.05-c.r);  // accelerating decay
+      if(c.r<0.04){ c.r=1; c.trail.length=0; }
+      const rr=ATOM_R*c.r;
+      const ex=ATOM_CX+rr*Math.cos(c.theta), ey=ATOM_CY+rr*Math.sin(c.theta);
+      c.trail.push([ex,ey]); if(c.trail.length>120)c.trail.shift();
+      ctx.lineWidth=1.4;
+      for(let i=1;i<c.trail.length;i++){ ctx.globalAlpha=i/c.trail.length*0.6;
+        ctx.strokeStyle='#e0b15a'; ctx.beginPath(); ctx.moveTo(c.trail[i-1][0],c.trail[i-1][1]); ctx.lineTo(c.trail[i][0],c.trail[i][1]); ctx.stroke(); }
+      ctx.globalAlpha=1;
+      ctx.fillStyle='#3fd7e6'; ctx.shadowBlur=8; ctx.shadowColor='#3fd7e6';
+      ctx.beginPath(); ctx.arc(ex,ey,4,0,7); ctx.fill(); ctx.shadowBlur=0;
+      // continuous emission smear into the spectrum strip (throttled)
+      if((smearTick++&1)===0){ const k=380+Math.floor(Math.random()*340); spectrum[k]=(spectrum[k]||0)+0.25; }
+    }
+    // photons flying out
+    for(const p of photons){ p.x+=p.vx; p.y+=p.vy; p.life++; }
+    photons=photons.filter(p=>p.life<70 && p.x>0&&p.x<W&&p.y>0&&p.y<H);
+    for(const p of photons){ const al=Math.max(0,1-p.life/70), col=wl2rgb(p.lam,1);
+      ctx.strokeStyle=col;
+      ctx.globalAlpha=al*0.3; ctx.lineWidth=5;
+      ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(p.x-p.vx*3,p.y-p.vy*3); ctx.stroke();
+      ctx.globalAlpha=al; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(p.x-p.vx*3,p.y-p.vy*3); ctx.stroke(); }
+    ctx.globalAlpha=1;
+  }
+
+  function drawSpectrum(){
+    // dark plate strip
+    ctx.fillStyle='#05070d'; ctx.fillRect(SPEC_X0,SPEC_Y,SPEC_X1-SPEC_X0,SPEC_H);
+    ctx.strokeStyle='#26314c'; ctx.lineWidth=1; ctx.strokeRect(SPEC_X0,SPEC_Y,SPEC_X1-SPEC_X0,SPEC_H);
+    ctx.fillStyle='#727c95'; ctx.font='10px "JetBrains Mono",monospace'; ctx.textAlign='left';
+    ctx.fillText('emission plate  (what the prism shows)', SPEC_X0, SPEC_Y-7);
+    ctx.textAlign='center';
+    for(const lam of [400,450,500,550,600,650,700]){ const x=specX(lam);
+      ctx.fillStyle='#46527a'; ctx.fillText(lam, x, SPEC_Y+SPEC_H+14); }
+    ctx.fillStyle='#46527a'; ctx.textAlign='right'; ctx.fillText('UV ←',SPEC_X0-4,SPEC_Y+SPEC_H/2);
+    ctx.textAlign='left'; ctx.fillText('→ IR',SPEC_X1+4,SPEC_Y+SPEC_H/2);
+    // lines — no shadowBlur (hundreds of blurred strokes killed the frame rate);
+    // a wide faint halo stroke fakes the glow at a fraction of the cost
+    for(const k in spectrum){ const lam=+k; if(lam<LAMIN||lam>LAMAX)continue;
+      const x=specX(lam); const inten=Math.min(1,spectrum[k]/6);
+      const a=0.25+0.75*inten, col=wl2rgb(lam,1);
+      ctx.strokeStyle=col;
+      if(mode!=='c'){ ctx.globalAlpha=a*0.28; ctx.lineWidth=6;
+        ctx.beginPath(); ctx.moveTo(x,SPEC_Y+2); ctx.lineTo(x,SPEC_Y+SPEC_H-2); ctx.stroke(); }
+      ctx.globalAlpha=a; ctx.lineWidth=mode==='c'?1:2;
+      ctx.beginPath(); ctx.moveTo(x,SPEC_Y+2); ctx.lineTo(x,SPEC_Y+SPEC_H-2); ctx.stroke();
+    }
+    ctx.globalAlpha=1;
+  }
+
+  function frame(){
+    if(window.__seen['w3cv']===false){ requestAnimationFrame(frame); return; }
+    ctx.clearRect(0,0,W,H);
+    if(mode==='q') drawLadder();
+    drawAtom(); drawSpectrum();
+    requestAnimationFrame(frame);
+  }
+
+  function cascadeStep(){
+    if(mode!=='q'||nCur<=1) return;
+    const m=1+Math.floor(Math.random()*(nCur-1)); // random allowed lower level
+    const lam=lamOf(nCur,m);
+    jumpArrows.push({ni:nCur,nf:m,lam,life:0});
+    // emit photon from atom
+    const rr=ATOM_R*(nCur*nCur)/(NLEVELS*NLEVELS);
+    const th=Math.random()*7, sp=4;
+    photons.push({x:ATOM_CX+rr*Math.cos(th),y:ATOM_CY+rr*Math.sin(th),vx:sp*Math.cos(th),vy:sp*Math.sin(th),lam,life:0});
+    addLine(lam);
+    nCur=m;
+    if(nCur>1) setTimeout(cascadeStep,420);
+    else updateCap('done');
+  }
+  function excite(){ if(mode!=='q')return; nCur=3+Math.floor(Math.random()*4); // 3..6
+    updateCap('excited'); setTimeout(cascadeStep,300); }
+
+  function updateCap(state){
+    if(mode==='c'){
+      cap.innerHTML='This is Rutherford\'s classical atom. The electron <b>spirals into the nucleus</b>, smearing out light of every color as it falls — the atom should self-destruct in ~10⁻¹¹ s. Switch to <b>Quantized levels</b> to see Bohr\'s fix.';
+    } else if(state==='excited'){
+      cap.innerHTML='A photon was absorbed, kicking the electron up to a high level. Now watch it <b>fall back in discrete hops</b>, emitting one sharp photon per jump.';
+    } else if(state==='done'){
+      cap.innerHTML='Each hop landing on <b>n=2</b> dropped a visible line on the plate — 656, 486, 434, 410 nm. Keep exciting (or hit <b>Auto-excite</b>) and the exact <b>Balmer spectrum of hydrogen</b> builds up, line by line.';
+    } else {
+      cap.innerHTML='Only certain orbits exist, and the electron <b>doesn\'t radiate while it sits on one</b>. Press <b>Excite the atom</b> to lift it, then watch it hop back down.';
+    }
+  }
+
+  modeBtns.forEach(b=>b.addEventListener('click',()=>{ mode=b.dataset.m;
+    modeBtns.forEach(x=>x.classList.remove('on','warm')); b.classList.add('on'); if(mode==='c')b.classList.add('warm');
+    exciteBtn.disabled=autoBtn.disabled=(mode!=='q'); spectrum={}; jumpArrows=[]; photons=[]; nCur=1; classical={r:1,theta:0,trail:[]};
+    if(autoTimer){clearInterval(autoTimer);autoTimer=null;autoBtn.textContent='Auto-excite ▶';}
+    updateCap(); }));
+  exciteBtn.addEventListener('click',excite);
+  autoBtn.addEventListener('click',()=>{ if(autoTimer){clearInterval(autoTimer);autoTimer=null;autoBtn.textContent='Auto-excite ▶';}
+    else { autoTimer=setInterval(()=>{ if(nCur<=1) excite(); },900); autoBtn.textContent='Stop ⏸'; } });
+  clearBtn.addEventListener('click',()=>{ spectrum={}; jumpArrows=[]; photons=[]; });
+
+  updateCap(); requestAnimationFrame(frame);
+})();
+</script>
+<script>
+/* ===== STEP 2: photoelectric effect ===== */
+(function(){
+  const cv=document.getElementById('w2cv'), ctx=cv.getContext('2d');
+  const W=cv.width, H=cv.height;
+  const fS=document.getElementById('w2f'), iS=document.getElementById('w2i');
+  const lab=document.getElementById('w2lab'), ilab=document.getElementById('w2ilab');
+  const hvEl=document.getElementById('w2hv'), keEl=document.getElementById('w2ke'),
+        curEl=document.getElementById('w2cur'), cap=document.getElementById('w2cap');
+  const modeBtns=document.querySelectorAll('#w2mode button');
+  const WORK=2.38;            // work function eV
+  const GOLDc='#e0b15a';
+  let lambda=470, inten=0.6, mode='q';
+
+  function wl2rgb(wl){ let r=0,g=0,b=0;
+    if(wl<440){r=-(wl-440)/60;b=1;} else if(wl<490){g=(wl-440)/50;b=1;}
+    else if(wl<510){g=1;b=-(wl-510)/20;} else if(wl<580){r=(wl-510)/70;g=1;}
+    else if(wl<645){r=1;g=-(wl-645)/65;} else {r=1;}
+    let f=1; if(wl<420)f=0.3+0.7*(wl-380)/40; else if(wl>700)f=0.3+0.7*(780-wl)/80;
+    const ch=v=>Math.round(255*Math.pow(Math.max(0,v)*f,0.8));
+    return 'rgb('+ch(r)+','+ch(g)+','+ch(b)+')'; }
+  const eV = wl => 1240/wl;     // photon energy eV
+
+  const metalX=W*0.62;          // metal surface plane x
+  let photons=[], electrons=[], wavePhase=0, classicalAccum=0;
+  let ejectCount=0;
+
+  function spawnPhoton(){
+    const y=40+Math.random()*(H-110);
+    photons.push({x:-10,y,vx:5.5+Math.random()*1.5});
+  }
+  function eject(y){
+    const ke=eV(lambda)-WORK; if(ke<=0) return;
+    const sp=2+Math.sqrt(ke)*3.2;
+    electrons.push({x:metalX,y:y+(Math.random()-0.5)*8,vx:sp,vy:(Math.random()-0.5)*0.8,life:0});
+    ejectCount++;
+  }
+  // the WRONG classical prediction: accumulated wave energy frees an electron
+  // regardless of color, with speed set by brightness
+  function ejectClassical(y){
+    const sp=1.5+inten*3.5;
+    electrons.push({x:metalX,y:y+(Math.random()-0.5)*8,vx:sp,vy:(Math.random()-0.5)*0.8,life:0});
+    ejectCount++;
+  }
+
+  function frame(t){
+    if(window.__seen['w2cv']===false){ requestAnimationFrame(frame); return; }
+    ctx.clearRect(0,0,W,H);
+    // metal slab
+    const grad=ctx.createLinearGradient(metalX,0,W,0);
+    grad.addColorStop(0,'#2b3450'); grad.addColorStop(1,'#161d30');
+    ctx.fillStyle=grad; ctx.fillRect(metalX,0,W-metalX,H);
+    ctx.strokeStyle='#46527a'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(metalX,0); ctx.lineTo(metalX,H); ctx.stroke();
+    ctx.fillStyle='#727c95'; ctx.font='11px "JetBrains Mono",monospace'; ctx.textAlign='center';
+    ctx.fillText('METAL', metalX+(W-metalX)/2, H-12);
+    // bound electrons lattice
+    ctx.fillStyle='rgba(63,215,230,.5)';
+    for(let gx=metalX+24; gx<W-12; gx+=34) for(let gy=28; gy<H-26; gy+=34){
+      ctx.beginPath(); ctx.arc(gx+( (Math.floor(gy/34))%2?17:0 ),gy,2.4,0,7); ctx.fill();
+    }
+    const lightCol=wl2rgb(lambda);
+
+    if(mode==='q'){
+      // spawn rate ∝ intensity
+      const rate=inten*0.9;
+      if(Math.random()<rate) spawnPhoton();
+      if(Math.random()<rate*0.6) spawnPhoton();
+      // photons
+      ctx.save();
+      for(const p of photons){ p.x+=p.vx;
+        // dot with little wave tail (no shadowBlur — too costly per particle)
+        ctx.globalAlpha=0.9; ctx.fillStyle=lightCol;
+        ctx.beginPath(); ctx.arc(p.x,p.y,3.2,0,7); ctx.fill();
+        ctx.globalAlpha=0.35; ctx.strokeStyle=lightCol; ctx.lineWidth=1.5;
+        ctx.beginPath(); for(let k=0;k<16;k++){const xx=p.x-k*3.2; ctx.lineTo(xx,p.y+Math.sin((p.x-xx)*0.5)*2.2);} ctx.stroke();
+      }
+      ctx.restore(); ctx.globalAlpha=1;
+      // hits
+      photons=photons.filter(p=>{
+        if(p.x>=metalX){
+          if(eV(lambda)>WORK){ eject(p.y); }
+          else { // absorbed: brief heat flash
+            ctx.fillStyle='rgba(224,177,90,.5)'; ctx.beginPath(); ctx.arc(metalX,p.y,5,0,7); ctx.fill(); }
+          return false;
+        } return p.x<W;
+      });
+    } else {
+      // classical continuous wave
+      wavePhase+=0.18;
+      ctx.strokeStyle=lightCol; ctx.lineWidth=1.5; ctx.globalAlpha=0.85;
+      const amp=8+inten*30;
+      for(let row=0; row<3; row++){ const yc=H*0.28+row*H*0.22;
+        ctx.beginPath();
+        for(let x=0;x<metalX;x+=4){ const y=yc+Math.sin(x*0.06 - wavePhase + row)*amp*(0.4+0.6*x/metalX);
+          if(x===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);} ctx.stroke(); }
+      ctx.globalAlpha=1;
+      // accumulate "delivered energy"
+      classicalAccum+=inten*0.9;
+      const need=120;
+      // draw energy meter on the metal
+      const mh=Math.min(1,classicalAccum/need)*(H-40);
+      ctx.fillStyle='rgba(224,177,90,.18)'; ctx.fillRect(metalX,H-20-mh,W-metalX,mh);
+      ctx.fillStyle=GOLDc; ctx.font='600 11px "JetBrains Mono",monospace'; ctx.textAlign='center';
+      ctx.fillText('wave energy "accumulating"', metalX+(W-metalX)/2, 20);
+      if(classicalAccum>=need){ // classical theory says: now it ejects (regardless of color!)
+        ejectClassical(40+Math.random()*(H-110)); classicalAccum-=need*0.5;
+      }
+    }
+
+    // electrons fly out (leftward, out of metal)
+    for(const e of electrons){ e.x-=e.vx; e.y+=e.vy; e.life++; }
+    electrons=electrons.filter(e=>e.x>-10 && e.life<400);
+    ctx.fillStyle='#3fd7e6';
+    for(const e of electrons){ ctx.globalAlpha=Math.max(0,1-e.life/400);
+      ctx.beginPath(); ctx.arc(e.x,e.y,3,0,7); ctx.fill(); }
+    ctx.globalAlpha=1;
+    if(electrons.length) { ctx.fillStyle='#727c95'; ctx.textAlign='left'; ctx.font='11px "JetBrains Mono",monospace';
+      ctx.fillText('← ejected electrons', 14, 20); }
+
+    // bound photons array & electrons array
+    if(photons.length>240) photons.splice(0,photons.length-240);
+    if(electrons.length>240) electrons.splice(0,electrons.length-240);
+
+    requestAnimationFrame(frame);
+  }
+
+  // current readout updated on a timer (avoid per-frame text thrash)
+  setInterval(()=>{ const perSec=ejectCount; ejectCount=0;
+    curEl.textContent = perSec>0 ? (perSec).toString() : '0';
+  },1000);
+
+  function updateLabels(){
+    lab.textContent=lambda+' nm';
+    ilab.textContent=Math.round(inten*100)+'%';
+    const hv=eV(lambda), ke=hv-WORK;
+    hvEl.textContent=hv.toFixed(2)+' eV';
+    keEl.textContent= ke>0? ke.toFixed(2)+' eV' : 'none (below threshold)';
+    setCap();
+  }
+  let capKey='';
+  function setCap(){
+    const hv=eV(lambda), ke=hv-WORK;
+    const key = mode==='c' ? 'c' : (ke>0?'q1':'q0');
+    if(mode==='c'){
+      if(key!==capKey) cap.innerHTML='<b>The wave picture (wrong).</b> Energy pours in continuously and piles up until an electron breaks free — so here even deep-red light ejects electrons if you wait, and brighter light makes them faster. Experiment flatly disagrees: below threshold, <b>zero</b> electrons, forever. Toggle back to see reality.';
+    } else if(ke>0){
+      cap.innerHTML='Each grain carries hν = '+hv.toFixed(2)+' eV &gt; W, enough to free one electron with K = '+ke.toFixed(2)+' eV left over. <b>Brightness changes how many fly, never how fast.</b>';
+    } else {
+      cap.innerHTML='Here hν = '+hv.toFixed(2)+' eV &lt; W = 2.38 eV. Every grain is <b>too small</b> to free an electron, and a flood of small grains is still a flood of small grains — <b>raise brightness to 100% and still nothing escapes.</b>';
+    }
+    capKey=key;
+  }
+
+  fS.addEventListener('input',()=>{lambda=+fS.value; updateLabels();});
+  iS.addEventListener('input',()=>{inten=+iS.value/100; updateLabels();});
+  modeBtns.forEach(b=>b.addEventListener('click',()=>{ mode=b.dataset.m; classicalAccum=0;
+    modeBtns.forEach(x=>x.classList.remove('on')); b.classList.add('on'); capKey=''; setCap(); }));
+
+  updateLabels(); requestAnimationFrame(frame);
+})();
+</script>
+<script>
+/* ===== STEP 5: Schrödinger — shooting method in a finite well ===== */
+(function(){
+  const cv=document.getElementById('w5cv'), ctx=cv.getContext('2d');
+  const W=cv.width, H=cv.height;
+  const slider=document.getElementById('w5E'), Elab=document.getElementById('w5Elab'),
+        Ev=document.getElementById('w5Ev'), divEl=document.getElementById('w5div'),
+        foundEl=document.getElementById('w5found'), snapBtn=document.getElementById('w5snap'),
+        stageBtn=document.getElementById('w5stage'), clearBtn=document.getElementById('w5clear'),
+        cap=document.getElementById('w5cap');
+  const CYAN='#3fd7e6', GOLD='#e0b15a', GREEN='#7ee06a';
+
+  // units: hbar^2/2m = 1;  psi'' = (V - E) psi
+  const V0=40, X0=-3, X1=3, N=1200, dx=(X1-X0)/N;
+  // eigenvalues of THIS discretized scheme (verified against exact finite-well
+  // transcendental roots 1.836 / 7.292 / 16.184 / 28.004)
+  const EIG=[1.8436,7.3232,16.2508,28.1115];
+  const MAG=0.12;                       // magnet radius for landing on a level
+  let Etrial=10, dispE=10, onEig=-1, born=false, needInt=true;
+  const found=[false,false,false,false];
+  const psi=new Float64Array(N+1); let maxwell=1, tail=0;
+
+  // layout: main plot left, verdict panel right, Born strip bottom
+  const PLX0=64, PLX1=650, PLY0=26, PLY1=300;      // well diagram (E axis vertical)
+  const STY0=330, STY1=414;                        // Born strip
+  const PNX=686;                                   // right panel x
+  const EY = E => PLY1 - (E/44)*(PLY1-PLY0);
+  const XP = x => PLX0 + (x-X0)/(X1-X0)*(PLX1-PLX0);
+  const Vx = x => Math.abs(x)<1?0:V0;
+
+  function integrate(E){
+    const kap=Math.sqrt(Math.max(V0-E,1e-9));
+    psi[0]=1e-8; psi[1]=1e-8*Math.exp(kap*dx);
+    maxwell=1e-300;
+    for(let i=1;i<N;i++){ const x=X0+i*dx;
+      psi[i+1]=2*psi[i]-psi[i-1]+dx*dx*(Vx(x)-E)*psi[i];
+      if(Math.abs(x)<1.2 && Math.abs(psi[i+1])>maxwell) maxwell=Math.abs(psi[i+1]);
+    }
+    tail=psi[N]/maxwell;
+  }
+
+  function retune(){
+    dispE=Etrial; onEig=-1;
+    for(let k=0;k<EIG.length;k++) if(Math.abs(Etrial-EIG[k])<MAG){ dispE=EIG[k]; onEig=k;
+      if(!found[k]){ found[k]=true; foundEl.textContent=found.filter(Boolean).length+' / 4'; } }
+    integrate(dispE); needInt=false;
+    Ev.textContent=dispE.toFixed(2); Elab.textContent=dispE.toFixed(2);
+    const d=Math.abs(tail);
+    divEl.textContent = onEig>=0 ? '1 (fits)' : (d>=1e4? d.toExponential(1) : d.toFixed(0));
+    setCap();
+  }
+
+  // Born-rule sampling: rejection from psi^2 over the well region
+  const BINS=110, hist=new Float32Array(BINS); let histMax=1, drops=[], nSamp=0;
+  function sampleX(){
+    for(let t=0;t<220;t++){
+      const x=-2+Math.random()*4;
+      const i=Math.round((x-X0)/dx); if(i<1||i>N-1) continue;
+      const p=(psi[i]/maxwell); if(Math.random()<p*p) return x;
+    }
+    return 0;
+  }
+
+  function drawStatic(){
+    // well outline
+    ctx.strokeStyle='#46527a'; ctx.lineWidth=2;
+    ctx.beginPath();
+    ctx.moveTo(PLX0, EY(V0)); ctx.lineTo(XP(-1), EY(V0)); ctx.lineTo(XP(-1), EY(0));
+    ctx.lineTo(XP(1), EY(0)); ctx.lineTo(XP(1), EY(V0)); ctx.lineTo(PLX1, EY(V0));
+    ctx.stroke();
+    ctx.fillStyle='rgba(38,49,76,.25)'; ctx.fillRect(XP(-1),EY(V0),XP(1)-XP(-1),EY(0)-EY(V0));
+    ctx.fillStyle='#727c95'; ctx.font='11px "JetBrains Mono",monospace'; ctx.textAlign='left';
+    ctx.fillText('the trap: potential V(x) — walls of height 40', PLX0, 16);
+    ctx.textAlign='center'; ctx.fillText('position x →', (PLX0+PLX1)/2, PLY1+16);
+    ctx.save(); ctx.translate(20,(PLY0+PLY1)/2); ctx.rotate(-Math.PI/2); ctx.textAlign='center';
+    ctx.fillText('energy ↑', 0,0); ctx.restore();
+  }
+
+  function frame(){
+    if(window.__seen['w5cv']===false){ requestAnimationFrame(frame); return; }
+    ctx.clearRect(0,0,W,H);
+    if(needInt) retune();
+    drawStatic();
+
+    // known levels: found ones glow
+    for(let k=0;k<EIG.length;k++){ if(!found[k]) continue;
+      const y=EY(EIG[k]);
+      ctx.strokeStyle='rgba(63,215,230,.55)'; ctx.setLineDash([5,4]); ctx.lineWidth=1.3;
+      ctx.beginPath(); ctx.moveTo(XP(-1),y); ctx.lineTo(XP(1),y); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle='rgba(63,215,230,.8)'; ctx.font='10px "JetBrains Mono",monospace'; ctx.textAlign='left';
+      ctx.fillText('E'+(k+1)+' = '+EIG[k].toFixed(2), XP(1)+8, y+3);
+    }
+
+    // trial-energy line
+    const ey=EY(dispE);
+    const col = onEig>=0? GREEN : GOLD;
+    ctx.strokeStyle=col; ctx.lineWidth=1; ctx.setLineDash([2,3]);
+    ctx.beginPath(); ctx.moveTo(PLX0,ey); ctx.lineTo(PLX1,ey); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle=col; ctx.font='600 10px "JetBrains Mono",monospace'; ctx.textAlign='left';
+    ctx.fillText('E = '+dispE.toFixed(2), PLX0+4, ey-5);
+
+    // the wave, centered on the energy line, tail clamped
+    const A=34;
+    ctx.strokeStyle= onEig>=0? CYAN : GOLD; ctx.lineWidth= onEig>=0? 2.4:1.8;
+    ctx.shadowBlur= onEig>=0? 8:0; ctx.shadowColor=CYAN;
+    ctx.beginPath();
+    for(let i=0;i<=N;i+=2){
+      let v=psi[i]/maxwell; v=Math.max(-3.4,Math.min(3.4,v));
+      const x=XP(X0+i*dx);
+      const y=Math.max(PLY0+4, Math.min(PLY1+16, ey - v*A));
+      if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    }
+    ctx.stroke(); ctx.shadowBlur=0;
+    // divergence arrow if tail off-scale
+    if(onEig<0 && Math.abs(tail)>3.4){
+      const ay=Math.max(PLY0+14, Math.min(PLY1+12, ey-(tail>0?1:-1)*A*3.4)) + (tail>0?12:-4);
+      ctx.fillStyle=GOLD; ctx.font='600 12px "JetBrains Mono",monospace'; ctx.textAlign='right';
+      ctx.fillText(tail>0?'→ +∞':'→ −∞', PLX1-4, ay);
+    }
+
+    // ---- right verdict panel ----
+    ctx.textAlign='left'; ctx.font='11px "JetBrains Mono",monospace'; ctx.fillStyle='#727c95';
+    ctx.fillText('does the wave fit?', PNX, 40);
+    ctx.font='600 15px "JetBrains Mono",monospace'; ctx.fillStyle=col;
+    if(onEig>=0){
+      ctx.fillText('✓ FITS — decays both', PNX, 66);
+      ctx.fillText('  sides. Level n='+(onEig+1), PNX, 86);
+      ctx.fillStyle='#b3b8c9'; ctx.font='12px "JetBrains Mono",monospace';
+      ctx.fillText('an allowed energy —', PNX, 112);
+      ctx.fillText('a standing wave, like', PNX, 130);
+      ctx.fillText('n='+(onEig+1)+' on the Bohr ring', PNX, 148);
+    } else {
+      ctx.fillText('✗ blows up at the edge', PNX, 66);
+      ctx.fillStyle='#b3b8c9'; ctx.font='12px "JetBrains Mono",monospace';
+      ctx.fillText('ψ can\'t be a real,', PNX, 92);
+      ctx.fillText('normalizable wave here.', PNX, 110);
+      ctx.fillText('This energy is forbidden.', PNX, 128);
+    }
+    // divergence meter (log scale)
+    ctx.fillStyle='#727c95'; ctx.font='11px "JetBrains Mono",monospace';
+    ctx.fillText('edge blow-up (log scale)', PNX, 178);
+    const meterW=W-PNX-20, dmag=Math.log10(Math.max(1,Math.abs(tail)))/9;
+    ctx.fillStyle='#1a2236'; ctx.fillRect(PNX,188,meterW,14);
+    ctx.fillStyle= onEig>=0? GREEN:GOLD; ctx.fillRect(PNX,188,meterW*Math.min(1,dmag),14);
+    ctx.strokeStyle='#26314c'; ctx.strokeRect(PNX,188,meterW,14);
+    ctx.fillStyle='#727c95'; ctx.font='10px "JetBrains Mono",monospace';
+    ctx.fillText('found so far: '+found.filter(Boolean).length+' of 4 allowed energies', PNX, 226);
+    for(let k=0;k<4;k++){ ctx.fillStyle=found[k]?CYAN:'#1a2236';
+      ctx.fillRect(PNX+k*26,236,18,8); }
+
+    // ---- Born strip ----
+    ctx.fillStyle='#05070d'; ctx.fillRect(PLX0,STY0,PLX1-PLX0,STY1-STY0);
+    ctx.strokeStyle='#26314c'; ctx.strokeRect(PLX0,STY0,PLX1-PLX0,STY1-STY0);
+    ctx.fillStyle='#727c95'; ctx.font='10px "JetBrains Mono",monospace'; ctx.textAlign='left';
+    if(!born){
+      ctx.fillText('what does ψ mean? — press "Reveal what ψ means" once a wave fits', PLX0+8, STY0+18);
+    } else {
+      ctx.fillText('position detector — each dot is ONE measurement of the electron  ('+nSamp+' so far)', PLX0, STY0-7);
+      // |psi|^2 curve
+      if(onEig>=0){
+        ctx.strokeStyle=CYAN; ctx.lineWidth=1.6; ctx.globalAlpha=.8; ctx.beginPath();
+        for(let i=0;i<=N;i+=3){ const v=psi[i]/maxwell;
+          const x=XP(X0+i*dx), y=STY1-4-(v*v)*(STY1-STY0-14);
+          if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y); }
+        ctx.stroke(); ctx.globalAlpha=1;
+        ctx.fillStyle='rgba(63,215,230,.7)'; ctx.textAlign='right';
+        ctx.fillText('|ψ|²', PLX1-6, STY0+14);
+      }
+      // histogram of detections
+      const bw=(PLX1-PLX0)/BINS;
+      ctx.fillStyle='rgba(155,107,255,.65)';
+      for(let b=0;b<BINS;b++){ if(!hist[b])continue;
+        const hh=Math.min(1,hist[b]/histMax)*(STY1-STY0-16);
+        ctx.fillRect(PLX0+b*bw, STY1-2-hh, Math.max(1,bw-1), hh); }
+      // falling dots
+      if(onEig>=0){
+        if(drops.length<26 && Math.random()<0.5){
+          const x=sampleX(); drops.push({x, y:STY0+6, vy:1.6+Math.random()});
+        }
+      }
+      for(const dpt of drops){ dpt.y+=dpt.vy;
+        ctx.fillStyle='#ece8dc'; ctx.beginPath(); ctx.arc(XP(dpt.x),Math.min(dpt.y,STY1-5),1.8,0,7); ctx.fill(); }
+      drops=drops.filter(dpt=>{ if(dpt.y>=STY1-5){
+          const b=Math.max(0,Math.min(BINS-1,Math.floor((dpt.x-X0)/(X1-X0)*BINS)));
+          hist[b]+=1; if(hist[b]>histMax)histMax=hist[b]; nSamp++;
+          return false;} return true; });
+    }
+    requestAnimationFrame(frame);
+  }
+
+  let capKey='';
+  function setCap(){
+    const key=(born?'b':'h')+(onEig>=0?('y'+onEig):'n');
+    if(key===capKey) return; capKey=key;
+    if(!born){
+      if(onEig>=0) cap.innerHTML='<b>It fits.</b> At E = '+dispE.toFixed(2)+' the wave decays on <b>both</b> sides — a genuine standing wave, level n='+(onEig+1)+'. Nobody told the equation to quantize: the discreteness fell out of demanding the wave stay trapped. Find all four, then press <b>Reveal what ψ means</b>.';
+      else cap.innerHTML='At this energy the wave grown from the left <b>explodes at the right edge</b> — it cannot be a trapped, finite wave, so this energy is physically impossible. Drag E slowly: the tail flips from +∞ to −∞ exactly at an allowed energy. (The slider magnetizes within ±0.12 of one — the true window is far thinner.)';
+    } else {
+      if(onEig>=0) cap.innerHTML='<b>Born\'s rule, live.</b> The wave |ψ|² (cyan curve) is smooth — but every detection lands at <b>one point</b>, more often where |ψ|² is tall, never at its zeros. The wave doesn\'t say where the electron is; it sets the <b>odds</b>. Try a higher level: more lobes, and dark gaps between them.';
+      else cap.innerHTML='No standing wave here, so there\'s nothing to measure — <b>snap to an allowed E</b> to resume detections.';
+    }
+  }
+
+  slider.addEventListener('input',()=>{ Etrial=+slider.value; needInt=true; });
+  snapBtn.addEventListener('click',()=>{ let best=0,bd=1e9;
+    for(let k=0;k<EIG.length;k++){const d=Math.abs(Etrial-EIG[k]); if(d<bd){bd=d;best=k;}}
+    Etrial=EIG[best]; slider.value=Etrial; needInt=true; });
+  stageBtn.addEventListener('click',()=>{ born=true; stageBtn.disabled=true; clearBtn.disabled=false;
+    if(onEig<0){ let best=0,bd=1e9;
+      for(let k=0;k<EIG.length;k++){const d=Math.abs(Etrial-EIG[k]); if(d<bd){bd=d;best=k;}}
+      Etrial=EIG[best]; slider.value=Etrial; }
+    needInt=true; capKey=''; });
+  clearBtn.addEventListener('click',()=>{ hist.fill(0); histMax=1; drops=[]; nSamp=0; });
+
+  needInt=true; requestAnimationFrame(frame);
+})();
+</script>
+<script>
+/* ===== STEP 6: double slit, one electron at a time ===== */
+(function(){
+  const cv=document.getElementById('w6cv'), ctx=cv.getContext('2d');
+  const W=cv.width, H=cv.height;
+  const oneBtn=document.getElementById('w6one'), runBtn=document.getElementById('w6run'),
+        ffBtn=document.getElementById('w6ff'), clearBtn=document.getElementById('w6clear'),
+        overlayBtn=document.getElementById('w6overlay'), nEl=document.getElementById('w6n'),
+        cap=document.getElementById('w6cap');
+  const detBtns=document.querySelectorAll('#w6det button');
+  const CYAN='#3fd7e6', GOLD='#e0b15a', VIOLET='#9b6bff';
+
+  // geometry (px): slit separation d=90, slit width w=24, λL=4050 → fringe spacing λL/d = 45
+  const GUNX=52, BARX=330, SCRX=828, CY=H*0.5-14;
+  const D=90, SW=24, LAML=4050, YR=170;
+  const sinc=u=>Math.abs(u)<1e-9?1:Math.sin(u)/u;
+  const Icoh=y=>Math.pow(Math.cos(Math.PI*D*y/LAML),2)*Math.pow(sinc(Math.PI*SW*y/LAML),2);
+  const Ione=(y,c)=>Math.pow(sinc(Math.PI*SW*(y-c)/LAML),2);
+
+  let detector=false, running=false, overlay=false, nRec=0, runTick=0;
+  let flights=[];                          // animated electrons
+  const BINS=68, binC=new Float32Array(BINS), binW=new Float32Array(BINS);
+  let binMax=1;
+
+  // accumulated dots on an offscreen layer
+  const dots=document.createElement('canvas'); dots.width=W; dots.height=H;
+  const dctx=dots.getContext('2d');
+
+  function sampleY(det,slit){
+    for(let t=0;t<300;t++){
+      const y=(Math.random()*2-1)*YR;
+      const p= det? Ione(y, slit*D/2) : Icoh(y);
+      if(Math.random()<p) return y;
+    }
+    return 0;
+  }
+  function record(y,det){
+    const b=Math.max(0,Math.min(BINS-1,Math.floor((y+YR)/(2*YR)*BINS)));
+    if(det) binW[b]+=1; else binC[b]+=1;
+    if(binC[b]+binW[b]>binMax) binMax=binC[b]+binW[b];
+    nRec++; nEl.textContent=nRec;
+    // stamp dot
+    dctx.fillStyle= det? 'rgba(224,177,90,.85)' : 'rgba(63,215,230,.85)';
+    dctx.beginPath(); dctx.arc(SCRX+3+Math.random()*12, CY+y, 1.5, 0, 7); dctx.fill();
+    milestones();
+  }
+  function fire(animate){
+    const slit=Math.random()<0.5?-1:1;         // meaningful only if detector on
+    const y=sampleY(detector,slit);
+    if(!animate){ record(y,detector); return; }
+    flights.push({ph:0,t:0,slit,y,det:detector});
+    if(flights.length>36) flights.shift();
+  }
+
+  // static scene layer
+  const scene=document.createElement('canvas'); scene.width=W; scene.height=H;
+  (function(){ const s=scene.getContext('2d');
+    // gun
+    s.fillStyle='#2b3450'; s.fillRect(GUNX-34,CY-16,38,32);
+    s.fillStyle='#46527a'; s.fillRect(GUNX+2,CY-6,16,12);
+    s.fillStyle='#727c95'; s.font='10px "JetBrains Mono",monospace'; s.textAlign='center';
+    s.fillText('electron gun', GUNX-14, CY+34);
+    // barrier with two slits
+    const s1=CY-D/2, s2=CY+D/2;
+    s.fillStyle='#26314c';
+    s.fillRect(BARX-4,0,8,s1-SW/2);
+    s.fillRect(BARX-4,s1+SW/2,8,(s2-SW/2)-(s1+SW/2));
+    s.fillRect(BARX-4,s2+SW/2,8,H-(s2+SW/2));
+    s.fillStyle='#727c95'; s.textAlign='left';
+    s.fillText('slit 1', BARX+10, s1+3);
+    s.fillText('slit 2', BARX+10, s2+3);
+    s.fillText('d = 90 px', BARX+10, CY+3);
+    // screen
+    s.fillStyle='#0d1322'; s.fillRect(SCRX,CY-YR-6,18,2*YR+12);
+    s.strokeStyle='#26314c'; s.strokeRect(SCRX,CY-YR-6,18,2*YR+12);
+    s.fillStyle='#727c95'; s.textAlign='center'; s.fillText('screen', SCRX+9, CY-YR-14);
+    s.fillText('counts →', SCRX+64, CY-YR-14);
+  })();
+
+  function frame(){
+    if(window.__seen['w6cv']===false){ requestAnimationFrame(frame); return; }
+    ctx.clearRect(0,0,W,H);
+    ctx.drawImage(scene,0,0);
+    ctx.drawImage(dots,0,0);
+
+    if(running && (runTick++%5===0)) fire(true);
+
+    // animate flights
+    for(const f of flights){
+      f.t++;
+      if(f.ph===0){ // gun -> barrier
+        const x=GUNX+20+f.t*9;
+        ctx.fillStyle='rgba(155,107,255,.3)';
+        ctx.beginPath(); ctx.arc(x,CY,5,0,7); ctx.fill();
+        ctx.fillStyle='#ece8dc';
+        ctx.beginPath(); ctx.arc(x,CY,2.6,0,7); ctx.fill();
+        if(x>=BARX-6){ f.ph=1; f.t=0;
+          if(f.det){ // which-slit flash
+            f.flashY=CY+f.slit*D/2; }
+        }
+      } else if(f.ph===1){ // waves spread from slit(s)
+        const r=f.t*13;
+        const srcs = f.det? [CY+f.slit*D/2] : [CY-D/2, CY+D/2];
+        ctx.lineWidth=1.2;
+        for(const sy of srcs){
+          for(let k=0;k<3;k++){ const rr=r-k*26; if(rr<=0)continue;
+            ctx.globalAlpha=Math.max(0,.5-k*.14)*(f.det?1:.9);
+            ctx.strokeStyle= f.det? GOLD:CYAN;
+            ctx.beginPath(); ctx.arc(BARX,sy,rr,-1.2,1.2); ctx.stroke();
+          }
+        }
+        ctx.globalAlpha=1;
+        if(f.det && f.t<14){ ctx.fillStyle=GOLD; ctx.globalAlpha=1-f.t/14;
+          ctx.beginPath(); ctx.arc(BARX,f.flashY,8+f.t,0,7); ctx.fill(); ctx.globalAlpha=1;
+          ctx.font='600 10px "JetBrains Mono",monospace'; ctx.textAlign='left';
+          ctx.fillStyle=GOLD; ctx.fillText('seen!', BARX+14, f.flashY-10);
+        }
+        if(r>=SCRX-BARX){ f.ph=2; record(f.y,f.det); }
+      }
+    }
+    flights=flights.filter(f=>f.ph<2);
+
+    // histogram bars beside screen
+    const bh=(2*YR)/BINS;
+    for(let b=0;b<BINS;b++){
+      const y0=CY-YR+b*bh, wC=binC[b]/binMax*74, wW=binW[b]/binMax*74;
+      if(wC>0){ ctx.fillStyle='rgba(63,215,230,.75)'; ctx.fillRect(SCRX+22,y0,wC,Math.max(1,bh-1)); }
+      if(wW>0){ ctx.fillStyle='rgba(224,177,90,.75)'; ctx.fillRect(SCRX+22+wC,y0,wW,Math.max(1,bh-1)); }
+    }
+    // prediction overlay
+    if(overlay){
+      const hasC=binC.some(v=>v>0)||!detector, hasW=binW.some(v=>v>0)||detector;
+      ctx.lineWidth=1.6;
+      if(hasC){ ctx.strokeStyle=CYAN; ctx.globalAlpha=.9; ctx.beginPath();
+        for(let i=0;i<=120;i++){ const y=-YR+i/120*2*YR;
+          const px=SCRX+22+Icoh(y)*74, py=CY+y;
+          if(i===0)ctx.moveTo(px,py); else ctx.lineTo(px,py); }
+        ctx.stroke(); }
+      if(hasW){ ctx.strokeStyle=GOLD; ctx.beginPath();
+        for(let i=0;i<=120;i++){ const y=-YR+i/120*2*YR;
+          const px=SCRX+22+0.5*(Ione(y,-D/2)+Ione(y,D/2))*74, py=CY+y;
+          if(i===0)ctx.moveTo(px,py); else ctx.lineTo(px,py); }
+        ctx.stroke(); }
+      ctx.globalAlpha=1;
+      ctx.fillStyle='#727c95'; ctx.font='10px "JetBrains Mono",monospace'; ctx.textAlign='left';
+      ctx.fillText('|ψ₁+ψ₂|²', SCRX+22, CY+YR+16);
+      if(hasW){ ctx.fillStyle=GOLD; ctx.fillText('|ψ₁|²+|ψ₂|²', SCRX+22, CY+YR+28); }
+    }
+    // detector mode banner
+    ctx.font='600 11px "JetBrains Mono",monospace'; ctx.textAlign='left';
+    ctx.fillStyle= detector? GOLD : CYAN;
+    ctx.fillText(detector? 'DETECTOR ON — every electron is caught using one slit'
+                         : 'no detector — the wave takes both slits', GUNX-34, 20);
+    requestAnimationFrame(frame);
+  }
+
+  let capKey='';
+  function setCapKeyed(key,html){ if(key!==capKey){ capKey=key; cap.innerHTML=html; } }
+  function milestones(){
+    if(detector) setCapKeyed('det','<b>You watched — and the stripes died.</b> Each electron is now caught at one slit (gold flash), so the two paths are distinguishable and their probabilities <b>add</b>: a smooth stripeless hump (gold dots). Nothing else changed. Toggle back to <b>No detector</b> and keep firing — new cyan dots resume striping.');
+    else if(nRec>=80) setCapKeyed('many','<b>Stripes.</b> There are bands where <b>no electron ever lands</b> — yet each traveled alone, so it can only have interfered <b>with itself</b>: its wave took both slits. Bright stripes sit exactly 45 px apart, where the two paths differ by a whole wavelength. Now press <b>Watch the slits</b>.');
+    else if(nRec>=1) setCapKeyed('few','Dots so far look random — no pattern, no way to predict the next one. This is real: the theory itself says only the <b>odds</b> are determined. Keep firing (or <b>Fast-forward</b>) and let the statistics speak.');
+  }
+
+  oneBtn.addEventListener('click',()=>fire(true));
+  runBtn.addEventListener('click',()=>{ running=!running;
+    runBtn.textContent= running? 'Stop ⏸':'Fire stream ▶'; });
+  ffBtn.addEventListener('click',()=>{ for(let i=0;i<500;i++) fire(false); });
+  clearBtn.addEventListener('click',()=>{ binC.fill(0); binW.fill(0); binMax=1; nRec=0;
+    nEl.textContent='0'; dctx.clearRect(0,0,W,H); capKey=''; });
+  overlayBtn.addEventListener('click',()=>{ overlay=!overlay;
+    overlayBtn.textContent= overlay? 'Hide the prediction':'Overlay the wave\'s prediction';
+    if(overlay) setCapKeyed('ov','<b>The Born rule, closing the story.</b> The cyan curve is |ψ₁+ψ₂|², computed from Schrödinger\'s wave — it matches the dot histogram exactly, yet it never predicts any <em>single</em> dot. The wave is not the electron; it is the <b>probability</b> of the electron. That is quantum mechanics.'); });
+  detBtns.forEach(b=>b.addEventListener('click',()=>{ detector=(b.dataset.d==='on');
+    detBtns.forEach(x=>x.classList.remove('on','warm')); b.classList.add('on'); if(detector)b.classList.add('warm');
+    capKey=''; if(nRec>0) milestones(); }));
+
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>

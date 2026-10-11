@@ -5,21 +5,9 @@ date:   2019-09-30
 excerpt: "Tackling the computational cost of GP's"
 image: "/blog/InducingPoints/Cover.png"
 ---
-<head>
-<script type="text/x-mathjax-config"> MathJax.Hub.Config({ TeX: { equationNumbers: { autoNumber: "all" } } }); </script>
-       <script type="text/x-mathjax-config">
-         MathJax.Hub.Config({
-           tex2jax: {
-             inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-             displayMath: [['$$','$$']],
-             processEscapes: true
-           }
-         });
-       </script>
-       <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
-</head>
+{% include mathjax3.html %}
 
-Gaussian processes (GP) are extremely flexible probabilistic models with a sound theoretical footing.
+[Gaussian processes (GP)](https://ludwigwinkler.github.io/blog/Gaussian-Processes/) are extremely flexible probabilistic models with a sound theoretical footing. See also [GPyTorch](https://ludwigwinkler.github.io/blog/GPyTorch/) for scalable GPU-accelerated GP training.
 In essence, you treat your available data as a giant Normal distribution and infer the covariances between the data points via a kernel.
 Now every data point becomes a dimension of the Normal distribution.
 This is in contrast to how we normally think about Normal distributions and data where each feature has its own dimension in a Normal distribution.
@@ -162,7 +150,7 @@ Remember that both the objective function via the logarithm of the Normal distri
 
 			self.num_inducing_points = _num_inducing_points
 
-			inducing_x = torch.linspace(_x.min().item(), _x.max().item(), self.num_inducing_points).reshape(-1,1) 	# distribute the data points as a linspace between x.min() and x.max() to get a good initializaiton of the inducing points
+			inducing_x = torch.linspace(_x.min().item(), _x.max().item(), self.num_inducing_points).reshape(-1,1) 	# distribute the data points as a linspace between x.min() and x.max() to get a good initialization of the inducing points
 			self.inducing_x_mu = torch.nn.Parameter(inducing_x + torch.randn_like(inducing_x).clamp(-0.1,0.1)) 			# add some noise to the x values of the inducing points
 			self.inducing_y_mu = torch.nn.Parameter(FloatTensor(_num_inducing_points, _dim).uniform_(-0.5,0.5)) 		# since we normalized the data to N(0,1) we initialize the y values in the middle of N(0,1)
 
