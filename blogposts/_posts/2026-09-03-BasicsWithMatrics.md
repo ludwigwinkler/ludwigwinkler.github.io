@@ -5,7 +5,7 @@ category: blog
 date:   2026-09-03
 excerpt: "Back to University Math 101"
 highlighter: rouge
-# image: "/blog/FKC/steered_diffusion.gif"
+image: "/blog/BasicsWithMatrics/BasicsWithMatrics.png"
 ---
 {% include mathjax3.html %}
 
